@@ -1,6 +1,6 @@
 {
     "name": "progpilot/project",
-    "description": "progpilot tests",
+    "description": "progpilot for designsecurity",
     "license": "MIT",
     "authors": [
         {
@@ -16,6 +16,7 @@
         }
     ],
     "require": {
+	"cweagans/composer-patches": "~1.0",
         "ircmaxell/php-cfg": "dev-master",
         "progpilot/package": "dev-master",
         "slim/slim": "3.5.0"
@@ -23,5 +24,14 @@
     },
     "require-dev": {
         "behat/behat": "^3.1"
-    }
+    },
+	"extra": {
+		"patches": {
+			"ircmaxell/php-cfg": {
+				"Op": "../../patchs/Op.diff",
+				"Include": "../../patchs/Include_.diff",
+				"Traverser": "../../patchs/Traverser.diff"
+				}
+			}
+		}
 } 
