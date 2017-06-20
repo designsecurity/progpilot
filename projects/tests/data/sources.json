@@ -1,0 +1,6 @@
+{
+    "sources": [
+        {"name": "_GET", "language": "php", "type": "HTTP Parameter"},
+        {"name": "_POST", "language": "php", "type": "HTTP Parameter"}
+		]
+}

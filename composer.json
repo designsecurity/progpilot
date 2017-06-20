@@ -1,0 +1,19 @@
+{
+    "name": "static",
+    "description": "A Static Analyser for security",
+    "license": "BSD",
+    "authors": [
+        {
+            "name": "Eric Therond",
+            "email": "eric.therond.fr@gmail.com"
+        }
+    ],
+    "require": {
+        "ircmaxell/php-cfg": "dev-master",
+        "slim/slim": "3.5.0"
+    
+    },
+    "require-dev": {
+        "behat/behat": "^3.1"
+    }
+}

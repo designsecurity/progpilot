@@ -1,0 +1,7 @@
+{
+    "sanitizers": [
+        {"name": "htmlentities", "language": "php", "type": "character encoding", "prevent": "xss"},
+        {"name": "addslashes", "language": "php", "type": "character escaping", "prevent": "sqli"},
+        {"name": "str_replace", "language": "js", "type": "character encoding", "prevent": "xss"}
+		]
+}

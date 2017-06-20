@@ -1,0 +1,27 @@
+{
+    "name": "progpilot/project",
+    "description": "progpilot tests",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Eric Therond",
+            "email": "eric.therond.fr@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../package"
+        }
+    ],
+    "require": {
+        "ircmaxell/php-cfg": "dev-master",
+        "progpilot/package": "dev-master",
+        "slim/slim": "3.5.0"
+    
+    },
+    "require-dev": {
+        "behat/behat": "^3.1"
+    }
+} 
