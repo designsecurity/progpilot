@@ -53,148 +53,151 @@ class VisitorDataflow {
 
 		do
 		{
-			$instruction = $code[$index];
-			switch($instruction->get_opcode())
-			{
-				case Opcodes::CLASSE:
-					{
-						$myclass = $instruction->get_property("myclass");
-						foreach($myclass->get_properties() as $property)
-							$property->set_source_file($this->current_file);
+            if(isset($code[$index]))
+            {
+                $instruction = $code[$index];
+                switch($instruction->get_opcode())
+                {
+                    case Opcodes::CLASSE:
+                        {
+                            $myclass = $instruction->get_property("myclass");
+                            foreach($myclass->get_properties() as $property)
+                                $property->set_source_file($this->current_file);
 
-						break;
-					}
+                            break;
+                        }
 
-				case Opcodes::ENTER_FUNCTION:
-					{
-						$myfunc = $instruction->get_property("myfunc");
+                    case Opcodes::ENTER_FUNCTION:
+                        {
+                            $myfunc = $instruction->get_property("myfunc");
 
-						$defs = new Definitions();
-						$defs->create_block(0); 
+                            $defs = new Definitions();
+                            $defs->create_block(0); 
 
-						$myfunc->set_defs($defs);
+                            $myfunc->set_defs($defs);
 
-						$this->defs = $defs;
+                            $this->defs = $defs;
 
-						$this->blocks = new \SplObjectStorage;
+                            $this->blocks = new \SplObjectStorage;
 
-						$this->current_block_id = 0;
+                            $this->current_block_id = 0;
 
-						break;
-					}
+                            break;
+                        }
 
-				case Opcodes::ENTER_BLOCK:
-					{
-						$myblock = $instruction->get_property("myblock");
+                    case Opcodes::ENTER_BLOCK:
+                        {
+                            $myblock = $instruction->get_property("myblock");
 
-						$this->setBlockId($myblock);
-						$myblock->set_id($this->getBlockId($myblock));
+                            $this->setBlockId($myblock);
+                            $myblock->set_id($this->getBlockId($myblock));
 
-						$blockid = $myblock->get_id();
+                            $blockid = $myblock->get_id();
 
-						$this->current_block_id = $blockid;
+                            $this->current_block_id = $blockid;
 
-						if($blockid != 0)
-							$this->defs->create_block($blockid);  
+                            if($blockid != 0)
+                                $this->defs->create_block($blockid);  
 
-						$assertions = $myblock->get_assertions();
-						foreach($assertions as $assertion)
-						{
-							$mydef = $assertion->get_def();		
-							$mydef->set_block_id($blockid);
-						}
+                            $assertions = $myblock->get_assertions();
+                            foreach($assertions as $assertion)
+                            {
+                                $mydef = $assertion->get_def();		
+                                $mydef->set_block_id($blockid);
+                            }
 
-						break;
-					}
+                            break;
+                        }
 
-				case Opcodes::LEAVE_BLOCK:
-					{
-						$myblock = $instruction->get_property("myblock");
+                    case Opcodes::LEAVE_BLOCK:
+                        {
+                            $myblock = $instruction->get_property("myblock");
 
-						$blockid = $myblock->get_id();
+                            $blockid = $myblock->get_id();
 
-						$this->defs->computekill($blockid);
+                            $this->defs->computekill($blockid);
 
-						break;
-					}
+                            break;
+                        }
 
 
-				case Opcodes::LEAVE_FUNCTION:
-					{
-						$this->defs->reachingDefs($this->blocks);
+                    case Opcodes::LEAVE_FUNCTION:
+                        {
+                            $this->defs->reachingDefs($this->blocks);
 
-						$myfunc = $instruction->get_property("myfunc");
+                            $myfunc = $instruction->get_property("myfunc");
 
-						break;
-					}
+                            break;
+                        }
 
-				case Opcodes::START_INCLUDE:
-					{
-						$this->old_current_file = $this->current_file;
-						$this->current_file = $instruction->get_property("file");
+                    case Opcodes::START_INCLUDE:
+                        {
+                            $this->old_current_file = $this->current_file;
+                            $this->current_file = $instruction->get_property("file");
 
-						break;
-					}
+                            break;
+                        }
 
-				case Opcodes::END_INCLUDE:
-					{
-						$this->current_file = $this->old_current_file;
+                    case Opcodes::END_INCLUDE:
+                        {
+                            $this->current_file = $this->old_current_file;
 
-						break;
-					}
+                            break;
+                        }
 
-				case Opcodes::FUNC_CALL:
-					{
-						$myfunc_call = $instruction->get_property("myfunc_call");
-						$myfunc_call->set_block_id($this->current_block_id);
-						$myfunc_call->set_source_file($this->current_file);
+                    case Opcodes::FUNC_CALL:
+                        {
+                            $myfunc_call = $instruction->get_property("myfunc_call");
+                            $myfunc_call->set_block_id($this->current_block_id);
+                            $myfunc_call->set_source_file($this->current_file);
 
-						break;
-					}
+                            break;
+                        }
 
-				case Opcodes::TEMPORARY:
-					{
-						$mydef = $instruction->get_property("temporary");
-						$mydef->set_block_id($this->current_block_id);
+                    case Opcodes::TEMPORARY:
+                        {
+                            $mydef = $instruction->get_property("temporary");
+                            $mydef->set_block_id($this->current_block_id);
 
-						unset($mydef);
+                            unset($mydef);
 
-						break;
-					}
+                            break;
+                        }
 
-				case Opcodes::DEFINITION:
-					{
-						$mydef = $instruction->get_property("def");
-						$mydef->set_block_id($this->current_block_id);	
-						$mydef->set_source_file($this->current_file);
+                    case Opcodes::DEFINITION:
+                        {
+                            $mydef = $instruction->get_property("def");
+                            $mydef->set_block_id($this->current_block_id);	
+                            $mydef->set_source_file($this->current_file);
 
-						if(!$mydef->is_property())
-						{
-							$this->defs->adddef($mydef->get_name(), $mydef);
-							$this->defs->addgen($mydef->get_block_id(), $mydef);
-						}
+                            if(!$mydef->is_property())
+                            {
+                                $this->defs->adddef($mydef->get_name(), $mydef);
+                                $this->defs->addgen($mydef->get_block_id(), $mydef);
+                            }
 
-						if($mydef->is_instance())
-						{
-							$myclass = $context->get_classes()->get_myclass($mydef->get_class_name());
-							if($myclass != null)
-							{
-								$myinstance = new MyInstance("this");
-								$myinstance->set_myclass(clone $myclass);
+                            if($mydef->is_instance())
+                            {
+                                $myclass = $context->get_classes()->get_myclass($mydef->get_class_name());
+                                if($myclass != null)
+                                {
+                                    $myinstance = new MyInstance("this");
+                                    $myinstance->set_myclass(clone $myclass);
 
-								$mydef->set_myinstance($myinstance);
-							}
-							else
-								echo "undefined class\n";
-						}
+                                    $mydef->set_myinstance($myinstance);
+                                }
+                                else
+                                    echo "undefined class\n";
+                            }
 
-						unset($mydef);
+                            unset($mydef);
 
-						break;
-					}
-			}
+                            break;
+                        }
+                }
 
-			$index = $index + 1;
+                $index = $index + 1;
+            }
 		}
 		while(isset($code[$index]) && $index <= $mycode->get_end());
 	}

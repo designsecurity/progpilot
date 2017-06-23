@@ -2,10 +2,11 @@
 
 var esprima = require('esprima');
 var styx = require('styx');
-var Instructions = require('./Instructions');
-var Block = require('./Block');
-var Code = require('./Code');
 var fs = require('fs');
+
+var Code = require('./Code');
+var Instructions = require('./Instructions');
+var MyBlock = require('./objects/MyBlock');
 
 var program = fs.readFileSync("./tests/generic/bloc1.js", 'utf-8');
 // http://tobyho.com/2013/12/02/fun-with-esprima/
@@ -21,9 +22,8 @@ if(data.hasOwnProperty('program'))
 	var prog = data.program;
 	if(prog.hasOwnProperty('flowGraph'))
 	{
+        var code = new Code.Code;
 		var edges = prog.flowGraph.edges;
-
-		var code = new Code.Code;
 
 		for(var i = 0; i < edges.length; i ++)
 		{
@@ -39,36 +39,43 @@ if(data.hasOwnProperty('program'))
 				switch(mytype)
 				{
 					case 'EnterBlock': 
-						Instructions.EnterBlock(myedge);
+						var tmp_myblock = Instructions.EnterBlock(myedge);
 						code.instructions.push("EnterBlock");
 						code.instructions.push("myblock");
+						code.instructions.push(tmp_myblock);
 
 						break;
 
 					case 'LeaveBlock': 
-						Instructions.LeaveBlock(myedge);
+						var tmp_myblock = Instructions.LeaveBlock(myedge);
 						code.instructions.push("LeaveBlock");
 						code.instructions.push("myblock");
+						code.instructions.push(tmp_myblock);
 
 						break;
 
 						/* identifier = value */
 					case 'AssignmentExpression': 
-						Instructions.AssignmentExpression(mydata);
+						code.instructions.push("start_assign");
+						var identifier = Instructions.AssignmentExpression(code, mydata);
+						code.instructions.push("end_assign");
+                        
 						code.instructions.push("Definition");
 						code.instructions.push("def");
+						code.instructions.push(identifier);
 
 						break;
 
 						/* var identifier = value */
 					case 'VariableDeclarator':
-						Instructions.VariableDeclarator(mydata);
-
-						if(mydata.init != null)
-						{
-							code.instructions.push("Definition");
-							code.instructions.push("def");
-						}
+                        
+                        code.instructions.push("start_assign");
+						var identifier = Instructions.VariableDeclarator(code, mydata);
+                        code.instructions.push("end_assign");
+                        
+						code.instructions.push("Definition");
+						code.instructions.push("def");
+						code.instructions.push(identifier);
 
 						break;
 

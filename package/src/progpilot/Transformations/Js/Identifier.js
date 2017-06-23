@@ -1,8 +1,8 @@
 "use strict";
 
-var Op = require('./Op');
+var MyOp = require('./objects/MyOp');
 
-class Identifier extends Op.Op
+class Identifier extends MyOp.MyOp
 {
 	constructor()
 	{
@@ -12,22 +12,22 @@ class Identifier extends Op.Op
 		this.isliteral = false;
 	}
 
-	isobject()
+	is_object()
 	{
 		return this.isobject;
 	}
 
-	isidentifier()
+	is_identifier()
 	{
 		return this.isidentifier;
 	}
 
-	isliteral()
+	is_literal()
 	{
 		return this.isliteral;
 	}
 
-	gettype()
+	get_type()
 	{
 		if(this.isobject)
 		{

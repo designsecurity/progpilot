@@ -1,7 +1,7 @@
 "use strict";
 
 var Identifier = require('./Identifier');
-var Block = require('./Block');
+var MyBlock = require('./objects/MyBlock');
 
 var blocks = [];
 
@@ -41,44 +41,95 @@ function select_block_from_address(address)
 
 function EnterBlock(myedge)
 {
-	var block = new Block.Block;
-	block.setId(myedge.data.id);
-	block.setLine(myedge.data.loc.start_line);
-	block.setColumn(myedge.data.loc.start_column);
-	block.set_start_address_block(myedge.from);
+	var myblock = new MyBlock.MyBlock;
+	myblock.setId(myedge.data.id);
+	myblock.setLine(myedge.data.loc.start_line);
+	myblock.setColumn(myedge.data.loc.start_column);
+	myblock.set_start_address_block(myedge.from);
 
-	blocks.push(block);
+	blocks.push(myblock);
 
-	return block;
+	return myblock;
 }
 
 function LeaveBlock(myedge)
 {
-	var block = select_block(myedge.data.id);
-	if(block != null)
+	var myblock = select_block(myedge.data.id);
+	if(myblock != null)
 	{
-		console.log("J'ai retrouvé mon block");
-		block.set_end_address_block(myedge.from);
+		myblock.set_end_address_block(myedge.from);
 	}
-	else
-	{
-		console.log("ERROR");
-	}
+	
+	return myblock;
 }
 
-function AssignmentExpression(mydata)
+function AssignmentExpression(code, mydata)
 {
 	var myoperator = mydata.operator;
-
-	var myleft = new Identifier.Identifier;
-	myleft.CalculateIdentifier(mydata.left);
-
-	console.log("AssignmentExpression left type= "+myleft.gettype());
-
+    
+    code.instructions.push("start_expression");
 	var myright = new Identifier.Identifier;
 	myright.CalculateIdentifier(mydata.right);
+    myright.setLine(mydata.right.loc.start.line);
+    myright.setColumn(mydata.right.loc.start.column);
+    
+    if(myright.is_identifier())
+    {
+        code.instructions.push("temporary");
+        code.instructions.push("def");
+        code.instructions.push(myright);
+    }
+    code.instructions.push("end_expression");
+    
+	var myleft = new Identifier.Identifier;
+	myleft.CalculateIdentifier(mydata.left);
+    myleft.setLine(mydata.left.loc.start.line);
+    myleft.setColumn(mydata.left.loc.start.column);
 
-	console.log("AssignmentExpression right type= "+myright.gettype());
+    return myleft;
+}
+
+function VariableDeclarator(code, mydata)
+{
+	/* var identifier = */
+	var myvariable = new Identifier.Identifier;
+	myvariable.isidentifier = true;
+	myvariable.identifiername = mydata.id.name;
+    myvariable.setLine(mydata.id.loc.start.line);
+    myvariable.setColumn(mydata.id.loc.start.column);
+    
+	/* = init */
+    code.instructions.push("start_expression");
+	var myinit = mydata.init;
+	if(myinit != null)
+	{
+		var myidentifier = '';
+		switch(myinit.type)
+		{
+			case 'CallExpression': 
+				CallExpression(myinit);
+				break;
+
+			default:
+				myidentifier = new Identifier.Identifier;
+				myidentifier.CalculateIdentifier(myinit);
+                
+                myidentifier.setLine(myinit.loc.start.line);
+                myidentifier.setColumn(myinit.loc.start.column);
+                
+                if(myidentifier.is_identifier())
+                {
+                    code.instructions.push("temporary");
+                    code.instructions.push("def");
+                    code.instructions.push(myidentifier);
+                }
+        
+				break;
+		}
+	}
+    code.instructions.push("end_expression");
+	
+	return myvariable;
 }
 
 function ReturnStatement(myinit)
@@ -104,34 +155,6 @@ function CallExpression(myinit)
 		var myargumenttype = myarguments[i].type;
 		var myargumentvalue = myarguments[i].value;
 	}
-}
-
-function VariableDeclarator(mydata)
-{
-	/* var identifier = */
-	var myvariable = new Identifier.Identifier;
-	myvariable.isidentifier = true;
-	myvariable.identifiername = mydata.id.name;
-
-	/* = init */
-	var myinit = mydata.init;
-	if(myinit != null)
-	{
-		var myidentifier = '';
-		switch(myinit.type)
-		{
-			case 'CallExpression': 
-				CallExpression(myinit);
-				break;
-
-			default:
-				myidentifier = new Identifier.Identifier;
-				myidentifier.CalculateIdentifier(myinit);
-				break;
-		}
-	}
-
-	console.log("VariableDeclarator variable name= "+myvariable.identifiername);
 }
 
 module.exports = {

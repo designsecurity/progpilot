@@ -1,6 +1,6 @@
 "use strict";
 
-class Op
+class MyOp
 {
 	constructor()
 	{
@@ -41,7 +41,7 @@ class Op
 }
 
 module.exports = {
-Op: Op
+MyOp: MyOp
 };
 
 

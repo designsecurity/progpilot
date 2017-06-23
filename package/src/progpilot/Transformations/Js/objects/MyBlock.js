@@ -1,8 +1,8 @@
 "use strict";
 
-var Op = require('./Op');
+var MyOp = require('./MyOp');
 
-class Block extends Op.Op
+class MyBlock extends MyOp.MyOp
 {
 	constructor()
 	{
@@ -30,7 +30,6 @@ class Block extends Op.Op
 
 			if(!inarray)
 			{
-				console.log("add_parent véritable");
 				this.parents.push(parent);
 			}
 		}
@@ -58,7 +57,7 @@ class Block extends Op.Op
 }
 
 module.exports = {
-Block: Block
+MyBlock: MyBlock
 };
 
 

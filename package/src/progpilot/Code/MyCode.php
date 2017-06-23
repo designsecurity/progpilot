@@ -62,144 +62,146 @@ class MyCode {
 
 		do
 		{
-			$instruction = $this->code[$index];
-			echo "[$index] ";
-			switch($instruction->get_opcode())
-			{
-				case Opcodes::ENTER_FUNCTION:
-					{
-						echo "enter_func\n";
+            if(isset($this->code[$index]))
+            {
+                $instruction = $this->code[$index];
+                echo "[$index] ";
+                switch($instruction->get_opcode())
+                {
+                    case Opcodes::ENTER_FUNCTION:
+                        {
+                            echo "enter_func\n";
 
-						$myfunc = $instruction->get_property("myfunc");
-						echo "name = ".htmlentities($myfunc->get_name(), ENT_QUOTES, 'UTF-8')."\n";
-						break;
-					}
+                            $myfunc = $instruction->get_property("myfunc");
+                            echo "name = ".htmlentities($myfunc->get_name(), ENT_QUOTES, 'UTF-8')."\n";
+                            break;
+                        }
 
-				case Opcodes::CLASSE:
-					{
-						echo "class\n";
+                    case Opcodes::CLASSE:
+                        {
+                            echo "class\n";
 
-						$myclass = $instruction->get_property("myclass");
-						echo "name = ".htmlentities($myclass->get_name(), ENT_QUOTES, 'UTF-8')."\n";
-						break;
-					}
+                            $myclass = $instruction->get_property("myclass");
+                            echo "name = ".htmlentities($myclass->get_name(), ENT_QUOTES, 'UTF-8')."\n";
+                            break;
+                        }
 
-				case Opcodes::ENTER_BLOCK:
-					{
-						echo "enter_block\n";
+                    case Opcodes::ENTER_BLOCK:
+                        {
+                            echo "enter_block\n";
 
-						$myblock = $instruction->get_property("myblock");
-						echo "id = ".$myblock->get_id()."\n";
+                            $myblock = $instruction->get_property("myblock");
+                            echo "id = ".$myblock->get_id()."\n";
 
-						break;
-					}
+                            break;
+                        }
 
-				case Opcodes::LEAVE_BLOCK:
-					{
-						echo "leave_block\n";
+                    case Opcodes::LEAVE_BLOCK:
+                        {
+                            echo "leave_block\n";
 
-						break;
-					}
+                            break;
+                        }
 
-				case Opcodes::LEAVE_FUNCTION:
-					{
-						echo "leave_func\n";
+                    case Opcodes::LEAVE_FUNCTION:
+                        {
+                            echo "leave_func\n";
 
-						break;
-					}
+                            break;
+                        }
 
-				case Opcodes::FUNC_CALL:
-					{
-						echo "funccall\n";
+                    case Opcodes::FUNC_CALL:
+                        {
+                            echo "funccall\n";
 
-						$funcname = htmlentities($instruction->get_property("funcname"), ENT_QUOTES, 'UTF-8');
-						echo "name = $funcname\n";
-						break;
-					}
+                            $funcname = htmlentities($instruction->get_property("funcname"), ENT_QUOTES, 'UTF-8');
+                            echo "name = $funcname\n";
+                            break;
+                        }
 
-				case Opcodes::START_EXPRESSION:
-					{
-						echo "start_expression\n";
-						break;
-					}
+                    case Opcodes::START_EXPRESSION:
+                        {
+                            echo "start_expression\n";
+                            break;
+                        }
 
-				case Opcodes::END_EXPRESSION:
-					{
-						echo "end_expression\n";
-						$myexpr = $instruction->get_property("expr");
-						echo "expression et tainted = ".$myexpr->is_tainted()."\n";
-						break;
-					}
+                    case Opcodes::END_EXPRESSION:
+                        {
+                            echo "end_expression\n";
+                            $myexpr = $instruction->get_property("expr");
+                            echo "expression et tainted = ".$myexpr->is_tainted()."\n";
+                            break;
+                        }
 
-				case Opcodes::CONCAT_LIST:
-					{
-						echo "concat_list\n";
-						break;
-					}
+                    case Opcodes::CONCAT_LIST:
+                        {
+                            echo "concat_list\n";
+                            break;
+                        }
 
-				case Opcodes::CONCAT_LEFT:
-					{
-						echo "concat_left\n";
-						break;
-					}
+                    case Opcodes::CONCAT_LEFT:
+                        {
+                            echo "concat_left\n";
+                            break;
+                        }
 
-				case Opcodes::CONCAT_RIGHT:
-					{
-						echo "concat_right\n";
-						break;
-					}
+                    case Opcodes::CONCAT_RIGHT:
+                        {
+                            echo "concat_right\n";
+                            break;
+                        }
 
-				case Opcodes::RETURN_FUNCTION:
-					{
-						echo "return\n";
-						break;
-					}
+                    case Opcodes::RETURN_FUNCTION:
+                        {
+                            echo "return\n";
+                            break;
+                        }
 
-				case Opcodes::START_ASSIGN:
-					{
-						echo "start_assign\n";
-						break;
-					}
+                    case Opcodes::START_ASSIGN:
+                        {
+                            echo "start_assign\n";
+                            break;
+                        }
 
-				case Opcodes::END_ASSIGN:
-					{
-						echo "end_assign\n";
-						break;
-					}
+                    case Opcodes::END_ASSIGN:
+                        {
+                            echo "end_assign\n";
+                            break;
+                        }
 
-				case Opcodes::START_INCLUDE:
-					{
-						echo "start_include\n";
-						break;
-					}
+                    case Opcodes::START_INCLUDE:
+                        {
+                            echo "start_include\n";
+                            break;
+                        }
 
-				case Opcodes::END_INCLUDE:
-					{
-						echo "end_include\n";
-						break;
-					}
+                    case Opcodes::END_INCLUDE:
+                        {
+                            echo "end_include\n";
+                            break;
+                        }
 
-				case Opcodes::TEMPORARY:
-					{
-						echo "temporary_simple\n";
-						$def = $instruction->get_property("temporary");
-						$def->print_stdout();
+                    case Opcodes::TEMPORARY:
+                        {
+                            echo "temporary_simple\n";
+                            $def = $instruction->get_property("temporary");
+                            $def->print_stdout();
 
-						break;
-					}
+                            break;
+                        }
 
-				case Opcodes::DEFINITION:
-					{
-						echo "definition_simple\n";
-						$def = $instruction->get_property("def");
-						$def->print_stdout();
+                    case Opcodes::DEFINITION:
+                        {
+                            echo "definition_simple\n";
+                            $def = $instruction->get_property("def");
+                            $def->print_stdout();
 
-						break;
-					}
-			}
-
-
-			$index = $index + 1;
+                            break;
+                        }
+                }
+            
+                $index = $index + 1;
+            }
 
 		}
 		while(isset($this->code[$index]));
