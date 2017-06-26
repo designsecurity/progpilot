@@ -1,36 +1,79 @@
 <?php
 
 require_once './vendor/autoload.php';
+require_once './framework_test.php';
 
 try {
+	
+	$framework = new framework_test;
+	$framework->add_testbasis("./tests/oop/simple1.php");
+	$framework->add_output("./tests/oop/simple1.php", array("boum2"));
+	$framework->add_output("./tests/oop/simple1.php", array("6"));
+	$framework->add_output("./tests/oop/simple1.php", "xss");
+	
+	$framework->add_testbasis("./tests/oop/simple2.php");
+	$framework->add_output("./tests/oop/simple2.php", array("boum2"));
+	$framework->add_output("./tests/oop/simple2.php", array("6"));
+	$framework->add_output("./tests/oop/simple2.php", "xss");
+	
+	$framework->add_testbasis("./tests/oop/simple3.php");
+	$framework->add_output("./tests/oop/simple3.php", array("_GET"));
+	$framework->add_output("./tests/oop/simple3.php", array("9"));
+	$framework->add_output("./tests/oop/simple3.php", "xss");
+	
+	$framework->add_testbasis("./tests/oop/simple4.php");
+	$framework->add_output("./tests/oop/simple4.php", array("_GET"));
+	$framework->add_output("./tests/oop/simple4.php", array("10"));
+	$framework->add_output("./tests/oop/simple4.php", "xss");
+	
+	$framework->add_testbasis("./tests/oop/simple5.php");
+	$framework->add_output("./tests/oop/simple5.php", array("boum1"));
+	$framework->add_output("./tests/oop/simple5.php", array("15"));
+	$framework->add_output("./tests/oop/simple5.php", "xss");
+	
+	$framework->add_testbasis("./tests/oop/simple6.php");
+	$framework->add_output("./tests/oop/simple6.php", array("boum1"));
+	$framework->add_output("./tests/oop/simple6.php", array("15"));
+	$framework->add_output("./tests/oop/simple6.php", "xss");
+	
+	$framework->add_testbasis("./tests/oop/simple7.php");
+	$framework->add_output("./tests/oop/simple7.php", array("boum1"));
+	$framework->add_output("./tests/oop/simple7.php", array("5"));
+	$framework->add_output("./tests/oop/simple7.php", "xss");
+	
+	$framework->add_testbasis("./tests/oop/simple8.php");
+	$framework->add_output("./tests/oop/simple8.php", array("boum2"));
+	$framework->add_output("./tests/oop/simple8.php", array("6"));
+	$framework->add_output("./tests/oop/simple8.php", "xss");
+	
+	$framework->add_testbasis("./tests/oop/simple9.php");
+	$framework->add_output("./tests/oop/simple9.php", array("boum1"));
+	$framework->add_output("./tests/oop/simple9.php", array("0"));
+	$framework->add_output("./tests/oop/simple9.php", "xss");
+	
+	$framework->add_testbasis("./tests/oop/simple10.php");
+	$framework->add_output("./tests/oop/simple10.php", array("boum1"));
+	$framework->add_output("./tests/oop/simple10.php", array("5"));
+	$framework->add_output("./tests/oop/simple10.php", "xss");
+	
+	$framework->add_testbasis("./tests/oop/simple11.php");
+	$framework->add_output("./tests/oop/simple11.php", array("boum1"));
+	$framework->add_output("./tests/oop/simple11.php", array("5"));
+	$framework->add_output("./tests/oop/simple11.php", "xss");
 
-	$files = array(
-
-			"./tests/oop/simple1.php",
-			"./tests/oop/simple2.php", 
-			"./tests/oop/simple3.php", 
-			"./tests/oop/simple4.php", 
-			"./tests/oop/simple5.php", 
-			"./tests/oop/simple6.php", 
-			"./tests/oop/simple7.php",
-			"./tests/oop/simple8.php",
-			"./tests/oop/simple9.php",
-			"./tests/oop/simple10.php",
-			"./tests/oop/simple11.php"
-		      );
-
-	foreach($files as $file)
+	
+	foreach($framework->get_testbasis() as $file)
 	{
 		$context = new \progpilot\Context;
 		$analyzer = new \progpilot\Analyzer;
-
+		
 		$context->inputs->set_sources("./data/sources.json");
 		$context->inputs->set_sinks("./data/sinks.json");
 		$context->inputs->set_sanitizers("./data/sanitizers.json");
-
+		
 		$analyzer->set_file($file);
 		$analyzer->run($context);
-
+		
 		$results = $context->get_results();
 		$outputjson = array('results' => $results); 
 
@@ -40,138 +83,20 @@ try {
 		if(isset($parsed_json[0]) && count($parsed_json) == 1)
 		{
 			$vuln = $parsed_json[0];
-
-			if($file == "./tests/oop/simple1.php")
+			
+			$basis_outputs = [
+				$vuln['source'],
+				$vuln['source_line'],
+				$vuln['vuln_name']];
+				
+			if($framework->check_outputs($file, $basis_outputs))
 			{
-				$tempsource = array("boum2");
-				$tempsource_line = array("6");
-				if($vuln['vuln_name'] == "xss" && $vuln['source'] == $tempsource && $vuln['source_line'] == $tempsource_line)
-					echo "[$file] test result ok\n";
-				else
-				{
-					echo "[$file] test result ko\n";
-					var_dump($vuln);
-				}
+				echo "[$file] test result ok\n";
 			}
-			else if($file == "./tests/oop/simple2.php")
+			else
 			{
-				$tempsource = array("boum2");
-				$tempsource_line = array("6");
-				if($vuln['vuln_name'] == "xss" && $vuln['source'] == $tempsource && $vuln['source_line'] == $tempsource_line)
-					echo "[$file] test result ok\n";
-				else
-				{
-					echo "[$file] test result ko\n";
-					var_dump($vuln);
-				}
-			}
-			else if($file == "./tests/oop/simple3.php")
-			{
-				$tempsource = array("_GET");
-				$tempsource_line = array("9");
-				if($vuln['vuln_name'] == "xss" && $vuln['source'] == $tempsource && $vuln['source_line'] == $tempsource_line)
-					echo "[$file] test result ok\n";
-				else
-				{
-					echo "[$file] test result ko\n";
-					var_dump($vuln);
-				}
-			}
-			else if($file == "./tests/oop/simple4.php")
-			{
-				$tempsource = array("_GET");
-				$tempsource_line = array("10");
-				if($vuln['vuln_name'] == "xss" && $vuln['source'] == $tempsource && $vuln['source_line'] == $tempsource_line)
-					echo "[$file] test result ok\n";
-				else
-				{
-					echo "[$file] test result ko\n";
-					var_dump($vuln);
-				}
-			}
-			else if($file == "./tests/oop/simple5.php")
-			{
-				$tempsource = array("boum1");
-				$tempsource_line = array("15");
-				if($vuln['vuln_name'] == "xss" && $vuln['source'] == $tempsource && $vuln['source_line'] == $tempsource_line)
-					echo "[$file] test result ok\n";
-				else
-				{
-					echo "[$file] test result ko\n";
-					var_dump($vuln);
-				}
-			}
-			else if($file == "./tests/oop/simple6.php")
-			{
-				$tempsource = array("boum1");
-				$tempsource_line = array("15");
-				if($vuln['vuln_name'] == "xss" && $vuln['source'] == $tempsource && $vuln['source_line'] == $tempsource_line)
-					echo "[$file] test result ok\n";
-				else
-				{
-					echo "[$file] test result ko\n";
-					var_dump($vuln);
-				}
-			}
-			else if($file == "./tests/oop/simple7.php")
-			{
-				$tempsource = array("boum1");
-				$tempsource_line = array("5");
-				if($vuln['vuln_name'] == "xss" && $vuln['source'] == $tempsource && $vuln['source_line'] == $tempsource_line)
-					echo "[$file] test result ok\n";
-				else
-				{
-					echo "[$file] test result ko\n";
-					var_dump($vuln);
-				}
-			}
-			else if($file == "./tests/oop/simple8.php")
-			{
-				$tempsource = array("boum2");
-				$tempsource_line = array("6");
-				if($vuln['vuln_name'] == "xss" && $vuln['source'] == $tempsource && $vuln['source_line'] == $tempsource_line)
-					echo "[$file] test result ok\n";
-				else
-				{
-					echo "[$file] test result ko\n";
-					var_dump($vuln);
-				}
-			}
-			else if($file == "./tests/oop/simple9.php")
-			{
-				$tempsource = array("boum1");
-				$tempsource_line = array("0");
-				if($vuln['vuln_name'] == "xss" && $vuln['source'] == $tempsource && $vuln['source_line'] == $tempsource_line)
-					echo "[$file] test result ok\n";
-				else
-				{
-					echo "[$file] test result ko\n";
-					var_dump($vuln);
-				}
-			}
-			else if($file == "./tests/oop/simple10.php")
-			{
-				$tempsource = array("boum1");
-				$tempsource_line = array("5");
-				if($vuln['vuln_name'] == "xss" && $vuln['source'] == $tempsource && $vuln['source_line'] == $tempsource_line)
-					echo "[$file] test result ok\n";
-				else
-				{
-					echo "[$file] test result ko\n";
-					var_dump($vuln);
-				}
-			}
-			else if($file == "./tests/oop/simple11.php")
-			{
-				$tempsource = array("boum1");
-				$tempsource_line = array("5");
-				if($vuln['vuln_name'] == "xss" && $vuln['source'] == $tempsource && $vuln['source_line'] == $tempsource_line)
-					echo "[$file] test result ok\n";
-				else
-				{
-					echo "[$file] test result ko\n";
-					var_dump($vuln);
-				}
+				echo "[$file] test result ko\n";
+				var_dump($vuln);
 			}
 		}
 		else

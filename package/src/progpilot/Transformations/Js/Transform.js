@@ -7,6 +7,8 @@ var fs = require('fs');
 var Code = require('./Code');
 var Instructions = require('./Instructions');
 var MyBlock = require('./objects/MyBlock');
+var MyExpr = require('./objects/MyExpr');
+var MyDefinition = require('./objects/MyDefinition');
 
 var program = fs.readFileSync("./tests/generic/bloc1.js", 'utf-8');
 // http://tobyho.com/2013/12/02/fun-with-esprima/
@@ -16,6 +18,7 @@ var json = styx.exportAsJson(flowProgram);
 var data = JSON.parse(json);
 
 
+var exprs = [];
 
 if(data.hasOwnProperty('program'))
 {
@@ -24,6 +27,7 @@ if(data.hasOwnProperty('program'))
 	{
         var code = new Code.Code;
 		var edges = prog.flowGraph.edges;
+        //console.log(json);
 
 		for(var i = 0; i < edges.length; i ++)
 		{
@@ -56,26 +60,51 @@ if(data.hasOwnProperty('program'))
 
 						/* identifier = value */
 					case 'AssignmentExpression': 
+                        var my_expr = new MyExpr.MyExpr;
+                        my_expr.setLine(mydata.right.loc.start.line);
+                        my_expr.setColumn(mydata.right.loc.start.column);
+                        my_expr.setId(exprs.length);
+                        exprs.push(my_expr);
+                        
 						code.instructions.push("start_assign");
-						var identifier = Instructions.AssignmentExpression(code, mydata);
+                        code.instructions.push("start_expression");
+						var my_def = Instructions.AssignmentExpression(code, mydata, my_expr);
+                        my_expr.set_assign(true);
+                        my_expr.set_assign_def(my_def);
+                        
+                        code.instructions.push("end_expression");
+                        code.instructions.push("expr");
+                        code.instructions.push(my_expr);
 						code.instructions.push("end_assign");
                         
 						code.instructions.push("Definition");
 						code.instructions.push("def");
-						code.instructions.push(identifier);
+						code.instructions.push(my_def);
 
 						break;
 
 						/* var identifier = value */
 					case 'VariableDeclarator':
+                        var my_expr = new MyExpr.MyExpr;
+                        my_expr.setLine(mydata.id.loc.start.line);
+                        my_expr.setColumn(mydata.id.loc.start.column);
+                        my_expr.setId(exprs.length);
+                        exprs.push(my_expr);
                         
                         code.instructions.push("start_assign");
-						var identifier = Instructions.VariableDeclarator(code, mydata);
+                        code.instructions.push("start_expression");
+						var my_def = Instructions.VariableDeclarator(code, mydata, my_expr);
+                        my_expr.set_assign(true);
+                        my_expr.set_assign_def(my_def);
+                        
+                        code.instructions.push("end_expression");
+                        code.instructions.push("expr");
+                        code.instructions.push(my_expr);
                         code.instructions.push("end_assign");
                         
 						code.instructions.push("Definition");
 						code.instructions.push("def");
-						code.instructions.push(identifier);
+						code.instructions.push(my_def);
 
 						break;
 

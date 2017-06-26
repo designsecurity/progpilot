@@ -1,9 +1,10 @@
 "use strict";
 
-var Identifier = require('./Identifier');
+var MyDefinition = require('./objects/MyDefinition');
 var MyBlock = require('./objects/MyBlock');
 
 var blocks = [];
+var definitions = [];
 
 function select_block(id)
 {
@@ -63,47 +64,50 @@ function LeaveBlock(myedge)
 	return myblock;
 }
 
-function AssignmentExpression(code, mydata)
+function AssignmentExpression(code, mydata, my_expr)
 {
 	var myoperator = mydata.operator;
     
-    code.instructions.push("start_expression");
-	var myright = new Identifier.Identifier;
+	var myright = new MyDefinition.MyDefinition;
 	myright.CalculateIdentifier(mydata.right);
     myright.setLine(mydata.right.loc.start.line);
     myright.setColumn(mydata.right.loc.start.column);
+    myright.setId(definitions.length);
+    definitions.push(myright);
     
     if(myright.is_identifier())
     {
         code.instructions.push("temporary");
         code.instructions.push("def");
         code.instructions.push(myright);
+        myright.add_expr(my_expr);
     }
-    code.instructions.push("end_expression");
     
-	var myleft = new Identifier.Identifier;
+	var myleft = new MyDefinition.MyDefinition;
 	myleft.CalculateIdentifier(mydata.left);
     myleft.setLine(mydata.left.loc.start.line);
     myleft.setColumn(mydata.left.loc.start.column);
+    myleft.setId(definitions.length);
+    definitions.push(myleft);
 
     return myleft;
 }
 
-function VariableDeclarator(code, mydata)
+function VariableDeclarator(code, mydata, my_expr)
 {
 	/* var identifier = */
-	var myvariable = new Identifier.Identifier;
+	var myvariable = new MyDefinition.MyDefinition;
 	myvariable.isidentifier = true;
-	myvariable.identifiername = mydata.id.name;
+	myvariable.set_var_name(mydata.id.name);
     myvariable.setLine(mydata.id.loc.start.line);
     myvariable.setColumn(mydata.id.loc.start.column);
+    myvariable.setId(definitions.length);
+    definitions.push(myvariable);
     
 	/* = init */
-    code.instructions.push("start_expression");
 	var myinit = mydata.init;
 	if(myinit != null)
 	{
-		var myidentifier = '';
 		switch(myinit.type)
 		{
 			case 'CallExpression': 
@@ -111,23 +115,25 @@ function VariableDeclarator(code, mydata)
 				break;
 
 			default:
-				myidentifier = new Identifier.Identifier;
-				myidentifier.CalculateIdentifier(myinit);
+				var mydef = new MyDefinition.MyDefinition;
+				mydef.CalculateIdentifier(myinit);
                 
-                myidentifier.setLine(myinit.loc.start.line);
-                myidentifier.setColumn(myinit.loc.start.column);
+                mydef.setLine(myinit.loc.start.line);
+                mydef.setColumn(myinit.loc.start.column);
+                mydef.setId(definitions.length);
+                definitions.push(mydef);
                 
-                if(myidentifier.is_identifier())
+                if(mydef.is_identifier())
                 {
                     code.instructions.push("temporary");
                     code.instructions.push("def");
-                    code.instructions.push(myidentifier);
+                    code.instructions.push(mydef);
+                    mydef.add_expr(my_expr);
                 }
         
 				break;
 		}
 	}
-    code.instructions.push("end_expression");
 	
 	return myvariable;
 }
@@ -145,7 +151,7 @@ function ReturnStatement(myinit)
 
 function CallExpression(myinit)
 {
-	var mycallee = new Identifier.Identifier;
+	var mycallee = new MyDefinition.MyDefinition;
 	mycallee.CalculateIdentifier(myinit.callee);
 
 	var myarguments = myinit.arguments;
@@ -158,12 +164,13 @@ function CallExpression(myinit)
 }
 
 module.exports = {
-AssignmentExpression: AssignmentExpression,
-		      VariableDeclarator: VariableDeclarator,
-		      ReturnStatement: ReturnStatement,
-		      EnterBlock: EnterBlock,
-		      LeaveBlock: LeaveBlock,
-		      select_block_from_address: select_block_from_address
+    AssignmentExpression: AssignmentExpression,
+    VariableDeclarator: VariableDeclarator,
+    ReturnStatement: ReturnStatement,
+    EnterBlock: EnterBlock,
+    LeaveBlock: LeaveBlock,
+    select_block_from_address: select_block_from_address,
+    definitions: definitions
 };
 
 

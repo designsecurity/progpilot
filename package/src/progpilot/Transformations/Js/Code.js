@@ -39,13 +39,14 @@ class Code
                     console.log(tmp_block.id);
                     
                     i = i + 3;
+                    //i = i + 1;
                     break;
                     
                 case 'Definition':
                     console.log(this.instructions[i]);
                     console.log(this.instructions[i + 1]);
                     var tmp_def = this.instructions[i + 2];
-                    console.log(tmp_def.identifiername);
+                    console.log(tmp_def.get_var_name());
                     console.log(tmp_def.getLine());
                     console.log(tmp_def.getColumn());
                     
@@ -56,9 +57,16 @@ class Code
                     console.log(this.instructions[i]);
                     console.log(this.instructions[i + 1]);
                     var tmp_def = this.instructions[i + 2];
-                    console.log(tmp_def.identifiername);
+                    console.log(tmp_def.get_var_name());
                     console.log(tmp_def.getLine());
                     console.log(tmp_def.getColumn());
+                    
+                    var tmp_exprs = tmp_def.get_exprs();
+                    console.log(tmp_exprs.length);
+                    for(var j = 0; j < tmp_exprs.length; j ++)
+                    {
+                        console.log(tmp_exprs[j].getId());
+                    }
                     
                     i = i + 3;
                     break;
@@ -83,8 +91,19 @@ class Code
                     
                 case 'end_expression':
                     console.log(this.instructions[i]);
+                    console.log(this.instructions[i + 1]);
+                    var tmp_expr = this.instructions[i + 2];
+                    console.log(tmp_expr.getLine());
+                    console.log(tmp_expr.getColumn());
                     
-                    i = i + 1;
+                    var tmp_defs = tmp_expr.get_defs();
+                    console.log(tmp_defs.length);
+                    for(var j = 0; j < tmp_defs.length; j ++)
+                    {
+                        console.log(tmp_defs[j].getId());
+                    }
+                    
+                    i = i + 3;
                     break;
             }
 		}

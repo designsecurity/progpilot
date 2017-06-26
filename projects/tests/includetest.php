@@ -1,28 +1,43 @@
 <?php
 
 require_once './vendor/autoload.php';
+require_once './framework_test.php';
 
 try {
-
-	$files = array(
-
-			"./tests/includes/simple1.php",
-			"./tests/includes/simple2.php",
-			"./tests/includes/simple3.php",
-			"./tests/includes/simple4.php"
-		      );
-
-	foreach($files as $file)
+	
+	$framework = new framework_test;
+	$framework->add_testbasis("./tests/includes/simple1.php");
+	$framework->add_output("./tests/includes/simple1.php", array("var1"));
+	$framework->add_output("./tests/includes/simple1.php", array("3"));
+	$framework->add_output("./tests/includes/simple1.php", "xss");
+	
+	$framework->add_testbasis("./tests/includes/simple2.php");
+	$framework->add_output("./tests/includes/simple2.php", array("var1"));
+	$framework->add_output("./tests/includes/simple2.php", array("3"));
+	$framework->add_output("./tests/includes/simple2.php", "xss");
+	
+	$framework->add_testbasis("./tests/includes/simple3.php");
+	$framework->add_output("./tests/includes/simple3.php", array("var1"));
+	$framework->add_output("./tests/includes/simple3.php", array("3"));
+	$framework->add_output("./tests/includes/simple3.php", "xss");
+	
+	$framework->add_testbasis("./tests/includes/simple4.php");
+	$framework->add_output("./tests/includes/simple4.php", array("var1"));
+	$framework->add_output("./tests/includes/simple4.php", array("3"));
+	$framework->add_output("./tests/includes/simple4.php", "xss");
+	
+	
+	foreach($framework->get_testbasis() as $file)
 	{
 		$context = new \progpilot\Context;
 		$analyzer = new \progpilot\Analyzer;
-
+		
 		$context->inputs->set_sources("./data/sources.json");
 		$context->inputs->set_sinks("./data/sinks.json");
 		$context->inputs->set_sanitizers("./data/sanitizers.json");
-
+		
 		$analyzer->set_file($file);
-
+		
 		try 
 		{
 			$analyzer->run($context);
@@ -31,63 +46,29 @@ try {
 		{
 			echo 'Exception : ',  $e->getMessage(), "\n";
 		}
-
+		
 		$results = $context->get_results();
 		$outputjson = array('results' => $results); 
 
 		$parsed_json = $outputjson["results"];
-
+		
 		if(isset($parsed_json[0]) && count($parsed_json) == 1)
 		{
 			$vuln = $parsed_json[0];
-
-			if($file == "./tests/includes/simple1.php")
+			
+			$basis_outputs = [
+				$vuln['source'],
+				$vuln['source_line'],
+				$vuln['vuln_name']];
+				
+			if($framework->check_outputs($file, $basis_outputs))
 			{
-				$tempsource = array("var1");
-				$tempsource_line = array("3");
-				if($vuln['vuln_name'] == "xss" && $vuln['source'] == $tempsource && $vuln['source_line'] == $tempsource_line)
-					echo "[$file] test result ok\n";
-				else
-				{
-					echo "[$file] test result ko\n";
-					var_dump($vuln);
-				}
+				echo "[$file] test result ok\n";
 			}
-			else if($file == "./tests/includes/simple2.php")
+			else
 			{
-				$tempsource = array("var1");
-				$tempsource_line = array("3");
-				if($vuln['vuln_name'] == "xss" && $vuln['source'] == $tempsource && $vuln['source_line'] == $tempsource_line)
-					echo "[$file] test result ok\n";
-				else
-				{
-					echo "[$file] test result ko\n";
-					var_dump($vuln);
-				}
-			}
-			else if($file == "./tests/includes/simple3.php")
-			{
-				$tempsource = array("var1");
-				$tempsource_line = array("3");
-				if($vuln['vuln_name'] == "xss" && $vuln['source'] == $tempsource && $vuln['source_line'] == $tempsource_line)
-					echo "[$file] test result ok\n";
-				else
-				{
-					echo "[$file] test result ko\n";
-					var_dump($vuln);
-				}
-			}
-			else if($file == "./tests/includes/simple4.php")
-			{
-				$tempsource = array("var1");
-				$tempsource_line = array("3");
-				if($vuln['vuln_name'] == "xss" && $vuln['source'] == $tempsource && $vuln['source_line'] == $tempsource_line)
-					echo "[$file] test result ok\n";
-				else
-				{
-					echo "[$file] test result ko\n";
-					var_dump($vuln);
-				}
+				echo "[$file] test result ko\n";
+				var_dump($vuln);
 			}
 		}
 		else
