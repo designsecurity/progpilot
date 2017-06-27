@@ -89,7 +89,7 @@ arg3 : arr for the return : function_call()[0] (arr = [0])
 
 		if($is_method)
 		{
-			// when we define a method in a class (is_method = true) but when we use a method (is_intance = true)
+			// when we define a method in a class (is_method = true) but when we use a method (is_instance = true)
 			$myfunction_call->set_is_instance(true);
 			$myfunction_call->set_name_instance($instance_name);
 		}

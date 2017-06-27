@@ -322,7 +322,7 @@ class Transform implements Visitor {
 			$myfunction_call->setColumn($op->getColumn());
 			$myfunction_call->set_nb_params(1);
 
-			FuncCall::argument($this->context, $op->expr, $inst_funcall_main, "echo", 1);
+			FuncCall::argument($this->context, $op->expr, $inst_funcall_main, "echo", 0);
 
 			$inst_funcall_main->add_property("myfunc_call", $myfunction_call);
 			$inst_funcall_main->add_property("expr", $myexpr);
@@ -346,7 +346,7 @@ class Transform implements Visitor {
 			$myfunction_call->setColumn($op->getColumn());
 			$myfunction_call->set_nb_params(1);
 
-			FuncCall::argument($this->context, $op->expr, $inst_funcall_main, "print", 1);
+			FuncCall::argument($this->context, $op->expr, $inst_funcall_main, "print", 0);
 
 			$inst_funcall_main->add_property("myfunc_call", $myfunction_call);
 			$inst_funcall_main->add_property("expr", $myexpr);
@@ -362,8 +362,8 @@ class Transform implements Visitor {
 			if(!(isset($op->result->usages[0])) || (
 						// funccall()[0]
 						!(isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\ArrayDimFetch) &&
-						// test = funccall()
-						!(isset($op->result->usages[0]) && ($op->result->usages[0] instanceof Op\Expr\Assign || $op->result->usages[0] instanceof Op\Expr\Array_))))
+						// test = funccall() // funcccall(funccall())
+						!(isset($op->result->usages[0]) && ($op->result->usages[0] instanceof Op\Terminal\Echo_ || $op->result->usages[0] instanceof Op\Expr\MethodCall || $op->result->usages[0] instanceof Op\Expr\FuncCall || $op->result->usages[0] instanceof Op\Expr\Assign || $op->result->usages[0] instanceof Op\Expr\Array_))))
 			{
 				// expr of type "assign" to have a defined return
 				$myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
@@ -382,7 +382,7 @@ class Transform implements Visitor {
 						// funccall()[0]
 						!(isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\ArrayDimFetch) &&
 						// test = funccall()
-						!(isset($op->result->usages[0]) && ($op->result->usages[0] instanceof Op\Expr\Assign || $op->result->usages[0] instanceof Op\Expr\Array_))))
+						!(isset($op->result->usages[0]) && ($op->result->usages[0] instanceof Op\Terminal\Echo_ || $op->result->usages[0] instanceof Op\Expr\MethodCall || $op->result->usages[0] instanceof Op\Expr\FuncCall || $op->result->usages[0] instanceof Op\Expr\Assign || $op->result->usages[0] instanceof Op\Expr\Array_))))
 			{
 				$class_name = Common::get_name_definition($op->var);
 

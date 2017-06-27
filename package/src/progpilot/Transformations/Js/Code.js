@@ -53,6 +53,29 @@ class Code
                     i = i + 3;
                     break;
                     
+                case 'funccall':
+                    console.log(this.instructions[i]);
+                    console.log(this.instructions[i + 1]);
+                    var myfunction = this.instructions[i + 2];
+                    console.log(myfunction.getLine());
+                    console.log(myfunction.getColumn());
+                    console.log(myfunction.get_name());
+                    console.log(myfunction.is_instance());
+                    console.log(myfunction.get_name_instance());
+                    console.log(myfunction.get_nb_params());
+                    
+                    for(var j = 0; j < myfunction.get_nb_params(); j ++)
+                    {
+                        console.log(myfunction.get_param(j).getId());
+                    }
+                    
+                    console.log(this.instructions[i + 3]);
+                    var myexpr = this.instructions[i + 4];
+                    console.log(myexpr.getId());
+                    
+                    i = i + 5;
+                    break;
+                    
                 case 'temporary':
                     console.log(this.instructions[i]);
                     console.log(this.instructions[i + 1]);

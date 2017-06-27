@@ -35,29 +35,26 @@ class SecurityAnalysis {
 		return true;
 	}
 
-	public static function funccall($context, $myfunc_call, $index)
+	public static function funccall($context, $myfunc_call, $instruction)
 	{
 		$mysink = $context->inputs->get_sink_byname($myfunc_call->get_name());
-		$code = $context->get_mycode()->get_codes();
 
 		if($mysink != null)
 		{
 			$nb_params = $myfunc_call->get_nb_params();
-			$start_args = 5 * $nb_params;
 
 			for($i = 0; $i < $nb_params; $i ++)
 			{
-				$instruction = $code[$index + 4 - $start_args + $i*5];
-				SecurityAnalysis::call($myfunc_call, $context, $mysink, $instruction);
+				$mydef_arg = $instruction->get_property("argdef$i");
+                SecurityAnalysis::call($myfunc_call, $context, $mysink, $mydef_arg);
 			}
 		}
 	}
 
-	public static function call($myfunc_call, $context, $mysink, $instruction)
+	public static function call($myfunc_call, $context, $mysink, $mydef)
 	{
 		$results = &$context->get_results();
 
-		$mydef = $instruction->get_property("def");
 		$temp["source"] = [];
 		$temp["source_line"] = [];
 		$temp["source_file"] = [];

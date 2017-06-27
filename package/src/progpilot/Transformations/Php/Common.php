@@ -64,6 +64,12 @@ class Common {
 		{
 			return $ops->name->value;
 		}
+		
+		// arrayexpr
+		if(isset($ops->value))
+		{
+            return $ops->value;
+        }
 
 		return "";
 	}

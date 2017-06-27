@@ -2,6 +2,7 @@
 
 var MyDefinition = require('./objects/MyDefinition');
 var MyBlock = require('./objects/MyBlock');
+var MyFunction = require('./objects/MyFunction');
 
 var blocks = [];
 var definitions = [];
@@ -149,23 +150,92 @@ function ReturnStatement(myinit)
 	}
 }
 
-function CallExpression(myinit)
+function CallExpression(myinit, myexpr, exprs)
 {
 	var mycallee = new MyDefinition.MyDefinition;
 	mycallee.CalculateIdentifier(myinit.callee);
+    
+    if(mycallee.type == "MemberExpression")
+    {
+        var object = mycallee.object;
+        var property = mycallee.property;
+        
+        var instance_name = object.name;
+        var method_name = property.name;
+        
+        var myfunction = new MyFunction.MyFunction;
+        myfunction.setLine(mycallee.loc.start.line);
+        myfunction.setColumn(mycallee.loc.start.column);
+        myfunction.set_name(method_name);
+        myfunction.set_is_instance(true);
+        myfunction.set_name_instance(instance_name);
 
-	var myarguments = myinit.arguments;
+        var myarguments = myinit.arguments;
 
-	for(var i = 0; i < myarguments.length; i ++)
-	{
-		var myargumenttype = myarguments[i].type;
-		var myargumentvalue = myarguments[i].value;
-	}
+        for(var i = 0; i < myarguments.length; i ++)
+        {
+            var def_name = method_name+"_param"+i+"_"+Math.random();
+            var mydef = new MyDefinition.MyDefinition;
+            mydef.set_var_name(def_name);
+            mydef.setLine(mycallee.loc.start.line);
+            mydef.setColumn(mycallee.loc.start.column);
+            mydef.setId(definitions.length);
+            definitions.push(mydef);
+        
+            var myexprparam = new MyExpr.MyExpr;
+            myexprparam.setLine(mycallee.loc.start.line);
+            myexprparam.setColumn(mycallee.loc.start.column);
+            myexprparam.setId(exprs.length);
+            myexprparam.set_assign(true);
+            myexprparam.set_assign_def(mydef);
+            exprs.push(myexprparam);
+                                
+            code.instructions.push("start_expression");
+            code.instructions.push("start_assign");
+                                
+            var myargumenttype = myarguments[i].type;
+            var myargumentvalue = myarguments[i].value;
+            
+            var mytemp = new MyDefinition.MyDefinition;
+            mytemp.setLine(mycallee.loc.start.line);
+            mytemp.setColumn(mycallee.loc.start.column);
+            mytemp.set_var_name(myargumentvalue);
+            mytemp.add_expr(myexprparam);
+            mytemp.setId(definitions.length);
+            definitions.push(mytemp);
+            
+            myfunction.add_param(mytemp);
+            
+            
+            code.instructions.push("temporary");
+            code.instructions.push("def");
+            code.instructions.push(mytemp);
+                    
+                                    
+            code.instructions.push("end_expression");
+            code.instructions.push("expr");
+            code.instructions.push(myexprparam);
+            code.instructions.push("end_assign");
+                                    
+            code.instructions.push("Definition");
+            code.instructions.push("def");
+            code.instructions.push(mydef);
+        }
+	
+        myfunction.set_nb_params(myarguments.length);
+        
+        code.instructions.push("funccall");
+        code.instructions.push("myfunc_call");
+        code.instructions.push(myfunction);
+        code.instructions.push("expr");
+        code.instructions.push(myexpr);
+    }
 }
 
 module.exports = {
     AssignmentExpression: AssignmentExpression,
     VariableDeclarator: VariableDeclarator,
+    CallExpression: CallExpression,
     ReturnStatement: ReturnStatement,
     EnterBlock: EnterBlock,
     LeaveBlock: LeaveBlock,

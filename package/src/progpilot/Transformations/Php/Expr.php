@@ -44,6 +44,7 @@ class Expr {
 
 			$mytemp = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name, false, false);
 			$mytemp->set_tainted($tainted);
+			$mytemp->last_known_value($name);
 
 			if($arr != false)
 			{
@@ -56,7 +57,7 @@ class Expr {
 				$mytemp->set_arr(false);
 				$mytemp->add_expr($myexpr);
 			}
-
+            
 			if($type == "property")
 			{
 				foreach($op->ops as $property)

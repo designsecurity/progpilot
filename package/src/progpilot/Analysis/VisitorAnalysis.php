@@ -163,6 +163,8 @@ class VisitorAnalysis {
                                         if($expr->is_assign())
                                         {
                                             $defassign = $expr->get_assign_def();
+                                            
+                                            $defassign->last_known_value($def->get_last_known_value());
 
                                             ArrayAnalysis::copy_array($this->defs, $def, $def->get_arr_value(), $defassign, $defassign->get_arr_value());
 
@@ -183,7 +185,7 @@ class VisitorAnalysis {
                             $arr_funccall = $instruction->get_property("arr");
                             $myfunc_call = $instruction->get_property("myfunc_call");
 
-                            SecurityAnalysis::funccall($this->context, $myfunc_call, $index);
+                            SecurityAnalysis::funccall($this->context, $myfunc_call, $instruction);
 
                             $list_myfunc = [];
                             if($myfunc_call->is_instance())
@@ -201,14 +203,28 @@ class VisitorAnalysis {
                                         $this->defs->getin($myfunc_call->get_block_id()), 
                                         $mydef_tmp, 
                                         $this->inside_instance);
-
+                                
                                 foreach($instances as $instance)
                                 {
-                                    $myclass = $instance->get_myinstance()->get_myclass();
-                                    $myfunc = $myclass->get_method($funcname);
+                                    // the class is defined (! build in php class for example)
+                                    if($instance->get_myinstance() != null)
+                                    {
+                                        $myclass = $instance->get_myinstance()->get_myclass();
+                                        $myfunc = $myclass->get_method($funcname);
 
-                                    if($myfunc != null)
-                                        $list_myfunc[] = [$myfunc, $instance->get_myinstance()];
+                                        if($myfunc != null)
+                                            $list_myfunc[] = [$myfunc, $instance->get_myinstance()];
+                                    }
+                                    
+                                    // twig analysis
+                                    if($instance->get_class_name() == "Twig_Environment")
+                                    {
+                                        if($myfunc_call->get_name() == "render")
+                                        {
+                                            echo "VisitorAnalysis :: twig test\n";
+                                            TwigAnalysis::funccall($this->context, $myfunc_call, $instruction);
+                                        }
+                                    }
                                 }
                             }
                             else
@@ -236,20 +252,6 @@ class VisitorAnalysis {
                                         {
                                             ArrayAnalysis::funccall_before($this->defs, $myfunc, $myfunc_call, $instruction);
                                             TaintAnalysis::funccall_before($this->defs, $myfunc, $instruction, $this->context->get_classes());
-
-                                            // twig analysis
-                                            if($myfunc_call->is_instance())
-                                            {
-                                                $myclass = $myinstance->get_myclass();
-                                                if($myclass->get_name() == "Twig_Environment")
-                                                {
-                                                    if($myfunc_call->get_name() == "render")
-                                                    {
-                                                        echo "VisitorAnalysis :: twig test\n";
-                                                    }
-                                                }
-                                            }
-
 
                                             $mycodefunction = new MyCode;
                                             $mycodefunction->set_codes($mycode->get_codes());

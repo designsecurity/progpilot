@@ -37,7 +37,13 @@ class ArrayExpr {
 
 				// we create an element for each value of array expr
 				// name_arr = [expr1, expr2] => name_arr[0] = expr1, name_arr[1] = expr2
-				$building_arr = array($nb_arrayexpr => $arr);
+                if(isset($op->ops[0]->keys[$nb_arrayexpr]->value))
+                {
+                    $index_value = $op->ops[0]->keys[$nb_arrayexpr]->value;
+                    $building_arr = array($index_value => $arr);
+                }
+                else    
+                    $building_arr = array($nb_arrayexpr => $arr);
 
 				if($type == "arrayexpr")
 				{

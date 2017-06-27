@@ -173,6 +173,11 @@ try {
 	$framework->add_output("./tests/generic/arraysexpr3.php", array("onearr"));
 	$framework->add_output("./tests/generic/arraysexpr3.php", array("3"));
 	$framework->add_output("./tests/generic/arraysexpr3.php", "xss");
+	
+	$framework->add_testbasis("./tests/generic/arraysexpr4.php");
+	$framework->add_output("./tests/generic/arraysexpr4.php", array("var_main"));
+	$framework->add_output("./tests/generic/arraysexpr4.php", array("4"));
+	$framework->add_output("./tests/generic/arraysexpr4.php", "xss");
 			
 	$framework->add_testbasis("./tests/generic/functions1.php");
 	$framework->add_output("./tests/generic/functions1.php", array("parama"));
@@ -254,6 +259,11 @@ try {
 	$framework->add_output("./tests/generic/functions16.php", array("9"));
 	$framework->add_output("./tests/generic/functions16.php", "xss");
 	
+	$framework->add_testbasis("./tests/generic/functions17.php");
+	$framework->add_output("./tests/generic/functions17.php", array("param2"));
+	$framework->add_output("./tests/generic/functions17.php", array("0"));
+	$framework->add_output("./tests/generic/functions17.php", "xss");
+	
 	$framework->add_testbasis("./tests/generic/functionsrec1.php");
 	$framework->add_output("./tests/generic/functionsrec1.php", array("var"));
 	$framework->add_output("./tests/generic/functionsrec1.php", array("10"));
@@ -263,6 +273,7 @@ try {
 	$framework->add_output("./tests/generic/condition1.php", array("_GET"));
 	$framework->add_output("./tests/generic/condition1.php", array("8"));
 	$framework->add_output("./tests/generic/condition1.php", "xss");
+	
 	/*
 	$framework->add_testbasis("./tests/generic/condition2.php");
 	$framework->add_output("./tests/generic/condition2.php", array("ret"));
@@ -274,6 +285,7 @@ try {
 	$framework->add_output("./tests/generic/condition3.php", array("8"));
 	$framework->add_output("./tests/generic/condition3.php", "xss");
 	*/
+	
 	$framework->add_testbasis("./tests/generic/condition4.php");
 	$framework->add_output("./tests/generic/condition4.php", array("blabla"));
 	$framework->add_output("./tests/generic/condition4.php", array("3"));

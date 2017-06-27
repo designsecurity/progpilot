@@ -62,6 +62,8 @@ class MyDefinition extends MyOp {
 
 		$this->is_sanitized = false;
 		$this->type_sanitized = [];
+		
+		$this->last_known_value = "";
 	}
 
 	public function print_stdout()
@@ -84,8 +86,16 @@ class MyDefinition extends MyOp {
 			var_dump($this->get_copyarrays());
 		}
 	}
-
-
+	
+	public function last_known_value($value)
+	{
+        $this->last_known_value = $value;
+    }
+    
+    public function get_last_known_value()
+	{
+        return $this->last_known_value;
+    }
 
 	public function set_property($property)
 	{
@@ -268,6 +278,11 @@ class MyDefinition extends MyOp {
 		$this->is_copyarray = $arr;
 	}
 
+	public function set_exprs($exprs)
+	{
+		$this->theexprs = $exprs;
+	}
+	
 	/* expressions utilisant la définition */
 	public function add_expr($myexpr)
 	{
