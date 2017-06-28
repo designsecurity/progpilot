@@ -7,21 +7,23 @@ class MyBlock extends MyOp.MyOp
 	constructor()
 	{
 		super();
-		this.start_address_block = -1;
-		this.end_address_block = -1;
-		this.parents = [];
+		this.start_address_block_from = -1;
+		this.start_address_block_to = -1;
+		this.end_address_block_from = -1;
+		this.end_address_block_to = -1;
+		this.childs = [];
 	}
 
-	add_parent(parent)
+	add_child(child)
 	{
 		// not himself
-		if(this.id != parent.id)
+		if(this.id != child.id)
 		{
 			var inarray = false;
 
-			for(var i = 0; i < this.parents.length; i++)
+			for(var i = 0; i < this.childs.length; i++)
 			{
-				if(parent.id == this.parents[i].id)
+				if(child.id == this.childs[i].id)
 				{
 					inarray = true;
 					break;
@@ -30,29 +32,51 @@ class MyBlock extends MyOp.MyOp
 
 			if(!inarray)
 			{
-				this.parents.push(parent);
+				this.childs.push(child);
 			}
 		}
 	}
 
-	set_start_address_block(address)
+	set_start_address_block_from(address)
 	{
-		this.start_address_block = address;
+		this.start_address_block_from = address;
 	}
 
-	set_end_address_block(address)
+	set_start_address_block_to(address)
 	{
-		this.end_address_block = address;
+		this.start_address_block_to = address;
 	}
 
-	get_start_address_block()
+	set_end_address_block_from(address)
 	{
-		return this.start_address_block;
+		this.end_address_block_from = address;
 	}
 
-	get_end_address_block()
+	set_end_address_block_to(address)
 	{
-		return this.end_address_block;
+		this.end_address_block_to = address;
+	}
+	
+	
+
+	get_start_address_block_from(address)
+	{
+		return this.start_address_block_from;
+	}
+
+	get_start_address_block_to(address)
+	{
+		return this.start_address_block_to;
+	}
+
+	get_end_address_block_from(address)
+	{
+		return this.end_address_block_from;
+	}
+
+	get_end_address_block_to(address)
+	{
+		return this.end_address_block_to;
 	}
 }
 

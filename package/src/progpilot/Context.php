@@ -20,6 +20,7 @@ class Context {
 	private $current_func;
 	private $first_file;
 	private $classes;
+	private $functions;
 	private $results;
 	private $path;
 
@@ -84,6 +85,11 @@ class Context {
 		return $this->functions;
 	}
 
+	public function get_inputs()
+	{
+		return $this->inputs;
+	}
+
 	public function &get_results()
 	{
 		return $this->results;
@@ -143,6 +149,21 @@ class Context {
 	public function set_classes($classes)
 	{
 		$this->classes = $classes;
+	}
+
+	public function set_functions($functions)
+	{
+		$this->functions = $functions;
+	}
+
+	public function set_inputs($inputs)
+	{
+		$this->inputs = $inputs;
+	}
+
+	public function set_results(&$results)
+	{
+		$this->results = &$results;
 	}
 }
 

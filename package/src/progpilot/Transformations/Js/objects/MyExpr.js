@@ -12,7 +12,7 @@ class MyExpr extends MyOp.MyOp
 		this.defs = [];
 	}
 
-	is_assign()
+	get_is_assign()
 	{
 		return this.is_assign;
 	}

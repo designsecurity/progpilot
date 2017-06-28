@@ -27,8 +27,7 @@ if(argvs.length > 2)
         var json = styx.exportAsJson(flowProgram);
         var data = JSON.parse(json);
         
-        console.log(json);
-
+        //console.log(json);
 
         var exprs = [];
 
@@ -39,8 +38,7 @@ if(argvs.length > 2)
             {
                 var code = new Code.Code;
                 var edges = prog.flowGraph.edges;
-                //console.log(json);
-
+                
                 for(var i = 0; i < edges.length; i ++)
                 {
                     var myedge = edges[i];
@@ -97,38 +95,47 @@ if(argvs.length > 2)
 
                                     /* var identifier = value */
                             case 'VariableDeclarator':
-                                var my_expr = new MyExpr.MyExpr;
-                                my_expr.setLine(mydata.id.loc.start.line);
-                                my_expr.setColumn(mydata.id.loc.start.column);
-                                my_expr.setId(exprs.length);
-                                exprs.push(my_expr);
-                                    
-                                code.instructions.push("start_assign");
-                                code.instructions.push("start_expression");
-                                var my_def = Instructions.VariableDeclarator(code, mydata, my_expr);
-                                my_expr.set_assign(true);
-                                my_expr.set_assign_def(my_def);
-                                    
-                                code.instructions.push("end_expression");
-                                code.instructions.push("expr");
-                                code.instructions.push(my_expr);
-                                code.instructions.push("end_assign");
-                                    
-                                code.instructions.push("Definition");
-                                code.instructions.push("def");
-                                code.instructions.push(my_def);
+                                
+                                var myinit = mydata.init;
+                                if(myinit != null)
+                                {
+                                    var my_expr = new MyExpr.MyExpr;
+                                    my_expr.setLine(mydata.id.loc.start.line);
+                                    my_expr.setColumn(mydata.id.loc.start.column);
+                                    my_expr.setId(exprs.length);
+                                    exprs.push(my_expr);
+                                        
+                                    code.instructions.push("start_assign");
+                                    code.instructions.push("start_expression");
+                                    var my_def = Instructions.VariableDeclarator(code, mydata, my_expr);
+                                    my_expr.set_assign(true);
+                                    my_expr.set_assign_def(my_def);
+                                        
+                                    code.instructions.push("end_expression");
+                                    code.instructions.push("expr");
+                                    code.instructions.push(my_expr);
+                                    code.instructions.push("end_assign");
+                                        
+                                    code.instructions.push("Definition");
+                                    code.instructions.push("def");
+                                    code.instructions.push(my_def);
+                                }
 
                                 break;
 
                             case 'CallExpression':
                                 code.instructions.push("start_expression");
+                                
+                                Instructions.CallExpression(code, mydata, exprs);
+                                
                                 var my_expr = new MyExpr.MyExpr;
                                 my_expr.setLine(mydata.loc.start.line);
                                 my_expr.setColumn(mydata.loc.start.column);
                                 my_expr.setId(exprs.length);
                                 exprs.push(my_expr);
                                 
-                                Instructions.CallExpression(mydata, my_expr, exprs);
+                                code.instructions.push("expr");
+                                code.instructions.push(my_expr);
                                     
                                 code.instructions.push("end_expression");
                                 code.instructions.push("expr");
@@ -151,12 +158,20 @@ if(argvs.length > 2)
                     var myto = myedge.to;
 
 
-                    var blockparent = Instructions.select_block_from_address(myedge.from);
-                    var blockchild = Instructions.select_block_from_address(myedge.to);
+                    var blockparent = Instructions.select_block_from_address(myfrom);
+                    var blockchild = Instructions.select_block_to_address(myto);
+                    
+                    /*
+                    console.log("edges from ="+myfrom+" to ="+myto);
+                    console.log("blockparent");
+                    console.log(blockparent);
+                    console.log("blockchild");
+                    console.log(blockchild);
+                    */
 
                     if(blockparent != null && blockchild != null)
                     {
-                        blockchild.add_parent(blockparent);
+                        blockparent.add_child(blockchild);
                     }
                 }
 

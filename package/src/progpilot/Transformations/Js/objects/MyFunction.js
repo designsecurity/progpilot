@@ -25,7 +25,7 @@ class MyFunction extends MyOp.MyOp
 		return this.name;
 	}
 
-	is_instance()
+	get_is_instance()
 	{
 		return this.is_instance;
 	}
@@ -45,7 +45,7 @@ class MyFunction extends MyOp.MyOp
 		return this.name_instance;
 	}
 	
-	is_method()
+	get_is_method()
 	{
 		return this.is_method;
 	}
@@ -77,7 +77,7 @@ class MyFunction extends MyOp.MyOp
 
 	get_param(i)
 	{
-		if(typeof this.params[i] === 'undefined')
+		if(typeof this.params[i] !== 'undefined')
 			return this.params[i];
 
 		return null;

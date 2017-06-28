@@ -47,31 +47,26 @@ class TwigAnalysis {
                     $arr = $array[0];
                     
                     $arr_index = "{{".key($arr)."}}";
-                    echo "TwigAnalysis:: arr_index = $arr_index\n";
                     
                     $mydef = new MyDefinition(0, 0, $arr_index, false, false);
                     
                     if($def->is_tainted())
-                    {
-                        echo "C'EST TAINTé!\n";
                         $mydef->set_tainted(true);
-                    }
                     
                     $thedefs[] = $mydef;
                 }
                 
                 shell_exec("node ./vendor/progpilot/package/src/progpilot/Transformations/Js/Transform.js $file > tmpjscode.txt");
                 
-                $mycode = new MyCode;
-                $mycode->read_code("tmpjscode.txt", $thedefs);
-                $mycode->set_start(0);
-                $mycode->set_end(count($mycode->get_codes()));
+                $newcontext = new \progpilot\Context;
                 
-                $newcontext = clone $context;
-                $newcontext->set_mycode($mycode);
+                MyCode::read_code($newcontext, "tmpjscode.txt", $thedefs);
+                
+                $newcontext->set_inputs($context->get_inputs());
+                $newcontext->set_results($context->get_results());
                 
                 $analyzer = new Analyzer;
-                $analyzer->run($newcontext);
+                $analyzer->run($newcontext, false);
                 
                 unlink("tmpjscode.txt");
             }

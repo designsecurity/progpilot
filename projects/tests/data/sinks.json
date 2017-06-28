@@ -3,6 +3,6 @@
         {"name": "echo", "language": "php", "attack": "xss"},
         {"name": "print", "language": "php", "attack": "xss"},
         {"name": "printf", "language": "php", "attack": "xss"},
-        {"name": "document.write", "language": "js", "attack": "xss"}
+        {"name": "write", "instanceof": "document", "language": "js", "attack": "xss"}
 		]
 }

@@ -19,14 +19,14 @@ class Code
                     console.log(this.instructions[i + 1]);
                     var tmp_block = this.instructions[i + 2];
                     console.log(tmp_block.id);
-                    console.log(tmp_block.start_address_block);
-                    console.log(tmp_block.end_address_block);
+                    console.log(tmp_block.start_address_block_from);
+                    console.log(tmp_block.end_address_block_to);
                     console.log("edges");
-                    console.log(tmp_block.parents.length);
-                    for(var j = 0; j < tmp_block.parents.length; j++)
+                    console.log(tmp_block.childs.length);
+                    for(var j = 0; j < tmp_block.childs.length; j++)
                     {
-                        var parent = tmp_block.parents[j];
-                        console.log(tmp_block.parents[j].id);
+                        var child = tmp_block.childs[j];
+                        console.log(tmp_block.childs[j].id);
                     }
                     
                     i = i + 3;
@@ -60,7 +60,7 @@ class Code
                     console.log(myfunction.getLine());
                     console.log(myfunction.getColumn());
                     console.log(myfunction.get_name());
-                    console.log(myfunction.is_instance());
+                    console.log(myfunction.get_is_instance());
                     console.log(myfunction.get_name_instance());
                     console.log(myfunction.get_nb_params());
                     
@@ -118,6 +118,12 @@ class Code
                     var tmp_expr = this.instructions[i + 2];
                     console.log(tmp_expr.getLine());
                     console.log(tmp_expr.getColumn());
+                    console.log(tmp_expr.get_is_assign());
+                    
+                    //console.log(tmp_expr);
+                    
+                    if(tmp_expr.get_is_assign())
+                        console.log(tmp_expr.get_assign_def().getId());
                     
                     var tmp_defs = tmp_expr.get_defs();
                     console.log(tmp_defs.length);

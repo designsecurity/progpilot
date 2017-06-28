@@ -44,12 +44,16 @@ class MyInputs {
 		return null;
 	}
 
-	public function get_sink_byname($name)
+	public function get_sink_byname($name, $instance_name)
 	{
 		foreach($this->sinks as $mysink)
 		{
 			if($mysink->get_name() == $name)
+			{
+                if(!$mysink->is_instance() 
+                    || ($mysink->is_instance() && $mysink->get_instanceof_name() == $instance_name))
 				return $mysink;
+            }
 		}
 
 		return null;
@@ -158,6 +162,13 @@ class MyInputs {
 					$attack = $sink->{'attack'};
 
 					$mysink = new MySink($name, $language, $attack);
+					
+					if(isset($sink->{'instanceof'}))
+					{
+                        $mysink->set_is_instance(true);
+                        $mysink->set_instanceof_name($sink->{'instanceof'});
+                    }
+					
 					$this->sinks[] = $mysink;
 				}
 			}

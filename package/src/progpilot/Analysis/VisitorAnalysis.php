@@ -96,7 +96,7 @@ class VisitorAnalysis {
                             {
                                 $addr_start = $blockparent->get_start_address_block();
                                 $addr_end = $blockparent->get_end_address_block();
-
+                                
                                 if(!$this->storagemyblocks->contains($blockparent))
                                 {
                                     $oldindex_start = $mycode->get_start();
@@ -150,8 +150,9 @@ class VisitorAnalysis {
                     case Opcodes::TEMPORARY:
                         {
                             $tempdefa = $instruction->get_property("temporary");
+                            
                             $defs = ResolveDefs::temporary_simple($this->defs, $tempdefa, $this->inside_instance);
-
+                                           
                             foreach($defs as $def)
                             {		
                                 if(($def->is_property() && $def->get_visibility()) 
@@ -221,7 +222,6 @@ class VisitorAnalysis {
                                     {
                                         if($myfunc_call->get_name() == "render")
                                         {
-                                            echo "VisitorAnalysis :: twig test\n";
                                             TwigAnalysis::funccall($this->context, $myfunc_call, $instruction);
                                         }
                                     }

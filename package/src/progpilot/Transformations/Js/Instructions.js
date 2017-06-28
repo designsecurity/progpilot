@@ -3,6 +3,7 @@
 var MyDefinition = require('./objects/MyDefinition');
 var MyBlock = require('./objects/MyBlock');
 var MyFunction = require('./objects/MyFunction');
+var MyExpr = require('./objects/MyExpr');
 
 var blocks = [];
 var definitions = [];
@@ -20,25 +21,37 @@ function select_block(id)
 	return null;
 }
 
-function select_block_from_address(address)
+function select_block_to_address(address)
 {
 	for(var i = 1; i < blocks.length; i ++)
 	{
-		if(address >= blocks[i].start_address_block && address <= blocks[i].end_address_block)
+		if(address == blocks[i].start_address_block_from)
 		{
-			return blocks[i];
-		}
-	}
-
-	if(blocks.length > 0)
-	{
-		if(address >= blocks[0].start_address_block && address <= blocks[0].end_address_block)
-		{
-			return blocks[0];
-		}
+            return blocks[i];
+        }
 	}
 
 	return null;
+}
+
+function select_block_from_address(address)
+{
+    var min = -1;
+    var good = null;
+    
+	for(var i = 0; i < blocks.length; i ++)
+	{
+		if(address >= blocks[i].start_address_block_to && address <= blocks[i].end_address_block_to)
+		{
+            if(blocks[i].end_address_block_from > min)
+            {
+                min = blocks[i].end_address_block_from;
+                good = blocks[i];
+            }
+        }
+	}
+
+	return good;
 }
 
 function EnterBlock(myedge)
@@ -47,7 +60,8 @@ function EnterBlock(myedge)
 	myblock.setId(myedge.data.id);
 	myblock.setLine(myedge.data.loc.start_line);
 	myblock.setColumn(myedge.data.loc.start_column);
-	myblock.set_start_address_block(myedge.from);
+	myblock.set_start_address_block_from(myedge.from);
+	myblock.set_start_address_block_to(myedge.to);
 
 	blocks.push(myblock);
 
@@ -59,7 +73,8 @@ function LeaveBlock(myedge)
 	var myblock = select_block(myedge.data.id);
 	if(myblock != null)
 	{
-		myblock.set_end_address_block(myedge.from);
+		myblock.set_end_address_block_from(myedge.from);
+		myblock.set_end_address_block_to(myedge.to);
 	}
 	
 	return myblock;
@@ -97,18 +112,18 @@ function AssignmentExpression(code, mydata, my_expr)
 function VariableDeclarator(code, mydata, my_expr)
 {
 	/* var identifier = */
-	var myvariable = new MyDefinition.MyDefinition;
-	myvariable.isidentifier = true;
-	myvariable.set_var_name(mydata.id.name);
-    myvariable.setLine(mydata.id.loc.start.line);
-    myvariable.setColumn(mydata.id.loc.start.column);
-    myvariable.setId(definitions.length);
-    definitions.push(myvariable);
-    
 	/* = init */
 	var myinit = mydata.init;
 	if(myinit != null)
-	{
+    {
+        var myvariable = new MyDefinition.MyDefinition;
+        myvariable.isidentifier = true;
+        myvariable.set_var_name(mydata.id.name);
+        myvariable.setLine(mydata.id.loc.start.line);
+        myvariable.setColumn(mydata.id.loc.start.column);
+        myvariable.setId(definitions.length);
+        definitions.push(myvariable);
+    
 		switch(myinit.type)
 		{
 			case 'CallExpression': 
@@ -124,13 +139,10 @@ function VariableDeclarator(code, mydata, my_expr)
                 mydef.setId(definitions.length);
                 definitions.push(mydef);
                 
-                if(mydef.is_identifier())
-                {
-                    code.instructions.push("temporary");
-                    code.instructions.push("def");
-                    code.instructions.push(mydef);
-                    mydef.add_expr(my_expr);
-                }
+                code.instructions.push("temporary");
+                code.instructions.push("def");
+                code.instructions.push(mydef);
+                mydef.add_expr(my_expr);
         
 				break;
 		}
@@ -150,11 +162,10 @@ function ReturnStatement(myinit)
 	}
 }
 
-function CallExpression(myinit, myexpr, exprs)
+function CallExpression(code, myinit, exprs)
 {
-	var mycallee = new MyDefinition.MyDefinition;
-	mycallee.CalculateIdentifier(myinit.callee);
-    
+	var mycallee = myinit.callee;
+	
     if(mycallee.type == "MemberExpression")
     {
         var object = mycallee.object;
@@ -204,13 +215,11 @@ function CallExpression(myinit, myexpr, exprs)
             mytemp.setId(definitions.length);
             definitions.push(mytemp);
             
-            myfunction.add_param(mytemp);
-            
+            myfunction.add_param(mydef);
             
             code.instructions.push("temporary");
             code.instructions.push("def");
             code.instructions.push(mytemp);
-                    
                                     
             code.instructions.push("end_expression");
             code.instructions.push("expr");
@@ -227,8 +236,6 @@ function CallExpression(myinit, myexpr, exprs)
         code.instructions.push("funccall");
         code.instructions.push("myfunc_call");
         code.instructions.push(myfunction);
-        code.instructions.push("expr");
-        code.instructions.push(myexpr);
     }
 }
 
@@ -240,6 +247,7 @@ module.exports = {
     EnterBlock: EnterBlock,
     LeaveBlock: LeaveBlock,
     select_block_from_address: select_block_from_address,
+    select_block_to_address: select_block_to_address,
     definitions: definitions
 };
 

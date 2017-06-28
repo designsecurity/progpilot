@@ -61,22 +61,23 @@ class MyCode {
 		$this->code[] = $code;
 	}
 	
-	public function read_code($file, $defs)
+	public static function read_code($context, $file, $defs)
 	{
         $first_block = true;
         $handle = fopen($file, "r");
         
 		$myfunction = new MyFunction("{main}");
 		$myfunction->set_start_address_func(0);
+		$context->get_functions()->add_function($myfunction->get_name(), $myfunction);
 
 		$inst_func = new MyInstruction(Opcodes::ENTER_FUNCTION);
 		$inst_func->add_property("myfunc", $myfunction);
-		$this->add_code($inst_func);
+		$context->get_mycode()->add_code($inst_func);
 
         if($handle)
         {
             $array_myblocks = [];
-            $array_myblocks_parents = [];
+            $array_myblocks_childs = [];
             
             $array_exprs = [];
             $array_definitions = [];
@@ -98,20 +99,20 @@ class MyCode {
                         
                         $myblock = new MyBlock;
                         $myblock->set_id($myblock_id);
-                        $myblock->set_start_address_block(count($this->code));
+                        $myblock->set_start_address_block(count($context->get_mycode()->get_codes()));
                         
                         $array_myblocks[$myblock_id] = $myblock;
-                        $array_myblocks_parents[$myblock_id] = [];
+                        $array_myblocks_childs[$myblock_id] = [];
                         
                         for($i = 0; $i < $nb_edges; $i ++)
                         {
-                            $id_parent = (int) fgets($handle);
-                            $array_myblocks_parents[$myblock_id][] = $id_parent;
+                            $id_child = (int) fgets($handle);
+                            $array_myblocks_childs[$myblock_id][] = $id_child;
                         }
                         
                         $inst_block = new MyInstruction(Opcodes::ENTER_BLOCK);
                         $inst_block->add_property("myblock", $myblock);
-                        $this->add_code($inst_block);
+                        $context->get_mycode()->add_code($inst_block);
                         
                         if($first_block)
                         {
@@ -121,7 +122,7 @@ class MyCode {
                             {
                                 $inst_def = new MyInstruction(Opcodes::DEFINITION);
                                 $inst_def->add_property("def", $mydef);
-                                $this->add_code($inst_def);
+                                $context->get_mycode()->add_code($inst_def);
                             }
                         }
                         
@@ -136,11 +137,11 @@ class MyCode {
                         if(isset($array_myblocks[$myblock_id]))
                         {
                             $myblock = $array_myblocks[$myblock_id];
-                            $myblock->set_end_address_block(count($this->code));
+                            $myblock->set_end_address_block(count($context->get_mycode()->get_codes()));
                         
                             $inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
                             $inst_block->add_property("myblock", $myblock);
-                            $this->add_code($inst_block);
+                            $context->get_mycode()->add_code($inst_block);
                         }
                         
                         break;
@@ -148,23 +149,22 @@ class MyCode {
                             
                     case 'Definition':
                     {
-                        $last_opcode = $this->code[count($this->code) - 1];
+                        $code = $context->get_mycode()->get_codes();
+                        $last_opcode = $code[count($code) - 1];
                         
                         $def_string = fgets($handle);
-                        $def_name = fgets($handle);
+                        $def_name = rtrim(fgets($handle));
                         $def_line = (int) fgets($handle);
                         $def_column = (int) fgets($handle);
                         
                         $mydef = new MyDefinition($def_line, $def_column, $def_name, false, false);
                         $array_definitions[] = $mydef;
                         
+                        /*
                         if($last_opcode->get_opcode() == Opcodes::END_ASSIGN)
                         {
-                            $opcode_expr = $this->code[count($this->code) - 2];
+                            $opcode_expr = $code[count($context->get_mycode()->get_codes()) - 2];
                             $myexpr = $opcode_expr->get_property("expr");
-                            
-                            $myexpr->set_assign(true);
-                            $myexpr->set_assign_def($mydef);
                             
                             $defs = $myexpr->get_defs();
                             for($i = 0; $i < count($defs); $i ++)
@@ -172,10 +172,11 @@ class MyCode {
                                 $myexpr->add_def($array_definitions[$defs[i]]);
                             }
                         }
+                        */
                         
                         $inst_def = new MyInstruction(Opcodes::DEFINITION);
                         $inst_def->add_property("def", $mydef);
-                        $this->add_code($inst_def);
+                        $context->get_mycode()->add_code($inst_def);
                         
                         break;
                     }
@@ -183,11 +184,11 @@ class MyCode {
                     case 'funccall':
                     {
                         $func_string = fgets($handle);
-                        $func_line = fgets($handle);
-                        $func_column = fgets($handle);
-                        $func_name = fgets($handle);
-                        $func_is_instance = (int) fgets($handle);
-                        $func_name_instance = fgets($handle);
+                        $func_line = (int) fgets($handle);
+                        $func_column = (int) fgets($handle);
+                        $func_name = rtrim(fgets($handle));
+                        $func_is_instance = rtrim(fgets($handle));
+                        $func_name_instance = rtrim(fgets($handle));
                         $func_nb_params = (int) fgets($handle);
                         
                         $inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
@@ -198,7 +199,7 @@ class MyCode {
                         $myfunction_call->setColumn($func_column);
                         $myfunction_call->set_nb_params($func_nb_params);
                         
-                        if($func_is_instance)
+                        if($func_is_instance == "true")
                         {
                             $myfunction_call->set_is_instance(true);
                             $myfunction_call->set_name_instance($func_name_instance);
@@ -206,12 +207,13 @@ class MyCode {
                         
                         for($j = 0; $j < $func_nb_params; $j ++)
                         {
-                            $func_name_param = fgets($handle);
-                            
+                            $func_def_id_param = (int) fgets($handle);
+                            $func_def_param = $array_definitions[$func_def_id_param];
+                            $inst_funcall_main->add_property("argdef$j", $func_def_param);
                         }
                         
                         $func_expr_string = fgets($handle);
-                        $func_expr_id = fgets($handle);
+                        $func_expr_id = (int) fgets($handle);
                         
                         // !!!!????
                         //$myexpr = $array_exprs[$func_expr_id];
@@ -220,7 +222,7 @@ class MyCode {
                         $inst_funcall_main->add_property("myfunc_call", $myfunction_call);
                         $inst_funcall_main->add_property("expr", $myexpr);
                         $inst_funcall_main->add_property("arr", null);
-                        $this->add_code($inst_funcall_main);
+                        $context->get_mycode()->add_code($inst_funcall_main);
                         
                         break;
                     }
@@ -228,7 +230,7 @@ class MyCode {
                     case 'temporary':
                     {
                         $def_string = fgets($handle);
-                        $def_name = fgets($handle);
+                        $def_name = rtrim(fgets($handle));
                         $def_line = (int) fgets($handle);
                         $def_column = (int) fgets($handle);
                         
@@ -244,28 +246,28 @@ class MyCode {
 
                         $inst_temporary_simple = new MyInstruction(Opcodes::TEMPORARY);
                         $inst_temporary_simple->add_property("temporary", $mytemp);
-                        $this->add_code($inst_temporary_simple);
+                        $context->get_mycode()->add_code($inst_temporary_simple);
                     
                         break;
                     }
                     
                     case 'start_assign':
                     {
-                        $this->add_code(new MyInstruction(Opcodes::START_ASSIGN));
+                        $context->get_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
                         
                         break;
                     }
                     
                     case 'end_assign':
                     {
-                        $this->add_code(new MyInstruction(Opcodes::END_ASSIGN));
+                        $context->get_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
                         
                         break;
                     }
                     
                     case 'start_expression':
                     {
-                        $this->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+                        $context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
                         
                         break;
                     }
@@ -275,9 +277,20 @@ class MyCode {
                         $expr_string = fgets($handle);
                         $expr_line = (int) fgets($handle);
                         $expr_column = (int) fgets($handle);
-                        $nb_exprs = (int) fgets($handle);
                         
                         $myexpr = new MyExpr($expr_line, $expr_column);
+                        
+                        $expr_is_assign = rtrim(fgets($handle));
+                        
+                        if($expr_is_assign == "true")
+                        {
+                            $expr_def_assign_id = (int) fgets($handle);
+                            $myexpr->set_assign(true);
+                            $myexpr->set_assign_def($expr_def_assign_id);
+                        }
+                        
+                        $nb_exprs = (int) fgets($handle);
+                        
                         $array_exprs[] = $myexpr;
                         
                         for($i = 0; $i < $nb_exprs; $i ++)
@@ -288,21 +301,22 @@ class MyCode {
                         
                         $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
                         $inst_end_expr->add_property("expr", $myexpr);
-                        $this->add_code($inst_end_expr);
+                        $context->get_mycode()->add_code($inst_end_expr);
                         
                         break;
                     }
                 }
             }
             
-            foreach($array_myblocks as $myblock)
+            foreach($array_myblocks as $parent)
             {
-                $parents = $array_myblocks_parents[$myblock_id];
+                $parent->addParent($parent);
+                $childs = $array_myblocks_childs[$parent->get_id()];
                 
-                foreach($parents as $parent)
+                foreach($childs as $child)
                 {
-                    $myblock_parent = $array_myblocks[$parent];
-                    $myblock->addParent($myblock_parent);
+                    $myblock_child = $array_myblocks[$child];
+                    $myblock_child->addParent($parent);
                 }
             }
             
@@ -310,6 +324,13 @@ class MyCode {
             {
                 $defs = $myexpr->get_defs();
                 $myexpr->set_defs(array());
+                
+                if($myexpr->is_assign())
+                {
+                    $def_id = $myexpr->get_assign_def();
+                    $mydef = $array_definitions[$def_id];
+                    $myexpr->set_assign_def($mydef);
+                }
         
                 foreach($defs as $def_id)
                 {
@@ -333,11 +354,15 @@ class MyCode {
             fclose($handle);
             
             
-            $myfunction->set_end_address_func(count($this->code));
+            $myfunction->set_end_address_func(count($context->get_mycode()->get_codes()));
 
             $inst_func = new MyInstruction(Opcodes::LEAVE_FUNCTION);
             $inst_func->add_property("myfunc", $myfunction);
-            $this->add_code($inst_func);
+            $context->get_mycode()->add_code($inst_func);
+            
+            $context->get_mycode()->set_start(0);
+            $context->get_mycode()->set_end(count($context->get_mycode()->get_codes()));
+            
         }
     }
 

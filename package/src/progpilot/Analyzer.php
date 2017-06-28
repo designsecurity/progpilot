@@ -71,12 +71,15 @@ class Analyzer
 		}
 	}
 
-	public function run($context)
+	public function run($context, $firststeps = true)
 	{
-		$context->set_first_file($this->file);
-		$script = $this->parse($context);
-		$this->transform($context, $script);
-
+        if($firststeps)
+        {
+            $context->set_first_file($this->file);
+            $script = $this->parse($context);
+            $this->transform($context, $script);
+        }
+        
 		// analyze
 		if($context != null)
 		{
@@ -87,13 +90,20 @@ class Analyzer
 			$visitordataflow->analyze($context);
 
 			$myfunc = $context->get_functions()->get_function("{main}");
+			
+			if(!is_null($myfunc))
+			{
+                $context->get_mycode()->set_start($myfunc->get_start_address_func());
+                $context->get_mycode()->set_end($myfunc->get_end_address_func());
 
-			$context->get_mycode()->set_start($myfunc->get_start_address_func());
-			$context->get_mycode()->set_end($myfunc->get_end_address_func());
-
-			$visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
-			$visitoranalyzer->set_context($context);
-			$visitoranalyzer->analyze($context->get_mycode());
+                $visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
+                $visitoranalyzer->set_context($context);
+                $visitoranalyzer->analyze($context->get_mycode());
+            }
+            else
+            {
+                // throw main function missing
+            }
 		}
 	}
 
