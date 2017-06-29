@@ -54,7 +54,8 @@ class Transform implements Visitor {
 	}
 
 	public function enterScript(Script $script) {
-
+	
+        $this->context->outputs->current_includes_file = "";
 	}
 
 	public function leaveScript(Script $script) {
@@ -73,6 +74,9 @@ class Transform implements Visitor {
 		// the last block doesn't have address computed because leaveblock() didn't do anything
 		if($this->context->get_current_block() != null)
 			$this->s_blocks[$this->context->get_current_block()]->set_end_address_block(count($this->context->get_mycode()->get_codes()));
+	
+        if($this->context->outputs->get_resolve_includes())
+            $this->context->outputs->write_includes_file();
 	}
 
 	public function enterBlock(Block $block, Block $prior = null) {
@@ -228,12 +232,32 @@ class Transform implements Visitor {
 		   const TYPE_REQUIRE = 3;
 		   const TYPE_REQUIRE_ONCE = 4;
 		 */
-		if($op instanceof Op\Expr\Include_)
+		if($op instanceof Op\Expr\Include_ && $this->context->get_analyze_includes())
 		{
-			if(isset($this->context->get_current_op()->expr))
-			{
+			if(!isset($this->context->get_current_op()->expr->value))
+            {
+                $continue_include = false;
+                
+                $myinclude = $this->context->inputs->get_include_bylocation(
+                    $this->context->get_current_line(),
+                        $this->context->get_current_column(),
+                            $this->context->get_first_file());
+                            
+                if($myinclude != null)
+                {
+                    $continue_include = true;
+                    $name = $myinclude->get_value();
+                }
+            }
+            else
+            {
+                $continue_include = true;
 				$name = $this->context->get_current_op()->expr->value;
-				$file = $this->context->get_path()."/".$name;	
+            }
+            
+            if($continue_include)
+            {
+				$file = $this->context->get_path()."/".$name;
 
 				if((!in_array($file, $this->array_includes) && $op->type == 2)
 						|| (!in_array($file, $this->array_requires) && $op->type == 4)
@@ -259,6 +283,17 @@ class Transform implements Visitor {
 						$op->included = $scriptbis->main->cfg;
 				}
 			}
+			else
+            {
+                if($this->context->outputs->get_resolve_includes())
+                {
+                    $temp["line"] = $this->context->get_current_line();
+                    $temp["column"] = $this->context->get_current_column();
+                    $temp["source_file"] = $this->context->get_first_file();
+			
+                    $this->context->outputs->current_includes_file[] = $temp;
+                }
+            }
 		}
 
 		/*

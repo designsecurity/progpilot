@@ -1,0 +1,11 @@
+{
+    "includes":
+        [
+            {
+                "line":11,
+                "column":11,
+                "source_file":"./tests/includes/simple5.php",
+                "value":"simple5_include.php"
+            }
+        ]
+}

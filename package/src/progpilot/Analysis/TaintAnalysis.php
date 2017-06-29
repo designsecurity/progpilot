@@ -12,6 +12,7 @@ namespace progpilot\Analysis;
 
 use progpilot\Objects\MyCode;
 use progpilot\Objects\ArrayStatic;
+use progpilot\Objects\MyDefinition;
 
 use progpilot\Dataflow\Definitions;
 
@@ -76,39 +77,56 @@ class TaintAnalysis {
 			}
 		}
 	}
-
+	
+    public static function funccall_source($context, $data, $myfunc, $arr_funccall, $instruction)
+	{ 
+        $exprreturn = $instruction->get_property("expr");
+            
+        if($context->inputs->get_source_byname($myfunc->get_name(), true) != null)
+        {
+            $mydef = new MyDefinition($myfunc->getLine(), $myfunc->getColumn(), "return", false, false);
+            $mydef->set_tainted(true);
+            
+            if($exprreturn->is_assign())
+            {
+                $defassign = $exprreturn->get_assign_def();
+                TaintAnalysis::set_tainted($data, $mydef, $defassign, $exprreturn, false, null); 
+            } 
+        }
+    }
+    
 	public static function funccall_after($data, $myfunc, $arr_funccall, $instruction)
-	{                   
-		$defsreturn = $myfunc->get_return_defs(); 
-		$exprreturn = $instruction->get_property("expr");
+	{ 
+        $defsreturn = $myfunc->get_return_defs(); 
+        $exprreturn = $instruction->get_property("expr");
 
-		foreach($defsreturn as &$defreturn)
-		{        
-			if(($arr_funccall != false && $defreturn->is_arr() && $defreturn->get_arr_value() == $arr_funccall) || $arr_funccall == false)
-			{
-				$copydefreturn = $defreturn;
+        foreach($defsreturn as &$defreturn)
+        {        
+            if(($arr_funccall != false && $defreturn->is_arr() && $defreturn->get_arr_value() == $arr_funccall) || $arr_funccall == false)
+            {
+                $copydefreturn = $defreturn;
 
-				$copydefreturn->add_expr($exprreturn);
-				$exprreturn->add_def($copydefreturn);
+                $copydefreturn->add_expr($exprreturn);
+                $exprreturn->add_def($copydefreturn);
 
-				// !!! SANITIZERS
-				// ajouter cas des property comme si dessus temporary_simple
+                // !!! SANITIZERS
+                // ajouter cas des property comme si dessus temporary_simple
 
 
-				$exprs = $copydefreturn->get_exprs();
+                $exprs = $copydefreturn->get_exprs();
 
-				foreach($exprs as $expr)
-				{
-					if($expr->is_assign())
-					{
-						$defassign = $expr->get_assign_def();
-						TaintAnalysis::set_tainted($data, $copydefreturn, $defassign, $expr, false, null); 
-					}
-				}
+                foreach($exprs as $expr)
+                {
+                    if($expr->is_assign())
+                    {
+                        $defassign = $expr->get_assign_def();
+                        TaintAnalysis::set_tainted($data, $copydefreturn, $defassign, $expr, false, null); 
+                    }
+                }
 
-				//TaintAnalysis::set_exprs_tainted($data, $copydefreturn, false, null);
-			}
-		}
+                //TaintAnalysis::set_exprs_tainted($data, $copydefreturn, false, null);
+            }
+        }
 	}
 
 	public static function funccall_before($data, $myfunc, $instruction)

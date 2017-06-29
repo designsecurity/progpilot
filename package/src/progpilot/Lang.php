@@ -16,6 +16,7 @@ class Lang
 	const FORMAT_SANITIZERS = "Format of json saniter's file is incorrect";
 	const FORMAT_SINKS = "Format of json sinks's file is incorrect";
 	const FORMAT_SOURCES = "Format of json sources's file is incorrect";
+	const FORMAT_INCLUDES = "Format of json includes's file is incorrect";
 }
 
 ?>

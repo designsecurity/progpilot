@@ -18,13 +18,7 @@ class Analyzer
 	{
 		$this->file = null;
 	}
-
-	public function get_results()
-	{
-		$outputjson = array('results' => $this->results); 
-		return $outputjson;
-	}
-
+	
 	public function set_file($file)
 	{
 		$this->file = $file;
@@ -62,6 +56,7 @@ class Analyzer
 			$context->inputs->read_sanitizers();
 			$context->inputs->read_sinks();
 			$context->inputs->read_sources();
+			$context->inputs->read_includes();
 
 			$traverser = new \PHPCfg\Traverser();
 			$traverser->addVisitor(new \progpilot\Transformations\Php\Transform());

@@ -39,6 +39,16 @@ try {
 	$framework->add_output("./tests/data/source2.php", array("3"));
 	$framework->add_output("./tests/data/source2.php", "xss");
 	
+	$framework->add_testbasis("./tests/data/source3.php");
+	$framework->add_output("./tests/data/source3.php", array("var"));
+	$framework->add_output("./tests/data/source3.php", array("3"));
+	$framework->add_output("./tests/data/source3.php", "xss");
+	
+	$framework->add_testbasis("./tests/data/source4.php");
+	$framework->add_output("./tests/data/source4.php", array("var2"));
+	$framework->add_output("./tests/data/source4.php", array("5"));
+	$framework->add_output("./tests/data/source4.php", "xss");
+	
 	$framework->add_testbasis("./tests/data/sanitizer1.php");
 	$framework->add_output("./tests/data/sanitizer1.php", array("var7safe"));
 	$framework->add_output("./tests/data/sanitizer1.php", array("5"));

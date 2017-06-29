@@ -14,6 +14,9 @@ use progpilot\Lang;
 
 class MyInputs {
 
+	private $includes;
+	private $includes_file;
+
 	private $sanitizers;
 	private $sinks;
 	private $sources;
@@ -24,13 +27,28 @@ class MyInputs {
 
 	public function __construct() {
 
+		$this->includes = [];
 		$this->sanitizers = [];
 		$this->sinks = [];
 		$this->sources = [];
-
+		
+		$this->includes_file = null;
 		$this->sanitizers_file = null;
 		$this->sinks_file = null;
 		$this->sources_file = null;
+	}
+
+	public function get_include_bylocation($line, $column, $source_file)
+	{
+		foreach($this->includes as $myinclude)
+		{
+			if($myinclude->get_line() == $line 
+                && $myinclude->get_column() == $column
+                   && $myinclude->get_source_file() == $source_file)
+				return $myinclude;
+		}
+
+		return null;
 	}
 
 	public function get_sanitizer_byname($name)
@@ -59,11 +77,11 @@ class MyInputs {
 		return null;
 	}
 
-	public function get_source_byname($name)
+	public function get_source_byname($name, $is_function = false)
 	{
 		foreach($this->sources as $mysource)
 		{
-			if($mysource->get_name() == $name)
+			if($mysource->get_name() == $name && $mysource->is_function() == $is_function)
 				return $mysource;
 		}
 
@@ -83,6 +101,16 @@ class MyInputs {
 	public function get_sources()
 	{
 		return $this->sources;
+	}
+	
+	public function get_includes()
+	{
+		return $this->includes;
+	}
+
+	public function set_includes($file)
+	{
+		$this->includes_file = $file;
 	}
 
 	public function set_sources($file)
@@ -198,13 +226,56 @@ class MyInputs {
 
 					$name = $source->{'name'};
 					$language = $source->{'language'};
-
+					
+					$isfunc = substr($name, -2, 2);
+					if($isfunc == "()")
+                        $name = substr($name, 0, -2);
+                        
 					$mysource = new MySource($name, $language);
+							
+					if($isfunc == "()")
+                        $mysource->set_is_function(true);
+                        
 					$this->sources[] = $mysource;
 				}
 			}
 			else
 				throw new \Exception(Lang::FORMAT_SOURCES);
+		}
+	}
+	
+	public function read_includes()
+	{
+		if($this->includes_file != null)
+		{
+			if(!file_exists($this->includes_file))
+				throw new \Exception(Lang::FILE_DONT_EXIST);
+
+			$output_json = file_get_contents($this->includes_file);
+			$parsed_json = json_decode($output_json);
+
+			if(isset($parsed_json->{'includes'}))
+			{
+				$includes = $parsed_json->{'includes'};
+				foreach($includes as $include)
+				{
+					if(!isset($include->{'line'}) 
+							|| !isset($include->{'column'})
+							|| !isset($include->{'source_file'})
+							|| !isset($include->{'value'}))
+						throw new \Exception(Lang::FORMAT_INCLUDES);
+
+					$line = $include->{'line'};
+					$column = $include->{'column'};
+					$source_file = $include->{'source_file'};
+					$value = $include->{'value'};
+
+					$myinclude = new MyInclude($line, $column, $source_file, $value);
+					$this->includes[] = $myinclude;
+				}
+			}
+			else
+				throw new \Exception(Lang::FORMAT_INCLUDES);
 		}
 	}
 }

@@ -36,12 +36,12 @@ try {
 	$framework->add_output("./tests/sard/000/CWE_98__backticks__whitelist_using_array__require_file_name-concatenation_simple_quote.php", array("var7"));
 	$framework->add_output("./tests/sard/000/CWE_98__backticks__whitelist_using_array__require_file_name-concatenation_simple_quote.php", array("3"));
 	$framework->add_output("./tests/sard/000/CWE_98__backticks__whitelist_using_array__require_file_name-concatenation_simple_quote.php", "file_inclusion");
-
+/*
 	$framework->add_testbasis("./tests/sard/001/CWE_98__backticks__whitelist_using_array__include_file_name-interpretation_simple_quote.php");
 	$framework->add_output("./tests/sard/001/CWE_98__backticks__whitelist_using_array__include_file_name-interpretation_simple_quote.php", array("var7"));
 	$framework->add_output("./tests/sard/001/CWE_98__backticks__whitelist_using_array__include_file_name-interpretation_simple_quote.php", array("3"));
 	$framework->add_output("./tests/sard/001/CWE_98__backticks__whitelist_using_array__include_file_name-interpretation_simple_quote.php", "file_inclusion");
-
+*/
 	foreach($framework->get_testbasis() as $file)
 	{
 		$context = new \progpilot\Context;

@@ -26,6 +26,11 @@ try {
 	$framework->add_output("./tests/includes/simple4.php", array("3"));
 	$framework->add_output("./tests/includes/simple4.php", "xss");
 	
+	$framework->add_testbasis("./tests/includes/simple5.php");
+	$framework->add_output("./tests/includes/simple5.php", array("var1"));
+	$framework->add_output("./tests/includes/simple5.php", array("3"));
+	$framework->add_output("./tests/includes/simple5.php", "xss");
+	
 	
 	foreach($framework->get_testbasis() as $file)
 	{
@@ -36,16 +41,27 @@ try {
 		$context->inputs->set_sinks("./data/sinks.json");
 		$context->inputs->set_sanitizers("./data/sanitizers.json");
 		
-		$analyzer->set_file($file);
 		
-		try 
+		//$context->set_analyze_includes(false);
+		
+        $analyzer->set_file($file);
+        
+		if($file == "./tests/includes/simple5.php")
 		{
-			$analyzer->run($context);
-		}
-		catch (Exception $e) 
-		{
-			echo 'Exception : ',  $e->getMessage(), "\n";
-		}
+            //$context->outputs->resolve_includes_file("./tests/includes/includes_simple5.txt");
+            //$context->outputs->resolve_includes(true);
+            
+            $context->inputs->set_includes("./tests/includes/resolved_includes_simple5.txt");      
+        }
+            
+        try 
+        {
+            $analyzer->run($context);
+        }
+        catch (Exception $e) 
+        {
+            echo 'Exception : ',  $e->getMessage(), "\n";
+        }
 		
 		$results = $context->get_results();
 		$outputjson = array('results' => $results); 

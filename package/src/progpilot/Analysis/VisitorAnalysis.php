@@ -218,11 +218,14 @@ class VisitorAnalysis {
                                     }
                                     
                                     // twig analysis
-                                    if($instance->get_class_name() == "Twig_Environment")
+                                    if($this->context->get_analyze_js())
                                     {
-                                        if($myfunc_call->get_name() == "render")
+                                        if($instance->get_class_name() == "Twig_Environment")
                                         {
-                                            TwigAnalysis::funccall($this->context, $myfunc_call, $instruction);
+                                            if($myfunc_call->get_name() == "render")
+                                            {
+                                                TwigAnalysis::funccall($this->context, $myfunc_call, $instruction);
+                                            }
                                         }
                                     }
                                 }
@@ -272,7 +275,10 @@ class VisitorAnalysis {
                                 }
 
                                 if(is_null($myfunc))
+                                {
                                     TaintAnalysis::funccall_sanitizer($this->context, $myfunc_call, $arr_funccall, $instruction, $index);  
+                                    TaintAnalysis::funccall_source($this->context, $this->defs, $myfunc_call, $arr_funccall, $instruction);     
+                                }
 
                             }
 

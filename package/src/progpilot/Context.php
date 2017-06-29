@@ -23,12 +23,18 @@ class Context {
 	private $functions;
 	private $results;
 	private $path;
+	private $analyze_includes;
+	private $analyze_js;
 
 	public $inputs;
+	public $outputs;
 
 	public function __construct() 
 	{
-		//$this->mycode = $mycode;
+		// !!!??? mettre dans analyzer.php?
+		$this->analyze_includes = true;
+		$this->analyze_js = true;
+		
 		$this->current_op = null;
 		$this->current_block = null;
 		$this->current_line = -1;
@@ -43,6 +49,27 @@ class Context {
 		$this->results = "";
 
 		$this->inputs = new \progpilot\Inputs\MyInputs;
+		$this->outputs = new \progpilot\Outputs\MyOutputs;
+	}
+
+	public function get_analyze_js()
+	{
+		return $this->analyze_js;
+	}
+
+	public function get_analyze_includes()
+	{
+		return $this->analyze_includes;
+	}
+
+	public function set_analyze_js($analyze_js)
+	{
+        $this->analyze_js = $analyze_js;
+	}
+
+	public function set_analyze_includes($analyze_includes)
+	{
+        $this->analyze_includes = $analyze_includes;
 	}
 
 	public function get_mycode()
@@ -88,6 +115,11 @@ class Context {
 	public function get_inputs()
 	{
 		return $this->inputs;
+	}
+
+	public function get_outputs()
+	{
+		return $this->outputs;
 	}
 
 	public function &get_results()
