@@ -208,12 +208,12 @@ class VisitorAnalysis {
                                 foreach($instances as $instance)
                                 {
                                     // the class is defined (! build in php class for example)
-                                    if($instance->get_myinstance() != null)
+                                    if(!is_null($instance->get_myinstance()))
                                     {
                                         $myclass = $instance->get_myinstance()->get_myclass();
                                         $myfunc = $myclass->get_method($funcname);
 
-                                        if($myfunc != null)
+                                        if(!is_null($myfunc))
                                             $list_myfunc[] = [$myfunc, $instance->get_myinstance()];
                                     }
                                     
@@ -242,7 +242,7 @@ class VisitorAnalysis {
                                 $myfunc = $tabfunc[0];
                                 $myinstance = $tabfunc[1];
 
-                                if($myfunc != null && !$this->in_call_stack($myfunc))
+                                if(!is_null($myfunc) && !$this->in_call_stack($myfunc))
                                 {
                                     $addr_start = $myfunc->get_start_address_func();
                                     $addr_end = $myfunc->get_end_address_func();

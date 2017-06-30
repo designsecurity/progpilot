@@ -72,7 +72,7 @@ class Transform implements Visitor {
 		}
 
 		// the last block doesn't have address computed because leaveblock() didn't do anything
-		if($this->context->get_current_block() != null)
+		if(!is_null($this->context->get_current_block()))
 			$this->s_blocks[$this->context->get_current_block()]->set_end_address_block(count($this->context->get_mycode()->get_codes()));
 	
         if($this->context->outputs->get_resolve_includes())
@@ -85,7 +85,7 @@ class Transform implements Visitor {
 		if(!($this->context->get_current_op() instanceof Op\Expr\Include_))
 		{
 			// computation for the last block
-			if($this->context->get_current_block() != null)
+			if(!is_null($this->context->get_current_block()))
 			{
 				$address_end_block = count($this->context->get_mycode()->get_codes());
 				$myblock = $this->s_blocks[$this->context->get_current_block()];
@@ -139,13 +139,13 @@ class Transform implements Visitor {
 		$myfunction = new MyFunction($func->name);
 		$myfunction->set_start_address_func(count($this->context->get_mycode()->get_codes()));
 
-		if($func->class != null)
+		if(!is_null($func->class))
 		{
 			$class_name = $func->class->value;
 			// at this moment class is defined
 			$myclass = $this->context->get_classes()->get_myclass($class_name);
 
-			if($myclass != null)
+			if(!is_null($myclass))
 			{
 				$myclass->add_method($myfunction);
 
@@ -187,7 +187,7 @@ class Transform implements Visitor {
 		// we can have a block opened and we need to leave it
 		if($inst->get_opcode() != Opcodes::LEAVE_BLOCK)
 		{
-			if($this->context->get_current_block() != null)
+			if(!is_null($this->context->get_current_block()))
 			{
 				$myblock = $this->s_blocks[$this->context->get_current_block()];
 				$myblock->set_end_address_block(count($this->context->get_mycode()->get_codes()));
@@ -199,7 +199,7 @@ class Transform implements Visitor {
 		}
 
 		$class_name = null;
-		if($func->class != null)
+		if(!is_null($func->class))
 			$class_name = $func->class->value;
 
 		$myfunction = $this->context->get_functions()->get_function($func->name, $class_name);
@@ -243,7 +243,7 @@ class Transform implements Visitor {
                         $this->context->get_current_column(),
                             $this->context->get_first_file());
                             
-                if($myinclude != null)
+                if(!is_null($myinclude))
                 {
                     $continue_include = true;
                     $name = $myinclude->get_value();

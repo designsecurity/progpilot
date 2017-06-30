@@ -12,7 +12,7 @@ namespace progpilot;
 
 class Lang
 {
-	const FILE_DONT_EXIST = "The file doesn't exist";
+	const FILE_DOESNT_EXIST = "The file doesn't exist";
 	const FORMAT_SANITIZERS = "Format of json saniter's file is incorrect";
 	const FORMAT_SINKS = "Format of json sinks's file is incorrect";
 	const FORMAT_SOURCES = "Format of json sources's file is incorrect";

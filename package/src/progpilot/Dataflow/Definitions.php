@@ -51,7 +51,7 @@ class Definitions {
 
 	public static function printblock($defsparam)
 	{
-		if($defsparam != null)
+		if(!is_null($defsparam))
 		{
 			foreach($defsparam as $def)
 			{
@@ -62,7 +62,7 @@ class Definitions {
 
 	public static function print_stdout($defsparam)
 	{
-		if($defsparam != null)
+		if(!is_null($defsparam))
 		{
 			foreach($defsparam as $blockid => $defs)
 			{
@@ -116,7 +116,7 @@ class Definitions {
 	{
 		$truedefsfound = [];
 
-		if($data == null)
+		if(is_null($data))
 			return $truedefsfound;
 
 		$defsfound = [];
@@ -134,10 +134,10 @@ class Definitions {
 					$myclass = $def->get_myinstance()->get_myclass();
 
 					$property = $myclass->get_property($defsearch->get_property_name());
-					if($property != null)
+					if(!is_null($property))
 					{
-						if(($inside_class == null && $property->get_visibility() == "public")
-								|| ($inside_class != null && $myclass->get_name() != $inside_class->get_name()))
+						if((is_null($inside_class) && $property->get_visibility() == "public")
+								|| (!is_null($inside_class) && $myclass->get_name() != $inside_class->get_name()))
 						{
 							$property->set_visibility(true);
 						}
@@ -194,7 +194,7 @@ class Definitions {
 				// on prend la plus proche de l'op
 				if(Definitions::is_nearest($line, $column, $bisline, $biscolumn))
 				{
-					if($nearestdef == null || Definitions::is_nearest($bisline, $biscolumn, $nearestline, $nearestcolumn))
+					if(is_null($nearestdef) || Definitions::is_nearest($bisline, $biscolumn, $nearestline, $nearestcolumn))
 					{
 						$nearestdef = $bisdef;
 						$nearestline = $bisline;
@@ -358,7 +358,7 @@ class Definitions {
 		foreach($this->gen[$blockid] as $gen)
 		{
 			$tmpdefs = $this->getdefrefbyname($gen->get_name());
-			if($tmpdefs != null)
+			if(!is_null($tmpdefs))
 			{
 				foreach($tmpdefs as &$def)
 				{

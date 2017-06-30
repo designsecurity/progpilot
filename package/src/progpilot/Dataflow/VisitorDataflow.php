@@ -179,7 +179,7 @@ class VisitorDataflow {
                             if($mydef->is_instance())
                             {
                                 $myclass = $context->get_classes()->get_myclass($mydef->get_class_name());
-                                if($myclass != null)
+                                if(!is_null($myclass))
                                 {
                                     $myinstance = new MyInstance("this");
                                     $myinstance->set_myclass(clone $myclass);

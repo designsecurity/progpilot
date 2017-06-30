@@ -21,7 +21,7 @@ class Functions {
 			$list_funcs = $this->functions[$funcname];
 			foreach($list_funcs as $myfunc)
 			{
-				if(!$myfunc->is_method() && $class_name == null)
+				if(!$myfunc->is_method() && is_null($class_name))
 					return $myfunc;
 
 				if($myfunc->is_method())

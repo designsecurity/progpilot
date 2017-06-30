@@ -43,7 +43,7 @@ class SecurityAnalysis {
         
         $mysink = $context->inputs->get_sink_byname($myfunc_call->get_name(), $name_instance);
 
-		if($mysink != null)
+		if(!is_null($mysink))
 		{
 			$nb_params = $myfunc_call->get_nb_params();
 

@@ -29,7 +29,7 @@ class Analyzer
 		$script = null;
 
 		// parser
-		if($this->file != null)
+		if(!is_null($this->file))
 		{
 			$asttraverser = new \PhpParser\NodeTraverser;
 			$asttraverser->addVisitor(new \PhpParser\NodeVisitor\NameResolver);
@@ -51,7 +51,7 @@ class Analyzer
 	public function transform($context, $script)
 	{
 		// transform
-		if($script != null)
+		if(!is_null($script))
 		{
 			$context->inputs->read_sanitizers();
 			$context->inputs->read_sinks();
@@ -76,7 +76,7 @@ class Analyzer
         }
         
 		// analyze
-		if($context != null)
+		if(!is_null($context))
 		{
 			$context->get_mycode()->set_start(0);
 			$context->get_mycode()->set_end(count($context->get_mycode()->get_codes()));

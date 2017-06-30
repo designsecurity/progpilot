@@ -120,7 +120,7 @@ class ArrayAnalysis {
 		{
 			$func_param = $myfunc_call->get_param($nbparams);
 
-			if($func_param != null)
+			if(!is_null($func_param))
 			{
 				$oldcopyarray = $param->is_copyarray();
 				$oldcopyarrays = $param->get_copyarrays();
@@ -159,7 +159,7 @@ class ArrayAnalysis {
 		{
 			$func_param = $myfunc_call->get_param($nbparams);
 
-			if($func_param != null)
+			if(!is_null($func_param))
 			{
 				$oldcopyarray = $func_param->is_copyarray();
 				$oldcopyarrays = $func_param->get_copyarrays();
@@ -177,7 +177,7 @@ class ArrayAnalysis {
 
 	public static function copy_array($data, $originaltab, $originalarr, $copytab, $copyarr) {
 
-		if($originaltab != null && $copytab != null)
+		if(!is_null($originaltab) && !is_null($copytab))
 		{
 			$defs = Definitions::search_force(
 					$data->getin($originaltab->get_block_id()), 

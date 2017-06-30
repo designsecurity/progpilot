@@ -63,7 +63,7 @@ class TaintAnalysis {
 				$mydef_return->set_tainted(true);
 
 			$mysanitizer = $context->inputs->get_sanitizer_byname($myfunc_call->get_name());
-			if($mysanitizer != null)
+			if(!is_null($mysanitizer))
 			{
 				$mydef_return->set_sanitized(true);
 				$mydef_return->add_type_sanitized($mysanitizer->get_prevent());
@@ -82,7 +82,7 @@ class TaintAnalysis {
 	{ 
         $exprreturn = $instruction->get_property("expr");
             
-        if($context->inputs->get_source_byname($myfunc->get_name(), true) != null)
+        if(!is_null($context->inputs->get_source_byname($myfunc->get_name(), true)))
         {
             $mydef = new MyDefinition($myfunc->getLine(), $myfunc->getColumn(), "return", false, false);
             $mydef->set_tainted(true);
@@ -190,12 +190,12 @@ class TaintAnalysis {
 		{
 			// we are going to taint defassign's definitions		
 			// we are inside a class
-			if($defassign->get_name() == "this" && $myinstance != null)
+			if($defassign->get_name() == "this" && !is_null($myinstance))
 			{
 				$myclass = $myinstance->get_myclass();
 				$property = $myclass->get_property($defassign->get_property_name());
 
-				if($property != null)
+				if(!is_null($property))
 				{
 					// with this visibility of property is ok, check isnot needed
 					if($def->is_tainted())
@@ -238,10 +238,10 @@ class TaintAnalysis {
 							$myclass = $defb->get_myinstance()->get_myclass();
 							$property = $myclass->get_property($defassign->get_property_name());
 
-							if($property != null)
+							if(!is_null($property))
 							{
-								if(($myinstance == null && $property->get_visibility() == "public")
-										|| ($myinstance != null && $myclass->get_name() != $myinstance->get_name()))
+								if((is_null($myinstance) && $property->get_visibility() == "public")
+										|| (!is_null($myinstance) && $myclass->get_name() != $myinstance->get_name()))
 								{
 									if($def->is_tainted())
 									{

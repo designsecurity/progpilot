@@ -31,15 +31,15 @@ class Expr {
 		$name = Common::get_name_definition($op);
 
 		// end of expression
-		if($type != null && $type != "array_funccall")
+		if(!is_null($type) && $type != "array_funccall")
 		{
-			if($name == null)
+			if(is_null($name))
 				$name = mt_rand();
 
 			$arr = BuildArrays::build_array_from_ops($op, false);
 
 			$tainted = false;
-			if($context->inputs->get_source_byname($name, false) != null)
+			if(!is_null($context->inputs->get_source_byname($name, false)))
 				$tainted = true;
 
 			$mytemp = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name, false, false);

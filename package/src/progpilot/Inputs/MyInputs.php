@@ -130,10 +130,10 @@ class MyInputs {
 
 	public function read_sanitizers()
 	{
-		if($this->sanitizers_file != null)
+		if(!is_null($this->sanitizers_file))
 		{
 			if(!file_exists($this->sanitizers_file))
-				throw new \Exception(Lang::FILE_DONT_EXIST);
+				throw new \Exception(Lang::FILE_DOESNT_EXIST);
 
 			$output_json = file_get_contents($this->sanitizers_file);
 
@@ -167,10 +167,10 @@ class MyInputs {
 
 	public function read_sinks()
 	{
-		if($this->sinks_file != null)
+		if(!is_null($this->sinks_file))
 		{
 			if(!file_exists($this->sinks_file))
-				throw new \Exception(Lang::FILE_DONT_EXIST);
+				throw new \Exception(Lang::FILE_DOESNT_EXIST);
 
 			$output_json = file_get_contents($this->sinks_file);
 			$parsed_json = json_decode($output_json);
@@ -207,10 +207,10 @@ class MyInputs {
 
 	public function read_sources()
 	{
-		if($this->sources_file != null)
+		if(!is_null($this->sources_file))
 		{
 			if(!file_exists($this->sources_file))
-				throw new \Exception(Lang::FILE_DONT_EXIST);
+				throw new \Exception(Lang::FILE_DOESNT_EXIST);
 
 			$output_json = file_get_contents($this->sources_file);
 			$parsed_json = json_decode($output_json);
@@ -246,10 +246,10 @@ class MyInputs {
 	
 	public function read_includes()
 	{
-		if($this->includes_file != null)
+		if(!is_null($this->includes_file))
 		{
 			if(!file_exists($this->includes_file))
-				throw new \Exception(Lang::FILE_DONT_EXIST);
+				throw new \Exception(Lang::FILE_DOESNT_EXIST);
 
 			$output_json = file_get_contents($this->includes_file);
 			$parsed_json = json_decode($output_json);

@@ -67,6 +67,7 @@ try {
 		$outputjson = array('results' => $results); 
 
 		$parsed_json = $outputjson["results"];
+		echo "test $file ";
 		
 		if(isset($parsed_json[0]) && count($parsed_json) == 1)
 		{
