@@ -23,9 +23,12 @@ class TaintAnalysis {
 	public static function funccall_sanitizer($context, $myfunc_call, $arr_funccall, $instruction, $index)
 	{     
 		$params_tainted = false;
+		$exprs_tainted = [];
 		$params_sanitized = false;
 		$params_type_sanitized = [];
 		$nbparams = 0;
+		
+		$codes = $context->get_mycode()->get_codes();
 
 		while(true)
 		{
@@ -33,9 +36,13 @@ class TaintAnalysis {
 				break;
 
 			$defarg = $instruction->get_property("argdef$nbparams"); 
+			$exprarg = $instruction->get_property("argexpr$nbparams"); 
 
 			if($defarg->is_tainted())
+			{
 				$params_tainted = true;
+				$exprs_tainted[] = $exprarg;
+            }
 
 			if($defarg->is_sanitized())
 			{
@@ -53,15 +60,19 @@ class TaintAnalysis {
 			$nbparams ++;
 		}
 
-		$codes = $context->get_mycode()->get_codes();
 		if($codes[$index + 2]->get_opcode() == Opcodes::END_ASSIGN)
 		{
-			$instruction_def = $codes[$index + 3];
+            $instruction_def = $codes[$index + 3];
 			$mydef_return = $instruction_def->get_property("def");
 
 			if($params_tainted)
+			{
 				$mydef_return->set_tainted(true);
-
+				// il peut en y avoir plusieurs
+				foreach($exprs_tainted as $expr_tainted)
+                    $mydef_return->set_taintedbyexpr($expr_tainted);
+            }
+            
 			$mysanitizer = $context->inputs->get_sanitizer_byname($myfunc_call->get_name());
 			if(!is_null($mysanitizer))
 			{
@@ -180,7 +191,7 @@ class TaintAnalysis {
 
 	public static function set_tainted($data, $def, $defassign, $expr, $safe, $myinstance)
 	{	
-		if($def->is_sanitized() && !$safe)
+        if($def->is_sanitized() && !$safe)
 		{
 			$defassign->set_type_sanitized($def->get_type_sanitized());
 			$defassign->set_sanitized(true);
@@ -262,7 +273,7 @@ class TaintAnalysis {
 			{
 				if($def->is_tainted())
 				{
-					$defassign->set_taintedbyexpr($expr);
+        			$defassign->set_taintedbyexpr($expr);
 					$defassign->set_tainted(true);
 				}
 			}

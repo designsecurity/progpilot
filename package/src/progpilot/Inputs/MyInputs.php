@@ -197,6 +197,18 @@ class MyInputs {
                         $mysink->set_instanceof_name($sink->{'instanceof'});
                     }
 					
+					if(isset($sink->{'parameters'}))
+					{
+                        $parameters = $sink->{'parameters'};
+                        foreach($parameters as $parameter)
+                        {
+                            if(is_int($parameter->{'id'}))
+                                $mysink->add_parameter($parameter->{'id'});
+                        }
+                        
+                        $mysink->set_has_parameters(true);
+                    }
+					
 					$this->sinks[] = $mysink;
 				}
 			}

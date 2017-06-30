@@ -74,6 +74,16 @@ try {
 	$framework->add_output("./tests/generic/simple5.php", array("3"));
 	$framework->add_output("./tests/generic/simple5.php", "xss");
 	
+	$framework->add_testbasis("./tests/generic/simple6.php");
+	$framework->add_output("./tests/generic/simple6.php", array("var4"));
+	$framework->add_output("./tests/generic/simple6.php", array("5"));
+	$framework->add_output("./tests/generic/simple6.php", "xss");
+	
+	$framework->add_testbasis("./tests/generic/simple7.php");
+	$framework->add_output("./tests/generic/simple7.php", array("myvar1"));
+	$framework->add_output("./tests/generic/simple7.php", array("3"));
+	$framework->add_output("./tests/generic/simple7.php", "xss");
+	
 	$framework->add_testbasis("./tests/generic/concat1.php");
 	$framework->add_output("./tests/generic/concat1.php", array("myvar7"));
 	$framework->add_output("./tests/generic/concat1.php", array("7"));
@@ -317,31 +327,30 @@ try {
 		$parsed_json = $outputjson["results"];
 		echo "test $file ";
 
-		if(isset($parsed_json[0]) && count($parsed_json) == 1)
+		foreach($parsed_json as $vuln)
 		{
-			$vuln = $parsed_json[0];
-			
+            $result_test = true;
 			$basis_outputs = [
 				$vuln['source'],
 				$vuln['source_line'],
 				$vuln['vuln_name']];
 				
-			if($framework->check_outputs($file, $basis_outputs))
+			if(!$framework->check_outputs($file, $basis_outputs))
 			{
-				echo "[$file] test result ok\n";
-			}
-			else
-			{
-				echo "[$file] test result ko\n";
-				var_dump($vuln);
-			}
+                $result_test = false;
+                break;
+            }
+		}
+		
+		if($result_test)
+		{
+            echo "[$file] test result ok\n";
 		}
 		else
 		{
 			echo "[$file] test result ko\n";
 			var_dump($parsed_json);
 		}
-
 	}
 
 } catch (\RuntimeException $e) {

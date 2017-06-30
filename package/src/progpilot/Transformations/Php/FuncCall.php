@@ -30,14 +30,15 @@ class FuncCall {
 		$def_name = $funccall_name."_param".$num_param."_".mt_rand();
 		$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name, false, false);
 
-		$inst_funcall_main->add_property("argdef$num_param", $mydef);
-
 		$context->get_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
 		$context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
 		$myexprparam = new MyExpr($context->get_current_line(), $context->get_current_column());
 		$myexprparam->set_assign(true);
 		$myexprparam->set_assign_def($mydef);
+		
+		$inst_funcall_main->add_property("argdef$num_param", $mydef);
+		$inst_funcall_main->add_property("argexpr$num_param", $myexprparam);
 
 		Expr::instruction($arg, $context, $myexprparam);
 

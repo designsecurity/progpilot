@@ -208,6 +208,7 @@ class MyDefinition extends MyOp {
 		$this->is_tainted = $tainted;
 	}
 
+	// il peut y en avoir plusieurs !
 	public function set_taintedbyexpr($expr)
 	{
 		$this->taintedbyexpr = $expr;

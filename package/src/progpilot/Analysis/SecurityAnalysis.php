@@ -50,7 +50,9 @@ class SecurityAnalysis {
 			for($i = 0; $i < $nb_params; $i ++)
 			{
 				$mydef_arg = $instruction->get_property("argdef$i");
-                SecurityAnalysis::call($myfunc_call, $context, $mysink, $mydef_arg);
+				
+				if(!$mysink->has_parameters() || ($mysink->has_parameters() && !is_null($mysink->is_parameter($i + 1))))
+                    SecurityAnalysis::call($myfunc_call, $context, $mysink, $mydef_arg);
 			}
 		}
 	}

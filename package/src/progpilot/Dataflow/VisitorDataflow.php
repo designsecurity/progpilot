@@ -150,7 +150,15 @@ class VisitorDataflow {
                             $myfunc_call = $instruction->get_property("myfunc_call");
                             $myfunc_call->set_block_id($this->current_block_id);
                             $myfunc_call->set_source_file($this->current_file);
-
+                            /*
+                            
+                            $myfunc = $this->context->get_functions()->get_function($myfunc_call->get_name());
+                            if(is_null($myfunc))
+                            {
+                                
+                            
+                            }
+*/
                             break;
                         }
 

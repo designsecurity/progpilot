@@ -77,6 +77,8 @@ class Transform implements Visitor {
 	
         if($this->context->outputs->get_resolve_includes())
             $this->context->outputs->write_includes_file();
+            
+        //var_dump($script);
 	}
 
 	public function enterBlock(Block $block, Block $prior = null) {
@@ -294,6 +296,31 @@ class Transform implements Visitor {
                     $this->context->outputs->current_includes_file[] = $temp;
                 }
             }
+        }
+        
+        if($op instanceof Op\Expr\Include_)
+        {
+			$myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
+			$this->context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+
+			$inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
+			$inst_funcall_main->add_property("funcname", "include");
+
+			$myfunction_call = new MyFunction("include");
+			$myfunction_call->setLine($this->context->get_current_line());
+			$myfunction_call->setColumn($this->context->get_current_column());
+			$myfunction_call->set_nb_params(1);
+
+			FuncCall::argument($this->context, $this->context->get_current_op()->expr, $inst_funcall_main, "include", 0);
+
+			$inst_funcall_main->add_property("myfunc_call", $myfunction_call);
+			$inst_funcall_main->add_property("expr", $myexpr);
+			$inst_funcall_main->add_property("arr", false);
+			$this->context->get_mycode()->add_code($inst_funcall_main);
+
+			$inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
+			$inst_end_expr->add_property("expr", $myexpr);
+			$this->context->get_mycode()->add_code($inst_end_expr);
 		}
 
 		/*
@@ -343,6 +370,30 @@ class Transform implements Visitor {
 			$inst = new MyInstruction(Opcodes::RETURN_FUNCTION);	
 			$inst->add_property("return_defs", $this->context->get_current_func()->get_return_defs());
 			$this->context->get_mycode()->add_code($inst);
+		}
+		else if($op instanceof Op\Expr\Eval_)
+		{
+			$myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
+			$this->context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+
+			$inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
+			$inst_funcall_main->add_property("funcname", "eval");
+
+			$myfunction_call = new MyFunction("eval");
+			$myfunction_call->setLine($op->getLine());
+			$myfunction_call->setColumn($op->getColumn());
+			$myfunction_call->set_nb_params(1);
+
+			FuncCall::argument($this->context, $op->expr, $inst_funcall_main, "eval", 0);
+
+			$inst_funcall_main->add_property("myfunc_call", $myfunction_call);
+			$inst_funcall_main->add_property("expr", $myexpr);
+			$inst_funcall_main->add_property("arr", false);
+			$this->context->get_mycode()->add_code($inst_funcall_main);
+
+			$inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
+			$inst_end_expr->add_property("expr", $myexpr);
+			$this->context->get_mycode()->add_code($inst_end_expr);
 		}
 		else if($op instanceof Op\Terminal\Echo_)
 		{
@@ -394,11 +445,15 @@ class Transform implements Visitor {
 		}
 		else if($op instanceof Op\Expr\FuncCall)
 		{
+		/*
 			if(!(isset($op->result->usages[0])) || (
 						// funccall()[0]
 						!(isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\ArrayDimFetch) &&
 						// test = funccall() // funcccall(funccall())
 						!(isset($op->result->usages[0]) && ($op->result->usages[0] instanceof Op\Terminal\Echo_ || $op->result->usages[0] instanceof Op\Expr\MethodCall || $op->result->usages[0] instanceof Op\Expr\FuncCall || $op->result->usages[0] instanceof Op\Expr\Assign || $op->result->usages[0] instanceof Op\Expr\Array_))))
+			{
+			*/
+			if(Common::is_funccall_withoutreturn($op))
 			{
 				// expr of type "assign" to have a defined return
 				$myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
@@ -413,11 +468,16 @@ class Transform implements Visitor {
 		}
 		else if($op instanceof Op\Expr\MethodCall)
 		{
+		/*
 			if(!(isset($op->result->usages[0])) || (
 						// funccall()[0]
 						!(isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\ArrayDimFetch) &&
 						// test = funccall()
 						!(isset($op->result->usages[0]) && ($op->result->usages[0] instanceof Op\Terminal\Echo_ || $op->result->usages[0] instanceof Op\Expr\MethodCall || $op->result->usages[0] instanceof Op\Expr\FuncCall || $op->result->usages[0] instanceof Op\Expr\Assign || $op->result->usages[0] instanceof Op\Expr\Array_))))
+			{
+			*/
+			
+			if(Common::is_funccall_withoutreturn($op))
 			{
 				$class_name = Common::get_name_definition($op->var);
 

@@ -273,7 +273,7 @@ class VisitorAnalysis {
                                         }
                                     }
                                 }
-
+                                
                                 if(is_null($myfunc))
                                 {
                                     TaintAnalysis::funccall_sanitizer($this->context, $myfunc_call, $arr_funccall, $instruction, $index);  

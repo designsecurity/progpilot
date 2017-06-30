@@ -17,6 +17,8 @@ class MySink {
 	private $attack;
 	private $instanceof_name;
 	private $is_instance;
+	private $parameters;
+	private $has_parameters;
 
 	public function __construct($name, $language, $attack) {
 
@@ -25,6 +27,39 @@ class MySink {
 		$this->attack = $attack;
 		$this->instanceof_name = null;
 		$this->is_instance = false;
+		$this->has_parameters = false;
+		$this->parameters = [];
+	}
+
+	public function add_parameter($parameter)
+	{
+		$this->parameters[] = $parameter;
+	}
+
+	public function get_parameters()
+	{
+		return $this->parameters;
+	}
+
+	public function is_parameter($i)
+	{
+        foreach($this->parameters as $parameter)
+        {
+            if($parameter == $i)
+                return true;
+        }
+            
+        return false;
+	}
+
+	public function has_parameters()
+	{
+		return $this->has_parameters;
+	}
+
+	public function set_has_parameters($has_parameters)
+	{
+        $this->has_parameters = $has_parameters;
 	}
 
 	public function get_name()

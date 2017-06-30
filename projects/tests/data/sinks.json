@@ -3,6 +3,11 @@
         {"name": "echo", "language": "php", "attack": "xss"},
         {"name": "print", "language": "php", "attack": "xss"},
         {"name": "printf", "language": "php", "attack": "xss"},
-        {"name": "write", "instanceof": "document", "language": "js", "attack": "xss"}
+        {"name": "write", "instanceof": "document", "language": "js", "attack": "xss"},
+        {"name": "include", "language": "php", "attack": "file_inclusion"},
+        {"name": "eval", "language": "php", "attack": "code_injection"},
+        {"name": "system", "language": "php", "attack": "command_injection"},
+        {"name": "ldap_search", "parameters": [{"id": 3}], "language": "php", "attack": "ldap_injection"},
+        {"name": "mysql_query", "language": "php", "attack": "sql_injection"}
 		]
 }

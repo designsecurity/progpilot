@@ -32,18 +32,15 @@ class framework_test
 	{
 		$i = 0;
 		
-		if(count($this->outputs["$testbasis"]) != count($basis_outputs))
-			return false;
-		
 		foreach($this->outputs["$testbasis"] as $output)
 		{
-			if(isset($basis_outputs[$i]) && $output != $basis_outputs[$i])
-				return false;
+			if(isset($basis_outputs[$i]) && $output == $basis_outputs[$i])
+				return true;
 			
 			$i ++;
 		}
 		
-		return true;
+		return false;
 	}
 	
 	public function add_testbasis($testbasis) {

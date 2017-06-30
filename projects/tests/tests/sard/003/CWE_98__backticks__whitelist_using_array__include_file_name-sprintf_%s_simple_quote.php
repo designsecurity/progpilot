@@ -51,9 +51,6 @@ if (in_array($tainted, $legal_table, true)) {
   $tainted = $legal_table[0];
 }
 
-
 $var = include(sprintf("'%s'.php", $tainted));
-
-
 
 ?>
