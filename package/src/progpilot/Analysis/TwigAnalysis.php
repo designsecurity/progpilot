@@ -49,6 +49,7 @@ class TwigAnalysis {
                     $arr_index = "{{".key($arr)."}}";
                     
                     $mydef = new MyDefinition(0, 0, $arr_index, false, false);
+                    $mydef->set_assign_id(rand());
                     
                     if($def->is_tainted())
                         $mydef->set_tainted(true);

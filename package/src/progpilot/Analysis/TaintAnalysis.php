@@ -257,7 +257,8 @@ class TaintAnalysis {
 									if($def->is_tainted())
 									{
 										$property->set_tainted(true);
-										$property->set_taintedbyexpr($expr);}
+										$property->set_taintedbyexpr($expr);
+                                    }
 									else
 									{
 										$property->set_tainted(false);

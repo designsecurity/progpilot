@@ -35,6 +35,7 @@ class MyDefinition extends MyOp {
 	private $class_name;
 	private $is_sanitized;
 	private $type_sanitized;
+	private $assign_id;
 
 	public function __construct($var_line, $var_column, $var_name, $is_ref, $is_arr) {
 
@@ -64,11 +65,12 @@ class MyDefinition extends MyOp {
 		$this->type_sanitized = [];
 		
 		$this->last_known_value = "";
+		$this->assign_id = -1;
 	}
 
 	public function print_stdout()
 	{
-		echo "def name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_ref()." :: arr = ".$this->is_arr()." :: copyarray = ".$this->is_copyarray()." :: is_instance = ".$this->is_instance()." :: is_property = ".$this->is_property()." :: visibility = ".$this->get_visibility()." :: blockid = ".$this->get_block_id()."\n";
+		echo "def name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: assign_id = ".$this->get_assign_id()." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_ref()." :: arr = ".$this->is_arr()." :: copyarray = ".$this->is_copyarray()." :: is_instance = ".$this->is_instance()." :: is_property = ".$this->is_property()." :: visibility = ".$this->get_visibility()." :: blockid = ".$this->get_block_id()."\n";
 		if($this->is_arr())
 		{
 			echo "arr :\n";
@@ -267,6 +269,16 @@ class MyDefinition extends MyOp {
 	public function get_copyarrays()
 	{
 		return $this->thearrays;
+	}
+
+	public function get_assign_id()
+	{
+		return $this->assign_id;
+	}
+
+	public function set_assign_id($assign_id)
+	{
+        $this->assign_id = $assign_id;
 	}
 
 	public function is_copyarray()

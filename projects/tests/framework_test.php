@@ -30,17 +30,24 @@ class framework_test
 	
 	public function check_outputs($testbasis, $basis_outputs)
 	{
-		$i = 0;
-		
-		foreach($this->outputs["$testbasis"] as $output)
+		foreach($basis_outputs as $basis_output)
 		{
-			if(isset($basis_outputs[$i]) && $output == $basis_outputs[$i])
-				return true;
-			
-			$i ++;
-		}
+            $return_check = false;
+            
+            foreach($this->outputs["$testbasis"] as $output)
+            {
+                if($output == $basis_output)
+                {
+                    $return_check = true;
+                    break;
+                }
+            }
+            
+            if(!$return_check)
+                return false;
+        }
 		
-		return false;
+		return true;
 	}
 	
 	public function add_testbasis($testbasis) {

@@ -122,7 +122,7 @@ class Definitions {
 		$defsfound = [];
 		foreach($data as $def)
 		{
-			if($def->get_name() == $defsearch->get_name())
+			if($def->get_name() == $defsearch->get_name() && $def->get_assign_id() != $defsearch->get_assign_id())
 			{
 				if(($def->is_instance() && !$def->is_property()) && ($defsearch->is_instance() && !$defsearch->is_property()))
 				{		
@@ -191,7 +191,6 @@ class Definitions {
 				$bisline = $deflast[1];
 				$biscolumn = $deflast[2];
 
-				// on prend la plus proche de l'op
 				if(Definitions::is_nearest($line, $column, $bisline, $biscolumn))
 				{
 					if(is_null($nearestdef) || Definitions::is_nearest($bisline, $biscolumn, $nearestline, $nearestcolumn))

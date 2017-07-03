@@ -28,6 +28,9 @@ class ResolveDefs {
 
 		if($tempdefa->is_property())
 			$tempdefa->set_instance(true);
+				
+       // echo "ResolveDefs::temporary_simple\n";
+       // $tempdefa->print_stdout();
 
 		$defs = Definitions::search_nearest(
 				$tempdefa->getLine(), 
@@ -41,6 +44,8 @@ class ResolveDefs {
 		{
 			foreach($defs as $defa)
 			{
+                //echo "ResolveDefs::temporary_simple foreach defa\n";
+                //$defa->print_stdout();
 				if($defa->is_ref())
 				{
 					$refdef = new MyDefinition($tempdefa->getLine(), $tempdefa->getColumn(), $defa->get_ref_name(), false, false);

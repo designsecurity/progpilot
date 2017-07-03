@@ -44,6 +44,7 @@ class Transform implements Visitor {
 	public function __construct() 
 	{
 		$this->s_blocks = new \SplObjectStorage;
+		$this->s_blocks_left = new \SplObjectStorage;
 		$this->array_includes = [];
 		$this->array_requires = [];
 	}
@@ -63,13 +64,13 @@ class Transform implements Visitor {
 		// creating edges for myblocks structure as block structure
 		foreach($this->s_blocks as $block)
 		{
-			$myblock = $this->s_blocks[$block];
+            $myblock = $this->s_blocks[$block];
 			foreach($block->parents as $block_parent)
 			{
 				$myblock_parent = $this->s_blocks[$block_parent];
 				$myblock->addParent($myblock_parent);
-			}
-		}
+            }
+        }
 
 		// the last block doesn't have address computed because leaveblock() didn't do anything
 		if(!is_null($this->context->get_current_block()))
@@ -77,11 +78,13 @@ class Transform implements Visitor {
 	
         if($this->context->outputs->get_resolve_includes())
             $this->context->outputs->write_includes_file();
-            
-        //var_dump($script);
 	}
 
 	public function enterBlock(Block $block, Block $prior = null) {
+	
+        // if previous block has not been left, it is the case when block are inside another block (subblocks)
+        if(!$this->s_blocks_left->contains($block) && !is_null($this->context->get_current_block()))
+            $block->addParent($this->context->get_current_block());
 
 		// if we have an include, don't create a block for not natural subblock
 		if(!($this->context->get_current_op() instanceof Op\Expr\Include_))
@@ -95,7 +98,10 @@ class Transform implements Visitor {
 
 				$inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
 				$inst_block->add_property("myblock", $myblock);
-				$this->context->get_mycode()->add_code($inst_block);
+				$this->context->get_mycode()->add_code($inst_block); 
+				
+				echo "myblock start_address = '".$myblock->get_start_address_block()."' et start_address = '".$myblock->get_end_address_block()."'\n";
+		
 
 				unset($myblock);
 			}
@@ -130,6 +136,7 @@ class Transform implements Visitor {
 	}
 
 	public function leaveBlock(Block $block, Block $prior = null) {
+        $this->s_blocks_left->attach($block);
 
 	}
 
@@ -166,7 +173,7 @@ class Transform implements Visitor {
 			$param_name = $param->name->value;
 			$byref = $param->byRef;
 
-			$mydef = new MyDefinition(0, 0, $param_name, $byref, false);
+			$mydef = new MyDefinition($param->getLine(), $param->getColumn(), $param_name, $byref, false);
 			$myfunction->add_param($mydef);
 
 			$inst_def = new MyInstruction(Opcodes::DEFINITION);
@@ -311,7 +318,7 @@ class Transform implements Visitor {
 			$myfunction_call->setColumn($this->context->get_current_column());
 			$myfunction_call->set_nb_params(1);
 
-			FuncCall::argument($this->context, $this->context->get_current_op()->expr, $inst_funcall_main, "include", 0);
+			FuncCall::argument($this->context, rand(), $this->context->get_current_op()->expr, $inst_funcall_main, "include", 0);
 
 			$inst_funcall_main->add_property("myfunc_call", $myfunction_call);
 			$inst_funcall_main->add_property("expr", $myexpr);
@@ -384,7 +391,7 @@ class Transform implements Visitor {
 			$myfunction_call->setColumn($op->getColumn());
 			$myfunction_call->set_nb_params(1);
 
-			FuncCall::argument($this->context, $op->expr, $inst_funcall_main, "eval", 0);
+			FuncCall::argument($this->context, rand(), $op->expr, $inst_funcall_main, "eval", 0);
 
 			$inst_funcall_main->add_property("myfunc_call", $myfunction_call);
 			$inst_funcall_main->add_property("expr", $myexpr);
@@ -408,7 +415,7 @@ class Transform implements Visitor {
 			$myfunction_call->setColumn($op->getColumn());
 			$myfunction_call->set_nb_params(1);
 
-			FuncCall::argument($this->context, $op->expr, $inst_funcall_main, "echo", 0);
+			FuncCall::argument($this->context, rand(), $op->expr, $inst_funcall_main, "echo", 0);
 
 			$inst_funcall_main->add_property("myfunc_call", $myfunction_call);
 			$inst_funcall_main->add_property("expr", $myexpr);
@@ -432,7 +439,7 @@ class Transform implements Visitor {
 			$myfunction_call->setColumn($op->getColumn());
 			$myfunction_call->set_nb_params(1);
 
-			FuncCall::argument($this->context, $op->expr, $inst_funcall_main, "print", 0);
+			FuncCall::argument($this->context, rand(), $op->expr, $inst_funcall_main, "print", 0);
 
 			$inst_funcall_main->add_property("myfunc_call", $myfunction_call);
 			$inst_funcall_main->add_property("expr", $myexpr);
@@ -445,21 +452,13 @@ class Transform implements Visitor {
 		}
 		else if($op instanceof Op\Expr\FuncCall)
 		{
-		/*
-			if(!(isset($op->result->usages[0])) || (
-						// funccall()[0]
-						!(isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\ArrayDimFetch) &&
-						// test = funccall() // funcccall(funccall())
-						!(isset($op->result->usages[0]) && ($op->result->usages[0] instanceof Op\Terminal\Echo_ || $op->result->usages[0] instanceof Op\Expr\MethodCall || $op->result->usages[0] instanceof Op\Expr\FuncCall || $op->result->usages[0] instanceof Op\Expr\Assign || $op->result->usages[0] instanceof Op\Expr\Array_))))
-			{
-			*/
 			if(Common::is_funccall_withoutreturn($op))
 			{
 				// expr of type "assign" to have a defined return
 				$myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
 				$this->context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
-				FuncCall::instruction($this->context, $myexpr, false);
+				FuncCall::instruction($this->context, $myexpr, rand(), false);
 
 				$inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
 				$inst_end_expr->add_property("expr", $myexpr);
@@ -468,15 +467,6 @@ class Transform implements Visitor {
 		}
 		else if($op instanceof Op\Expr\MethodCall)
 		{
-		/*
-			if(!(isset($op->result->usages[0])) || (
-						// funccall()[0]
-						!(isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\ArrayDimFetch) &&
-						// test = funccall()
-						!(isset($op->result->usages[0]) && ($op->result->usages[0] instanceof Op\Terminal\Echo_ || $op->result->usages[0] instanceof Op\Expr\MethodCall || $op->result->usages[0] instanceof Op\Expr\FuncCall || $op->result->usages[0] instanceof Op\Expr\Assign || $op->result->usages[0] instanceof Op\Expr\Array_))))
-			{
-			*/
-			
 			if(Common::is_funccall_withoutreturn($op))
 			{
 				$class_name = Common::get_name_definition($op->var);
@@ -485,7 +475,7 @@ class Transform implements Visitor {
 
 				$this->context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
-				FuncCall::instruction($this->context, $myexpr, false, true);
+				FuncCall::instruction($this->context, $myexpr, rand(), false, true);
 
 				$inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
 				$inst_end_expr->add_property("expr", $myexpr);

@@ -49,8 +49,12 @@ class Sanitize{
     return mysql_real_escape_string($input);
   }
 }
+
 $temp = new Sanitize();
 $tainted = $temp->sanitize($tainted);
+//$tainted1 = $temp->sanitize($tainted);
+
+mysql_query($tainted);
 
 $query = "SELECT * FROM '". $tainted . "'";
 

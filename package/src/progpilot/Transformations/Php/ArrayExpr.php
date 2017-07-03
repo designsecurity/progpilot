@@ -25,6 +25,7 @@ class ArrayExpr {
 
 	public static function instruction($op, $context, $arr, $def_name, $is_returndef)
 	{
+        $assign_id = rand();
 		$building_arr = false;
 
 		if(isset($op->ops[0]->values))
@@ -52,7 +53,8 @@ class ArrayExpr {
 				else
 				{
 					$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name, false, true);
-
+                    $mydef->set_assign_id($assign_id);
+                    
 					if($is_returndef)
 						$context->get_current_func()->add_return_def($mydef);
 
@@ -63,7 +65,7 @@ class ArrayExpr {
 					$myexpr->set_assign(true);
 					$myexpr->set_assign_def($mydef);
 
-					Expr::instruction($value, $context, $myexpr, null);
+					Expr::instruction($value, $context, $myexpr, null, $assign_id);
 
 					$inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
 					$inst_end_expr->add_property("expr", $myexpr);

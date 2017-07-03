@@ -26,6 +26,8 @@ class Assign {
 
 	public static function instruction($context, $is_returndef = false)
 	{
+        $assign_id = rand();
+        
 		$isref = false;
 		if($context->get_current_op() instanceof Op\Expr\AssignRef)
 			$isref = true;
@@ -40,6 +42,7 @@ class Assign {
 		if($type == "array" || $type == "simple" || $type == "property" || $type == "instance")
 		{ 
 			$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name, $isref, false);
+			$mydef->set_assign_id($assign_id);
 
 			if($is_returndef)
 				$context->get_current_func()->add_return_def($mydef);
@@ -53,7 +56,7 @@ class Assign {
 
 			$context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
-			Expr::instruction($context->get_current_op()->expr, $context, $myexpr);
+			Expr::instruction($context->get_current_op()->expr, $context, $myexpr, $assign_id);
 
 			$inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
 			$inst_end_expr->add_property("expr", $myexpr);

@@ -24,12 +24,13 @@ use progpilot\Transformations\Php\Expr;
 
 class FuncCall {
 
-	public static function argument($context, $arg, $inst_funcall_main, $funccall_name, $num_param)
+	public static function argument($context, $assign_id, $arg, $inst_funcall_main, $funccall_name, $num_param)
 	{
 		// each argument will be a definition defined by an expression
 		$def_name = $funccall_name."_param".$num_param."_".mt_rand();
 		$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name, false, false);
-
+        $mydef->set_assign_id($assign_id);
+        
 		$context->get_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
 		$context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
@@ -40,7 +41,7 @@ class FuncCall {
 		$inst_funcall_main->add_property("argdef$num_param", $mydef);
 		$inst_funcall_main->add_property("argexpr$num_param", $myexprparam);
 
-		Expr::instruction($arg, $context, $myexprparam);
+		Expr::instruction($arg, $context, $myexprparam, $assign_id);
 
 		$inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
 		$inst_end_expr->add_property("expr", $myexprparam);
@@ -60,7 +61,7 @@ class FuncCall {
     arg2 : expr for the return
     arg3 : arr for the return : function_call()[0] (arr = [0])
 	 */
-	public static function instruction($context, $myexpr, $funccall_arr, $is_method = false)
+	public static function instruction($context, $myexpr, $assign_id, $funccall_arr, $is_method = false)
 	{
 		$nbparams = 0;	
 
@@ -97,7 +98,7 @@ class FuncCall {
 
 		foreach($context->get_current_op()->args as $arg)
 		{
-			FuncCall::argument($context, $arg, $inst_funcall_main, $funccall_name, $nbparams);
+			FuncCall::argument($context, $assign_id, $arg, $inst_funcall_main, $funccall_name, $nbparams);
 			$nbparams ++;
 		}
 

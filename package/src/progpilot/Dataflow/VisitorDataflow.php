@@ -93,7 +93,7 @@ class VisitorDataflow {
                             $myblock->set_id($this->getBlockId($myblock));
 
                             $blockid = $myblock->get_id();
-
+                            
                             $this->current_block_id = $blockid;
 
                             if($blockid != 0)
@@ -106,6 +106,8 @@ class VisitorDataflow {
                                 $mydef->set_block_id($blockid);
                             }
 
+                            echo "[$index] ENTER_BLOCK $blockid\n";
+                            
                             break;
                         }
 
@@ -114,6 +116,8 @@ class VisitorDataflow {
                             $myblock = $instruction->get_property("myblock");
 
                             $blockid = $myblock->get_id();
+                            
+                            echo "[$index] LEAVE_BLOCK $blockid\n";
 
                             $this->defs->computekill($blockid);
 
@@ -126,6 +130,8 @@ class VisitorDataflow {
                             $this->defs->reachingDefs($this->blocks);
 
                             $myfunc = $instruction->get_property("myfunc");
+                            
+                            //$this->defs->printall();
 
                             break;
                         }
@@ -150,15 +156,7 @@ class VisitorDataflow {
                             $myfunc_call = $instruction->get_property("myfunc_call");
                             $myfunc_call->set_block_id($this->current_block_id);
                             $myfunc_call->set_source_file($this->current_file);
-                            /*
-                            
-                            $myfunc = $this->context->get_functions()->get_function($myfunc_call->get_name());
-                            if(is_null($myfunc))
-                            {
-                                
-                            
-                            }
-*/
+
                             break;
                         }
 

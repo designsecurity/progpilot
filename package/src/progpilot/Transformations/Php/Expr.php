@@ -24,7 +24,7 @@ use progpilot\Transformations\Php\Transform;
 
 class Expr {
 
-	public static function instruction($op, $context, $myexpr)
+	public static function instruction($op, $context, $myexpr, $assign_id)
 	{
 		$arr_funccall = false;
 		$type = Common::get_type_definition($op);
@@ -33,7 +33,7 @@ class Expr {
 		// end of expression
 		if(!is_null($type) && $type != "array_funccall")
 		{
-			if(is_null($name))
+			if(is_null($name) || empty($name))
 				$name = mt_rand();
 
 			$arr = BuildArrays::build_array_from_ops($op, false);
@@ -45,6 +45,7 @@ class Expr {
 			$mytemp = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name, false, false);
 			$mytemp->set_tainted($tainted);
 			$mytemp->last_known_value($name);
+			$mytemp->set_assign_id($assign_id);
 
 			if($arr != false)
 			{
@@ -95,10 +96,10 @@ class Expr {
 				if($ops instanceof Op\Expr\BinaryOp\Concat)
 				{
 					$context->get_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_LEFT));
-					Expr::instruction($ops->left, $context, $myexpr);
+					Expr::instruction($ops->left, $context, $myexpr, $assign_id);
 
 					$context->get_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_RIGHT));
-					Expr::instruction($ops->right, $context, $myexpr);
+					Expr::instruction($ops->right, $context, $myexpr, $assign_id);
 				}
 				else if($ops instanceof Op\Expr\ConcatList)
 				{
@@ -106,21 +107,21 @@ class Expr {
 
 					foreach($ops->list as $opsbis)
 					{
-						Expr::instruction($opsbis, $context, $myexpr);
+						Expr::instruction($opsbis, $context, $myexpr, $assign_id);
 					}
 				}
 				else if($ops instanceof Op\Expr\FuncCall)
 				{
 					$old_op = $context->get_current_op();
 					$context->set_current_op($ops);
-					FuncCall::instruction($context, $myexpr, $arr_funccall);
+					FuncCall::instruction($context, $myexpr, $assign_id, $arr_funccall);
 					$context->set_current_op($old_op);
 				}
 				else if($ops instanceof Op\Expr\MethodCall)
 				{
 					$old_op = $context->get_current_op();
 					$context->set_current_op($ops);
-					FuncCall::instruction($context, $myexpr, $arr_funccall, true);
+					FuncCall::instruction($context, $myexpr, $assign_id, $arr_funccall, true);
 					$context->set_current_op($old_op);
 				}
 
@@ -129,12 +130,12 @@ class Expr {
 					// funccall for the constructor
 					$old_op = $context->get_current_op();
 					$context->set_current_op($ops);
-					FuncCall::instruction($context, $myexpr, $arr_funccall);
+					FuncCall::instruction($context, $myexpr, $assign_id, $arr_funccall);
 					$context->set_current_op($old_op);
 				}
 				else
 				{
-					Expr::instruction($ops, $context, $myexpr);
+					Expr::instruction($ops, $context, $myexpr, $assign_id);
 				}
 			}
 		}

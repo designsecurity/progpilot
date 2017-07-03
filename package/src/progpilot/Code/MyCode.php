@@ -61,6 +61,12 @@ class MyCode {
 		$this->code[] = $code;
 	}
 	
+	public function get_last_code()
+	{
+        $last_index = count($this->code);
+        return $this->code[$last_index - 1];
+	}
+	
 	public static function read_code($context, $file, $defs)
 	{
         $first_block = true;

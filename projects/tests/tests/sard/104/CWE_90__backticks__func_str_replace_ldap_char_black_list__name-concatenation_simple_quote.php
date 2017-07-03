@@ -44,11 +44,11 @@ MODIFICATIONS.*/
 
 $tainted = `cat /tmp/tainted.txt`;
 
-$replace_tab = array('\\'  = > '\5c',
-  '*'  = > '\2a',
-  '('  = > '\28',
-  ')'  = > '\29',
-  "\x00"  = > '\00');
+$replace_tab = array('\\'  => '\5c',
+  '*'  => '\2a',
+  '('  => '\28',
+  ')'  => '\29',
+  "\x00"  => '\00');
 $tainted = str_replace(array_keys($replace_tab),array_values($replace_tab),$tainted);
 
 $query = "name='". $tainted . "'";

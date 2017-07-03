@@ -151,6 +151,13 @@ class VisitorAnalysis {
                         {
                             $tempdefa = $instruction->get_property("temporary");
                             
+                            if($tempdefa->getLine() == 57 && $tempdefa->get_name() == "tainted")
+                            {
+                                echo "Opcodes::TEMPORARY\n";
+                                $tempdefa->print_stdout();
+                                
+                            }
+                            
                             $defs = ResolveDefs::temporary_simple($this->defs, $tempdefa, $this->inside_instance);
                                            
                             foreach($defs as $def)
@@ -158,6 +165,13 @@ class VisitorAnalysis {
                                 if(($def->is_property() && $def->get_visibility()) 
                                         || !$def->is_property()) 
                                 {
+                                
+                                    if($tempdefa->getLine() == 57 && $tempdefa->get_name() == "tainted")
+                                    {
+                                        echo "foreach\n";
+                                        $def->print_stdout();
+                                    }
+                                    
                                     $exprs = $def->get_exprs();
                                     foreach($exprs as $expr)
                                     {
@@ -279,7 +293,6 @@ class VisitorAnalysis {
                                     TaintAnalysis::funccall_sanitizer($this->context, $myfunc_call, $arr_funccall, $instruction, $index);  
                                     TaintAnalysis::funccall_source($this->context, $this->defs, $myfunc_call, $arr_funccall, $instruction);     
                                 }
-
                             }
 
                             break;
