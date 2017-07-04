@@ -54,8 +54,6 @@ $temp = new Sanitize();
 $tainted = $temp->sanitize($tainted);
 //$tainted1 = $temp->sanitize($tainted);
 
-mysql_query($tainted);
-
 $query = "SELECT * FROM '". $tainted . "'";
 
 $conn = mysql_connect('localhost', 'mysql_user', 'mysql_password'); // Connection to the database (address, user, password)

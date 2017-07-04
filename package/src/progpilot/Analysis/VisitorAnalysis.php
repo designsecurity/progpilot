@@ -150,14 +150,6 @@ class VisitorAnalysis {
                     case Opcodes::TEMPORARY:
                         {
                             $tempdefa = $instruction->get_property("temporary");
-                            
-                            if($tempdefa->getLine() == 57 && $tempdefa->get_name() == "tainted")
-                            {
-                                echo "Opcodes::TEMPORARY\n";
-                                $tempdefa->print_stdout();
-                                
-                            }
-                            
                             $defs = ResolveDefs::temporary_simple($this->defs, $tempdefa, $this->inside_instance);
                                            
                             foreach($defs as $def)
@@ -165,13 +157,6 @@ class VisitorAnalysis {
                                 if(($def->is_property() && $def->get_visibility()) 
                                         || !$def->is_property()) 
                                 {
-                                
-                                    if($tempdefa->getLine() == 57 && $tempdefa->get_name() == "tainted")
-                                    {
-                                        echo "foreach\n";
-                                        $def->print_stdout();
-                                    }
-                                    
                                     $exprs = $def->get_exprs();
                                     foreach($exprs as $expr)
                                     {
@@ -185,7 +170,47 @@ class VisitorAnalysis {
 
                                             $safe = AssertionAnalysis::temporary_simple($this->defs, $this->current_myblock, $def, $tempdefa, $this->inside_instance);
 
-                                            TaintAnalysis::set_tainted($this->defs, $def, $defassign, $expr, $safe, $this->inside_instance); 
+                                            $resolve_defs_assign = TaintAnalysis::set_tainted($this->defs, $defassign, $safe, $this->inside_instance); 
+                                        
+                                        
+                                            //if param is tainted
+                                            if(count($resolve_defs_assign) > 0)
+                                            {
+                                                foreach($resolve_defs_assign as $resolve_def)
+                                                {
+                                                    if($def->is_tainted())
+                                                    {
+                                                        $resolve_def->set_tainted(true);
+                                                        $resolve_def->set_taintedbyexpr($expr);
+                                                    }
+                                                    else
+                                                    {
+                                                        $resolve_def->set_tainted(false);
+                                                        $resolve_def->set_taintedbyexpr(null);
+                                                    }
+                                                                
+                                                    if($def->is_sanitized())
+                                                    {
+                                                        $resolve_def->set_type_sanitized($def->get_type_sanitized());
+                                                        $resolve_def->set_sanitized(true);
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if($def->is_tainted())
+                                                {
+                                                    $defassign->set_tainted(true);
+                                                    $defassign->set_taintedbyexpr($expr);
+                                                }
+                                                                
+                                                if($def->is_sanitized())
+                                                {
+                                                    $defassign->set_type_sanitized($def->get_type_sanitized());
+                                                    $defassign->set_sanitized(true);
+                                                }
+                                            }
+                                        
                                         }
                                     }
                                 }
@@ -290,7 +315,7 @@ class VisitorAnalysis {
                                 
                                 if(is_null($myfunc))
                                 {
-                                    TaintAnalysis::funccall_sanitizer($this->context, $myfunc_call, $arr_funccall, $instruction, $index);  
+                                    TaintAnalysis::funccall_sanitizer($this->context, $this->defs, $myfunc_call, $arr_funccall, $instruction, $index, $this->inside_instance);  
                                     TaintAnalysis::funccall_source($this->context, $this->defs, $myfunc_call, $arr_funccall, $instruction);     
                                 }
                             }

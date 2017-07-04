@@ -416,6 +416,9 @@ class MyCode {
                         {
                             echo "leave_block\n";
 
+                            $myblock = $instruction->get_property("myblock");
+                            echo "id = ".$myblock->get_id()."\n";
+
                             break;
                         }
 

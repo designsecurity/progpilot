@@ -38,15 +38,16 @@ class Assign {
 		// name of function return
 		if($is_returndef)
 			$name = $context->get_current_func()->get_name()."_return";
-
+/*
 		if($type == "array" || $type == "simple" || $type == "property" || $type == "instance")
 		{ 
+		*/
 			$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name, $isref, false);
 			$mydef->set_assign_id($assign_id);
 
 			if($is_returndef)
 				$context->get_current_func()->add_return_def($mydef);
-
+            
 			$context->get_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
 
 			// it's an expression which will define a definition
@@ -67,7 +68,7 @@ class Assign {
 			$inst_def = new MyInstruction(Opcodes::DEFINITION);
 			$inst_def->add_property("def", $mydef);
 			$context->get_mycode()->add_code($inst_def);
-		}
+		//}
 
 		// $array[09][098] = expr;
 		if($type == "array")

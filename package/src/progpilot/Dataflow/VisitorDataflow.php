@@ -50,6 +50,8 @@ class VisitorDataflow {
 		$mycode = $context->get_mycode();
 		$index = $mycode->get_start();
 		$code = $mycode->get_codes();
+		
+		$blocks_stack_id = [];
 
 		do
 		{
@@ -94,6 +96,7 @@ class VisitorDataflow {
 
                             $blockid = $myblock->get_id();
                             
+                            array_push($blocks_stack_id, $blockid);
                             $this->current_block_id = $blockid;
 
                             if($blockid != 0)
@@ -105,8 +108,6 @@ class VisitorDataflow {
                                 $mydef = $assertion->get_def();		
                                 $mydef->set_block_id($blockid);
                             }
-
-                            echo "[$index] ENTER_BLOCK $blockid\n";
                             
                             break;
                         }
@@ -117,7 +118,10 @@ class VisitorDataflow {
 
                             $blockid = $myblock->get_id();
                             
-                            echo "[$index] LEAVE_BLOCK $blockid\n";
+                            $pop = array_pop($blocks_stack_id);
+                            
+                            if(count($blocks_stack_id) > 0)
+                                $this->current_block_id = $blocks_stack_id[count($blocks_stack_id) - 1];
 
                             $this->defs->computekill($blockid);
 
@@ -130,8 +134,6 @@ class VisitorDataflow {
                             $this->defs->reachingDefs($this->blocks);
 
                             $myfunc = $instruction->get_property("myfunc");
-                            
-                            //$this->defs->printall();
 
                             break;
                         }
@@ -206,5 +208,7 @@ class VisitorDataflow {
             }
 		}
 		while(isset($code[$index]) && $index <= $mycode->get_end());
+		
+		//$mycode->print_stdout();
 	}
 }

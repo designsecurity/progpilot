@@ -120,6 +120,16 @@ class Definitions {
 			return $truedefsfound;
 
 		$defsfound = [];
+		
+        if(!is_null($inside_class) && $defsearch->is_instance() && $defsearch->is_property() && $defsearch->get_name() == "this")
+        {
+            $myclass = $inside_class->get_myclass();
+            $property = $myclass->get_property($defsearch->get_property_name());
+                
+            if(!is_null($property))
+                $defsfound[$defsearch->get_block_id()][] = [$property, $property->getLine(), $property->getColumn()];
+        }
+            
 		foreach($data as $def)
 		{
 			if($def->get_name() == $defsearch->get_name() && $def->get_assign_id() != $defsearch->get_assign_id())

@@ -40,6 +40,7 @@ class Transform implements Visitor {
 	private $s_includes;
 	private $s_requires;
 	private $context;
+	private $inside_include;
 
 	public function __construct() 
 	{
@@ -65,7 +66,7 @@ class Transform implements Visitor {
 		foreach($this->s_blocks as $block)
 		{
             $myblock = $this->s_blocks[$block];
-			foreach($block->parents as $block_parent)
+            foreach($block->parents as $block_parent)
 			{
 				$myblock_parent = $this->s_blocks[$block_parent];
 				$myblock->addParent($myblock_parent);
@@ -78,10 +79,13 @@ class Transform implements Visitor {
 	
         if($this->context->outputs->get_resolve_includes())
             $this->context->outputs->write_includes_file();
+            
+        //var_dump($script);
 	}
 
 	public function enterBlock(Block $block, Block $prior = null) {
 	
+	/*
         // if previous block has not been left, it is the case when block are inside another block (subblocks)
         if(!$this->s_blocks_left->contains($block) && !is_null($this->context->get_current_block()))
             $block->addParent($this->context->get_current_block());
@@ -94,14 +98,11 @@ class Transform implements Visitor {
 			{
 				$address_end_block = count($this->context->get_mycode()->get_codes());
 				$myblock = $this->s_blocks[$this->context->get_current_block()];
-				$myblock->set_end_address_block($address_end_block);
+				//$myblock->set_end_address_block($address_end_block);
 
 				$inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
 				$inst_block->add_property("myblock", $myblock);
 				$this->context->get_mycode()->add_code($inst_block); 
-				
-				echo "myblock start_address = '".$myblock->get_start_address_block()."' et start_address = '".$myblock->get_end_address_block()."'\n";
-		
 
 				unset($myblock);
 			}
@@ -119,7 +120,34 @@ class Transform implements Visitor {
 
 			// block is for himself a parent block (handle dataflow for first block)
 			$block->addParent($block);
+			
+			$myblock->set_id(rand());
+			
+			echo "ENTER_BLOCK myblock id = '".$myblock->get_id()."' start_address = '".$myblock->get_start_address_block()."'\n";
 		}
+		*/
+		// new = current block
+		
+        $this->inside_include = false;
+		if(!($this->context->get_current_op() instanceof Op\Expr\Include_))
+		{
+			$myblock = new MyBlock;
+			$myblock->set_start_address_block(count($this->context->get_mycode()->get_codes()));
+			$this->context->set_current_block($block);
+
+			$this->s_blocks[$block] = $myblock;
+
+			$inst_block = new MyInstruction(Opcodes::ENTER_BLOCK);
+			$inst_block->add_property("myblock", $myblock);
+			$this->context->get_mycode()->add_code($inst_block);
+
+			// block is for himself a parent block (handle dataflow for first block)
+			$block->addParent($block);
+			
+			$myblock->set_id(rand());
+        }
+        else
+            $this->inside_include = true;
 	}
 
 	public function skipBlock(Block $block, Block $prior = null) {
@@ -136,8 +164,19 @@ class Transform implements Visitor {
 	}
 
 	public function leaveBlock(Block $block, Block $prior = null) {
-        $this->s_blocks_left->attach($block);
-
+        $this->s_blocks_left->attach($block);	
+        
+        if(!$this->inside_include)
+        {
+            $myblock = $this->s_blocks[$block];
+            $address_end_block = count($this->context->get_mycode()->get_codes());
+            $myblock->set_end_address_block($address_end_block);
+            //echo "LEAVE_BLOCK myblock id = '".$myblock->get_id()."' end_address = '".$myblock->get_end_address_block()."'\n";
+            
+            $inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
+            $inst_block->add_property("myblock", $myblock);
+            $this->context->get_mycode()->add_code($inst_block); 
+        }
 	}
 
 	public function enterFunc(Func $func) {

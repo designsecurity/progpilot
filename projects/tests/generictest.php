@@ -287,10 +287,12 @@
 	$framework->add_output("./tests/generic/condition3.php", "xss");
 	*/
 	
+	
 	$framework->add_testbasis("./tests/generic/condition4.php");
 	$framework->add_output("./tests/generic/condition4.php", array("blabla"));
 	$framework->add_output("./tests/generic/condition4.php", array("3"));
 	$framework->add_output("./tests/generic/condition4.php", "xss");
+	
 
 
 ?>

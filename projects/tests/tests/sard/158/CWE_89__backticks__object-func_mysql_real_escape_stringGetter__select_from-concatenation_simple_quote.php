@@ -47,7 +47,7 @@ $tainted = `cat /tmp/tainted.txt`;
 class Sanitize{
   private $data;
   public function __construct($input){
-    $this->data = $input ;
+    $this->data = $input;
   }
   public function getData(){
     return $this->data;
