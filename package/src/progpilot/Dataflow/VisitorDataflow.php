@@ -13,6 +13,7 @@ namespace progpilot\Dataflow;
 use progpilot\Objects\MyInstance;
 use progpilot\Objects\MyCode;
 use progpilot\Objects\ArrayStatic;
+use progpilot\Objects\MyDefinition;
 
 use progpilot\Dataflow\Definitions;
 use progpilot\Code\Opcodes;
@@ -178,12 +179,14 @@ class VisitorDataflow {
                             $mydef->set_block_id($this->current_block_id);	
                             $mydef->set_source_file($this->current_file);
 
+                            /*
                             if(!$mydef->is_property())
                             {
+                            */
                                 $this->defs->adddef($mydef->get_name(), $mydef);
                                 $this->defs->addgen($mydef->get_block_id(), $mydef);
-                            }
-
+                            //}
+                            
                             if($mydef->is_instance())
                             {
                                 $myclass = $context->get_classes()->get_myclass($mydef->get_class_name());

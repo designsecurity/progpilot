@@ -79,8 +79,6 @@ class Transform implements Visitor {
 	
         if($this->context->outputs->get_resolve_includes())
             $this->context->outputs->write_includes_file();
-            
-        //var_dump($script);
 	}
 
 	public function enterBlock(Block $block, Block $prior = null) {

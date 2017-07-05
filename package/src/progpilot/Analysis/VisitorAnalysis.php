@@ -147,13 +147,24 @@ class VisitorAnalysis {
                             break;
                         }
 
+                    case Opcodes::DEFINITION:
+                        {
+                            $mydef = $instruction->get_property("def");
+                            
+                            
+                            break;
+                        }
+                            
+
                     case Opcodes::TEMPORARY:
                         {
                             $tempdefa = $instruction->get_property("temporary");
+                            
+                            ResolveDefs::visibility($this->defs, $tempdefa, $this->inside_instance);
                             $defs = ResolveDefs::temporary_simple($this->defs, $tempdefa, $this->inside_instance);
-                                           
+                            
                             foreach($defs as $def)
-                            {		
+                            {	
                                 if(($def->is_property() && $def->get_visibility()) 
                                         || !$def->is_property()) 
                                 {
@@ -171,7 +182,6 @@ class VisitorAnalysis {
                                             $safe = AssertionAnalysis::temporary_simple($this->defs, $this->current_myblock, $def, $tempdefa, $this->inside_instance);
 
                                             $resolve_defs_assign = TaintAnalysis::set_tainted($this->defs, $defassign, $safe, $this->inside_instance); 
-                                        
                                         
                                             //if param is tainted
                                             if(count($resolve_defs_assign) > 0)
@@ -226,11 +236,10 @@ class VisitorAnalysis {
                             $myfunc_call = $instruction->get_property("myfunc_call");
 
                             SecurityAnalysis::funccall($this->context, $myfunc_call, $instruction);
-
+                            
                             $list_myfunc = [];
                             if($myfunc_call->is_instance())
                             {
-                                //$instances = ClassAnalysis::select_instance($this->defs->getin($myfunc_call->get_block_id()), $myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance(), $myfunc_call->get_block_id(), $this->inside_instance);
                                 $mydef_tmp = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance(), false, false);
 
                                 $mydef_tmp->set_block_id($myfunc_call->get_block_id());
@@ -240,7 +249,7 @@ class VisitorAnalysis {
                                 $instances = Definitions::search_nearest(
                                         $myfunc_call->getLine(), 
                                         $myfunc_call->getColumn(), 
-                                        $this->defs->getin($myfunc_call->get_block_id()), 
+                                        $this->defs->getout($myfunc_call->get_block_id()), 
                                         $mydef_tmp, 
                                         $this->inside_instance);
                                 

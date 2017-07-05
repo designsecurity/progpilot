@@ -180,7 +180,7 @@ class ArrayAnalysis {
 		if(!is_null($originaltab) && !is_null($copytab))
 		{
 			$defs = Definitions::search_force(
-					$data->getin($originaltab->get_block_id()), 
+					$data->getout($originaltab->get_block_id()), 
 					$originaltab);    
 
 			if(count($defs) > 0)

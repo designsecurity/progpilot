@@ -13,6 +13,7 @@ namespace progpilot\Analysis;
 use progpilot\Objects\MyCode;
 use progpilot\Objects\ArrayStatic;
 use progpilot\Objects\MyDefinition;
+use progpilot\Objects\MyInstance;
 
 use progpilot\Dataflow\Definitions;
 
@@ -349,6 +350,7 @@ class TaintAnalysis {
 	{	
         $good_defs = [];
         
+        // assertions
 		if(!$safe)
 		{
 			// we are going to taint defassign's definitions		
@@ -375,7 +377,7 @@ class TaintAnalysis {
 				$instances_defs = Definitions::search_nearest(
 						$defassign->getLine(), 
 						$defassign->getColumn(), 
-						$data->getin($defassign->get_block_id()), 
+						$data->getout($defassign->get_block_id()), 
 						$defassign, 
 						$myinstance);
 
@@ -393,12 +395,18 @@ class TaintAnalysis {
 
 							if(!is_null($property))
 							{
-								if((is_null($myinstance) && $property->get_visibility() == "public")
+                                if((is_null($myinstance) && $property->get_visibility() == "public")
 										|| (!is_null($myinstance) && $myclass->get_name() != $myinstance->get_name()))
 								{
-                                    $good_defs[] = $property;
-								}
-							}
+                                    $copy_myclass = clone $myclass;
+                                    $myinstance = new MyInstance("this");
+                                    $myinstance->set_myclass($copy_myclass);
+
+                                    $defassign->set_myinstance($myinstance);
+                                    
+                                    $good_defs[] = $copy_myclass->get_property($defassign->get_property_name());
+                                }
+                            }
 						}
 					}
 				}
