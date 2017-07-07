@@ -132,27 +132,9 @@ class Definitions {
 					$defsfound[$def->get_block_id()][] = [$def, $def->getLine(), $def->getColumn()];
 				}
 
-				else if(!$def->is_instance() && $def->is_property() && !$defsearch->is_instance() && $defsearch->is_property() && $def->get_property_name() == $defsearch->get_property_name())
+				else if(!$def->is_instance() && $def->is_property() && !$defsearch->is_instance() && $defsearch->is_property() && $def->property->get_name() == $defsearch->property->get_name())
 				{	
 					$defsfound[$def->get_block_id()][] = [$def, $def->getLine(), $def->getColumn()];
-				/*
-                    echo "DEFINITIONS IS PROPERTY\n";
-					$myclass = $def->get_myinstance()->get_myclass();
-
-					$property = $myclass->get_property($defsearch->get_property_name());
-					if(!is_null($property))
-					{
-						if((is_null($inside_class) && $property->get_visibility() == "public")
-								|| (!is_null($inside_class) && $myclass->get_name() != $inside_class->get_name()))
-						{
-							$property->set_visibility(true);
-						}
-						else
-							$property->set_visibility(false);
-
-						$defsfound[$def->get_block_id()][] = [$property, $def->getLine(), $def->getColumn()];
-					}
-					*/
 				}
 
 				else if(!$def->is_arr() && !$defsearch->is_arr() && !$def->is_property())

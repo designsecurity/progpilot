@@ -151,7 +151,6 @@ class VisitorAnalysis {
                         {
                             $mydef = $instruction->get_property("def");
                             
-                            
                             break;
                         }
                             
@@ -159,69 +158,27 @@ class VisitorAnalysis {
                     case Opcodes::TEMPORARY:
                         {
                             $tempdefa = $instruction->get_property("temporary");
-                            
-                            ResolveDefs::visibility($this->defs, $tempdefa, $this->inside_instance);
+                                        
                             $defs = ResolveDefs::temporary_simple($this->defs, $tempdefa, $this->inside_instance);
                             
                             foreach($defs as $def)
                             {	
-                                if(($def->is_property() && $def->get_visibility()) 
-                                        || !$def->is_property()) 
+                                $exprs = $def->get_exprs();
+                                foreach($exprs as $expr)
                                 {
-                                    $exprs = $def->get_exprs();
-                                    foreach($exprs as $expr)
+                                    if($expr->is_assign())
                                     {
-                                        if($expr->is_assign())
-                                        {
-                                            $defassign = $expr->get_assign_def();
+                                        $defassign = $expr->get_assign_def();
                                             
-                                            $defassign->last_known_value($def->get_last_known_value());
+                                        ResolveDefs::definition_myinstance_and_visibility($this->defs, $defassign, $this->inside_instance);
 
-                                            ArrayAnalysis::copy_array($this->defs, $def, $def->get_arr_value(), $defassign, $defassign->get_arr_value());
+                                        $defassign->last_known_value($def->get_last_known_value());
 
-                                            $safe = AssertionAnalysis::temporary_simple($this->defs, $this->current_myblock, $def, $tempdefa, $this->inside_instance);
-
-                                            $resolve_defs_assign = TaintAnalysis::set_tainted($this->defs, $defassign, $safe, $this->inside_instance); 
+                                        ArrayAnalysis::copy_array($this->defs, $def, $def->get_arr_value(), $defassign, $defassign->get_arr_value());
                                         
-                                            //if param is tainted
-                                            if(count($resolve_defs_assign) > 0)
-                                            {
-                                                foreach($resolve_defs_assign as $resolve_def)
-                                                {
-                                                    if($def->is_tainted())
-                                                    {
-                                                        $resolve_def->set_tainted(true);
-                                                        $resolve_def->set_taintedbyexpr($expr);
-                                                    }
-                                                    else
-                                                    {
-                                                        $resolve_def->set_tainted(false);
-                                                        $resolve_def->set_taintedbyexpr(null);
-                                                    }
-                                                                
-                                                    if($def->is_sanitized())
-                                                    {
-                                                        $resolve_def->set_type_sanitized($def->get_type_sanitized());
-                                                        $resolve_def->set_sanitized(true);
-                                                    }
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if($def->is_tainted())
-                                                {
-                                                    $defassign->set_tainted(true);
-                                                    $defassign->set_taintedbyexpr($expr);
-                                                }
-                                                                
-                                                if($def->is_sanitized())
-                                                {
-                                                    $defassign->set_type_sanitized($def->get_type_sanitized());
-                                                    $defassign->set_sanitized(true);
-                                                }
-                                            }
-                                        
-                                        }
+                                        $safe = AssertionAnalysis::temporary_simple($this->defs, $this->current_myblock, $def, $tempdefa, $this->inside_instance);
+
+                                        TaintAnalysis::set_tainted($this->defs, $def, $defassign, $expr, $safe, $this->inside_instance); 
                                     }
                                 }
                             }
@@ -241,34 +198,28 @@ class VisitorAnalysis {
                             if($myfunc_call->is_instance())
                             {
                                 $mydef_tmp = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance(), false, false);
-
                                 $mydef_tmp->set_block_id($myfunc_call->get_block_id());
-                                $mydef_tmp->set_instance(true);
-                                $mydef_tmp->set_property(false);
-
-                                $instances = Definitions::search_nearest(
-                                        $myfunc_call->getLine(), 
-                                        $myfunc_call->getColumn(), 
-                                        $this->defs->getout($myfunc_call->get_block_id()), 
-                                        $mydef_tmp, 
-                                        $this->inside_instance);
+                                $mydef_tmp->set_method(true); // method (car nécessaire dans select_instances)
+                                $mydef_tmp->method->set_name($funcname);
                                 
-                                foreach($instances as $instance)
+                                $instances = ResolveDefs::select_instances($this->defs, $mydef_tmp, $this->inside_instance);
+                                
+                                foreach($instances as $instance_tab)
                                 {
+                                    $myinstance = $instance_tab[0];
+                                    $visibility_instance = $instance_tab[1];
+                                    
                                     // the class is defined (! build in php class for example)
-                                    if(!is_null($instance->get_myinstance()))
-                                    {
-                                        $myclass = $instance->get_myinstance()->get_myclass();
-                                        $myfunc = $myclass->get_method($funcname);
+                                    $myclass = $myinstance->get_myclass();
+                                    $myfunc = $myclass->get_method($funcname);
 
-                                        if(!is_null($myfunc))
-                                            $list_myfunc[] = [$myfunc, $instance->get_myinstance()];
-                                    }
+                                    if(!is_null($myfunc))
+                                        $list_myfunc[] = [$myfunc, $myinstance];
                                     
                                     // twig analysis
                                     if($this->context->get_analyze_js())
                                     {
-                                        if($instance->get_class_name() == "Twig_Environment")
+                                        if($myinstance->get_class_name() == "Twig_Environment")
                                         {
                                             if($myfunc_call->get_name() == "render")
                                             {

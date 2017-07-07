@@ -179,24 +179,14 @@ class VisitorDataflow {
                             $mydef->set_block_id($this->current_block_id);	
                             $mydef->set_source_file($this->current_file);
 
-                            /*
-                            if(!$mydef->is_property())
-                            {
-                            */
-                                $this->defs->adddef($mydef->get_name(), $mydef);
-                                $this->defs->addgen($mydef->get_block_id(), $mydef);
-                            //}
+                            $this->defs->adddef($mydef->get_name(), $mydef);
+                            $this->defs->addgen($mydef->get_block_id(), $mydef);
                             
                             if($mydef->is_instance())
                             {
                                 $myclass = $context->get_classes()->get_myclass($mydef->get_class_name());
                                 if(!is_null($myclass))
-                                {
-                                    $myinstance = new MyInstance("this");
-                                    $myinstance->set_myclass(clone $myclass);
-
-                                    $mydef->set_myinstance($myinstance);
-                                }
+                                    $mydef->set_myclass($myclass);
                                 else
                                     echo "undefined class\n";
                             }

@@ -27,15 +27,17 @@ class MyDefinition extends MyOp {
 	private $thearrays;
 	private $theexprs;
 	private $taintedbyexpr;
-	private $visibility;
 	private $instance;
-	private $myinstance;
 	private $is_property;
 	private $property_name;
 	private $class_name;
 	private $is_sanitized;
 	private $type_sanitized;
 	private $assign_id;
+	private $myclass;
+	
+	public $property;
+	public $method;
 
 	public function __construct($var_line, $var_column, $var_name, $is_ref, $is_arr) {
 
@@ -54,23 +56,25 @@ class MyDefinition extends MyOp {
 		$this->is_ref_arr = false;
 		$this->ref_arr_value = null;
 		$this->taintedbyexpr = null;
-		$this->visibility = "public";
 		$this->instance = false;
-		$this->myinstance = null;
 		$this->class_name = "";
 		$this->is_property = false;
-		$this->property_name = "";
+		$this->is_method = false;
+		$this->myclass = null;
 
 		$this->is_sanitized = false;
 		$this->type_sanitized = [];
 		
 		$this->last_known_value = "";
 		$this->assign_id = -1;
+		
+		$this->property = new MyProperty;
+		$this->method = new MyMethod;
 	}
 
 	public function print_stdout()
 	{
-		echo "def name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: assign_id = ".$this->get_assign_id()." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_ref()." :: arr = ".$this->is_arr()." :: copyarray = ".$this->is_copyarray()." :: is_instance = ".$this->is_instance()." :: is_property = ".$this->is_property()." :: visibility = ".$this->get_visibility()." :: blockid = ".$this->get_block_id()."\n";
+		echo "def name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: assign_id = ".$this->get_assign_id()." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_ref()." :: arr = ".$this->is_arr()." :: copyarray = ".$this->is_copyarray()." :: is_instance = ".$this->is_instance()." :: is_method = ".$this->is_method()." :: is_property = ".$this->is_property()." :: blockid = ".$this->get_block_id()."\n";
 		if($this->is_arr())
 		{
 			echo "arr :\n";
@@ -79,7 +83,7 @@ class MyDefinition extends MyOp {
 
 		if($this->is_property())
 		{
-			echo "property : ".htmlentities($this->get_property_name(), ENT_QUOTES, 'UTF-8')."\n";
+			echo "property : ".htmlentities($this->property->get_name(), ENT_QUOTES, 'UTF-8')."\n";
 		}
 
 		if($this->is_copyarray())
@@ -99,6 +103,16 @@ class MyDefinition extends MyOp {
         return $this->last_known_value;
     }
 
+	public function set_method($method)
+	{
+		$this->is_method = $method;
+	}
+
+	public function is_method()
+	{
+		return $this->is_method;
+	}
+
 	public function set_property($property)
 	{
 		$this->is_property = $property;
@@ -108,19 +122,6 @@ class MyDefinition extends MyOp {
 	{
 		return $this->is_property;
 	}
-
-	public function set_property_name($property_name)
-	{
-		$this->property_name = $property_name;
-	}
-
-	public function get_property_name()
-	{
-		return $this->property_name;
-	}
-
-
-
 
 	public function is_instance()
 	{
@@ -132,17 +133,15 @@ class MyDefinition extends MyOp {
 		$this->instance = $instance;
 	}
 
-	public function get_myinstance()
+	public function set_myclass($myclass)
 	{
-		return $this->myinstance;
+        $this->myclass = $myclass;
 	}
 
-	public function set_myinstance($myinstance)
+	public function get_myclass()
 	{
-		$this->myinstance = $myinstance;
+		return $this->myclass;
 	}
-
-
 
 	public function get_class_name()
 	{
@@ -173,16 +172,6 @@ class MyDefinition extends MyOp {
 	public function set_ref_arr($arr)
 	{
 		$this->is_ref_arr = $arr;
-	}
-
-	public function set_visibility($visibility)
-	{
-		$this->visibility = $visibility;
-	}
-
-	public function get_visibility()
-	{
-		return $this->visibility;
 	}
 
 	public function is_ref()

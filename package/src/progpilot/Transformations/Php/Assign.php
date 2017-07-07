@@ -106,7 +106,7 @@ class Assign {
 			}
 
 			$mydef->set_property(true);
-			$mydef->set_property_name($property_name);
+			$mydef->property->set_name($property_name);
 		}
 		// an object (created by new)
 		else if($type == "instance")

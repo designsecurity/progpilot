@@ -76,12 +76,14 @@ class SecurityAnalysis {
 			{
 				if(!SecurityAnalysis::is_safe($def_expr, $mysink))
 				{
+				/*
 					if(($def_expr->is_property() && $def_expr->get_visibility()) || !$def_expr->is_property()) 
 					{
+					*/
 						$temp["source"][] = htmlentities($def_expr->get_name(), ENT_QUOTES, 'UTF-8');
 						$temp["source_line"][] = $def_expr->getLine();
 						$temp["source_file"][] = htmlentities($def_expr->get_source_file(), ENT_QUOTES, 'UTF-8');
-					}
+					//}
 				}
 			}
 

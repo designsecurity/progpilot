@@ -17,31 +17,70 @@ use PHPCfg\Script;
 use PHPCfg\Visitor;
 use PHPCfg\Operand;
 
+use progpilot\Objects\MyInstance;
 use progpilot\Objects\MyDefinition;
 use progpilot\Dataflow\Definitions;
 
 class ResolveDefs {
 
-	public static function select_instances($data, $tempdefa, $inside_class)
+    public static function select_properties($data, $tempdefa, $inside_class)
 	{
         $good_defs = [];
         
         if($tempdefa->is_property())
         {
-            // we can have multiple instances with the same property assigned
-            // we are looking for and instance, not a property	
-            $tempdefa->set_instance(true);
-            $tempdefa->set_property(false);
-
-            $instances_defs = Definitions::search_nearest(
-                    $tempdefa->getLine(), 
-                    $tempdefa->getColumn(), 
-                    $data->getout($tempdefa->get_block_id()), 
-                    $tempdefa, 
+            $copy_tempdefa = clone $tempdefa;
+            $copy_tempdefa->set_assign_id(-1);
+            
+            $properties = Definitions::search_nearest(
+                    $copy_tempdefa->getLine(), 
+                    $copy_tempdefa->getColumn(), 
+                    $data->getout($copy_tempdefa->get_block_id()), 
+                    $copy_tempdefa, 
                     $inside_class);
 
-            $tempdefa->set_instance(false);
-            $tempdefa->set_property(true);
+            if(count($properties) > 0)
+            {
+                foreach($properties as $property)
+                {           
+                    if($property->is_property())
+                    {
+                        $myinstances = $property->property->get_myinstances();
+                        
+                        foreach($myinstances as $myinstance)
+                        {
+                            $myclass = $myinstance->get_myclass();
+                            $visibility = ResolveDefs::get_visibility($myclass, $property, $inside_class);
+                            $good_defs[] = [$property, $visibility];
+                        }
+                    }
+                }
+            }
+        }
+        
+        return $good_defs;
+    }
+    
+	public static function select_instances($data, $tempdefa, $inside_class)
+	{
+        $good_defs = [];
+        
+        if($tempdefa->is_property() || $tempdefa->is_method())
+        {
+            // we can have multiple instances with the same property assigned
+            // we are looking for and instance, not a property	
+            
+            $copy_tempdefa = clone $tempdefa;
+            $copy_tempdefa->set_instance(true);
+            $copy_tempdefa->set_property(false);
+            $copy_tempdefa->set_method(false);
+
+            $instances_defs = Definitions::search_nearest(
+                    $copy_tempdefa->getLine(), 
+                    $copy_tempdefa->getColumn(), 
+                    $data->getout($copy_tempdefa->get_block_id()), 
+                    $copy_tempdefa, 
+                    $inside_class);
 
             if(count($instances_defs) > 0)
             {
@@ -49,13 +88,28 @@ class ResolveDefs {
                 {            
                     if($defb->is_instance())
                     {
-                        $myclass = $defb->get_myinstance()->get_myclass();
-                        $property = $myclass->get_property($tempdefa->get_property_name());
-
-                        if(!is_null($property))
+                        $myclass = $defb->get_myclass();
+                        
+                        if($tempdefa->is_property())
                         {
-                            $visibility = ResolveDefs::get_visibility($myclass, $property, $inside_class);
-                            $good_defs[] = [$defb, $visibility];
+                            $property = $myclass->get_property($tempdefa->property->get_name());
+
+                            if(!is_null($property))
+                            {
+                                $visibility = ResolveDefs::get_visibility($myclass, $property, $inside_class);
+                                $good_defs[] = [$defb, $visibility];
+                            }
+                        }
+                        
+                        else if($tempdefa->is_method())
+                        {
+                            $method = $myclass->get_method($tempdefa->method->get_name());
+
+                            if(!is_null($method))
+                            {
+                                //$visibility = ResolveDefs::get_visibility($myclass, $property, $inside_class);
+                                $good_defs[] = [$defb, 1];
+                            }
                         }
                     }
                 }
@@ -67,9 +121,9 @@ class ResolveDefs {
     
 	public static function get_visibility($myclass, $property, $inside_class)
 	{
-        if(!is_null($property) && !is_null($myclass))
+        if(!is_null($property) && !is_null($myclass) && $property->is_property())
         {
-            if((is_null($inside_class) && $property->get_visibility() == "public")
+            if((is_null($inside_class) && $property->property->get_visibility() == "public")
                 || (!is_null($inside_class) && $myclass->get_name() != $inside_class->get_name()))
             {
                 return true;
@@ -79,142 +133,35 @@ class ResolveDefs {
         return false;
 	}
     
-	public static function create_instance($instances, $tempdefa)
+	public static function definition_myinstance_and_visibility($data, $tempdefa, $inside_class)
 	{
-        $final_visibility = false;
-        
         if($tempdefa->is_property())
         {
+            $visibility_final = false;
+            $instances = ResolveDefs::select_instances($data, $tempdefa, $inside_class);
+            
             foreach($instances as $instance)
             {
                 $instance_def = $instance[0];
                 $visibility_def = $instance[1];
-                
+                            
                 if($visibility_def)
                 {
-                    $myclass = $instance->get_myinstance()->get_myclass();
+                    $myclass = $instance_def->get_myclass();
                     $copy_myclass = clone $myclass;
                     $inside_class = new MyInstance("this");
                     $inside_class->set_myclass($copy_myclass);
 
-                    $tempdefa->set_myinstance($inside_class);
+                    $tempdefa->property->add_myinstance($inside_class);
+                    
+                    $visibility_final = true;
                 }
             }    
+            
+            if($visibility_final)
+                $tempdefa->property->set_visibility($visibility_final);
         }
 	}
-    
-	public static function definition($data, $tempdefa, $inside_class)
-	{
-        if($tempdefa->is_property())
-        {
-            $instances = ResolveDefs::select_instances($data, $tempdefa, $inside_class);
-            ResolveDefs::create_instance($instances, $tempdefa);
-            
-            // ???
-            $tempdefa->set_visibility($visibility); 
-            
-            // IL PEUT Y EN AVOIR PLUSIEURS D'INSTANCES
-            if($visibility)
-            {
-            
-            }
-        }
-	}
-    
-	public static function instance($data, $tempdefa, $inside_class)
-	{
-        if($tempdefa->is_property())
-        {
-            // we can have multiple instances with the same property assigned
-            // we are looking for and instance, not a property	
-            $tempdefa->set_instance(true);
-            $tempdefa->set_property(false);
-
-            $instances_defs = Definitions::search_nearest(
-                    $tempdefa->getLine(), 
-                    $tempdefa->getColumn(), 
-                    $data->getout($tempdefa->get_block_id()), 
-                    $tempdefa, 
-                    $inside_class);
-
-            $tempdefa->set_instance(false);
-            $tempdefa->set_property(true);
-
-            if(count($instances_defs) > 0)
-            {
-                foreach($instances_defs as $defb)
-                {            
-                    if($defb->is_instance())
-                    {
-                        $myclass = $defb->get_myinstance()->get_myclass();
-                        $property = $myclass->get_property($tempdefa->get_property_name());
-
-                        if(!is_null($property))
-                        {
-                            // on vérifie pour éviter de créer mais est-ce que ca fausse l'analyse ????!!!!
-                            if((is_null($inside_class) && $property->get_visibility() == "public")
-                                    || (!is_null($inside_class) && $myclass->get_name() != $inside_class->get_name()))
-                            {
-                                $copy_myclass = clone $myclass;
-                                $inside_class = new MyInstance("this");
-                                $inside_class->set_myclass($copy_myclass);
-
-                                $tempdefa->set_myinstance($inside_class);
-                                    
-                                $good_defs[] = $copy_myclass->get_property($tempdefa->get_property_name());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-				
-				
-	public static function visibility($data, $tempdefa, $inside_class)
-	{
-        if($tempdefa->is_property())
-        {    
-            $tempdefa->set_instance(true);
-            $tempdefa->set_property(false);
-
-            $instances_defs = Definitions::search_nearest(
-                $tempdefa->getLine(), 
-                    $tempdefa->getColumn(), 
-                        $data->getout($tempdefa->get_block_id()), 
-                            $tempdefa, 
-                                $inside_class);
-
-            $tempdefa->set_instance(false);
-            $tempdefa->set_property(true);
-                        
-            $final_visibility = false;
-
-            if(count($instances_defs) > 0)
-            {
-                foreach($instances_defs as $defb)
-                {      
-                    if($defb->is_instance())
-                    {
-                        $myclass = $defb->get_myinstance()->get_myclass();
-                        $property = $myclass->get_property($tempdefa->get_property_name());
-
-                        if(!is_null($property))
-                        {
-                            if((is_null($inside_class) && $property->get_visibility() == "public")
-                                || (!is_null($inside_class) && $myclass->get_name() != $inside_class->get_name()))
-                            {
-                                $final_visibility = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }  
-                        
-            $tempdefa->set_visibility($final_visibility);  
-        }
-    }
 
 	public static function temporary_simple($data, $tempdefa, $inside_class)
 	{
@@ -225,9 +172,6 @@ class ResolveDefs {
 				$data->getout($tempdefa->get_block_id()), 
 				$tempdefa, 
 				$inside_class);
-				
-        //echo "ResolveDefs 0\n";
-        //$tempdefa->print_stdout();
 
 		$gooddefs = [];
 		if(count($defs) > 0)
@@ -263,12 +207,7 @@ class ResolveDefs {
 				}
 				else
 				{
-                    // function resolve_visibility , resolve_exprs
-                    if($tempdefa->is_property())
-                        $defa->set_visibility($tempdefa->get_visibility());
-                    
-                    
-					$defa->add_expr($myexpr);
+                    $defa->add_expr($myexpr);
 					$myexpr->add_def($defa);
 
 					$gooddefs[] = $defa;

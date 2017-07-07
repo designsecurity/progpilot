@@ -16,7 +16,6 @@ use PHPCfg\Op;
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyExpr;
-use progpilot\Objects\MyInstance;
 
 use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
@@ -71,7 +70,7 @@ class Expr {
 				}
 
 				$mytemp->set_property(true);
-				$mytemp->set_property_name($property_name);
+				$mytemp->property->set_name($property_name);
 			}
 
 			$inst_temporary_simple = new MyInstruction(Opcodes::TEMPORARY);
