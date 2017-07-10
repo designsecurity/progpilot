@@ -159,6 +159,23 @@ class VisitorDataflow {
                             $myfunc_call = $instruction->get_property("myfunc_call");
                             $myfunc_call->set_block_id($this->current_block_id);
                             $myfunc_call->set_source_file($this->current_file);
+                            
+                            if($myfunc_call->is_instance())
+                            {
+                                $mydef = new MyDefinition(
+                                    $myfunc_call->getLine(), 
+                                        $myfunc_call->getColumn(), 
+                                            $myfunc_call->get_name_instance(), false, false);
+                                $mydef->set_method(true);
+                                $mydef->set_block_id($this->current_block_id);
+                                $mydef->set_source_file($this->current_file);
+                                $mydef->method->set_name($myfunc_call->get_name());
+                                
+                                $instruction->add_property("instance", $mydef);
+			
+                                $this->defs->adddef($mydef->get_name(), $mydef);
+                                $this->defs->addgen($mydef->get_block_id(), $mydef);
+                            }
 
                             break;
                         }
@@ -178,7 +195,7 @@ class VisitorDataflow {
                             $mydef = $instruction->get_property("def");
                             $mydef->set_block_id($this->current_block_id);	
                             $mydef->set_source_file($this->current_file);
-
+                                
                             $this->defs->adddef($mydef->get_name(), $mydef);
                             $this->defs->addgen($mydef->get_block_id(), $mydef);
                             
@@ -190,7 +207,6 @@ class VisitorDataflow {
                                 else
                                     echo "undefined class\n";
                             }
-
                             unset($mydef);
 
                             break;

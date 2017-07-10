@@ -25,7 +25,6 @@ class MyMethod extends MyOp {
 		$this->visibility = "public";
 	}
 
-
 	public function set_visibility($visibility)
 	{
 		$this->visibility = $visibility;

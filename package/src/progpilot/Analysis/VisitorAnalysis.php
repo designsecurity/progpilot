@@ -158,7 +158,10 @@ class VisitorAnalysis {
                     case Opcodes::TEMPORARY:
                         {
                             $tempdefa = $instruction->get_property("temporary");
-                                        
+                            
+                            echo "Opcodes::TEMPORARY\n";
+                            $tempdefa->print_stdout();
+                            
                             $defs = ResolveDefs::temporary_simple($this->defs, $tempdefa, $this->inside_instance);
                             
                             foreach($defs as $def)
@@ -169,7 +172,10 @@ class VisitorAnalysis {
                                     if($expr->is_assign())
                                     {
                                         $defassign = $expr->get_assign_def();
-                                            
+                           
+                                        echo "Opcodes::TEMPORARY foreach !!!!!!!!!!!!!!!!!!!!!!!\n";
+                                        $defassign->print_stdout();
+                                        
                                         ResolveDefs::definition_myinstance_and_visibility($this->defs, $defassign, $this->inside_instance);
 
                                         $defassign->last_known_value($def->get_last_known_value());
@@ -197,29 +203,34 @@ class VisitorAnalysis {
                             $list_myfunc = [];
                             if($myfunc_call->is_instance())
                             {
-                                $mydef_tmp = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance(), false, false);
-                                $mydef_tmp->set_block_id($myfunc_call->get_block_id());
-                                $mydef_tmp->set_method(true); // method (car nécessaire dans select_instances)
-                                $mydef_tmp->method->set_name($funcname);
+                                $mydef_tmp = $instruction->get_property("instance");
+                            
+                                echo "Opcodes::FUNC_CALL <=======================================================>\n";
+                                $mydef_tmp->print_stdout();
+                                
+                                ResolveDefs::definition_myinstance_and_visibility($this->defs, $mydef_tmp, $this->inside_instance);
                                 
                                 $instances = ResolveDefs::select_instances($this->defs, $mydef_tmp, $this->inside_instance);
                                 
                                 foreach($instances as $instance_tab)
                                 {
-                                    $myinstance = $instance_tab[0];
-                                    $visibility_instance = $instance_tab[1];
+                                    $myclass = $instance_tab[0];
+                                    $method = $instance_tab[1];
+                                    $visibility_instance = $instance_tab[2];
+                                    
+                                    echo "Opcodes::FUNC_CALL °°°° foreach name = '".$method->get_name()."'\n";
                                     
                                     // the class is defined (! build in php class for example)
-                                    $myclass = $myinstance->get_myclass();
+                                    //$myclass = $myinstance->get_myclass();
                                     $myfunc = $myclass->get_method($funcname);
 
                                     if(!is_null($myfunc))
-                                        $list_myfunc[] = [$myfunc, $myinstance];
+                                        $list_myfunc[] = [$myfunc, $myclass];
                                     
                                     // twig analysis
                                     if($this->context->get_analyze_js())
                                     {
-                                        if($myinstance->get_class_name() == "Twig_Environment")
+                                        if($myclass->get_name() == "Twig_Environment")
                                         {
                                             if($myfunc_call->get_name() == "render")
                                             {
@@ -249,6 +260,7 @@ class VisitorAnalysis {
                                     // the called function is a method and this method exists in the class 
                                     if($myfunc_call->is_instance() && $myfunc->is_method() || (!$myfunc_call->is_instance() && !$myfunc->is_method()))
                                     {
+                                        echo "))))))))))))))))))))))) myfunc_call is_instance\n";
                                         // the called function is defined in our project (not php build'in function)
                                         if($addr_start >= 0)
                                         {

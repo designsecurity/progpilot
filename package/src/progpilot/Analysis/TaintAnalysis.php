@@ -190,7 +190,7 @@ class TaintAnalysis {
 	}
 	
 	public static function set_tainted($data, $def, $defassign, $expr, $safe, $myinstance)
-	{	          
+	{	           
         // assertions
 		if(!$safe)
 		{
@@ -198,8 +198,7 @@ class TaintAnalysis {
 			// we are inside a class
 			if($defassign->get_name() == "this" && !is_null($myinstance))
 			{
-				$myclass = $myinstance->get_myclass();
-				$property = $myclass->get_property($defassign->property->get_name());
+				$property = $myinstance->get_property($defassign->property->get_name());
 
 				if(!is_null($property))
 				{
@@ -227,12 +226,15 @@ class TaintAnalysis {
 			{
 				// we can have multiple instances with the same property assigned
 				// we are looking for and instance, not a property	
-				$properties = ResolveDefs::select_properties($data, $defassign, $myinstance);
+				//$properties = ResolveDefs::select_properties($data, $defassign, $myinstance);
+				
+				$properties = ResolveDefs::select_instances($data, $defassign, $myinstance);
 
 				foreach($properties as $property_tab)
                 {
-                    $property = $property_tab[0];
-                    $visibility_property = $property_tab[1];
+                    $class = $property_tab[0];
+                    $property = $property_tab[1];
+                    $visibility_property = $property_tab[2];
                     
                     if($property->is_property() && $visibility_property)
                     {

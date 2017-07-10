@@ -86,6 +86,11 @@ class MyDefinition extends MyOp {
 			echo "property : ".htmlentities($this->property->get_name(), ENT_QUOTES, 'UTF-8')."\n";
 		}
 
+		if($this->is_method())
+		{
+			echo "method : ".htmlentities($this->method->get_name(), ENT_QUOTES, 'UTF-8')."\n";
+		}
+
 		if($this->is_copyarray())
 		{
 			echo "copyarray :\n";
