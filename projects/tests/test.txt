@@ -1,122 +1,405 @@
+ResolveDefs::::select_instances
+def name = instance1 :: assign_id = -1 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 1053357245 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : __construct
+search_nearest ok name 
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest ok name 
+search_nearest ok [[[[instance 
+search_nearest 'instance1'
+def name = set_boum1_param0_894221819 :: assign_id = 770538946 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 429286715 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : set_boum1
+search_nearest ok name 
+search_nearest 'instance1'
+def name = echo_param0_1307052980 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = echo_param0_1902532834 :: assign_id = 180437649 :: line = 18 :: column = 18 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = {main}_return :: assign_id = 502721040 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::select_instances foreach
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::select_instances foreach is_instance
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
 Opcodes::TEMPORARY
-def name = _GET :: assign_id = 438175510 :: line = 10 :: column = 10 :: tainted = 1 :: ref =  :: arr = 1 :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+def name = _GET :: assign_id = 770538946 :: line = 14 :: column = 14 :: tainted = 1 :: ref =  :: arr = 1 :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
 arr :
 array(1) {
   ["p"]=>
   bool(false)
 }
-Opcodes::TEMPORARY DEFASSIGN
-def name = instance1 :: assign_id = 438175510 :: line = 10 :: column = 10 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 0
+ResolveDefs::::temporary_simple
+def name = _GET :: assign_id = 770538946 :: line = 14 :: column = 14 :: tainted = 1 :: ref =  :: arr = 1 :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+arr :
+array(1) {
+  ["p"]=>
+  bool(false)
+}
+search_nearest '_GET'
+def name = instance1 :: assign_id = 1053357245 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : __construct
+search_nearest '_GET'
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest '_GET'
+def name = set_boum1_param0_894221819 :: assign_id = 770538946 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest '_GET'
+def name = instance1 :: assign_id = 429286715 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : set_boum1
+search_nearest '_GET'
+def name = echo_param0_1307052980 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest '_GET'
+def name = echo_param0_1902532834 :: assign_id = 180437649 :: line = 18 :: column = 18 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest '_GET'
+def name = {main}_return :: assign_id = 502721040 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+Opcodes::TEMPORARY foreach ------------
+def name = _GET :: assign_id = 770538946 :: line = 14 :: column = 14 :: tainted = 1 :: ref =  :: arr = 1 :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+arr :
+array(1) {
+  ["p"]=>
+  bool(false)
+}
+Opcodes::TEMPORARY foreach foreach !!!!!!!!!!!!!!!!!!!!!!!
+def name = set_boum1_param0_894221819 :: assign_id = 770538946 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+TaintAnalysis set_tainted safe
+def name = set_boum1_param0_894221819 :: assign_id = 770538946 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::select_instances
+def name = instance1 :: assign_id = -1 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 1053357245 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : __construct
+search_nearest ok name 
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest ok name 
+search_nearest ok [[[[instance 
+search_nearest 'instance1'
+def name = set_boum1_param0_894221819 :: assign_id = 770538946 :: line = 14 :: column = 14 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 429286715 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : set_boum1
+search_nearest ok name 
+search_nearest 'instance1'
+def name = echo_param0_1307052980 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = echo_param0_1902532834 :: assign_id = 180437649 :: line = 18 :: column = 18 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = {main}_return :: assign_id = 502721040 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::select_instances foreach
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::select_instances foreach is_instance
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+Opcodes::FUNC_CALL °°°° foreach name = 'set_boum1'
+================================================================== >>>>>>>>>>> !is_null(myfunc)
+def name = this :: assign_id = -1 :: line = 0 :: column = 0 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+def name = instance1 :: assign_id = -1 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : set_boum1
+ResolveDefs definition_myinstance_and_visibility
+ResolveDefs::::select_properties select_normal
+def name = instance1 :: assign_id = -1 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : set_boum1
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 1053357245 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : __construct
+search_nearest ok name 
+search_nearest ok [[[[property 
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest ok name 
+search_nearest 'instance1'
+def name = set_boum1_param0_894221819 :: assign_id = 770538946 :: line = 14 :: column = 14 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 429286715 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : set_boum1
+search_nearest ok name 
+search_nearest ok [[[[property 
+search_nearest 'instance1'
+def name = echo_param0_1307052980 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = echo_param0_1902532834 :: assign_id = 180437649 :: line = 18 :: column = 18 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = {main}_return :: assign_id = 502721040 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::select_properties select_instances
+def name = instance1 :: assign_id = -1 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : set_boum1
+ResolveDefs::::select_instances
+def name = instance1 :: assign_id = -1 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 1053357245 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : __construct
+search_nearest ok name 
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest ok name 
+search_nearest ok [[[[instance 
+search_nearest 'instance1'
+def name = set_boum1_param0_894221819 :: assign_id = 770538946 :: line = 14 :: column = 14 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 429286715 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : set_boum1
+search_nearest ok name 
+search_nearest 'instance1'
+def name = echo_param0_1307052980 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = echo_param0_1902532834 :: assign_id = 180437649 :: line = 18 :: column = 18 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = {main}_return :: assign_id = 502721040 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::select_instances foreach
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::select_instances foreach is_instance
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs definition_myinstance_and_visibility foreach
+ResolveDefs definition_myinstance_and_visibility foreach visibility_def method '1' count = '1'
+------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> clone_mydefthis->method->get_myinstances() = '1'
+))))))))))))))))))))))) myfunc_call is_instance
+Opcodes::TEMPORARY
+def name = boum1 :: assign_id = 1904750146 :: line = 9 :: column = 9 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::temporary_simple
+def name = boum1 :: assign_id = 1904750146 :: line = 9 :: column = 9 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'boum1'
+def name = this :: assign_id = -1 :: line = 0 :: column = 0 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'boum1'
+def name = boum1 :: assign_id = -1 :: line = 7 :: column = 7 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest ok name 
+search_nearest ok [[[[normal 
+search_nearest 'boum1'
+def name = this :: assign_id = 1904750146 :: line = 9 :: column = 9 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 0
 property : boum1
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<<
-def name = _GET :: assign_id = 438175510 :: line = 10 :: column = 10 :: tainted = 1 :: ref =  :: arr = 1 :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
-arr :
-array(1) {
-  ["p"]=>
-  bool(false)
-}
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<< SAFE
-TaintAnalysis set_tainted
+search_nearest 'boum1'
+def name = set_boum1_return :: assign_id = 384812482 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::temporary_simple foreach
+def name = boum1 :: assign_id = -1 :: line = 7 :: column = 7 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+Opcodes::TEMPORARY foreach ------------
+def name = boum1 :: assign_id = -1 :: line = 7 :: column = 7 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+Opcodes::TEMPORARY foreach foreach !!!!!!!!!!!!!!!!!!!!!!!
+def name = this :: assign_id = 1904750146 :: line = 9 :: column = 9 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 0
+property : boum1
+ResolveDefs definition_myinstance_and_visibility
+ResolveDefs::::select_properties select_normal
+def name = this :: assign_id = -1 :: line = 9 :: column = 9 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 0
+property : boum1
+search_nearest 'this'
+def name = this :: assign_id = -1 :: line = 0 :: column = 0 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'this'
+def name = boum1 :: assign_id = -1 :: line = 7 :: column = 7 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'this'
+def name = this :: assign_id = 1904750146 :: line = 9 :: column = 9 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 0
+property : boum1
+search_nearest ok name 
+search_nearest ok [[[[property 
+search_nearest 'this'
+def name = set_boum1_return :: assign_id = 384812482 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::select_properties select_instances
+def name = this :: assign_id = 1904750146 :: line = 9 :: column = 9 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 0
+property : boum1
+ResolveDefs::::select_instances
+def name = this :: assign_id = 1904750146 :: line = 9 :: column = 9 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'this'
+def name = this :: assign_id = -1 :: line = 0 :: column = 0 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest ok name 
+search_nearest ok [[[[instance 
+search_nearest 'this'
+def name = boum1 :: assign_id = -1 :: line = 7 :: column = 7 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'this'
+def name = this :: assign_id = 1904750146 :: line = 9 :: column = 9 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 0
+property : boum1
+search_nearest 'this'
+def name = set_boum1_return :: assign_id = 384812482 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::select_instances foreach
+def name = this :: assign_id = -1 :: line = 0 :: column = 0 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::select_instances foreach is_instance
+def name = this :: assign_id = -1 :: line = 0 :: column = 0 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::select_instances foreach is_instance foreach myinstance
+ResolveDefs definition_myinstance_and_visibility foreach
+ResolveDefs definition_myinstance_and_visibility foreach visibility_def property '1' count = '1'
+ResolveDefs definition_myinstance_and_visibility foreach
+ResolveDefs definition_myinstance_and_visibility foreach visibility_def property '1' count = '1'
+TaintAnalysis set_tainted safe
+def name = this :: assign_id = 1904750146 :: line = 9 :: column = 9 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 0
+property : boum1
+Opcodes::TEMPORARY
+def name = 1571167514 :: assign_id = 384812482 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::temporary_simple
+def name = 1571167514 :: assign_id = 384812482 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest '1571167514'
+def name = this :: assign_id = -1 :: line = 0 :: column = 0 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest '1571167514'
+def name = boum1 :: assign_id = -1 :: line = 7 :: column = 7 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest '1571167514'
+def name = this :: assign_id = 1904750146 :: line = 9 :: column = 9 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 0
+property : boum1
+search_nearest '1571167514'
+def name = set_boum1_return :: assign_id = 384812482 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+Opcodes::TEMPORARY foreach ------------
+def name = 1571167514 :: assign_id = 384812482 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+Opcodes::TEMPORARY foreach foreach !!!!!!!!!!!!!!!!!!!!!!!
+def name = set_boum1_return :: assign_id = 384812482 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+TaintAnalysis set_tainted safe
+def name = set_boum1_return :: assign_id = 384812482 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+Opcodes::LEAVE_FUNCTION start
+Opcodes::LEAVE_FUNCTION END
+FOREACH FOREACH PROPERTY
 def name = boum1 :: assign_id = -1 :: line = 5 :: column = 5 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = -1
 property : 
-TaintAnalysis set_tainted is_property
-TaintAnalysis set_tainted is_property def is_tainted
-def name = _GET :: assign_id = 438175510 :: line = 10 :: column = 10 :: tainted = 1 :: ref =  :: arr = 1 :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
-arr :
-array(1) {
-  ["p"]=>
-  bool(false)
-}
 Opcodes::TEMPORARY
-def name = _GET :: assign_id = 62550478 :: line = 11 :: column = 11 :: tainted = 1 :: ref =  :: arr = 1 :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
-arr :
-array(1) {
-  ["p"]=>
-  bool(false)
-}
-Opcodes::TEMPORARY DEFASSIGN
-def name = instance1 :: assign_id = 62550478 :: line = 11 :: column = 11 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 0
-property : boum2
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<<
-def name = _GET :: assign_id = 62550478 :: line = 11 :: column = 11 :: tainted = 1 :: ref =  :: arr = 1 :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
-arr :
-array(1) {
-  ["p"]=>
-  bool(false)
-}
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<< SAFE
-TaintAnalysis set_tainted
-def name = boum2 :: assign_id = -1 :: line = 6 :: column = 6 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = -1
-property : 
-TaintAnalysis set_tainted is_property
-TaintAnalysis set_tainted is_property def is_tainted
-def name = _GET :: assign_id = 62550478 :: line = 11 :: column = 11 :: tainted = 1 :: ref =  :: arr = 1 :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
-arr :
-array(1) {
-  ["p"]=>
-  bool(false)
-}
-Opcodes::TEMPORARY
-def name = eee :: assign_id = 971793619 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 2
-Opcodes::TEMPORARY DEFASSIGN
-def name = instance1 :: assign_id = 971793619 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 2
+def name = instance1 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 0
 property : boum1
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<<
-def name = eee :: assign_id = 971793619 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 2
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<< SAFE
-TaintAnalysis set_tainted
-def name = boum1 :: assign_id = -1 :: line = 5 :: column = 5 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = -1
-property : 
-TaintAnalysis set_tainted is_property
-Opcodes::TEMPORARY
-def name = instance1 :: assign_id = 251134480 :: line = 16 :: column = 16 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 2
+ResolveDefs::::temporary_simple
+def name = instance1 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 0
 property : boum1
-Opcodes::TEMPORARY DEFASSIGN
-def name = echo_param0_582811110 :: assign_id = 251134480 :: line = 16 :: column = 16 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 2
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<<
+ResolveDefs::::select_properties select_normal
+def name = instance1 :: assign_id = -1 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 0
+property : boum1
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 1053357245 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : __construct
+search_nearest ok name 
+search_nearest ok [[[[property 
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest ok name 
+search_nearest 'instance1'
+def name = set_boum1_param0_894221819 :: assign_id = 770538946 :: line = 14 :: column = 14 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 429286715 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : set_boum1
+search_nearest ok name 
+search_nearest ok [[[[property 
+search_nearest ok [[[[property foreach
+search_nearest ok [[[[property foreach !is_null(myclass)
+search_nearest ok [[[[property foreach !is_null(myclass) property_name 'boum1'
+search_nearest ok [[[[property foreach !is_null(myclass) !is_null(attribute)
+search_nearest 'instance1'
+def name = echo_param0_1307052980 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = echo_param0_1902532834 :: assign_id = 180437649 :: line = 18 :: column = 18 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = {main}_return :: assign_id = 502721040 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::select_properties select_normal foreach
+def name = instance1 :: assign_id = 429286715 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : set_boum1
+ResolveDefs::::select_properties select_normal foreach is_property is_method
+ResolveDefs::::select_properties select_normal foreach is_property is_method foreach
+ResolveDefs::::select_properties select_normal foreach is_property is_method foreach property_name = 'boum1'
+ResolveDefs::::select_properties select_normal foreach is_property is_method foreach !is_null(attribute)
+ResolveDefs::::select_properties select_instances
+def name = instance1 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 0
+property : boum1
+ResolveDefs::::select_instances
+def name = instance1 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 1053357245 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : __construct
+search_nearest ok name 
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest ok name 
+search_nearest ok [[[[instance 
+search_nearest 'instance1'
+def name = set_boum1_param0_894221819 :: assign_id = 770538946 :: line = 14 :: column = 14 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = instance1 :: assign_id = 429286715 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : set_boum1
+search_nearest ok name 
+search_nearest 'instance1'
+def name = echo_param0_1307052980 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = echo_param0_1902532834 :: assign_id = 180437649 :: line = 18 :: column = 18 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest 'instance1'
+def name = {main}_return :: assign_id = 502721040 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::select_instances foreach
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::select_instances foreach is_instance
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::temporary_simple select_properties END
 def name = boum1 :: assign_id = -1 :: line = 5 :: column = 5 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = -1
 property : 
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<< SAFE
-Opcodes::TEMPORARY DEFASSIGN
-def name = echo_param0_582811110 :: assign_id = 251134480 :: line = 16 :: column = 16 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 2
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<<
+ResolveDefs::::temporary_simple select_properties END
 def name = boum1 :: assign_id = -1 :: line = 5 :: column = 5 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = -1
 property : 
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<< SAFE
-Opcodes::TEMPORARY
-def name = instance1 :: assign_id = 2076874478 :: line = 17 :: column = 17 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = 2
-property : boum2
-Opcodes::TEMPORARY DEFASSIGN
-def name = echo_param0_2024517466 :: assign_id = 2076874478 :: line = 17 :: column = 17 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 2
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<<
-def name = boum2 :: assign_id = -1 :: line = 6 :: column = 6 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = -1
+ResolveDefs::::temporary_simple foreach
+def name = boum1 :: assign_id = -1 :: line = 5 :: column = 5 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = -1
 property : 
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<< SAFE
-TaintAnalysis set_tainted def is_tainted
-def name = boum2 :: assign_id = -1 :: line = 6 :: column = 6 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = -1
+ResolveDefs::::temporary_simple foreach
+def name = boum1 :: assign_id = -1 :: line = 5 :: column = 5 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = -1
 property : 
-Opcodes::TEMPORARY DEFASSIGN
-def name = echo_param0_2024517466 :: assign_id = 2076874478 :: line = 17 :: column = 17 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 2
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<<
-def name = boum2 :: assign_id = -1 :: line = 6 :: column = 6 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = -1
+Opcodes::TEMPORARY foreach ------------
+def name = boum1 :: assign_id = -1 :: line = 5 :: column = 5 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = -1
 property : 
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<< SAFE
-TaintAnalysis set_tainted def is_tainted
-def name = boum2 :: assign_id = -1 :: line = 6 :: column = 6 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = -1
+Opcodes::TEMPORARY foreach foreach !!!!!!!!!!!!!!!!!!!!!!!
+def name = echo_param0_1307052980 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+TaintAnalysis set_tainted safe
+def name = echo_param0_1307052980 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+Opcodes::TEMPORARY foreach ------------
+def name = boum1 :: assign_id = -1 :: line = 5 :: column = 5 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property = 1 :: blockid = -1
 property : 
+Opcodes::TEMPORARY foreach foreach !!!!!!!!!!!!!!!!!!!!!!!
+def name = echo_param0_1307052980 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+TaintAnalysis set_tainted safe
+def name = echo_param0_1307052980 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
 Opcodes::TEMPORARY
 def name =  
- :: assign_id = 135674735 :: line = 21 :: column = 21 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 3
-Opcodes::TEMPORARY DEFASSIGN
-def name = echo_param0_1219930895 :: assign_id = 135674735 :: line = 21 :: column = 21 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 3
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<<
+ :: assign_id = 180437649 :: line = 18 :: column = 18 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::temporary_simple
 def name =  
- :: assign_id = 135674735 :: line = 21 :: column = 21 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 3
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<< SAFE
+ :: assign_id = 180437649 :: line = 18 :: column = 18 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest ' 
+'
+def name = instance1 :: assign_id = 1053357245 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : __construct
+search_nearest ' 
+'
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest ' 
+'
+def name = set_boum1_param0_894221819 :: assign_id = 770538946 :: line = 14 :: column = 14 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest ' 
+'
+def name = instance1 :: assign_id = 429286715 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : set_boum1
+search_nearest ' 
+'
+def name = echo_param0_1307052980 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest ' 
+'
+def name = echo_param0_1902532834 :: assign_id = 180437649 :: line = 18 :: column = 18 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest ' 
+'
+def name = {main}_return :: assign_id = 502721040 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+Opcodes::TEMPORARY foreach ------------
+def name =  
+ :: assign_id = 180437649 :: line = 18 :: column = 18 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+Opcodes::TEMPORARY foreach foreach !!!!!!!!!!!!!!!!!!!!!!!
+def name = echo_param0_1902532834 :: assign_id = 180437649 :: line = 18 :: column = 18 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+TaintAnalysis set_tainted safe
+def name = echo_param0_1902532834 :: assign_id = 180437649 :: line = 18 :: column = 18 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
 Opcodes::TEMPORARY
-def name = 1 :: assign_id = 1982713077 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 3
-Opcodes::TEMPORARY DEFASSIGN
-def name = {main}_return :: assign_id = 1982713077 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 3
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<<
-def name = 1 :: assign_id = 1982713077 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 3
-TaintAnalysis set_tainted <<<<<<<<<<<<<<<<<<<<<< SAFE
+def name = 1 :: assign_id = 502721040 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+ResolveDefs::::temporary_simple
+def name = 1 :: assign_id = 502721040 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest '1'
+def name = instance1 :: assign_id = 1053357245 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : __construct
+search_nearest '1'
+def name = instance1 :: assign_id = 842979534 :: line = 13 :: column = 13 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance = 1 :: is_method =  :: is_property =  :: blockid = 0
+search_nearest '1'
+def name = set_boum1_param0_894221819 :: assign_id = 770538946 :: line = 14 :: column = 14 :: tainted = 1 :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest '1'
+def name = instance1 :: assign_id = 429286715 :: line = 14 :: column = 14 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method = 1 :: is_property =  :: blockid = 0
+method : set_boum1
+search_nearest '1'
+def name = echo_param0_1307052980 :: assign_id = 244044850 :: line = 15 :: column = 15 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest '1'
+def name = echo_param0_1902532834 :: assign_id = 180437649 :: line = 18 :: column = 18 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+search_nearest '1'
+def name = {main}_return :: assign_id = 502721040 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+Opcodes::TEMPORARY foreach ------------
+def name = 1 :: assign_id = 502721040 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+Opcodes::TEMPORARY foreach foreach !!!!!!!!!!!!!!!!!!!!!!!
+def name = {main}_return :: assign_id = 502721040 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+TaintAnalysis set_tainted safe
+def name = {main}_return :: assign_id = 502721040 :: line = -1 :: column = -1 :: tainted =  :: ref =  :: arr =  :: copyarray =  :: is_instance =  :: is_method =  :: is_property =  :: blockid = 0
+[./tests/oop/simple10.php] test result ko
+string(0) ""

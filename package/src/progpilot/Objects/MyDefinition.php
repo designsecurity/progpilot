@@ -235,6 +235,11 @@ class MyDefinition extends MyOp {
 		return $this->arr_value;
 	}
 
+	public function set_name($name)
+	{
+        $this->var_name = $name;
+	}
+
 	public function get_name()
 	{
 		return $this->var_name;

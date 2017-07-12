@@ -84,6 +84,14 @@ class VisitorDataflow {
                             $this->blocks = new \SplObjectStorage;
 
                             $this->current_block_id = 0;
+                            
+                            if($myfunc->is_method())
+                            {
+                                $thisdef = $myfunc->get_this_def();
+                                
+                                $this->defs->adddef($thisdef->get_name(), $thisdef);
+                                $this->defs->addgen($thisdef->get_block_id(), $thisdef);
+                            }
 
                             break;
                         }
@@ -162,19 +170,22 @@ class VisitorDataflow {
                             
                             if($myfunc_call->is_instance())
                             {
-                                $mydef = new MyDefinition(
+                                $mybackdef = new MyDefinition(
                                     $myfunc_call->getLine(), 
                                         $myfunc_call->getColumn(), 
-                                            $myfunc_call->get_name_instance(), false, false);
-                                $mydef->set_method(true);
-                                $mydef->set_block_id($this->current_block_id);
-                                $mydef->set_source_file($this->current_file);
-                                $mydef->method->set_name($myfunc_call->get_name());
+                                            $myfunc_call->get_name_instance(), 
+                                                false, false);
+                                $mybackdef->set_block_id($this->current_block_id);
+                                $mybackdef->set_method(true);
+                                $mybackdef->method->set_name($myfunc_call->get_name());
+                                $mybackdef->set_assign_id(rand());
+                                //$mybackdef->set_class_name($myfunc_call->get_myclass()->get_name());
+                                //$mybackdef->set_myclass($myfunc_call->get_myclass());
                                 
-                                $instruction->add_property("instance", $mydef);
-			
-                                $this->defs->adddef($mydef->get_name(), $mydef);
-                                $this->defs->addgen($mydef->get_block_id(), $mydef);
+                                $this->defs->adddef($mybackdef->get_name(), $mybackdef);
+                                $this->defs->addgen($mybackdef->get_block_id(), $mybackdef);
+                                
+                                $myfunc_call->set_back_def($mybackdef);
                             }
 
                             break;

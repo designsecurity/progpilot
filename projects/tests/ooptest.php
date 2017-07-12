@@ -49,8 +49,7 @@
 	$framework->add_output("./tests/oop/simple10.php", array("boum1"));
 	$framework->add_output("./tests/oop/simple10.php", array("5"));
 	$framework->add_output("./tests/oop/simple10.php", "xss");
-	
-	/*
+/*
 	$framework->add_testbasis("./tests/oop/simple11.php");
 	$framework->add_output("./tests/oop/simple11.php", array("boum1"));
 	$framework->add_output("./tests/oop/simple11.php", array("5"));
@@ -70,5 +69,10 @@
 	$framework->add_output("./tests/oop/simple14.php", array("boum2"));
 	$framework->add_output("./tests/oop/simple14.php", array("6"));
 	$framework->add_output("./tests/oop/simple14.php", "xss");
+	
+	$framework->add_testbasis("./tests/oop/simple15.php");
+	$framework->add_output("./tests/oop/simple15.php", array("boum2"));
+	$framework->add_output("./tests/oop/simple15.php", array("6"));
+	$framework->add_output("./tests/oop/simple15.php", "xss");
 	*/
 ?>

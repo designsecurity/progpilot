@@ -194,54 +194,99 @@ class TaintAnalysis {
         // assertions
 		if(!$safe)
 		{
+            echo "TaintAnalysis set_tainted safe\n";
+            $defassign->print_stdout();
 			// we are going to taint defassign's definitions		
 			// we are inside a class
 			if($defassign->get_name() == "this" && !is_null($myinstance))
 			{
-				$property = $myinstance->get_property($defassign->property->get_name());
+                $myinstances = $myinstance->method->get_myinstances();
+                
+                foreach($myinstances as $myinstance)
+                {
+                    $property = $myinstance->get_myclass()->get_property($defassign->property->get_name());
 
-				if(!is_null($property))
-				{
-					// with this visibility of property is ok, check is not needed
-                    if($property->is_tainted())
+                    if(!is_null($property))
                     {
-                        $property->set_tainted(true);
-                        $property->set_taintedbyexpr($expr);
+                        // with this visibility of property is ok, check is not needed
+                        if($property->is_tainted())
+                        {
+                            $property->set_tainted(true);
+                            $property->set_taintedbyexpr($expr);
+                        }
+                        else
+                        {
+                            $property->set_tainted(false);
+                            $property->set_taintedbyexpr(null);
+                        }
+                                                                    
+                        if($property->is_sanitized())
+                        {
+                            $property->set_type_sanitized($property->get_type_sanitized());
+                            $property->set_sanitized(true);
+                        }
                     }
-                    else
-                    {
-                        $property->set_tainted(false);
-                        $property->set_taintedbyexpr(null);
-                    }
-                                                                
-                    if($property->is_sanitized())
-                    {
-                        $property->set_type_sanitized($property->get_type_sanitized());
-                        $property->set_sanitized(true);
-                    }
-				}
-			}
-
+                }
+            }
 			else if($defassign->is_property())
 			{
 				// we can have multiple instances with the same property assigned
 				// we are looking for and instance, not a property	
 				//$properties = ResolveDefs::select_properties($data, $defassign, $myinstance);
 				
-				$properties = ResolveDefs::select_instances($data, $defassign, $myinstance);
-
+				
+                echo "TaintAnalysis set_tainted safe is_property\n";
+				
+				//$properties = ResolveDefs::select_properties($data, $defassign, $myinstance);
+				
+				$myinstances = $defassign->property->get_myinstances();
+				foreach($myinstances as $myinstance)
+                {
+                    $myclass = $myinstance->get_myclass();
+                    $property = $myclass->get_property($defassign->property->get_name());
+                    
+                    echo "TaintAnalysis set_tainted safe is_property foreach\n";
+                    
+                    if(!is_null($property))
+                    {
+                        if($def->is_tainted())
+                        {
+                            $property->set_tainted(true);
+                            $property->set_taintedbyexpr($expr);
+                            echo "TaintAnalysis set_tainted safe is_property foreach is_tainted\n";
+                        }
+                        else
+                        {
+                            $property->set_tainted(false);
+                            $property->set_taintedbyexpr(null);
+                        }
+                                                                
+                        if($property->is_sanitized())
+                        {
+                            $property->set_type_sanitized($property->get_type_sanitized());
+                            $property->set_sanitized(true);
+                        }
+                    }
+				}
+				
+/*
 				foreach($properties as $property_tab)
                 {
                     $class = $property_tab[0];
                     $property = $property_tab[1];
                     $visibility_property = $property_tab[2];
                     
+                    echo "TaintAnalysis set_tainted safe is_property foreach $visibility_property\n";
+                    $property->print_stdout();
+                    
                     if($property->is_property() && $visibility_property)
                     {
+                    echo "TaintAnalysis set_tainted safe is_property foreach $visibility_property is_property\n";
                         if($def->is_tainted())
                         {
                             $property->set_tainted(true);
                             $property->set_taintedbyexpr($expr);
+                    echo "TaintAnalysis set_tainted safe is_property foreach $visibility_property is_property is_tainted\n";
                         }
                         else
                         {
@@ -256,6 +301,7 @@ class TaintAnalysis {
                         }
                     }
                 }
+                */
 			}
 			else
 			{

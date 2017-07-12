@@ -24,6 +24,15 @@ class MyClass extends MyOp {
 		$this->properties = [];
 		$this->methods = [];
 	}
+	
+	public function __clone()
+	{
+        for($i = 0; $i < count($this->properties); $i++)
+            $this->properties[$i] = clone $this->properties[$i];
+        
+        for($i = 0; $i < count($this->methods); $i++)
+            $this->methods[$i] = clone $this->methods[$i];
+	}
 
 	public function add_method($method)
 	{

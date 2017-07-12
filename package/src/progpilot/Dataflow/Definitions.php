@@ -112,50 +112,54 @@ class Definitions {
 			return $truedefsfound;
 
 		$defsfound = [];
-		
-		
-        if(!is_null($inside_class) && !$defsearch->is_property()  && $defsearch->is_instance() && $defsearch->get_name() == "this")
-        {
-        /*
-            $property = $inside_class->get_property($defsearch->get_property_name());
-                
-            if(!is_null($property))
-                $defsfound[$defsearch->get_block_id()][] = [$property, $property->getLine(), $property->getColumn()];
-        */
-        
-            $defsfound[$def->get_block_id()][] = [$def, $defsearch->getLine(), $defsearch->getColumn()];
-        
-        }
             
 		foreach($data as $def)
 		{
+            echo "search_nearest '".$defsearch->get_name() ."'\n";
+            $def->print_stdout();
+                
 			if($def->get_name() == $defsearch->get_name() && $def->get_assign_id() != $defsearch->get_assign_id())
 			{
-                echo "search_nearest\n";
-                $def->print_stdout();
-                
+                echo "search_nearest ok name \n";
 				if($def->is_instance() && !$def->is_property() && !$def->is_method() && $defsearch->is_instance() && !$defsearch->is_property() && !$defsearch->is_method())
 				{		
+                echo "search_nearest ok [[[[instance \n";
 					$defsfound[$def->get_block_id()][] = [$def, $def->getLine(), $def->getColumn()];
 				}
 				
-				else if(!$def->is_instance() && ($def->is_property() || $def->is_method()) && $defsearch->is_instance() && !$defsearch->is_property() && !$defsearch->is_method())
+				else if(!$def->is_instance() && ($def->is_property() || $def->is_method()) && !$defsearch->is_instance() && ($defsearch->is_property() || $defsearch->is_method()))
 				{	
-                    $myinstances = $def->property->get_myinstances();
+                    echo "search_nearest ok [[[[property \n";
+                    if($def->is_property())
+                        $myinstances = $def->property->get_myinstances();
+                    else if($def->is_method())
+                        $myinstances = $def->method->get_myinstances();
+                        
                     foreach($myinstances as $myinstance)
                     {
+                        echo "search_nearest ok [[[[property foreach\n";
                         $myclass = $myinstance->get_myclass();
                         
                         if(!is_null($myclass))
                         {
-                            if($def->is_property())
-                                $attribute = $myclass->get_property($def->property->get_name());
-                            else if($def->is_method())
-                                $attribute = $myclass->get_method($def->method->get_name());
+                            echo "search_nearest ok [[[[property foreach !is_null(myclass)\n";
                             
+                            //var_dump($myclass);
+                            
+                            if($defsearch->is_property())
+                            {
+                            echo "search_nearest ok [[[[property foreach !is_null(myclass) property_name '".$defsearch->property->get_name()."'\n";
+                                $attribute = $myclass->get_property($defsearch->property->get_name());
+                            }
+                            else if($defsearch->is_method())
+                            { echo "search_nearest ok [[[[property foreach !is_null(myclass) method_name '".$defsearch->method->get_name()."'\n";
+                               
+                                $attribute = $myclass->get_method($defsearch->method->get_name());
+                            }
 
                             if(!is_null($attribute))
                             {
+                                echo "search_nearest ok [[[[property foreach !is_null(myclass) !is_null(attribute)\n";
                                 $defsfound[$def->get_block_id()][] = [$def, $def->getLine(), $def->getColumn()];
                                 break;
                             }
@@ -163,18 +167,21 @@ class Definitions {
                     }
 				}
 
-				else if(!$def->is_arr() && !$defsearch->is_arr() && !$def->is_property())
+				else if(!$def->is_arr() && !$defsearch->is_arr() && !$def->is_instance() && !$def->is_property() && !$def->is_method())
 				{
+                    echo "search_nearest ok [[[[normal \n";
 					$defsfound[$def->get_block_id()][] = [$def, $def->getLine(), $def->getColumn()];
 				}
 
 				else if($def->get_arr_value() == $defsearch->get_arr_value() && $def->is_arr() && $defsearch->is_arr())
 				{
+                    echo "search_nearest ok [[[[arr \n";
 					$defsfound[$def->get_block_id()][] = [$def, $def->getLine(), $def->getColumn()];
 				}
 
 				else if($def->is_copyarray() && $defsearch->is_arr())
 				{
+                    echo "search_nearest ok [[[[copyarr \n";
 					$copyarrays = $def->get_copyarrays();
 
 					foreach($copyarrays as $value)
@@ -374,6 +381,7 @@ class Definitions {
 		return null;
 	}
 	
+	// $def1 = all, $def2 = gen
 	public function def_equality($def1, $def2)
 	{
         if($def1->get_name() == $def2->get_name())

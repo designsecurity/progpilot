@@ -129,7 +129,7 @@ class VisitorAnalysis {
                                 return;
 
                             array_pop($this->call_stack);
-
+                            
                             $this->defs = $this->olddefs;
 
                             break;
@@ -166,6 +166,9 @@ class VisitorAnalysis {
                             
                             foreach($defs as $def)
                             {	
+                                echo "Opcodes::TEMPORARY foreach ------------\n";
+                                $def->print_stdout();
+                                
                                 $exprs = $def->get_exprs();
                                 foreach($exprs as $expr)
                                 {
@@ -173,7 +176,7 @@ class VisitorAnalysis {
                                     {
                                         $defassign = $expr->get_assign_def();
                            
-                                        echo "Opcodes::TEMPORARY foreach !!!!!!!!!!!!!!!!!!!!!!!\n";
+                                        echo "Opcodes::TEMPORARY foreach foreach !!!!!!!!!!!!!!!!!!!!!!!\n";
                                         $defassign->print_stdout();
                                         
                                         ResolveDefs::definition_myinstance_and_visibility($this->defs, $defassign, $this->inside_instance);
@@ -203,12 +206,10 @@ class VisitorAnalysis {
                             $list_myfunc = [];
                             if($myfunc_call->is_instance())
                             {
-                                $mydef_tmp = $instruction->get_property("instance");
-                            
-                                echo "Opcodes::FUNC_CALL <=======================================================>\n";
-                                $mydef_tmp->print_stdout();
-                                
-                                ResolveDefs::definition_myinstance_and_visibility($this->defs, $mydef_tmp, $this->inside_instance);
+                                $mydef_tmp = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance(), false, false);
+                                $mydef_tmp->set_block_id($myfunc_call->get_block_id());
+                                $mydef_tmp->set_method(true);
+                                $mydef_tmp->method->set_name($funcname);
                                 
                                 $instances = ResolveDefs::select_instances($this->defs, $mydef_tmp, $this->inside_instance);
                                 
@@ -221,11 +222,36 @@ class VisitorAnalysis {
                                     echo "Opcodes::FUNC_CALL °°°° foreach name = '".$method->get_name()."'\n";
                                     
                                     // the class is defined (! build in php class for example)
-                                    //$myclass = $myinstance->get_myclass();
                                     $myfunc = $myclass->get_method($funcname);
 
                                     if(!is_null($myfunc))
+                                    {
+                                        $mydefthis = $myfunc->get_this_def();
+                                        echo "================================================================== >>>>>>>>>>> !is_null(myfunc)\n";
+                                        $mydefthis->print_stdout();
+                                        
+                                        $clone_mydefthis = new MyDefinition(
+                                            $myfunc_call->getLine(), 
+                                                $myfunc_call->getColumn(),
+                                                    $myfunc_call->get_name_instance(),
+                                                        false,
+                                                            false);
+                                        
+                                        $clone_mydefthis->set_block_id($myfunc_call->get_block_id());
+                                        $clone_mydefthis->set_method(true);
+                                        $clone_mydefthis->method->set_name($funcname);
+                                        
+                                        $clone_mydefthis->print_stdout();
+                                        
+                                        ResolveDefs::definition_myinstance_and_visibility($this->defs, $clone_mydefthis, $this->inside_instance);
+
+                                        echo "------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> clone_mydefthis->method->get_myinstances() = '".count($clone_mydefthis->method->get_myinstances())."'\n";
+                                        
+                                        //var_dump($clone_mydefthis->method->get_myinstances());
+                                        $mydefthis->method->set_myinstances($clone_mydefthis->method->get_myinstances());
+                                        
                                         $list_myfunc[] = [$myfunc, $myclass];
+                                    }
                                     
                                     // twig analysis
                                     if($this->context->get_analyze_js())
@@ -273,7 +299,7 @@ class VisitorAnalysis {
                                             $mycodefunction->set_end($addr_end);
 
                                             if($myfunc->is_method())
-                                                $this->inside_instance = $myinstance;
+                                                $this->inside_instance = $mydef_tmp;
 
                                             $this->analyze($mycodefunction); 
 
@@ -281,6 +307,26 @@ class VisitorAnalysis {
 
                                             ArrayAnalysis::funccall_after($myfunc, $myfunc_call, $arr_funccall, $code[$index + 3]);
                                             TaintAnalysis::funccall_after($this->defs, $myfunc, $arr_funccall, $instruction);  
+                                        }
+                                        
+                                        if($myfunc_call->is_instance() && $myfunc->is_method())
+                                        {
+                                            $mybackdef = $myfunc_call->get_back_def();
+                                            $mythisdef = $myfunc->get_this_def();
+                                            $mythisdef_myinstances = $mythisdef->method->get_myinstances();
+                                            
+                                            foreach($mythisdef_myinstances as $myinstance)
+                                            {
+                                                $properties = $myinstance->get_myclass()->get_properties();
+                                                
+                                                foreach($properties as $property)
+                                                {
+                                                    echo "FOREACH FOREACH PROPERTY\n";
+                                                    $property->print_stdout();
+                                                }
+                                                
+                                                $mybackdef->method->add_myinstance($myinstance);
+                                            }
                                         }
                                     }
                                 }

@@ -45,6 +45,11 @@ class MyMethod extends MyOp {
 		return $this->method_name;
 	}
 	
+	public function set_myinstances($myinstances)
+	{
+        $this->myinstances = $myinstances;
+	}
+	
 	public function get_myinstances()
 	{
 		return $this->myinstances;

@@ -28,6 +28,9 @@ class MyFunction extends MyOp {
 	private $myclass;
 	private $instance;
 	private $block_id;
+	
+	private $this_def;
+	private $back_def;
 
 	public function __construct($name) {
 
@@ -40,6 +43,8 @@ class MyFunction extends MyOp {
 		$this->is_method = false;
 		$this->myclass = null;
 		$this->name_instance = null;
+		$this->this_def = null;
+		$this->back_def = null;
 		$this->block_id = 0;
 		$this->nb_params = 0;
 	}
@@ -66,6 +71,28 @@ class MyFunction extends MyOp {
 
 
 
+
+	public function get_this_def()
+	{
+		return $this->this_def;
+	}
+
+	public function set_this_def($this_def)
+	{
+		$this->this_def = $this_def;
+	}
+
+
+
+	public function get_back_def()
+	{
+		return $this->back_def;
+	}
+
+	public function set_back_def($back_def)
+	{
+		$this->back_def = $back_def;
+	}
 
 	public function is_instance()
 	{

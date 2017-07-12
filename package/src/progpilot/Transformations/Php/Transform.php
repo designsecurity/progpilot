@@ -83,49 +83,6 @@ class Transform implements Visitor {
 
 	public function enterBlock(Block $block, Block $prior = null) {
 	
-	/*
-        // if previous block has not been left, it is the case when block are inside another block (subblocks)
-        if(!$this->s_blocks_left->contains($block) && !is_null($this->context->get_current_block()))
-            $block->addParent($this->context->get_current_block());
-
-		// if we have an include, don't create a block for not natural subblock
-		if(!($this->context->get_current_op() instanceof Op\Expr\Include_))
-		{
-			// computation for the last block
-			if(!is_null($this->context->get_current_block()))
-			{
-				$address_end_block = count($this->context->get_mycode()->get_codes());
-				$myblock = $this->s_blocks[$this->context->get_current_block()];
-				//$myblock->set_end_address_block($address_end_block);
-
-				$inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
-				$inst_block->add_property("myblock", $myblock);
-				$this->context->get_mycode()->add_code($inst_block); 
-
-				unset($myblock);
-			}
-
-			// new = current block
-			$myblock = new MyBlock;
-			$myblock->set_start_address_block(count($this->context->get_mycode()->get_codes()));
-			$this->context->set_current_block($block);
-
-			$this->s_blocks[$block] = $myblock;
-
-			$inst_block = new MyInstruction(Opcodes::ENTER_BLOCK);
-			$inst_block->add_property("myblock", $myblock);
-			$this->context->get_mycode()->add_code($inst_block);
-
-			// block is for himself a parent block (handle dataflow for first block)
-			$block->addParent($block);
-			
-			$myblock->set_id(rand());
-			
-			echo "ENTER_BLOCK myblock id = '".$myblock->get_id()."' start_address = '".$myblock->get_start_address_block()."'\n";
-		}
-		*/
-		// new = current block
-		
         $this->inside_include = false;
 		if(!($this->context->get_current_op() instanceof Op\Expr\Include_))
 		{
@@ -185,6 +142,10 @@ class Transform implements Visitor {
 		$myfunction = new MyFunction($func->name);
 		$myfunction->set_start_address_func(count($this->context->get_mycode()->get_codes()));
 
+		$inst_func = new MyInstruction(Opcodes::ENTER_FUNCTION);
+		$inst_func->add_property("myfunc", $myfunction);
+		$this->context->get_mycode()->add_code($inst_func);
+
 		if(!is_null($func->class))
 		{
 			$class_name = $func->class->value;
@@ -198,12 +159,16 @@ class Transform implements Visitor {
 				$myfunction->set_visibility(Common::get_type_visibility($func->flags));
 				$myfunction->set_is_method(true);
 				$myfunction->set_myclass($myclass);
+				
+                $mythisdef = new MyDefinition(0, 0, "this", false, false);
+                $mythisdef->set_block_id(0);
+                $mythisdef->set_instance(true);
+                $mythisdef->set_class_name($myclass->get_name());
+                $mythisdef->set_myclass($myclass);
+			
+				$myfunction->set_this_def($mythisdef);
 			}
 		}
-
-		$inst_func = new MyInstruction(Opcodes::ENTER_FUNCTION);
-		$inst_func->add_property("myfunc", $myfunction);
-		$this->context->get_mycode()->add_code($inst_func);
 
 		foreach($func->params as $param)
 		{
