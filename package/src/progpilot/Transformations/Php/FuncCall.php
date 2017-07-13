@@ -67,14 +67,16 @@ class FuncCall {
 
 		// instance_name = new obj; instance_name->method_name()
 		if($is_method)
+		{
 			$instance_name = Common::get_name_definition($context->get_current_op()->var);
-
+        }
+        
 		$funccall_name = "";
 		if($context->get_current_op() instanceof Op\Expr\New_)
 		{
 			$funccall_name = "__construct";
 			// we have the class name
-			$instance_name = $context->get_current_op()->class->value;
+			$class_name = $context->get_current_op()->class->value;
 			$is_method = true;
 
 			$instance_name = Common::get_name_definition($context->get_current_op()->result->usages[0]);
@@ -94,6 +96,10 @@ class FuncCall {
 			// when we define a method in a class (is_method = true) but when we use a method (is_instance = true)
 			$myfunction_call->set_is_instance(true);
 			$myfunction_call->set_name_instance($instance_name);
+					
+            $mybackdef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $instance_name, false, false);
+            $mybackdef->set_instance(true);
+            $myfunction_call->set_back_def($mybackdef);
 		}
 
 		foreach($context->get_current_op()->args as $arg)

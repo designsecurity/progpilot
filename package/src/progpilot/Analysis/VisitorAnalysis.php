@@ -158,17 +158,10 @@ class VisitorAnalysis {
                     case Opcodes::TEMPORARY:
                         {
                             $tempdefa = $instruction->get_property("temporary");
-                            
-                            echo "Opcodes::TEMPORARY\n";
-                            $tempdefa->print_stdout();
-                            
-                            $defs = ResolveDefs::temporary_simple($this->defs, $tempdefa, $this->inside_instance);
+                            $defs = ResolveDefs::temporary_simple($this->defs, $tempdefa);
                             
                             foreach($defs as $def)
                             {	
-                                echo "Opcodes::TEMPORARY foreach ------------\n";
-                                $def->print_stdout();
-                                
                                 $exprs = $def->get_exprs();
                                 foreach($exprs as $expr)
                                 {
@@ -176,18 +169,13 @@ class VisitorAnalysis {
                                     {
                                         $defassign = $expr->get_assign_def();
                            
-                                        echo "Opcodes::TEMPORARY foreach foreach !!!!!!!!!!!!!!!!!!!!!!!\n";
-                                        $defassign->print_stdout();
-                                        
-                                        ResolveDefs::definition_myinstance_and_visibility($this->defs, $defassign, $this->inside_instance);
-
                                         $defassign->last_known_value($def->get_last_known_value());
 
                                         ArrayAnalysis::copy_array($this->defs, $def, $def->get_arr_value(), $defassign, $defassign->get_arr_value());
                                         
-                                        $safe = AssertionAnalysis::temporary_simple($this->defs, $this->current_myblock, $def, $tempdefa, $this->inside_instance);
+                                        $safe = AssertionAnalysis::temporary_simple($this->defs, $this->current_myblock, $def, $tempdefa);
 
-                                        TaintAnalysis::set_tainted($this->defs, $def, $defassign, $expr, $safe, $this->inside_instance); 
+                                        TaintAnalysis::set_tainted($this->defs, $def, $defassign, $expr, $safe); 
                                     }
                                 }
                             }
@@ -211,56 +199,30 @@ class VisitorAnalysis {
                                 $mydef_tmp->set_method(true);
                                 $mydef_tmp->method->set_name($funcname);
                                 
-                                $instances = ResolveDefs::select_instances($this->defs, $mydef_tmp, $this->inside_instance);
-                                
-                                foreach($instances as $instance_tab)
+                                $instances_pre = ResolveDefs::select_instances($this->defs, $mydef_tmp);
+                                $instances = Definitions::unique_nearest_byblock($myfunc_call->getLine(), $myfunc_call->getColumn(), $instances_pre);
+        
+                                foreach($instances as $instance)
                                 {
-                                    $myclass = $instance_tab[0];
-                                    $method = $instance_tab[1];
-                                    $visibility_instance = $instance_tab[2];
-                                    
-                                    echo "Opcodes::FUNC_CALL °°°° foreach name = '".$method->get_name()."'\n";
-                                    
-                                    // the class is defined (! build in php class for example)
-                                    $myfunc = $myclass->get_method($funcname);
-
-                                    if(!is_null($myfunc))
+                                    if($instance->is_instance())
                                     {
-                                        $mydefthis = $myfunc->get_this_def();
-                                        echo "================================================================== >>>>>>>>>>> !is_null(myfunc)\n";
-                                        $mydefthis->print_stdout();
-                                        
-                                        $clone_mydefthis = new MyDefinition(
-                                            $myfunc_call->getLine(), 
-                                                $myfunc_call->getColumn(),
-                                                    $myfunc_call->get_name_instance(),
-                                                        false,
-                                                            false);
-                                        
-                                        $clone_mydefthis->set_block_id($myfunc_call->get_block_id());
-                                        $clone_mydefthis->set_method(true);
-                                        $clone_mydefthis->method->set_name($funcname);
-                                        
-                                        $clone_mydefthis->print_stdout();
-                                        
-                                        ResolveDefs::definition_myinstance_and_visibility($this->defs, $clone_mydefthis, $this->inside_instance);
+                                        // the class is defined (! build in php class for example)
+                                        $myclass = $instance->get_myclass();
+                                        $myfunc = $myclass->get_method($funcname);
 
-                                        echo "------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> clone_mydefthis->method->get_myinstances() = '".count($clone_mydefthis->method->get_myinstances())."'\n";
+                                        if(!is_null($myfunc))
+                                            $list_myfunc[] = [$myfunc, $myclass];
                                         
-                                        //var_dump($clone_mydefthis->method->get_myinstances());
-                                        $mydefthis->method->set_myinstances($clone_mydefthis->method->get_myinstances());
                                         
-                                        $list_myfunc[] = [$myfunc, $myclass];
-                                    }
-                                    
-                                    // twig analysis
-                                    if($this->context->get_analyze_js())
-                                    {
-                                        if($myclass->get_name() == "Twig_Environment")
+                                        // twig analysis
+                                        if($this->context->get_analyze_js())
                                         {
-                                            if($myfunc_call->get_name() == "render")
+                                            if($myclass->get_name() == "Twig_Environment")
                                             {
-                                                TwigAnalysis::funccall($this->context, $myfunc_call, $instruction);
+                                                if($myfunc_call->get_name() == "render")
+                                                {
+                                                    TwigAnalysis::funccall($this->context, $myfunc_call, $instruction);
+                                                }
                                             }
                                         }
                                     }
@@ -286,7 +248,6 @@ class VisitorAnalysis {
                                     // the called function is a method and this method exists in the class 
                                     if($myfunc_call->is_instance() && $myfunc->is_method() || (!$myfunc_call->is_instance() && !$myfunc->is_method()))
                                     {
-                                        echo "))))))))))))))))))))))) myfunc_call is_instance\n";
                                         // the called function is defined in our project (not php build'in function)
                                         if($addr_start >= 0)
                                         {
@@ -299,41 +260,29 @@ class VisitorAnalysis {
                                             $mycodefunction->set_end($addr_end);
 
                                             if($myfunc->is_method())
+                                            {
+                                                ResolveDefs::instance_build_this($this->defs, $myfunc, $myfunc_call);
                                                 $this->inside_instance = $mydef_tmp;
-
+                                            }
+                                            
                                             $this->analyze($mycodefunction); 
 
+                                            if($myfunc->is_method())
+                                            {
+                                                ResolveDefs::instance_build_back($this->defs, $myfunc, $myfunc_call);
+                                            }
                                             $this->inside_instance = null;
+                                            
 
                                             ArrayAnalysis::funccall_after($myfunc, $myfunc_call, $arr_funccall, $code[$index + 3]);
                                             TaintAnalysis::funccall_after($this->defs, $myfunc, $arr_funccall, $instruction);  
-                                        }
-                                        
-                                        if($myfunc_call->is_instance() && $myfunc->is_method())
-                                        {
-                                            $mybackdef = $myfunc_call->get_back_def();
-                                            $mythisdef = $myfunc->get_this_def();
-                                            $mythisdef_myinstances = $mythisdef->method->get_myinstances();
-                                            
-                                            foreach($mythisdef_myinstances as $myinstance)
-                                            {
-                                                $properties = $myinstance->get_myclass()->get_properties();
-                                                
-                                                foreach($properties as $property)
-                                                {
-                                                    echo "FOREACH FOREACH PROPERTY\n";
-                                                    $property->print_stdout();
-                                                }
-                                                
-                                                $mybackdef->method->add_myinstance($myinstance);
-                                            }
                                         }
                                     }
                                 }
                                 
                                 if(is_null($myfunc))
                                 {
-                                    TaintAnalysis::funccall_sanitizer($this->context, $this->defs, $myfunc_call, $arr_funccall, $instruction, $index, $this->inside_instance);  
+                                    TaintAnalysis::funccall_sanitizer($this->context, $this->defs, $myfunc_call, $arr_funccall, $instruction, $index);  
                                     TaintAnalysis::funccall_source($this->context, $this->defs, $myfunc_call, $arr_funccall, $instruction);     
                                 }
                             }

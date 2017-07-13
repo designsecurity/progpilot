@@ -163,10 +163,7 @@ class Transform implements Visitor {
                 $mythisdef = new MyDefinition(0, 0, "this", false, false);
                 $mythisdef->set_block_id(0);
                 $mythisdef->set_instance(true);
-                $mythisdef->set_class_name($myclass->get_name());
-                $mythisdef->set_myclass($myclass);
-			
-				$myfunction->set_this_def($mythisdef);
+                $myfunction->set_this_def($mythisdef);
 			}
 		}
 
@@ -214,6 +211,9 @@ class Transform implements Visitor {
 			$class_name = $func->class->value;
 
 		$myfunction = $this->context->get_functions()->get_function($func->name, $class_name);
+		$myfunction->set_last_line($this->context->get_current_line());
+		$myfunction->set_last_column($this->context->get_current_column());
+		$myfunction->set_last_block_id(-1);
 
 		$address_func = count($this->context->get_mycode()->get_codes());
 		$myfunction->set_end_address_func($address_func);
@@ -233,9 +233,12 @@ class Transform implements Visitor {
 				($op instanceof Op\Expr && !($op instanceof Op\Expr\Assertion)) || 
 				$op instanceof Op\Terminal)
 		{
-			$this->context->set_current_line($op->getLine());
-			$this->context->set_current_column($op->getColumn());
-		}
+            if($op->getLine() != -1 && $op->getColumn() != -1)
+            {
+                $this->context->set_current_line($op->getLine());
+                $this->context->set_current_column($op->getColumn());
+            }
+        }
 
 		/*
 		   const TYPE_INCLUDE = 1;

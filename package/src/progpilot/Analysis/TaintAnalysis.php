@@ -21,7 +21,7 @@ use progpilot\Code\Opcodes;
 
 class TaintAnalysis {
 
-	public static function funccall_sanitizer($context, $data, $myfunc_call, $arr_funccall, $instruction, $index, $myinstance)
+	public static function funccall_sanitizer($context, $data, $myfunc_call, $arr_funccall, $instruction, $index)
 	{     
 		$params_tainted = false;
 		$exprs_tainted = [];
@@ -72,7 +72,7 @@ class TaintAnalysis {
 			if($params_tainted)
 			{
                 for($j = 0; $j < count($defs_tainted); $j ++)  
-                    TaintAnalysis::set_tainted($data, $defs_tainted[$j], $mydef_return, $exprs_tainted[$j], false, $myinstance); 
+                    TaintAnalysis::set_tainted($data, $defs_tainted[$j], $mydef_return, $exprs_tainted[$j], false); 
             }
             
 			
@@ -189,134 +189,39 @@ class TaintAnalysis {
 		unset($params);
 	}
 	
-	public static function set_tainted($data, $def, $defassign, $expr, $safe, $myinstance)
+	public static function set_tainted($data, $def, $defassign, $expr, $safe)
 	{	           
         // assertions
 		if(!$safe)
 		{
-            echo "TaintAnalysis set_tainted safe\n";
-            $defassign->print_stdout();
-			// we are going to taint defassign's definitions		
-			// we are inside a class
-			if($defassign->get_name() == "this" && !is_null($myinstance))
-			{
-                $myinstances = $myinstance->method->get_myinstances();
-                
-                foreach($myinstances as $myinstance)
+            $visibility_final = true;
+            if($defassign->is_property())
+            {
+                $visibility_final = false;
+                $instances_pre = ResolveDefs::select_instances($data, $defassign);
+                $instances = Definitions::unique_nearest_byblock($defassign->getLine(), $defassign->getColumn(), $instances_pre);
+        
+                foreach($instances as $instance)
                 {
-                    $property = $myinstance->get_myclass()->get_property($defassign->property->get_name());
-
-                    if(!is_null($property))
+                    if($instance->is_instance())
                     {
-                        // with this visibility of property is ok, check is not needed
-                        if($property->is_tainted())
-                        {
-                            $property->set_tainted(true);
-                            $property->set_taintedbyexpr($expr);
-                        }
-                        else
-                        {
-                            $property->set_tainted(false);
-                            $property->set_taintedbyexpr(null);
-                        }
-                                                                    
-                        if($property->is_sanitized())
-                        {
-                            $property->set_type_sanitized($property->get_type_sanitized());
-                            $property->set_sanitized(true);
-                        }
+                        $visibility_final = true;
+                        break;
                     }
                 }
             }
-			else if($defassign->is_property())
-			{
-				// we can have multiple instances with the same property assigned
-				// we are looking for and instance, not a property	
-				//$properties = ResolveDefs::select_properties($data, $defassign, $myinstance);
-				
-				
-                echo "TaintAnalysis set_tainted safe is_property\n";
-				
-				//$properties = ResolveDefs::select_properties($data, $defassign, $myinstance);
-				
-				$myinstances = $defassign->property->get_myinstances();
-				foreach($myinstances as $myinstance)
-                {
-                    $myclass = $myinstance->get_myclass();
-                    $property = $myclass->get_property($defassign->property->get_name());
-                    
-                    echo "TaintAnalysis set_tainted safe is_property foreach\n";
-                    
-                    if(!is_null($property))
-                    {
-                        if($def->is_tainted())
-                        {
-                            $property->set_tainted(true);
-                            $property->set_taintedbyexpr($expr);
-                            echo "TaintAnalysis set_tainted safe is_property foreach is_tainted\n";
-                        }
-                        else
-                        {
-                            $property->set_tainted(false);
-                            $property->set_taintedbyexpr(null);
-                        }
-                                                                
-                        if($property->is_sanitized())
-                        {
-                            $property->set_type_sanitized($property->get_type_sanitized());
-                            $property->set_sanitized(true);
-                        }
-                    }
-				}
-				
-/*
-				foreach($properties as $property_tab)
-                {
-                    $class = $property_tab[0];
-                    $property = $property_tab[1];
-                    $visibility_property = $property_tab[2];
-                    
-                    echo "TaintAnalysis set_tainted safe is_property foreach $visibility_property\n";
-                    $property->print_stdout();
-                    
-                    if($property->is_property() && $visibility_property)
-                    {
-                    echo "TaintAnalysis set_tainted safe is_property foreach $visibility_property is_property\n";
-                        if($def->is_tainted())
-                        {
-                            $property->set_tainted(true);
-                            $property->set_taintedbyexpr($expr);
-                    echo "TaintAnalysis set_tainted safe is_property foreach $visibility_property is_property is_tainted\n";
-                        }
-                        else
-                        {
-                            $property->set_tainted(false);
-                            $property->set_taintedbyexpr(null);
-                        }
-                                                                
-                        if($property->is_sanitized())
-                        {
-                            $property->set_type_sanitized($property->get_type_sanitized());
-                            $property->set_sanitized(true);
-                        }
-                    }
-                }
-                */
-			}
-			else
-			{
-                if($def->is_tainted())
-                {
-                    $defassign->set_tainted(true);
-                    $defassign->set_taintedbyexpr($expr);
-                }
-                                                                
-                if($def->is_sanitized())
-                {
-                    $defassign->set_type_sanitized($def->get_type_sanitized());
-                    $defassign->set_sanitized(true);
-                }
-			}
+            
+            if($def->is_tainted() && $visibility_final)
+            {
+                $defassign->set_tainted(true);
+                $defassign->set_taintedbyexpr($expr);
+            }
+                                                                    
+            if($def->is_sanitized() && $visibility_final)
+            {
+                $defassign->set_type_sanitized($def->get_type_sanitized());
+                $defassign->set_sanitized(true);
+            }
 		}
 	}
 }

@@ -53,6 +53,7 @@ class VisitorDataflow {
 		$code = $mycode->get_codes();
 		
 		$blocks_stack_id = [];
+		$last_block_id = 0;
 
 		do
 		{
@@ -133,6 +134,8 @@ class VisitorDataflow {
                                 $this->current_block_id = $blocks_stack_id[count($blocks_stack_id) - 1];
 
                             $this->defs->computekill($blockid);
+                            
+                            $last_block_id = $blockid;
 
                             break;
                         }
@@ -143,6 +146,7 @@ class VisitorDataflow {
                             $this->defs->reachingDefs($this->blocks);
 
                             $myfunc = $instruction->get_property("myfunc");
+                            $myfunc->set_last_block_id($last_block_id);
 
                             break;
                         }
@@ -170,22 +174,17 @@ class VisitorDataflow {
                             
                             if($myfunc_call->is_instance())
                             {
-                                $mybackdef = new MyDefinition(
-                                    $myfunc_call->getLine(), 
-                                        $myfunc_call->getColumn(), 
-                                            $myfunc_call->get_name_instance(), 
-                                                false, false);
+                                $mybackdef = $myfunc_call->get_back_def();
                                 $mybackdef->set_block_id($this->current_block_id);
-                                $mybackdef->set_method(true);
-                                $mybackdef->method->set_name($myfunc_call->get_name());
-                                $mybackdef->set_assign_id(rand());
-                                //$mybackdef->set_class_name($myfunc_call->get_myclass()->get_name());
-                                //$mybackdef->set_myclass($myfunc_call->get_myclass());
                                 
-                                $this->defs->adddef($mybackdef->get_name(), $mybackdef);
-                                $this->defs->addgen($mybackdef->get_block_id(), $mybackdef);
+                                $copy_mybackdef = clone $mybackdef;
+                                $copy_mybackdef->set_method(true);
+                                $copy_mybackdef->method->set_name($myfunc_call->get_name());
+                                $copy_mybackdef->set_assign_id(rand());
                                 
-                                $myfunc_call->set_back_def($mybackdef);
+                                //$this->defs->adddef($mybackdef->get_name(), $mybackdef);
+                                //$this->defs->addgen($mybackdef->get_block_id(), $mybackdef);
+                                
                             }
 
                             break;
@@ -212,6 +211,8 @@ class VisitorDataflow {
                             
                             if($mydef->is_instance())
                             {
+                                    echo "definition my class\n";
+                                    $mydef->print_stdout();
                                 $myclass = $context->get_classes()->get_myclass($mydef->get_class_name());
                                 if(!is_null($myclass))
                                     $mydef->set_myclass($myclass);

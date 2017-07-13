@@ -31,6 +31,10 @@ class MyFunction extends MyOp {
 	
 	private $this_def;
 	private $back_def;
+	
+	private $last_line;
+	private $last_column;
+	private $last_block_id;
 
 	public function __construct($name) {
 
@@ -47,8 +51,45 @@ class MyFunction extends MyOp {
 		$this->back_def = null;
 		$this->block_id = 0;
 		$this->nb_params = 0;
+		
+		$this->last_line = 0;
+		$this->last_column = 0;
+		$this->last_block_id = 0;
 	}
 
+	public function set_last_line($last_line)
+	{
+		$this->last_line = $last_line;
+	}
+
+	public function set_last_column($last_column)
+	{
+		$this->last_column = $last_column;
+	}
+	
+	public function set_last_block_id($last_block_id)
+	{
+		$this->last_block_id = $last_block_id;
+	}
+
+	public function get_last_line()
+	{
+		return $this->last_line;
+	}
+
+	public function get_last_column()
+	{
+		return $this->last_column;
+	}
+	
+	public function get_last_block_id()
+	{
+		return $this->last_block_id;
+	}
+	
+	
+	
+	
 	public function is_method()
 	{
 		return $this->is_method;
@@ -58,6 +99,7 @@ class MyFunction extends MyOp {
 	{
 		$this->is_method = $method;
 	}
+
 
 	public function get_myclass()
 	{

@@ -12,7 +12,7 @@ namespace progpilot\Analysis;
 
 class AssertionAnalysis {
 
-	public static function temporary_simple($data, $myblock, $resolve_temporary, $tempdefa, $inside_instance)
+	public static function temporary_simple($data, $myblock, $resolve_temporary, $tempdefa)
 	{
 		$assertions = $myblock->get_assertions();
 
@@ -24,7 +24,7 @@ class AssertionAnalysis {
 			$type_assertion = $assertion->get_type();
 			$assertions_defs[] = $mydef;
 
-			$defs_assert = ResolveDefs::temporary_simple($data, $mydef, $inside_instance);
+			$defs_assert = ResolveDefs::temporary_simple($data, $mydef);
 
 			$equality = false;
 			if($mydef == $defs_assert[0])
