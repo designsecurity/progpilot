@@ -27,7 +27,6 @@ class VisitorAnalysis {
 	private $defs;
 	private $olddefs;
 
-	private $inside_instance;
 	private $current_myblock;
 	private $old_myblock;
 
@@ -188,7 +187,7 @@ class VisitorAnalysis {
                             $funcname = $instruction->get_property("funcname");
                             $arr_funccall = $instruction->get_property("arr");
                             $myfunc_call = $instruction->get_property("myfunc_call");
-
+                            
                             SecurityAnalysis::funccall($this->context, $myfunc_call, $instruction);
                             
                             $list_myfunc = [];
@@ -199,20 +198,23 @@ class VisitorAnalysis {
                                 $mydef_tmp->set_method(true);
                                 $mydef_tmp->method->set_name($funcname);
                                 
-                                $instances_pre = ResolveDefs::select_instances($this->defs, $mydef_tmp);
+                                echo "Opcodes::FUNC_CALL\n";
+                                $mydef_tmp->print_stdout();
+                                
+                                $instances_pre = ResolveDefs::select_instances_ins($this->defs, $mydef_tmp);
                                 $instances = Definitions::unique_nearest_byblock($myfunc_call->getLine(), $myfunc_call->getColumn(), $instances_pre);
         
                                 foreach($instances as $instance)
                                 {
                                     if($instance->is_instance())
                                     {
+                                echo "Opcodes::FUNC_CALL foreach is_instance\n";
+                                $instance->print_stdout();
                                         // the class is defined (! build in php class for example)
                                         $myclass = $instance->get_myclass();
                                         $myfunc = $myclass->get_method($funcname);
 
-                                        if(!is_null($myfunc))
-                                            $list_myfunc[] = [$myfunc, $myclass];
-                                        
+                                        $list_myfunc[] = [$myfunc, $myclass];
                                         
                                         // twig analysis
                                         if($this->context->get_analyze_js())
@@ -240,6 +242,8 @@ class VisitorAnalysis {
                                 $myfunc = $tabfunc[0];
                                 $myinstance = $tabfunc[1];
 
+                                ResolveDefs::instance_build_this($this->defs, $myfunc, $myfunc_call);
+                                                
                                 if(!is_null($myfunc) && !$this->in_call_stack($myfunc))
                                 {
                                     $addr_start = $myfunc->get_start_address_func();
@@ -259,26 +263,15 @@ class VisitorAnalysis {
                                             $mycodefunction->set_start($addr_start);
                                             $mycodefunction->set_end($addr_end);
 
-                                            if($myfunc->is_method())
-                                            {
-                                                ResolveDefs::instance_build_this($this->defs, $myfunc, $myfunc_call);
-                                                $this->inside_instance = $mydef_tmp;
-                                            }
+                                            $this->analyze($mycodefunction);
                                             
-                                            $this->analyze($mycodefunction); 
-
-                                            if($myfunc->is_method())
-                                            {
-                                                ResolveDefs::instance_build_back($this->defs, $myfunc, $myfunc_call);
-                                            }
-                                            $this->inside_instance = null;
-                                            
-
                                             ArrayAnalysis::funccall_after($myfunc, $myfunc_call, $arr_funccall, $code[$index + 3]);
                                             TaintAnalysis::funccall_after($this->defs, $myfunc, $arr_funccall, $instruction);  
                                         }
                                     }
                                 }
+                                
+                                ResolveDefs::instance_build_back($this->defs, $myfunc, $myfunc_call);
                                 
                                 if(is_null($myfunc))
                                 {

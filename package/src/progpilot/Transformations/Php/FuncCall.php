@@ -97,8 +97,9 @@ class FuncCall {
 			$myfunction_call->set_is_instance(true);
 			$myfunction_call->set_name_instance($instance_name);
 					
-            $mybackdef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $instance_name, false, false);
+            $mybackdef = new MyDefinition($context->get_current_line(), $context->get_current_column()+1, $instance_name, false, false);
             $mybackdef->set_instance(true);
+            $mybackdef->set_assign_id(rand());
             $myfunction_call->set_back_def($mybackdef);
 		}
 

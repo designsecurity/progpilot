@@ -75,6 +75,7 @@ class Definitions {
 		}
 	}
 
+	// op is nearest than def
 	public static function is_nearest($lineop, $columnop, $linedef, $columdef)
 	{
 		if(($lineop > $linedef) || ($lineop == $linedef &&  $columnop >= $columdef))
@@ -129,16 +130,20 @@ class Definitions {
 		{
 			if($def->get_name() == $defsearch->get_name() && $def->get_assign_id() != $defsearch->get_assign_id())
 			{
-				if($def->is_instance() && !$def->is_property() && !$def->is_method() && $defsearch->is_instance() && $defsearch->is_property() && !$defsearch->is_method())
+				if($def->is_instance() && !$def->is_property() && !$def->is_method() && $defsearch->is_instance() && !$defsearch->is_property() && !$defsearch->is_method())
 				{		
-                    echo "search_nearest instance ok\n";
-                    $def->print_stdout();
-                    
+                    $defsfound[$def->get_block_id()][] = [$def, $def->getLine(), $def->getColumn()];
+				}
+				
+				else if($def->is_instance() && !$def->is_property() && !$def->is_method() && $defsearch->is_instance() && $defsearch->is_property() && !$defsearch->is_method())
+				{		
                     $myclass = $def->get_myclass();
                     $property = $myclass->get_property($defsearch->property->get_name());
 
                     if(!is_null($property) && Definitions::get_visibility($myclass, $property))
+                    {
                         $defsfound[$def->get_block_id()][] = [$def, $def->getLine(), $def->getColumn()];
+                    }
 				}
 				
 				else if($def->is_instance() && !$def->is_property() && !$def->is_method() && $defsearch->is_instance() && !$defsearch->is_property() && $defsearch->is_method())
@@ -147,7 +152,9 @@ class Definitions {
                     $method = $myclass->get_method($defsearch->method->get_name());
 
                     if(!is_null($method))
-                        $defsfound[$def->get_block_id()][] = [$def, $def->getLine(), $def->getColumn()];
+                    {
+                        $defsfound[$def->get_block_id()][] = [$def, $def->getLine(), $def->getColumn()];   
+                    }
 				}
 				
 				else if(!$def->is_instance() && $def->is_property() && !$defsearch->is_instance() && $defsearch->is_property())

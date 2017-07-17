@@ -36,7 +36,18 @@ class MyClass extends MyOp {
 
 	public function add_method($method)
 	{
-		$this->methods[] = $method;
+        $exist = false;
+        foreach($this->methods as $method_class)
+        {
+            if($method_class->get_name() == $method->get_name())
+            {
+                $exist = true;
+                break;
+            }
+        }
+        
+        if(!$exist)
+            $this->methods[] = $method;
 	}
 
 	public function get_method($name)
@@ -62,7 +73,18 @@ class MyClass extends MyOp {
 
 	public function add_property($property)
 	{
-		$this->properties[] = $property;
+        $exist = false;
+        foreach($this->properties as $property_class)
+        {
+            if($property_class->get_name() == $property->get_name())
+            {
+                $exist = true;
+                break;
+            }
+        }
+        
+        if(!$exist)
+            $this->properties[] = $property;
 	}
 
 	public function get_property($name)

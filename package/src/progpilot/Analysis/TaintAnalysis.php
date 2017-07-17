@@ -88,25 +88,6 @@ class TaintAnalysis {
 				foreach($params_type_sanitized as $tmp)
 					$mydef_return->add_type_sanitized($tmp);
 			}
-			/*         
-			if(count($resolve_defs_assign) > 0)
-            {
-                foreach($resolve_defs_assign as $resolve_def)
-                {
-                    if(!is_null($mysanitizer))
-                    {
-                        $resolve_def->set_sanitized(true);
-                        $resolve_def->add_type_sanitized($mysanitizer->get_prevent());
-                    }
-
-                    if($params_sanitized)
-                    {
-                        $resolve_def->set_sanitized(true);
-                        foreach($params_type_sanitized as $tmp)
-                            $resolve_def->add_type_sanitized($tmp);
-                    }
-                }
-            }*/
 		}
 	}
 	

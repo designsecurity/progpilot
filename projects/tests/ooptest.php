@@ -39,21 +39,21 @@
 	$framework->add_output("./tests/oop/simple8.php", array("instance1"));
 	$framework->add_output("./tests/oop/simple8.php", array("16"));
 	$framework->add_output("./tests/oop/simple8.php", "xss");
-	
+	*/
 	
 	$framework->add_testbasis("./tests/oop/simple9.php");
 	$framework->add_output("./tests/oop/simple9.php", array("boum1"));
 	$framework->add_output("./tests/oop/simple9.php", array("7"));
 	$framework->add_output("./tests/oop/simple9.php", "xss");
-	*/
+	/*
 	$framework->add_testbasis("./tests/oop/simple10.php");
 	$framework->add_output("./tests/oop/simple10.php", array("boum1"));
 	$framework->add_output("./tests/oop/simple10.php", array("5"));
 	$framework->add_output("./tests/oop/simple10.php", "xss");
-/*
+    
 	$framework->add_testbasis("./tests/oop/simple11.php");
-	$framework->add_output("./tests/oop/simple11.php", array("boum1"));
-	$framework->add_output("./tests/oop/simple11.php", array("5"));
+	$framework->add_output("./tests/oop/simple11.php", array("instance1"));
+	$framework->add_output("./tests/oop/simple11.php", array("18"));
 	$framework->add_output("./tests/oop/simple11.php", "xss");
 	
 	$framework->add_testbasis("./tests/oop/simple12.php");
@@ -62,18 +62,18 @@
 	$framework->add_output("./tests/oop/simple12.php", "xss");
 	
 	$framework->add_testbasis("./tests/oop/simple13.php");
-	$framework->add_output("./tests/oop/simple13.php", array("boudsm1"));
-	$framework->add_output("./tests/oop/simple13.php", array("5"));
+	$framework->add_output("./tests/oop/simple13.php", array("instance1"));
+	$framework->add_output("./tests/oop/simple13.php", array("14"));
 	$framework->add_output("./tests/oop/simple13.php", "xss");
-	
+    
 	$framework->add_testbasis("./tests/oop/simple14.php");
-	$framework->add_output("./tests/oop/simple14.php", array("boum2"));
-	$framework->add_output("./tests/oop/simple14.php", array("6"));
+	$framework->add_output("./tests/oop/simple14.php", array("instance1"));
+	$framework->add_output("./tests/oop/simple14.php", array("11"));
 	$framework->add_output("./tests/oop/simple14.php", "xss");
 	
 	$framework->add_testbasis("./tests/oop/simple15.php");
-	$framework->add_output("./tests/oop/simple15.php", array("boum2"));
-	$framework->add_output("./tests/oop/simple15.php", array("6"));
+	$framework->add_output("./tests/oop/simple15.php", array("boum1"));
+	$framework->add_output("./tests/oop/simple15.php", array("5"));
 	$framework->add_output("./tests/oop/simple15.php", "xss");
 	*/
 ?>

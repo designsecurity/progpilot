@@ -14,6 +14,7 @@ use progpilot\Objects\MyInstance;
 use progpilot\Objects\MyCode;
 use progpilot\Objects\ArrayStatic;
 use progpilot\Objects\MyDefinition;
+use progpilot\Objects\MyClass;
 
 use progpilot\Dataflow\Definitions;
 use progpilot\Code\Opcodes;
@@ -176,15 +177,15 @@ class VisitorDataflow {
                             {
                                 $mybackdef = $myfunc_call->get_back_def();
                                 $mybackdef->set_block_id($this->current_block_id);
+                                $mybackdef->set_instance(true);
                                 
-                                $copy_mybackdef = clone $mybackdef;
-                                $copy_mybackdef->set_method(true);
-                                $copy_mybackdef->method->set_name($myfunc_call->get_name());
-                                $copy_mybackdef->set_assign_id(rand());
+                                $new_myclass = new MyClass($myfunc_call->getLine(), 
+                                    $myfunc_call->getColumn(),
+                                        $myfunc_call->get_name_instance());
+                                $mybackdef->set_myclass($new_myclass);
                                 
-                                //$this->defs->adddef($mybackdef->get_name(), $mybackdef);
-                                //$this->defs->addgen($mybackdef->get_block_id(), $mybackdef);
-                                
+                                $this->defs->adddef($mybackdef->get_name(), $mybackdef);
+                                $this->defs->addgen($mybackdef->get_block_id(), $mybackdef);
                             }
 
                             break;
@@ -211,8 +212,6 @@ class VisitorDataflow {
                             
                             if($mydef->is_instance())
                             {
-                                    echo "definition my class\n";
-                                    $mydef->print_stdout();
                                 $myclass = $context->get_classes()->get_myclass($mydef->get_class_name());
                                 if(!is_null($myclass))
                                     $mydef->set_myclass($myclass);
