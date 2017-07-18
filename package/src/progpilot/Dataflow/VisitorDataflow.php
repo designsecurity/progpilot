@@ -216,7 +216,12 @@ class VisitorDataflow {
                                 if(!is_null($myclass))
                                     $mydef->set_myclass($myclass);
                                 else
-                                    echo "undefined class\n";
+                                {
+                                    $new_myclass = new MyClass($mydef->getLine(), 
+                                        $mydef->getColumn(),
+                                            $mydef->get_class_name());
+                                    $mydef->set_myclass($new_myclass);
+                                }
                             }
                             unset($mydef);
 
@@ -228,7 +233,5 @@ class VisitorDataflow {
             }
 		}
 		while(isset($code[$index]) && $index <= $mycode->get_end());
-		
-		//$mycode->print_stdout();
 	}
 }

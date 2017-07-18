@@ -41,8 +41,10 @@ OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
 
 MODIFICATIONS.*/
 
-
-$tainted = `cat /tmp/tainted.txt`;
+$tainted = "eee";
+$query = "'echo $". $tainted . ";'";
+echo $query;
+//$tainted = `cat /tmp/tainted.txt`;
 
 $legal_table = array("safe1", "safe2");
 if (in_array($tainted, $legal_table, true)) {
@@ -50,9 +52,12 @@ if (in_array($tainted, $legal_table, true)) {
 } else {
   $tainted = $legal_table[0];
 }
-
+/*
 $query = "'echo $". $tainted . ";'";
 
 $res = eval($query);
+*/
+
+$res = eval($tainted);
 
 ?>

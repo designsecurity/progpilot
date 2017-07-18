@@ -86,6 +86,17 @@ class MyDefinition extends MyOp {
 			echo "property : ".htmlentities($this->property->get_name(), ENT_QUOTES, 'UTF-8')."\n";
 		}
 
+		if($this->is_instance())
+		{
+			echo "instance : ".htmlentities($this->get_class_name(), ENT_QUOTES, 'UTF-8')."\n";
+			$myclass = $this->get_myclass();
+			foreach($myclass->get_properties() as $property)
+                echo "property : '".$property->get_name()."'\n";
+			
+			foreach($myclass->get_methods() as $method)
+                echo "method : '".$method->get_name()."'\n";
+		}
+
 		if($this->is_method())
 		{
 			echo "method : ".htmlentities($this->method->get_name(), ENT_QUOTES, 'UTF-8')."\n";
@@ -94,7 +105,7 @@ class MyDefinition extends MyOp {
 		if($this->is_copyarray())
 		{
 			echo "copyarray :\n";
-			var_dump($this->get_copyarrays());
+			//var_dump($this->get_copyarrays());
 		}
 	}
 	

@@ -103,6 +103,11 @@ class MyClass extends MyOp {
 		return $this->name;
 	}
 
+	public function set_name($name)
+	{
+        $this->name = $name;
+	}
+
 }
 
 ?>

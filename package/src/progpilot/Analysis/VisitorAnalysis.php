@@ -195,25 +195,21 @@ class VisitorAnalysis {
                             {
                                 $mydef_tmp = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance(), false, false);
                                 $mydef_tmp->set_block_id($myfunc_call->get_block_id());
-                                $mydef_tmp->set_method(true);
-                                $mydef_tmp->method->set_name($funcname);
-                                
-                                echo "Opcodes::FUNC_CALL\n";
-                                $mydef_tmp->print_stdout();
-                                
-                                $instances_pre = ResolveDefs::select_instances_ins($this->defs, $mydef_tmp);
-                                $instances = Definitions::unique_nearest_byblock($myfunc_call->getLine(), $myfunc_call->getColumn(), $instances_pre);
+                                $mydef_tmp->set_assign_id($myfunc_call->get_back_def()->get_assign_id());
+                                //$mydef_tmp->set_method(true);
+                                //$mydef_tmp->method->set_name($funcname);
+                                    
+                                $instances_pre = ResolveDefs::select_instances($this->defs, $mydef_tmp, true);
+                                $instances = Definitions::unique_nearest_byblock($mydef_tmp, $myfunc_call->getLine(), $myfunc_call->getColumn(), $instances_pre);
         
                                 foreach($instances as $instance)
                                 {
                                     if($instance->is_instance())
                                     {
-                                echo "Opcodes::FUNC_CALL foreach is_instance\n";
-                                $instance->print_stdout();
                                         // the class is defined (! build in php class for example)
                                         $myclass = $instance->get_myclass();
                                         $myfunc = $myclass->get_method($funcname);
-
+                                        
                                         $list_myfunc[] = [$myfunc, $myclass];
                                         
                                         // twig analysis
@@ -243,12 +239,12 @@ class VisitorAnalysis {
                                 $myinstance = $tabfunc[1];
 
                                 ResolveDefs::instance_build_this($this->defs, $myfunc, $myfunc_call);
-                                                
+                                         
                                 if(!is_null($myfunc) && !$this->in_call_stack($myfunc))
                                 {
                                     $addr_start = $myfunc->get_start_address_func();
                                     $addr_end = $myfunc->get_end_address_func();
-
+                                    
                                     // the called function is a method and this method exists in the class 
                                     if($myfunc_call->is_instance() && $myfunc->is_method() || (!$myfunc_call->is_instance() && !$myfunc->is_method()))
                                     {
@@ -271,6 +267,9 @@ class VisitorAnalysis {
                                     }
                                 }
                                 
+                                if(is_null($myfunc))
+                                    ResolveDefs::copy_instance($this->defs, $myfunc_call);
+                                    
                                 ResolveDefs::instance_build_back($this->defs, $myfunc, $myfunc_call);
                                 
                                 if(is_null($myfunc))

@@ -41,7 +41,6 @@ OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
 
 MODIFICATIONS.*/
 
-
 $tainted = `cat /tmp/tainted.txt`;
 
 $tainted = preg_replace( "/[^a-zA-Z0-9_\ -]/", "", $tainted );

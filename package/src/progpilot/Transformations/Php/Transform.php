@@ -74,9 +74,10 @@ class Transform implements Visitor {
         }
 
 		// the last block doesn't have address computed because leaveblock() didn't do anything
+		/*
 		if(!is_null($this->context->get_current_block()))
 			$this->s_blocks[$this->context->get_current_block()]->set_end_address_block(count($this->context->get_mycode()->get_codes()));
-	
+	*/
         if($this->context->outputs->get_resolve_includes())
             $this->context->outputs->write_includes_file();
 	}
@@ -126,7 +127,6 @@ class Transform implements Visitor {
             $myblock = $this->s_blocks[$block];
             $address_end_block = count($this->context->get_mycode()->get_codes());
             $myblock->set_end_address_block($address_end_block);
-            //echo "LEAVE_BLOCK myblock id = '".$myblock->get_id()."' end_address = '".$myblock->get_end_address_block()."'\n";
             
             $inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
             $inst_block->add_property("myblock", $myblock);
@@ -163,6 +163,7 @@ class Transform implements Visitor {
                 $mythisdef = new MyDefinition(0, 0, "this", false, false);
                 $mythisdef->set_block_id(0);
                 $mythisdef->set_instance(true);
+                $mythisdef->set_assign_id(rand());
                 $myfunction->set_this_def($mythisdef);
 			}
 		}

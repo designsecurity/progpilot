@@ -30,6 +30,9 @@ class framework_test
 	
 	public function check_outputs($testbasis, $basis_outputs)
 	{
+        if(count($this->outputs) == 0 && count($basis_outputs) == 0)
+            return true;
+            
 		foreach($basis_outputs as $basis_output)
 		{
             $return_check = false;

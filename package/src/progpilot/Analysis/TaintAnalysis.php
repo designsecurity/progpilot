@@ -39,7 +39,7 @@ class TaintAnalysis {
 
 			$defarg = $instruction->get_property("argdef$nbparams"); 
 			$exprarg = $instruction->get_property("argexpr$nbparams"); 
-
+			
 			if($defarg->is_tainted())
 			{
 				$params_tainted = true;
@@ -62,7 +62,7 @@ class TaintAnalysis {
 
 			$nbparams ++;
 		}
-
+		
 		if($codes[$index + 2]->get_opcode() == Opcodes::END_ASSIGN)
 		{
             $instruction_def = $codes[$index + 3];
@@ -171,16 +171,18 @@ class TaintAnalysis {
 	}
 	
 	public static function set_tainted($data, $def, $defassign, $expr, $safe)
-	{	           
+	{	     
         // assertions
 		if(!$safe)
 		{
             $visibility_final = true;
             if($defassign->is_property())
             {
+                $copy_defassign = clone $defassign;
+                $copy_defassign->set_assign_id(-1);
                 $visibility_final = false;
-                $instances_pre = ResolveDefs::select_instances($data, $defassign);
-                $instances = Definitions::unique_nearest_byblock($defassign->getLine(), $defassign->getColumn(), $instances_pre);
+                $instances_pre = ResolveDefs::select_instances($data, $copy_defassign);
+                $instances = Definitions::unique_nearest_byblock($defassign, $defassign->getLine(), $defassign->getColumn(), $instances_pre);
         
                 foreach($instances as $instance)
                 {

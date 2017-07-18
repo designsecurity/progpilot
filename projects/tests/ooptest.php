@@ -1,5 +1,5 @@
 <?php
-    /*
+    
 	$framework->add_testbasis("./tests/oop/simple1.php");
 	$framework->add_output("./tests/oop/simple1.php", array("instance1"));
 	$framework->add_output("./tests/oop/simple1.php", array("12"));
@@ -39,13 +39,12 @@
 	$framework->add_output("./tests/oop/simple8.php", array("instance1"));
 	$framework->add_output("./tests/oop/simple8.php", array("16"));
 	$framework->add_output("./tests/oop/simple8.php", "xss");
-	*/
 	
 	$framework->add_testbasis("./tests/oop/simple9.php");
 	$framework->add_output("./tests/oop/simple9.php", array("boum1"));
 	$framework->add_output("./tests/oop/simple9.php", array("7"));
 	$framework->add_output("./tests/oop/simple9.php", "xss");
-	/*
+	
 	$framework->add_testbasis("./tests/oop/simple10.php");
 	$framework->add_output("./tests/oop/simple10.php", array("boum1"));
 	$framework->add_output("./tests/oop/simple10.php", array("5"));
@@ -75,5 +74,5 @@
 	$framework->add_output("./tests/oop/simple15.php", array("boum1"));
 	$framework->add_output("./tests/oop/simple15.php", array("5"));
 	$framework->add_output("./tests/oop/simple15.php", "xss");
-	*/
+	
 ?>

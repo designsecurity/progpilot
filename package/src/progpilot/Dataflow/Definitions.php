@@ -16,6 +16,7 @@ class Definitions {
 
 	private $in;
 	private $out;
+	private $outminuskill;
 	private $gen;
 	private $kill;
 
@@ -42,6 +43,10 @@ class Definitions {
 
 		echo "print out : \n";
 		Definitions::print_stdout($this->out);
+		echo "\n";
+
+		echo "print out-kill : \n";
+		Definitions::print_stdout($this->outminuskill);
 		echo "\n";
 
 		echo "print in : \n";
@@ -106,11 +111,13 @@ class Definitions {
 	}
 
     
-	public static function get_visibility($myclass, $property)
+	public static function get_visibility($def, $property)
 	{
+        $myclass = $def->get_myclass();
+        
         if(!is_null($property) && !is_null($myclass) && $property->is_property())
         {
-            if($property->property->get_visibility() == "public")
+            if($property->property->get_visibility() == "public" || $def->get_name() == "this")
             {
                 return true;
             }
@@ -122,7 +129,6 @@ class Definitions {
 	public static function search_nearest($line, $column, $data, $defsearch)
 	{
 		$defsfound = [];
-
 		if(is_null($data))
 			return $defsfound;
         
@@ -140,10 +146,8 @@ class Definitions {
                     $myclass = $def->get_myclass();
                     $property = $myclass->get_property($defsearch->property->get_name());
 
-                    if(!is_null($property) && Definitions::get_visibility($myclass, $property))
-                    {
+                    if(!is_null($property) && Definitions::get_visibility($def, $property))
                         $defsfound[$def->get_block_id()][] = [$def, $def->getLine(), $def->getColumn()];
-                    }
 				}
 				
 				else if($def->is_instance() && !$def->is_property() && !$def->is_method() && $defsearch->is_instance() && !$defsearch->is_property() && $defsearch->is_method())
@@ -197,18 +201,25 @@ class Definitions {
     }
 
 
-	public static function unique_nearest_byblock($line, $column, $defsfound)
+	public static function unique_nearest_byblock($defsearch, $line, $column, $defsfound)
 	{
 		$truedefsfound = [];
 			
-		// pour gérer le cas de deux ou plus de définitions dans le même bloc (une tainté l'autre non) 
-		foreach($defsfound as $blockdefs)
+		// si on a trouvé des defs dans le même bloc que la ou on cherche elles killent les autres	
+		if(isset($defsfound[$defsearch->get_block_id()]) 
+            && count($defsfound[$defsearch->get_block_id()]) > 0)
+            $defsfound_good[$defsearch->get_block_id()] = $defsfound[$defsearch->get_block_id()];
+		else 
+            $defsfound_good = $defsfound;
+		
+		// pour gérer le cas de deux ou plus de définitions qui arrivent de deux ou plus blocs différents
+		foreach($defsfound_good as $blockdefs)
 		{
 			$nearestdef = null;
 			$nearestline = 0;
 			$nearestcolumn = 0;
                 
-			foreach($blockdefs as $id => $deflast)
+			foreach($blockdefs as $block_id => $deflast)
 			{
 				$bisdef = $deflast[0];
 				$bisline = $deflast[1];
@@ -257,6 +268,7 @@ class Definitions {
 	{
 		$this->in[$id] = [];
 		$this->out[$id] = [];
+		$this->outminuskill[$id] = [];
 		$this->gen[$id] = [];
 		$this->kill[$id] = [];
 	}
@@ -337,6 +349,14 @@ class Definitions {
 		return null;
 	}
 
+	public function getoutminuskill($block)
+	{
+		if(isset($this->outminuskill[$block]))
+			return $this->outminuskill[$block];
+
+		return null;
+	}
+
 	public function getin($block)
 	{
 		if(isset($this->in[$block]))
@@ -358,6 +378,11 @@ class Definitions {
 	public function setout($block, $out)
 	{
 		$this->out[$block] = $out;
+	}
+
+	public function setoutminuskill($block, $outminuskill)
+	{
+		$this->outminuskill[$block] = $outminuskill;
 	}
 
 	public function setin($block, $in)
@@ -391,12 +416,15 @@ class Definitions {
             if($def1->is_property() && $def2->is_property() 
                 && $def1->property->get_name() != $def2->property->get_name())
                 return false;
-                
+            
+            /*
             if($def1->is_property() && $def2->is_property())
                 return true;
                 
             if($def1->is_instance() && $def2->is_instance())
                 return true;
+            */
+            return true;
         }
         
         return false;
@@ -433,8 +461,11 @@ class Definitions {
 	public function reachingDefs(&$myblocks)
 	{
 		foreach($myblocks as $id => $block)
+		{
+            $this->setoutminuskill($id, $this->getgen($id));
 			$this->setout($id, $this->getgen($id));
-
+        }
+        
 		$change = true;
 
 		while($change)
@@ -457,6 +488,8 @@ class Definitions {
                         
                         $inminus = ArrayMulti::array_minus_multi($this->getin($idcurrent), $this->getkill($idcurrent));
                         $this->setout($idcurrent, ArrayMulti::array_merge_multi($this->getgen($idcurrent), $inminus));
+                        
+                        $this->setoutminuskill($idcurrent, ArrayMulti::array_merge_multi($this->getgen($idcurrent), $this->getin($idcurrent)));
 
                         if($this->getout($idcurrent) != $oldout)
                             $change = true;
