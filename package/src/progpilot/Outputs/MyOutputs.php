@@ -11,19 +11,89 @@
 namespace progpilot\Outputs;
 
 use progpilot\Lang;
+use progpilot\Representations\Callgraph;
+use progpilot\Representations\ControlFlowGraph;
 
 class MyOutputs {
 
+	private $results;
     private $resolve_includes;
     private $resolve_includes_file;
     
     public $current_includes_file;
+    public $cfg;
+    public $callgraph;
 
 	public function __construct() {
 
 		$this->resolve_includes = false;
 		$this->resolve_includes_file = null;
 		$this->current_includes_file = "";
+		$this->results = "";
+		
+		$this->cfg = new ControlFlowGraph;
+		$this->callgraph = new Callgraph;
+	}
+
+	public function get_cfg()
+	{
+		foreach($this->cfg->get_nodes() as $node)
+		{
+			$hash = spl_object_hash($node); 
+
+			if(is_null($this->cfg->get_myblock_from_storage($node)))
+				$this->cfg->store_myblock($node, "");
+
+			$nodesjson[] = array('name' => $this->cfg->get_myblock_from_storage($node), 'id' => $hash);
+		}
+
+		foreach($this->cfg->get_edges() as $edge)
+		{
+			$caller = $edge[0];
+			$callee = $edge[1];
+
+			$hashcaller = spl_object_hash($caller);
+			$hashcallee = spl_object_hash($callee);
+
+			$linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
+		}
+
+		$outputjson = array('nodes' => $nodesjson, 'links' => $linksjson);
+
+		return $outputjson;
+	}
+	
+	public function get_callgraph()
+	{
+		foreach($this->callgraph->get_nodes() as $node)
+		{
+			$hash = spl_object_hash($node);
+			$nodesjson[] = array('name' => $node->get_name(), 'id' => $hash);
+		}
+
+		foreach($this->callgraph->get_edges() as $edge)
+		{
+			$caller = $edge[0];
+			$callee = $edge[1];
+
+			$hashcaller = spl_object_hash($caller);
+			$hashcallee = spl_object_hash($callee);
+
+			$linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
+		}
+
+		$outputjson = array('nodes' => $nodesjson, 'links' => $linksjson);
+		return $outputjson;
+	}
+	
+	public function &get_results()
+	{
+		return $this->results;
+	}
+
+	public function set_results(&$results)
+	{
+		$this->results = &$results;
 	}
 
 	public function get_resolve_includes()

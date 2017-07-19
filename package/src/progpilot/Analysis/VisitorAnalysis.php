@@ -199,9 +199,8 @@ class VisitorAnalysis {
                                 //$mydef_tmp->set_method(true);
                                 //$mydef_tmp->method->set_name($funcname);
                                     
-                                $instances_pre = ResolveDefs::select_instances($this->defs, $mydef_tmp, true);
-                                $instances = Definitions::unique_nearest_byblock($mydef_tmp, $myfunc_call->getLine(), $myfunc_call->getColumn(), $instances_pre);
-        
+                                $instances = ResolveDefs::select_instances($this->defs, $mydef_tmp, true);
+                                
                                 foreach($instances as $instance)
                                 {
                                     if($instance->is_instance())

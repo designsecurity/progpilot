@@ -181,9 +181,8 @@ class TaintAnalysis {
                 $copy_defassign = clone $defassign;
                 $copy_defassign->set_assign_id(-1);
                 $visibility_final = false;
-                $instances_pre = ResolveDefs::select_instances($data, $copy_defassign);
-                $instances = Definitions::unique_nearest_byblock($defassign, $defassign->getLine(), $defassign->getColumn(), $instances_pre);
-        
+                $instances = ResolveDefs::select_instances($data, $copy_defassign);
+                
                 foreach($instances as $instance)
                 {
                     if($instance->is_instance())

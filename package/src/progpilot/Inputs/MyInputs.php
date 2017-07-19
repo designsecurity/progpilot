@@ -24,6 +24,9 @@ class MyInputs {
 	private $sources_file;
 	private $sinks_file;
 	private $sanitizers_file;
+	
+	private $file;
+	private $code;
 
 	public function __construct() {
 
@@ -36,6 +39,29 @@ class MyInputs {
 		$this->sanitizers_file = null;
 		$this->sinks_file = null;
 		$this->sources_file = null;
+		
+		$this->file = null;
+		$this->code = null;
+	}
+	
+	public function get_file()
+	{
+		return $this->file;
+	}
+	
+	public function get_code()
+	{
+		return $this->code;
+	}
+	
+	public function set_file($file)
+	{
+		$this->file = $file;
+	}
+	
+	public function set_code($code)
+	{
+		$this->code = $code;
 	}
 
 	public function get_include_bylocation($line, $column, $source_file)

@@ -26,6 +26,7 @@ class MyBlock extends MyOp {
 		$this->start_address_block = -1;
 		$this->end_address_block = -1;
 		$this->assertions = [];
+		$this->parents = [];
 	}
 
 	public function addParent($parent)

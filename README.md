@@ -2,6 +2,7 @@
 > A static analyzer for security purposes
 
 At this moment only PHP language is supported
+You could looking at the API explaination in the [corresponding chapter about API](./doc/API.md)
 
 ## Examples
 - A simple example where your source code to be analyzed is example1.php
@@ -14,10 +15,10 @@ $analyzer = new \progpilot\Analyzer;
 $context->inputs->set_sources("./data/sources.json");
 $context->inputs->set_sinks("./data/sinks.json");
 $context->inputs->set_sanitizers("./data/sanitizers.json");
-		
-$analyzer->set_file($file);
+$context->inputs->set_file($file);
+
 $analyzer->run($context);
-$results = $context->get_results();
+$results = $context->outputs->get_results();
 ?>	
 ```
 - When example1.php contains this code :
@@ -62,6 +63,7 @@ array(7) {
 
 ## Configure sources
 You can define a return function as a source when the last chars of your name source are ()
+See more available options in the [corresponding chapter about specify an analyze](./doc/SPECIFY_ANALYZE.md)
 ```javascript
 {
     "sources": [

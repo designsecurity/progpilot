@@ -73,11 +73,6 @@ class Transform implements Visitor {
             }
         }
 
-		// the last block doesn't have address computed because leaveblock() didn't do anything
-		/*
-		if(!is_null($this->context->get_current_block()))
-			$this->s_blocks[$this->context->get_current_block()]->set_end_address_block(count($this->context->get_mycode()->get_codes()));
-	*/
         if($this->context->outputs->get_resolve_includes())
             $this->context->outputs->write_includes_file();
 	}
@@ -289,7 +284,7 @@ class Transform implements Visitor {
 					$this->context->get_mycode()->add_code($inst_start_include);
 
 					$analyzer = new \progpilot\Analyzer;
-					$analyzer->set_file($file);
+					$this->context->inputs->set_file($file);
 					$scriptbis = $analyzer->parse($this->context);
 
 					// another option is to $analyser->transform() to obtain mycode of included file 

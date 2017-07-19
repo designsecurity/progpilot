@@ -21,7 +21,6 @@ class Context {
 	private $first_file;
 	private $classes;
 	private $functions;
-	private $results;
 	private $path;
 	private $analyze_includes;
 	private $analyze_js;
@@ -46,7 +45,6 @@ class Context {
 		$this->classes = new \progpilot\Dataflow\Classes;
 		$this->functions = new \progpilot\Dataflow\Functions;
 		$this->mycode = new \progpilot\Code\MyCode;
-		$this->results = "";
 
 		$this->inputs = new \progpilot\Inputs\MyInputs;
 		$this->outputs = new \progpilot\Outputs\MyOutputs;
@@ -122,11 +120,6 @@ class Context {
 		return $this->outputs;
 	}
 
-	public function &get_results()
-	{
-		return $this->results;
-	}
-
 	public function get_path()
 	{
 		return $this->path;
@@ -191,11 +184,6 @@ class Context {
 	public function set_inputs($inputs)
 	{
 		$this->inputs = $inputs;
-	}
-
-	public function set_results(&$results)
-	{
-		$this->results = &$results;
 	}
 }
 

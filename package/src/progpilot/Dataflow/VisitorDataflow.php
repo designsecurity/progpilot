@@ -63,6 +63,18 @@ class VisitorDataflow {
                 $instruction = $code[$index];
                 switch($instruction->get_opcode())
                 {
+                    case Opcodes::START_EXPRESSION:
+                        {
+                            $context->outputs->cfg->concat_current_block_text("start_expression\n");
+                            break;
+                        }
+
+                    case Opcodes::END_EXPRESSION:
+                        {
+                            $context->outputs->cfg->concat_current_block_text("end_expression\n");
+                            break;
+                        }
+                        
                     case Opcodes::CLASSE:
                         {
                             $myclass = $instruction->get_property("myclass");
@@ -75,7 +87,11 @@ class VisitorDataflow {
                     case Opcodes::ENTER_FUNCTION:
                         {
                             $myfunc = $instruction->get_property("myfunc");
-
+                            
+                            $context->outputs->callgraph->set_current_func($myfunc);
+                            $context->outputs->callgraph->add_node($myfunc);
+                            $context->outputs->cfg->concat_current_block_text("enter_func ".htmlentities($myfunc->get_name(), ENT_QUOTES, 'UTF-8')."\n");
+                            
                             $defs = new Definitions();
                             $defs->create_block(0); 
 
@@ -120,6 +136,14 @@ class VisitorDataflow {
                                 $mydef->set_block_id($blockid);
                             }
                             
+                            $context->outputs->cfg->set_current_block_text("enter_block\n");
+                            $context->outputs->cfg->add_node($myblock);
+
+                            foreach($myblock->parents as $parent)
+                            {
+                                $context->outputs->cfg->add_edge($myblock, $parent);
+                            }
+                            
                             break;
                         }
 
@@ -137,6 +161,10 @@ class VisitorDataflow {
                             $this->defs->computekill($blockid);
                             
                             $last_block_id = $blockid;
+                            
+                            
+                            $context->outputs->cfg->concat_current_block_text("leave_block\n");
+                            $context->outputs->cfg->store_myblock($myblock, $context->outputs->cfg->get_current_block_text());
 
                             break;
                         }
@@ -148,6 +176,8 @@ class VisitorDataflow {
 
                             $myfunc = $instruction->get_property("myfunc");
                             $myfunc->set_last_block_id($last_block_id);
+                            
+                            $context->outputs->cfg->concat_current_block_text("leave_func\n");
 
                             break;
                         }
@@ -187,6 +217,9 @@ class VisitorDataflow {
                                 $this->defs->adddef($mybackdef->get_name(), $mybackdef);
                                 $this->defs->addgen($mybackdef->get_block_id(), $mybackdef);
                             }
+                            
+                            $context->outputs->callgraph->add_edge($context->outputs->callgraph->get_current_func(), $myfunc_call);
+                            $context->outputs->cfg->concat_current_block_text("funccall ".htmlentities($myfunc_call->get_name(), ENT_QUOTES, 'UTF-8')."\n");
 
                             break;
                         }
@@ -197,6 +230,8 @@ class VisitorDataflow {
                             $mydef->set_block_id($this->current_block_id);
 
                             unset($mydef);
+                            
+                            $context->outputs->cfg->concat_current_block_text("temporary_simple\n");
 
                             break;
                         }
@@ -224,6 +259,8 @@ class VisitorDataflow {
                                 }
                             }
                             unset($mydef);
+                            
+                            $context->outputs->cfg->concat_current_block_text("definition_simple\n");
 
                             break;
                         }

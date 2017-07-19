@@ -12,16 +12,8 @@ namespace progpilot;
 
 class Analyzer
 {
-	private $file;
-
 	public function __construct() 
 	{
-		$this->file = null;
-	}
-	
-	public function set_file($file)
-	{
-		$this->file = $file;
 	}
 
 	public function parse($context)
@@ -29,20 +21,26 @@ class Analyzer
 		$script = null;
 
 		// parser
-		if(!is_null($this->file))
+		if(!is_null($context->inputs->get_file()))
 		{
 			$asttraverser = new \PhpParser\NodeTraverser;
 			$asttraverser->addVisitor(new \PhpParser\NodeVisitor\NameResolver);
-
 			$parser = new \PHPCfg\Parser((new \PhpParser\ParserFactory)->create(\PhpParser\ParserFactory::PREFER_PHP7), $asttraverser);
 
-			if(!file_exists($this->file))
-				throw new \Exception(Lang::FILE_DONT_EXIST);
+			if(!file_exists($context->inputs->get_file()) && is_null($context->inputs->get_code()))
+				throw new \Exception(Lang::FILE_DOESNT_EXIST);
+				
+			if(is_null($context->inputs->get_file()) && is_null($context->inputs->get_code()))
+				throw new \Exception(Lang::FILE_AND_CODE_ARE_NULL);
 
-			$code = file_get_contents($this->file);
-			$script = $parser->parse($code, "");
-
-			$context->set_path(dirname($this->file));
+            if(is_null($context->inputs->get_code()))
+            {
+                $code = file_get_contents($context->inputs->get_file());
+                $script = $parser->parse($code, "");
+                $context->set_path(dirname($context->inputs->get_file()));
+            }
+            else
+                $script = $parser->parse($context->inputs->get_code(), "");
 		}
 
 		return $script;
@@ -70,7 +68,7 @@ class Analyzer
 	{
         if($firststeps)
         {
-            $context->set_first_file($this->file);
+            $context->set_first_file($context->inputs->get_file());
             $script = $this->parse($context);
             $this->transform($context, $script);
         }

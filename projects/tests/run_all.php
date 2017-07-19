@@ -9,6 +9,7 @@ require_once './datatest.php';
 require_once './generictest.php';
 require_once './includetest.php';
 require_once './ooptest.php';
+//require_once './negativetest.php';
 
 //require_once './twigtest.php';
 require_once './sardtest.php';
@@ -23,11 +24,10 @@ try {
 		$context->inputs->set_sources("./data/sources.json");
 		$context->inputs->set_sinks("./data/sinks.json");
 		$context->inputs->set_sanitizers("./data/sanitizers.json");
+        $context->inputs->set_file($file);
 		
 		
 		//$context->set_analyze_includes(false);
-		
-        $analyzer->set_file($file);
         
 		if($file == "./tests/includes/simple5.php")
 		{
@@ -46,7 +46,7 @@ try {
             echo 'Exception : ',  $e->getMessage(), "\n";
         }
 		
-		$results = $context->get_results();
+		$results = $context->outputs->get_results();
 		$outputjson = array('results' => $results); 
 
 		$parsed_json = $outputjson["results"];

@@ -179,7 +179,7 @@ class ArrayAnalysis {
 
 		if(!is_null($originaltab) && !is_null($copytab))
 		{
-			$defs = Definitions::search_force(
+			$defs = ResolveDefs::select_definitions_force(
 					$data->getout($originaltab->get_block_id()), 
 					$originaltab);    
 
