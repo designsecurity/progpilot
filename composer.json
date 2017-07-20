@@ -10,10 +10,9 @@
     ],
     "require": {
         "cweagans/composer-patches": "~1.0",
-        "ircmaxell/php-cfg": "dev-master",
-    
+        "ircmaxell/php-cfg": "dev-master"
     },
-	"extra": {
+    "extra": {
 		"patches": {
 			"ircmaxell/php-cfg": {
 				"Op": "./patchs/Op.diff",
