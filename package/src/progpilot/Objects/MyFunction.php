@@ -28,10 +28,10 @@ class MyFunction extends MyOp {
 	private $myclass;
 	private $instance;
 	private $block_id;
-	
+
 	private $this_def;
 	private $back_def;
-	
+
 	private $last_line;
 	private $last_column;
 	private $last_block_id;
@@ -51,7 +51,7 @@ class MyFunction extends MyOp {
 		$this->back_def = null;
 		$this->block_id = 0;
 		$this->nb_params = 0;
-		
+
 		$this->last_line = 0;
 		$this->last_column = 0;
 		$this->last_block_id = 0;
@@ -66,7 +66,7 @@ class MyFunction extends MyOp {
 	{
 		$this->last_column = $last_column;
 	}
-	
+
 	public function set_last_block_id($last_block_id)
 	{
 		$this->last_block_id = $last_block_id;
@@ -81,15 +81,15 @@ class MyFunction extends MyOp {
 	{
 		return $this->last_column;
 	}
-	
+
 	public function get_last_block_id()
 	{
 		return $this->last_block_id;
 	}
-	
-	
-	
-	
+
+
+
+
 	public function is_method()
 	{
 		return $this->is_method;

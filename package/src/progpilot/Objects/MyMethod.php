@@ -34,7 +34,7 @@ class MyMethod extends MyOp {
 	{
 		return $this->visibility;
 	}
-	
+
 	public function set_name($method_name)
 	{
 		$this->method_name = $method_name;
@@ -44,12 +44,12 @@ class MyMethod extends MyOp {
 	{
 		return $this->method_name;
 	}
-	
+
 	public function set_myinstances($myinstances)
 	{
-        $this->myinstances = $myinstances;
+		$this->myinstances = $myinstances;
 	}
-	
+
 	public function get_myinstances()
 	{
 		return $this->myinstances;
@@ -57,8 +57,8 @@ class MyMethod extends MyOp {
 
 	public function add_myinstance($myinstance)
 	{
-        if(!in_array($myinstance, $this->myinstances))
-            $this->myinstances[] = $myinstance;
+		if(!in_array($myinstance, $this->myinstances))
+			$this->myinstances[] = $myinstance;
 	}
 }
 

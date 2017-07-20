@@ -37,11 +37,11 @@ class SecurityAnalysis {
 
 	public static function funccall($context, $myfunc_call, $instruction)
 	{
-        $name_instance = null;
-        if($myfunc_call->is_instance())
-            $name_instance = $myfunc_call->get_name_instance();
-        
-        $mysink = $context->inputs->get_sink_byname($myfunc_call->get_name(), $name_instance);
+		$name_instance = null;
+		if($myfunc_call->is_instance())
+			$name_instance = $myfunc_call->get_name_instance();
+
+		$mysink = $context->inputs->get_sink_byname($myfunc_call->get_name(), $name_instance);
 
 		if(!is_null($mysink))
 		{
@@ -50,9 +50,9 @@ class SecurityAnalysis {
 			for($i = 0; $i < $nb_params; $i ++)
 			{
 				$mydef_arg = $instruction->get_property("argdef$i");
-				
+
 				if(!$mysink->has_parameters() || ($mysink->has_parameters() && !is_null($mysink->is_parameter($i + 1))))
-                    SecurityAnalysis::call($myfunc_call, $context, $mysink, $mydef_arg);
+					SecurityAnalysis::call($myfunc_call, $context, $mysink, $mydef_arg);
 			}
 		}
 	}
@@ -76,9 +76,9 @@ class SecurityAnalysis {
 			{
 				if(!SecurityAnalysis::is_safe($def_expr, $mysink))
 				{
-                    $temp["source"][] = htmlentities($def_expr->get_name(), ENT_QUOTES, 'UTF-8');
-                    $temp["source_line"][] = $def_expr->getLine();
-                    $temp["source_file"][] = htmlentities($def_expr->get_source_file(), ENT_QUOTES, 'UTF-8');
+					$temp["source"][] = htmlentities($def_expr->get_name(), ENT_QUOTES, 'UTF-8');
+					$temp["source_line"][] = $def_expr->getLine();
+					$temp["source_file"][] = htmlentities($def_expr->get_source_file(), ENT_QUOTES, 'UTF-8');
 				}
 			}
 

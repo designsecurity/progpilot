@@ -31,6 +31,8 @@ class Opcodes
 	const ASSERTION = "assertion";
 	const START_INCLUDE = "start_include";
 	const END_INCLUDE = "end_include";
+	const COND_START_IF = "condition_start_if";
+	const COND_BOOLEAN_NOT = "condition_boolean_not";
 }
 
 ?>

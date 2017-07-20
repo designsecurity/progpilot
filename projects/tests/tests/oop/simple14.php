@@ -12,9 +12,9 @@ $instance1->boum2 = $_GET["p"];
 
 if(rand() % 2)
 {
-    $instance1->boum1 = "eee"; 
-    echo $instance1->boum1;
-    echo $instance1->boum2;
+	$instance1->boum1 = "eee"; 
+	echo $instance1->boum1;
+	echo $instance1->boum2;
 }
 
 

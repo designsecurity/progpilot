@@ -56,8 +56,8 @@ class Transform implements Visitor {
 	}
 
 	public function enterScript(Script $script) {
-	
-        $this->context->outputs->current_includes_file = "";
+
+		$this->context->outputs->current_includes_file = "";
 	}
 
 	public function leaveScript(Script $script) {
@@ -65,21 +65,21 @@ class Transform implements Visitor {
 		// creating edges for myblocks structure as block structure
 		foreach($this->s_blocks as $block)
 		{
-            $myblock = $this->s_blocks[$block];
-            foreach($block->parents as $block_parent)
+			$myblock = $this->s_blocks[$block];
+			foreach($block->parents as $block_parent)
 			{
 				$myblock_parent = $this->s_blocks[$block_parent];
 				$myblock->addParent($myblock_parent);
-            }
-        }
+			}
+		}
 
-        if($this->context->outputs->get_resolve_includes())
-            $this->context->outputs->write_includes_file();
+		if($this->context->outputs->get_resolve_includes())
+			$this->context->outputs->write_includes_file();
 	}
 
 	public function enterBlock(Block $block, Block $prior = null) {
-	
-        $this->inside_include = false;
+
+		$this->inside_include = false;
 		if(!($this->context->get_current_op() instanceof Op\Expr\Include_))
 		{
 			$myblock = new MyBlock;
@@ -94,11 +94,11 @@ class Transform implements Visitor {
 
 			// block is for himself a parent block (handle dataflow for first block)
 			$block->addParent($block);
-			
+
 			$myblock->set_id(rand());
-        }
-        else
-            $this->inside_include = true;
+		}
+		else
+			$this->inside_include = true;
 	}
 
 	public function skipBlock(Block $block, Block $prior = null) {
@@ -115,18 +115,18 @@ class Transform implements Visitor {
 	}
 
 	public function leaveBlock(Block $block, Block $prior = null) {
-        $this->s_blocks_left->attach($block);	
-        
-        if(!$this->inside_include)
-        {
-            $myblock = $this->s_blocks[$block];
-            $address_end_block = count($this->context->get_mycode()->get_codes());
-            $myblock->set_end_address_block($address_end_block);
-            
-            $inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
-            $inst_block->add_property("myblock", $myblock);
-            $this->context->get_mycode()->add_code($inst_block); 
-        }
+		$this->s_blocks_left->attach($block);	
+
+		if(!$this->inside_include)
+		{
+			$myblock = $this->s_blocks[$block];
+			$address_end_block = count($this->context->get_mycode()->get_codes());
+			$myblock->set_end_address_block($address_end_block);
+
+			$inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
+			$inst_block->add_property("myblock", $myblock);
+			$this->context->get_mycode()->add_code($inst_block); 
+		}
 	}
 
 	public function enterFunc(Func $func) {
@@ -154,12 +154,12 @@ class Transform implements Visitor {
 				$myfunction->set_visibility(Common::get_type_visibility($func->flags));
 				$myfunction->set_is_method(true);
 				$myfunction->set_myclass($myclass);
-				
-                $mythisdef = new MyDefinition(0, 0, "this", false, false);
-                $mythisdef->set_block_id(0);
-                $mythisdef->set_instance(true);
-                $mythisdef->set_assign_id(rand());
-                $myfunction->set_this_def($mythisdef);
+
+				$mythisdef = new MyDefinition(0, 0, "this", false, false);
+				$mythisdef->set_block_id(0);
+				$mythisdef->set_instance(true);
+				$mythisdef->set_assign_id(rand());
+				$myfunction->set_this_def($mythisdef);
 			}
 		}
 
@@ -219,6 +219,23 @@ class Transform implements Visitor {
 		$this->context->get_mycode()->add_code($inst_func);
 	}
 
+	public function parse_condition($cond)
+	{  
+		foreach($cond as $ops)
+		{
+			//echo "JUMPIF ops\n";
+
+			if($ops instanceof Op\Expr\BooleanNot)
+			{
+				//echo "JUMPIF BooleanNot\n";
+				$inst_boolean_not = new MyInstruction(Opcodes::COND_BOOLEAN_NOT);	
+				$this->context->get_mycode()->add_code($inst_boolean_not);
+
+				$this->parse_condition($ops->expr->ops);
+			}
+		}
+	}
+
 	public function enterOp(Op $op, Block $block) {
 
 		$this->context->set_current_op($op);
@@ -229,44 +246,52 @@ class Transform implements Visitor {
 				($op instanceof Op\Expr && !($op instanceof Op\Expr\Assertion)) || 
 				$op instanceof Op\Terminal)
 		{
-            if($op->getLine() != -1 && $op->getColumn() != -1)
-            {
-                $this->context->set_current_line($op->getLine());
-                $this->context->set_current_column($op->getColumn());
-            }
-        }
+			if($op->getLine() != -1 && $op->getColumn() != -1)
+			{
+				$this->context->set_current_line($op->getLine());
+				$this->context->set_current_column($op->getColumn());
+			}
+		}
 
+		if($op instanceof Op\Stmt\JumpIf)
+		{
+			$inst_start_if = new MyInstruction(Opcodes::COND_START_IF);	
+			$inst_start_if->add_property("block", $op->if);
+			$this->context->get_mycode()->add_code($inst_start_if);
+
+			$this->parse_condition($op->cond->ops);
+		}
 		/*
 		   const TYPE_INCLUDE = 1;
 		   const TYPE_INCLUDE_OPNCE = 2;
 		   const TYPE_REQUIRE = 3;
 		   const TYPE_REQUIRE_ONCE = 4;
 		 */
-		if($op instanceof Op\Expr\Include_ && $this->context->get_analyze_includes())
+		else if($op instanceof Op\Expr\Include_ && $this->context->get_analyze_includes())
 		{
 			if(!isset($this->context->get_current_op()->expr->value))
-            {
-                $continue_include = false;
-                
-                $myinclude = $this->context->inputs->get_include_bylocation(
-                    $this->context->get_current_line(),
-                        $this->context->get_current_column(),
-                            $this->context->get_first_file());
-                            
-                if(!is_null($myinclude))
-                {
-                    $continue_include = true;
-                    $name = $myinclude->get_value();
-                }
-            }
-            else
-            {
-                $continue_include = true;
+			{
+				$continue_include = false;
+
+				$myinclude = $this->context->inputs->get_include_bylocation(
+						$this->context->get_current_line(),
+						$this->context->get_current_column(),
+						$this->context->get_first_file());
+
+				if(!is_null($myinclude))
+				{
+					$continue_include = true;
+					$name = $myinclude->get_value();
+				}
+			}
+			else
+			{
+				$continue_include = true;
 				$name = $this->context->get_current_op()->expr->value;
-            }
-            
-            if($continue_include)
-            {
+			}
+
+			if($continue_include)
+			{
 				$file = $this->context->get_path()."/".$name;
 
 				if((!in_array($file, $this->array_includes) && $op->type == 2)
@@ -294,20 +319,20 @@ class Transform implements Visitor {
 				}
 			}
 			else
-            {
-                if($this->context->outputs->get_resolve_includes())
-                {
-                    $temp["line"] = $this->context->get_current_line();
-                    $temp["column"] = $this->context->get_current_column();
-                    $temp["source_file"] = $this->context->get_first_file();
-			
-                    $this->context->outputs->current_includes_file[] = $temp;
-                }
-            }
-        }
-        
-        if($op instanceof Op\Expr\Include_)
-        {
+			{
+				if($this->context->outputs->get_resolve_includes())
+				{
+					$temp["line"] = $this->context->get_current_line();
+					$temp["column"] = $this->context->get_current_column();
+					$temp["source_file"] = $this->context->get_first_file();
+
+					$this->context->outputs->current_includes_file[] = $temp;
+				}
+			}
+		}
+
+		if($op instanceof Op\Expr\Include_)
+		{
 			$myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
 			$this->context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 

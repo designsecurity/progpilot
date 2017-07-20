@@ -26,33 +26,33 @@ class ControlFlowGraph {
 		$this->current_block_text = "";
 		$this->storagemyblocks = new \SplObjectStorage;
 	}
-	
+
 	public function get_current_block_text()
 	{
-        return $this->current_block_text;
+		return $this->current_block_text;
 	}
-	
+
 	public function set_current_block_text($text)
 	{
-        $this->current_block_text = $text;
+		$this->current_block_text = $text;
 	}
-	
+
 	public function concat_current_block_text($text)
 	{
-        $this->current_block_text = $this->current_block_text.$text;
+		$this->current_block_text = $this->current_block_text.$text;
 	}
 
 	public function store_myblock($myblock, $value)
 	{
-        $this->storagemyblocks[$myblock] = $value;
+		$this->storagemyblocks[$myblock] = $value;
 	}
 
 	public function get_myblock_from_storage($myblock)
 	{
-        if(isset($this->storagemyblocks[$myblock]))
-            return $this->storagemyblocks[$myblock];
-            
-        return null;
+		if(isset($this->storagemyblocks[$myblock]))
+			return $this->storagemyblocks[$myblock];
+
+		return null;
 	}
 
 	public function get_nodes()

@@ -75,215 +75,215 @@ class VisitorAnalysis {
 
 		do
 		{
-            if(isset($code[$index]))
-            {
-                $instruction = $code[$index];
-                switch($instruction->get_opcode())
-                {
-                    case Opcodes::ENTER_BLOCK:
-                        {
-                            $myblock = $instruction->get_property("myblock");
-                            $this->old_myblock = $this->current_myblock;
-                            $this->current_myblock = $myblock;
+			if(isset($code[$index]))
+			{
+				$instruction = $code[$index];
+				switch($instruction->get_opcode())
+				{
+					case Opcodes::ENTER_BLOCK:
+						{
+							$myblock = $instruction->get_property("myblock");
+							$this->old_myblock = $this->current_myblock;
+							$this->current_myblock = $myblock;
 
-                            if($this->storagemyblocks->contains($myblock))
-                                return;
+							if($this->storagemyblocks->contains($myblock))
+								return;
 
-                            $this->storagemyblocks->attach($myblock);
+							$this->storagemyblocks->attach($myblock);
 
-                            foreach($myblock->parents as $blockparent)
-                            {
-                                $addr_start = $blockparent->get_start_address_block();
-                                $addr_end = $blockparent->get_end_address_block();
-                                
-                                if(!$this->storagemyblocks->contains($blockparent))
-                                {
-                                    $oldindex_start = $mycode->get_start();
-                                    $oldindex_end = $mycode->get_end();
+							foreach($myblock->parents as $blockparent)
+							{
+								$addr_start = $blockparent->get_start_address_block();
+								$addr_end = $blockparent->get_end_address_block();
 
-                                    $mycode->set_start($addr_start);
-                                    $mycode->set_end($addr_end);
+								if(!$this->storagemyblocks->contains($blockparent))
+								{
+									$oldindex_start = $mycode->get_start();
+									$oldindex_end = $mycode->get_end();
 
-                                    $this->analyze($mycode);
+									$mycode->set_start($addr_start);
+									$mycode->set_end($addr_end);
 
-                                    $mycode->set_start($oldindex_start);
-                                    $mycode->set_end($oldindex_end);
-                                }
-                            }
+									$this->analyze($mycode);
 
-                            break;
-                        }
+									$mycode->set_start($oldindex_start);
+									$mycode->set_end($oldindex_end);
+								}
+							}
 
-                    case Opcodes::LEAVE_BLOCK:
-                        {
-                            $this->current_myblock = $this->old_myblock;
+							break;
+						}
 
-                            break;
-                        }
+					case Opcodes::LEAVE_BLOCK:
+						{
+							$this->current_myblock = $this->old_myblock;
 
-                    case Opcodes::LEAVE_FUNCTION:
-                        {
-                            $myfunc = $instruction->get_property("myfunc");
-                            if($myfunc->get_name() == "{main}")
-                                return;
+							break;
+						}
 
-                            array_pop($this->call_stack);
-                            
-                            $this->defs = $this->olddefs;
+					case Opcodes::LEAVE_FUNCTION:
+						{
+							$myfunc = $instruction->get_property("myfunc");
+							if($myfunc->get_name() == "{main}")
+								return;
 
-                            break;
-                        }
+							array_pop($this->call_stack);
 
-                    case Opcodes::ENTER_FUNCTION:
-                        {
-                            $myfunc = $instruction->get_property("myfunc");
+							$this->defs = $this->olddefs;
 
-                            array_push($this->call_stack, $myfunc);
+							break;
+						}
 
-                            $this->olddefs = $this->defs;
-                            $this->defs = $myfunc->get_defs();
+					case Opcodes::ENTER_FUNCTION:
+						{
+							$myfunc = $instruction->get_property("myfunc");
 
-                            break;
-                        }
+							array_push($this->call_stack, $myfunc);
 
-                    case Opcodes::DEFINITION:
-                        {
-                            $mydef = $instruction->get_property("def");
-                            
-                            break;
-                        }
-                            
+							$this->olddefs = $this->defs;
+							$this->defs = $myfunc->get_defs();
 
-                    case Opcodes::TEMPORARY:
-                        {
-                            $tempdefa = $instruction->get_property("temporary");
-                            $defs = ResolveDefs::temporary_simple($this->defs, $tempdefa);
-                            
-                            foreach($defs as $def)
-                            {	
-                                $exprs = $def->get_exprs();
-                                foreach($exprs as $expr)
-                                {
-                                    if($expr->is_assign())
-                                    {
-                                        $defassign = $expr->get_assign_def();
-                           
-                                        $defassign->last_known_value($def->get_last_known_value());
+							break;
+						}
 
-                                        ArrayAnalysis::copy_array($this->defs, $def, $def->get_arr_value(), $defassign, $defassign->get_arr_value());
-                                        
-                                        $safe = AssertionAnalysis::temporary_simple($this->defs, $this->current_myblock, $def, $tempdefa);
+					case Opcodes::DEFINITION:
+						{
+							$mydef = $instruction->get_property("def");
 
-                                        TaintAnalysis::set_tainted($this->defs, $def, $defassign, $expr, $safe); 
-                                    }
-                                }
-                            }
-
-                            break;
-                        }
-
-                    case Opcodes::FUNC_CALL:
-                        {
-                            $funcname = $instruction->get_property("funcname");
-                            $arr_funccall = $instruction->get_property("arr");
-                            $myfunc_call = $instruction->get_property("myfunc_call");
-                            
-                            SecurityAnalysis::funccall($this->context, $myfunc_call, $instruction);
-                            
-                            $list_myfunc = [];
-                            if($myfunc_call->is_instance())
-                            {
-                                $mydef_tmp = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance(), false, false);
-                                $mydef_tmp->set_block_id($myfunc_call->get_block_id());
-                                $mydef_tmp->set_assign_id($myfunc_call->get_back_def()->get_assign_id());
-                                //$mydef_tmp->set_method(true);
-                                //$mydef_tmp->method->set_name($funcname);
-                                    
-                                $instances = ResolveDefs::select_instances($this->defs, $mydef_tmp, true);
-                                
-                                foreach($instances as $instance)
-                                {
-                                    if($instance->is_instance())
-                                    {
-                                        // the class is defined (! build in php class for example)
-                                        $myclass = $instance->get_myclass();
-                                        $myfunc = $myclass->get_method($funcname);
-                                        
-                                        $list_myfunc[] = [$myfunc, $myclass];
-                                        
-                                        // twig analysis
-                                        if($this->context->get_analyze_js())
-                                        {
-                                            if($myclass->get_name() == "Twig_Environment")
-                                            {
-                                                if($myfunc_call->get_name() == "render")
-                                                {
-                                                    TwigAnalysis::funccall($this->context, $myfunc_call, $instruction);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                $myfunc = $this->context->get_functions()->get_function($funcname);
-                                $list_myfunc[] = [$myfunc, null];
-                            }
+							break;
+						}
 
 
-                            foreach($list_myfunc as $tabfunc)
-                            {
-                                $myfunc = $tabfunc[0];
-                                $myinstance = $tabfunc[1];
+					case Opcodes::TEMPORARY:
+						{
+							$tempdefa = $instruction->get_property("temporary");
+							$defs = ResolveDefs::temporary_simple($this->defs, $tempdefa);
 
-                                ResolveDefs::instance_build_this($this->defs, $myfunc, $myfunc_call);
-                                         
-                                if(!is_null($myfunc) && !$this->in_call_stack($myfunc))
-                                {
-                                    $addr_start = $myfunc->get_start_address_func();
-                                    $addr_end = $myfunc->get_end_address_func();
-                                    
-                                    // the called function is a method and this method exists in the class 
-                                    if($myfunc_call->is_instance() && $myfunc->is_method() || (!$myfunc_call->is_instance() && !$myfunc->is_method()))
-                                    {
-                                        // the called function is defined in our project (not php build'in function)
-                                        if($addr_start >= 0)
-                                        {
-                                            ArrayAnalysis::funccall_before($this->defs, $myfunc, $myfunc_call, $instruction);
-                                            TaintAnalysis::funccall_before($this->defs, $myfunc, $instruction, $this->context->get_classes());
+							foreach($defs as $def)
+							{	
+								$exprs = $def->get_exprs();
+								foreach($exprs as $expr)
+								{
+									if($expr->is_assign())
+									{
+										$defassign = $expr->get_assign_def();
 
-                                            $mycodefunction = new MyCode;
-                                            $mycodefunction->set_codes($mycode->get_codes());
-                                            $mycodefunction->set_start($addr_start);
-                                            $mycodefunction->set_end($addr_end);
+										$defassign->last_known_value($def->get_last_known_value());
 
-                                            $this->analyze($mycodefunction);
-                                            
-                                            ArrayAnalysis::funccall_after($myfunc, $myfunc_call, $arr_funccall, $code[$index + 3]);
-                                            TaintAnalysis::funccall_after($this->defs, $myfunc, $arr_funccall, $instruction);  
-                                        }
-                                    }
-                                }
-                                
-                                if(is_null($myfunc))
-                                    ResolveDefs::copy_instance($this->defs, $myfunc_call);
-                                    
-                                ResolveDefs::instance_build_back($this->defs, $myfunc, $myfunc_call);
-                                
-                                if(is_null($myfunc))
-                                {
-                                    TaintAnalysis::funccall_sanitizer($this->context, $this->defs, $myfunc_call, $arr_funccall, $instruction, $index);  
-                                    TaintAnalysis::funccall_source($this->context, $this->defs, $myfunc_call, $arr_funccall, $instruction);     
-                                }
-                            }
+										ArrayAnalysis::copy_array($this->defs, $def, $def->get_arr_value(), $defassign, $defassign->get_arr_value());
 
-                            break;
-                        }
-                }
+										$safe = AssertionAnalysis::temporary_simple($this->defs, $this->current_myblock, $def, $tempdefa);
 
-                $index = $index + 1;
-            }
+										TaintAnalysis::set_tainted($this->defs, $def, $defassign, $expr, $safe); 
+									}
+								}
+							}
+
+							break;
+						}
+
+					case Opcodes::FUNC_CALL:
+						{
+							$funcname = $instruction->get_property("funcname");
+							$arr_funccall = $instruction->get_property("arr");
+							$myfunc_call = $instruction->get_property("myfunc_call");
+
+							SecurityAnalysis::funccall($this->context, $myfunc_call, $instruction);
+
+							$list_myfunc = [];
+							if($myfunc_call->is_instance())
+							{
+								$mydef_tmp = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance(), false, false);
+								$mydef_tmp->set_block_id($myfunc_call->get_block_id());
+								$mydef_tmp->set_assign_id($myfunc_call->get_back_def()->get_assign_id());
+								//$mydef_tmp->set_method(true);
+								//$mydef_tmp->method->set_name($funcname);
+
+								$instances = ResolveDefs::select_instances($this->defs, $mydef_tmp, true);
+
+								foreach($instances as $instance)
+								{
+									if($instance->is_instance())
+									{
+										// the class is defined (! build in php class for example)
+										$myclass = $instance->get_myclass();
+										$myfunc = $myclass->get_method($funcname);
+
+										$list_myfunc[] = [$myfunc, $myclass];
+
+										// twig analysis
+										if($this->context->get_analyze_js())
+										{
+											if($myclass->get_name() == "Twig_Environment")
+											{
+												if($myfunc_call->get_name() == "render")
+												{
+													TwigAnalysis::funccall($this->context, $myfunc_call, $instruction);
+												}
+											}
+										}
+									}
+								}
+							}
+							else
+							{
+								$myfunc = $this->context->get_functions()->get_function($funcname);
+								$list_myfunc[] = [$myfunc, null];
+							}
+
+
+							foreach($list_myfunc as $tabfunc)
+							{
+								$myfunc = $tabfunc[0];
+								$myinstance = $tabfunc[1];
+
+								ResolveDefs::instance_build_this($this->defs, $myfunc, $myfunc_call);
+
+								if(!is_null($myfunc) && !$this->in_call_stack($myfunc))
+								{
+									$addr_start = $myfunc->get_start_address_func();
+									$addr_end = $myfunc->get_end_address_func();
+
+									// the called function is a method and this method exists in the class 
+									if($myfunc_call->is_instance() && $myfunc->is_method() || (!$myfunc_call->is_instance() && !$myfunc->is_method()))
+									{
+										// the called function is defined in our project (not php build'in function)
+										if($addr_start >= 0)
+										{
+											ArrayAnalysis::funccall_before($this->defs, $myfunc, $myfunc_call, $instruction);
+											TaintAnalysis::funccall_before($this->defs, $myfunc, $instruction, $this->context->get_classes());
+
+											$mycodefunction = new MyCode;
+											$mycodefunction->set_codes($mycode->get_codes());
+											$mycodefunction->set_start($addr_start);
+											$mycodefunction->set_end($addr_end);
+
+											$this->analyze($mycodefunction);
+
+											ArrayAnalysis::funccall_after($myfunc, $myfunc_call, $arr_funccall, $code[$index + 3]);
+											TaintAnalysis::funccall_after($this->defs, $myfunc, $arr_funccall, $instruction);  
+										}
+									}
+								}
+
+								if(is_null($myfunc))
+									ResolveDefs::copy_instance($this->defs, $myfunc_call);
+
+								ResolveDefs::instance_build_back($this->defs, $myfunc, $myfunc_call);
+
+								if(is_null($myfunc))
+								{
+									TaintAnalysis::funccall_sanitizer($this->context, $this->defs, $myfunc_call, $arr_funccall, $instruction, $index);  
+									TaintAnalysis::funccall_source($this->context, $this->defs, $myfunc_call, $arr_funccall, $instruction);     
+								}
+							}
+
+							break;
+						}
+				}
+
+				$index = $index + 1;
+			}
 		}
 		while(isset($code[$index]) && $index <= $mycode->get_end());
 	}

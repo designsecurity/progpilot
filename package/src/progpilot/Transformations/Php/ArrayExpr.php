@@ -25,7 +25,7 @@ class ArrayExpr {
 
 	public static function instruction($op, $context, $arr, $def_name, $is_returndef)
 	{
-        $assign_id = rand();
+		$assign_id = rand();
 		$building_arr = false;
 
 		if(isset($op->ops[0]->values))
@@ -38,13 +38,13 @@ class ArrayExpr {
 
 				// we create an element for each value of array expr
 				// name_arr = [expr1, expr2] => name_arr[0] = expr1, name_arr[1] = expr2
-                if(isset($op->ops[0]->keys[$nb_arrayexpr]->value))
-                {
-                    $index_value = $op->ops[0]->keys[$nb_arrayexpr]->value;
-                    $building_arr = array($index_value => $arr);
-                }
-                else    
-                    $building_arr = array($nb_arrayexpr => $arr);
+				if(isset($op->ops[0]->keys[$nb_arrayexpr]->value))
+				{
+					$index_value = $op->ops[0]->keys[$nb_arrayexpr]->value;
+					$building_arr = array($index_value => $arr);
+				}
+				else    
+					$building_arr = array($nb_arrayexpr => $arr);
 
 				if($type == "arrayexpr")
 				{
@@ -53,8 +53,8 @@ class ArrayExpr {
 				else
 				{
 					$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name, false, true);
-                    $mydef->set_assign_id($assign_id);
-                    
+					$mydef->set_assign_id($assign_id);
+
 					if($is_returndef)
 						$context->get_current_func()->add_return_def($mydef);
 

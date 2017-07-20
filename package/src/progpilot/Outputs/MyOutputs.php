@@ -17,12 +17,12 @@ use progpilot\Representations\ControlFlowGraph;
 class MyOutputs {
 
 	private $results;
-    private $resolve_includes;
-    private $resolve_includes_file;
-    
-    public $current_includes_file;
-    public $cfg;
-    public $callgraph;
+	private $resolve_includes;
+	private $resolve_includes_file;
+
+	public $current_includes_file;
+	public $cfg;
+	public $callgraph;
 
 	public function __construct() {
 
@@ -30,7 +30,7 @@ class MyOutputs {
 		$this->resolve_includes_file = null;
 		$this->current_includes_file = "";
 		$this->results = "";
-		
+
 		$this->cfg = new ControlFlowGraph;
 		$this->callgraph = new Callgraph;
 	}
@@ -62,7 +62,7 @@ class MyOutputs {
 
 		return $outputjson;
 	}
-	
+
 	public function get_callgraph()
 	{
 		foreach($this->callgraph->get_nodes() as $node)
@@ -85,7 +85,7 @@ class MyOutputs {
 		$outputjson = array('nodes' => $nodesjson, 'links' => $linksjson);
 		return $outputjson;
 	}
-	
+
 	public function &get_results()
 	{
 		return $this->results;
@@ -113,24 +113,24 @@ class MyOutputs {
 
 	public function get_resolve_includes_file()
 	{
-        return $this->resolve_includes_file;
+		return $this->resolve_includes_file;
 	}
-	
+
 	public function write_includes_file()
 	{
-        if($this->resolve_includes)
-        {
+		if($this->resolve_includes)
+		{
 			if(!file_exists($this->resolve_includes_file))
 				throw new \Exception(Lang::FILE_DOESNT_EXIST);
-				
-            $fp = fopen($this->resolve_includes_file, "w");
-            if($fp)
-            {
-                $outputjson = array('includes_not_resolved' => $this->current_includes_file); 
-                fwrite($fp, json_encode($outputjson, JSON_UNESCAPED_SLASHES));
-                fclose($fp);
-            }
-        }
+
+			$fp = fopen($this->resolve_includes_file, "w");
+			if($fp)
+			{
+				$outputjson = array('includes_not_resolved' => $this->current_includes_file); 
+				fwrite($fp, json_encode($outputjson, JSON_UNESCAPED_SLASHES));
+				fclose($fp);
+			}
+		}
 	}
 
 }

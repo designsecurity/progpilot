@@ -26,8 +26,8 @@ class Assign {
 
 	public static function instruction($context, $is_returndef = false)
 	{
-        $assign_id = rand();
-        
+		$assign_id = rand();
+
 		$isref = false;
 		if($context->get_current_op() instanceof Op\Expr\AssignRef)
 			$isref = true;
@@ -38,36 +38,36 @@ class Assign {
 		// name of function return
 		if($is_returndef)
 			$name = $context->get_current_func()->get_name()."_return";
-/*
-		if($type == "array" || $type == "simple" || $type == "property" || $type == "instance")
-		{ 
-		*/
-			$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name, $isref, false);
-			$mydef->set_assign_id($assign_id);
+		/*
+		   if($type == "array" || $type == "simple" || $type == "property" || $type == "instance")
+		   { 
+		 */
+		$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name, $isref, false);
+		$mydef->set_assign_id($assign_id);
 
-			if($is_returndef)
-				$context->get_current_func()->add_return_def($mydef);
-            
-			$context->get_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
+		if($is_returndef)
+			$context->get_current_func()->add_return_def($mydef);
 
-			// it's an expression which will define a definition
-			$myexpr = new MyExpr($context->get_current_line(), $context->get_current_column());
-			$myexpr->set_assign(true);
-			$myexpr->set_assign_def($mydef);
+		$context->get_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
 
-			$context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+		// it's an expression which will define a definition
+		$myexpr = new MyExpr($context->get_current_line(), $context->get_current_column());
+		$myexpr->set_assign(true);
+		$myexpr->set_assign_def($mydef);
 
-			Expr::instruction($context->get_current_op()->expr, $context, $myexpr, $assign_id);
+		$context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
-			$inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-			$inst_end_expr->add_property("expr", $myexpr);
-			$context->get_mycode()->add_code($inst_end_expr);
+		Expr::instruction($context->get_current_op()->expr, $context, $myexpr, $assign_id);
 
-			$context->get_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
+		$inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
+		$inst_end_expr->add_property("expr", $myexpr);
+		$context->get_mycode()->add_code($inst_end_expr);
 
-			$inst_def = new MyInstruction(Opcodes::DEFINITION);
-			$inst_def->add_property("def", $mydef);
-			$context->get_mycode()->add_code($inst_def);
+		$context->get_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
+
+		$inst_def = new MyInstruction(Opcodes::DEFINITION);
+		$inst_def->add_property("def", $mydef);
+		$context->get_mycode()->add_code($inst_def);
 		//}
 
 		// $array[09][098] = expr;

@@ -24,7 +24,7 @@ class MyInputs {
 	private $sources_file;
 	private $sinks_file;
 	private $sanitizers_file;
-	
+
 	private $file;
 	private $code;
 
@@ -34,31 +34,31 @@ class MyInputs {
 		$this->sanitizers = [];
 		$this->sinks = [];
 		$this->sources = [];
-		
+
 		$this->includes_file = null;
 		$this->sanitizers_file = null;
 		$this->sinks_file = null;
 		$this->sources_file = null;
-		
+
 		$this->file = null;
 		$this->code = null;
 	}
-	
+
 	public function get_file()
 	{
 		return $this->file;
 	}
-	
+
 	public function get_code()
 	{
 		return $this->code;
 	}
-	
+
 	public function set_file($file)
 	{
 		$this->file = $file;
 	}
-	
+
 	public function set_code($code)
 	{
 		$this->code = $code;
@@ -69,8 +69,8 @@ class MyInputs {
 		foreach($this->includes as $myinclude)
 		{
 			if($myinclude->get_line() == $line 
-                && $myinclude->get_column() == $column
-                   && $myinclude->get_source_file() == $source_file)
+					&& $myinclude->get_column() == $column
+					&& $myinclude->get_source_file() == $source_file)
 				return $myinclude;
 		}
 
@@ -94,10 +94,10 @@ class MyInputs {
 		{
 			if($mysink->get_name() == $name)
 			{
-                if(!$mysink->is_instance() 
-                    || ($mysink->is_instance() && $mysink->get_instanceof_name() == $instance_name))
-				return $mysink;
-            }
+				if(!$mysink->is_instance() 
+						|| ($mysink->is_instance() && $mysink->get_instanceof_name() == $instance_name))
+					return $mysink;
+			}
 		}
 
 		return null;
@@ -128,7 +128,7 @@ class MyInputs {
 	{
 		return $this->sources;
 	}
-	
+
 	public function get_includes()
 	{
 		return $this->includes;
@@ -216,25 +216,25 @@ class MyInputs {
 					$attack = $sink->{'attack'};
 
 					$mysink = new MySink($name, $language, $attack);
-					
+
 					if(isset($sink->{'instanceof'}))
 					{
-                        $mysink->set_is_instance(true);
-                        $mysink->set_instanceof_name($sink->{'instanceof'});
-                    }
-					
+						$mysink->set_is_instance(true);
+						$mysink->set_instanceof_name($sink->{'instanceof'});
+					}
+
 					if(isset($sink->{'parameters'}))
 					{
-                        $parameters = $sink->{'parameters'};
-                        foreach($parameters as $parameter)
-                        {
-                            if(is_int($parameter->{'id'}))
-                                $mysink->add_parameter($parameter->{'id'});
-                        }
-                        
-                        $mysink->set_has_parameters(true);
-                    }
-					
+						$parameters = $sink->{'parameters'};
+						foreach($parameters as $parameter)
+						{
+							if(is_int($parameter->{'id'}))
+								$mysink->add_parameter($parameter->{'id'});
+						}
+
+						$mysink->set_has_parameters(true);
+					}
+
 					$this->sinks[] = $mysink;
 				}
 			}
@@ -264,16 +264,16 @@ class MyInputs {
 
 					$name = $source->{'name'};
 					$language = $source->{'language'};
-					
+
 					$isfunc = substr($name, -2, 2);
 					if($isfunc == "()")
-                        $name = substr($name, 0, -2);
-                        
+						$name = substr($name, 0, -2);
+
 					$mysource = new MySource($name, $language);
-							
+
 					if($isfunc == "()")
-                        $mysource->set_is_function(true);
-                        
+						$mysource->set_is_function(true);
+
 					$this->sources[] = $mysource;
 				}
 			}
@@ -281,7 +281,7 @@ class MyInputs {
 				throw new \Exception(Lang::FORMAT_SOURCES);
 		}
 	}
-	
+
 	public function read_includes()
 	{
 		if(!is_null($this->includes_file))

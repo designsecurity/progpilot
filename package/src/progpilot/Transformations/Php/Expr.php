@@ -57,7 +57,7 @@ class Expr {
 				$mytemp->set_arr(false);
 				$mytemp->add_expr($myexpr);
 			}
-            
+
 			if($type == "property")
 			{
 				foreach($op->ops as $property)

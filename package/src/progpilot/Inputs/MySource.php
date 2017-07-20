@@ -32,16 +32,16 @@ class MySource {
 	{
 		return $this->language;
 	}
-	
+
 	public function is_function()
 	{
-        return $this->is_function;
-    }
-	
+		return $this->is_function;
+	}
+
 	public function set_is_function($is_function)
 	{
-        $this->is_function = $is_function;
-    }
+		$this->is_function = $is_function;
+	}
 }
 
 ?>

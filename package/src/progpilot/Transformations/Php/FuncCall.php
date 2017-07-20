@@ -29,15 +29,15 @@ class FuncCall {
 		// each argument will be a definition defined by an expression
 		$def_name = $funccall_name."_param".$num_param."_".mt_rand();
 		$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name, false, false);
-        $mydef->set_assign_id($assign_id);
-        
+		$mydef->set_assign_id($assign_id);
+
 		$context->get_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
 		$context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
 		$myexprparam = new MyExpr($context->get_current_line(), $context->get_current_column());
 		$myexprparam->set_assign(true);
 		$myexprparam->set_assign_def($mydef);
-		
+
 		$inst_funcall_main->add_property("argdef$num_param", $mydef);
 		$inst_funcall_main->add_property("argexpr$num_param", $myexprparam);
 
@@ -58,8 +58,8 @@ class FuncCall {
 	}
 
 	/* 
-    arg2 : expr for the return
-    arg3 : arr for the return : function_call()[0] (arr = [0])
+arg2 : expr for the return
+arg3 : arr for the return : function_call()[0] (arr = [0])
 	 */
 	public static function instruction($context, $myexpr, $assign_id, $funccall_arr, $is_method = false)
 	{
@@ -69,8 +69,8 @@ class FuncCall {
 		if($is_method)
 		{
 			$instance_name = Common::get_name_definition($context->get_current_op()->var);
-        }
-        
+		}
+
 		$funccall_name = "";
 		if($context->get_current_op() instanceof Op\Expr\New_)
 		{
@@ -96,11 +96,11 @@ class FuncCall {
 			// when we define a method in a class (is_method = true) but when we use a method (is_instance = true)
 			$myfunction_call->set_is_instance(true);
 			$myfunction_call->set_name_instance($instance_name);
-					
-            $mybackdef = new MyDefinition($context->get_current_line(), $context->get_current_column()+1, $instance_name, false, false);
-            $mybackdef->set_instance(true);
-            $mybackdef->set_assign_id(rand());
-            $myfunction_call->set_back_def($mybackdef);
+
+			$mybackdef = new MyDefinition($context->get_current_line(), $context->get_current_column()+1, $instance_name, false, false);
+			$mybackdef->set_instance(true);
+			$mybackdef->set_assign_id(rand());
+			$myfunction_call->set_back_def($mybackdef);
 		}
 
 		foreach($context->get_current_op()->args as $arg)

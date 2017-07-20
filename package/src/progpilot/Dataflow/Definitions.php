@@ -79,7 +79,7 @@ class Definitions {
 			}
 		}
 	}
-	
+
 	public function getdefs()
 	{
 		$outputdefs = [];
@@ -242,29 +242,29 @@ class Definitions {
 
 		return null;
 	}
-	
+
 	// $def1 = all, $def2 = gen
 	public function def_equality($def1, $def2)
 	{
-        if($def1->get_name() == $def2->get_name())
-        {
-            if($def1->is_property() && $def2->is_property() 
-                && $def1->property->get_name() != $def2->property->get_name())
-                return false;
-            
-            /*
-            if($def1->is_property() && $def2->is_property())
-                return true;
-                
-            if($def1->is_instance() && $def2->is_instance())
-                return true;
-            */
-            return true;
-        }
-        
-        return false;
+		if($def1->get_name() == $def2->get_name())
+		{
+			if($def1->is_property() && $def2->is_property() 
+					&& $def1->property->get_name() != $def2->property->get_name())
+				return false;
+
+			/*
+			   if($def1->is_property() && $def2->is_property())
+			   return true;
+
+			   if($def1->is_instance() && $def2->is_instance())
+			   return true;
+			 */
+			return true;
+		}
+
+		return false;
 	}
-	
+
 	// $this->data["gen"][$blockid]
 	public function computekill($blockid)
 	{
@@ -275,11 +275,11 @@ class Definitions {
 			{
 				foreach($tmpdefs as $def)
 				{
-                    if($this->def_equality($def, $gen))
-                    {
-                        if($def != $gen && !in_array($def, $this->kill[$blockid]))
-                            $this->kill[$blockid][] = $def;
-                    }
+					if($this->def_equality($def, $gen))
+					{
+						if($def != $gen && !in_array($def, $this->kill[$blockid]))
+							$this->kill[$blockid][] = $def;
+					}
 				}
 			}
 		}
@@ -297,10 +297,10 @@ class Definitions {
 	{
 		foreach($myblocks as $id => $block)
 		{
-            $this->setoutminuskill($id, $this->getgen($id));
+			$this->setoutminuskill($id, $this->getgen($id));
 			$this->setout($id, $this->getgen($id));
-        }
-        
+		}
+
 		$change = true;
 
 		while($change)
@@ -313,22 +313,22 @@ class Definitions {
 				{
 					$idcurrent = $block->get_id();
 					$idparent = $parent->get_id();
-					
+
 					if($idcurrent != $idparent)
 					{
-                        $temp = ArrayMulti::array_merge_multi($this->getin($idcurrent), $this->getout($idparent));
-                        $this->setin($idcurrent, $temp);
+						$temp = ArrayMulti::array_merge_multi($this->getin($idcurrent), $this->getout($idparent));
+						$this->setin($idcurrent, $temp);
 
-                        $oldout = $this->getout($idcurrent);
-                        
-                        $inminus = ArrayMulti::array_minus_multi($this->getin($idcurrent), $this->getkill($idcurrent));
-                        $this->setout($idcurrent, ArrayMulti::array_merge_multi($this->getgen($idcurrent), $inminus));
-                        
-                        $this->setoutminuskill($idcurrent, ArrayMulti::array_merge_multi($this->getgen($idcurrent), $this->getin($idcurrent)));
+						$oldout = $this->getout($idcurrent);
 
-                        if($this->getout($idcurrent) != $oldout)
-                            $change = true;
-                    }
+						$inminus = ArrayMulti::array_minus_multi($this->getin($idcurrent), $this->getkill($idcurrent));
+						$this->setout($idcurrent, ArrayMulti::array_merge_multi($this->getgen($idcurrent), $inminus));
+
+						$this->setoutminuskill($idcurrent, ArrayMulti::array_merge_multi($this->getgen($idcurrent), $this->getin($idcurrent)));
+
+						if($this->getout($idcurrent) != $oldout)
+							$change = true;
+					}
 				}
 			}
 		}

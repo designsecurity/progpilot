@@ -35,7 +35,7 @@ class MyProperty extends MyOp {
 	{
 		return $this->visibility;
 	}
-	
+
 	public function set_name($property_name)
 	{
 		$this->property_name = $property_name;
@@ -45,7 +45,7 @@ class MyProperty extends MyOp {
 	{
 		return $this->property_name;
 	}
-	
+
 	public function get_myinstances()
 	{
 		return $this->myinstances;
@@ -53,8 +53,8 @@ class MyProperty extends MyOp {
 
 	public function add_myinstance($myinstance)
 	{
-        if(!in_array($myinstance, $this->myinstances))
-            $this->myinstances[] = $myinstance;
+		if(!in_array($myinstance, $this->myinstances))
+			$this->myinstances[] = $myinstance;
 	}
 }
 

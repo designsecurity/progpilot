@@ -5,7 +5,7 @@ function scandir_rec($dir, &$files)
 	if(is_dir($dir))
 	{
 		$filesanddirs = scandir($dir);
-		
+
 		if($filesanddirs != false)
 		{
 			foreach($filesanddirs as $filedir)
@@ -14,7 +14,7 @@ function scandir_rec($dir, &$files)
 				{
 					if(is_dir($dir."/".$filedir))
 						scandir_rec($dir."/".$filedir, $files);
-					
+
 					else
 						$files[] = $dir."/".$filedir;
 				}
@@ -23,208 +23,208 @@ function scandir_rec($dir, &$files)
 	}
 }
 
-    $framework->add_testbasis("./tests/sard/000/CWE_98__backticks__whitelist_using_array__require_file_name-concatenation_simple_quote.php");
-    $framework->add_output("./tests/sard/000/CWE_98__backticks__whitelist_using_array__require_file_name-concatenation_simple_quote.php", array("tainted"));
-    $framework->add_output("./tests/sard/000/CWE_98__backticks__whitelist_using_array__require_file_name-concatenation_simple_quote.php", array("49"));
-    $framework->add_output("./tests/sard/000/CWE_98__backticks__whitelist_using_array__require_file_name-concatenation_simple_quote.php", "file_inclusion");
+$framework->add_testbasis("./tests/sard/000/CWE_98__backticks__whitelist_using_array__require_file_name-concatenation_simple_quote.php");
+$framework->add_output("./tests/sard/000/CWE_98__backticks__whitelist_using_array__require_file_name-concatenation_simple_quote.php", array("tainted"));
+$framework->add_output("./tests/sard/000/CWE_98__backticks__whitelist_using_array__require_file_name-concatenation_simple_quote.php", array("49"));
+$framework->add_output("./tests/sard/000/CWE_98__backticks__whitelist_using_array__require_file_name-concatenation_simple_quote.php", "file_inclusion");
 
-    $framework->add_testbasis("./tests/sard/001/CWE_98__backticks__whitelist_using_array__include_file_name-interpretation_simple_quote.php");
-    $framework->add_output("./tests/sard/001/CWE_98__backticks__whitelist_using_array__include_file_name-interpretation_simple_quote.php", array("tainted"));
-    $framework->add_output("./tests/sard/001/CWE_98__backticks__whitelist_using_array__include_file_name-interpretation_simple_quote.php", array("49"));
-    $framework->add_output("./tests/sard/001/CWE_98__backticks__whitelist_using_array__include_file_name-interpretation_simple_quote.php", "file_inclusion");
+$framework->add_testbasis("./tests/sard/001/CWE_98__backticks__whitelist_using_array__include_file_name-interpretation_simple_quote.php");
+$framework->add_output("./tests/sard/001/CWE_98__backticks__whitelist_using_array__include_file_name-interpretation_simple_quote.php", array("tainted"));
+$framework->add_output("./tests/sard/001/CWE_98__backticks__whitelist_using_array__include_file_name-interpretation_simple_quote.php", array("49"));
+$framework->add_output("./tests/sard/001/CWE_98__backticks__whitelist_using_array__include_file_name-interpretation_simple_quote.php", "file_inclusion");
 
-    $framework->add_testbasis("./tests/sard/002/CWE_98__backticks__whitelist_using_array__require_file_name-interpretation_simple_quote.php");
-    $framework->add_output("./tests/sard/002/CWE_98__backticks__whitelist_using_array__require_file_name-interpretation_simple_quote.php", array("tainted"));
-    $framework->add_output("./tests/sard/002/CWE_98__backticks__whitelist_using_array__require_file_name-interpretation_simple_quote.php", array("49"));
-    $framework->add_output("./tests/sard/002/CWE_98__backticks__whitelist_using_array__require_file_name-interpretation_simple_quote.php", "file_inclusion");
+$framework->add_testbasis("./tests/sard/002/CWE_98__backticks__whitelist_using_array__require_file_name-interpretation_simple_quote.php");
+$framework->add_output("./tests/sard/002/CWE_98__backticks__whitelist_using_array__require_file_name-interpretation_simple_quote.php", array("tainted"));
+$framework->add_output("./tests/sard/002/CWE_98__backticks__whitelist_using_array__require_file_name-interpretation_simple_quote.php", array("49"));
+$framework->add_output("./tests/sard/002/CWE_98__backticks__whitelist_using_array__require_file_name-interpretation_simple_quote.php", "file_inclusion");
 
-    $framework->add_testbasis("./tests/sard/003/CWE_98__backticks__whitelist_using_array__include_file_name-sprintf_%s_simple_quote.php");
-    $framework->add_output("./tests/sard/003/CWE_98__backticks__whitelist_using_array__include_file_name-sprintf_%s_simple_quote.php", array("tainted"));
-    $framework->add_output("./tests/sard/003/CWE_98__backticks__whitelist_using_array__include_file_name-sprintf_%s_simple_quote.php", array("49"));
-    $framework->add_output("./tests/sard/003/CWE_98__backticks__whitelist_using_array__include_file_name-sprintf_%s_simple_quote.php", "file_inclusion");
-    
-    $framework->add_testbasis("./tests/sard/004/CWE_98__backticks__whitelist_using_array__require_file_name-sprintf_%s_simple_quote.php");
-    $framework->add_output("./tests/sard/004/CWE_98__backticks__whitelist_using_array__require_file_name-sprintf_%s_simple_quote.php", array("tainted"));
-    $framework->add_output("./tests/sard/004/CWE_98__backticks__whitelist_using_array__require_file_name-sprintf_%s_simple_quote.php", array("49"));
-    $framework->add_output("./tests/sard/004/CWE_98__backticks__whitelist_using_array__require_file_name-sprintf_%s_simple_quote.php", "file_inclusion");
+$framework->add_testbasis("./tests/sard/003/CWE_98__backticks__whitelist_using_array__include_file_name-sprintf_%s_simple_quote.php");
+$framework->add_output("./tests/sard/003/CWE_98__backticks__whitelist_using_array__include_file_name-sprintf_%s_simple_quote.php", array("tainted"));
+$framework->add_output("./tests/sard/003/CWE_98__backticks__whitelist_using_array__include_file_name-sprintf_%s_simple_quote.php", array("49"));
+$framework->add_output("./tests/sard/003/CWE_98__backticks__whitelist_using_array__include_file_name-sprintf_%s_simple_quote.php", "file_inclusion");
+
+$framework->add_testbasis("./tests/sard/004/CWE_98__backticks__whitelist_using_array__require_file_name-sprintf_%s_simple_quote.php");
+$framework->add_output("./tests/sard/004/CWE_98__backticks__whitelist_using_array__require_file_name-sprintf_%s_simple_quote.php", array("tainted"));
+$framework->add_output("./tests/sard/004/CWE_98__backticks__whitelist_using_array__require_file_name-sprintf_%s_simple_quote.php", array("49"));
+$framework->add_output("./tests/sard/004/CWE_98__backticks__whitelist_using_array__require_file_name-sprintf_%s_simple_quote.php", "file_inclusion");
 
 
 
-    $framework->add_testbasis("./tests/sard/005/CWE_98__backticks__whitelist_using_array__include_file_id-concatenation_simple_quote.php");
-    $framework->add_output("./tests/sard/005/CWE_98__backticks__whitelist_using_array__include_file_id-concatenation_simple_quote.php", array("tainted"));
-    $framework->add_output("./tests/sard/005/CWE_98__backticks__whitelist_using_array__include_file_id-concatenation_simple_quote.php", array("49"));
-    $framework->add_output("./tests/sard/005/CWE_98__backticks__whitelist_using_array__include_file_id-concatenation_simple_quote.php", "file_inclusion");
+$framework->add_testbasis("./tests/sard/005/CWE_98__backticks__whitelist_using_array__include_file_id-concatenation_simple_quote.php");
+$framework->add_output("./tests/sard/005/CWE_98__backticks__whitelist_using_array__include_file_id-concatenation_simple_quote.php", array("tainted"));
+$framework->add_output("./tests/sard/005/CWE_98__backticks__whitelist_using_array__include_file_id-concatenation_simple_quote.php", array("49"));
+$framework->add_output("./tests/sard/005/CWE_98__backticks__whitelist_using_array__include_file_id-concatenation_simple_quote.php", "file_inclusion");
 
-    $framework->add_testbasis("./tests/sard/006/CWE_98__backticks__whitelist_using_array__require_file_id-concatenation_simple_quote.php");
-    $framework->add_output("./tests/sard/006/CWE_98__backticks__whitelist_using_array__require_file_id-concatenation_simple_quote.php", array("tainted"));
-    $framework->add_output("./tests/sard/006/CWE_98__backticks__whitelist_using_array__require_file_id-concatenation_simple_quote.php", array("49"));
-    $framework->add_output("./tests/sard/006/CWE_98__backticks__whitelist_using_array__require_file_id-concatenation_simple_quote.php", "file_inclusion");
+$framework->add_testbasis("./tests/sard/006/CWE_98__backticks__whitelist_using_array__require_file_id-concatenation_simple_quote.php");
+$framework->add_output("./tests/sard/006/CWE_98__backticks__whitelist_using_array__require_file_id-concatenation_simple_quote.php", array("tainted"));
+$framework->add_output("./tests/sard/006/CWE_98__backticks__whitelist_using_array__require_file_id-concatenation_simple_quote.php", array("49"));
+$framework->add_output("./tests/sard/006/CWE_98__backticks__whitelist_using_array__require_file_id-concatenation_simple_quote.php", "file_inclusion");
 
-    $framework->add_testbasis("./tests/sard/007/CWE_98__backticks__whitelist_using_array__include_file_id-interpretation_simple_quote.php");
-    $framework->add_output("./tests/sard/007/CWE_98__backticks__whitelist_using_array__include_file_id-interpretation_simple_quote.php", array("tainted"));
-    $framework->add_output("./tests/sard/007/CWE_98__backticks__whitelist_using_array__include_file_id-interpretation_simple_quote.php", array("49"));
-    $framework->add_output("./tests/sard/007/CWE_98__backticks__whitelist_using_array__include_file_id-interpretation_simple_quote.php", "file_inclusion");
+$framework->add_testbasis("./tests/sard/007/CWE_98__backticks__whitelist_using_array__include_file_id-interpretation_simple_quote.php");
+$framework->add_output("./tests/sard/007/CWE_98__backticks__whitelist_using_array__include_file_id-interpretation_simple_quote.php", array("tainted"));
+$framework->add_output("./tests/sard/007/CWE_98__backticks__whitelist_using_array__include_file_id-interpretation_simple_quote.php", array("49"));
+$framework->add_output("./tests/sard/007/CWE_98__backticks__whitelist_using_array__include_file_id-interpretation_simple_quote.php", "file_inclusion");
 
-    $framework->add_testbasis("./tests/sard/008/CWE_98__backticks__whitelist_using_array__require_file_id-interpretation_simple_quote.php");
-    $framework->add_output("./tests/sard/008/CWE_98__backticks__whitelist_using_array__require_file_id-interpretation_simple_quote.php", array("tainted"));
-    $framework->add_output("./tests/sard/008/CWE_98__backticks__whitelist_using_array__require_file_id-interpretation_simple_quote.php", array("49"));
-    $framework->add_output("./tests/sard/008/CWE_98__backticks__whitelist_using_array__require_file_id-interpretation_simple_quote.php", "file_inclusion");
+$framework->add_testbasis("./tests/sard/008/CWE_98__backticks__whitelist_using_array__require_file_id-interpretation_simple_quote.php");
+$framework->add_output("./tests/sard/008/CWE_98__backticks__whitelist_using_array__require_file_id-interpretation_simple_quote.php", array("tainted"));
+$framework->add_output("./tests/sard/008/CWE_98__backticks__whitelist_using_array__require_file_id-interpretation_simple_quote.php", array("49"));
+$framework->add_output("./tests/sard/008/CWE_98__backticks__whitelist_using_array__require_file_id-interpretation_simple_quote.php", "file_inclusion");
 
-    $framework->add_testbasis("./tests/sard/009/CWE_98__backticks__whitelist_using_array__include_file_id-sprintf_%d_simple_quote.php");
-    $framework->add_output("./tests/sard/009/CWE_98__backticks__whitelist_using_array__include_file_id-sprintf_%d_simple_quote.php", array("tainted"));
-    $framework->add_output("./tests/sard/009/CWE_98__backticks__whitelist_using_array__include_file_id-sprintf_%d_simple_quote.php", array("49"));
-    $framework->add_output("./tests/sard/009/CWE_98__backticks__whitelist_using_array__include_file_id-sprintf_%d_simple_quote.php", "file_inclusion");
+$framework->add_testbasis("./tests/sard/009/CWE_98__backticks__whitelist_using_array__include_file_id-sprintf_%d_simple_quote.php");
+$framework->add_output("./tests/sard/009/CWE_98__backticks__whitelist_using_array__include_file_id-sprintf_%d_simple_quote.php", array("tainted"));
+$framework->add_output("./tests/sard/009/CWE_98__backticks__whitelist_using_array__include_file_id-sprintf_%d_simple_quote.php", array("49"));
+$framework->add_output("./tests/sard/009/CWE_98__backticks__whitelist_using_array__include_file_id-sprintf_%d_simple_quote.php", "file_inclusion");
 
-    $framework->add_testbasis("./tests/sard/010/CWE_98__backticks__whitelist_using_array__require_file_id-sprintf_%d_simple_quote.php");
-    $framework->add_output("./tests/sard/010/CWE_98__backticks__whitelist_using_array__require_file_id-sprintf_%d_simple_quote.php", array("tainted"));
-    $framework->add_output("./tests/sard/010/CWE_98__backticks__whitelist_using_array__require_file_id-sprintf_%d_simple_quote.php", array("49"));
-    $framework->add_output("./tests/sard/010/CWE_98__backticks__whitelist_using_array__require_file_id-sprintf_%d_simple_quote.php", "file_inclusion");
+$framework->add_testbasis("./tests/sard/010/CWE_98__backticks__whitelist_using_array__require_file_id-sprintf_%d_simple_quote.php");
+$framework->add_output("./tests/sard/010/CWE_98__backticks__whitelist_using_array__require_file_id-sprintf_%d_simple_quote.php", array("tainted"));
+$framework->add_output("./tests/sard/010/CWE_98__backticks__whitelist_using_array__require_file_id-sprintf_%d_simple_quote.php", array("49"));
+$framework->add_output("./tests/sard/010/CWE_98__backticks__whitelist_using_array__require_file_id-sprintf_%d_simple_quote.php", "file_inclusion");
 
-    //$framework->add_testbasis("./tests/sard/011/CWE_95__backticks__whitelist_using_array__echo-concatenation_simple_quote.php");
-    //$framework->add_output("./tests/sard/011/CWE_95__backticks__whitelist_using_array__echo-concatenation_simple_quote.php", array("query"));
-    //$framework->add_output("./tests/sard/011/CWE_95__backticks__whitelist_using_array__echo-concatenation_simple_quote.php", array("54"));
-    //$framework->add_output("./tests/sard/011/CWE_95__backticks__whitelist_using_array__echo-concatenation_simple_quote.php", "code_injection");
-    
-    $framework->add_testbasis("./tests/sard/012/CWE_95__backticks__whitelist_using_array__echo-interpretation_simple_quote.php");
-    $framework->add_output("./tests/sard/012/CWE_95__backticks__whitelist_using_array__echo-interpretation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/012/CWE_95__backticks__whitelist_using_array__echo-interpretation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/012/CWE_95__backticks__whitelist_using_array__echo-interpretation_simple_quote.php", "code_injection");
+//$framework->add_testbasis("./tests/sard/011/CWE_95__backticks__whitelist_using_array__echo-concatenation_simple_quote.php");
+//$framework->add_output("./tests/sard/011/CWE_95__backticks__whitelist_using_array__echo-concatenation_simple_quote.php", array("query"));
+//$framework->add_output("./tests/sard/011/CWE_95__backticks__whitelist_using_array__echo-concatenation_simple_quote.php", array("54"));
+//$framework->add_output("./tests/sard/011/CWE_95__backticks__whitelist_using_array__echo-concatenation_simple_quote.php", "code_injection");
 
-    $framework->add_testbasis("./tests/sard/013/CWE_95__backticks__whitelist_using_array__echo-sprintf_%s_simple_quote.php");
-    $framework->add_output("./tests/sard/013/CWE_95__backticks__whitelist_using_array__echo-sprintf_%s_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/013/CWE_95__backticks__whitelist_using_array__echo-sprintf_%s_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/013/CWE_95__backticks__whitelist_using_array__echo-sprintf_%s_simple_quote.php", "code_injection");
+$framework->add_testbasis("./tests/sard/012/CWE_95__backticks__whitelist_using_array__echo-interpretation_simple_quote.php");
+$framework->add_output("./tests/sard/012/CWE_95__backticks__whitelist_using_array__echo-interpretation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/012/CWE_95__backticks__whitelist_using_array__echo-interpretation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/012/CWE_95__backticks__whitelist_using_array__echo-interpretation_simple_quote.php", "code_injection");
 
-    $framework->add_testbasis("./tests/sard/014/CWE_95__backticks__whitelist_using_array__variable-concatenation_simple_quote.php");
-    $framework->add_output("./tests/sard/014/CWE_95__backticks__whitelist_using_array__variable-concatenation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/014/CWE_95__backticks__whitelist_using_array__variable-concatenation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/014/CWE_95__backticks__whitelist_using_array__variable-concatenation_simple_quote.php", "code_injection");
+$framework->add_testbasis("./tests/sard/013/CWE_95__backticks__whitelist_using_array__echo-sprintf_%s_simple_quote.php");
+$framework->add_output("./tests/sard/013/CWE_95__backticks__whitelist_using_array__echo-sprintf_%s_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/013/CWE_95__backticks__whitelist_using_array__echo-sprintf_%s_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/013/CWE_95__backticks__whitelist_using_array__echo-sprintf_%s_simple_quote.php", "code_injection");
 
-    $framework->add_testbasis("./tests/sard/015/CWE_95__backticks__whitelist_using_array__variable-interpretation_simple_quote.php");
-    $framework->add_output("./tests/sard/015/CWE_95__backticks__whitelist_using_array__variable-interpretation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/015/CWE_95__backticks__whitelist_using_array__variable-interpretation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/015/CWE_95__backticks__whitelist_using_array__variable-interpretation_simple_quote.php", "code_injection");
+$framework->add_testbasis("./tests/sard/014/CWE_95__backticks__whitelist_using_array__variable-concatenation_simple_quote.php");
+$framework->add_output("./tests/sard/014/CWE_95__backticks__whitelist_using_array__variable-concatenation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/014/CWE_95__backticks__whitelist_using_array__variable-concatenation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/014/CWE_95__backticks__whitelist_using_array__variable-concatenation_simple_quote.php", "code_injection");
 
-    $framework->add_testbasis("./tests/sard/016/CWE_95__backticks__whitelist_using_array__variable-sprintf_%d_simple_quote.php");
-    $framework->add_output("./tests/sard/016/CWE_95__backticks__whitelist_using_array__variable-sprintf_%d_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/016/CWE_95__backticks__whitelist_using_array__variable-sprintf_%d_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/016/CWE_95__backticks__whitelist_using_array__variable-sprintf_%d_simple_quote.php", "code_injection");
+$framework->add_testbasis("./tests/sard/015/CWE_95__backticks__whitelist_using_array__variable-interpretation_simple_quote.php");
+$framework->add_output("./tests/sard/015/CWE_95__backticks__whitelist_using_array__variable-interpretation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/015/CWE_95__backticks__whitelist_using_array__variable-interpretation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/015/CWE_95__backticks__whitelist_using_array__variable-interpretation_simple_quote.php", "code_injection");
 
-    $framework->add_testbasis("./tests/sard/017/CWE_78__backticks__whitelist_using_array__ls-concatenation_simple_quote.php");
-    $framework->add_output("./tests/sard/017/CWE_78__backticks__whitelist_using_array__ls-concatenation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/017/CWE_78__backticks__whitelist_using_array__ls-concatenation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/017/CWE_78__backticks__whitelist_using_array__ls-concatenation_simple_quote.php", "command_injection");
+$framework->add_testbasis("./tests/sard/016/CWE_95__backticks__whitelist_using_array__variable-sprintf_%d_simple_quote.php");
+$framework->add_output("./tests/sard/016/CWE_95__backticks__whitelist_using_array__variable-sprintf_%d_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/016/CWE_95__backticks__whitelist_using_array__variable-sprintf_%d_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/016/CWE_95__backticks__whitelist_using_array__variable-sprintf_%d_simple_quote.php", "code_injection");
 
-    $framework->add_testbasis("./tests/sard/018/CWE_78__backticks__whitelist_using_array__ls-interpretation_simple_quote.php");
-    $framework->add_output("./tests/sard/018/CWE_78__backticks__whitelist_using_array__ls-interpretation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/018/CWE_78__backticks__whitelist_using_array__ls-interpretation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/018/CWE_78__backticks__whitelist_using_array__ls-interpretation_simple_quote.php", "command_injection");
+$framework->add_testbasis("./tests/sard/017/CWE_78__backticks__whitelist_using_array__ls-concatenation_simple_quote.php");
+$framework->add_output("./tests/sard/017/CWE_78__backticks__whitelist_using_array__ls-concatenation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/017/CWE_78__backticks__whitelist_using_array__ls-concatenation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/017/CWE_78__backticks__whitelist_using_array__ls-concatenation_simple_quote.php", "command_injection");
 
-    $framework->add_testbasis("./tests/sard/019/CWE_78__backticks__whitelist_using_array__ls-sprintf_%s_simple_quote.php");
-    $framework->add_output("./tests/sard/019/CWE_78__backticks__whitelist_using_array__ls-sprintf_%s_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/019/CWE_78__backticks__whitelist_using_array__ls-sprintf_%s_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/019/CWE_78__backticks__whitelist_using_array__ls-sprintf_%s_simple_quote.php", "command_injection");
+$framework->add_testbasis("./tests/sard/018/CWE_78__backticks__whitelist_using_array__ls-interpretation_simple_quote.php");
+$framework->add_output("./tests/sard/018/CWE_78__backticks__whitelist_using_array__ls-interpretation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/018/CWE_78__backticks__whitelist_using_array__ls-interpretation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/018/CWE_78__backticks__whitelist_using_array__ls-interpretation_simple_quote.php", "command_injection");
 
-    $framework->add_testbasis("./tests/sard/020/CWE_78__backticks__whitelist_using_array__find_size-concatenation_simple_quote.php");
-    $framework->add_output("./tests/sard/020/CWE_78__backticks__whitelist_using_array__find_size-concatenation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/020/CWE_78__backticks__whitelist_using_array__find_size-concatenation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/020/CWE_78__backticks__whitelist_using_array__find_size-concatenation_simple_quote.php", "command_injection");
+$framework->add_testbasis("./tests/sard/019/CWE_78__backticks__whitelist_using_array__ls-sprintf_%s_simple_quote.php");
+$framework->add_output("./tests/sard/019/CWE_78__backticks__whitelist_using_array__ls-sprintf_%s_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/019/CWE_78__backticks__whitelist_using_array__ls-sprintf_%s_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/019/CWE_78__backticks__whitelist_using_array__ls-sprintf_%s_simple_quote.php", "command_injection");
 
-    $framework->add_testbasis("./tests/sard/021/CWE_78__backticks__whitelist_using_array__find_size-interpretation_simple_quote.php");
-    $framework->add_output("./tests/sard/021/CWE_78__backticks__whitelist_using_array__find_size-interpretation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/021/CWE_78__backticks__whitelist_using_array__find_size-interpretation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/021/CWE_78__backticks__whitelist_using_array__find_size-interpretation_simple_quote.php", "command_injection");
+$framework->add_testbasis("./tests/sard/020/CWE_78__backticks__whitelist_using_array__find_size-concatenation_simple_quote.php");
+$framework->add_output("./tests/sard/020/CWE_78__backticks__whitelist_using_array__find_size-concatenation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/020/CWE_78__backticks__whitelist_using_array__find_size-concatenation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/020/CWE_78__backticks__whitelist_using_array__find_size-concatenation_simple_quote.php", "command_injection");
 
-    $framework->add_testbasis("./tests/sard/022/CWE_78__backticks__whitelist_using_array__find_size-sprintf_%s_simple_quote.php");
-    $framework->add_output("./tests/sard/022/CWE_78__backticks__whitelist_using_array__find_size-sprintf_%s_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/022/CWE_78__backticks__whitelist_using_array__find_size-sprintf_%s_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/022/CWE_78__backticks__whitelist_using_array__find_size-sprintf_%s_simple_quote.php", "command_injection");
+$framework->add_testbasis("./tests/sard/021/CWE_78__backticks__whitelist_using_array__find_size-interpretation_simple_quote.php");
+$framework->add_output("./tests/sard/021/CWE_78__backticks__whitelist_using_array__find_size-interpretation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/021/CWE_78__backticks__whitelist_using_array__find_size-interpretation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/021/CWE_78__backticks__whitelist_using_array__find_size-interpretation_simple_quote.php", "command_injection");
 
-    $framework->add_testbasis("./tests/sard/023/CWE_78__backticks__whitelist_using_array__cat-concatenation_simple_quote.php");
-    $framework->add_output("./tests/sard/023/CWE_78__backticks__whitelist_using_array__cat-concatenation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/023/CWE_78__backticks__whitelist_using_array__cat-concatenation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/023/CWE_78__backticks__whitelist_using_array__cat-concatenation_simple_quote.php", "command_injection");
+$framework->add_testbasis("./tests/sard/022/CWE_78__backticks__whitelist_using_array__find_size-sprintf_%s_simple_quote.php");
+$framework->add_output("./tests/sard/022/CWE_78__backticks__whitelist_using_array__find_size-sprintf_%s_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/022/CWE_78__backticks__whitelist_using_array__find_size-sprintf_%s_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/022/CWE_78__backticks__whitelist_using_array__find_size-sprintf_%s_simple_quote.php", "command_injection");
 
-    $framework->add_testbasis("./tests/sard/024/CWE_78__backticks__whitelist_using_array__cat-interpretation_simple_quote.php");
-    $framework->add_output("./tests/sard/024/CWE_78__backticks__whitelist_using_array__cat-interpretation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/024/CWE_78__backticks__whitelist_using_array__cat-interpretation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/024/CWE_78__backticks__whitelist_using_array__cat-interpretation_simple_quote.php", "command_injection");
+$framework->add_testbasis("./tests/sard/023/CWE_78__backticks__whitelist_using_array__cat-concatenation_simple_quote.php");
+$framework->add_output("./tests/sard/023/CWE_78__backticks__whitelist_using_array__cat-concatenation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/023/CWE_78__backticks__whitelist_using_array__cat-concatenation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/023/CWE_78__backticks__whitelist_using_array__cat-concatenation_simple_quote.php", "command_injection");
 
-    $framework->add_testbasis("./tests/sard/025/CWE_78__backticks__whitelist_using_array__cat-sprintf_%s_simple_quote.php");
-    $framework->add_output("./tests/sard/025/CWE_78__backticks__whitelist_using_array__cat-sprintf_%s_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/025/CWE_78__backticks__whitelist_using_array__cat-sprintf_%s_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/025/CWE_78__backticks__whitelist_using_array__cat-sprintf_%s_simple_quote.php", "command_injection");
+$framework->add_testbasis("./tests/sard/024/CWE_78__backticks__whitelist_using_array__cat-interpretation_simple_quote.php");
+$framework->add_output("./tests/sard/024/CWE_78__backticks__whitelist_using_array__cat-interpretation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/024/CWE_78__backticks__whitelist_using_array__cat-interpretation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/024/CWE_78__backticks__whitelist_using_array__cat-interpretation_simple_quote.php", "command_injection");
 
-    $framework->add_testbasis("./tests/sard/026/CWE_90__backticks__whitelist_using_array__name-concatenation_simple_quote.php");
-    $framework->add_output("./tests/sard/026/CWE_90__backticks__whitelist_using_array__name-concatenation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/026/CWE_90__backticks__whitelist_using_array__name-concatenation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/026/CWE_90__backticks__whitelist_using_array__name-concatenation_simple_quote.php", "ldap_injection");
+$framework->add_testbasis("./tests/sard/025/CWE_78__backticks__whitelist_using_array__cat-sprintf_%s_simple_quote.php");
+$framework->add_output("./tests/sard/025/CWE_78__backticks__whitelist_using_array__cat-sprintf_%s_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/025/CWE_78__backticks__whitelist_using_array__cat-sprintf_%s_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/025/CWE_78__backticks__whitelist_using_array__cat-sprintf_%s_simple_quote.php", "command_injection");
 
-    $framework->add_testbasis("./tests/sard/027/CWE_90__backticks__whitelist_using_array__name-interpretation_simple_quote.php");
-    $framework->add_output("./tests/sard/027/CWE_90__backticks__whitelist_using_array__name-interpretation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/027/CWE_90__backticks__whitelist_using_array__name-interpretation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/027/CWE_90__backticks__whitelist_using_array__name-interpretation_simple_quote.php", "ldap_injection");
+$framework->add_testbasis("./tests/sard/026/CWE_90__backticks__whitelist_using_array__name-concatenation_simple_quote.php");
+$framework->add_output("./tests/sard/026/CWE_90__backticks__whitelist_using_array__name-concatenation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/026/CWE_90__backticks__whitelist_using_array__name-concatenation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/026/CWE_90__backticks__whitelist_using_array__name-concatenation_simple_quote.php", "ldap_injection");
 
-    $framework->add_testbasis("./tests/sard/028/CWE_90__backticks__whitelist_using_array__name-sprintf_%s_simple_quote.php");
-    $framework->add_output("./tests/sard/028/CWE_90__backticks__whitelist_using_array__name-sprintf_%s_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/028/CWE_90__backticks__whitelist_using_array__name-sprintf_%s_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/028/CWE_90__backticks__whitelist_using_array__name-sprintf_%s_simple_quote.php", "ldap_injection");
+$framework->add_testbasis("./tests/sard/027/CWE_90__backticks__whitelist_using_array__name-interpretation_simple_quote.php");
+$framework->add_output("./tests/sard/027/CWE_90__backticks__whitelist_using_array__name-interpretation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/027/CWE_90__backticks__whitelist_using_array__name-interpretation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/027/CWE_90__backticks__whitelist_using_array__name-interpretation_simple_quote.php", "ldap_injection");
 
-    $framework->add_testbasis("./tests/sard/029/CWE_90__backticks__whitelist_using_array__not_name-concatenation_simple_quote.php");
-    $framework->add_output("./tests/sard/029/CWE_90__backticks__whitelist_using_array__not_name-concatenation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/029/CWE_90__backticks__whitelist_using_array__not_name-concatenation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/029/CWE_90__backticks__whitelist_using_array__not_name-concatenation_simple_quote.php", "ldap_injection");
+$framework->add_testbasis("./tests/sard/028/CWE_90__backticks__whitelist_using_array__name-sprintf_%s_simple_quote.php");
+$framework->add_output("./tests/sard/028/CWE_90__backticks__whitelist_using_array__name-sprintf_%s_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/028/CWE_90__backticks__whitelist_using_array__name-sprintf_%s_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/028/CWE_90__backticks__whitelist_using_array__name-sprintf_%s_simple_quote.php", "ldap_injection");
 
-    $framework->add_testbasis("./tests/sard/030/CWE_90__backticks__whitelist_using_array__not_name-interpretation_simple_quote.php");
-    $framework->add_output("./tests/sard/030/CWE_90__backticks__whitelist_using_array__not_name-interpretation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/030/CWE_90__backticks__whitelist_using_array__not_name-interpretation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/030/CWE_90__backticks__whitelist_using_array__not_name-interpretation_simple_quote.php", "ldap_injection");
+$framework->add_testbasis("./tests/sard/029/CWE_90__backticks__whitelist_using_array__not_name-concatenation_simple_quote.php");
+$framework->add_output("./tests/sard/029/CWE_90__backticks__whitelist_using_array__not_name-concatenation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/029/CWE_90__backticks__whitelist_using_array__not_name-concatenation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/029/CWE_90__backticks__whitelist_using_array__not_name-concatenation_simple_quote.php", "ldap_injection");
 
-    $framework->add_testbasis("./tests/sard/031/CWE_90__backticks__whitelist_using_array__not_name-sprintf_%s_simple_quote.php");
-    $framework->add_output("./tests/sard/031/CWE_90__backticks__whitelist_using_array__not_name-sprintf_%s_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/031/CWE_90__backticks__whitelist_using_array__not_name-sprintf_%s_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/031/CWE_90__backticks__whitelist_using_array__not_name-sprintf_%s_simple_quote.php", "ldap_injection");
+$framework->add_testbasis("./tests/sard/030/CWE_90__backticks__whitelist_using_array__not_name-interpretation_simple_quote.php");
+$framework->add_output("./tests/sard/030/CWE_90__backticks__whitelist_using_array__not_name-interpretation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/030/CWE_90__backticks__whitelist_using_array__not_name-interpretation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/030/CWE_90__backticks__whitelist_using_array__not_name-interpretation_simple_quote.php", "ldap_injection");
 
-    $framework->add_testbasis("./tests/sard/032/CWE_90__backticks__whitelist_using_array__userByCN-concatenation_simple_quote.php");
-    $framework->add_output("./tests/sard/032/CWE_90__backticks__whitelist_using_array__userByCN-concatenation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/032/CWE_90__backticks__whitelist_using_array__userByCN-concatenation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/032/CWE_90__backticks__whitelist_using_array__userByCN-concatenation_simple_quote.php", "ldap_injection");
+$framework->add_testbasis("./tests/sard/031/CWE_90__backticks__whitelist_using_array__not_name-sprintf_%s_simple_quote.php");
+$framework->add_output("./tests/sard/031/CWE_90__backticks__whitelist_using_array__not_name-sprintf_%s_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/031/CWE_90__backticks__whitelist_using_array__not_name-sprintf_%s_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/031/CWE_90__backticks__whitelist_using_array__not_name-sprintf_%s_simple_quote.php", "ldap_injection");
 
-    $framework->add_testbasis("./tests/sard/033/CWE_90__backticks__whitelist_using_array__userByCN-interpretation_simple_quote.php");
-    $framework->add_output("./tests/sard/033/CWE_90__backticks__whitelist_using_array__userByCN-interpretation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/033/CWE_90__backticks__whitelist_using_array__userByCN-interpretation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/033/CWE_90__backticks__whitelist_using_array__userByCN-interpretation_simple_quote.php", "ldap_injection");
+$framework->add_testbasis("./tests/sard/032/CWE_90__backticks__whitelist_using_array__userByCN-concatenation_simple_quote.php");
+$framework->add_output("./tests/sard/032/CWE_90__backticks__whitelist_using_array__userByCN-concatenation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/032/CWE_90__backticks__whitelist_using_array__userByCN-concatenation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/032/CWE_90__backticks__whitelist_using_array__userByCN-concatenation_simple_quote.php", "ldap_injection");
 
-    $framework->add_testbasis("./tests/sard/034/CWE_90__backticks__whitelist_using_array__userByCN-sprintf_%s_simple_quote.php");
-    $framework->add_output("./tests/sard/034/CWE_90__backticks__whitelist_using_array__userByCN-sprintf_%s_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/034/CWE_90__backticks__whitelist_using_array__userByCN-sprintf_%s_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/034/CWE_90__backticks__whitelist_using_array__userByCN-sprintf_%s_simple_quote.php", "ldap_injection");
-   
-    $framework->add_testbasis("./tests/sard/035/CWE_90__backticks__whitelist_using_array__userByMail-concatenation_simple_quote.php");
-    $framework->add_output("./tests/sard/035/CWE_90__backticks__whitelist_using_array__userByMail-concatenation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/035/CWE_90__backticks__whitelist_using_array__userByMail-concatenation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/035/CWE_90__backticks__whitelist_using_array__userByMail-concatenation_simple_quote.php", "ldap_injection");
+$framework->add_testbasis("./tests/sard/033/CWE_90__backticks__whitelist_using_array__userByCN-interpretation_simple_quote.php");
+$framework->add_output("./tests/sard/033/CWE_90__backticks__whitelist_using_array__userByCN-interpretation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/033/CWE_90__backticks__whitelist_using_array__userByCN-interpretation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/033/CWE_90__backticks__whitelist_using_array__userByCN-interpretation_simple_quote.php", "ldap_injection");
 
-    $framework->add_testbasis("./tests/sard/036/CWE_90__backticks__whitelist_using_array__userByMail-interpretation_simple_quote.php");
-    $framework->add_output("./tests/sard/036/CWE_90__backticks__whitelist_using_array__userByMail-interpretation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/036/CWE_90__backticks__whitelist_using_array__userByMail-interpretation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/036/CWE_90__backticks__whitelist_using_array__userByMail-interpretation_simple_quote.php", "ldap_injection");
+$framework->add_testbasis("./tests/sard/034/CWE_90__backticks__whitelist_using_array__userByCN-sprintf_%s_simple_quote.php");
+$framework->add_output("./tests/sard/034/CWE_90__backticks__whitelist_using_array__userByCN-sprintf_%s_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/034/CWE_90__backticks__whitelist_using_array__userByCN-sprintf_%s_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/034/CWE_90__backticks__whitelist_using_array__userByCN-sprintf_%s_simple_quote.php", "ldap_injection");
 
-    $framework->add_testbasis("./tests/sard/037/CWE_90__backticks__whitelist_using_array__userByMail-sprintf_%s_simple_quote.php");
-    $framework->add_output("./tests/sard/037/CWE_90__backticks__whitelist_using_array__userByMail-sprintf_%s_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/037/CWE_90__backticks__whitelist_using_array__userByMail-sprintf_%s_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/037/CWE_90__backticks__whitelist_using_array__userByMail-sprintf_%s_simple_quote.php", "ldap_injection");
+$framework->add_testbasis("./tests/sard/035/CWE_90__backticks__whitelist_using_array__userByMail-concatenation_simple_quote.php");
+$framework->add_output("./tests/sard/035/CWE_90__backticks__whitelist_using_array__userByMail-concatenation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/035/CWE_90__backticks__whitelist_using_array__userByMail-concatenation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/035/CWE_90__backticks__whitelist_using_array__userByMail-concatenation_simple_quote.php", "ldap_injection");
 
-    $framework->add_testbasis("./tests/sard/038/CWE_89__backticks__whitelist_using_array__select_from-concatenation_simple_quote.php");
-    $framework->add_output("./tests/sard/038/CWE_89__backticks__whitelist_using_array__select_from-concatenation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/038/CWE_89__backticks__whitelist_using_array__select_from-concatenation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/038/CWE_89__backticks__whitelist_using_array__select_from-concatenation_simple_quote.php", "xss");
-    
-    $framework->add_output("./tests/sard/038/CWE_89__backticks__whitelist_using_array__select_from-concatenation_simple_quote.php", array("query"));
-    $framework->add_output("./tests/sard/038/CWE_89__backticks__whitelist_using_array__select_from-concatenation_simple_quote.php", array("54"));
-    $framework->add_output("./tests/sard/038/CWE_89__backticks__whitelist_using_array__select_from-concatenation_simple_quote.php", "sql_injection");
+$framework->add_testbasis("./tests/sard/036/CWE_90__backticks__whitelist_using_array__userByMail-interpretation_simple_quote.php");
+$framework->add_output("./tests/sard/036/CWE_90__backticks__whitelist_using_array__userByMail-interpretation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/036/CWE_90__backticks__whitelist_using_array__userByMail-interpretation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/036/CWE_90__backticks__whitelist_using_array__userByMail-interpretation_simple_quote.php", "ldap_injection");
 
-    
+$framework->add_testbasis("./tests/sard/037/CWE_90__backticks__whitelist_using_array__userByMail-sprintf_%s_simple_quote.php");
+$framework->add_output("./tests/sard/037/CWE_90__backticks__whitelist_using_array__userByMail-sprintf_%s_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/037/CWE_90__backticks__whitelist_using_array__userByMail-sprintf_%s_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/037/CWE_90__backticks__whitelist_using_array__userByMail-sprintf_%s_simple_quote.php", "ldap_injection");
+
+$framework->add_testbasis("./tests/sard/038/CWE_89__backticks__whitelist_using_array__select_from-concatenation_simple_quote.php");
+$framework->add_output("./tests/sard/038/CWE_89__backticks__whitelist_using_array__select_from-concatenation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/038/CWE_89__backticks__whitelist_using_array__select_from-concatenation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/038/CWE_89__backticks__whitelist_using_array__select_from-concatenation_simple_quote.php", "xss");
+
+$framework->add_output("./tests/sard/038/CWE_89__backticks__whitelist_using_array__select_from-concatenation_simple_quote.php", array("query"));
+$framework->add_output("./tests/sard/038/CWE_89__backticks__whitelist_using_array__select_from-concatenation_simple_quote.php", array("54"));
+$framework->add_output("./tests/sard/038/CWE_89__backticks__whitelist_using_array__select_from-concatenation_simple_quote.php", "sql_injection");
+
+
 $framework->add_testbasis("./tests/sard/039/CWE_89__backticks__whitelist_using_array__select_from-interpretation_simple_quote.php");
 $framework->add_output("./tests/sard/039/CWE_89__backticks__whitelist_using_array__select_from-interpretation_simple_quote.php", array("query"));
 $framework->add_output("./tests/sard/039/CWE_89__backticks__whitelist_using_array__select_from-interpretation_simple_quote.php", array("54"));
@@ -1035,25 +1035,25 @@ $framework->add_output("./tests/sard/158/CWE_89__backticks__object-func_mysql_re
 $framework->add_output("./tests/sard/158/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-concatenation_simple_quote.php", "xss");
 
 /*
-$framework->add_testbasis("./tests/sard/159/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-interpretation_simple_quote.php");
-$framework->add_output("./tests/sard/159/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-interpretation_simple_quote.php", array("tainted"));
-$framework->add_output("./tests/sard/159/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-interpretation_simple_quote.php", array("49"));
-$framework->add_output("./tests/sard/159/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-interpretation_simple_quote.php", "file_inclusion");
+   $framework->add_testbasis("./tests/sard/159/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-interpretation_simple_quote.php");
+   $framework->add_output("./tests/sard/159/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-interpretation_simple_quote.php", array("tainted"));
+   $framework->add_output("./tests/sard/159/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-interpretation_simple_quote.php", array("49"));
+   $framework->add_output("./tests/sard/159/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-interpretation_simple_quote.php", "file_inclusion");
 
-$framework->add_testbasis("./tests/sard/160/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-sprintf_%s_simple_quote.php");
-$framework->add_output("./tests/sard/160/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-sprintf_%s_simple_quote.php", array("tainted"));
-$framework->add_output("./tests/sard/160/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-sprintf_%s_simple_quote.php", array("49"));
-$framework->add_output("./tests/sard/160/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-sprintf_%s_simple_quote.php", "file_inclusion");
+   $framework->add_testbasis("./tests/sard/160/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-sprintf_%s_simple_quote.php");
+   $framework->add_output("./tests/sard/160/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-sprintf_%s_simple_quote.php", array("tainted"));
+   $framework->add_output("./tests/sard/160/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-sprintf_%s_simple_quote.php", array("49"));
+   $framework->add_output("./tests/sard/160/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__select_from-sprintf_%s_simple_quote.php", "file_inclusion");
 
-$framework->add_testbasis("./tests/sard/161/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-concatenation_simple_quote.php");
-$framework->add_output("./tests/sard/161/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-concatenation_simple_quote.php", array("tainted"));
-$framework->add_output("./tests/sard/161/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-concatenation_simple_quote.php", array("49"));
-$framework->add_output("./tests/sard/161/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-concatenation_simple_quote.php", "file_inclusion");
+   $framework->add_testbasis("./tests/sard/161/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-concatenation_simple_quote.php");
+   $framework->add_output("./tests/sard/161/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-concatenation_simple_quote.php", array("tainted"));
+   $framework->add_output("./tests/sard/161/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-concatenation_simple_quote.php", array("49"));
+   $framework->add_output("./tests/sard/161/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-concatenation_simple_quote.php", "file_inclusion");
 
-$framework->add_testbasis("./tests/sard/162/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-interpretation_simple_quote.php");
-$framework->add_output("./tests/sard/162/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-interpretation_simple_quote.php", array("tainted"));
-$framework->add_output("./tests/sard/162/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-interpretation_simple_quote.php", array("49"));
-$framework->add_output("./tests/sard/162/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-interpretation_simple_quote.php", "file_inclusion");
+   $framework->add_testbasis("./tests/sard/162/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-interpretation_simple_quote.php");
+   $framework->add_output("./tests/sard/162/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-interpretation_simple_quote.php", array("tainted"));
+   $framework->add_output("./tests/sard/162/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-interpretation_simple_quote.php", array("49"));
+   $framework->add_output("./tests/sard/162/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-interpretation_simple_quote.php", "file_inclusion");
 /*
 $framework->add_testbasis("./tests/sard/163/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/sard/163/CWE_89__backticks__object-func_mysql_real_escape_stringGetter__join-sprintf_%s_simple_quote.php", array("tainted"));
@@ -5243,17 +5243,17 @@ $framework->add_output("./tests/sard/999/CWE_89__exec__CAST-cast_int_sort_of2__m
 */
 
 
-	/*
-	$files = [];
-	scandir_rec("./tests/sard", $files);
+/*
+   $files = [];
+   scandir_rec("./tests/sard", $files);
 
-	foreach($files as $file)
-	{
-		echo "\$framework->add_testbasis(\"$file\");\n";
-		echo "\$framework->add_output(\"$file\", array(\"tainted\"));\n";
-		echo "\$framework->add_output(\"$file\", array(\"49\"));\n";
-		echo "\$framework->add_output(\"$file\", \"file_inclusion\");\n\n";
-	}
-	*/
+   foreach($files as $file)
+   {
+   echo "\$framework->add_testbasis(\"$file\");\n";
+   echo "\$framework->add_output(\"$file\", array(\"tainted\"));\n";
+   echo "\$framework->add_output(\"$file\", array(\"49\"));\n";
+   echo "\$framework->add_output(\"$file\", \"file_inclusion\");\n\n";
+   }
+ */
 
 ?>

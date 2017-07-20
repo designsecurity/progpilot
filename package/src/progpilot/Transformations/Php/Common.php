@@ -64,12 +64,12 @@ class Common {
 		{
 			return $ops->name->value;
 		}
-		
+
 		// arrayexpr
 		if(isset($ops->value))
 		{
-            return $ops->value;
-        }
+			return $ops->value;
+		}
 
 		return "";
 	}
@@ -98,22 +98,22 @@ class Common {
 
 	public static function is_funccall_withoutreturn($op)
 	{
-        if(!(isset($op->result->usages[0])) || (
-            // funccall()[0]
-            !(isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\ArrayDimFetch) &&
-            // test = funccall() // funcccall(funccall())
-                !(isset($op->result->usages[0]) 
-                    && (
-                        $op->result->usages[0] instanceof Op\Terminal\Echo_ 
-                            || $op->result->usages[0] instanceof Op\Expr\MethodCall 
-                                || $op->result->usages[0] instanceof Op\Expr\FuncCall 
-                                    || $op->result->usages[0] instanceof Op\Expr\Assign 
-                                        || $op->result->usages[0] instanceof Op\Expr\Array_
-                                            || $op->result->usages[0] instanceof Op\Expr\Include_
-                                                || $op->result->usages[0] instanceof Op\Expr\Eval_))))
-            return true;
-            
-        return false;
+		if(!(isset($op->result->usages[0])) || (
+					// funccall()[0]
+					!(isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\ArrayDimFetch) &&
+					// test = funccall() // funcccall(funccall())
+					!(isset($op->result->usages[0]) 
+						&& (
+							$op->result->usages[0] instanceof Op\Terminal\Echo_ 
+							|| $op->result->usages[0] instanceof Op\Expr\MethodCall 
+							|| $op->result->usages[0] instanceof Op\Expr\FuncCall 
+							|| $op->result->usages[0] instanceof Op\Expr\Assign 
+							|| $op->result->usages[0] instanceof Op\Expr\Array_
+							|| $op->result->usages[0] instanceof Op\Expr\Include_
+							|| $op->result->usages[0] instanceof Op\Expr\Eval_))))
+			return true;
+
+		return false;
 	}
 
 	public static function get_type_definition($ops)

@@ -63,7 +63,12 @@ Where *$file_sinks* is a json file like below :
 }
 ```
 *Name*, *language*, *attack* properties are mandatory
+
 The value of *name* property must be a php function or method
+
 To specify a method add *instanceof* property with the class name value to which the method belongs.
+
 You can also specify which parameters of a function is a sink with *parameters* property
+
 The *attack* will be annihilate if a source is sanitized by a sanitizer where *prevent* property equals *attack* property
+

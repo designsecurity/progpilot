@@ -29,18 +29,18 @@ class Analyzer
 
 			if(!file_exists($context->inputs->get_file()) && is_null($context->inputs->get_code()))
 				throw new \Exception(Lang::FILE_DOESNT_EXIST);
-				
+
 			if(is_null($context->inputs->get_file()) && is_null($context->inputs->get_code()))
 				throw new \Exception(Lang::FILE_AND_CODE_ARE_NULL);
 
-            if(is_null($context->inputs->get_code()))
-            {
-                $code = file_get_contents($context->inputs->get_file());
-                $script = $parser->parse($code, "");
-                $context->set_path(dirname($context->inputs->get_file()));
-            }
-            else
-                $script = $parser->parse($context->inputs->get_code(), "");
+			if(is_null($context->inputs->get_code()))
+			{
+				$code = file_get_contents($context->inputs->get_file());
+				$script = $parser->parse($code, "");
+				$context->set_path(dirname($context->inputs->get_file()));
+			}
+			else
+				$script = $parser->parse($context->inputs->get_code(), "");
 		}
 
 		return $script;
@@ -66,13 +66,13 @@ class Analyzer
 
 	public function run($context, $firststeps = true)
 	{
-        if($firststeps)
-        {
-            $context->set_first_file($context->inputs->get_file());
-            $script = $this->parse($context);
-            $this->transform($context, $script);
-        }
-        
+		if($firststeps)
+		{
+			$context->set_first_file($context->inputs->get_file());
+			$script = $this->parse($context);
+			$this->transform($context, $script);
+		}
+
 		// analyze
 		if(!is_null($context))
 		{
@@ -83,20 +83,20 @@ class Analyzer
 			$visitordataflow->analyze($context);
 
 			$myfunc = $context->get_functions()->get_function("{main}");
-			
+
 			if(!is_null($myfunc))
 			{
-                $context->get_mycode()->set_start($myfunc->get_start_address_func());
-                $context->get_mycode()->set_end($myfunc->get_end_address_func());
+				$context->get_mycode()->set_start($myfunc->get_start_address_func());
+				$context->get_mycode()->set_end($myfunc->get_end_address_func());
 
-                $visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
-                $visitoranalyzer->set_context($context);
-                $visitoranalyzer->analyze($context->get_mycode());
-            }
-            else
-            {
-                // throw main function missing
-            }
+				$visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
+				$visitoranalyzer->set_context($context);
+				$visitoranalyzer->analyze($context->get_mycode());
+			}
+			else
+			{
+				// throw main function missing
+			}
 		}
 	}
 

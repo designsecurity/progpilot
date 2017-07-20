@@ -29,7 +29,7 @@ class TaintAnalysis {
 		$params_sanitized = false;
 		$params_type_sanitized = [];
 		$nbparams = 0;
-		
+
 		$codes = $context->get_mycode()->get_codes();
 
 		while(true)
@@ -39,13 +39,13 @@ class TaintAnalysis {
 
 			$defarg = $instruction->get_property("argdef$nbparams"); 
 			$exprarg = $instruction->get_property("argexpr$nbparams"); 
-			
+
 			if($defarg->is_tainted())
 			{
 				$params_tainted = true;
 				$exprs_tainted[] = $exprarg;
 				$defs_tainted[] = $defarg;
-            }
+			}
 
 			if($defarg->is_sanitized())
 			{
@@ -62,20 +62,20 @@ class TaintAnalysis {
 
 			$nbparams ++;
 		}
-		
+
 		if($codes[$index + 2]->get_opcode() == Opcodes::END_ASSIGN)
 		{
-            $instruction_def = $codes[$index + 3];
+			$instruction_def = $codes[$index + 3];
 			$mydef_return = $instruction_def->get_property("def");
-			
-                    
+
+
 			if($params_tainted)
 			{
-                for($j = 0; $j < count($defs_tainted); $j ++)  
-                    TaintAnalysis::set_tainted($data, $defs_tainted[$j], $mydef_return, $exprs_tainted[$j], false); 
-            }
-            
-			
+				for($j = 0; $j < count($defs_tainted); $j ++)  
+					TaintAnalysis::set_tainted($data, $defs_tainted[$j], $mydef_return, $exprs_tainted[$j], false); 
+			}
+
+
 			$mysanitizer = $context->inputs->get_sanitizer_byname($myfunc_call->get_name());
 			if(!is_null($mysanitizer))
 			{
@@ -90,49 +90,49 @@ class TaintAnalysis {
 			}
 		}
 	}
-	
-    public static function funccall_source($context, $data, $myfunc, $arr_funccall, $instruction)
+
+	public static function funccall_source($context, $data, $myfunc, $arr_funccall, $instruction)
 	{ 
-        $exprreturn = $instruction->get_property("expr");
-            
-        if(!is_null($context->inputs->get_source_byname($myfunc->get_name(), true)))
-        {
-            $mydef = new MyDefinition($myfunc->getLine(), $myfunc->getColumn(), "return", false, false);
-            $mydef->set_tainted(true);
-            
-            if($exprreturn->is_assign())
-            {
-                $defassign = $exprreturn->get_assign_def();
-                TaintAnalysis::set_tainted($data, $mydef, $defassign, $exprreturn, false, null); 
-            } 
-        }
-    }
-    
+		$exprreturn = $instruction->get_property("expr");
+
+		if(!is_null($context->inputs->get_source_byname($myfunc->get_name(), true)))
+		{
+			$mydef = new MyDefinition($myfunc->getLine(), $myfunc->getColumn(), "return", false, false);
+			$mydef->set_tainted(true);
+
+			if($exprreturn->is_assign())
+			{
+				$defassign = $exprreturn->get_assign_def();
+				TaintAnalysis::set_tainted($data, $mydef, $defassign, $exprreturn, false, null); 
+			} 
+		}
+	}
+
 	public static function funccall_after($data, $myfunc, $arr_funccall, $instruction)
 	{ 
-        $defsreturn = $myfunc->get_return_defs(); 
-        $exprreturn = $instruction->get_property("expr");
+		$defsreturn = $myfunc->get_return_defs(); 
+		$exprreturn = $instruction->get_property("expr");
 
-        foreach($defsreturn as $defreturn)
-        {        
-            if(($arr_funccall != false && $defreturn->is_arr() && $defreturn->get_arr_value() == $arr_funccall) || $arr_funccall == false)
-            {
-                $copydefreturn = $defreturn;
+		foreach($defsreturn as $defreturn)
+		{        
+			if(($arr_funccall != false && $defreturn->is_arr() && $defreturn->get_arr_value() == $arr_funccall) || $arr_funccall == false)
+			{
+				$copydefreturn = $defreturn;
 
-                $copydefreturn->add_expr($exprreturn);
-                $exprreturn->add_def($copydefreturn);
-                $exprs = $copydefreturn->get_exprs();
+				$copydefreturn->add_expr($exprreturn);
+				$exprreturn->add_def($copydefreturn);
+				$exprs = $copydefreturn->get_exprs();
 
-                foreach($exprs as $expr)
-                {
-                    if($expr->is_assign())
-                    {
-                        $defassign = $expr->get_assign_def();
-                        TaintAnalysis::set_tainted($data, $copydefreturn, $defassign, $expr, false, null); 
-                    }
-                }
-            }
-        }
+				foreach($exprs as $expr)
+				{
+					if($expr->is_assign())
+					{
+						$defassign = $expr->get_assign_def();
+						TaintAnalysis::set_tainted($data, $copydefreturn, $defassign, $expr, false, null); 
+					}
+				}
+			}
+		}
 	}
 
 	public static function funccall_before($data, $myfunc, $instruction)
@@ -169,41 +169,41 @@ class TaintAnalysis {
 
 		unset($params);
 	}
-	
+
 	public static function set_tainted($data, $def, $defassign, $expr, $safe)
 	{	     
-        // assertions
+		// assertions
 		if(!$safe)
 		{
-            $visibility_final = true;
-            if($defassign->is_property())
-            {
-                $copy_defassign = clone $defassign;
-                $copy_defassign->set_assign_id(-1);
-                $visibility_final = false;
-                $instances = ResolveDefs::select_instances($data, $copy_defassign);
-                
-                foreach($instances as $instance)
-                {
-                    if($instance->is_instance())
-                    {
-                        $visibility_final = true;
-                        break;
-                    }
-                }
-            }
-            
-            if($def->is_tainted() && $visibility_final)
-            {
-                $defassign->set_tainted(true);
-                $defassign->set_taintedbyexpr($expr);
-            }
-                                                                    
-            if($def->is_sanitized() && $visibility_final)
-            {
-                $defassign->set_type_sanitized($def->get_type_sanitized());
-                $defassign->set_sanitized(true);
-            }
+			$visibility_final = true;
+			if($defassign->is_property())
+			{
+				$copy_defassign = clone $defassign;
+				$copy_defassign->set_assign_id(-1);
+				$visibility_final = false;
+				$instances = ResolveDefs::select_instances($data, $copy_defassign);
+
+				foreach($instances as $instance)
+				{
+					if($instance->is_instance())
+					{
+						$visibility_final = true;
+						break;
+					}
+				}
+			}
+
+			if($def->is_tainted() && $visibility_final)
+			{
+				$defassign->set_tainted(true);
+				$defassign->set_taintedbyexpr($expr);
+			}
+
+			if($def->is_sanitized() && $visibility_final)
+			{
+				$defassign->set_type_sanitized($def->get_type_sanitized());
+				$defassign->set_sanitized(true);
+			}
 		}
 	}
 }

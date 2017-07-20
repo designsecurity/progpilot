@@ -35,7 +35,7 @@ class MyDefinition extends MyOp {
 	private $type_sanitized;
 	private $assign_id;
 	private $myclass;
-	
+
 	public $property;
 	public $method;
 
@@ -64,10 +64,10 @@ class MyDefinition extends MyOp {
 
 		$this->is_sanitized = false;
 		$this->type_sanitized = [];
-		
+
 		$this->last_known_value = "";
 		$this->assign_id = -1;
-		
+
 		$this->property = new MyProperty;
 		$this->method = new MyMethod;
 	}
@@ -91,10 +91,10 @@ class MyDefinition extends MyOp {
 			echo "instance : ".htmlentities($this->get_class_name(), ENT_QUOTES, 'UTF-8')."\n";
 			$myclass = $this->get_myclass();
 			foreach($myclass->get_properties() as $property)
-                echo "property : '".$property->get_name()."'\n";
-			
+				echo "property : '".$property->get_name()."'\n";
+
 			foreach($myclass->get_methods() as $method)
-                echo "method : '".$method->get_name()."'\n";
+				echo "method : '".$method->get_name()."'\n";
 		}
 
 		if($this->is_method())
@@ -108,16 +108,16 @@ class MyDefinition extends MyOp {
 			//var_dump($this->get_copyarrays());
 		}
 	}
-	
+
 	public function last_known_value($value)
 	{
-        $this->last_known_value = $value;
-    }
-    
-    public function get_last_known_value()
+		$this->last_known_value = $value;
+	}
+
+	public function get_last_known_value()
 	{
-        return $this->last_known_value;
-    }
+		return $this->last_known_value;
+	}
 
 	public function set_method($method)
 	{
@@ -151,7 +151,7 @@ class MyDefinition extends MyOp {
 
 	public function set_myclass($myclass)
 	{
-        $this->myclass = $myclass;
+		$this->myclass = $myclass;
 	}
 
 	public function get_myclass()
@@ -248,7 +248,7 @@ class MyDefinition extends MyOp {
 
 	public function set_name($name)
 	{
-        $this->var_name = $name;
+		$this->var_name = $name;
 	}
 
 	public function get_name()
@@ -288,7 +288,7 @@ class MyDefinition extends MyOp {
 
 	public function set_assign_id($assign_id)
 	{
-        $this->assign_id = $assign_id;
+		$this->assign_id = $assign_id;
 	}
 
 	public function is_copyarray()
@@ -305,7 +305,7 @@ class MyDefinition extends MyOp {
 	{
 		$this->theexprs = $exprs;
 	}
-	
+
 	/* expressions utilisant la définition */
 	public function add_expr($myexpr)
 	{

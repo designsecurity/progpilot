@@ -43,13 +43,13 @@ class MySink {
 
 	public function is_parameter($i)
 	{
-        foreach($this->parameters as $parameter)
-        {
-            if($parameter == $i)
-                return true;
-        }
-            
-        return false;
+		foreach($this->parameters as $parameter)
+		{
+			if($parameter == $i)
+				return true;
+		}
+
+		return false;
 	}
 
 	public function has_parameters()
@@ -59,7 +59,7 @@ class MySink {
 
 	public function set_has_parameters($has_parameters)
 	{
-        $this->has_parameters = $has_parameters;
+		$this->has_parameters = $has_parameters;
 	}
 
 	public function get_name()
@@ -79,7 +79,7 @@ class MySink {
 
 	public function set_is_instance($is_instance)
 	{
-        $this->is_instance = $is_instance;
+		$this->is_instance = $is_instance;
 	}
 
 	public function is_instance()

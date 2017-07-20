@@ -52,223 +52,225 @@ class VisitorDataflow {
 		$mycode = $context->get_mycode();
 		$index = $mycode->get_start();
 		$code = $mycode->get_codes();
-		
+
 		$blocks_stack_id = [];
 		$last_block_id = 0;
 
 		do
 		{
-            if(isset($code[$index]))
-            {
-                $instruction = $code[$index];
-                switch($instruction->get_opcode())
-                {
-                    case Opcodes::START_EXPRESSION:
-                        {
-                            $context->outputs->cfg->concat_current_block_text("start_expression\n");
-                            break;
-                        }
+			if(isset($code[$index]))
+			{
+				$instruction = $code[$index];
+				switch($instruction->get_opcode())
+				{
+					case Opcodes::START_EXPRESSION:
+						{
+							$context->outputs->cfg->concat_current_block_text("start_expression\n");
+							break;
+						}
 
-                    case Opcodes::END_EXPRESSION:
-                        {
-                            $context->outputs->cfg->concat_current_block_text("end_expression\n");
-                            break;
-                        }
-                        
-                    case Opcodes::CLASSE:
-                        {
-                            $myclass = $instruction->get_property("myclass");
-                            foreach($myclass->get_properties() as $property)
-                                $property->set_source_file($this->current_file);
+					case Opcodes::END_EXPRESSION:
+						{
+							$context->outputs->cfg->concat_current_block_text("end_expression\n");
+							break;
+						}
 
-                            break;
-                        }
+					case Opcodes::CLASSE:
+						{
+							$myclass = $instruction->get_property("myclass");
+							foreach($myclass->get_properties() as $property)
+								$property->set_source_file($this->current_file);
 
-                    case Opcodes::ENTER_FUNCTION:
-                        {
-                            $myfunc = $instruction->get_property("myfunc");
-                            
-                            $context->outputs->callgraph->set_current_func($myfunc);
-                            $context->outputs->callgraph->add_node($myfunc);
-                            $context->outputs->cfg->concat_current_block_text("enter_func ".htmlentities($myfunc->get_name(), ENT_QUOTES, 'UTF-8')."\n");
-                            
-                            $defs = new Definitions();
-                            $defs->create_block(0); 
+							break;
+						}
 
-                            $myfunc->set_defs($defs);
+					case Opcodes::ENTER_FUNCTION:
+						{
+							$myfunc = $instruction->get_property("myfunc");
 
-                            $this->defs = $defs;
+							$context->outputs->callgraph->set_current_func($myfunc);
+							$context->outputs->callgraph->add_node($myfunc);
+							$context->outputs->cfg->concat_current_block_text("enter_func ".htmlentities($myfunc->get_name(), ENT_QUOTES, 'UTF-8')."\n");
 
-                            $this->blocks = new \SplObjectStorage;
+							$defs = new Definitions();
+							$defs->create_block(0); 
 
-                            $this->current_block_id = 0;
-                            
-                            if($myfunc->is_method())
-                            {
-                                $thisdef = $myfunc->get_this_def();
-                                
-                                $this->defs->adddef($thisdef->get_name(), $thisdef);
-                                $this->defs->addgen($thisdef->get_block_id(), $thisdef);
-                            }
+							$myfunc->set_defs($defs);
 
-                            break;
-                        }
+							$this->defs = $defs;
 
-                    case Opcodes::ENTER_BLOCK:
-                        {
-                            $myblock = $instruction->get_property("myblock");
+							$this->blocks = new \SplObjectStorage;
 
-                            $this->setBlockId($myblock);
-                            $myblock->set_id($this->getBlockId($myblock));
+							$this->current_block_id = 0;
 
-                            $blockid = $myblock->get_id();
-                            
-                            array_push($blocks_stack_id, $blockid);
-                            $this->current_block_id = $blockid;
+							if($myfunc->is_method())
+							{
+								$thisdef = $myfunc->get_this_def();
 
-                            if($blockid != 0)
-                                $this->defs->create_block($blockid);  
+								$this->defs->adddef($thisdef->get_name(), $thisdef);
+								$this->defs->addgen($thisdef->get_block_id(), $thisdef);
+							}
 
-                            $assertions = $myblock->get_assertions();
-                            foreach($assertions as $assertion)
-                            {
-                                $mydef = $assertion->get_def();		
-                                $mydef->set_block_id($blockid);
-                            }
-                            
-                            $context->outputs->cfg->set_current_block_text("enter_block\n");
-                            $context->outputs->cfg->add_node($myblock);
+							break;
+						}
 
-                            foreach($myblock->parents as $parent)
-                            {
-                                $context->outputs->cfg->add_edge($myblock, $parent);
-                            }
-                            
-                            break;
-                        }
+					case Opcodes::ENTER_BLOCK:
+						{
+							$myblock = $instruction->get_property("myblock");
 
-                    case Opcodes::LEAVE_BLOCK:
-                        {
-                            $myblock = $instruction->get_property("myblock");
+							$this->setBlockId($myblock);
+							$myblock->set_id($this->getBlockId($myblock));
 
-                            $blockid = $myblock->get_id();
-                            
-                            $pop = array_pop($blocks_stack_id);
-                            
-                            if(count($blocks_stack_id) > 0)
-                                $this->current_block_id = $blocks_stack_id[count($blocks_stack_id) - 1];
+							$blockid = $myblock->get_id();
 
-                            $this->defs->computekill($blockid);
-                            
-                            $last_block_id = $blockid;
-                            
-                            
-                            $context->outputs->cfg->concat_current_block_text("leave_block\n");
-                            $context->outputs->cfg->store_myblock($myblock, $context->outputs->cfg->get_current_block_text());
+							array_push($blocks_stack_id, $blockid);
+							$this->current_block_id = $blockid;
 
-                            break;
-                        }
+							if($blockid != 0)
+								$this->defs->create_block($blockid);  
+
+							$assertions = $myblock->get_assertions();
+							foreach($assertions as $assertion)
+							{
+								$mydef = $assertion->get_def();		
+								$mydef->set_block_id($blockid);
+							}
+
+							$context->outputs->cfg->set_current_block_text("enter_block\n");
+							$context->outputs->cfg->add_node($myblock);
+
+							foreach($myblock->parents as $parent)
+							{
+								$context->outputs->cfg->add_edge($myblock, $parent);
+							}
+
+							break;
+						}
+
+					case Opcodes::LEAVE_BLOCK:
+						{
+							$myblock = $instruction->get_property("myblock");
+
+							$blockid = $myblock->get_id();
+
+							$pop = array_pop($blocks_stack_id);
+
+							if(count($blocks_stack_id) > 0)
+								$this->current_block_id = $blocks_stack_id[count($blocks_stack_id) - 1];
+
+							$this->defs->computekill($blockid);
+
+							$last_block_id = $blockid;
 
 
-                    case Opcodes::LEAVE_FUNCTION:
-                        {
-                            $this->defs->reachingDefs($this->blocks);
+							$context->outputs->cfg->concat_current_block_text("leave_block\n");
+							$context->outputs->cfg->store_myblock($myblock, $context->outputs->cfg->get_current_block_text());
 
-                            $myfunc = $instruction->get_property("myfunc");
-                            $myfunc->set_last_block_id($last_block_id);
-                            
-                            $context->outputs->cfg->concat_current_block_text("leave_func\n");
+							break;
+						}
 
-                            break;
-                        }
 
-                    case Opcodes::START_INCLUDE:
-                        {
-                            $this->old_current_file = $this->current_file;
-                            $this->current_file = $instruction->get_property("file");
+					case Opcodes::LEAVE_FUNCTION:
+						{
+							$this->defs->reachingDefs($this->blocks);
 
-                            break;
-                        }
+							$myfunc = $instruction->get_property("myfunc");
+							$myfunc->set_last_block_id($last_block_id);
 
-                    case Opcodes::END_INCLUDE:
-                        {
-                            $this->current_file = $this->old_current_file;
+							$context->outputs->cfg->concat_current_block_text("leave_func\n");
 
-                            break;
-                        }
+							break;
+						}
 
-                    case Opcodes::FUNC_CALL:
-                        {
-                            $myfunc_call = $instruction->get_property("myfunc_call");
-                            $myfunc_call->set_block_id($this->current_block_id);
-                            $myfunc_call->set_source_file($this->current_file);
-                            
-                            if($myfunc_call->is_instance())
-                            {
-                                $mybackdef = $myfunc_call->get_back_def();
-                                $mybackdef->set_block_id($this->current_block_id);
-                                $mybackdef->set_instance(true);
-                                
-                                $new_myclass = new MyClass($myfunc_call->getLine(), 
-                                    $myfunc_call->getColumn(),
-                                        $myfunc_call->get_name_instance());
-                                $mybackdef->set_myclass($new_myclass);
-                                
-                                $this->defs->adddef($mybackdef->get_name(), $mybackdef);
-                                $this->defs->addgen($mybackdef->get_block_id(), $mybackdef);
-                            }
-                            
-                            $context->outputs->callgraph->add_edge($context->outputs->callgraph->get_current_func(), $myfunc_call);
-                            $context->outputs->cfg->concat_current_block_text("funccall ".htmlentities($myfunc_call->get_name(), ENT_QUOTES, 'UTF-8')."\n");
+					case Opcodes::START_INCLUDE:
+						{
+							$this->old_current_file = $this->current_file;
+							$this->current_file = $instruction->get_property("file");
 
-                            break;
-                        }
+							break;
+						}
 
-                    case Opcodes::TEMPORARY:
-                        {
-                            $mydef = $instruction->get_property("temporary");
-                            $mydef->set_block_id($this->current_block_id);
+					case Opcodes::END_INCLUDE:
+						{
+							$this->current_file = $this->old_current_file;
 
-                            unset($mydef);
-                            
-                            $context->outputs->cfg->concat_current_block_text("temporary_simple\n");
+							break;
+						}
 
-                            break;
-                        }
+					case Opcodes::FUNC_CALL:
+						{
+							$myfunc_call = $instruction->get_property("myfunc_call");
+							$myfunc_call->set_block_id($this->current_block_id);
+							$myfunc_call->set_source_file($this->current_file);
 
-                    case Opcodes::DEFINITION:
-                        {
-                            $mydef = $instruction->get_property("def");
-                            $mydef->set_block_id($this->current_block_id);	
-                            $mydef->set_source_file($this->current_file);
-                                
-                            $this->defs->adddef($mydef->get_name(), $mydef);
-                            $this->defs->addgen($mydef->get_block_id(), $mydef);
-                            
-                            if($mydef->is_instance())
-                            {
-                                $myclass = $context->get_classes()->get_myclass($mydef->get_class_name());
-                                if(!is_null($myclass))
-                                    $mydef->set_myclass($myclass);
-                                else
-                                {
-                                    $new_myclass = new MyClass($mydef->getLine(), 
-                                        $mydef->getColumn(),
-                                            $mydef->get_class_name());
-                                    $mydef->set_myclass($new_myclass);
-                                }
-                            }
-                            unset($mydef);
-                            
-                            $context->outputs->cfg->concat_current_block_text("definition_simple\n");
+							if($myfunc_call->is_instance())
+							{
+								$mybackdef = $myfunc_call->get_back_def();
+								$mybackdef->set_block_id($this->current_block_id);
+								$mybackdef->set_instance(true);
 
-                            break;
-                        }
-                }
+								$new_myclass = new MyClass($myfunc_call->getLine(), 
+										$myfunc_call->getColumn(),
+										$myfunc_call->get_name_instance());
+								$mybackdef->set_myclass($new_myclass);
 
-                $index = $index + 1;
-            }
+								$this->defs->adddef($mybackdef->get_name(), $mybackdef);
+								$this->defs->addgen($mybackdef->get_block_id(), $mybackdef);
+							}
+
+							$context->outputs->callgraph->add_edge($context->outputs->callgraph->get_current_func(), $myfunc_call);
+							$context->outputs->cfg->concat_current_block_text("funccall ".htmlentities($myfunc_call->get_name(), ENT_QUOTES, 'UTF-8')."\n");
+
+							break;
+						}
+
+					case Opcodes::TEMPORARY:
+						{
+							$mydef = $instruction->get_property("temporary");
+							$mydef->set_block_id($this->current_block_id);
+
+							unset($mydef);
+
+							$context->outputs->cfg->concat_current_block_text("temporary_simple\n");
+
+							break;
+						}
+
+					case Opcodes::DEFINITION:
+						{
+							$mydef = $instruction->get_property("def");
+							$mydef->set_block_id($this->current_block_id);	
+							$mydef->set_source_file($this->current_file);
+
+							$this->defs->adddef($mydef->get_name(), $mydef);
+							$this->defs->addgen($mydef->get_block_id(), $mydef);
+
+							if($mydef->is_instance())
+							{
+								$myclass = $context->get_classes()->get_myclass($mydef->get_class_name());
+								if(!is_null($myclass))
+									$mydef->set_myclass($myclass);
+								else
+								{
+									$new_myclass = new MyClass($mydef->getLine(), 
+											$mydef->getColumn(),
+											$mydef->get_class_name());
+									$mydef->set_myclass($new_myclass);
+								}
+							}
+							unset($mydef);
+
+							$context->outputs->cfg->concat_current_block_text("definition_simple\n");
+
+							break;
+						}
+				}
+
+				$index = $index + 1;
+			}
 		}
 		while(isset($code[$index]) && $index <= $mycode->get_end());
+
+		//$mycode->print_stdout();
 	}
 }

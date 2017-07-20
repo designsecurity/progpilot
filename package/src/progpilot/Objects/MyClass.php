@@ -24,30 +24,30 @@ class MyClass extends MyOp {
 		$this->properties = [];
 		$this->methods = [];
 	}
-	
+
 	public function __clone()
 	{
-        for($i = 0; $i < count($this->properties); $i++)
-            $this->properties[$i] = clone $this->properties[$i];
-        
-        for($i = 0; $i < count($this->methods); $i++)
-            $this->methods[$i] = clone $this->methods[$i];
+		for($i = 0; $i < count($this->properties); $i++)
+			$this->properties[$i] = clone $this->properties[$i];
+
+		for($i = 0; $i < count($this->methods); $i++)
+			$this->methods[$i] = clone $this->methods[$i];
 	}
 
 	public function add_method($method)
 	{
-        $exist = false;
-        foreach($this->methods as $method_class)
-        {
-            if($method_class->get_name() == $method->get_name())
-            {
-                $exist = true;
-                break;
-            }
-        }
-        
-        if(!$exist)
-            $this->methods[] = $method;
+		$exist = false;
+		foreach($this->methods as $method_class)
+		{
+			if($method_class->get_name() == $method->get_name())
+			{
+				$exist = true;
+				break;
+			}
+		}
+
+		if(!$exist)
+			$this->methods[] = $method;
 	}
 
 	public function get_method($name)
@@ -73,18 +73,18 @@ class MyClass extends MyOp {
 
 	public function add_property($property)
 	{
-        $exist = false;
-        foreach($this->properties as $property_class)
-        {
-            if($property_class->get_name() == $property->get_name())
-            {
-                $exist = true;
-                break;
-            }
-        }
-        
-        if(!$exist)
-            $this->properties[] = $property;
+		$exist = false;
+		foreach($this->properties as $property_class)
+		{
+			if($property_class->get_name() == $property->get_name())
+			{
+				$exist = true;
+				break;
+			}
+		}
+
+		if(!$exist)
+			$this->properties[] = $property;
 	}
 
 	public function get_property($name)
@@ -105,7 +105,7 @@ class MyClass extends MyOp {
 
 	public function set_name($name)
 	{
-        $this->name = $name;
+		$this->name = $name;
 	}
 
 }
