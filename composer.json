@@ -13,6 +13,7 @@
         "ircmaxell/php-cfg": "dev-master"
     },
     "extra": {
+        "enable-patching": true,
 		"patches": {
 			"ircmaxell/php-cfg": {
 				"Op": "./patchs/Op.diff",
