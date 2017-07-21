@@ -18,9 +18,9 @@ Where *$file_sources* is a json file like below :
 		]
 }
 ```
-*Name* and *language* properties are mandatory
-The value of *name* property must be a php function (the source will be the return of this function) or a variable
-You can define a return function as a source when the last chars of your *name* source are ()
+*Name* and *language* properties are mandatory.  
+The value of *name* property must be a php function (the source will be the return of this function) or a variable.  
+You can define a return function as a source when the last chars of your *name* source are ().
 
 ## Configure sanitizers
 - $obj_context->inputs->set_sanitizers($file_sanitizers);
@@ -37,8 +37,8 @@ Where *$file_sanitizers* is a json file like below :
 		]
 }
 ```
-*Name*, *language*, *type* and *prevent* properties are mandatory
-The value of *name* property must be a php function
+*Name*, *language*, *type* and *prevent* properties are mandatory.  
+The value of *name* property must be a php function.  
 The value of *prevent* property should match which an *attack* defined in the sinks file.
 
 ## Configure sinks
@@ -62,13 +62,9 @@ Where *$file_sinks* is a json file like below :
 		]
 }
 ```
-*Name*, *language*, *attack* properties are mandatory
-
-The value of *name* property must be a php function or method
-
-To specify a method add *instanceof* property with the class name value to which the method belongs.
-
-You can also specify which parameters of a function is a sink with *parameters* property
-
+*Name*, *language*, *attack* properties are mandatory.  
+The value of *name* property must be a php function or method.  
+To specify a method add *instanceof* property with the class name value to which the method belongs.  
+You can also specify which parameters of a function is a sink with *parameters* property.  
 The *attack* will be annihilate if a source is sanitized by a sanitizer where *prevent* property equals *attack* property
 

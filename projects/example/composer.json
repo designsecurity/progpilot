@@ -1,0 +1,17 @@
+{
+    "name": "Example",
+    "description": "Example of use of Progpilot",
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/designsecurity/progpilot"
+        }
+    ],
+    "require": {
+        "designsecurity/progpilot": "dev-master"
+    },
+	"extra": {
+		"enable-patching": true
+		}
+} 

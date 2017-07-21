@@ -1,13 +1,45 @@
 # progpilot
 > A static analyzer for security purposes
 
-At this moment only PHP language is supported
+At this moment only PHP language is supported  
 You could looking at the API explaination in the [corresponding chapter about API](./doc/API.md)
 
-## Examples
-- A simple example where your source code to be analyzed is example1.php
+## Installation
+Use [getcomposer](https://getcomposer.org/) to install the progpilot library.  
+Your composer.json looks like this one :
+```javascript
+{
+    "name": "Example",
+    "description": "Example of use of Progpilot",
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/designsecurity/progpilot"
+        }
+    ],
+    "require": {
+        "designsecurity/progpilot": "dev-master"
+    },
+	"extra": {
+		"enable-patching": true
+		}
+} 
+```
+*enable-patching* set to *true* is mandatory because progpilot will patch *ircmaxell/php-cfg* library.  
+Then run composer :
+```shell
+composer install
+```
+If no errors occuring you could try the next example.
+
+## Example
+- Use this code for analyze *example1.php*
 ```php
 <?php
+
+require_once './vendor/autoload.php';
+
 $file = "example1.php";
 $context = new \progpilot\Context;
 $analyzer = new \progpilot\Analyzer;
@@ -19,7 +51,10 @@ $context->inputs->set_file($file);
 
 $analyzer->run($context);
 $results = $context->outputs->get_results();
-?>	
+
+var_dump($results);
+
+?>	 
 ```
 - When example1.php contains this code :
 ```php
@@ -31,38 +66,41 @@ echo "$var4";
 
 ?>	
 ```
-- The return of method get_results() of context instance is :
+- The return of method get_results() will be :
 ```javascript
-array(7) {
-  ["source"]=>
-  array(1) {
-    [0]=>
-    string(4) "var4"
+array(1) {
+  [0]=>
+  array(7) {
+    ["source"]=>
+    array(1) {
+      [0]=>
+      string(4) "var4"
+    }
+    ["source_line"]=>
+    array(1) {
+      [0]=>
+      int(4)
+    }
+    ["source_file"]=>
+    array(1) {
+      [0]=>
+      string(12) "example1.php"
+    }
+    ["sink"]=>
+    string(4) "echo"
+    ["sink_line"]=>
+    int(5)
+    ["sink_file"]=>
+    string(12) "example1.php"
+    ["vuln_name"]=>
+    string(3) "xss"
   }
-  ["source_line"]=>
-  array(1) {
-    [0]=>
-    int(4)
-  }
-  ["source_file"]=>
-  array(1) {
-    [0]=>
-    string(27) "./example1.php"
-  }
-  ["sink"]=>
-  string(4) "echo"
-  ["sink_line"]=>
-  int(5)
-  ["sink_file"]=>
-  string(27) "./example1.php"
-  ["vuln_name"]=>
-  string(3) "xss"
 }
 ```
-
+All files (composer.json, ./data/*.json) are in the [projects/example](./projects/example) folder
 
 ## Configure sources
-You can define a return function as a source when the last chars of your name source are ()
+You can define a return function as a source when the last chars of your name source are ()  
 See more available options in the [corresponding chapter about specify an analyze](./doc/SPECIFY_ANALYZE.md)
 ```javascript
 {
