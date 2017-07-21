@@ -34,7 +34,7 @@ composer install
 If no errors occuring you could try the next example.
 
 ## Example
-- Use this code for analyze *example1.php*
+- Use this code to analyze *example1.php*
 ```php
 <?php
 
