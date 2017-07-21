@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-0": {
-            "progpilot": "src"
+            "progpilot": "package/src"
         }
     }
 }
