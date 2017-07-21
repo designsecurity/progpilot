@@ -10,11 +10,11 @@
     ],
     "require": {
         "cweagans/composer-patches": "~1.0",
-        "ircmaxdddell/php-cfg": "dev-master"
+        "ircmaxell/php-cfg": "dev-master"
     },
     "extra": {
 		"patches": {
-			"ircmaxdddell/php-cfg": {
+			"ircmaxell/php-cfg": {
 				"Op": "./patchs/Op.diff",
 				"Include": "./patchs/Include_.diff",
 				"Traverser": "./patchs/Traverser.diff"
