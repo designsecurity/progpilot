@@ -20,5 +20,10 @@
 				"Traverser": "./patchs/Traverser.diff"
             }
         }
+    },
+    "autoload": {
+        "psr-0": {
+            "progpilot": "src"
+        }
     }
 }
