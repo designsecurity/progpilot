@@ -99,7 +99,7 @@ array(1) {
 ```
 All files (composer.json, ./data/*.json) used in this example are in the [projects/example](./projects/example) folder
 
-## Configure sources
+## Configure analysis
 You can define a return function as a source when the last chars of your name source are ()  
 See more available options in the [corresponding chapter about specify an analyze](./doc/SPECIFY_ANALYZE.md)
 ```javascript
