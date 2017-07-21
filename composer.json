@@ -15,9 +15,9 @@
     "extra": {
 		"patches": {
 			"ircmaxell/php-cfg": {
-				"Op": "https://github.com/designsecurity/progpilot/blob/master/patchs/Op.diff",
-				"Include": "https://github.com/designsecurity/progpilot/blob/master/patchs/Include_.diff",
-				"Traverser": "https://github.com/designsecurity/progpilot/blob/master/patchs/Traverser.diff"
+				"Op": "./patchs/Op.diff",
+				"Include": "./Include_.diff",
+				"Traverser": "./patchs/Traverser.diff"
             }
         }
     },
