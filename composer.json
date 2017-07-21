@@ -14,7 +14,7 @@
     },
     "extra": {
 		"patches": {
-			"ircmaxell/php-cfg": {
+			"ircmaxdddell/php-cfg": {
 				"Op": "./patchs/Op.diff",
 				"Include": "./patchs/Include_.diff",
 				"Traverser": "./patchs/Traverser.diff"
