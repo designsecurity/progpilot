@@ -2,7 +2,7 @@
 > A static analyzer for security purposes
 
 At this moment only PHP language is supported  
-You could looking at the API explaination in the [corresponding chapter about API](./doc/API.md)
+To have an idea of the capabilities of the tool you could looking at the [chapter about API explaination](./doc/API.md)
 
 ## Installation
 Use [getcomposer](https://getcomposer.org/) to install the progpilot library.  
@@ -21,9 +21,9 @@ Your composer.json looks like this one :
     "require": {
         "designsecurity/progpilot": "dev-master"
     },
-	"extra": {
-		"enable-patching": true
-		}
+    "extra": {
+        "enable-patching": true
+    }
 } 
 ```
 *enable-patching* set to *true* is mandatory because progpilot will patch *ircmaxell/php-cfg* library.  
@@ -97,7 +97,7 @@ array(1) {
   }
 }
 ```
-All files (composer.json, ./data/*.json) are in the [projects/example](./projects/example) folder
+All files (composer.json, ./data/*.json) used in this example are in the [projects/example](./projects/example) folder
 
 ## Configure sources
 You can define a return function as a source when the last chars of your name source are ()  
