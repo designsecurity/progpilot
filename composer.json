@@ -8,7 +8,6 @@
             "email": "eric.therond.fr@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "cweagans/composer-patches": "~1.0",
         "ircmaxell/php-cfg": "dev-master"
