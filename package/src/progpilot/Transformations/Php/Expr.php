@@ -37,12 +37,7 @@ class Expr {
 
 			$arr = BuildArrays::build_array_from_ops($op, false);
 
-			$tainted = false;
-			if(!is_null($context->inputs->get_source_byname($name, false)))
-				$tainted = true;
-
 			$mytemp = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name, false, false);
-			$mytemp->set_tainted($tainted);
 			$mytemp->last_known_value($name);
 			$mytemp->set_assign_id($assign_id);
 
@@ -72,6 +67,13 @@ class Expr {
 				$mytemp->set_property(true);
 				$mytemp->property->set_name($property_name);
 			}
+			
+			
+			$tainted = false;
+			if(!is_null($context->inputs->get_source_byname($name, false, false, $mytemp->get_arr_value())))
+				$tainted = true;
+				
+            $mytemp->set_tainted($tainted);
 
 			$inst_temporary_simple = new MyInstruction(Opcodes::TEMPORARY);
 			$inst_temporary_simple->add_property("temporary", $mytemp);

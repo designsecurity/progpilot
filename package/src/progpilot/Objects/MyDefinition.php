@@ -52,7 +52,7 @@ class MyDefinition extends MyOp {
 		//$this->references = new SplObjectStorage();
 		$this->thearrays = [];
 		$this->theexprs = [];
-		$this->arr_value = null;
+		$this->arr_value = false;
 		$this->is_ref_arr = false;
 		$this->ref_arr_value = null;
 		$this->taintedbyexpr = null;

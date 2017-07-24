@@ -10,7 +10,7 @@ Your composer.json looks like this one :
 ```javascript
 {
     "name": "Example",
-    "description": "Example of use of Progpilot",
+    "description": "Example of using Progpilot",
     "minimum-stability": "dev",
     "repositories": [
         {
@@ -31,7 +31,7 @@ Then run composer :
 ```shell
 composer install
 ```
-If no errors occuring you could try the next example.
+If no errors occuring you could try the following example.
 
 ## Example
 - Use this code to analyze *example1.php*
@@ -100,8 +100,8 @@ array(1) {
 All files (composer.json, ./data/*.json) used in this example are in the [projects/example](./projects/example) folder
 
 ## Configure analysis
-You can define a return function as a source when the last chars of your name source are ()  
-See more available options in the [corresponding chapter about specify an analyze](./doc/SPECIFY_ANALYZE.md)
+You can configure an analysis (the definitions of sinks, sources, sanitizers, validators) according to your own context.__
+For example you can define traditional variables like *$_GET*, *$_POST* or *$_COOKIES* as untrusted but also the return of the function *shell_exec()*
 ```javascript
 {
     "sources": [
@@ -112,3 +112,7 @@ See more available options in the [corresponding chapter about specify an analyz
 		]
 }
 ```
+See more available options in the [corresponding chapter about specify an analyze](./doc/SPECIFY_ANALYZE.md)
+
+## Dev
+[Learn more](./doc/DEV.md) about the development of the tool

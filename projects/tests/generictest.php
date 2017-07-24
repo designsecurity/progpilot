@@ -270,29 +270,4 @@ $framework->add_output("./tests/generic/functionsrec1.php", array("var"));
 $framework->add_output("./tests/generic/functionsrec1.php", array("10"));
 $framework->add_output("./tests/generic/functionsrec1.php", "xss");
 
-$framework->add_testbasis("./tests/generic/condition1.php");
-$framework->add_output("./tests/generic/condition1.php", array("_GET"));
-$framework->add_output("./tests/generic/condition1.php", array("8"));
-$framework->add_output("./tests/generic/condition1.php", "xss");
-
-/*
-   $framework->add_testbasis("./tests/generic/condition2.php");
-   $framework->add_output("./tests/generic/condition2.php", array("ret"));
-   $framework->add_output("./tests/generic/condition2.php", array("8"));
-   $framework->add_output("./tests/generic/condition2.php", "xss");
-
-   $framework->add_testbasis("./tests/generic/condition3.php");
-   $framework->add_output("./tests/generic/condition3.php", array("ret"));
-   $framework->add_output("./tests/generic/condition3.php", array("8"));
-   $framework->add_output("./tests/generic/condition3.php", "xss");
- */
-
-
-$framework->add_testbasis("./tests/generic/condition4.php");
-$framework->add_output("./tests/generic/condition4.php", array("blabla"));
-$framework->add_output("./tests/generic/condition4.php", array("3"));
-$framework->add_output("./tests/generic/condition4.php", "xss");
-
-
-
 ?>

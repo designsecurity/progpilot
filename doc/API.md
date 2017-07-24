@@ -18,8 +18,10 @@ To retrieve the value of $file and $code use theses methods :
 - $obj_context->inputs->set_sources($file_sources);
 - $obj_context->inputs->set_sinks($file_sinks);
 - $obj_context->inputs->set_sanitizers($file_sanitizers);
+- $obj_context->inputs->set_validators($file_validators);
 - $obj_context->inputs->get_sources();
 - $obj_context->inputs->get_sinks();
-- $obj_context->inputs->get_sanitizers();  
+- $obj_context->inputs->get_sanitizers();
+- $obj_context->inputs->get_validators();  
 Theses methods are mainly explained in the chapter [**specify an analyze**](./SPECIFY_ANALYZE.md)
 ***

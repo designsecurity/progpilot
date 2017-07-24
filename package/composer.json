@@ -1,0 +1,16 @@
+{    
+    "name": "progpilot/package",
+    "description": "A Static Analyser for security (package for local dev)",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Eric Therond",
+            "email": "eric.therond.fr@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "progpilot": "src"
+        }
+    }
+} 

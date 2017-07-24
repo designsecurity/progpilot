@@ -55,6 +55,7 @@ class Analyzer
 			$context->inputs->read_sinks();
 			$context->inputs->read_sources();
 			$context->inputs->read_includes();
+			$context->inputs->read_validators();
 
 			$traverser = new \PHPCfg\Traverser();
 			$traverser->addVisitor(new \progpilot\Transformations\Php\Transform());

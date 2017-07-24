@@ -69,7 +69,7 @@ class MyExpr extends MyOp {
 		$this->thedefs = $defs;
 	}
 
-	public function add_def(&$mydef)
+	public function add_def($mydef)
 	{
 		if(!in_array($mydef, $this->thedefs))
 			$this->thedefs[] = $mydef;

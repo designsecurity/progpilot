@@ -18,6 +18,7 @@ class Lang
 	const FORMAT_SINKS = "Format of json sinks's file is incorrect";
 	const FORMAT_SOURCES = "Format of json sources's file is incorrect";
 	const FORMAT_INCLUDES = "Format of json includes's file is incorrect";
+	const FORMAT_VALIDATORS = "Format of json validators's file is incorrect";
 
 }
 

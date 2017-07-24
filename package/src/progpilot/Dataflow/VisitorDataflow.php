@@ -62,7 +62,7 @@ class VisitorDataflow {
 			{
 				$instruction = $code[$index];
 				switch($instruction->get_opcode())
-				{
+				{	
 					case Opcodes::START_EXPRESSION:
 						{
 							$context->outputs->cfg->concat_current_block_text("start_expression\n");

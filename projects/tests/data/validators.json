@@ -1,0 +1,10 @@
+{
+    "validators": [
+        {"name": "in_array", "language": "php", "parameters": 
+            [
+                {"id": 1, "condition": "valid"},
+                {"id": 2, "condition": "array_not_tainted"}
+            ]
+        }
+		]
+}

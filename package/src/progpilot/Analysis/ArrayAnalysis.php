@@ -138,12 +138,13 @@ class ArrayAnalysis {
 
 	public static function funccall_after($myfunc, $myfunc_call, $arr_funccall, $op_apr)
 	{	
+        // remplacer ça par mexpr->get_assign_def() ?
 		if($op_apr->get_opcode() == Opcodes::DEFINITION)
 		{
 			$copytab = $op_apr->get_property("def");
 
 			$originaltabs = $myfunc->get_return_defs();
-			$originaltab = &$originaltabs[0];
+			$originaltab = $originaltabs[0];
 
 			// on copie le tableau retourné dans la définition
 			if(count($originaltabs) >= 1)
@@ -155,7 +156,7 @@ class ArrayAnalysis {
 		// on remet les paramètres originaux si d'autres appels
 		$nbparams = 0;
 		$params = $myfunc->get_params();
-		foreach($params as &$param)
+		foreach($params as $param)
 		{
 			$func_param = $myfunc_call->get_param($nbparams);
 

@@ -20,10 +20,12 @@ class MyInputs {
 	private $sanitizers;
 	private $sinks;
 	private $sources;
+	private $validators;
 
 	private $sources_file;
 	private $sinks_file;
 	private $sanitizers_file;
+	private $validators_file;
 
 	private $file;
 	private $code;
@@ -34,12 +36,14 @@ class MyInputs {
 		$this->sanitizers = [];
 		$this->sinks = [];
 		$this->sources = [];
+		$this->validators = [];
 
 		$this->includes_file = null;
 		$this->sanitizers_file = null;
 		$this->sinks_file = null;
 		$this->sources_file = null;
-
+		$this->validators_file = null;
+		
 		$this->file = null;
 		$this->code = null;
 	}
@@ -77,12 +81,31 @@ class MyInputs {
 		return null;
 	}
 
-	public function get_sanitizer_byname($name)
+	public function get_validator_byname($name, $instance_name)
+	{
+		foreach($this->validators as $myvalidator)
+		{
+			if($myvalidator->get_name() == $name)
+			{
+				if(!$myvalidator->is_instance() 
+						|| ($myvalidator->is_instance() && $myvalidator->get_instanceof_name() == $instance_name))
+				return $myvalidator;
+            }
+		}
+
+		return null;
+	}
+
+	public function get_sanitizer_byname($name, $instance_name)
 	{
 		foreach($this->sanitizers as $mysanitizer)
 		{
 			if($mysanitizer->get_name() == $name)
+			{
+				if(!$mysanitizer->is_instance() 
+						|| ($mysanitizer->is_instance() && $mysanitizer->get_instanceof_name() == $instance_name))
 				return $mysanitizer;
+            }
 		}
 
 		return null;
@@ -103,12 +126,23 @@ class MyInputs {
 		return null;
 	}
 
-	public function get_source_byname($name, $is_function = false)
+	public function get_source_byname($name, $is_function = false, $instance_name = false, $arr_value = false)
 	{
 		foreach($this->sources as $mysource)
 		{
 			if($mysource->get_name() == $name && $mysource->is_function() == $is_function)
-				return $mysource;
+			{
+                $arr_value_source = array($mysource->get_arr_value() => false);
+                
+                if((($instance_name != false 
+                    && $mysource->is_instance() 
+                        && $mysource->get_instanceof_name() == $instance_name) || !$instance_name) &&
+                        
+                        (($arr_value != false
+                        && ($mysource->is_arr() 
+                            && $arr_value_source == $arr_value) || !$mysource->is_arr()) || !$arr_value))
+                    return $mysource;
+            }
 		}
 
 		return null;
@@ -127,6 +161,11 @@ class MyInputs {
 	public function get_sources()
 	{
 		return $this->sources;
+	}
+
+	public function get_validators()
+	{
+		return $this->validators;
 	}
 
 	public function get_includes()
@@ -152,6 +191,11 @@ class MyInputs {
 	public function set_sanitizers($file)
 	{
 		$this->sanitizers_file = $file;
+	}
+
+	public function set_validators($file)
+	{
+		$this->validators_file = $file;
 	}
 
 	public function read_sanitizers()
@@ -183,6 +227,13 @@ class MyInputs {
 					$prevent = $sanitizer->{'prevent'};
 
 					$mysanitizer = new MySanitizer($name, $language, $type, $prevent);
+					
+					if(isset($sanitizer->{'instanceof'}))
+					{
+						$mysanitizer->set_is_instance(true);
+						$mysanitizer->set_instanceof_name($sanitizer->{'instanceof'});
+					}
+					
 					$this->sanitizers[] = $mysanitizer;
 				}
 			}
@@ -273,12 +324,81 @@ class MyInputs {
 
 					if($isfunc == "()")
 						$mysource->set_is_function(true);
+						
+					if(isset($source->{'instanceof'}))
+					{
+						$mysource->set_is_instance(true);
+						$mysource->set_instanceof_name($source->{'instanceof'});
+					}
+					if(isset($source->{'array_index'}))
+					{
+						$mysource->set_arr(true);
+						$mysource->set_arr_value($source->{'array_index'});
+					}
 
 					$this->sources[] = $mysource;
 				}
 			}
 			else
 				throw new \Exception(Lang::FORMAT_SOURCES);
+		}
+	}
+
+	public function read_validators()
+	{
+		if(!is_null($this->validators_file))
+		{
+			if(!file_exists($this->validators_file))
+				throw new \Exception(Lang::FILE_DOESNT_EXIST);
+
+			$output_json = file_get_contents($this->validators_file);
+			$parsed_json = json_decode($output_json);
+
+			if(isset($parsed_json->{'validators'}))
+			{
+				$validators = $parsed_json->{'validators'};
+				foreach($validators as $validator)
+				{
+					if(!isset($validator->{'name'}) 
+							|| !isset($validator->{'language'}))
+						throw new \Exception(Lang::FORMAT_VALIDATORS);
+
+					$name = $validator->{'name'};
+					$language = $validator->{'language'};
+
+					$myvalidator = new MyValidator($name, $language);
+					
+                    if(isset($validator->{'parameters'}))
+					{
+						$parameters = $validator->{'parameters'};
+						foreach($parameters as $parameter)
+						{
+                            if(isset($parameter->{'id'}) && isset($parameter->{'condition'}))
+                            {
+                                if(is_int($parameter->{'id'}) 
+                                    && ($parameter->{'condition'} == "not_tainted"
+                                        || $parameter->{'condition'} == "array_not_tainted"
+                                            || $parameter->{'condition'} == "valid"))
+                                {
+                                    $myvalidator->add_parameter($parameter->{'id'}, $parameter->{'condition'});
+                                }
+                            }
+						}
+
+						$myvalidator->set_has_parameters(true);
+					}
+					
+					if(isset($validator->{'instanceof'}))
+					{
+						$myvalidator->set_is_instance(true);
+						$myvalidator->set_instanceof_name($validator->{'instanceof'});
+					}
+
+					$this->validators[] = $myvalidator;
+				}
+			}
+			else
+				throw new \Exception(Lang::FORMAT_VALIDATORS);
 		}
 	}
 

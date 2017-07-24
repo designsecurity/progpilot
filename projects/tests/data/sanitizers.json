@@ -3,6 +3,8 @@
         {"name": "htmlentities", "language": "php", "type": "character encoding", "prevent": "xss"},
         {"name": "addslashes", "language": "php", "type": "character escaping", "prevent": "sql_injection"},
         {"name": "mysql_real_escape_string", "language": "php", "type": "character escaping", "prevent": "sql_injection"},
-        {"name": "str_replace", "language": "js", "type": "character encoding", "prevent": "xss"}
+        {"name": "str_replace", "language": "js", "type": "character encoding", "prevent": "xss"},
+        {"name": "mysanitizer", "language": "php", "type": "character encoding", "prevent": "xss", "comment": "for dev purposes"},
+        {"name": "mysanitizer", "instanceof": "testc1", "language": "php", "type": "character encoding", "prevent": "xss", "comment": "for dev purposes"}
 		]
 }

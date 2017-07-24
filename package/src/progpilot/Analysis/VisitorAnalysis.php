@@ -158,9 +158,20 @@ class VisitorAnalysis {
 						{
 							$tempdefa = $instruction->get_property("temporary");
 							$defs = ResolveDefs::temporary_simple($this->defs, $tempdefa);
-
+							
 							foreach($defs as $def)
 							{	
+                                if($def->is_property())
+                                {
+                                    $class_name = false;
+                                    $myclass = $def->get_myclass();
+                                    if(!is_null($myclass))
+                                        $class_name = $myclass->get_name();
+                                        
+                                    if(!is_null($this->context->inputs->get_source_byname($def->get_name(), $class_name)))
+                                        $def->set_tainted(true);
+                                }
+                
 								$exprs = $def->get_exprs();
 								foreach($exprs as $expr)
 								{
@@ -187,7 +198,7 @@ class VisitorAnalysis {
 							$funcname = $instruction->get_property("funcname");
 							$arr_funccall = $instruction->get_property("arr");
 							$myfunc_call = $instruction->get_property("myfunc_call");
-
+							
 							SecurityAnalysis::funccall($this->context, $myfunc_call, $instruction);
 
 							$list_myfunc = [];
@@ -205,7 +216,7 @@ class VisitorAnalysis {
 								{
 									if($instance->is_instance())
 									{
-										// the class is defined (! build in php class for example)
+										// the class is defined (it's always the case (build-in php or not), see visitorflowanalysis)
 										$myclass = $instance->get_myclass();
 										$myfunc = $myclass->get_method($funcname);
 
@@ -271,11 +282,9 @@ class VisitorAnalysis {
 
 								ResolveDefs::instance_build_back($this->defs, $myfunc, $myfunc_call);
 
-								if(is_null($myfunc))
-								{
-									TaintAnalysis::funccall_sanitizer($this->context, $this->defs, $myfunc_call, $arr_funccall, $instruction, $index);  
-									TaintAnalysis::funccall_source($this->context, $this->defs, $myfunc_call, $arr_funccall, $instruction);     
-								}
+                                TaintAnalysis::funccall_validator($this->context, $this->defs, $myinstance, $myfunc_call, $arr_funccall, $instruction, $index); 
+                                TaintAnalysis::funccall_sanitizer($this->context, $this->defs, $myinstance, $myfunc_call, $arr_funccall, $instruction, $index);     
+                                TaintAnalysis::funccall_source($this->context, $this->defs, $myinstance, $myfunc_call, $arr_funccall, $instruction);  
 							}
 
 							break;

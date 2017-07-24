@@ -37,17 +37,17 @@ use progpilot\Transformations\Php\Context;
 class Transform implements Visitor {
 
 	private $s_blocks;
-	private $s_includes;
-	private $s_requires;
+	private $array_includes;
+	private $array_requires;
 	private $context;
-	private $inside_include;
+	private $block_if_to_be_resolved;
 
 	public function __construct() 
 	{
 		$this->s_blocks = new \SplObjectStorage;
-		$this->s_blocks_left = new \SplObjectStorage;
 		$this->array_includes = [];
 		$this->array_requires = [];
+		$this->block_if_to_be_resolved = [];
 	}
 
 	public function set_context($context) {
@@ -71,6 +71,23 @@ class Transform implements Visitor {
 				$myblock_parent = $this->s_blocks[$block_parent];
 				$myblock->addParent($myblock_parent);
 			}
+		}
+		
+		foreach($this->block_if_to_be_resolved as $block_resolved)
+		{
+            $instruction_if = $block_resolved[0];
+            $block_if = $block_resolved[1];
+            $block_else = $block_resolved[2];
+            
+            if($this->s_blocks->contains($block_if) && $this->s_blocks->contains($block_else))
+            {
+                $myblock_if = $this->s_blocks[$block_if];
+                $myblock_else = $this->s_blocks[$block_else];
+                
+                $instruction_if->add_property("myblock_if", $myblock_if);
+                $instruction_if->add_property("myblock_else", $myblock_else);
+            }
+		
 		}
 
 		if($this->context->outputs->get_resolve_includes())
@@ -115,7 +132,6 @@ class Transform implements Visitor {
 	}
 
 	public function leaveBlock(Block $block, Block $prior = null) {
-		$this->s_blocks_left->attach($block);	
 
 		if(!$this->inside_include)
 		{
@@ -219,19 +235,14 @@ class Transform implements Visitor {
 		$this->context->get_mycode()->add_code($inst_func);
 	}
 
-	public function parse_condition($cond)
+	public function parse_condition($inst_start_if, $cond)
 	{  
 		foreach($cond as $ops)
 		{
-			//echo "JUMPIF ops\n";
-
 			if($ops instanceof Op\Expr\BooleanNot)
 			{
-				//echo "JUMPIF BooleanNot\n";
-				$inst_boolean_not = new MyInstruction(Opcodes::COND_BOOLEAN_NOT);	
-				$this->context->get_mycode()->add_code($inst_boolean_not);
-
-				$this->parse_condition($ops->expr->ops);
+				$inst_start_if->add_property("not_boolean", true);
+				$this->parse_condition($inst_start_if, $ops->expr->ops);
 			}
 		}
 	}
@@ -256,10 +267,11 @@ class Transform implements Visitor {
 		if($op instanceof Op\Stmt\JumpIf)
 		{
 			$inst_start_if = new MyInstruction(Opcodes::COND_START_IF);	
-			$inst_start_if->add_property("block", $op->if);
 			$this->context->get_mycode()->add_code($inst_start_if);
+			
+			$this->block_if_to_be_resolved[] = [$inst_start_if, $op->if, $op->else];
 
-			$this->parse_condition($op->cond->ops);
+			$this->parse_condition($inst_start_if, $op->cond->ops);
 		}
 		/*
 		   const TYPE_INCLUDE = 1;
