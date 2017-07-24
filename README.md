@@ -101,7 +101,7 @@ All files (composer.json, ./data/*.json) used in this example are in the [projec
 
 ## Configure analysis
 You can configure an analysis (the definitions of sinks, sources, sanitizers, validators) according to your own context.  
-For example you can define traditional variables like *$_GET*, *$_POST* or *$_COOKIES* as untrusted but also the return of the function *shell_exec()*
+For example you can define traditional variables like *$_GET*, *$_POST* or *$_COOKIES* as untrusted and for example the return of the function *shell_exec()* too like in the following configuration :
 ```javascript
 {
     "sources": [
