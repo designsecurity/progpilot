@@ -23,9 +23,9 @@ Where *$file_sources* is a json file like below :
 *Name* and *language* properties are mandatory.  
 The value of *name* property must be a php function (the source will be the return of this function) or a variable.  
 To specify a method add *instanceof* property with the class name value to which the method belongs.  
-You can define a return function or method as a source when the last chars of your *name* source are ().__
-For defining a property as a source just add *instanceof* like for a method.__
-If you want to define only one element of an array as a source use *array_index* property with index name as value.__
+You can define a return function or method as a source when the last chars of your *name* source are ().  
+For defining a property as a source just add *instanceof* like for a method.  
+If you want to define only one element of an array as a source use *array_index* property with index name as value.  
 By default if you define a variable as a source and in your code this variable is an array all the elements of this array will be tainted, it is the case for well-known *_GET*, *_POST* and *_COOKIES* variables.
 
 ## Configure sanitizers
@@ -96,7 +96,7 @@ Where *$file_validators* is a json file like below :
 *Name*, *language*, properties are mandatory.  
 The value of *name* property must be a php function or method.  
 To specify a method add *instanceof* property with the class name value to which the method belongs.  
-You can add conditions to parameters of your validator function :__
+You can add conditions to parameters of your validator function :  
 - **valid** : the corresponding argument will be considered as safe if others conditions are respected.
 - **not_tainted** : the argument is not tainted.
 - **array_not_tainted** : the argument is an array that not contains any tainted values.
@@ -111,6 +111,6 @@ if (in_array($tainted, $legal_table, true))
 } 
 ```
 *$tainted* (parameter number 1) is the variable we want to validate.  
-*$legal_table* (parameter number 2) is an array that not contains any tainted values.__
+*$legal_table* (parameter number 2) is an array that not contains any tainted values.  
 So the variable *tainted* is safe in the if block.
 
