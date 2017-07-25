@@ -24,6 +24,7 @@ use progpilot\Objects\MyBlock;
 use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyExpr;
 use progpilot\Objects\MyClass;
+use progpilot\Objects\MyOp;
 
 use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
@@ -72,22 +73,21 @@ class Transform implements Visitor {
 				$myblock->addParent($myblock_parent);
 			}
 		}
-		
+
 		foreach($this->block_if_to_be_resolved as $block_resolved)
 		{
-            $instruction_if = $block_resolved[0];
-            $block_if = $block_resolved[1];
-            $block_else = $block_resolved[2];
-            
-            if($this->s_blocks->contains($block_if) && $this->s_blocks->contains($block_else))
-            {
-                $myblock_if = $this->s_blocks[$block_if];
-                $myblock_else = $this->s_blocks[$block_else];
-                
-                $instruction_if->add_property("myblock_if", $myblock_if);
-                $instruction_if->add_property("myblock_else", $myblock_else);
-            }
-		
+			$instruction_if = $block_resolved[0];
+			$block_if = $block_resolved[1];
+			$block_else = $block_resolved[2];
+
+			if($this->s_blocks->contains($block_if) && $this->s_blocks->contains($block_else))
+			{
+				$myblock_if = $this->s_blocks[$block_if];
+				$myblock_else = $this->s_blocks[$block_else];
+
+				$instruction_if->add_property("myblock_if", $myblock_if);
+				$instruction_if->add_property("myblock_else", $myblock_else);
+			}
 		}
 
 		if($this->context->outputs->get_resolve_includes())
@@ -168,12 +168,12 @@ class Transform implements Visitor {
 				$myclass->add_method($myfunction);
 
 				$myfunction->set_visibility(Common::get_type_visibility($func->flags));
-				$myfunction->set_is_method(true);
+				$myfunction->set_type(MyOp::TYPE_METHOD);
 				$myfunction->set_myclass($myclass);
 
-				$mythisdef = new MyDefinition(0, 0, "this", false, false);
+				$mythisdef = new MyDefinition(0, 0, "this", false);
 				$mythisdef->set_block_id(0);
-				$mythisdef->set_instance(true);
+				$mythisdef->set_type(MyOp::TYPE_INSTANCE);
 				$mythisdef->set_assign_id(rand());
 				$myfunction->set_this_def($mythisdef);
 			}
@@ -184,7 +184,7 @@ class Transform implements Visitor {
 			$param_name = $param->name->value;
 			$byref = $param->byRef;
 
-			$mydef = new MyDefinition($param->getLine(), $param->getColumn(), $param_name, $byref, false);
+			$mydef = new MyDefinition($param->getLine(), $param->getColumn(), $param_name, $byref);
 			$myfunction->add_param($mydef);
 
 			$inst_def = new MyInstruction(Opcodes::DEFINITION);
@@ -268,7 +268,7 @@ class Transform implements Visitor {
 		{
 			$inst_start_if = new MyInstruction(Opcodes::COND_START_IF);	
 			$this->context->get_mycode()->add_code($inst_start_if);
-			
+
 			$this->block_if_to_be_resolved[] = [$inst_start_if, $op->if, $op->else];
 
 			$this->parse_condition($inst_start_if, $op->cond->ops);
@@ -380,17 +380,17 @@ class Transform implements Visitor {
 			$name = Common::get_name_definition($this->context->get_current_op()->result);
 			$type = Common::get_type_definition($this->context->get_current_op()->result);
 
-			$mydef = new MyDefinition($this->context->get_current_line(), $this->context->get_current_column(), $name, false, false);
+			$mydef = new MyDefinition($this->context->get_current_line(), $this->context->get_current_column(), $name, false);
 
 			// because it's obligatory in resolve defs
 			$myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
 			$mydef->add_expr($myexpr);
 
-			if($type == "array")
+			if($type == MyOp::TYPE_ARRAY)
 			{
 				$arr = BuildArrays::build_array_from_ops($this->context->get_current_op()->result, false);
-				$mydef->set_arr(true);
 				$mydef->set_arr_value($arr);
+				$mydef->set_type(MyOp::TYPE_ARRAY);
 			}
 
 			if($op->assertion instanceof Assertion\NegatedAssertion)
@@ -539,11 +539,11 @@ class Transform implements Visitor {
 					$property_name = Common::get_name_definition($property);
 					$visibility = Common::get_type_visibility($property->visiblity);
 
-					$mydef = new MyDefinition($property->getLine(), $property->getColumn(), $property_name, false, false);
+					$mydef = new MyDefinition($property->getLine(), $property->getColumn(), $property_name, false);
 					$mydef->property->set_visibility($visibility);
 
 					// it's necessary for securityanalysis (visibility)
-					$mydef->set_property(true);
+					$mydef->set_type(MyOp::TYPE_PROPERTY);
 					$myclass->add_property($mydef);
 
 					unset($mydef);

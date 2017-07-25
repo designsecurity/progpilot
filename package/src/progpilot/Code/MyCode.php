@@ -10,6 +10,7 @@
 
 namespace progpilot\Code;
 
+use progpilot\Objects\MyOp;
 use progpilot\objects\MyBlock;
 use progpilot\objects\MyDefinition;
 use progpilot\objects\MyExpr;
@@ -67,7 +68,7 @@ class MyCode {
 		return $this->code[$last_index - 1];
 	}
 
-	public static function read_code($context, $file, $defs)
+	public static function read_code($context, $file, $defs, $javascript_file)
 	{
 		$first_block = true;
 		$handle = fopen($file, "r");
@@ -163,22 +164,9 @@ class MyCode {
 							$def_line = (int) fgets($handle);
 							$def_column = (int) fgets($handle);
 
-							$mydef = new MyDefinition($def_line, $def_column, $def_name, false, false);
+							$mydef = new MyDefinition($def_line, $def_column, $def_name, false);
+							$mydef->set_source_file($javascript_file);
 							$array_definitions[] = $mydef;
-
-							/*
-							   if($last_opcode->get_opcode() == Opcodes::END_ASSIGN)
-							   {
-							   $opcode_expr = $code[count($context->get_mycode()->get_codes()) - 2];
-							   $myexpr = $opcode_expr->get_property("expr");
-
-							   $defs = $myexpr->get_defs();
-							   for($i = 0; $i < count($defs); $i ++)
-							   {
-							   $myexpr->add_def($array_definitions[$defs[i]]);
-							   }
-							   }
-							 */
 
 							$inst_def = new MyInstruction(Opcodes::DEFINITION);
 							$inst_def->add_property("def", $mydef);
@@ -204,11 +192,18 @@ class MyCode {
 							$myfunction_call->setLine($func_line);
 							$myfunction_call->setColumn($func_column);
 							$myfunction_call->set_nb_params($func_nb_params);
+							$myfunction_call->set_source_file($javascript_file);
 
 							if($func_is_instance == "true")
 							{
-								$myfunction_call->set_is_instance(true);
+								$myfunction_call->set_type(MyOp::TYPE_INSTANCE);
 								$myfunction_call->set_name_instance($func_name_instance);
+
+								$mybackdef = new MyDefinition($func_line, $func_column+1, $func_name_instance, false);
+								$mybackdef->set_type(MyOp::TYPE_INSTANCE);
+								$mybackdef->set_assign_id(rand());
+								$mybackdef->set_source_file($javascript_file);
+								$myfunction_call->set_back_def($mybackdef);
 							}
 
 							for($j = 0; $j < $func_nb_params; $j ++)
@@ -240,7 +235,8 @@ class MyCode {
 							$def_line = (int) fgets($handle);
 							$def_column = (int) fgets($handle);
 
-							$mytemp = new MyDefinition($def_line, $def_column, $def_name, false, false);
+							$mytemp = new MyDefinition($def_line, $def_column, $def_name, false);
+							$mytemp->set_source_file($javascript_file);
 							$array_definitions[] = $mytemp;
 
 							$nb_exprs = (int) fgets($handle);
@@ -386,7 +382,7 @@ class MyCode {
 				{
 					case Opcodes::ENTER_FUNCTION:
 						{
-							echo "enter_func\n";
+							echo Opcodes::ENTER_FUNCTION+"\n";
 
 							$myfunc = $instruction->get_property("myfunc");
 							echo "name = ".htmlentities($myfunc->get_name(), ENT_QUOTES, 'UTF-8')."\n";
@@ -395,7 +391,7 @@ class MyCode {
 
 					case Opcodes::CLASSE:
 						{
-							echo "class\n";
+							echo Opcodes::CLASSE+"\n";
 
 							$myclass = $instruction->get_property("myclass");
 							echo "name = ".htmlentities($myclass->get_name(), ENT_QUOTES, 'UTF-8')."\n";
@@ -404,7 +400,7 @@ class MyCode {
 
 					case Opcodes::ENTER_BLOCK:
 						{
-							echo "enter_block\n";
+							echo Opcodes::ENTER_BLOCK+"\n";
 
 							$myblock = $instruction->get_property("myblock");
 							echo "id = ".$myblock->get_id()."\n";
@@ -414,7 +410,7 @@ class MyCode {
 
 					case Opcodes::LEAVE_BLOCK:
 						{
-							echo "leave_block\n";
+							echo Opcodes::LEAVE_BLOCK+"\n";
 
 							$myblock = $instruction->get_property("myblock");
 							echo "id = ".$myblock->get_id()."\n";
@@ -424,14 +420,14 @@ class MyCode {
 
 					case Opcodes::LEAVE_FUNCTION:
 						{
-							echo "leave_func\n";
+							echo Opcodes::LEAVE_FUNCTION+"\n";
 
 							break;
 						}
 
 					case Opcodes::FUNC_CALL:
 						{
-							echo "funccall\n";
+							echo Opcodes::FUNC_CALL+"\n";
 
 							$funcname = htmlentities($instruction->get_property("funcname"), ENT_QUOTES, 'UTF-8');
 							echo "name = $funcname\n";
@@ -440,13 +436,13 @@ class MyCode {
 
 					case Opcodes::START_EXPRESSION:
 						{
-							echo "start_expression\n";
+							echo Opcodes::START_EXPRESSION+"\n";
 							break;
 						}
 
 					case Opcodes::END_EXPRESSION:
 						{
-							echo "end_expression\n";
+							echo Opcodes::END_EXPRESSION+"\n";
 							$myexpr = $instruction->get_property("expr");
 							echo "expression et tainted = ".$myexpr->is_tainted()."\n";
 							break;
@@ -454,67 +450,67 @@ class MyCode {
 
 					case Opcodes::CONCAT_LIST:
 						{
-							echo "concat_list\n";
+							echo Opcodes::CONCAT_LIST+"\n";
 							break;
 						}
 
 					case Opcodes::CONCAT_LEFT:
 						{
-							echo "concat_left\n";
+							echo Opcodes::CONCAT_LEFT+"\n";
 							break;
 						}
 
 					case Opcodes::CONCAT_RIGHT:
 						{
-							echo "concat_right\n";
+							echo Opcodes::CONCAT_RIGHT+"\n";
 							break;
 						}
 
 					case Opcodes::RETURN_FUNCTION:
 						{
-							echo "return\n";
+							echo Opcodes::RETURN_FUNCTION+"\n";
 							break;
 						}
 
 					case Opcodes::START_ASSIGN:
 						{
-							echo "start_assign\n";
+							echo Opcodes::START_ASSIGN+"\n";
 							break;
 						}
 
 					case Opcodes::END_ASSIGN:
 						{
-							echo "end_assign\n";
+							echo Opcodes::END_ASSIGN+"\n";
 							break;
 						}
 
 					case Opcodes::START_INCLUDE:
 						{
-							echo "start_include\n";
+							echo Opcodes::START_INCLUDE+"\n";
 							break;
 						}
 
 					case Opcodes::END_INCLUDE:
 						{
-							echo "end_include\n";
+							echo Opcodes::END_INCLUDE+"\n";
 							break;
 						}
 
 					case Opcodes::COND_BOOLEAN_NOT:
 						{
-							echo "cond_boolean_not\n";
+							echo Opcodes::COND_BOOLEAN_NOT+"\n";
 							break;
 						}
 
 					case Opcodes::COND_START_IF:
 						{
-							echo "cond_start_if\n";
+							echo Opcodes::COND_START_IF+"\n";
 							break;
 						}
 
 					case Opcodes::TEMPORARY:
 						{
-							echo "temporary_simple\n";
+							echo Opcodes::TEMPORARY+"\n";
 							$def = $instruction->get_property("temporary");
 							$def->print_stdout();
 
@@ -523,7 +519,7 @@ class MyCode {
 
 					case Opcodes::DEFINITION:
 						{
-							echo "definition_simple\n";
+							echo Opcodes::DEFINITION+"\n";
 							$def = $instruction->get_property("def");
 							$def->print_stdout();
 

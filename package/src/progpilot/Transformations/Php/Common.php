@@ -14,6 +14,7 @@ use PHPCfg\Block;
 use PHPCfg\Op;
 use PHPCfg\Operand;
 
+use progpilot\Objects\MyOp;
 use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
 use progpilot\Transformations\Php\Transform;
@@ -122,40 +123,40 @@ class Common {
 		{
 			if($ops->ops[0] instanceof Op\Expr\FuncCall)
 			{
-				return "array_funccall";
+				return MyOp::TYPE_FUNCCALL_ARRAY;
 			}
 
 			if($ops->ops[0] instanceof Op\Expr\PropertyFetch)
 			{
-				return "property";
+				return MyOp::TYPE_PROPERTY;
 			}
 
 			if($ops->ops[0] instanceof Op\Expr\ArrayDimFetch)
 			{
 				$ret = Common::get_type_definition($ops->ops[0]);
 
-				if($ret == "array_funccall")
-					return "array_funccall";
+				if($ret == MyOp::TYPE_FUNCCALL_ARRAY)
+					return MyOp::TYPE_FUNCCALL_ARRAY;
 
-				return "array";
+				return MyOp::TYPE_ARRAY;
 			}
 
 			if($ops->ops[0] instanceof Op\Expr\Array_)
 			{
-				return "arrayexpr";
+				return MyOp::TYPE_ARRAY_EXPR;
 			}
 		}
 
 		if(isset($ops->expr->ops[0]))
 		{
 			if($ops->expr->ops[0] instanceof Op\Expr\Array_)
-				return "arrayexpr";
+				return MyOp::TYPE_ARRAY_EXPR;
 		}
 
 		if(isset($ops->expr->ops[0]))
 		{
 			if($ops->expr->ops[0] instanceof Op\Expr\New_)
-				return "instance";
+				return MyOp::TYPE_INSTANCE;
 		}
 
 		if(isset($ops->var->ops[0]))
@@ -164,41 +165,41 @@ class Common {
 			{
 				$ret = Common::get_type_definition($ops->var->ops[0]);
 
-				if($ret == "array_funccall")
-					return "array_funccall";
+				if($ret == MyOp::TYPE_FUNCCALL_ARRAY)
+					return MyOp::TYPE_FUNCCALL_ARRAY;
 
-				return "array";
+				return MyOp::TYPE_ARRAY;
 			}
 
 			if($ops->var->ops[0] instanceof Op\Expr\PropertyFetch)
 			{
-				return "property";
+				return MyOp::TYPE_PROPERTY;
 			}
 
 			if($ops->var->ops[0] instanceof Op\Expr\FuncCall)
-				return "array_funccall";   
+				return MyOp::TYPE_FUNCCALL_ARRAY;   
 		}
 
 		if(isset($ops->var->original->name))
 		{
 			if($ops->var->original->name instanceof Operand\Literal)
-				return "simple";
+				return MyOp::TYPE_LITERAL;
 		}
 
 		if(isset($ops->expr->original->name)) // return
 		{
 			if($ops->expr->original->name instanceof Operand\Literal)
-				return "simple";
+				return MyOp::TYPE_LITERAL;
 		}
 
 		if(isset($ops->original->name))
 		{
 			if($ops->original->name instanceof Operand\Literal)
-				return "simple";
+				return MyOp::TYPE_LITERAL;
 		}
 
 		if($ops instanceof Operand\Literal)
-			return "simple";
+			return MyOp::TYPE_LITERAL;
 
 		return null;
 	}

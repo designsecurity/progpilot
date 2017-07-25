@@ -16,6 +16,7 @@ use PHPCfg\Op;
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyExpr;
+use progpilot\Objects\MyOp;
 
 use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
@@ -28,7 +29,7 @@ class FuncCall {
 	{
 		// each argument will be a definition defined by an expression
 		$def_name = $funccall_name."_param".$num_param."_".mt_rand();
-		$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name, false, false);
+		$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name, false);
 		$mydef->set_assign_id($assign_id);
 
 		$context->get_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
@@ -93,12 +94,12 @@ arg3 : arr for the return : function_call()[0] (arr = [0])
 
 		if($is_method)
 		{
-			// when we define a method in a class (is_method = true) but when we use a method (is_instance = true)
-			$myfunction_call->set_is_instance(true);
+			// when we define a method in a class (TYPE_METHOD) but when we use a method (TYPE_INSTANCE)
+			$myfunction_call->set_type(MyOp::TYPE_INSTANCE);
 			$myfunction_call->set_name_instance($instance_name);
 
-			$mybackdef = new MyDefinition($context->get_current_line(), $context->get_current_column()+1, $instance_name, false, false);
-			$mybackdef->set_instance(true);
+			$mybackdef = new MyDefinition($context->get_current_line(), $context->get_current_column()+1, $instance_name, false);
+			$mybackdef->set_type(MyOp::TYPE_INSTANCE);
 			$mybackdef->set_assign_id(rand());
 			$myfunction_call->set_back_def($mybackdef);
 		}

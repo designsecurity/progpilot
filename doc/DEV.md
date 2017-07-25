@@ -26,3 +26,6 @@ See also the list of [contributors](https://github.com/designsecurity/progpilot/
 There is a lot of tasks to do :
 - Global variables
 - Object heritage
+- Htmlentities ENT_QUOTES
+- Better analysis of conditions
+- Nearest def based on file analyzed (includes) too

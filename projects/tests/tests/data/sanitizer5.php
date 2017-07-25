@@ -2,7 +2,7 @@
 
 function mysanitizer()
 {
-    
+
 }
 
 $ret = mysanitizer($_GET["p"]);

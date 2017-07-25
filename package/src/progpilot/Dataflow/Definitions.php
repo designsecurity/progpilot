@@ -11,6 +11,7 @@
 namespace progpilot\Dataflow;
 
 use PHPCfg\Block;
+use progpilot\Objects\MyOp;
 
 class Definitions {
 
@@ -248,7 +249,7 @@ class Definitions {
 	{
 		if($def1->get_name() == $def2->get_name())
 		{
-			if($def1->is_property() && $def2->is_property() 
+			if($def1->get_type() == MyOp::TYPE_PROPERTY && $def2->get_type() == MyOp::TYPE_PROPERTY 
 					&& $def1->property->get_name() != $def2->property->get_name())
 				return false;
 

@@ -42,7 +42,6 @@ class MyExpr extends MyOp {
 		return false;
 	}
 
-
 	/* assignement utilisant cette expression */
 	public function set_assign_def($def)
 	{

@@ -48,8 +48,9 @@ class TwigAnalysis {
 
 					$arr_index = "{{".key($arr)."}}";
 
-					$mydef = new MyDefinition(0, 0, $arr_index, false, false);
+					$mydef = new MyDefinition($def->getLine(), $def->getColumn(), $arr_index, false);
 					$mydef->set_assign_id(rand());
+					$mydef->set_source_file($def->get_source_file());
 
 					if($def->is_tainted())
 						$mydef->set_tainted(true);
@@ -61,10 +62,11 @@ class TwigAnalysis {
 
 				$newcontext = new \progpilot\Context;
 
-				MyCode::read_code($newcontext, "tmpjscode.txt", $thedefs);
+				MyCode::read_code($newcontext, "tmpjscode.txt", $thedefs, $file);
 
 				$newcontext->set_inputs($context->get_inputs());
-				$newcontext->set_results($context->get_results());
+				$newcontext->outputs->set_results($context->outputs->get_results());
+				$newcontext->set_first_file($file);
 
 				$analyzer = new Analyzer;
 				$analyzer->run($newcontext, false);

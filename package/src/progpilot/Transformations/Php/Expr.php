@@ -16,6 +16,7 @@ use PHPCfg\Op;
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyExpr;
+use progpilot\Objects\MyOp;
 
 use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
@@ -30,30 +31,26 @@ class Expr {
 		$name = Common::get_name_definition($op);
 
 		// end of expression
-		if(!is_null($type) && $type != "array_funccall")
+		if(!is_null($type) && $type != MyOp::TYPE_FUNCCALL_ARRAY)
 		{
 			if(is_null($name) || empty($name))
 				$name = mt_rand();
 
 			$arr = BuildArrays::build_array_from_ops($op, false);
 
-			$mytemp = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name, false, false);
+			$mytemp = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name, false);
 			$mytemp->last_known_value($name);
 			$mytemp->set_assign_id($assign_id);
 
 			if($arr != false)
 			{
-				$mytemp->set_arr(true);
+				$mytemp->set_type(MyOp::TYPE_ARRAY);
 				$mytemp->set_arr_value($arr);
-				$mytemp->add_expr($myexpr);
-			}
-			else
-			{
-				$mytemp->set_arr(false);
-				$mytemp->add_expr($myexpr);
 			}
 
-			if($type == "property")
+			$mytemp->add_expr($myexpr);
+
+			if($type == MyOp::TYPE_PROPERTY)
 			{
 				foreach($op->ops as $property)
 				{
@@ -64,16 +61,16 @@ class Expr {
 					}
 				}
 
-				$mytemp->set_property(true);
+				$mytemp->set_type(MyOp::TYPE_PROPERTY);
 				$mytemp->property->set_name($property_name);
 			}
-			
-			
+
+
 			$tainted = false;
 			if(!is_null($context->inputs->get_source_byname($name, false, false, $mytemp->get_arr_value())))
 				$tainted = true;
-				
-            $mytemp->set_tainted($tainted);
+
+			$mytemp->set_tainted($tainted);
 
 			$inst_temporary_simple = new MyInstruction(Opcodes::TEMPORARY);
 			$inst_temporary_simple->add_property("temporary", $mytemp);
@@ -83,7 +80,7 @@ class Expr {
 		}
 
 		// func()[0][1]
-		else if($type == "array_funccall")
+		else if($type == MyOp::TYPE_FUNCCALL_ARRAY)
 		{
 			$arr_funccall = BuildArrays::build_array_from_ops($op, false);
 			$start_ops = BuildArrays::function_start_ops($op);

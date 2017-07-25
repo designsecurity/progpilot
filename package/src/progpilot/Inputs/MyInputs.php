@@ -43,7 +43,7 @@ class MyInputs {
 		$this->sinks_file = null;
 		$this->sources_file = null;
 		$this->validators_file = null;
-		
+
 		$this->file = null;
 		$this->code = null;
 	}
@@ -89,8 +89,8 @@ class MyInputs {
 			{
 				if(!$myvalidator->is_instance() 
 						|| ($myvalidator->is_instance() && $myvalidator->get_instanceof_name() == $instance_name))
-				return $myvalidator;
-            }
+					return $myvalidator;
+			}
 		}
 
 		return null;
@@ -104,8 +104,8 @@ class MyInputs {
 			{
 				if(!$mysanitizer->is_instance() 
 						|| ($mysanitizer->is_instance() && $mysanitizer->get_instanceof_name() == $instance_name))
-				return $mysanitizer;
-            }
+					return $mysanitizer;
+			}
 		}
 
 		return null;
@@ -132,17 +132,17 @@ class MyInputs {
 		{
 			if($mysource->get_name() == $name && $mysource->is_function() == $is_function)
 			{
-                $arr_value_source = array($mysource->get_arr_value() => false);
-                
-                if((($instance_name != false 
-                    && $mysource->is_instance() 
-                        && $mysource->get_instanceof_name() == $instance_name) || !$instance_name) &&
-                        
-                        (($arr_value != false
-                        && ($mysource->is_arr() 
-                            && $arr_value_source == $arr_value) || !$mysource->is_arr()) || !$arr_value))
-                    return $mysource;
-            }
+				$arr_value_source = array($mysource->get_arr_value() => false);
+
+				if((($instance_name != false 
+								&& $mysource->is_instance() 
+								&& $mysource->get_instanceof_name() == $instance_name) || !$instance_name) &&
+
+						(($arr_value != false
+						  && ($mysource->is_arr() 
+							  && $arr_value_source == $arr_value) || !$mysource->is_arr()) || !$arr_value))
+					return $mysource;
+			}
 		}
 
 		return null;
@@ -227,13 +227,13 @@ class MyInputs {
 					$prevent = $sanitizer->{'prevent'};
 
 					$mysanitizer = new MySanitizer($name, $language, $type, $prevent);
-					
+
 					if(isset($sanitizer->{'instanceof'}))
 					{
 						$mysanitizer->set_is_instance(true);
 						$mysanitizer->set_instanceof_name($sanitizer->{'instanceof'});
 					}
-					
+
 					$this->sanitizers[] = $mysanitizer;
 				}
 			}
@@ -324,7 +324,7 @@ class MyInputs {
 
 					if($isfunc == "()")
 						$mysource->set_is_function(true);
-						
+
 					if(isset($source->{'instanceof'}))
 					{
 						$mysource->set_is_instance(true);
@@ -367,27 +367,27 @@ class MyInputs {
 					$language = $validator->{'language'};
 
 					$myvalidator = new MyValidator($name, $language);
-					
-                    if(isset($validator->{'parameters'}))
+
+					if(isset($validator->{'parameters'}))
 					{
 						$parameters = $validator->{'parameters'};
 						foreach($parameters as $parameter)
 						{
-                            if(isset($parameter->{'id'}) && isset($parameter->{'condition'}))
-                            {
-                                if(is_int($parameter->{'id'}) 
-                                    && ($parameter->{'condition'} == "not_tainted"
-                                        || $parameter->{'condition'} == "array_not_tainted"
-                                            || $parameter->{'condition'} == "valid"))
-                                {
-                                    $myvalidator->add_parameter($parameter->{'id'}, $parameter->{'condition'});
-                                }
-                            }
+							if(isset($parameter->{'id'}) && isset($parameter->{'condition'}))
+							{
+								if(is_int($parameter->{'id'}) 
+										&& ($parameter->{'condition'} == "not_tainted"
+											|| $parameter->{'condition'} == "array_not_tainted"
+											|| $parameter->{'condition'} == "valid"))
+								{
+									$myvalidator->add_parameter($parameter->{'id'}, $parameter->{'condition'});
+								}
+							}
 						}
 
 						$myvalidator->set_has_parameters(true);
 					}
-					
+
 					if(isset($validator->{'instanceof'}))
 					{
 						$myvalidator->set_is_instance(true);

@@ -16,11 +16,32 @@ class MyOp {
 	private $var_column;
 	private $source_file;
 
+	const TYPE_LITERAL = "type_literal";
+	const TYPE_ARRAY = "type_array";
+	const TYPE_ARRAY_EXPR = "type_array_expr";
+	const TYPE_COPY_ARRAY = "type_copy_array";
+	const TYPE_METHOD = "type_method";
+	const TYPE_INSTANCE = "type_instance";
+	const TYPE_PROPERTY = "type_property";
+	const TYPE_FUNCCALL = "type_funccall";
+	const TYPE_FUNCCALL_ARRAY = "type_funccall_array";
+
 	public function __construct($var_line, $var_column) {
 
 		$this->var_line = $var_line;
 		$this->var_column = $var_column;
-		$this->source_file = "";
+		$this->source_file = null;
+		$this->type = MyOp::TYPE_LITERAL;
+	}
+
+	public function get_type()
+	{
+		return $this->type;
+	}
+
+	public function set_type($type)
+	{
+		$this->type = $type;
 	}
 
 	public function getLine()

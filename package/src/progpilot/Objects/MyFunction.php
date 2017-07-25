@@ -23,8 +23,6 @@ class MyFunction extends MyOp {
 	private $start_address_func;
 	private $end_address_func;
 	private $visibility;
-	private $is_method;
-	private $is_instance;
 	private $myclass;
 	private $instance;
 	private $block_id;
@@ -44,7 +42,6 @@ class MyFunction extends MyOp {
 		$this->params = [];
 		$this->return_defs = [];
 		$this->visibility = "public";
-		$this->is_method = false;
 		$this->myclass = null;
 		$this->name_instance = null;
 		$this->this_def = null;
@@ -87,20 +84,6 @@ class MyFunction extends MyOp {
 		return $this->last_block_id;
 	}
 
-
-
-
-	public function is_method()
-	{
-		return $this->is_method;
-	}
-
-	public function set_is_method($method)
-	{
-		$this->is_method = $method;
-	}
-
-
 	public function get_myclass()
 	{
 		return $this->myclass;
@@ -110,9 +93,6 @@ class MyFunction extends MyOp {
 	{
 		$this->myclass = $myclass;
 	}
-
-
-
 
 	public function get_this_def()
 	{
@@ -124,8 +104,6 @@ class MyFunction extends MyOp {
 		$this->this_def = $this_def;
 	}
 
-
-
 	public function get_back_def()
 	{
 		return $this->back_def;
@@ -134,16 +112,6 @@ class MyFunction extends MyOp {
 	public function set_back_def($back_def)
 	{
 		$this->back_def = $back_def;
-	}
-
-	public function is_instance()
-	{
-		return $this->is_instance;
-	}
-
-	public function set_is_instance($instance)
-	{
-		$this->is_instance = $instance;
 	}
 
 	public function get_name_instance()
@@ -155,9 +123,6 @@ class MyFunction extends MyOp {
 	{
 		$this->name_instance = $name_instance;
 	}
-
-
-
 
 	public function set_visibility($visibility)
 	{

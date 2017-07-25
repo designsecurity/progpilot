@@ -10,33 +10,17 @@
 
 namespace progpilot\Inputs;
 
-class MySanitizer {
+class MySanitizer extends MySpecify {
 
-	private $name;
-	private $language;
 	private $type;
 	private $prevent;
-	private $instanceof_name;
-	private $is_instance;
 
 	public function __construct($name, $language, $type, $prevent) {
 
-		$this->name = $name;
-		$this->language = $language;
+		parent::__construct($name, $language);
+
 		$this->type = $type;
 		$this->prevent = $prevent;
-		$this->instanceof_name = null;
-		$this->is_instance = false;
-	}
-
-	public function get_name()
-	{
-		return $this->name;
-	}
-
-	public function get_language()
-	{
-		return $this->language;
 	}
 
 	public function get_type()
@@ -47,26 +31,6 @@ class MySanitizer {
 	public function get_prevent()
 	{
 		return $this->prevent;
-	}
-
-	public function set_is_instance($is_instance)
-	{
-		$this->is_instance = $is_instance;
-	}
-
-	public function is_instance()
-	{
-		return $this->is_instance;
-	}
-
-	public function get_instanceof_name()
-	{
-		return $this->is_instance;
-	}
-
-	public function set_instanceof_name($name)
-	{
-		return $this->instanceof_name = $name;
 	}
 }
 

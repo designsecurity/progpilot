@@ -2,10 +2,10 @@
 
 class testc1
 {
-    public function mysanitizer()
-    {
-    
-    }
+	public function mysanitizer()
+	{
+
+	}
 }
 
 $instance = new testc1;

@@ -16,14 +16,10 @@
         }
     ],
     "require": {
-	"cweagans/composer-patches": "~1.0",
+        "cweagans/composer-patches": "~1.0",
         "ircmaxell/php-cfg": "dev-master",
-        "progpilot/package": "dev-master",
-        "slim/slim": "3.5.0"
+        "progpilot/package": "dev-master"
     
-    },
-    "require-dev": {
-        "behat/behat": "^3.1"
     },
 	"extra": {
 		"patches": {

@@ -10,6 +10,7 @@
 
 namespace progpilot\Analysis;
 
+use progpilot\Objects\MyOp;
 use progpilot\Objects\ArrayStatic;
 use progpilot\Objects\MyDefinition;
 use progpilot\Dataflow\Definitions;
@@ -42,10 +43,10 @@ class VisitorAnalysis {
 	{
 		foreach($this->call_stack as $call)
 		{
-			if($call->get_name() == $cur_func->get_name() && !$call->is_method() && !$cur_func->is_method())
+			if($call->get_name() == $cur_func->get_name() && $call->get_type() != MyOp::TYPE_METHOD && $cur_func->get_type() != MyOp::TYPE_METHOD)
 				return true;
 
-			if($call->get_name() == $cur_func->get_name() && $call->is_method() && $cur_func->is_method())
+			if($call->get_name() == $cur_func->get_name() && $call->get_type() == MyOp::TYPE_METHOD && $cur_func->get_type() == MyOp::TYPE_METHOD)
 			{
 				$cur_class = $cur_func->get_myclass();
 				$call_class = $call->get_myclass();
@@ -158,20 +159,20 @@ class VisitorAnalysis {
 						{
 							$tempdefa = $instruction->get_property("temporary");
 							$defs = ResolveDefs::temporary_simple($this->defs, $tempdefa);
-							
+
 							foreach($defs as $def)
 							{	
-                                if($def->is_property())
-                                {
-                                    $class_name = false;
-                                    $myclass = $def->get_myclass();
-                                    if(!is_null($myclass))
-                                        $class_name = $myclass->get_name();
-                                        
-                                    if(!is_null($this->context->inputs->get_source_byname($def->get_name(), $class_name)))
-                                        $def->set_tainted(true);
-                                }
-                
+								if($def->get_type() == MyOp::TYPE_PROPERTY)
+								{
+									$class_name = false;
+									$myclass = $def->get_myclass();
+									if(!is_null($myclass))
+										$class_name = $myclass->get_name();
+
+									if(!is_null($this->context->inputs->get_source_byname($def->get_name(), $class_name)))
+										$def->set_tainted(true);
+								}
+
 								$exprs = $def->get_exprs();
 								foreach($exprs as $expr)
 								{
@@ -198,23 +199,21 @@ class VisitorAnalysis {
 							$funcname = $instruction->get_property("funcname");
 							$arr_funccall = $instruction->get_property("arr");
 							$myfunc_call = $instruction->get_property("myfunc_call");
-							
+
 							SecurityAnalysis::funccall($this->context, $myfunc_call, $instruction);
 
 							$list_myfunc = [];
-							if($myfunc_call->is_instance())
+							if($myfunc_call->get_type() == MyOp::TYPE_INSTANCE)
 							{
-								$mydef_tmp = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance(), false, false);
+								$mydef_tmp = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance(), false);
 								$mydef_tmp->set_block_id($myfunc_call->get_block_id());
 								$mydef_tmp->set_assign_id($myfunc_call->get_back_def()->get_assign_id());
-								//$mydef_tmp->set_method(true);
-								//$mydef_tmp->method->set_name($funcname);
 
-								$instances = ResolveDefs::select_instances($this->defs, $mydef_tmp, true);
+								$instances = ResolveDefs::select_instances($this->defs, $mydef_tmp, true, false);
 
 								foreach($instances as $instance)
 								{
-									if($instance->is_instance())
+									if($instance->get_type() == MyOp::TYPE_INSTANCE)
 									{
 										// the class is defined (it's always the case (build-in php or not), see visitorflowanalysis)
 										$myclass = $instance->get_myclass();
@@ -256,7 +255,7 @@ class VisitorAnalysis {
 									$addr_end = $myfunc->get_end_address_func();
 
 									// the called function is a method and this method exists in the class 
-									if($myfunc_call->is_instance() && $myfunc->is_method() || (!$myfunc_call->is_instance() && !$myfunc->is_method()))
+									if($myfunc_call->get_type() == MyOp::TYPE_INSTANCE && $myfunc->get_type() == MyOp::TYPE_METHOD || ($myfunc_call->get_type() != MyOp::TYPE_INSTANCE && $myfunc->get_type() != MyOp::TYPE_METHOD))
 									{
 										// the called function is defined in our project (not php build'in function)
 										if($addr_start >= 0)
@@ -282,9 +281,9 @@ class VisitorAnalysis {
 
 								ResolveDefs::instance_build_back($this->defs, $myfunc, $myfunc_call);
 
-                                TaintAnalysis::funccall_validator($this->context, $this->defs, $myinstance, $myfunc_call, $arr_funccall, $instruction, $index); 
-                                TaintAnalysis::funccall_sanitizer($this->context, $this->defs, $myinstance, $myfunc_call, $arr_funccall, $instruction, $index);     
-                                TaintAnalysis::funccall_source($this->context, $this->defs, $myinstance, $myfunc_call, $arr_funccall, $instruction);  
+								TaintAnalysis::funccall_validator($this->context, $this->defs, $myinstance, $myfunc_call, $arr_funccall, $instruction, $index); 
+								TaintAnalysis::funccall_sanitizer($this->context, $this->defs, $myinstance, $myfunc_call, $arr_funccall, $instruction, $index);     
+								TaintAnalysis::funccall_source($this->context, $this->defs, $myinstance, $myfunc_call, $arr_funccall, $instruction);  
 							}
 
 							break;

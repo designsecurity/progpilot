@@ -17,9 +17,9 @@ use PHPCfg\Script;
 use PHPCfg\Visitor;
 use PHPCfg\Operand;
 
+use progpilot\Objects\MyOp;
 use progpilot\Dataflow\Definitions;
 use progpilot\Transformations\Php\BuildArrays;
-
 use progpilot\Code\Opcodes;
 
 class ArrayAnalysis {
@@ -34,8 +34,8 @@ class ArrayAnalysis {
 	{		
 		foreach($defs as $def)
 		{		
-			if(($def->is_property() && $def->get_visibility()) 
-					|| !$def->is_property()) 
+			if(($def->get_type() == MyOp::TYPE_PROPERTY && $def->get_visibility()) 
+					|| $def->get_type() != MyOp::TYPE_PROPERTY) 
 			{
 				$exprs = $def->get_exprs();
 				foreach($exprs as $expr)
@@ -98,7 +98,7 @@ class ArrayAnalysis {
 	{
 		$nbparams = 0;
 		$params = $myfunc->get_params();
-		foreach($params as &$param)
+		foreach($params as $param)
 		{
 			if($instruction->is_property_exist("argdef$nbparams"))
 			{
@@ -116,19 +116,19 @@ class ArrayAnalysis {
 		}
 
 		$nbparams = 0;       
-		foreach($params as &$param)
+		foreach($params as $param)
 		{
 			$func_param = $myfunc_call->get_param($nbparams);
 
 			if(!is_null($func_param))
 			{
-				$oldcopyarray = $param->is_copyarray();
+				$oldcopyarray = $param->get_type();
 				$oldcopyarrays = $param->get_copyarrays();
 
-				$param->set_copyarray($func_param->is_copyarray());
+				$param->set_type($func_param->get_type());
 				$param->set_copyarrays($func_param->get_copyarrays());
 
-				$func_param->set_copyarray($oldcopyarray);
+				$func_param->set_type($oldcopyarray);
 				$func_param->set_copyarrays($oldcopyarrays);
 			}
 
@@ -138,7 +138,7 @@ class ArrayAnalysis {
 
 	public static function funccall_after($myfunc, $myfunc_call, $arr_funccall, $op_apr)
 	{	
-        // remplacer ça par mexpr->get_assign_def() ?
+		// remplacer ça par mexpr->get_assign_def() ?
 		if($op_apr->get_opcode() == Opcodes::DEFINITION)
 		{
 			$copytab = $op_apr->get_property("def");
@@ -162,13 +162,13 @@ class ArrayAnalysis {
 
 			if(!is_null($func_param))
 			{
-				$oldcopyarray = $func_param->is_copyarray();
+				$oldcopyarray = $func_param->get_type();
 				$oldcopyarrays = $func_param->get_copyarrays();
 
-				$func_param->set_copyarray($param->is_copyarray());
+				$func_param->set_type($param->get_type());
 				$func_param->set_copyarrays($param->get_copyarrays());
 
-				$param->set_copyarray($oldcopyarray);
+				$param->set_type($oldcopyarray);
 				$param->set_copyarrays($oldcopyarrays);
 				$nbparams ++;
 			}
@@ -188,7 +188,7 @@ class ArrayAnalysis {
 			{
 				foreach($defs as $defa)
 				{
-					if($defa->is_copyarray())
+					if($defa->get_type() == MyOp::TYPE_COPY_ARRAY)
 					{
 						$copyarrays = $defa->get_copyarrays();
 
@@ -201,7 +201,7 @@ class ArrayAnalysis {
 							$extractbis = BuildArrays::build_array_from_arr($copyarr, $extract);
 
 							$copytab->add_copyarray($extractbis, $defarr);
-							$copytab->set_copyarray(true);
+							$copytab->set_type(MyOp::TYPE_COPY_ARRAY);
 
 							unset($defarr);
 						}
@@ -221,7 +221,7 @@ class ArrayAnalysis {
 								$extract = BuildArrays::build_array_from_arr($copyarr, $extract);
 
 							$copytab->add_copyarray($extract, $defa);
-							$copytab->set_copyarray(true);
+							$copytab->set_type(MyOp::TYPE_COPY_ARRAY);
 						}
 					}
 

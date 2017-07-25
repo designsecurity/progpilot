@@ -2,10 +2,10 @@
 
 class testc1
 {
-    public function methodc1()
-    {
-        echo "ee";
-    }
+	public function methodc1()
+	{
+		echo "ee";
+	}
 }
 
 $var1 = new testc1;

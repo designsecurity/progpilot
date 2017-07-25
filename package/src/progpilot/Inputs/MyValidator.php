@@ -10,21 +10,15 @@
 
 namespace progpilot\Inputs;
 
-class MyValidator {
+class MyValidator extends MySpecify {
 
-	private $name;
-	private $language;
-	private $instanceof_name;
-	private $is_instance;
 	private $parameters;
 	private $has_parameters;
 
 	public function __construct($name, $language) {
 
-		$this->name = $name;
-		$this->language = $language;
-		$this->instanceof_name = null;
-		$this->is_instance = false;
+		parent::__construct($name, $language);
+
 		$this->has_parameters = false;
 		$this->parameters = [];
 	}
@@ -43,9 +37,9 @@ class MyValidator {
 	{
 		foreach($this->parameters as $parameter)
 		{
-            $index = $parameter[0];
-            $condition = $parameter[1];
-            
+			$index = $parameter[0];
+			$condition = $parameter[1];
+
 			if($index == $i)
 				return $condition;
 		}
@@ -57,9 +51,9 @@ class MyValidator {
 	{
 		foreach($this->parameters as $parameter)
 		{
-            $index = $parameter[0];
-            $condition = $parameter[1];
-            
+			$index = $parameter[0];
+			$condition = $parameter[1];
+
 			if($index == $i)
 				return true;
 		}
@@ -75,36 +69,6 @@ class MyValidator {
 	public function set_has_parameters($has_parameters)
 	{
 		$this->has_parameters = $has_parameters;
-	}
-
-	public function get_name()
-	{
-		return $this->name;
-	}
-
-	public function get_language()
-	{
-		return $this->language;
-	}
-
-	public function set_is_instance($is_instance)
-	{
-		$this->is_instance = $is_instance;
-	}
-
-	public function is_instance()
-	{
-		return $this->is_instance;
-	}
-
-	public function get_instanceof_name()
-	{
-		return $this->is_instance;
-	}
-
-	public function set_instanceof_name($name)
-	{
-		return $this->instanceof_name = $name;
 	}
 }
 

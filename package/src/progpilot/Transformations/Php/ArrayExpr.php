@@ -16,6 +16,7 @@ use PHPCfg\Op;
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyExpr;
+use progpilot\Objects\MyOp;
 
 use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
@@ -46,13 +47,13 @@ class ArrayExpr {
 				else    
 					$building_arr = array($nb_arrayexpr => $arr);
 
-				if($type == "arrayexpr")
+				if($type == MyOp::TYPE_ARRAY_EXPR)
 				{
 					$building_arr = ArrayExpr::instruction($value, $context, $building_arr, $def_name, $is_returndef);
 				}
 				else
 				{
-					$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name, false, true);
+					$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name, false);
 					$mydef->set_assign_id($assign_id);
 
 					if($is_returndef)
@@ -75,7 +76,7 @@ class ArrayExpr {
 
 					// we reverse the arr
 					$arrtrans = BuildArrays::build_array_from_arr($building_arr, false);
-					$mydef->set_arr(true);
+					$mydef->set_type(MyOp::TYPE_ARRAY);
 					$mydef->set_arr_value($arrtrans);
 
 					$inst_def = new MyInstruction(Opcodes::DEFINITION);

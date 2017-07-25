@@ -17,6 +17,8 @@ use PHPCfg\Script;
 use PHPCfg\Visitor;
 use PHPCfg\Operand;
 
+use progpilot\Objects\MyOp;
+
 class SecurityAnalysis {
 
 	public static function is_safe($mydef, $mysink)
@@ -38,7 +40,7 @@ class SecurityAnalysis {
 	public static function funccall($context, $myfunc_call, $instruction)
 	{
 		$name_instance = null;
-		if($myfunc_call->is_instance())
+		if($myfunc_call->get_type() == MyOp::TYPE_INSTANCE)
 			$name_instance = $myfunc_call->get_name_instance();
 
 		$mysink = $context->inputs->get_sink_byname($myfunc_call->get_name(), $name_instance);
