@@ -8,6 +8,19 @@
             "email": "eric.therond.fr@gmail.com"
         }
     ],
+    "require": {
+        "cweagans/composer-patches": "~1.0",
+        "ircmaxell/php-cfg": "dev-master"
+    },
+	"extra": {
+		"patches": {
+			"ircmaxell/php-cfg": {
+				"Op": "../../patchs/Op.diff",
+				"Include": "../../patchs/Include_.diff",
+				"Traverser": "../../patchs/Traverser.diff"
+				}
+			}
+		},
     "autoload": {
         "psr-0": {
             "progpilot": "src"
