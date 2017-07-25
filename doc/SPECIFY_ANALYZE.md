@@ -106,7 +106,7 @@ You can add conditions to parameters of your validator function :
 - **not_tainted** : the argument is not tainted.
 - **array_not_tainted** : the argument is an array that not contains any tainted values.
 
-For the following in_array call : 
+For the following *in_array* call : 
 ```php
 $tainted = $_GET["p"];
 
