@@ -1,6 +1,11 @@
 # Specify an analyze
 
-You can specify the way of vulnerabilities are detected by playing with sources, sinks and sanitizers.
+You can specify the way of vulnerabilities are detected by playing with sources, sinks, sanitizers and validators :
+
+- **sources** : the untrusted variables that will be initially tainted during the analysis.
+- **sinks** : the sensitives functions that could lead to vulnerabilities.
+- **sanitizers** : the functions that transform tainted values as safe values.
+- **validators** : the functions that valid tainted values without transforming them as safe value.
 
 ## Configure sources
 - $obj_context->inputs->set_sources($file_sources);
@@ -100,6 +105,7 @@ You can add conditions to parameters of your validator function :
 - **valid** : the corresponding argument will be considered as safe if others conditions are respected.
 - **not_tainted** : the argument is not tainted.
 - **array_not_tainted** : the argument is an array that not contains any tainted values.
+
 For the following in_array call : 
 ```php
 $tainted = $_GET["p"];
