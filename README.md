@@ -116,4 +116,4 @@ For example you can define traditional variables like *_GET*, *_POST* or *_COOKI
 See more available options in the [corresponding chapter about specify an analyze](./doc/SPECIFY_ANALYZE.md)
 
 ## Development
-[Learn more](./doc/DEV.md) about the development of the tool
+[Learn more](./doc/DEV.md) about the development of Progpilot

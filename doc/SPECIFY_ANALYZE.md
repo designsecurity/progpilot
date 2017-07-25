@@ -4,8 +4,8 @@ You can specify the way of vulnerabilities are detected by playing with sources,
 
 - **sources** : the untrusted variables that will be initially tainted during the analysis.
 - **sinks** : the sensitives functions that could lead to vulnerabilities.
-- **sanitizers** : the functions that transform tainted values as safe values.
-- **validators** : the functions that valid tainted values without transforming them as safe value.
+- **sanitizers** : the functions that transform tainted values into safe values.
+- **validators** : the functions that valid tainted values without transforming them into safe value.
 
 ## Configure sources
 - $obj_context->inputs->set_sources($file_sources);
