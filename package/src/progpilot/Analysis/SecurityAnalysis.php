@@ -80,7 +80,7 @@ class SecurityAnalysis {
 				{
 					$temp["source"][] = htmlentities($def_expr->get_name(), ENT_QUOTES, 'UTF-8');
 					$temp["source_line"][] = $def_expr->getLine();
-					$temp["source_file"][] = htmlentities($def_expr->get_source_file(), ENT_QUOTES, 'UTF-8');
+					$temp["source_file"][] = htmlentities($def_expr->get_source_myfile()->get_name(), ENT_QUOTES, 'UTF-8');
 				}
 			}
 
@@ -91,7 +91,7 @@ class SecurityAnalysis {
 		{
 			$temp["sink"] = htmlentities($mysink->get_name(), ENT_QUOTES, 'UTF-8');
 			$temp["sink_line"] = $mydef->getLine();
-			$temp["sink_file"] = htmlentities($myfunc_call->get_source_file(), ENT_QUOTES, 'UTF-8');
+			$temp["sink_file"] = htmlentities($myfunc_call->get_source_myfile()->get_name(), ENT_QUOTES, 'UTF-8');
 			$temp["vuln_name"] = htmlentities($mysink->get_attack(), ENT_QUOTES, 'UTF-8');
 			$results[] = $temp;
 		}

@@ -158,7 +158,16 @@ class VisitorAnalysis {
 					case Opcodes::TEMPORARY:
 						{
 							$tempdefa = $instruction->get_property("temporary");
-							$defs = ResolveDefs::temporary_simple($this->defs, $tempdefa);
+							
+							$tainted = false;
+                            if(!is_null($this->context->inputs->get_source_byname($tempdefa->get_name(), false, false, $tempdefa->get_arr_value())))
+                                $tainted = true;
+                            $tempdefa->set_tainted($tainted);
+                            
+                            echo "VisitorAnalysis Opcodes::TEMPORARY\n";
+                            $tempdefa->print_stdout();
+							
+							$defs = ResolveDefs::temporary_simple($this->context, $this->defs, $tempdefa);
 
 							foreach($defs as $def)
 							{	
@@ -169,10 +178,13 @@ class VisitorAnalysis {
 									if(!is_null($myclass))
 										$class_name = $myclass->get_name();
 
-									if(!is_null($this->context->inputs->get_source_byname($def->get_name(), $class_name)))
+									if(!is_null($this->context->inputs->get_source_byname($def->get_name(), false, $class_name, false)))
 										$def->set_tainted(true);
 								}
-
+								
+                                echo "VisitorAnalysis Opcodes::TEMPORARY foreach\n";
+                                $def->print_stdout();
+								
 								$exprs = $def->get_exprs();
 								foreach($exprs as $expr)
 								{
@@ -182,11 +194,11 @@ class VisitorAnalysis {
 
 										$defassign->last_known_value($def->get_last_known_value());
 
-										ArrayAnalysis::copy_array($this->defs, $def, $def->get_arr_value(), $defassign, $defassign->get_arr_value());
+										ArrayAnalysis::copy_array($this->context, $this->defs, $def, $def->get_arr_value(), $defassign, $defassign->get_arr_value());
 
-										$safe = AssertionAnalysis::temporary_simple($this->defs, $this->current_myblock, $def, $tempdefa);
+										$safe = AssertionAnalysis::temporary_simple($this->context, $this->defs, $this->current_myblock, $def, $tempdefa);
 
-										TaintAnalysis::set_tainted($this->defs, $def, $defassign, $expr, $safe); 
+										TaintAnalysis::set_tainted($this->context, $this->defs, $def, $defassign, $expr, $safe); 
 									}
 								}
 							}
@@ -208,8 +220,9 @@ class VisitorAnalysis {
 								$mydef_tmp = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance(), false);
 								$mydef_tmp->set_block_id($myfunc_call->get_block_id());
 								$mydef_tmp->set_assign_id($myfunc_call->get_back_def()->get_assign_id());
+								$mydef_tmp->set_source_myfile($myfunc_call->get_source_myfile());
 
-								$instances = ResolveDefs::select_instances($this->defs, $mydef_tmp, true, false);
+								$instances = ResolveDefs::select_instances($this->context, $this->defs, $mydef_tmp, true, false);
 
 								foreach($instances as $instance)
 								{
@@ -247,7 +260,7 @@ class VisitorAnalysis {
 								$myfunc = $tabfunc[0];
 								$myinstance = $tabfunc[1];
 
-								ResolveDefs::instance_build_this($this->defs, $myfunc, $myfunc_call);
+								ResolveDefs::instance_build_this($this->context, $this->defs, $myfunc, $myfunc_call);
 
 								if(!is_null($myfunc) && !$this->in_call_stack($myfunc))
 								{
@@ -260,8 +273,8 @@ class VisitorAnalysis {
 										// the called function is defined in our project (not php build'in function)
 										if($addr_start >= 0)
 										{
-											ArrayAnalysis::funccall_before($this->defs, $myfunc, $myfunc_call, $instruction);
-											TaintAnalysis::funccall_before($this->defs, $myfunc, $instruction, $this->context->get_classes());
+											ArrayAnalysis::funccall_before($this->context, $this->defs, $myfunc, $myfunc_call, $instruction);
+											TaintAnalysis::funccall_before($this->context, $this->defs, $myfunc, $instruction, $this->context->get_classes());
 
 											$mycodefunction = new MyCode;
 											$mycodefunction->set_codes($mycode->get_codes());
@@ -270,16 +283,16 @@ class VisitorAnalysis {
 
 											$this->analyze($mycodefunction);
 
-											ArrayAnalysis::funccall_after($myfunc, $myfunc_call, $arr_funccall, $code[$index + 3]);
-											TaintAnalysis::funccall_after($this->defs, $myfunc, $arr_funccall, $instruction);  
+											ArrayAnalysis::funccall_after($this->context, $myfunc, $myfunc_call, $arr_funccall, $code[$index + 3]);
+											TaintAnalysis::funccall_after($this->context, $this->defs, $myfunc, $arr_funccall, $instruction);  
 										}
 									}
 								}
 
 								if(is_null($myfunc))
-									ResolveDefs::copy_instance($this->defs, $myfunc_call);
+									ResolveDefs::copy_instance($this->context, $this->defs, $myfunc_call);
 
-								ResolveDefs::instance_build_back($this->defs, $myfunc, $myfunc_call);
+								ResolveDefs::instance_build_back($this->context, $this->defs, $myfunc, $myfunc_call);
 
 								TaintAnalysis::funccall_validator($this->context, $this->defs, $myinstance, $myfunc_call, $arr_funccall, $instruction, $index); 
 								TaintAnalysis::funccall_sanitizer($this->context, $this->defs, $myinstance, $myfunc_call, $arr_funccall, $instruction, $index);     

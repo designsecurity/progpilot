@@ -28,7 +28,7 @@ class MyOutputs {
 
 		$this->resolve_includes = false;
 		$this->resolve_includes_file = null;
-		$this->current_includes_file = "";
+		$this->current_includes_file = [];
 		$this->results = "";
 
 		$this->cfg = new ControlFlowGraph;
@@ -126,7 +126,17 @@ class MyOutputs {
 			$fp = fopen($this->resolve_includes_file, "w");
 			if($fp)
 			{
-				$outputjson = array('includes_not_resolved' => $this->current_includes_file); 
+                $myarray = "";
+                if(count($this->current_includes_file) > 0)
+                {
+                    $myarray = [];
+                    foreach($this->current_includes_file as $include_file)
+                    {
+                        $myarray[] = [$include_file->get_name(), $include_file->getLine(), $include_file->getColumn()];
+                    }
+                }
+                
+				$outputjson = array('includes_not_resolved' => $myarray); 
 				fwrite($fp, json_encode($outputjson, JSON_UNESCAPED_SLASHES));
 				fclose($fp);
 			}

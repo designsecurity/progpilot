@@ -29,3 +29,4 @@ There is a lot of tasks to do :
 - Htmlentities ENT_QUOTES
 - Better analysis of conditions
 - Nearest def based on file analyzed (includes) too
+- Circular includes

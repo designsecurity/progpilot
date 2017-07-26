@@ -25,4 +25,14 @@ $framework->add_output("./tests/includes/simple5.php", array("var1"));
 $framework->add_output("./tests/includes/simple5.php", array("3"));
 $framework->add_output("./tests/includes/simple5.php", "xss");
 
+$framework->add_testbasis("./tests/includes/simple6.php");
+$framework->add_output("./tests/includes/simple6.php", array("var1"));
+$framework->add_output("./tests/includes/simple6.php", array("10"));
+$framework->add_output("./tests/includes/simple6.php", "xss");
+
+$framework->add_testbasis("./tests/includes/simple7.php");
+$framework->add_output("./tests/includes/simple7.php", array("var1"));
+$framework->add_output("./tests/includes/simple7.php", array("9"));
+$framework->add_output("./tests/includes/simple7.php", "xss");
+
 ?>

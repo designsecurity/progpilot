@@ -77,6 +77,7 @@ class MyDefinition extends MyOp {
 		if($this->get_type() == MyOp::TYPE_PROPERTY)
 		{
 			echo "property : ".htmlentities($this->property->get_name(), ENT_QUOTES, 'UTF-8')."\n";
+			echo "class_name : ".htmlentities($this->get_class_name(), ENT_QUOTES, 'UTF-8')."\n";
 		}
 
 		if($this->get_type() == MyOp::TYPE_INSTANCE)

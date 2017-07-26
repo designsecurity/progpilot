@@ -25,6 +25,7 @@ use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyExpr;
 use progpilot\Objects\MyClass;
 use progpilot\Objects\MyOp;
+use progpilot\Objects\MyFile;
 
 use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
@@ -42,6 +43,7 @@ class Transform implements Visitor {
 	private $array_requires;
 	private $context;
 	private $block_if_to_be_resolved;
+	private $current_myfile;
 
 	public function __construct() 
 	{
@@ -49,6 +51,7 @@ class Transform implements Visitor {
 		$this->array_includes = [];
 		$this->array_requires = [];
 		$this->block_if_to_be_resolved = [];
+		$this->current_myfile = null;
 	}
 
 	public function set_context($context) {
@@ -58,7 +61,9 @@ class Transform implements Visitor {
 
 	public function enterScript(Script $script) {
 
-		$this->context->outputs->current_includes_file = "";
+		$this->context->outputs->current_includes_file = [];
+		
+		$this->current_myfile = new MyFile($this->context->inputs->get_file(), 0, 0);
 	}
 
 	public function leaveScript(Script $script) {
@@ -315,9 +320,16 @@ class Transform implements Visitor {
 
 					if($op->type == 4)
 						$this->array_requires[] = $file;
+						
+                    $myfile = new MyFile($file, 
+                        $this->context->get_current_line(),
+                            $this->context->get_current_column());
+                    $myfile->set_included_from_myfile($this->current_myfile);
+                    
+                    $this->current_myfile = $myfile;
 
 					$inst_start_include = new MyInstruction(Opcodes::START_INCLUDE);	
-					$inst_start_include->add_property("file", $file);
+					$inst_start_include->add_property("myfile", $myfile);	
 					$this->context->get_mycode()->add_code($inst_start_include);
 
 					$analyzer = new \progpilot\Analyzer;
@@ -334,11 +346,11 @@ class Transform implements Visitor {
 			{
 				if($this->context->outputs->get_resolve_includes())
 				{
-					$temp["line"] = $this->context->get_current_line();
-					$temp["column"] = $this->context->get_current_column();
-					$temp["source_file"] = $this->context->get_first_file();
+					$myfile_temp = new MyFile($this->context->get_first_file(),
+                        $this->context->get_current_line(),
+                            $this->context->get_current_column());
 
-					$this->context->outputs->current_includes_file[] = $temp;
+					$this->context->outputs->current_includes_file[] = $myfile_temp;
 				}
 			}
 		}
@@ -385,6 +397,7 @@ class Transform implements Visitor {
 			// because it's obligatory in resolve defs
 			$myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
 			$mydef->add_expr($myexpr);
+			$mydef->set_source_myfile($this->current_myfile);
 
 			if($type == MyOp::TYPE_ARRAY)
 			{

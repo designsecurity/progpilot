@@ -15,6 +15,7 @@ use progpilot\Objects\MyCode;
 use progpilot\Objects\ArrayStatic;
 use progpilot\Objects\MyClass;
 use progpilot\Objects\MyOp;
+use progpilot\Objects\MyFile;
 
 use progpilot\Dataflow\Definitions;
 use progpilot\Code\Opcodes;
@@ -24,11 +25,11 @@ class VisitorDataflow {
 	private $defs;
 	private $blocks;
 	private $current_block_id;
-	private $old_current_file;
-	private $current_file;
+	private $old_current_myfile;
+	private $current_myfile;
 
 	public function __construct() {
-
+	
 	}	
 
 	protected function getBlockId($myblock) {
@@ -47,8 +48,11 @@ class VisitorDataflow {
 
 	public function analyze($context) {
 
-		$this->old_current_file = $context->get_first_file();
-		$this->current_file = $context->get_first_file();
+        $myfirstfile = new MyFile($context->get_first_file(), 0, 0);
+        
+		$this->old_current_myfile = $myfirstfile;
+		$this->current_myfile = $myfirstfile;
+							
 		$mycode = $context->get_mycode();
 		$index = $mycode->get_start();
 		$code = $mycode->get_codes();
@@ -84,8 +88,8 @@ class VisitorDataflow {
 							$myclass = $instruction->get_property("myclass");
 							foreach($myclass->get_properties() as $property)
 							{
-								if(is_null($property->get_source_file()))
-									$property->set_source_file($this->current_file);
+								if(is_null($property->get_source_myfile()))
+									$property->set_source_myfile($this->current_myfile);
 							}
 
 							break;
@@ -109,7 +113,8 @@ class VisitorDataflow {
 							if($myfunc->get_type() == MyOp::TYPE_METHOD)
 							{
 								$thisdef = $myfunc->get_this_def();
-
+                                $thisdef->set_source_myfile($this->current_myfile);
+                                
 								$this->defs->adddef($thisdef->get_name(), $thisdef);
 								$this->defs->addgen($thisdef->get_block_id(), $thisdef);
 							}
@@ -196,15 +201,15 @@ class VisitorDataflow {
 
 					case Opcodes::START_INCLUDE:
 						{
-							$this->old_current_file = $this->current_file;
-							$this->current_file = $instruction->get_property("file");
+							$this->old_current_myfile = $this->current_myfile;
+							$this->current_myfile = $instruction->get_property("myfile");
 
 							break;
 						}
 
 					case Opcodes::END_INCLUDE:
 						{
-							$this->current_file = $this->old_current_file;
+							$this->current_myfile = $this->old_current_myfile;
 
 							break;
 						}
@@ -214,14 +219,15 @@ class VisitorDataflow {
 							$myfunc_call = $instruction->get_property("myfunc_call");
 							$myfunc_call->set_block_id($this->current_block_id);
 
-							if(is_null($myfunc_call->get_source_file()))
-								$myfunc_call->set_source_file($this->current_file);
+							if(is_null($myfunc_call->get_source_myfile()))
+								$myfunc_call->set_source_myfile($this->current_myfile);
 
 							if($myfunc_call->get_type() == MyOp::TYPE_INSTANCE)
 							{
 								$mybackdef = $myfunc_call->get_back_def();
 								$mybackdef->set_block_id($this->current_block_id);
 								$mybackdef->set_type(MyOp::TYPE_INSTANCE);
+								$mybackdef->set_source_myfile($this->current_myfile);
 
 								$new_myclass = new MyClass($myfunc_call->getLine(), 
 										$myfunc_call->getColumn(),
@@ -244,6 +250,9 @@ class VisitorDataflow {
 						{
 							$mydef = $instruction->get_property("temporary");
 							$mydef->set_block_id($this->current_block_id);
+							
+							if(is_null($mydef->get_source_myfile()))
+								$mydef->set_source_myfile($this->current_myfile);
 
 							unset($mydef);
 
@@ -259,8 +268,8 @@ class VisitorDataflow {
 							$mydef = $instruction->get_property("def");
 							$mydef->set_block_id($this->current_block_id);
 
-							if(is_null($mydef->get_source_file()))
-								$mydef->set_source_file($this->current_file);
+							if(is_null($mydef->get_source_myfile()))
+								$mydef->set_source_myfile($this->current_myfile);
 
 							$this->defs->adddef($mydef->get_name(), $mydef);
 							$this->defs->addgen($mydef->get_block_id(), $mydef);

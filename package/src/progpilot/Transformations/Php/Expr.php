@@ -65,13 +65,13 @@ class Expr {
 				$mytemp->property->set_name($property_name);
 			}
 
-
+/*
 			$tainted = false;
 			if(!is_null($context->inputs->get_source_byname($name, false, false, $mytemp->get_arr_value())))
 				$tainted = true;
 
 			$mytemp->set_tainted($tainted);
-
+*/
 			$inst_temporary_simple = new MyInstruction(Opcodes::TEMPORARY);
 			$inst_temporary_simple->add_property("temporary", $mytemp);
 			$context->get_mycode()->add_code($inst_temporary_simple);

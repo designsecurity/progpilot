@@ -68,8 +68,8 @@ class MyCode {
 		return $this->code[$last_index - 1];
 	}
 
-	public static function read_code($context, $file, $defs, $javascript_file)
-	{
+	public static function read_code($context, $file, $defs, $myjavascript_file)
+	{                 
 		$first_block = true;
 		$handle = fopen($file, "r");
 
@@ -165,7 +165,7 @@ class MyCode {
 							$def_column = (int) fgets($handle);
 
 							$mydef = new MyDefinition($def_line, $def_column, $def_name, false);
-							$mydef->set_source_file($javascript_file);
+							$mydef->set_source_myfile($myjavascript_file);
 							$array_definitions[] = $mydef;
 
 							$inst_def = new MyInstruction(Opcodes::DEFINITION);
@@ -192,7 +192,7 @@ class MyCode {
 							$myfunction_call->setLine($func_line);
 							$myfunction_call->setColumn($func_column);
 							$myfunction_call->set_nb_params($func_nb_params);
-							$myfunction_call->set_source_file($javascript_file);
+							$myfunction_call->set_source_myfile($myjavascript_file);
 
 							if($func_is_instance == "true")
 							{
@@ -202,7 +202,7 @@ class MyCode {
 								$mybackdef = new MyDefinition($func_line, $func_column+1, $func_name_instance, false);
 								$mybackdef->set_type(MyOp::TYPE_INSTANCE);
 								$mybackdef->set_assign_id(rand());
-								$mybackdef->set_source_file($javascript_file);
+								$mybackdef->set_source_myfile($myjavascript_file);
 								$myfunction_call->set_back_def($mybackdef);
 							}
 
@@ -236,7 +236,7 @@ class MyCode {
 							$def_column = (int) fgets($handle);
 
 							$mytemp = new MyDefinition($def_line, $def_column, $def_name, false);
-							$mytemp->set_source_file($javascript_file);
+							$mytemp->set_source_myfile($myjavascript_file);
 							$array_definitions[] = $mytemp;
 
 							$nb_exprs = (int) fgets($handle);

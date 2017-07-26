@@ -156,7 +156,7 @@ class TaintAnalysis {
 			if($params_tainted)
 			{
 				for($j = 0; $j < count($defs_tainted); $j ++)  
-					TaintAnalysis::set_tainted($data, $defs_tainted[$j], $mydef_return, $exprs_tainted[$j], false); 
+					TaintAnalysis::set_tainted($context, $data, $defs_tainted[$j], $mydef_return, $exprs_tainted[$j], false); 
 			}
 
 			$class_name = false;
@@ -194,14 +194,13 @@ class TaintAnalysis {
 				$defassign = $exprreturn->get_assign_def();
 
 				$mydef = new MyDefinition($myfunc->getLine(), $myfunc->getColumn(), "return", false);
-				$mydef->set_source_file($defassign->get_source_file());
+				$mydef->set_source_myfile($defassign->get_source_myfile());
 
 				if($mysource->is_arr() && $arr_funccall == false)
 				{
 					$value_array = array($mysource->get_arr_value() => false);
 
 					$defassign->add_copyarray($value_array, $mydef);
-					//$defassign->set_copyarray(true);
 					$defassign->set_type(MyOp::TYPE_COPY_ARRAY);
 
 					$mydef->set_tainted(true);
@@ -228,7 +227,7 @@ class TaintAnalysis {
 		}
 	}
 
-	public static function funccall_after($data, $myfunc, $arr_funccall, $instruction)
+	public static function funccall_after($context, $data, $myfunc, $arr_funccall, $instruction)
 	{ 
 		$defsreturn = $myfunc->get_return_defs(); 
 		$exprreturn = $instruction->get_property("expr");
@@ -248,14 +247,14 @@ class TaintAnalysis {
 					if($expr->is_assign())
 					{
 						$defassign = $expr->get_assign_def();
-						TaintAnalysis::set_tainted($data, $copydefreturn, $defassign, $expr, false, null); 
+						TaintAnalysis::set_tainted($context, $data, $copydefreturn, $defassign, $expr, false, null); 
 					}
 				}
 			}
 		}
 	}
 
-	public static function funccall_before($data, $myfunc, $instruction)
+	public static function funccall_before($context, $data, $myfunc, $instruction)
 	{                          
 		$nbparams = 0;
 		$params = $myfunc->get_params();
@@ -277,7 +276,7 @@ class TaintAnalysis {
 						if($expr->is_assign())
 						{
 							$defassign = $expr->get_assign_def();
-							TaintAnalysis::set_tainted($data, $param, $defassign, $expr, false, null); 
+							TaintAnalysis::set_tainted($context, $data, $param, $defassign, $expr, false, null); 
 						}
 					}
 				}
@@ -290,7 +289,7 @@ class TaintAnalysis {
 		unset($params);
 	}
 
-	public static function set_tainted($data, $def, $defassign, $expr, $safe)
+	public static function set_tainted($context, $data, $def, $defassign, $expr, $safe)
 	{	     
 		// assertions
 		if(!$safe)
@@ -302,7 +301,7 @@ class TaintAnalysis {
 				$copy_defassign->set_assign_id(-1);
 				$visibility_final = false;
 
-				$instances = ResolveDefs::select_instances($data, $copy_defassign, true, true);
+				$instances = ResolveDefs::select_instances($context, $data, $copy_defassign, true, true);
 
 				foreach($instances as $instance)
 				{

@@ -14,7 +14,7 @@ class MyOp {
 
 	private $var_line;
 	private $var_column;
-	private $source_file;
+	private $source_myfile;
 
 	const TYPE_LITERAL = "type_literal";
 	const TYPE_ARRAY = "type_array";
@@ -30,7 +30,7 @@ class MyOp {
 
 		$this->var_line = $var_line;
 		$this->var_column = $var_column;
-		$this->source_file = null;
+		$this->source_myfile = null;
 		$this->type = MyOp::TYPE_LITERAL;
 	}
 
@@ -64,14 +64,14 @@ class MyOp {
 		$this->var_column = $column;
 	}
 
-	public function get_source_file()
+	public function get_source_myfile()
 	{
-		return $this->source_file;
+		return $this->source_myfile;
 	}
 
-	public function set_source_file($source_file)
+	public function set_source_myfile($source_myfile)
 	{
-		$this->source_file = $source_file;
+		$this->source_myfile = $source_myfile;
 	}
 }
 

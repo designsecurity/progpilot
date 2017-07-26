@@ -61,8 +61,11 @@ class TwigAnalysis {
 				shell_exec("node ./vendor/progpilot/package/src/progpilot/Transformations/Js/Transform.js $file > tmpjscode.txt");
 
 				$newcontext = new \progpilot\Context;
+				
+				
+                $myjavascript_file = new MyFile($file, $myfunc_call->getLine(),  $myfunc_call->getColumn());
 
-				MyCode::read_code($newcontext, "tmpjscode.txt", $thedefs, $file);
+				MyCode::read_code($newcontext, "tmpjscode.txt", $thedefs, $myjavascript_file);
 
 				$newcontext->set_inputs($context->get_inputs());
 				$newcontext->outputs->set_results($context->outputs->get_results());

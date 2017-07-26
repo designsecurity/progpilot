@@ -30,7 +30,7 @@ class ArrayAnalysis {
 	}
 
 	// mettre la plus grosse boucle dans visitor analysis
-	public static function temporary_simple($data, $defs, $myinstance)
+	public static function temporary_simple($context, $data, $defs, $myinstance)
 	{		
 		foreach($defs as $def)
 		{		
@@ -44,7 +44,7 @@ class ArrayAnalysis {
 					{
 						$defassign = $expr->get_assign_def();
 
-						ArrayAnalysis::copy_array($data, $def, $def->get_arr_value(), $defassign, $defassign->get_arr_value());
+						ArrayAnalysis::copy_array($context, $data, $def, $def->get_arr_value(), $defassign, $defassign->get_arr_value());
 
 					}
 				}
@@ -52,7 +52,7 @@ class ArrayAnalysis {
 		}
 	}
 
-	public static function end_assign($data, $instruction, $instruction_arr, $instruction_ori)
+	public static function end_assign($context, $data, $instruction, $instruction_arr, $instruction_ori)
 	{
 		$myexpr = $instruction->get_property("expr");
 		if($myexpr->is_assign())
@@ -68,12 +68,12 @@ class ArrayAnalysis {
 			{
 				$originaltab = $instruction_ori->get_property("temporary");
 
-				ArrayAnalysis::copy_array($data, $originaltab, $originaltab->get_arr_value(), $copytab, $copytab->get_arr_value());
+				ArrayAnalysis::copy_array($context, $data, $originaltab, $originaltab->get_arr_value(), $copytab, $copytab->get_arr_value());
 			}
 		}
 	}
 
-	public static function end_expression($data, $instruction, $instruction_arr, $instruction_ori)
+	public static function end_expression($context, $data, $instruction, $instruction_arr, $instruction_ori)
 	{
 		$myexpr = $instruction->get_property("expr");
 		if($myexpr->is_assign())
@@ -89,12 +89,12 @@ class ArrayAnalysis {
 			{
 				$originaltab = $instruction_ori->get_property("temporary");
 
-				ArrayAnalysis::copy_array($data, $originaltab, $originaltab->get_arr_value(), $copytab, $copytab->get_arr_value());
+				ArrayAnalysis::copy_array($context, $data, $originaltab, $originaltab->get_arr_value(), $copytab, $copytab->get_arr_value());
 			}
 		}
 	}
 
-	public static function funccall_before($data, $myfunc, $myfunc_call, $instruction)
+	public static function funccall_before($context, $data, $myfunc, $myfunc_call, $instruction)
 	{
 		$nbparams = 0;
 		$params = $myfunc->get_params();
@@ -108,7 +108,7 @@ class ArrayAnalysis {
 				$myfunc_call->add_param($newparam);
 
 				// original et copie (source et cible)
-				ArrayAnalysis::copy_array($data, $defarg, $defarg->get_arr_value(), $newparam, false);
+				ArrayAnalysis::copy_array($context, $data, $defarg, $defarg->get_arr_value(), $newparam, false);
 
 				$nbparams ++;
 				unset($defarg);
@@ -136,7 +136,7 @@ class ArrayAnalysis {
 		}
 	}
 
-	public static function funccall_after($myfunc, $myfunc_call, $arr_funccall, $op_apr)
+	public static function funccall_after($context, $myfunc, $myfunc_call, $arr_funccall, $op_apr)
 	{	
 		// remplacer ça par mexpr->get_assign_def() ?
 		if($op_apr->get_opcode() == Opcodes::DEFINITION)
@@ -149,7 +149,7 @@ class ArrayAnalysis {
 			// on copie le tableau retourné dans la définition
 			if(count($originaltabs) >= 1)
 			{					
-				ArrayAnalysis::copy_array($myfunc->get_defs(), $originaltab, $arr_funccall, $copytab, $copytab->get_arr_value());
+				ArrayAnalysis::copy_array($context, $myfunc->get_defs(), $originaltab, $arr_funccall, $copytab, $copytab->get_arr_value());
 			}                   
 		}
 
@@ -176,11 +176,11 @@ class ArrayAnalysis {
 		unset($params);
 	}
 
-	public static function copy_array($data, $originaltab, $originalarr, $copytab, $copyarr) {
+	public static function copy_array($context, $data, $originaltab, $originalarr, $copytab, $copyarr) {
 
 		if(!is_null($originaltab) && !is_null($copytab))
 		{
-			$defs = ResolveDefs::select_definitions_force(
+			$defs = ResolveDefs::select_definitions_force($context, 
 					$data->getout($originaltab->get_block_id()), 
 					$originaltab);    
 

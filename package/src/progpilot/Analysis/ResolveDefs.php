@@ -24,7 +24,7 @@ use progpilot\Dataflow\Definitions;
 
 class ResolveDefs {
 
-	public static function copy_instance($data, $myfunc_call)
+	public static function copy_instance($context, $data, $myfunc_call)
 	{
 		if($myfunc_call->get_type() == MyOp::TYPE_INSTANCE)
 		{
@@ -34,11 +34,12 @@ class ResolveDefs {
 					false);
 
 			$mydef->set_block_id($myfunc_call->get_block_id());
+			$mydef->set_source_myfile($myfunc_call->get_source_myfile());
 
 			$backdef = $myfunc_call->get_back_def();
 			$new_myclass = $backdef->get_myclass();
 
-			$instances = ResolveDefs::select_instances($data, $mydef, true, false);
+			$instances = ResolveDefs::select_instances($context, $data, $mydef, true, false);
 
 			foreach($instances as $instance)
 			{
@@ -76,7 +77,7 @@ class ResolveDefs {
 		}
 	}
 
-	public static function instance_build_back($data, $myfunc, $myfunc_call)
+	public static function instance_build_back($context, $data, $myfunc, $myfunc_call)
 	{
 		if(!is_null($myfunc) && $myfunc->get_type() == MyOp::TYPE_METHOD)
 		{
@@ -86,6 +87,9 @@ class ResolveDefs {
 				$myback_myclass = $mybackdef->get_myclass();
 				$myclass = $myfunc->get_myclass();
 
+                echo "instance_build_back =========== name = '".$myfunc_call->get_name()."\n";
+                echo "instance_build_back =========== myclass = '".$myfunc->get_myclass()->get_name()."\n";
+                
 				$copy_myclass = clone $myclass;
 
 				foreach($copy_myclass->get_properties() as $property)
@@ -94,8 +98,9 @@ class ResolveDefs {
 					$mydef->set_type(MyOp::TYPE_PROPERTY);
 					$mydef->property->set_name($property->get_name());
 					$mydef->set_block_id($mybackdef->get_block_id());
+					$mydef->set_source_myfile($mybackdef->get_source_myfile());
 
-					$defs = ResolveDefs::select_definitions( 
+					$defs = ResolveDefs::select_definitions($context, 
 							$myfunc->get_defs()->getoutminuskill($mybackdef->get_block_id()), 
 							$mydef);
 
@@ -145,7 +150,7 @@ class ResolveDefs {
 		}
 	}
 
-	public static function instance_build_this($data, $myfunc, $myfunc_call)
+	public static function instance_build_this($context, $data, $myfunc, $myfunc_call)
 	{
 		if(!is_null($myfunc) && $myfunc_call->get_type() == MyOp::TYPE_INSTANCE)
 		{
@@ -158,8 +163,9 @@ class ResolveDefs {
 				$mydef->set_type(MyOp::TYPE_PROPERTY);
 				$mydef->property->set_name($property->get_name());
 				$mydef->set_block_id($myfunc_call->get_block_id());
+				$mydef->set_source_myfile($myfunc_call->get_source_myfile());
 
-				$defs_found = ResolveDefs::select_properties($data, $mydef);
+				$defs_found = ResolveDefs::select_properties($context, $data, $mydef);
 
 				$property_is_tainted = false;
 				$property_is_sanitized = false;
@@ -193,14 +199,81 @@ class ResolveDefs {
 			$mythisdef->set_myclass($copy_myclass);
 		}
 	}
-
-
-	// op is nearest than def
-	public static function is_nearest($lineop, $columnop, $linedef, $columdef)
+	
+	// def1 and def2 defined in different files
+	// return true if def1 is deeper by def2
+	public static function is_nearest_includes($def1, $def2)
 	{
-		if(($lineop > $linedef) || ($lineop == $linedef &&  $columnop >= $columdef))
-			return true;
+        $def1_includedby_def2 = false;
+        
+        $myfile = $def1->get_source_myfile();
+        while(!is_null($myfile))
+        {
+            $myfile_from = $myfile->get_included_from_myfile();
+            if(!is_null($myfile_from) && ($myfile_from->get_name() == $def2->get_source_myfile()->get_name()))
+            {
+                $def1_includedby_def2 = true;
+                break;
+            }
+                
+            $myfile = $myfile_from;
+        }
+        
+        if(!$def1_includedby_def2)
+        {
+            $def2_includedby_def1 = false;
+            $myfile = $def2->get_source_myfile();
+            while(!is_null($myfile))
+            {
+                $myfile_from = $myfile->get_included_from_myfile();
+                if(!is_null($myfile_from) && ($myfile_from->get_name() == $def1->get_source_myfile()->get_name()))
+                {
+                    $def2_includedby_def1 = true;
+                    break;
+                }
+                
+                $myfile = $myfile_from;
+            }
+        }
+    
+        // def1 is included by file from def2
+        // but def2 defined before or after the include ?
+        if($def1_includedby_def2)
+        {
+            // def2 defined after the include so def2 is deeper
+            if(($def2->getLine() > $myfile->getLine()) 
+                || ($def2->getLine() == $myfile->getLine() &&  $def2->getColumn() >= $myfile->getColumn()))
+                return false;
+            
+            return true;
+        }
+        
+        // def2 is included by file from def1
+        // but def1 defined before or after the include ?
+        if($def2_includedby_def1)
+        {
+            // def1 defined after the include so def1 is deeper
+            if(($def1->getLine() > $myfile->getLine()) 
+                || ($def1->getLine() == $myfile->getLine() &&  $def1->getColumn() >= $myfile->getColumn()))
+                return true;
+            
+            return false;
+        }
+        
+        return false;
+	}
 
+	// return true if op is deeper in code than def
+	public static function is_nearest($context, $def1, $def1_line, $def1_column, $def2, $def2_line, $def2_column)
+	{
+        if($def1->get_source_myfile()->get_name() == $def2->get_source_myfile()->get_name())
+        {
+            if(($def1_line > $def2_line) || ($def1_line == $def2_line &&  $def1_column >= $def2_column))
+                return true;
+        }
+        else
+            return ResolveDefs::is_nearest_includes($def1, $def2);
+        
 		return false;
 	}
 
@@ -219,7 +292,7 @@ class ResolveDefs {
 		return false;
 	}
 
-	public static function select_definitions_force($data, $defsearch)
+	public static function select_definitions_force($context, $data, $defsearch)
 	{
 		$defsfound = [];
 
@@ -229,7 +302,7 @@ class ResolveDefs {
 			{	    
 				if($def->get_name() == $defsearch->get_name())
 				{
-					if(ResolveDefs::is_nearest($defsearch->getLine(), $defsearch->getColumn(), $def->getLine(), $def->getColumn()))
+					if(ResolveDefs::is_nearest($context, $defsearch, $defsearch->getLine(), $defsearch->getColumn(), $def, $def->getLine(), $def->getColumn()))
 					{
 						$defsfound[] = $def;
 					}
@@ -240,7 +313,7 @@ class ResolveDefs {
 		return $defsfound;
 	}
 
-	public static function select_definitions($data, $defsearch, $instance_with_property = false)
+	public static function select_definitions($context, $data, $defsearch, $instance_with_property = false)
 	{
 		$defsfound = [];
 		if(is_null($data))
@@ -336,9 +409,9 @@ class ResolveDefs {
 				$bisline = $deflast[1];
 				$biscolumn = $deflast[2];
 
-				if(ResolveDefs::is_nearest($defsearch->getLine(), $defsearch->getColumn(), $bisline, $biscolumn))
+				if(ResolveDefs::is_nearest($context, $defsearch, $defsearch->getLine(), $defsearch->getColumn(), $bisdef, $bisline, $biscolumn))
 				{
-					if(is_null($nearestdef) || ResolveDefs::is_nearest($bisline, $biscolumn, $nearestline, $nearestcolumn))
+					if(is_null($nearestdef) || ResolveDefs::is_nearest($context, $bisdef, $bisline, $biscolumn, $nearestdef, $nearestline, $nearestcolumn))
 					{
 						$nearestdef = $bisdef;
 						$nearestline = $bisline;
@@ -354,7 +427,7 @@ class ResolveDefs {
 		return $truedefsfound;
 	}
 
-	public static function select_instances($data, $tempdefa, $check = false, $instance_with_property = false)
+	public static function select_instances($context, $data, $tempdefa, $check = false, $instance_with_property = false)
 	{
 		$instances_defs = [];
 
@@ -367,7 +440,7 @@ class ResolveDefs {
 			if(!$instance_with_property)
 				$copy_tempdefa->set_type(MyOp::TYPE_INSTANCE);
 
-			$instances_defs = ResolveDefs::select_definitions(
+			$instances_defs = ResolveDefs::select_definitions($context, 
 					$data->getoutminuskill($copy_tempdefa->get_block_id()), 
 					$copy_tempdefa, $instance_with_property);
 		}
@@ -375,13 +448,13 @@ class ResolveDefs {
 		return $instances_defs;
 	}
 
-	public static function select_properties($data, $tempdefa)
+	public static function select_properties($context, $data, $tempdefa)
 	{
 		$properties_defs = [];
 
 		if($tempdefa->get_type() == MyOp::TYPE_PROPERTY)
 		{
-			$defs = ResolveDefs::select_definitions(
+			$defs = ResolveDefs::select_definitions($context, 
 					$data->getoutminuskill($tempdefa->get_block_id()), 
 					$tempdefa);
 
@@ -392,12 +465,12 @@ class ResolveDefs {
 					if($defa->get_type() == MyOp::TYPE_PROPERTY)
 					{
 						// if we found a property, we are looking for a nearest instance
-						$instances = ResolveDefs::select_instances($data, $tempdefa, false, true);
+						$instances = ResolveDefs::select_instances($context, $data, $tempdefa, false, true);
 
 						$instance_nearest = false;
 						foreach($instances as $instance)
 						{
-							if($instance->get_type() == MyOp::TYPE_INSTANCE && ResolveDefs::is_nearest($instance->getLine(), $instance->getColumn(), $defa->getLine(), $defa->getColumn()))
+							if($instance->get_type() == MyOp::TYPE_INSTANCE && ResolveDefs::is_nearest($context, $instance, $instance->getLine(), $instance->getColumn(), $defa, $defa->getLine(), $defa->getColumn()))
 							{
 								$tmp_myclass = $instance->get_myclass();
 								$property = $tmp_myclass->get_property($tempdefa->property->get_name());
@@ -418,7 +491,7 @@ class ResolveDefs {
 			else
 			{
 				$copy_tempdefa = clone $tempdefa;
-				$instances = ResolveDefs::select_instances($data, $copy_tempdefa, true, false);
+				$instances = ResolveDefs::select_instances($context, $data, $copy_tempdefa, true, false);
 
 				$property_found = false;
 				foreach($instances as $instance)
@@ -444,13 +517,13 @@ class ResolveDefs {
 		return $properties_defs;
 	}
 
-	public static function temporary_simple($data, $tempdefa)
+	public static function temporary_simple($context, $data, $tempdefa)
 	{
 		if($tempdefa->get_type() == MyOp::TYPE_PROPERTY)
-			$defs = ResolveDefs::select_properties($data, $tempdefa);
+			$defs = ResolveDefs::select_properties($context, $data, $tempdefa);
 
 		else
-			$defs = ResolveDefs::select_definitions(
+			$defs = ResolveDefs::select_definitions($context, 
 					$data->getoutminuskill($tempdefa->get_block_id()), 
 					$tempdefa);
 
@@ -465,6 +538,7 @@ class ResolveDefs {
 				{
 					$refdef = new MyDefinition($tempdefa->getLine(), $tempdefa->getColumn(), $defa->get_ref_name(), false);
 					$refdef->set_block_id($tempdefa->get_block_id());
+					$refdef->set_source_myfile($tempdefa->get_source_myfile());
 
 					if($defa->is_ref_arr())
 					{
@@ -472,7 +546,7 @@ class ResolveDefs {
 						$refdef->set_arr_value($defa->get_ref_arr_value());
 					}
 
-					$truerefs = ResolveDefs::select_definitions(
+					$truerefs = ResolveDefs::select_definitions($context, 
 							$data->getoutminuskill($refdef->get_block_id()), 
 							$refdef); 
 
