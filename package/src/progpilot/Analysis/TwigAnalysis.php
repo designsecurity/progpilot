@@ -17,6 +17,7 @@ use PHPCfg\Script;
 use PHPCfg\Visitor;
 use PHPCfg\Operand;
 
+use progpilot\objects\MyFile;
 use progpilot\objects\MyDefinition;
 use progpilot\Code\MyCode;
 use progpilot\Analyzer;
@@ -35,6 +36,7 @@ class TwigAnalysis {
 			$variable = $instruction->get_property("argdef1");
 
 			$file = $path."/".$template->get_last_known_value();
+            $myjavascript_file = new MyFile($file, $myfunc_call->getLine(),  $myfunc_call->getColumn());
 
 			if(file_exists($file))
 			{
@@ -48,9 +50,9 @@ class TwigAnalysis {
 
 					$arr_index = "{{".key($arr)."}}";
 
-					$mydef = new MyDefinition($def->getLine(), $def->getColumn(), $arr_index, false);
+					$mydef = new MyDefinition($def->getLine(), $def->getColumn(), $arr_index);
 					$mydef->set_assign_id(rand());
-					$mydef->set_source_file($def->get_source_file());
+					$mydef->set_source_myfile($myjavascript_file->get_source_myfile());
 
 					if($def->is_tainted())
 						$mydef->set_tainted(true);
@@ -61,9 +63,6 @@ class TwigAnalysis {
 				shell_exec("node ./vendor/progpilot/package/src/progpilot/Transformations/Js/Transform.js $file > tmpjscode.txt");
 
 				$newcontext = new \progpilot\Context;
-				
-				
-                $myjavascript_file = new MyFile($file, $myfunc_call->getLine(),  $myfunc_call->getColumn());
 
 				MyCode::read_code($newcontext, "tmpjscode.txt", $thedefs, $myjavascript_file);
 

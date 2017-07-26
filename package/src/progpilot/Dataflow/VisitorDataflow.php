@@ -229,11 +229,6 @@ class VisitorDataflow {
 								$mybackdef->set_type(MyOp::TYPE_INSTANCE);
 								$mybackdef->set_source_myfile($this->current_myfile);
 
-								$new_myclass = new MyClass($myfunc_call->getLine(), 
-										$myfunc_call->getColumn(),
-										$myfunc_call->get_name_instance());
-								$mybackdef->set_myclass($new_myclass);
-
 								$this->defs->adddef($mybackdef->get_name(), $mybackdef);
 								$this->defs->addgen($mybackdef->get_block_id(), $mybackdef);
 							}
@@ -278,13 +273,13 @@ class VisitorDataflow {
 							{
 								$myclass = $context->get_classes()->get_myclass($mydef->get_class_name());
 								if(!is_null($myclass))
-									$mydef->set_myclass($myclass);
+									$mydef->add_myclass($myclass);
 								else
 								{
 									$new_myclass = new MyClass($mydef->getLine(), 
 											$mydef->getColumn(),
 											$mydef->get_class_name());
-									$mydef->set_myclass($new_myclass);
+									$mydef->add_myclass($new_myclass);
 								}
 							}
 							unset($mydef);

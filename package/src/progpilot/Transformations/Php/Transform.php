@@ -176,7 +176,7 @@ class Transform implements Visitor {
 				$myfunction->set_type(MyOp::TYPE_METHOD);
 				$myfunction->set_myclass($myclass);
 
-				$mythisdef = new MyDefinition(0, 0, "this", false);
+				$mythisdef = new MyDefinition(0, 0, "this");
 				$mythisdef->set_block_id(0);
 				$mythisdef->set_type(MyOp::TYPE_INSTANCE);
 				$mythisdef->set_assign_id(rand());
@@ -189,7 +189,8 @@ class Transform implements Visitor {
 			$param_name = $param->name->value;
 			$byref = $param->byRef;
 
-			$mydef = new MyDefinition($param->getLine(), $param->getColumn(), $param_name, $byref);
+			$mydef = new MyDefinition($param->getLine(), $param->getColumn(), $param_name);
+			$mydef->set_is_ref($byref);
 			$myfunction->add_param($mydef);
 
 			$inst_def = new MyInstruction(Opcodes::DEFINITION);
@@ -392,7 +393,7 @@ class Transform implements Visitor {
 			$name = Common::get_name_definition($this->context->get_current_op()->result);
 			$type = Common::get_type_definition($this->context->get_current_op()->result);
 
-			$mydef = new MyDefinition($this->context->get_current_line(), $this->context->get_current_column(), $name, false);
+			$mydef = new MyDefinition($this->context->get_current_line(), $this->context->get_current_column(), $name);
 
 			// because it's obligatory in resolve defs
 			$myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
@@ -552,8 +553,9 @@ class Transform implements Visitor {
 					$property_name = Common::get_name_definition($property);
 					$visibility = Common::get_type_visibility($property->visiblity);
 
-					$mydef = new MyDefinition($property->getLine(), $property->getColumn(), $property_name, false);
+					$mydef = new MyDefinition($property->getLine(), $property->getColumn(), $property_name);
 					$mydef->property->set_visibility($visibility);
+					$mydef->set_class_name($class_name);
 
 					// it's necessary for securityanalysis (visibility)
 					$mydef->set_type(MyOp::TYPE_PROPERTY);

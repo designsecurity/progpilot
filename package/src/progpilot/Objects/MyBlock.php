@@ -21,7 +21,7 @@ class MyBlock extends MyOp {
 
 	public function __construct() {
 
-		parent::__construct(0, 0);
+		parent::__construct("", 0, 0);
 
 		$this->start_address_block = -1;
 		$this->end_address_block = -1;

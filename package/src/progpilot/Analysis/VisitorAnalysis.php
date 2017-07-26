@@ -164,26 +164,15 @@ class VisitorAnalysis {
                                 $tainted = true;
                             $tempdefa->set_tainted($tainted);
                             
-                            echo "VisitorAnalysis Opcodes::TEMPORARY\n";
-                            $tempdefa->print_stdout();
-							
 							$defs = ResolveDefs::temporary_simple($this->context, $this->defs, $tempdefa);
 
 							foreach($defs as $def)
 							{	
 								if($def->get_type() == MyOp::TYPE_PROPERTY)
 								{
-									$class_name = false;
-									$myclass = $def->get_myclass();
-									if(!is_null($myclass))
-										$class_name = $myclass->get_name();
-
-									if(!is_null($this->context->inputs->get_source_byname($def->get_name(), false, $class_name, false)))
-										$def->set_tainted(true);
+                                    if(!is_null($this->context->inputs->get_source_byname($def->get_name(), false, $def->get_class_name(), false)))
+                                        $def->set_tainted(true);
 								}
-								
-                                echo "VisitorAnalysis Opcodes::TEMPORARY foreach\n";
-                                $def->print_stdout();
 								
 								$exprs = $def->get_exprs();
 								foreach($exprs as $expr)
@@ -217,34 +206,38 @@ class VisitorAnalysis {
 							$list_myfunc = [];
 							if($myfunc_call->get_type() == MyOp::TYPE_INSTANCE)
 							{
-								$mydef_tmp = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance(), false);
+								$mydef_tmp = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance());
 								$mydef_tmp->set_block_id($myfunc_call->get_block_id());
 								$mydef_tmp->set_assign_id($myfunc_call->get_back_def()->get_assign_id());
 								$mydef_tmp->set_source_myfile($myfunc_call->get_source_myfile());
 
-								$instances = ResolveDefs::select_instances($this->context, $this->defs, $mydef_tmp, true, false);
+								$instances = ResolveDefs::select_instances($this->context, $this->defs, $mydef_tmp, false);
 
 								foreach($instances as $instance)
 								{
 									if($instance->get_type() == MyOp::TYPE_INSTANCE)
 									{
 										// the class is defined (it's always the case (build-in php or not), see visitorflowanalysis)
-										$myclass = $instance->get_myclass();
-										$myfunc = $myclass->get_method($funcname);
-
-										$list_myfunc[] = [$myfunc, $myclass];
-
-										// twig analysis
-										if($this->context->get_analyze_js())
+										$myclasses = $instance->get_all_myclass();
+										
+										foreach($myclasses as $myclass)
 										{
-											if($myclass->get_name() == "Twig_Environment")
-											{
-												if($myfunc_call->get_name() == "render")
-												{
-													TwigAnalysis::funccall($this->context, $myfunc_call, $instruction);
-												}
-											}
-										}
+                                            $myfunc = $myclass->get_method($funcname);
+
+                                            $list_myfunc[] = [$myfunc, $myclass];
+
+                                            // twig analysis
+                                            if($this->context->get_analyze_js())
+                                            {
+                                                if($myclass->get_name() == "Twig_Environment")
+                                                {
+                                                    if($myfunc_call->get_name() == "render")
+                                                    {
+                                                        TwigAnalysis::funccall($this->context, $myfunc_call, $instruction);
+                                                    }
+                                                }
+                                            }
+                                        }
 									}
 								}
 							}

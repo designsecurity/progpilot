@@ -28,5 +28,5 @@ There is a lot of tasks to do :
 - Object heritage
 - Htmlentities ENT_QUOTES
 - Better analysis of conditions
-- Nearest def based on file analyzed (includes) too
 - Circular includes
+- Passing by reference

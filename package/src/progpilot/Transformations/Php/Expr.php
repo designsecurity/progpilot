@@ -38,7 +38,7 @@ class Expr {
 
 			$arr = BuildArrays::build_array_from_ops($op, false);
 
-			$mytemp = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name, false);
+			$mytemp = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name);
 			$mytemp->last_known_value($name);
 			$mytemp->set_assign_id($assign_id);
 

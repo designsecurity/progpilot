@@ -29,10 +29,6 @@ class Assign {
 	{
 		$assign_id = rand();
 
-		$isref = false;
-		if($context->get_current_op() instanceof Op\Expr\AssignRef)
-			$isref = true;
-
 		$name = Common::get_name_definition($context->get_current_op());
 		$type = Common::get_type_definition($context->get_current_op());
 
@@ -40,9 +36,16 @@ class Assign {
 		if($is_returndef)
 			$name = $context->get_current_func()->get_name()."_return";
 
-		$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name, $isref);
+		$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name);
 		$mydef->set_assign_id($assign_id);
-
+		
+		$isref = false;
+		if($context->get_current_op() instanceof Op\Expr\AssignRef)
+		{
+			$isref = true;
+			$mydef->set_is_ref(true);
+        }
+        
 		if($is_returndef)
 			$context->get_current_func()->add_return_def($mydef);
 

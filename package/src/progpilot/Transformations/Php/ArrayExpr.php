@@ -53,7 +53,7 @@ class ArrayExpr {
 				}
 				else
 				{
-					$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name, false);
+					$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name);
 					$mydef->set_assign_id($assign_id);
 
 					if($is_returndef)

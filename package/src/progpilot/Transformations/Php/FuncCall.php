@@ -29,7 +29,7 @@ class FuncCall {
 	{
 		// each argument will be a definition defined by an expression
 		$def_name = $funccall_name."_param".$num_param."_".mt_rand();
-		$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name, false);
+		$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name);
 		$mydef->set_assign_id($assign_id);
 
 		$context->get_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
@@ -98,7 +98,7 @@ arg3 : arr for the return : function_call()[0] (arr = [0])
 			$myfunction_call->set_type(MyOp::TYPE_INSTANCE);
 			$myfunction_call->set_name_instance($instance_name);
 
-			$mybackdef = new MyDefinition($context->get_current_line(), $context->get_current_column()+1, $instance_name, false);
+			$mybackdef = new MyDefinition($context->get_current_line(), $context->get_current_column()+1, $instance_name);
 			$mybackdef->set_type(MyOp::TYPE_INSTANCE);
 			$mybackdef->set_assign_id(rand());
 			$myfunction_call->set_back_def($mybackdef);

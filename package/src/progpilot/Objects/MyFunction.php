@@ -15,7 +15,6 @@ use PHPCfg\Script;
 
 class MyFunction extends MyOp {
 
-	private $name;
 	private $nb_params;
 	private $params;
 	private $return_defs;
@@ -36,9 +35,8 @@ class MyFunction extends MyOp {
 
 	public function __construct($name) {
 
-		parent::__construct(0, 0);
+		parent::__construct($name, 0, 0);
 
-		$this->name = $name;
 		$this->params = [];
 		$this->return_defs = [];
 		$this->visibility = "public";
@@ -162,11 +160,6 @@ class MyFunction extends MyOp {
 	public function get_defs()
 	{
 		return $this->defs;
-	}
-
-	public function get_name()
-	{
-		return $this->name;
 	}
 
 	public function add_param($param)

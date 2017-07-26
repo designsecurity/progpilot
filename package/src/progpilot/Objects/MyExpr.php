@@ -19,7 +19,7 @@ class MyExpr extends MyOp {
 
 	public function __construct($var_line, $var_column) {
 
-		parent::__construct($var_line, $var_column);
+		parent::__construct("", $var_line, $var_column);
 
 		$this->tainted = false;
 		$this->assign = false;

@@ -12,6 +12,7 @@ namespace progpilot\Objects;
 
 class MyOp {
 
+	private $var_name;
 	private $var_line;
 	private $var_column;
 	private $source_myfile;
@@ -26,8 +27,9 @@ class MyOp {
 	const TYPE_FUNCCALL = "type_funccall";
 	const TYPE_FUNCCALL_ARRAY = "type_funccall_array";
 
-	public function __construct($var_line, $var_column) {
+	public function __construct($var_name, $var_line, $var_column) {
 
+		$this->var_name = $var_name;
 		$this->var_line = $var_line;
 		$this->var_column = $var_column;
 		$this->source_myfile = null;
@@ -72,6 +74,16 @@ class MyOp {
 	public function set_source_myfile($source_myfile)
 	{
 		$this->source_myfile = $source_myfile;
+	}
+
+	public function set_name($var_name)
+	{
+		$this->var_name = $var_name;
+	}
+
+	public function get_name()
+	{
+		return $this->var_name;
 	}
 }
 

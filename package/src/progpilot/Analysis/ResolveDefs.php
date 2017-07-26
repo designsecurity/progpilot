@@ -17,6 +17,7 @@ use PHPCfg\Script;
 use PHPCfg\Visitor;
 use PHPCfg\Operand;
 
+use progpilot\Objects\MyClass;
 use progpilot\Objects\MyOp;
 use progpilot\Objects\MyInstance;
 use progpilot\Objects\MyDefinition;
@@ -28,51 +29,43 @@ class ResolveDefs {
 	{
 		if($myfunc_call->get_type() == MyOp::TYPE_INSTANCE)
 		{
-			$mydef = new MyDefinition($myfunc_call->getLine(), 
-					$myfunc_call->getColumn(), 
-					$myfunc_call->get_name_instance(), 
-					false);
+			$mydef = new MyDefinition(
+                $myfunc_call->getLine(), 
+                    $myfunc_call->getColumn(), 
+                        $myfunc_call->get_name_instance());
 
 			$mydef->set_block_id($myfunc_call->get_block_id());
 			$mydef->set_source_myfile($myfunc_call->get_source_myfile());
 
 			$backdef = $myfunc_call->get_back_def();
-			$new_myclass = $backdef->get_myclass();
+			//$new_myclass = $backdef->get_myclass();
 
-			$instances = ResolveDefs::select_instances($context, $data, $mydef, true, false);
+			$instances = ResolveDefs::select_instances($context, $data, $mydef, false);
 
 			foreach($instances as $instance)
 			{
-				$myclass = $instance->get_myclass();
-				$new_myclass->set_name($myclass->get_name());
+				$myclasses = $instance->get_all_myclass();
+				
+                foreach($myclasses as $myclass)
+                {
+                    $new_myclass = new MyClass($instance->getLine(), 
+                        $instance->getColumn(),
+                            $myclass->get_name());
+                                            
+                    foreach($myclass->get_properties() as $property)
+                    {
+                        $new_property = clone $property;
+                        $new_myclass->add_property($new_property);
+                    }
 
-				foreach($myclass->get_properties() as $property)
-				{
-					$new_property = clone $property;
-					$exist_property = $new_myclass->get_property($property->get_name());
-
-					if(!is_null($exist_property))
-					{
-						if($property->is_tainted())
-							$exist_property->set_tainted(true);
-
-						if($property->is_sanitized())
-						{
-							foreach($property->get_type_sanitized() as $type_sanitized)
-								$exist_property->add_type_sanitized($type_sanitized);
-
-							$exist_property->set_sanitized(true);
-						}
-					}
-					else if(is_null($exist_property))    
-						$new_myclass->add_property($new_property);
-				}
-
-				foreach($myclass->get_methods() as $method)
-				{
-					$new_method = clone $method;
-					$new_myclass->add_method($new_method);
-				}
+                    foreach($myclass->get_methods() as $method)
+                    {
+                        $new_method = clone $method;
+                        $new_myclass->add_method($new_method);
+                    }
+				
+                    $backdef->add_myclass($new_myclass);
+                }
 			}
 		}
 	}
@@ -84,24 +77,26 @@ class ResolveDefs {
 			if($myfunc_call->get_type() == MyOp::TYPE_INSTANCE)
 			{
 				$mybackdef = $myfunc_call->get_back_def();
-				$myback_myclass = $mybackdef->get_myclass();
 				$myclass = $myfunc->get_myclass();
 
-                echo "instance_build_back =========== name = '".$myfunc_call->get_name()."\n";
-                echo "instance_build_back =========== myclass = '".$myfunc->get_myclass()->get_name()."\n";
-                
+                $new_myback_myclass = new MyClass(
+                    $myclass->getLine(), 
+                        $myclass->getColumn(),
+                            $myclass->get_name());
+                $mybackdef->add_myclass($new_myback_myclass);
+                        
 				$copy_myclass = clone $myclass;
 
 				foreach($copy_myclass->get_properties() as $property)
 				{
-					$mydef = new MyDefinition($mybackdef->getLine(), $mybackdef->getColumn(), "this", false);
+					$mydef = new MyDefinition($myfunc->get_last_line(), $myfunc->get_last_column(), "this");
 					$mydef->set_type(MyOp::TYPE_PROPERTY);
 					$mydef->property->set_name($property->get_name());
-					$mydef->set_block_id($mybackdef->get_block_id());
+					$mydef->set_block_id($myfunc->get_last_block_id());
 					$mydef->set_source_myfile($mybackdef->get_source_myfile());
 
 					$defs = ResolveDefs::select_definitions($context, 
-							$myfunc->get_defs()->getoutminuskill($mybackdef->get_block_id()), 
+							$myfunc->get_defs()->getoutminuskill($mydef->get_block_id()), 
 							$mydef);
 
 					$property_is_tainted = false;
@@ -120,15 +115,10 @@ class ResolveDefs {
 								$set_sanitizers[] = $type_sanitized;
 						}
 					}
-
-					$exist_property = $myback_myclass->get_property($property->get_name());   
-					if(!is_null($exist_property))
-						$new_property = $exist_property;
-					else
-					{
-						$new_property = $property;
-						$myback_myclass->add_property($property);
-					}
+					
+                    $new_property = $property;
+                    $new_myback_myclass->add_property($property);
+					
 
 					if($property_is_tainted)
 						$new_property->set_tainted(true);
@@ -144,7 +134,7 @@ class ResolveDefs {
 				foreach($copy_myclass->get_methods() as $method)
 				{
 					$new_method = clone $method;
-					$myback_myclass->add_method($new_method);
+					$new_myback_myclass->add_method($new_method);
 				}
 			}
 		}
@@ -159,7 +149,7 @@ class ResolveDefs {
 
 			foreach($copy_myclass->get_properties() as $property)
 			{
-				$mydef = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance(), false);
+				$mydef = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance());
 				$mydef->set_type(MyOp::TYPE_PROPERTY);
 				$mydef->property->set_name($property->get_name());
 				$mydef->set_block_id($myfunc_call->get_block_id());
@@ -196,7 +186,8 @@ class ResolveDefs {
 
 			$mythisdef = $myfunc->get_this_def();
 			$mythisdef->set_class_name($copy_myclass->get_name());
-			$mythisdef->set_myclass($copy_myclass);
+			//$mythisdef->set_myclass($copy_myclass);
+            $mythisdef->add_myclass($copy_myclass);
 		}
 	}
 	
@@ -279,15 +270,18 @@ class ResolveDefs {
 
 	public static function get_visibility($def, $property)
 	{
-		$myclass = $def->get_myclass();
-
-		if(!is_null($property) && !is_null($myclass) && $property->get_type() == MyOp::TYPE_PROPERTY)
+		$myclasses = $def->get_all_myclass();
+		
+		foreach($myclasses as $myclass)
 		{
-			if($property->property->get_visibility() == "public" || $def->get_name() == "this")
-			{
-				return true;
-			}
-		}
+            if(!is_null($property) && !is_null($myclass) && $property->get_type() == MyOp::TYPE_PROPERTY)
+            {
+                if($property->property->get_visibility() == "public" || $def->get_name() == "this")
+                {
+                    return true;
+                }
+            }
+        }
 
 		return false;
 	}
@@ -323,7 +317,6 @@ class ResolveDefs {
 		{
 			if($def->get_name() == $defsearch->get_name() && $def->get_assign_id() != $defsearch->get_assign_id())
 			{
-
 				if($def->get_type() == MyOp::TYPE_INSTANCE && $defsearch->get_type() == MyOp::TYPE_INSTANCE && !$instance_with_property)
 				{		
 					$defsfound[$def->get_block_id()][] = [$def, $def->getLine(), $def->getColumn()];
@@ -331,24 +324,32 @@ class ResolveDefs {
 
 				else if($def->get_type() == MyOp::TYPE_INSTANCE && $defsearch->get_type() == MyOp::TYPE_PROPERTY && $instance_with_property)
 				{		
-					$myclass = $def->get_myclass();
-					$property = $myclass->get_property($defsearch->property->get_name());
-
-					if(!is_null($property) && ResolveDefs::get_visibility($def, $property))
+					$myclasses = $def->get_all_myclass();
+					
+					foreach($myclasses as $myclass)
 					{
-						$defsfound[$def->get_block_id()][] = [$def, $def->getLine(), $def->getColumn()];
-					}
+                        $property = $myclass->get_property($defsearch->property->get_name());
+
+                        if(!is_null($property) && ResolveDefs::get_visibility($def, $property))
+                        {
+                            $defsfound[$def->get_block_id()][] = [$def, $def->getLine(), $def->getColumn()];
+                        }
+                    }
 				}
 
 				else if($def->get_type() == MyOp::TYPE_INSTANCE && $defsearch->get_type() == MyOp::TYPE_METHOD && $instance_with_property)
 				{		
-					$myclass = $def->get_myclass();
-					$method = $myclass->get_method($defsearch->method->get_name());
-
-					if(!is_null($method))
+					$myclasses = $def->get_all_myclass();
+					
+					foreach($myclasses as $myclass)
 					{
-						$defsfound[$def->get_block_id()][] = [$def, $def->getLine(), $def->getColumn()];   
-					}
+                        $method = $myclass->get_method($defsearch->method->get_name());
+
+                        if(!is_null($method))
+                        {
+                            $defsfound[$def->get_block_id()][] = [$def, $def->getLine(), $def->getColumn()];   
+                        }
+                    }
 				}
 
 				else if($def->get_type() == MyOp::TYPE_PROPERTY && $defsearch->get_type() == MyOp::TYPE_PROPERTY && !$instance_with_property)
@@ -427,11 +428,11 @@ class ResolveDefs {
 		return $truedefsfound;
 	}
 
-	public static function select_instances($context, $data, $tempdefa, $check = false, $instance_with_property = false)
+	public static function select_instances($context, $data, $tempdefa, $instance_with_property)
 	{
 		$instances_defs = [];
 
-		if($tempdefa->get_type() == MyOp::TYPE_PROPERTY || $tempdefa->get_type() == MyOp::TYPE_METHOD || $check)
+		if($tempdefa->get_type() == MyOp::TYPE_PROPERTY || $tempdefa->get_type() == MyOp::TYPE_METHOD || !$instance_with_property)
 		{
 			// we can have multiple instances with the same property assigned
 			// we are looking for and instance, not a property	
@@ -465,21 +466,25 @@ class ResolveDefs {
 					if($defa->get_type() == MyOp::TYPE_PROPERTY)
 					{
 						// if we found a property, we are looking for a nearest instance
-						$instances = ResolveDefs::select_instances($context, $data, $tempdefa, false, true);
+						$instances = ResolveDefs::select_instances($context, $data, $tempdefa, true);
 
 						$instance_nearest = false;
 						foreach($instances as $instance)
 						{
 							if($instance->get_type() == MyOp::TYPE_INSTANCE && ResolveDefs::is_nearest($context, $instance, $instance->getLine(), $instance->getColumn(), $defa, $defa->getLine(), $defa->getColumn()))
 							{
-								$tmp_myclass = $instance->get_myclass();
-								$property = $tmp_myclass->get_property($tempdefa->property->get_name());
-
-								if(!is_null($property))
+								$tmp_myclasses = $instance->get_all_myclass();
+								
+								foreach($tmp_myclasses as $tmp_myclass)
 								{
-									$properties_defs[] = $property;
-									$instance_nearest = true;
-								}
+                                    $property = $tmp_myclass->get_property($tempdefa->property->get_name());
+
+                                    if(!is_null($property))
+                                    {
+                                        $properties_defs[] = $property;
+                                        $instance_nearest = true;
+                                    }
+                                }
 							}
 						}
 
@@ -491,21 +496,25 @@ class ResolveDefs {
 			else
 			{
 				$copy_tempdefa = clone $tempdefa;
-				$instances = ResolveDefs::select_instances($context, $data, $copy_tempdefa, true, false);
+				$instances = ResolveDefs::select_instances($context, $data, $copy_tempdefa, false);
 
 				$property_found = false;
 				foreach($instances as $instance)
 				{
 					if($instance->get_type() == MyOp::TYPE_INSTANCE)
 					{
-						$tmp_myclass = $instance->get_myclass();
-						$property = $tmp_myclass->get_property($tempdefa->property->get_name());
+						$tmp_myclasses = $instance->get_all_myclass();
+						
+                        foreach($tmp_myclasses as $tmp_myclass)
+                        {
+                            $property = $tmp_myclass->get_property($tempdefa->property->get_name());
 
-						if(!is_null($property))
-						{
-							$properties_defs[] = $property;
-							$property_found = true;
-						}
+                            if(!is_null($property))
+                            {
+                                $properties_defs[] = $property;
+                                $property_found = true;
+                            }
+                        }
 					}
 				}
 
@@ -536,7 +545,7 @@ class ResolveDefs {
 			{	
 				if($defa->is_ref())
 				{
-					$refdef = new MyDefinition($tempdefa->getLine(), $tempdefa->getColumn(), $defa->get_ref_name(), false);
+					$refdef = new MyDefinition($tempdefa->getLine(), $tempdefa->getColumn(), $defa->get_ref_name());
 					$refdef->set_block_id($tempdefa->get_block_id());
 					$refdef->set_source_myfile($tempdefa->get_source_myfile());
 

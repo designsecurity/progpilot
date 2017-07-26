@@ -16,7 +16,7 @@ class testc2
 
 	public function set_boum1($boum1)
 	{
-		$this->boum1 = $boum1;
+		$this->boum1 = "eee";
 	}
 };
 

@@ -164,7 +164,7 @@ class MyCode {
 							$def_line = (int) fgets($handle);
 							$def_column = (int) fgets($handle);
 
-							$mydef = new MyDefinition($def_line, $def_column, $def_name, false);
+							$mydef = new MyDefinition($def_line, $def_column, $def_name);
 							$mydef->set_source_myfile($myjavascript_file);
 							$array_definitions[] = $mydef;
 
@@ -199,7 +199,7 @@ class MyCode {
 								$myfunction_call->set_type(MyOp::TYPE_INSTANCE);
 								$myfunction_call->set_name_instance($func_name_instance);
 
-								$mybackdef = new MyDefinition($func_line, $func_column+1, $func_name_instance, false);
+								$mybackdef = new MyDefinition($func_line, $func_column+1, $func_name_instance);
 								$mybackdef->set_type(MyOp::TYPE_INSTANCE);
 								$mybackdef->set_assign_id(rand());
 								$mybackdef->set_source_myfile($myjavascript_file);
@@ -235,7 +235,7 @@ class MyCode {
 							$def_line = (int) fgets($handle);
 							$def_column = (int) fgets($handle);
 
-							$mytemp = new MyDefinition($def_line, $def_column, $def_name, false);
+							$mytemp = new MyDefinition($def_line, $def_column, $def_name);
 							$mytemp->set_source_myfile($myjavascript_file);
 							$array_definitions[] = $mytemp;
 

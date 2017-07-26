@@ -14,13 +14,11 @@ class MyClass extends MyOp {
 
 	private $properties;
 	private $methods;
-	private $name;
 
-	public function __construct($var_line, $var_column, $name) {
+	public function __construct($var_line, $var_column, $var_name) {
 
-		parent::__construct($var_line, $var_column);
+		parent::__construct($var_name, $var_line, $var_column);
 
-		$this->name = $name;
 		$this->properties = [];
 		$this->methods = [];
 	}
@@ -97,17 +95,6 @@ class MyClass extends MyOp {
 
 		return null;
 	}
-
-	public function get_name()
-	{
-		return $this->name;
-	}
-
-	public function set_name($name)
-	{
-		$this->name = $name;
-	}
-
 }
 
 ?>

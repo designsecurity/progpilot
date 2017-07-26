@@ -12,7 +12,6 @@ namespace progpilot\Objects;
 
 class MyAssertion {
 
-	private $name;
 	private $arr;
 	private $type_assertion;
 
@@ -22,11 +21,6 @@ class MyAssertion {
 
 		$this->type_assertion = $type_assertion;
 		$this->mydef = $mydef;
-	}
-
-	public function add_name($name)
-	{
-		$this->name = $name;
 	}
 
 	public function add_def($mydef)

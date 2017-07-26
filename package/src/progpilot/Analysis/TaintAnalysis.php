@@ -193,7 +193,7 @@ class TaintAnalysis {
 			{
 				$defassign = $exprreturn->get_assign_def();
 
-				$mydef = new MyDefinition($myfunc->getLine(), $myfunc->getColumn(), "return", false);
+				$mydef = new MyDefinition($myfunc->getLine(), $myfunc->getColumn(), "return");
 				$mydef->set_source_myfile($defassign->get_source_myfile());
 
 				if($mysource->is_arr() && $arr_funccall == false)
@@ -301,13 +301,13 @@ class TaintAnalysis {
 				$copy_defassign->set_assign_id(-1);
 				$visibility_final = false;
 
-				$instances = ResolveDefs::select_instances($context, $data, $copy_defassign, true, true);
+				$instances = ResolveDefs::select_instances($context, $data, $copy_defassign, true);
 
 				foreach($instances as $instance)
 				{
 					if($instance->get_type() == MyOp::TYPE_INSTANCE)
 					{
-						$visibility_final = true;
+                        $visibility_final = true;
 						break;
 					}
 				}

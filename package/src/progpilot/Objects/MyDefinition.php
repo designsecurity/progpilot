@@ -15,7 +15,6 @@ use progpilot\Objects\MyOp;
 
 class MyDefinition extends MyOp {
 
-	private $var_name;
 	private $block_id;
 	private $is_tainted;
 	private $is_ref;
@@ -32,28 +31,27 @@ class MyDefinition extends MyOp {
 	private $is_sanitized;
 	private $type_sanitized;
 	private $assign_id;
-	private $myclass;
+	private $myclasses;
 
 	public $property;
 	public $method;
 
-	public function __construct($var_line, $var_column, $var_name, $is_ref) {
+	public function __construct($var_line, $var_column, $var_name) {
 
-		parent::__construct($var_line, $var_column);
+		parent::__construct($var_name, $var_line, $var_column);
 
-		$this->var_name = $var_name;
 		$this->block_id = -1;
 		$this->is_tainted = false;
-		$this->is_ref = $is_ref;
-		$this->thearrays = [];
-		$this->theexprs = [];
+		$this->is_ref = false;
 		$this->arr_value = false;
 		$this->is_ref_arr = false;
 		$this->ref_arr_value = null;
-		$this->taintedbyexpr = null;
 		$this->instance = false;
+		$this->thearrays = [];
+		$this->theexprs = [];
+		$this->taintedbyexpr = null;
 		$this->class_name = "";
-		$this->myclass = null;
+		$this->myclasses = [];
 
 		$this->is_sanitized = false;
 		$this->type_sanitized = [];
@@ -83,9 +81,10 @@ class MyDefinition extends MyOp {
 		if($this->get_type() == MyOp::TYPE_INSTANCE)
 		{
 			echo "instance : ".htmlentities($this->get_class_name(), ENT_QUOTES, 'UTF-8')."\n";
-			$myclass = $this->get_myclass();
-			if(!is_null($myclass))
+			$myclasses = $this->get_all_myclass();
+			foreach($myclasses as $myclass)
 			{
+                echo "of myclass ".$myclass->get_name()."\n";
 				foreach($myclass->get_properties() as $property)
 					echo "property : '".$property->get_name()."'\n";
 
@@ -115,14 +114,14 @@ class MyDefinition extends MyOp {
 		return $this->last_known_value;
 	}
 
-	public function set_myclass($myclass)
+	public function add_myclass($myclass)
 	{
-		$this->myclass = $myclass;
+		$this->myclasses[] = $myclass;
 	}
 
-	public function get_myclass()
+	public function get_all_myclass()
 	{
-		return $this->myclass;
+		return $this->myclasses;
 	}
 
 	public function get_class_name()
@@ -143,6 +142,11 @@ class MyDefinition extends MyOp {
 	public function set_ref_arr($arr)
 	{
 		$this->is_ref_arr = $arr;
+	}
+
+	public function set_is_ref($is_ref)
+	{
+        $this->is_ref = $is_ref;
 	}
 
 	public function is_ref()
@@ -198,16 +202,6 @@ class MyDefinition extends MyOp {
 	public function get_arr_value()
 	{
 		return $this->arr_value;
-	}
-
-	public function set_name($name)
-	{
-		$this->var_name = $name;
-	}
-
-	public function get_name()
-	{
-		return $this->var_name;
 	}
 
 	public function get_block_id()
