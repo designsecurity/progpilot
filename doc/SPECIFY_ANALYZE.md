@@ -31,8 +31,8 @@ Where *$file_sources* is a json file like below :
 ```
 *Name* and *language* properties are mandatory.  
 The value of *name* property must be a function (the source will be the return of this function) or a variable.  
-To specify a method add *instanceof* property with the class name value to which the method belongs.  
 You can define a return function or method as a source when *is_function* property is set to true.  
+To specify a method add *instanceof* property with the class name value to which the method belongs.  
 For defining a property as a source just add *instanceof* like for a method.  
 If you want to define all elements of an array as a source (like for well-known *_GET*, *_POST* and *_COOKIES* variables) use *is_array* property set to true.  
 If you want to define only one element of an array as a source add *array_index* property with index name as value.  
