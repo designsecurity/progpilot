@@ -36,6 +36,7 @@ class ArrayExpr {
 			{
 				$name = Common::get_name_definition($value);
 				$type = Common::get_type_definition($value);
+				$type_array = Common::get_type_is_array($value);
 
 				// we create an element for each value of array expr
 				// name_arr = [expr1, expr2] => name_arr[0] = expr1, name_arr[1] = expr2
@@ -47,7 +48,7 @@ class ArrayExpr {
 				else    
 					$building_arr = array($nb_arrayexpr => $arr);
 
-				if($type == MyOp::TYPE_ARRAY_EXPR)
+				if($type_array == MyOp::TYPE_ARRAY_EXPR)
 				{
 					$building_arr = ArrayExpr::instruction($value, $context, $building_arr, $def_name, $is_returndef);
 				}
@@ -76,8 +77,8 @@ class ArrayExpr {
 
 					// we reverse the arr
 					$arrtrans = BuildArrays::build_array_from_arr($building_arr, false);
-					$mydef->set_type(MyOp::TYPE_ARRAY);
-					$mydef->set_arr_value($arrtrans);
+					$mydef->set_is_array(true);
+					$mydef->set_array_value($arrtrans);
 
 					$inst_def = new MyInstruction(Opcodes::DEFINITION);
 					$inst_def->add_property("def", $mydef);

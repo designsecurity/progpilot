@@ -80,4 +80,9 @@ $framework->add_output("./tests/oop/simple16.php", array("boum1"));
 $framework->add_output("./tests/oop/simple16.php", array("5"));
 $framework->add_output("./tests/oop/simple16.php", "xss");
 
+$framework->add_testbasis("./tests/oop/simple17.php");
+$framework->add_output("./tests/oop/simple17.php", array("this"));
+$framework->add_output("./tests/oop/simple17.php", array("9"));
+$framework->add_output("./tests/oop/simple17.php", "xss");
+
 ?>

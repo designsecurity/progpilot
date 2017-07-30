@@ -382,7 +382,7 @@ class MyCode {
 				{
 					case Opcodes::ENTER_FUNCTION:
 						{
-							echo Opcodes::ENTER_FUNCTION+"\n";
+							echo Opcodes::ENTER_FUNCTION."\n";
 
 							$myfunc = $instruction->get_property("myfunc");
 							echo "name = ".htmlentities($myfunc->get_name(), ENT_QUOTES, 'UTF-8')."\n";
@@ -391,7 +391,7 @@ class MyCode {
 
 					case Opcodes::CLASSE:
 						{
-							echo Opcodes::CLASSE+"\n";
+							echo Opcodes::CLASSE."\n";
 
 							$myclass = $instruction->get_property("myclass");
 							echo "name = ".htmlentities($myclass->get_name(), ENT_QUOTES, 'UTF-8')."\n";
@@ -400,7 +400,7 @@ class MyCode {
 
 					case Opcodes::ENTER_BLOCK:
 						{
-							echo Opcodes::ENTER_BLOCK+"\n";
+							echo Opcodes::ENTER_BLOCK."\n";
 
 							$myblock = $instruction->get_property("myblock");
 							echo "id = ".$myblock->get_id()."\n";
@@ -410,7 +410,7 @@ class MyCode {
 
 					case Opcodes::LEAVE_BLOCK:
 						{
-							echo Opcodes::LEAVE_BLOCK+"\n";
+							echo Opcodes::LEAVE_BLOCK."\n";
 
 							$myblock = $instruction->get_property("myblock");
 							echo "id = ".$myblock->get_id()."\n";
@@ -420,14 +420,14 @@ class MyCode {
 
 					case Opcodes::LEAVE_FUNCTION:
 						{
-							echo Opcodes::LEAVE_FUNCTION+"\n";
+							echo Opcodes::LEAVE_FUNCTION."\n";
 
 							break;
 						}
 
 					case Opcodes::FUNC_CALL:
 						{
-							echo Opcodes::FUNC_CALL+"\n";
+							echo Opcodes::FUNC_CALL."\n";
 
 							$funcname = htmlentities($instruction->get_property("funcname"), ENT_QUOTES, 'UTF-8');
 							echo "name = $funcname\n";
@@ -436,13 +436,13 @@ class MyCode {
 
 					case Opcodes::START_EXPRESSION:
 						{
-							echo Opcodes::START_EXPRESSION+"\n";
+							echo Opcodes::START_EXPRESSION."\n";
 							break;
 						}
 
 					case Opcodes::END_EXPRESSION:
 						{
-							echo Opcodes::END_EXPRESSION+"\n";
+							echo Opcodes::END_EXPRESSION."\n";
 							$myexpr = $instruction->get_property("expr");
 							echo "expression et tainted = ".$myexpr->is_tainted()."\n";
 							break;
@@ -450,67 +450,67 @@ class MyCode {
 
 					case Opcodes::CONCAT_LIST:
 						{
-							echo Opcodes::CONCAT_LIST+"\n";
+							echo Opcodes::CONCAT_LIST."\n";
 							break;
 						}
 
 					case Opcodes::CONCAT_LEFT:
 						{
-							echo Opcodes::CONCAT_LEFT+"\n";
+							echo Opcodes::CONCAT_LEFT."\n";
 							break;
 						}
 
 					case Opcodes::CONCAT_RIGHT:
 						{
-							echo Opcodes::CONCAT_RIGHT+"\n";
+							echo Opcodes::CONCAT_RIGHT."\n";
 							break;
 						}
 
 					case Opcodes::RETURN_FUNCTION:
 						{
-							echo Opcodes::RETURN_FUNCTION+"\n";
+							echo Opcodes::RETURN_FUNCTION."\n";
 							break;
 						}
 
 					case Opcodes::START_ASSIGN:
 						{
-							echo Opcodes::START_ASSIGN+"\n";
+							echo Opcodes::START_ASSIGN."\n";
 							break;
 						}
 
 					case Opcodes::END_ASSIGN:
 						{
-							echo Opcodes::END_ASSIGN+"\n";
+							echo Opcodes::END_ASSIGN."\n";
 							break;
 						}
 
 					case Opcodes::START_INCLUDE:
 						{
-							echo Opcodes::START_INCLUDE+"\n";
+							echo Opcodes::START_INCLUDE."\n";
 							break;
 						}
 
 					case Opcodes::END_INCLUDE:
 						{
-							echo Opcodes::END_INCLUDE+"\n";
+							echo Opcodes::END_INCLUDE."\n";
 							break;
 						}
 
 					case Opcodes::COND_BOOLEAN_NOT:
 						{
-							echo Opcodes::COND_BOOLEAN_NOT+"\n";
+							echo Opcodes::COND_BOOLEAN_NOT."\n";
 							break;
 						}
 
 					case Opcodes::COND_START_IF:
 						{
-							echo Opcodes::COND_START_IF+"\n";
+							echo Opcodes::COND_START_IF."\n";
 							break;
 						}
 
 					case Opcodes::TEMPORARY:
 						{
-							echo Opcodes::TEMPORARY+"\n";
+							echo Opcodes::TEMPORARY."\n";
 							$def = $instruction->get_property("temporary");
 							$def->print_stdout();
 
@@ -519,7 +519,7 @@ class MyCode {
 
 					case Opcodes::DEFINITION:
 						{
-							echo Opcodes::DEFINITION+"\n";
+							echo Opcodes::DEFINITION."\n";
 							$def = $instruction->get_property("def");
 							$def->print_stdout();
 

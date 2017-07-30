@@ -130,18 +130,34 @@ class MyInputs {
 	{
 		foreach($this->sources as $mysource)
 		{
-			if($mysource->get_name() == $name && $mysource->is_function() == $is_function)
+			if($mysource->get_name() == $name)
 			{
-				$arr_value_source = array($mysource->get_arr_value() => false);
+                $check_function = false;
+                $check_array = false;
+                $check_instance = false;
+                
+                if($mysource->is_function() == $is_function)
+                    $check_function = true;
+                
+				if(($instance_name != false 
+                    && $mysource->is_instance() 
+                        && $mysource->get_instanceof_name() == $instance_name) || !$instance_name)
+                    $check_instance = true;
 
-				if((($instance_name != false 
-								&& $mysource->is_instance() 
-								&& $mysource->get_instanceof_name() == $instance_name) || !$instance_name) &&
-
-						(($arr_value != false
-						  && ($mysource->is_arr() 
-							  && $arr_value_source == $arr_value) || !$mysource->is_arr()) || !$arr_value))
-					return $mysource;
+                if(($arr_value != false
+                    && $mysource->get_is_array()
+                        && is_null($mysource->get_array_value())) 
+                        || (!$arr_value && !$mysource->get_is_array()))
+                    $check_array = true;
+						  
+                if(($arr_value != false 
+                    && $mysource->get_is_array() 
+                        && !is_null($mysource->get_array_value())
+                            && $mysource->get_array_value() == $arr_value))
+                    $check_array = true;
+                    
+                if($check_array && $check_instance && $check_function)
+                    return $mysource;
 			}
 		}
 
@@ -316,24 +332,55 @@ class MyInputs {
 					$name = $source->{'name'};
 					$language = $source->{'language'};
 
-					$isfunc = substr($name, -2, 2);
-					if($isfunc == "()")
-						$name = substr($name, 0, -2);
-
 					$mysource = new MySource($name, $language);
-
-					if($isfunc == "()")
+						
+					if(isset($source->{'is_function'}) && $source->{'is_function'})
+					{
 						$mysource->set_is_function(true);
+					}
 
+					if(isset($source->{'is_array'}) && $source->{'is_array'})
+					{
+						$mysource->set_is_array(true);
+					}
+
+					if(isset($source->{'array_index'}))
+					{
+                        $arr = array($source->{'array_index'} => false);
+						$mysource->set_array_value($arr);
+					}
+					
 					if(isset($source->{'instanceof'}))
 					{
 						$mysource->set_is_instance(true);
 						$mysource->set_instanceof_name($source->{'instanceof'});
 					}
-					if(isset($source->{'array_index'}))
+					
+					if(isset($source->{'return_array_index'}))
 					{
-						$mysource->set_arr(true);
-						$mysource->set_arr_value($source->{'array_index'});
+						$mysource->set_return_array(true);
+						$mysource->set_return_array_value($source->{'return_array_index'});
+					}
+
+					if(isset($source->{'parameters'}))
+					{
+						$parameters = $source->{'parameters'};
+						foreach($parameters as $parameter)
+						{
+							if(is_int($parameter->{'id'}))
+							{
+								$mysource->add_parameter($parameter->{'id'});
+								
+                                if(isset($parameter->{'is_array'}) 
+                                    && $parameter->{'is_array'} 
+                                        && isset($parameter->{'array_index'}))
+                                {
+                                    $mysource->add_condition_parameter($parameter->{'id'}, MySource::CONDITION_ARRAY, $parameter->{'array_index'});
+                                }
+                            }
+						}
+
+						$mysource->set_has_parameters(true);
 					}
 
 					$this->sources[] = $mysource;

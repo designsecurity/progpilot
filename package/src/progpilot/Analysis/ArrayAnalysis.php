@@ -18,6 +18,7 @@ use PHPCfg\Visitor;
 use PHPCfg\Operand;
 
 use progpilot\Objects\MyOp;
+use progpilot\Objects\MyDefinition;
 use progpilot\Dataflow\Definitions;
 use progpilot\Transformations\Php\BuildArrays;
 use progpilot\Code\Opcodes;
@@ -29,69 +30,25 @@ class ArrayAnalysis {
 
 	}
 
-	// mettre la plus grosse boucle dans visitor analysis
-	public static function temporary_simple($context, $data, $defs, $myinstance)
+    public static function temporary_simple($context, $def1, $def2)
 	{		
-		foreach($defs as $def)
-		{		
-			if(($def->get_type() == MyOp::TYPE_PROPERTY && $def->get_visibility()) 
-					|| $def->get_type() != MyOp::TYPE_PROPERTY) 
-			{
-				$exprs = $def->get_exprs();
-				foreach($exprs as $expr)
-				{
-					if($expr->is_assign())
-					{
-						$defassign = $expr->get_assign_def();
-
-						ArrayAnalysis::copy_array($context, $data, $def, $def->get_arr_value(), $defassign, $defassign->get_arr_value());
-
-					}
-				}
-			}
-		}
-	}
-
-	public static function end_assign($context, $data, $instruction, $instruction_arr, $instruction_ori)
-	{
-		$myexpr = $instruction->get_property("expr");
-		if($myexpr->is_assign())
-		{
-			$codeapres = $instruction_arr->get_opcode();
-
-			if($codeapres == Opcodes::DEFINITION)
-				$copytab = $instruction_arr->get_property("def");
-
-			$codeavant = $instruction_ori->get_opcode();
-
-			if($codeavant == Opcodes::TEMPORARY)
-			{
-				$originaltab = $instruction_ori->get_property("temporary");
-
-				ArrayAnalysis::copy_array($context, $data, $originaltab, $originaltab->get_arr_value(), $copytab, $copytab->get_arr_value());
-			}
-		}
-	}
-
-	public static function end_expression($context, $data, $instruction, $instruction_arr, $instruction_ori)
-	{
-		$myexpr = $instruction->get_property("expr");
-		if($myexpr->is_assign())
-		{
-			$codeapres = $instruction_arr->get_opcode();
-
-			if($codeapres == Opcodes::DEFINITION)
-				$copytab = $instruction_arr->get_property("def");
-
-			$codeavant = $instruction_ori->get_opcode();
-
-			if($codeavant == Opcodes::TEMPORARY)
-			{
-				$originaltab = $instruction_ori->get_property("temporary");
-
-				ArrayAnalysis::copy_array($context, $data, $originaltab, $originaltab->get_arr_value(), $copytab, $copytab->get_arr_value());
-			}
-		}
+        $good_defs = [];
+        
+        if($def2->get_is_copy_array() && $def1->get_is_array())
+        {
+            foreach($def2->get_copyarrays() as $def_copyarray)
+            {
+                $mydef_arr = $def_copyarray[0];
+                $mydef_tmp = $def_copyarray[1];
+                                        
+                if($mydef_arr == $def1->get_array_value())
+                    $good_defs[] = $mydef_tmp;
+            }
+        }
+        else
+            $good_defs[] = $def2;
+            
+        return $good_defs;
 	}
 
 	public static function funccall_before($context, $data, $myfunc, $myfunc_call, $instruction)
@@ -102,16 +59,21 @@ class ArrayAnalysis {
 		{
 			if($instruction->is_property_exist("argdef$nbparams"))
 			{
+                $newparam = clone $param;
+                $myfunc_call->add_param($newparam);
+                    
 				$defarg = $instruction->get_property("argdef$nbparams"); 
+				$exprarg = $instruction->get_property("argexpr$nbparams"); 
 
-				$newparam = clone $param;
-				$myfunc_call->add_param($newparam);
-
-				// original et copie (source et cible)
-				ArrayAnalysis::copy_array($context, $data, $defarg, $defarg->get_arr_value(), $newparam, false);
-
-				$nbparams ++;
-				unset($defarg);
+				$thedefsargs = $exprarg->get_defs();
+					
+                foreach($thedefsargs as $thedefsarg)
+                {
+                    // original et copie (source et cible)
+                    ArrayAnalysis::copy_array($context, $data->getoutminuskill($thedefsarg->get_block_id()), $thedefsarg, $thedefsarg->get_array_value(), $newparam, false);
+                }
+                
+                $nbparams ++;
 			}
 		}
 
@@ -122,12 +84,18 @@ class ArrayAnalysis {
 
 			if(!is_null($func_param))
 			{
+                $oldcopyiscopyarray = $param->get_is_copy_array();
+				$oldcopyisarray = $param->get_is_array();
 				$oldcopyarray = $param->get_type();
 				$oldcopyarrays = $param->get_copyarrays();
 
+				$param->set_is_copy_array($func_param->get_is_copy_array());
+				$param->set_is_array($func_param->get_is_array());
 				$param->set_type($func_param->get_type());
 				$param->set_copyarrays($func_param->get_copyarrays());
 
+				$func_param->set_is_copy_array($oldcopyiscopyarray);
+				$func_param->set_is_array($oldcopyisarray);
 				$func_param->set_type($oldcopyarray);
 				$func_param->set_copyarrays($oldcopyarrays);
 			}
@@ -145,12 +113,19 @@ class ArrayAnalysis {
 
 			$originaltabs = $myfunc->get_return_defs();
 			$originaltab = $originaltabs[0];
-
-			// on copie le tableau retourné dans la définition
-			if(count($originaltabs) >= 1)
-			{					
-				ArrayAnalysis::copy_array($context, $myfunc->get_defs(), $originaltab, $arr_funccall, $copytab, $copytab->get_arr_value());
-			}                   
+			
+			if($originaltab->get_is_copy_array())
+			{
+                $copytab->set_is_copy_array(true);
+                $copytab->set_copyarrays($originaltab->get_copyarrays());
+			}
+			else
+			{
+                if(count($originaltabs) >= 1)
+                {					
+                    ArrayAnalysis::copy_array($context, $myfunc->get_defs()->getoutminuskill($originaltab->get_block_id()), $originaltab, $arr_funccall, $copytab, $copytab->get_array_value());
+                }       
+			}
 		}
 
 		// on remet les paramètres originaux si d'autres appels
@@ -162,12 +137,18 @@ class ArrayAnalysis {
 
 			if(!is_null($func_param))
 			{
+                $oldcopyiscopyarray = $func_param->get_is_copy_array();
+				$oldcopyisarray = $func_param->get_is_array();
 				$oldcopyarray = $func_param->get_type();
 				$oldcopyarrays = $func_param->get_copyarrays();
 
+				$func_param->set_is_copy_array($param->get_is_copy_array());
+				$func_param->set_is_array($param->get_is_array());
 				$func_param->set_type($param->get_type());
 				$func_param->set_copyarrays($param->get_copyarrays());
 
+				$param->set_is_copy_array($oldcopyiscopyarray);
+				$param->set_is_array($oldcopyisarray);
 				$param->set_type($oldcopyarray);
 				$param->set_copyarrays($oldcopyarrays);
 				$nbparams ++;
@@ -179,57 +160,67 @@ class ArrayAnalysis {
 	public static function copy_array($context, $data, $originaltab, $originalarr, $copytab, $copyarr) {
 
 		if(!is_null($originaltab) && !is_null($copytab))
-		{
-			$defs = ResolveDefs::select_definitions_force($context, 
-					$data->getout($originaltab->get_block_id()), 
-					$originaltab);    
+		{        
+                if($originaltab->get_type() == MyOp::TYPE_PROPERTY)
+                    $defs = ResolveDefs::select_properties(
+                        $context, 
+                            $data, 
+                                $originaltab,
+                                    true);
 
-			if(count($defs) > 0)
-			{
-				foreach($defs as $defa)
-				{
-					if($defa->get_type() == MyOp::TYPE_COPY_ARRAY)
-					{
-						$copyarrays = $defa->get_copyarrays();
+                else
+                    $defs = ResolveDefs::select_definitions(
+                        $context, 
+                            $data, 
+                                $originaltab,
+                                    false,
+                                        true);
 
-						foreach($copyarrays as $value)
-						{
-							$arrvalue = $value[0];
-							$defarr = $value[1];
+                if(count($defs) > 0)
+                {
+                    foreach($defs as $defa)
+                    {
+                        if($defa->get_is_copy_array())
+                        {
+                            $copyarrays = $defa->get_copyarrays();
 
-							$extract = BuildArrays::extract_array_from_arr($arrvalue, $originalarr); 
-							$extractbis = BuildArrays::build_array_from_arr($copyarr, $extract);
+                            foreach($copyarrays as $value)
+                            {
+                                $arrvalue = $value[0];
+                                $defarr = $value[1];
+                                
+                                $extract = BuildArrays::extract_array_from_arr($arrvalue, $originalarr); 
+                                $extractbis = BuildArrays::build_array_from_arr($copyarr, $extract);
 
-							$copytab->add_copyarray($extractbis, $defarr);
-							$copytab->set_type(MyOp::TYPE_COPY_ARRAY);
+                                $copytab->add_copyarray($extractbis, $defarr);
+                                $copytab->set_is_copy_array(true);
 
-							unset($defarr);
-						}
-					}
-					else
-					{
-						$extract = BuildArrays::extract_array_from_arr($defa->get_arr_value(), $originalarr);         
+                                unset($defarr);
+                            }
+                        }
+                        else
+                        {
+                            $extract = BuildArrays::extract_array_from_arr($defa->get_array_value(), $originalarr);         
 
+                            // si on cherchait $copy = $array[11] ici il y a des arrays de type $array[11][quelquechose]
+                            // ou deuxieme cas
+                            // si on cherchait $copy = $arrays ici il y a des arrays de type $arrays[quelquechose]
+                            if($extract != false)
+                            {
+                                // si on a $copy[11] = $array[12] on veut $copy[11][12]
+                                if($copyarr != false)
+                                    $extract = BuildArrays::build_array_from_arr($copyarr, $extract);
 
-						// si on cherchait $copy = $array[11] ici il y a des arrays de type $array[11][quelquechose]
-						// ou deuxieme cas
-						// si on cherchait $copy = $arrays ici il y a des arrays de type $arrays[quelquechose]
-						if($extract != false)
-						{
-							// si on a $copy[11] = $array[12] on veut $copy[11][12]
-							if($copyarr != false)
-								$extract = BuildArrays::build_array_from_arr($copyarr, $extract);
+                                $copytab->add_copyarray($extract, $defa);
+                                $copytab->set_is_copy_array(true);
+                            }
+                        }
 
-							$copytab->add_copyarray($extract, $defa);
-							$copytab->set_type(MyOp::TYPE_COPY_ARRAY);
-						}
-					}
+                        unset($defa);
+                    }
+                }
 
-					unset($defa);
-				}
-			}
-
-			unset($defs);
+                unset($defs);
 		}
 	}
 }

@@ -26,10 +26,12 @@ class Expr {
 
 	public static function instruction($op, $context, $myexpr, $assign_id)
 	{
+        $mytemp_def = null;
 		$arr_funccall = false;
-		$type = Common::get_type_definition($op);
 		$name = Common::get_name_definition($op);
-
+		$type = Common::get_type_definition($op);
+		$type_array = Common::get_type_is_array($op);
+		
 		// end of expression
 		if(!is_null($type) && $type != MyOp::TYPE_FUNCCALL_ARRAY)
 		{
@@ -44,39 +46,40 @@ class Expr {
 
 			if($arr != false)
 			{
-				$mytemp->set_type(MyOp::TYPE_ARRAY);
-				$mytemp->set_arr_value($arr);
+				$mytemp->set_is_array(true);
+				$mytemp->set_array_value($arr);
 			}
 
 			$mytemp->add_expr($myexpr);
 
 			if($type == MyOp::TYPE_PROPERTY)
 			{
-				foreach($op->ops as $property)
-				{
-					if($property instanceof Op\Expr\PropertyFetch)
-					{
-						$property_name = $property->name->value;
-						break;
-					}
-				}
+                if($type_array == MyOp::TYPE_ARRAY)
+                {
+                    $property_name = Common::get_name_definition($op, true);
+                }
+                else
+                {
+                    foreach($op->ops as $property)
+                    {
+                        if($property instanceof Op\Expr\PropertyFetch)
+                        {
+                            $property_name = $property->name->value;
+                            break;
+                        }
+                    }
+                }
 
 				$mytemp->set_type(MyOp::TYPE_PROPERTY);
 				$mytemp->property->set_name($property_name);
+                
 			}
 
-/*
-			$tainted = false;
-			if(!is_null($context->inputs->get_source_byname($name, false, false, $mytemp->get_arr_value())))
-				$tainted = true;
-
-			$mytemp->set_tainted($tainted);
-*/
 			$inst_temporary_simple = new MyInstruction(Opcodes::TEMPORARY);
 			$inst_temporary_simple->add_property("temporary", $mytemp);
 			$context->get_mycode()->add_code($inst_temporary_simple);
 
-			return;
+			return $mytemp;
 		}
 
 		// func()[0][1]
@@ -133,10 +136,12 @@ class Expr {
 				}
 				else
 				{
-					Expr::instruction($ops, $context, $myexpr, $assign_id);
+					$mytemp_def = Expr::instruction($ops, $context, $myexpr, $assign_id);
 				}
 			}
 		}
+		
+        return $mytemp_def;
 	}
 }
 

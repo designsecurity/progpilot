@@ -253,6 +253,10 @@ class Definitions {
 					&& $def1->property->get_name() != $def2->property->get_name())
 				return false;
 
+			if($def1->get_type() == MyOp::TYPE_PROPERTY && $def2->get_type() == MyOp::TYPE_PROPERTY 
+                && $def1->property->get_name() == $def2->property->get_name()
+						&& $def1->get_array_value() != $def2->get_array_value())
+				return false;
 			/*
 			   if($def1->is_property() && $def2->is_property())
 			   return true;
@@ -278,7 +282,7 @@ class Definitions {
 				{
 					if($this->def_equality($def, $gen))
 					{
-						if($def != $gen && !in_array($def, $this->kill[$blockid]))
+						if($def !== $gen && !in_array($def, $this->kill[$blockid], true))
 							$this->kill[$blockid][] = $def;
 					}
 				}

@@ -18,15 +18,15 @@ use progpilot\Objects\MyInstance;
 use progpilot\Objects\MyAssertion;
 
 use progpilot\Dataflow\Definitions;
-
 use progpilot\Code\Opcodes;
+use progpilot\Inputs\MySource;
 
 class TaintAnalysis {
 
 	public static function funccall_validator($context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index)
 	{     
 		$nbparams = 0;
-		$def_valid = null;
+		$defs_valid = [];
 		$condition_respected = true;
 
 		$class_name = false;
@@ -46,19 +46,22 @@ class TaintAnalysis {
 
 				$condition = $myvalidator->get_parameter_condition($nbparams+1);
 
-				if($condition == "valid")
+				if($condition == "valid" && !$exprarg->get_is_concat())
 				{
 					$thedefsargs = $exprarg->get_defs();
-					if(count($thedefsargs) == 1)
-						$def_valid = $thedefsargs[0];
+					
+					foreach($thedefsargs as $thedefsarg)
+                        $defs_valid[] = $thedefsargs[0];
 				}
 
 				else if($condition == "array_not_tainted")
-				{
-					if($defarg->get_type() == MyOp::TYPE_ARRAY && $defarg->is_tainted())
+				{ 
+					if($defarg->get_is_array() && $defarg->is_tainted())
+					{
 						$condition_respected = false;
-
-					else if($defarg->get_type() == MyOp::TYPE_COPY_ARRAY)
+                    }
+                    
+					else if($defarg->get_is_copy_array())
 					{
 						$copyarrays = $defarg->get_copyarrays();
 						foreach($copyarrays as $copyarray)
@@ -67,7 +70,9 @@ class TaintAnalysis {
 							$defarr = $copyarray[1];
 
 							if($defarr->is_tainted())
+							{ 
 								$condition_respected = false;
+                            }
 						}
 					}
 				}
@@ -82,7 +87,7 @@ class TaintAnalysis {
 			}
 		}
 
-		if(!is_null($def_valid))
+		if(count($defs_valid) > 0)
 		{
 			if($condition_respected)
 			{
@@ -93,13 +98,16 @@ class TaintAnalysis {
 					$myblock_if = $instruction_if->get_property("myblock_if");
 					$myblock_else = $instruction_if->get_property("myblock_else");
 
-					$type = "valid";
-					$myassertion = new MyAssertion($def_valid, $type);
+                    foreach($defs_valid as $def_valid)
+                    {
+                        $type = "valid";
+                        $myassertion = new MyAssertion($def_valid, $type);
 
-					if($instruction_if->is_property_exist("not_boolean"))
-						$myblock_else->add_assertion($myassertion);
-					else
-						$myblock_if->add_assertion($myassertion);
+                        if($instruction_if->is_property_exist("not_boolean"))
+                            $myblock_else->add_assertion($myassertion);
+                        else
+                            $myblock_if->add_assertion($myassertion);
+                    }
 				}
 			}
 		}
@@ -113,7 +121,7 @@ class TaintAnalysis {
 		$params_sanitized = false;
 		$params_type_sanitized = [];
 		$nbparams = 0;
-
+		
 		$codes = $context->get_mycode()->get_codes();
 
 		while(true)
@@ -139,7 +147,7 @@ class TaintAnalysis {
 
 				foreach($tmps as $tmp)
 				{
-					if(!in_array($tmp, $params_type_sanitized))
+					if(!in_array($tmp, $params_type_sanitized, true))
 						$params_type_sanitized[] = $tmp;
 				}
 			}
@@ -151,8 +159,7 @@ class TaintAnalysis {
 		{
 			$instruction_def = $codes[$index + 3];
 			$mydef_return = $instruction_def->get_property("def");
-
-
+            
 			if($params_tainted)
 			{
 				for($j = 0; $j < count($defs_tainted); $j ++)  
@@ -189,6 +196,34 @@ class TaintAnalysis {
 		$mysource = $context->inputs->get_source_byname($myfunc->get_name(), true, $class_name);
 		if(!is_null($mysource))
 		{
+            if($mysource->has_parameters())
+            {
+                $nbparams = 0;
+                while(true)
+                {
+                    if(!$instruction->is_property_exist("argdef$nbparams"))
+                        break;
+
+                    $defarg = $instruction->get_property("argdef$nbparams"); 
+
+                    if($mysource->is_parameter($nbparams+1))
+                    {
+                        $deffrom = $defarg->get_value_from_def();
+                        $array_index = $mysource->get_condition_parameter($nbparams+1, MySource::CONDITION_ARRAY);
+                        if(!is_null($array_index))
+                        {
+                            $true_array_index = array($array_index => false);
+                            $deffrom->set_is_array(true);
+                            $deffrom->set_array_value($true_array_index);
+                        }
+                        
+                        $deffrom->set_tainted(true);
+                    }
+                    
+                    $nbparams ++;
+                }
+            }
+            
 			if($exprreturn->is_assign())
 			{
 				$defassign = $exprreturn->get_assign_def();
@@ -196,19 +231,19 @@ class TaintAnalysis {
 				$mydef = new MyDefinition($myfunc->getLine(), $myfunc->getColumn(), "return");
 				$mydef->set_source_myfile($defassign->get_source_myfile());
 
-				if($mysource->is_arr() && $arr_funccall == false)
+				if($mysource->get_is_return_array() && $arr_funccall == false)
 				{
-					$value_array = array($mysource->get_arr_value() => false);
+					$value_array = array($mysource->get_return_array_value() => false);
 
 					$defassign->add_copyarray($value_array, $mydef);
-					$defassign->set_type(MyOp::TYPE_COPY_ARRAY);
+					$defassign->set_is_copy_array(true);
 
 					$mydef->set_tainted(true);
 					$mydef->set_taintedbyexpr($exprreturn);		
 				}
-				else if($mysource->is_arr())
+				else if($mysource->get_is_return_array())
 				{
-					$value_array = array($mysource->get_arr_value() => false);
+					$value_array = array($mysource->get_return_array_value() => false);
 
 					if($arr_funccall == $value_array)
 					{
@@ -218,7 +253,7 @@ class TaintAnalysis {
 						$exprreturn->add_def($mydef);
 					}
 				}
-				else if(!$mysource->is_arr())
+				else if(!$mysource->get_is_return_array())
 				{
 					$defassign->set_tainted(true);
 					$defassign->set_taintedbyexpr($exprreturn);
@@ -234,7 +269,7 @@ class TaintAnalysis {
 
 		foreach($defsreturn as $defreturn)
 		{        
-			if(($arr_funccall != false && $defreturn->get_type() == MyOp::TYPE_ARRAY && $defreturn->get_arr_value() == $arr_funccall) || $arr_funccall == false)
+			if(($arr_funccall != false && $defreturn->get_is_array() && $defreturn->get_array_value() == $arr_funccall) || $arr_funccall == false)
 			{
 				$copydefreturn = $defreturn;
 
@@ -295,6 +330,7 @@ class TaintAnalysis {
 		if(!$safe)
 		{
 			$visibility_final = true;
+			
 			if($defassign->get_type() == MyOp::TYPE_PROPERTY)
 			{
 				$copy_defassign = clone $defassign;
@@ -312,7 +348,7 @@ class TaintAnalysis {
 					}
 				}
 			}
-
+            
 			if($def->is_tainted() && $visibility_final)
 			{
 				$defassign->set_tainted(true);

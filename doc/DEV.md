@@ -2,14 +2,14 @@
 
 ## Dependencies
 
-This project would not have been possible without theses dependencies :
+This project would not have been possible without these dependencies :
 
 - ircmaxell/php-cfg
 - nikic/php-parser
 
 ## Tests
 
-We are using [PHP Vulnerability test suite](https://github.com/stivalet/PHP-Vulnerability-test-suite) for testing our tool.
+We are using more than 2400 tests cases from [PHP Vulnerability test suite](https://github.com/stivalet/PHP-Vulnerability-test-suite) for testing our tool.
 
 ## License
 
@@ -30,3 +30,4 @@ There is a lot of tasks to do :
 - Better analysis of conditions
 - Circular includes
 - Passing by reference
+- push element into array (like array[] = ele; or push_array())

@@ -16,15 +16,27 @@ class MyExpr extends MyOp {
 	private $assign;
 	private $assign_def;
 	private $thedefs;
+	private $is_concat;
 
 	public function __construct($var_line, $var_column) {
 
 		parent::__construct("", $var_line, $var_column);
 
+		$this->is_concat = false;
 		$this->tainted = false;
 		$this->assign = false;
 		$this->assign_def = null;
 		$this->thedefs = [];
+	}
+
+	public function set_is_concat($concat)
+	{
+		$this->is_concat = $concat;
+	}
+
+	public function get_is_concat()
+	{
+		return $this->is_concat;
 	}
 
 	public function set_tainted($tainted)
@@ -70,7 +82,9 @@ class MyExpr extends MyOp {
 
 	public function add_def($mydef)
 	{
-		if(!in_array($mydef, $this->thedefs))
+        //var_dump($this->thedefs);
+        
+		if(!in_array($mydef, $this->thedefs, true))
 			$this->thedefs[] = $mydef;
 	}
 

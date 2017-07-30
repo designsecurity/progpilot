@@ -97,6 +97,8 @@ class Transform implements Visitor {
 
 		if($this->context->outputs->get_resolve_includes())
 			$this->context->outputs->write_includes_file();
+			
+        //var_dump($script);
 	}
 
 	public function enterBlock(Block $block, Block $prior = null) {
@@ -312,8 +314,8 @@ class Transform implements Visitor {
 			{
 				$file = $this->context->get_path()."/".$name;
 
-				if((!in_array($file, $this->array_includes) && $op->type == 2)
-						|| (!in_array($file, $this->array_requires) && $op->type == 4)
+				if((!in_array($file, $this->array_includes, true) && $op->type == 2)
+						|| (!in_array($file, $this->array_requires, true) && $op->type == 4)
 						|| ($op->type == 1 || $op->type == 3))
 				{
 					if($op->type == 2)

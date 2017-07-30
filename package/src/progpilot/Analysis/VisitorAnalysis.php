@@ -160,7 +160,7 @@ class VisitorAnalysis {
 							$tempdefa = $instruction->get_property("temporary");
 							
 							$tainted = false;
-                            if(!is_null($this->context->inputs->get_source_byname($tempdefa->get_name(), false, false, $tempdefa->get_arr_value())))
+                            if(!is_null($this->context->inputs->get_source_byname($tempdefa->get_name(), false, false, $tempdefa->get_array_value())))
                                 $tainted = true;
                             $tempdefa->set_tainted($tainted);
                             
@@ -179,15 +179,15 @@ class VisitorAnalysis {
 								{
 									if($expr->is_assign())
 									{
-										$defassign = $expr->get_assign_def();
-
+                                        $defassign = $expr->get_assign_def();
+                                    
 										$defassign->last_known_value($def->get_last_known_value());
 
-										ArrayAnalysis::copy_array($this->context, $this->defs, $def, $def->get_arr_value(), $defassign, $defassign->get_arr_value());
+										ArrayAnalysis::copy_array($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $tempdefa, $tempdefa->get_array_value(), $defassign, $defassign->get_array_value());
 
 										$safe = AssertionAnalysis::temporary_simple($this->context, $this->defs, $this->current_myblock, $def, $tempdefa);
 
-										TaintAnalysis::set_tainted($this->context, $this->defs, $def, $defassign, $expr, $safe); 
+										TaintAnalysis::set_tainted($this->context, $this->defs->getoutminuskill($def->get_block_id()), $def, $defassign, $expr, $safe); 
 									}
 								}
 							}
@@ -211,7 +211,11 @@ class VisitorAnalysis {
 								$mydef_tmp->set_assign_id($myfunc_call->get_back_def()->get_assign_id());
 								$mydef_tmp->set_source_myfile($myfunc_call->get_source_myfile());
 
-								$instances = ResolveDefs::select_instances($this->context, $this->defs, $mydef_tmp, false);
+								$instances = ResolveDefs::select_instances(
+                                    $this->context, 
+                                        $this->defs->getoutminuskill($mydef_tmp->get_block_id()), 
+                                            $mydef_tmp, 
+                                                false);
 
 								foreach($instances as $instance)
 								{
@@ -253,7 +257,7 @@ class VisitorAnalysis {
 								$myfunc = $tabfunc[0];
 								$myinstance = $tabfunc[1];
 
-								ResolveDefs::instance_build_this($this->context, $this->defs, $myfunc, $myfunc_call);
+								ResolveDefs::instance_build_this($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc, $myfunc_call);
 
 								if(!is_null($myfunc) && !$this->in_call_stack($myfunc))
 								{
@@ -285,11 +289,11 @@ class VisitorAnalysis {
 								if(is_null($myfunc))
 									ResolveDefs::copy_instance($this->context, $this->defs, $myfunc_call);
 
-								ResolveDefs::instance_build_back($this->context, $this->defs, $myfunc, $myfunc_call);
+								ResolveDefs::instance_build_back($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc, $myfunc_call);
 
-								TaintAnalysis::funccall_validator($this->context, $this->defs, $myinstance, $myfunc_call, $arr_funccall, $instruction, $index); 
-								TaintAnalysis::funccall_sanitizer($this->context, $this->defs, $myinstance, $myfunc_call, $arr_funccall, $instruction, $index);     
-								TaintAnalysis::funccall_source($this->context, $this->defs, $myinstance, $myfunc_call, $arr_funccall, $instruction);  
+								TaintAnalysis::funccall_validator($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myinstance, $myfunc_call, $arr_funccall, $instruction, $index); 
+								TaintAnalysis::funccall_sanitizer($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myinstance, $myfunc_call, $arr_funccall, $instruction, $index);     
+								TaintAnalysis::funccall_source($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myinstance, $myfunc_call, $arr_funccall, $instruction);  
 							}
 
 							break;

@@ -31,6 +31,8 @@ class Assign {
 
 		$name = Common::get_name_definition($context->get_current_op());
 		$type = Common::get_type_definition($context->get_current_op());
+		$type_array = Common::get_type_is_array($context->get_current_op());
+		
 
 		// name of function return
 		if($is_returndef)
@@ -71,15 +73,15 @@ class Assign {
 		$context->get_mycode()->add_code($inst_def);
 
 		// $array[09][098] = expr;
-		if($type == MyOp::TYPE_ARRAY)
+		if($type_array == MyOp::TYPE_ARRAY)
 		{	
 			$arr = BuildArrays::build_array_from_ops($context->get_current_op()->var, false);
-			$mydef->set_type(MyOp::TYPE_ARRAY);
-			$mydef->set_arr_value($arr);
+			$mydef->set_is_array(true);
+			$mydef->set_array_value($arr);
 		}
 
 		// $array = [expr, expr, expr]
-		else if($type == MyOp::TYPE_ARRAY_EXPR)
+        if($type_array == MyOp::TYPE_ARRAY_EXPR)
 		{
 			$arr = false;
 			if(isset($context->get_current_op()->var))
@@ -88,19 +90,12 @@ class Assign {
 			ArrayExpr::instruction($context->get_current_op()->expr, $context, $arr, $name, $is_returndef);
 		}
 		// a variable, property
-		else if($type == MyOp::TYPE_PROPERTY)
+        if($type == MyOp::TYPE_PROPERTY)
 		{
-			foreach($context->get_current_op()->var->ops as $property)
-			{         
-				if($property instanceof Op\Expr\PropertyFetch)
-				{
-					$property_name = $property->name->value;
-					break;
-				}
-			}
-
+            $property_name = Common::get_name_definition($context->get_current_op(), true);
 			$mydef->set_type(MyOp::TYPE_PROPERTY);
 			$mydef->property->set_name($property_name);
+			
 		}
 		// an object (created by new)
 		else if($type == MyOp::TYPE_INSTANCE)
@@ -116,9 +111,10 @@ class Assign {
 		{
 			$ref_name = Common::get_name_definition($context->get_current_op()->expr);
 			$ref_type = Common::get_type_definition($context->get_current_op()->expr);
+            $ref_type_array = Common::get_type_is_array($context->get_current_op()->expr);
 			$mydef->set_ref_name($ref_name);
 
-			if($ref_type == MyOp::TYPE_ARRAY)
+			if($ref_type_array == MyOp::TYPE_ARRAY)
 			{
 				$arr = BuildArrays::build_array_from_ops($context->get_current_op()->expr, false);
 				$mydef->set_ref_arr(true);

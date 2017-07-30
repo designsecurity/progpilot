@@ -4,14 +4,15 @@ require_once './vendor/autoload.php';
 require_once './framework_test.php';
 $framework = new framework_test;
 
-require_once './includetest.php';
-require_once './datatest.php';
 require_once './ooptest.php';
-require_once './generictest.php';
+require_once './datatest.php';
+require_once './includetest.php';
 require_once './conditionstest.php';
+require_once './generictest.php';
+
 //require_once './negativetest.php'; !!!! ERREUR SYNTAX = RESTE NON EXECUTE ?
-require_once './twigtest.php';
-//require_once './sardtest.php';
+//require_once './twigtest.php';
+require_once './vulnsuitetest.php';
 
 try {
 
@@ -47,9 +48,7 @@ try {
 
 		$results = $context->outputs->get_results();
 		$outputjson = array('results' => $results); 
-
 		$parsed_json = $outputjson["results"];
-		//echo "test $file ";
 
 		$result_test = false;
 
@@ -73,7 +72,7 @@ try {
 		else
 		{
 			if(count($framework->get_output($file)) == 0)
-				return true;
+				$result_test = true;
 		}
 
 		if(!$result_test)

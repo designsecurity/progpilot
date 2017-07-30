@@ -10,14 +10,8 @@ Your composer.json looks like this one :
 ```javascript
 {
     "name": "Example",
-    "description": "Example of using Progpilot",
+    "description": "Example of use of Progpilot",
     "minimum-stability": "dev",
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/designsecurity/progpilot"
-        }
-    ],
     "require": {
         "designsecurity/progpilot": "dev-master"
     },
@@ -106,10 +100,10 @@ You can define traditional variables like *_GET*, *_POST* or *_COOKIES* as untru
 ```javascript
 {
     "sources": [
-        {"name": "_GET", "language": "php", "type": "HTTP Parameter"},
-        {"name": "_POST", "language": "php", "type": "HTTP Parameter"},
-        {"name": "_COOKIES", "language": "php", "type": "HTTP Parameter"},
-        {"name": "shell_exec()", "language": "php", "type": "command return"}
+        {"name": "_GET", "is_array": true, "language": "php", "type": "HTTP Parameter"},
+        {"name": "_POST", "is_array": true, "language": "php", "type": "HTTP Parameter"},
+        {"name": "_COOKIES", "is_array": true, "language": "php", "type": "HTTP Parameter"},
+        {"name": "shell_exec", "is_function": true, "language": "php", "type": "command return"}
 		]
 }
 ```

@@ -9,6 +9,7 @@
         {"name": "system", "language": "php", "attack": "command_injection"},
         {"name": "ldap_search", "parameters": [{"id": 3}], "language": "php", "attack": "ldap_injection"},
         {"name": "mysql_query", "language": "php", "attack": "sql_injection"},
-        {"name": "xpath", "instanceof": "simplexml_load_file", "language": "php", "attack": "xpath_injection"}
+        {"name": "xpath", "instanceof": "simplexml_load_file", "language": "php", "attack": "xpath_injection"},
+        {"name": "fopen", "parameters": [{"id": 1}], "language": "php", "attack": "idor"}
 		]
 }

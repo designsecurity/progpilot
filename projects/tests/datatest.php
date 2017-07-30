@@ -85,6 +85,11 @@ $framework->add_output("./tests/data/source13.php", array("var1"));
 $framework->add_output("./tests/data/source13.php", array("3"));
 $framework->add_output("./tests/data/source13.php", "xss");
 
+$framework->add_testbasis("./tests/data/source14.php");
+$framework->add_output("./tests/data/source14.php", array("tainted"));
+$framework->add_output("./tests/data/source14.php", array("7"));
+$framework->add_output("./tests/data/source14.php", "xss");
+
 $framework->add_testbasis("./tests/data/sanitizer1.php");
 $framework->add_output("./tests/data/sanitizer1.php", array("var7safe"));
 $framework->add_output("./tests/data/sanitizer1.php", array("5"));

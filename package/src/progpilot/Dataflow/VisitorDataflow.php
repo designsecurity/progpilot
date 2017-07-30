@@ -70,7 +70,7 @@ class VisitorDataflow {
 					case Opcodes::START_EXPRESSION:
 						{
 							// representations start
-							$context->outputs->cfg->concat_current_block_text(Opcodes::START_EXPRESSION+"\n");
+							$context->outputs->cfg->concat_current_block_text(Opcodes::START_EXPRESSION."\n");
 							// representations end
 							break;
 						}
@@ -78,7 +78,7 @@ class VisitorDataflow {
 					case Opcodes::END_EXPRESSION:
 						{
 							// representations start
-							$context->outputs->cfg->concat_current_block_text(Opcodes::END_EXPRESSION+"\n");
+							$context->outputs->cfg->concat_current_block_text(Opcodes::END_EXPRESSION."\n");
 							// representations end
 							break;
 						}
@@ -122,7 +122,7 @@ class VisitorDataflow {
 							// representations start
 							$context->outputs->callgraph->set_current_func($myfunc);
 							$context->outputs->callgraph->add_node($myfunc);
-							$context->outputs->cfg->concat_current_block_text(Opcodes::ENTER_FUNCTION+" ".htmlentities($myfunc->get_name(), ENT_QUOTES, 'UTF-8')."\n");
+							$context->outputs->cfg->concat_current_block_text(Opcodes::ENTER_FUNCTION." ".htmlentities($myfunc->get_name(), ENT_QUOTES, 'UTF-8')."\n");
 							// representations end
 
 							break;
@@ -151,7 +151,7 @@ class VisitorDataflow {
 							}
 
 							// representations start
-							$context->outputs->cfg->set_current_block_text(Opcodes::ENTER_BLOCK+"\n");
+							$context->outputs->cfg->set_current_block_text(Opcodes::ENTER_BLOCK."\n");
 							$context->outputs->cfg->add_node($myblock);
 
 							foreach($myblock->parents as $parent)
@@ -177,7 +177,7 @@ class VisitorDataflow {
 							$last_block_id = $blockid;
 
 							// representations start
-							$context->outputs->cfg->concat_current_block_text(Opcodes::LEAVE_BLOCK+"\n");
+							$context->outputs->cfg->concat_current_block_text(Opcodes::LEAVE_BLOCK."\n");
 							$context->outputs->cfg->store_myblock($myblock, $context->outputs->cfg->get_current_block_text());
 							// representations end
 
@@ -193,7 +193,7 @@ class VisitorDataflow {
 							$myfunc->set_last_block_id($last_block_id);
 
 							// representations start
-							$context->outputs->cfg->concat_current_block_text(Opcodes::LEAVE_FUNCTION+"\n");
+							$context->outputs->cfg->concat_current_block_text(Opcodes::LEAVE_FUNCTION."\n");
 							// representations end
 
 							break;
@@ -232,10 +232,38 @@ class VisitorDataflow {
 								$this->defs->adddef($mybackdef->get_name(), $mybackdef);
 								$this->defs->addgen($mybackdef->get_block_id(), $mybackdef);
 							}
+							
+							$mysource = $context->inputs->get_source_byname($myfunc_call->get_name(), true, false);
+                            if(!is_null($mysource))
+                            {
+                                if($mysource->has_parameters())
+                                {
+                                    $nbparams = 0;
+                                    while(true)
+                                    {
+                                        if(!$instruction->is_property_exist("argdef$nbparams"))
+                                            break;
+
+                                        $defarg = $instruction->get_property("argdef$nbparams");  
+
+                                        if($mysource->is_parameter($nbparams+1))
+                                        {
+                                            $deffrom = $defarg->get_value_from_def();
+                                            if(!is_null($deffrom))
+                                            {
+                                                $this->defs->adddef($deffrom->get_name(), $deffrom);
+                                                $this->defs->addgen($deffrom->get_block_id(), $deffrom);
+                                            }
+                                        }
+                                        
+                                        $nbparams ++;
+                                    }
+                                }
+                            }
 
 							// representations start
 							$context->outputs->callgraph->add_edge($context->outputs->callgraph->get_current_func(), $myfunc_call);
-							$context->outputs->cfg->concat_current_block_text(Opcodes::FUNC_CALL+" ".htmlentities($myfunc_call->get_name(), ENT_QUOTES, 'UTF-8')."\n");
+							$context->outputs->cfg->concat_current_block_text(Opcodes::FUNC_CALL." ".htmlentities($myfunc_call->get_name(), ENT_QUOTES, 'UTF-8')."\n");
 							// representations end
 
 							break;
@@ -252,7 +280,7 @@ class VisitorDataflow {
 							unset($mydef);
 
 							// representations start
-							$context->outputs->cfg->concat_current_block_text(Opcodes::TEMPORARY+"\n");
+							$context->outputs->cfg->concat_current_block_text(Opcodes::TEMPORARY."\n");
 							// representations end
 
 							break;
@@ -285,7 +313,7 @@ class VisitorDataflow {
 							unset($mydef);
 
 							// representations start
-							$context->outputs->cfg->concat_current_block_text(Opcodes::DEFINITION+"\n");
+							$context->outputs->cfg->concat_current_block_text(Opcodes::DEFINITION."\n");
 							// representations end
 
 							break;

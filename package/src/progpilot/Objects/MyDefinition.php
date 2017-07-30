@@ -15,11 +15,11 @@ use progpilot\Objects\MyOp;
 
 class MyDefinition extends MyOp {
 
+	private $is_copy_array;
 	private $block_id;
 	private $is_tainted;
 	private $is_ref;
 	private $ref_name;
-	private $arr_value;
 	private $is_ref_arr;
 	private $ref_arr_value;
 	private $thearrays;
@@ -32,6 +32,7 @@ class MyDefinition extends MyOp {
 	private $type_sanitized;
 	private $assign_id;
 	private $myclasses;
+	private $value_from_def;
 
 	public $property;
 	public $method;
@@ -40,10 +41,12 @@ class MyDefinition extends MyOp {
 
 		parent::__construct($var_name, $var_line, $var_column);
 
+		$this->is_copy_array = false;
+		$this->value_from_def = null;
+		
 		$this->block_id = -1;
 		$this->is_tainted = false;
 		$this->is_ref = false;
-		$this->arr_value = false;
 		$this->is_ref_arr = false;
 		$this->ref_arr_value = null;
 		$this->instance = false;
@@ -66,16 +69,17 @@ class MyDefinition extends MyOp {
 	public function print_stdout()
 	{
 		echo "def name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: assign_id = ".$this->get_assign_id()." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_ref()." :: type = ".$this->get_type()." :: blockid = ".$this->get_block_id()."\n";
-		if($this->get_type() == MyOp::TYPE_ARRAY)
+		if($this->get_is_array())
 		{
-			echo "arr :\n";
-			var_dump($this->get_arr_value());
+			echo "array index value :\n";
+			var_dump($this->get_array_value());
 		}
 
 		if($this->get_type() == MyOp::TYPE_PROPERTY)
 		{
 			echo "property : ".htmlentities($this->property->get_name(), ENT_QUOTES, 'UTF-8')."\n";
 			echo "class_name : ".htmlentities($this->get_class_name(), ENT_QUOTES, 'UTF-8')."\n";
+			echo "visibility : ".htmlentities($this->property->get_visibility(), ENT_QUOTES, 'UTF-8')."\n";
 		}
 
 		if($this->get_type() == MyOp::TYPE_INSTANCE)
@@ -98,10 +102,25 @@ class MyDefinition extends MyOp {
 			echo "method : ".htmlentities($this->method->get_name(), ENT_QUOTES, 'UTF-8')."\n";
 		}
 
-		if($this->get_type() == MyOp::TYPE_COPY_ARRAY)
+		if($this->get_is_copy_array())
 		{
-			echo "copyarray :\n";
+			echo "copyarray start =================\n";
+			foreach($this->get_copyarrays() as $copy_array)
+			{
+                $copy_array[1]->print_stdout();
+			}
+			echo "copyarray end =================\n";
 		}
+	}
+
+	public function set_value_from_def($def)
+	{
+		$this->value_from_def = $def;
+	}
+
+	public function get_value_from_def()
+	{
+		return $this->value_from_def;
 	}
 
 	public function last_known_value($value)
@@ -132,6 +151,16 @@ class MyDefinition extends MyOp {
 	public function set_class_name($class_name)
 	{
 		$this->class_name = $class_name;
+	}
+
+	public function get_is_copy_array()
+	{
+		return $this->is_copy_array;
+	}
+
+	public function set_is_copy_array($arr)
+	{
+		$this->is_copy_array = $arr;
 	}
 
 	public function is_ref_arr()
@@ -184,11 +213,6 @@ class MyDefinition extends MyOp {
 		return $this->taintedbyexpr;
 	}
 
-	public function set_arr_value($arr)
-	{
-		$this->arr_value = $arr;
-	}
-
 	public function get_ref_arr_value()
 	{
 		return $this->ref_arr_value;
@@ -197,11 +221,6 @@ class MyDefinition extends MyOp {
 	public function set_ref_arr_value($arr)
 	{
 		$this->ref_arr_value = $arr;
-	}
-
-	public function get_arr_value()
-	{
-		return $this->arr_value;
 	}
 
 	public function get_block_id()
@@ -246,7 +265,7 @@ class MyDefinition extends MyOp {
 
 	public function add_expr($myexpr)
 	{
-		if(!in_array($myexpr, $this->theexprs))
+		if(!in_array($myexpr, $this->theexprs, true))
 			$this->theexprs[] = $myexpr;
 	}
 
@@ -277,13 +296,13 @@ class MyDefinition extends MyOp {
 
 	public function add_type_sanitized($type_sanitized)
 	{
-		if(!in_array($type_sanitized, $this->type_sanitized))
+		if(!in_array($type_sanitized, $this->type_sanitized, true))
 			$this->type_sanitized[] = $type_sanitized;
 	}
 
 	public function is_type_sanitized($type_sanitized)
 	{
-		if(in_array($type_sanitized, $this->type_sanitized))
+		if(in_array($type_sanitized, $this->type_sanitized, true))
 			return true;
 
 		return false;

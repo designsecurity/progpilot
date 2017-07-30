@@ -42,7 +42,10 @@ class FuncCall {
 		$inst_funcall_main->add_property("argdef$num_param", $mydef);
 		$inst_funcall_main->add_property("argexpr$num_param", $myexprparam);
 
-		Expr::instruction($arg, $context, $myexprparam, $assign_id);
+		$mytemp = Expr::instruction($arg, $context, $myexprparam, $assign_id);
+		
+		if(!is_null($mytemp))
+            $mydef->set_value_from_def($mytemp);
 
 		$inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
 		$inst_end_expr->add_property("expr", $myexprparam);

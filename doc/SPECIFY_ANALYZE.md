@@ -15,23 +15,28 @@ Where *$file_sources* is a json file like below :
 ```javascript
 {
     "sources": [
-        {"name": "_GET", "language": "php", "type": "HTTP Parameter"},
-        {"name": "_POST", "language": "php", "type": "HTTP Parameter"},
-        {"name": "_COOKIES", "language": "php", "type": "HTTP Parameter"},
-        {"name": "shell_exec()", "language": "php", "type": "command return"},
-        {"name": "mysql_fetch_array()", "language": "php", "type": "database return"},
-        {"name": "member1", "instanceof": "testc1", "language": "php", "type": "for dev purposes"},
-        {"name": "vardev", "array_index": "tainted", "language": "php", "type": "for dev purposes"}
+        {"name": "_GET", "is_array": true, "language": "php", "type": "HTTP Parameter"},
+        {"name": "_POST", "is_array": true, "language": "php", "type": "HTTP Parameter"},
+        {"name": "_COOKIES", "is_array": true, "language": "php", "type": "HTTP Parameter"},
+        {"name": "_SESSION", "is_array": true, "language": "php", "type": "HTTP Parameter"},
+        {"name": "shell_exec", "is_function": true, "language": "php", "type": "command return"},
+        {"name": "mysql_fetch_array", "is_function": true, "language": "php", "type": "database return"},
+        {"name": "exec", "is_function": true, "parameters": [{"id": 2, "is_array": true, "array_index": 0}], "language": "php", "type": "for dev purposes"},
+        {"name": "fgets", "is_function": true, "language": "php", "type": "for dev purposes"},
+        {"name": "fread", "is_function": true, "language": "php", "type": "for dev purposes"},
+        {"name": "stream_get_contents", "is_function": true, "language": "php", "type": "for dev purposes"},
+        {"name": "system", "is_function": true, "language": "php", "type": "for dev purposes"}
 		]
 }
 ```
 *Name* and *language* properties are mandatory.  
-The value of *name* property must be a php function (the source will be the return of this function) or a variable.  
+The value of *name* property must be a function (the source will be the return of this function) or a variable.  
 To specify a method add *instanceof* property with the class name value to which the method belongs.  
-You can define a return function or method as a source when the last chars of your *name* source are ().  
+You can define a return function or method as a source when *is_function* property is set to true.  
 For defining a property as a source just add *instanceof* like for a method.  
-If you want to define only one element of an array as a source use *array_index* property with index name as value.  
-By default if you define a variable as a source and in your code this variable is an array all the elements of this array will be tainted, it is the case for well-known *_GET*, *_POST* and *_COOKIES* variables.
+If you want to define all elements of an array as a source (like for well-known *_GET*, *_POST* and *_COOKIES* variables) use *is_array* property set to true.  
+If you want to define only one element of an array as a source add *array_index* property with index name as value.  
+If you want to define one parameter of a function as a source use *parameters* property.
 
 ## Configure sanitizers
 - $obj_context->inputs->set_sanitizers($file_sanitizers);
@@ -50,9 +55,9 @@ Where *$file_sanitizers* is a json file like below :
 }
 ```
 *Name*, *language*, *type* and *prevent* properties are mandatory.  
-The value of *name* property must be a php function.  
+The value of *name* property must be a function.  
 To specify a method add *instanceof* property with the class name value to which the method belongs.  
-The value of *prevent* property should match which an *attack* defined in the sinks file.
+The value of *prevent* property should match with an *attack* defined in the sinks file.
 
 ## Configure sinks
 - $obj_context->inputs->set_sinks($file_sinks);
@@ -76,7 +81,7 @@ Where *$file_sinks* is a json file like below :
 }
 ```
 *Name*, *language*, *attack* properties are mandatory.  
-The value of *name* property must be a php function or method.  
+The value of *name* property must be a function or method.  
 To specify a method add *instanceof* property with the class name value to which the method belongs.  
 You can also specify which parameters of a function is a sink with *parameters* property.  
 The *attack* will be annihilate if a source is sanitized by a sanitizer where *prevent* property equals *attack* property
@@ -99,7 +104,7 @@ Where *$file_validators* is a json file like below :
 }
 ```
 *Name*, *language*, properties are mandatory.  
-The value of *name* property must be a php function or method.  
+The value of *name* property must be a function or method.  
 To specify a method add *instanceof* property with the class name value to which the method belongs.  
 You can add conditions to parameters of your validator function :  
 - **valid** : the corresponding argument will be considered as safe if others conditions are respected.
