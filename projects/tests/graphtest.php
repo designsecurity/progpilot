@@ -15,7 +15,7 @@ try {
 	$graphcallgraph_json = $context->outputs->get_callgraph();
 
 	var_dump($graphcfg_json);
-	var_dump($graphcallgraph_json);
+	//var_dump($graphcallgraph_json);
 
 } catch (\RuntimeException $e) {
 	echo 'Exception : ',  $e->getMessage(), "\n";

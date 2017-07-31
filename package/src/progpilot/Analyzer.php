@@ -21,7 +21,7 @@ class Analyzer
 		$script = null;
 
 		// parser
-		if(!is_null($context->inputs->get_file()))
+		if(!is_null($context->inputs->get_file()) || !is_null($context->inputs->get_code()))
 		{
 			$asttraverser = new \PhpParser\NodeTraverser;
 			$asttraverser->addVisitor(new \PhpParser\NodeVisitor\NameResolver);

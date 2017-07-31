@@ -31,7 +31,7 @@ Where *$file_sources* is a json file like below :
 ```
 *Name* and *language* properties are mandatory.  
 The value of *name* property must be a function (the source will be the return of this function) or a variable.  
-You can define a return function or method as a source when *is_function* property is set to true.  
+You can define a return function or a method as a source when *is_function* property is set to true.  
 To specify a method add *instanceof* property with the class name value to which the method belongs.  
 For defining a property as a source just add *instanceof* like for a method.  
 If you want to define all elements of an array as a source (like for well-known *_GET*, *_POST* and *_COOKIES* variables) use *is_array* property set to true.  
@@ -81,7 +81,7 @@ Where *$file_sinks* is a json file like below :
 }
 ```
 *Name*, *language*, *attack* properties are mandatory.  
-The value of *name* property must be a function or method.  
+The value of *name* property must be a function or a method.  
 To specify a method add *instanceof* property with the class name value to which the method belongs.  
 You can also specify which parameters of a function is a sink with *parameters* property.  
 The *attack* will be annihilate if a source is sanitized by a sanitizer where *prevent* property equals *attack* property
@@ -104,7 +104,7 @@ Where *$file_validators* is a json file like below :
 }
 ```
 *Name*, *language*, properties are mandatory.  
-The value of *name* property must be a function or method.  
+The value of *name* property must be a function or a method.  
 To specify a method add *instanceof* property with the class name value to which the method belongs.  
 You can add conditions to parameters of your validator function :  
 - **valid** : the corresponding argument will be considered as safe if others conditions are respected.
