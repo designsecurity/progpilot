@@ -22,17 +22,6 @@ class Callgraph {
 
 		$this->nodes = [];
 		$this->edges = []; 
-		$this->current_func = null;
-	}
-
-	public function get_current_func()
-	{
-		return $this->current_func;
-	}
-
-	public function set_current_func($func)
-	{
-		$this->current_func = $func;
 	}
 
 	public function get_nodes()

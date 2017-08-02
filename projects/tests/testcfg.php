@@ -26,6 +26,10 @@
     $results = $context->outputs->get_cfg();
     
     var_dump($results); 
+       
+    $results = $context->outputs->get_callgraph();
+    
+    var_dump($results); 
 ?>
 
 

@@ -72,11 +72,14 @@ class MyOutputs {
 	{
         $nodesjson = [];
         $linksjson = [];
+        $real_nodes = [];
         
 		foreach($this->callgraph->get_nodes() as $node)
 		{
             $function_name = \progpilot\Utils::print_function($node);
 			$hash = hash("sha256", $function_name);
+			
+			$real_nodes[] = $function_name;
 			
 			$nodesjson[] = array('name' => $node->get_name(), 'id' => $hash);
 		}
@@ -89,7 +92,12 @@ class MyOutputs {
 			$hashcaller = hash("sha256", \progpilot\Utils::print_function($caller));
 			$hashcallee = hash("sha256", \progpilot\Utils::print_function($callee));
 			
-			if($hashcaller != $hashcallee)
+            $function_name1 = \progpilot\Utils::print_function($caller);
+            $function_name2 = \progpilot\Utils::print_function($callee);
+			
+			if($hashcaller != $hashcallee 
+                && in_array($function_name1, $real_nodes, true) 
+                    && in_array($function_name2, $real_nodes, true))
             {
                 $linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
             }
