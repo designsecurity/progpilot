@@ -65,162 +65,162 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fop
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/safe/CWE_862_Fopen__unserialize__whitelist_using_array__fopen.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__GET__func_preg_replace__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__GET__func_preg_replace__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__GET__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__GET__func_preg_replace__fopen.php", array("48"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__GET__func_preg_replace__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__GET__no_sanitizing__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__GET__no_sanitizing__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__GET__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__GET__no_sanitizing__fopen.php", array("46"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__GET__no_sanitizing__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__POST__func_preg_replace__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__POST__func_preg_replace__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__POST__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__POST__func_preg_replace__fopen.php", array("48"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__POST__func_preg_replace__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__POST__no_sanitizing__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__POST__no_sanitizing__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__POST__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__POST__no_sanitizing__fopen.php", array("46"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__POST__no_sanitizing__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__SESSION__func_preg_replace__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__SESSION__func_preg_replace__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__SESSION__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__SESSION__func_preg_replace__fopen.php", array("48"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__SESSION__func_preg_replace__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__SESSION__no_sanitizing__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__SESSION__no_sanitizing__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__SESSION__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__SESSION__no_sanitizing__fopen.php", array("46"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__SESSION__no_sanitizing__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__func_preg_replace__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__func_preg_replace__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__func_preg_replace__fopen.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__func_preg_replace__fopen.php", "file_inclusion");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__no_sanitizing__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__no_sanitizing__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__no_sanitizing__fopen.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__no_sanitizing__fopen.php", "file_inclusion");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__backticks__func_preg_replace__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__backticks__func_preg_replace__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__backticks__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__backticks__func_preg_replace__fopen.php", array("48"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__backticks__func_preg_replace__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__backticks__no_sanitizing__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__backticks__no_sanitizing__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__backticks__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__backticks__no_sanitizing__fopen.php", array("46"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__backticks__no_sanitizing__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__exec__func_preg_replace__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__exec__func_preg_replace__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__exec__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__exec__func_preg_replace__fopen.php", array("51"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__exec__func_preg_replace__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__exec__no_sanitizing__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__exec__no_sanitizing__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__exec__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__exec__no_sanitizing__fopen.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__exec__no_sanitizing__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__fopen__func_preg_replace__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__fopen__func_preg_replace__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__fopen__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__fopen__func_preg_replace__fopen.php", array("57"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__fopen__func_preg_replace__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__fopen__no_sanitizing__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__fopen__no_sanitizing__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__fopen__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__fopen__no_sanitizing__fopen.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__fopen__no_sanitizing__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-Array__func_preg_replace__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-Array__func_preg_replace__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-Array__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-Array__func_preg_replace__fopen.php", array("63"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-Array__func_preg_replace__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-Array__no_sanitizing__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-Array__no_sanitizing__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-Array__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-Array__no_sanitizing__fopen.php", array("61"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-Array__no_sanitizing__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-classicGet__func_preg_replace__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-classicGet__func_preg_replace__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-classicGet__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-classicGet__func_preg_replace__fopen.php", array("60"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-classicGet__func_preg_replace__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-classicGet__no_sanitizing__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-classicGet__no_sanitizing__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-classicGet__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-classicGet__no_sanitizing__fopen.php", array("58"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-classicGet__no_sanitizing__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-directGet__func_preg_replace__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-directGet__func_preg_replace__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-directGet__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-directGet__func_preg_replace__fopen.php", array("55"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-directGet__func_preg_replace__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-directGet__no_sanitizing__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-directGet__no_sanitizing__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-directGet__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-directGet__no_sanitizing__fopen.php", array("53"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-directGet__no_sanitizing__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-indexArray__func_preg_replace__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-indexArray__func_preg_replace__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-indexArray__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-indexArray__func_preg_replace__fopen.php", array("63"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-indexArray__func_preg_replace__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-indexArray__no_sanitizing__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-indexArray__no_sanitizing__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-indexArray__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-indexArray__no_sanitizing__fopen.php", array("61"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__object-indexArray__no_sanitizing__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__popen__func_preg_replace__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__popen__func_preg_replace__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__popen__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__popen__func_preg_replace__fopen.php", array("50"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__popen__func_preg_replace__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__popen__no_sanitizing__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__popen__no_sanitizing__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__popen__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__popen__no_sanitizing__fopen.php", array("47"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__popen__no_sanitizing__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__proc_open__func_preg_replace__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__proc_open__func_preg_replace__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__proc_open__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__proc_open__func_preg_replace__fopen.php", array("60"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__proc_open__func_preg_replace__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__proc_open__no_sanitizing__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__proc_open__no_sanitizing__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__proc_open__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__proc_open__no_sanitizing__fopen.php", array("55"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__proc_open__no_sanitizing__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__shell_exec__func_preg_replace__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__shell_exec__func_preg_replace__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__shell_exec__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__shell_exec__func_preg_replace__fopen.php", array("48"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__shell_exec__func_preg_replace__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__shell_exec__no_sanitizing__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__shell_exec__no_sanitizing__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__shell_exec__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__shell_exec__no_sanitizing__fopen.php", array("46"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__shell_exec__no_sanitizing__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__system__func_preg_replace__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__system__func_preg_replace__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__system__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__system__func_preg_replace__fopen.php", array("48"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__system__func_preg_replace__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__system__no_sanitizing__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__system__no_sanitizing__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__system__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__system__no_sanitizing__fopen.php", array("46"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__system__no_sanitizing__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__unserialize__func_preg_replace__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__unserialize__func_preg_replace__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__unserialize__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__unserialize__func_preg_replace__fopen.php", array("50"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__unserialize__func_preg_replace__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__unserialize__no_sanitizing__fopen.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__unserialize__no_sanitizing__fopen.php", array("tainted"));
+$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__unserialize__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__unserialize__no_sanitizing__fopen.php", array("47"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__unserialize__no_sanitizing__fopen.php", "idor");
 

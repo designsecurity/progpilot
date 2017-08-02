@@ -16,43 +16,29 @@ class ControlFlowGraph {
 
 	private $nodes;
 	private $edges;
-	private $current_block_text;
-	private $storagemyblocks;
+	private $myblock_text;
 
 	public function __construct() {
 
 		$this->nodes = [];
 		$this->edges = [];
-		$this->current_block_text = "";
-		$this->storagemyblocks = new \SplObjectStorage;
+		$this->myblock_text = [];
 	}
 
-	public function get_current_block_text()
+	public function get_textofmyblock($id)
 	{
-		return $this->current_block_text;
+		if(isset($this->myblock_text["$id"]))
+            return $this->myblock_text["$id"];
+        
+        return "";
 	}
 
-	public function set_current_block_text($text)
+	public function add_textofmyblock($id, $text)
 	{
-		$this->current_block_text = $text;
-	}
-
-	public function concat_current_block_text($text)
-	{
-		$this->current_block_text = $this->current_block_text.$text;
-	}
-
-	public function store_myblock($myblock, $value)
-	{
-		$this->storagemyblocks[$myblock] = $value;
-	}
-
-	public function get_myblock_from_storage($myblock)
-	{
-		if(isset($this->storagemyblocks[$myblock]))
-			return $this->storagemyblocks[$myblock];
-
-		return null;
+		if(isset($this->myblock_text["$id"]))
+            $this->myblock_text["$id"] = $this->myblock_text["$id"]."$text";
+        else
+            $this->myblock_text["$id"] = "$text";
 	}
 
 	public function get_nodes()
@@ -65,9 +51,9 @@ class ControlFlowGraph {
 		return $this->edges;
 	}
 
-	public function add_node($block)
+	public function add_node($id, $block)
 	{
-		$this->nodes[] = $block;
+		$this->nodes["$id"] = $block;
 	}
 
 	public function add_edge($caller, $callee)

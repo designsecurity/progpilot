@@ -30,4 +30,6 @@ There is a lot of tasks to do :
 - Better analysis of conditions
 - Circular includes
 - Passing by reference
-- push element into array (like array[] = ele; or push_array())
+- Pushing elements into array (like array[] = ele; or push_array())
+- Property of an object is an object
+- Visibility of methods

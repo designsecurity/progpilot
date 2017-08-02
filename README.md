@@ -69,7 +69,7 @@ array(1) {
     ["source"]=>
     array(1) {
       [0]=>
-      string(4) "var4"
+      string(5) "$var4"
     }
     ["source_line"]=>
     array(1) {

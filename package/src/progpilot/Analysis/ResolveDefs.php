@@ -95,7 +95,7 @@ class ResolveDefs {
 				{
 					$mydef = new MyDefinition($myfunc->get_last_line(), $myfunc->get_last_column(), "this");
 					$mydef->set_type(MyOp::TYPE_PROPERTY);
-					$mydef->property->set_name($property->get_name());
+					$mydef->property->set_name($property->property->get_name());
 					$mydef->set_block_id($myfunc->get_last_block_id());
 					$mydef->set_source_myfile($mybackdef->get_source_myfile());
 
@@ -117,6 +117,9 @@ class ResolveDefs {
 					}
 					
                     $new_myback_myclass->add_property($property);
+                    
+                    $property->property->set_name($property->property->get_name());
+                    $property->set_name($mybackdef->get_name());
 				
                     ArrayAnalysis::copy_array($context, $myfunc->get_defs()->getoutminuskill($mydef->get_block_id()), $mydef, $mydef->get_array_value(), $property, $property->get_array_value());
                 }
@@ -141,7 +144,7 @@ class ResolveDefs {
 			{
 				$mydef = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance());
 				$mydef->set_type(MyOp::TYPE_PROPERTY);
-				$mydef->property->set_name($property->get_name());
+				$mydef->property->set_name($property->property->get_name());
 				$mydef->set_block_id($myfunc_call->get_block_id());
 				$mydef->set_source_myfile($myfunc_call->get_source_myfile());
 
@@ -165,6 +168,9 @@ class ResolveDefs {
                             $property->set_type_sanitized($type_sanitized);
 					}
 				}
+				
+				$property->property->set_name($property->property->get_name());
+				$property->set_name("this");
 			}
 
 			$mythisdef = $myfunc->get_this_def();
@@ -271,9 +277,6 @@ class ResolveDefs {
 			
 		foreach($data as $def)
 		{
-            //echo "select_definitions foreach\n";
-            //$def->print_stdout();
-            
 			if($def->get_name() == $defsearch->get_name() 
                 && $def->get_assign_id() != $defsearch->get_assign_id()
                     && ResolveDefs::is_nearest($context, $defsearch, $defsearch->getLine(), $defsearch->getColumn(), $def, $def->getLine(), $def->getColumn())
@@ -291,7 +294,7 @@ class ResolveDefs {
 					
 					foreach($myclasses as $myclass)
 					{
-                        $property = $myclass->get_property($defsearch->property->get_name());
+                        $property = $myclass->get_property($defsearch);
 
                         if(!is_null($property) && ResolveDefs::get_visibility($def, $property))
                         {
@@ -425,7 +428,7 @@ class ResolveDefs {
 								
 								foreach($tmp_myclasses as $tmp_myclass)
 								{
-                                    $property = $tmp_myclass->get_property($tempdefa->property->get_name());
+                                    $property = $tmp_myclass->get_property($tempdefa);
 
                                     if(!is_null($property) && (ResolveDefs::get_visibility($tempdefa, $property) || $bypass_visibility))
                                     {
@@ -455,7 +458,7 @@ class ResolveDefs {
 						
                         foreach($tmp_myclasses as $tmp_myclass)
                         {
-                            $property = $tmp_myclass->get_property($tempdefa->property->get_name());
+                            $property = $tmp_myclass->get_property($tempdefa);
                             
                             if(!is_null($property) && (ResolveDefs::get_visibility($tempdefa, $property) || $bypass_visibility))
                             {

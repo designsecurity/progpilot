@@ -78,9 +78,16 @@ class SecurityAnalysis {
 			{
 				if(!SecurityAnalysis::is_safe($def_expr, $mysink))
 				{
-					$temp["source"][] = htmlentities($def_expr->get_name(), ENT_QUOTES, 'UTF-8');
+                    if($def_expr->get_type() == MyOp::TYPE_PROPERTY)
+                        $name_source = "\$".htmlentities($def_expr->get_name(), ENT_QUOTES, 'UTF-8')."->".htmlentities($def_expr->property->get_name(), ENT_QUOTES, 'UTF-8');
+                    else
+                        $name_source = "\$".htmlentities($def_expr->get_name(), ENT_QUOTES, 'UTF-8');
+                    
+                    $name_source_array = "";
 					if($def_expr->get_is_array())
-                        $temp["source_array"][] = $def_expr->get_array_value();
+                        \progpilot\Utils::print_array($def_expr->get_array_value(), $name_source_array);
+                    
+					$temp["source"][] = $name_source.$name_source_array;
 					
 					$temp["source_line"][] = $def_expr->getLine();
 					$temp["source_file"][] = htmlentities($def_expr->get_source_myfile()->get_name(), ENT_QUOTES, 'UTF-8');

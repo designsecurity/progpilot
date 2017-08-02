@@ -173,7 +173,7 @@ class VisitorAnalysis {
                                     if(!is_null($this->context->inputs->get_source_byname($def->get_name(), false, $def->get_class_name(), false)))
                                         $def->set_tainted(true);
 								}
-								
+                            
 								$exprs = $def->get_exprs();
 								foreach($exprs as $expr)
 								{

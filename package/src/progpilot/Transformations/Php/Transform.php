@@ -555,8 +555,9 @@ class Transform implements Visitor {
 					$property_name = Common::get_name_definition($property);
 					$visibility = Common::get_type_visibility($property->visiblity);
 
-					$mydef = new MyDefinition($property->getLine(), $property->getColumn(), $property_name);
+					$mydef = new MyDefinition($property->getLine(), $property->getColumn(), "this");
 					$mydef->property->set_visibility($visibility);
+					$mydef->property->set_name($property_name);
 					$mydef->set_class_name($class_name);
 
 					// it's necessary for securityanalysis (visibility)

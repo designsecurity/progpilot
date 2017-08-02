@@ -37,14 +37,16 @@ class MyOutputs {
 
 	public function get_cfg()
 	{
-		foreach($this->cfg->get_nodes() as $node)
+        $nodesjson = [];
+        $linksjson = [];
+        
+		foreach($this->cfg->get_nodes() as $id => $node)
 		{
 			$hash = spl_object_hash($node); 
 
-			if(is_null($this->cfg->get_myblock_from_storage($node)))
-				$this->cfg->store_myblock($node, "");
-
-			$nodesjson[] = array('name' => $this->cfg->get_myblock_from_storage($node), 'id' => $hash);
+            $text = $this->cfg->get_textofmyblock($id);
+            
+			$nodesjson[] = array('name' => $text, 'id' => $hash);
 		}
 
 		foreach($this->cfg->get_edges() as $edge)
@@ -54,8 +56,11 @@ class MyOutputs {
 
 			$hashcaller = spl_object_hash($caller);
 			$hashcallee = spl_object_hash($callee);
-
-			$linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
+			
+			if($hashcaller != $hashcallee)
+            {
+                $linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
+            }
 		}
 
 		$outputjson = array('nodes' => $nodesjson, 'links' => $linksjson);
@@ -65,21 +70,29 @@ class MyOutputs {
 
 	public function get_callgraph()
 	{
+        $nodesjson = [];
+        $linksjson = [];
+        
 		foreach($this->callgraph->get_nodes() as $node)
 		{
-			$hash = spl_object_hash($node);
+            $function_name = \progpilot\Utils::print_function($node);
+			$hash = hash("sha256", $function_name);
+			
 			$nodesjson[] = array('name' => $node->get_name(), 'id' => $hash);
 		}
-
+        
 		foreach($this->callgraph->get_edges() as $edge)
 		{
 			$caller = $edge[0];
 			$callee = $edge[1];
-
-			$hashcaller = spl_object_hash($caller);
-			$hashcallee = spl_object_hash($callee);
-
-			$linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
+			
+			$hashcaller = hash("sha256", \progpilot\Utils::print_function($caller));
+			$hashcallee = hash("sha256", \progpilot\Utils::print_function($callee));
+			
+			if($hashcaller != $hashcallee)
+            {
+                $linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
+            }
 		}
 
 		$outputjson = array('nodes' => $nodesjson, 'links' => $linksjson);
