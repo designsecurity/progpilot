@@ -39,7 +39,7 @@ If you define *$bool* to *true* and a *$file*, all the arguments of includes fun
 - $obj_context->outputs->get_cfg();
 - $obj_context->outputs->get_callgraph();
 - $obj_context->outputs->tainted_flow($bool);  
-*true* or *false* if you want to output the complete flow of assignments that taints a variable used by a sink function (default is *false* : only the last tainted variable is printed).
+*true* or *false* if you want to print the complete flow of assignments that taints a variable used by a sink function (default is *false* : only the last tainted variable is printed).
 ***
 
 ## Options
