@@ -228,8 +228,10 @@ class TaintAnalysis {
 			{
 				$defassign = $exprreturn->get_assign_def();
 
-				$mydef = new MyDefinition($myfunc->getLine(), $myfunc->getColumn(), "return");
+				$mydef = new MyDefinition($myfunc->getLine(), $myfunc->getColumn(), $myfunc->get_name()."_return");
 				$mydef->set_source_myfile($defassign->get_source_myfile());
+				$mydef->set_tainted(true);
+                // no need to taintedbyexpr because it's source like _GET
 
 				if($mysource->get_is_return_array() && $arr_funccall == false)
 				{
@@ -237,9 +239,9 @@ class TaintAnalysis {
 
 					$defassign->add_copyarray($value_array, $mydef);
 					$defassign->set_is_copy_array(true);
-
-					$mydef->set_tainted(true);
-					$mydef->set_taintedbyexpr($exprreturn);		
+					
+                    $exprreturn->add_def($mydef);
+                    $mydef->add_expr($exprreturn);
 				}
 				else if($mysource->get_is_return_array())
 				{
@@ -247,16 +249,19 @@ class TaintAnalysis {
 
 					if($arr_funccall == $value_array)
 					{
-						$defassign->set_tainted(true);
-						$defassign->set_taintedbyexpr($exprreturn);
-						$mydef->set_tainted(true);
 						$exprreturn->add_def($mydef);
+                        $mydef->add_expr($exprreturn);
+                    
+                        if($exprreturn->is_assign())
+                            TaintAnalysis::set_tainted($context, $data, $mydef, $defassign, $exprreturn, false); 
 					}
 				}
 				else if(!$mysource->get_is_return_array())
 				{
-					$defassign->set_tainted(true);
-					$defassign->set_taintedbyexpr($exprreturn);
+                    $exprreturn->add_def($mydef);
+                    
+                    if($exprreturn->is_assign())
+                        TaintAnalysis::set_tainted($context, $data, $mydef, $defassign, $exprreturn, false); 
 				}
 			}
 		}
@@ -273,16 +278,21 @@ class TaintAnalysis {
 			{
 				$copydefreturn = $defreturn;
 
+                // copydefreturn = return $defreturn;
 				$copydefreturn->add_expr($exprreturn);
+				// exprreturn = $def = exprreturn(funccall());
 				$exprreturn->add_def($copydefreturn);
+				
+				
 				$exprs = $copydefreturn->get_exprs();
 
 				foreach($exprs as $expr)
 				{
+                    // blabla = 
 					if($expr->is_assign())
 					{
 						$defassign = $expr->get_assign_def();
-						TaintAnalysis::set_tainted($context, $data, $copydefreturn, $defassign, $expr, false, null); 
+						TaintAnalysis::set_tainted($context, $data, $copydefreturn, $defassign, $expr, false); 
 					}
 				}
 			}
@@ -311,7 +321,7 @@ class TaintAnalysis {
 						if($expr->is_assign())
 						{
 							$defassign = $expr->get_assign_def();
-							TaintAnalysis::set_tainted($context, $data, $param, $defassign, $expr, false, null); 
+							TaintAnalysis::set_tainted($context, $data, $param, $defassign, $expr, false); 
 						}
 					}
 				}

@@ -41,8 +41,8 @@ $framework->add_output("./tests/generic/mix3.php", array("12"));
 $framework->add_output("./tests/generic/mix3.php", "xss");
 
 $framework->add_testbasis("./tests/generic/simple1.php");
-$framework->add_output("./tests/generic/simple1.php", array("\$myvar1"));
-$framework->add_output("./tests/generic/simple1.php", array("3"));
+$framework->add_output("./tests/generic/simple1.php", array("\$myvar4"));
+$framework->add_output("./tests/generic/simple1.php", array("9"));
 $framework->add_output("./tests/generic/simple1.php", "xss");
 
 $framework->add_testbasis("./tests/generic/simple2.php");

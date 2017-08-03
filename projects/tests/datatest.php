@@ -51,22 +51,22 @@ $framework->add_output("./tests/data/source6.php", array("26"));
 $framework->add_output("./tests/data/source6.php", "xss");
 
 $framework->add_testbasis("./tests/data/source7.php");
-$framework->add_output("./tests/data/source7.php", array("\$return"));
+$framework->add_output("./tests/data/source7.php", array("\$methodc1arr_return"));
 $framework->add_output("./tests/data/source7.php", array("13"));
 $framework->add_output("./tests/data/source7.php", "xss");
 
 $framework->add_testbasis("./tests/data/source8.php");
-$framework->add_output("./tests/data/source8.php", array("\$return"));
+$framework->add_output("./tests/data/source8.php", array("\$func1arr_return"));
 $framework->add_output("./tests/data/source8.php", array("8"));
 $framework->add_output("./tests/data/source8.php", "xss");
 
 $framework->add_testbasis("./tests/data/source9.php");
-$framework->add_output("./tests/data/source9.php", array("\$return"));
+$framework->add_output("./tests/data/source9.php", array("\$func1arr_return"));
 $framework->add_output("./tests/data/source9.php", array("8"));
 $framework->add_output("./tests/data/source9.php", "xss");
 
 $framework->add_testbasis("./tests/data/source10.php");
-$framework->add_output("./tests/data/source10.php", array("\$return"));
+$framework->add_output("./tests/data/source10.php", array("\$func1arr_return"));
 $framework->add_output("./tests/data/source10.php", array("8"));
 $framework->add_output("./tests/data/source10.php", "xss");
 

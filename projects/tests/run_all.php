@@ -5,7 +5,6 @@ require_once './framework_test.php';
 $framework = new framework_test;
 
 require_once './ooptest.php';
-
 require_once './datatest.php';
 require_once './includetest.php';
 require_once './conditionstest.php';
@@ -27,6 +26,8 @@ try {
 		$context->inputs->set_sanitizers("./data/sanitizers.json");
 		$context->inputs->set_validators("./data/validators.json");
 		$context->inputs->set_file($file);
+		
+		$context->outputs->tainted_flow(true);
 
 		//$context->set_analyze_includes(false);
 
@@ -59,7 +60,7 @@ try {
 			{
 				$result_test = true;
 				$basis_outputs = [
-					$vuln['source'],
+					$vuln['source_name'],
 					$vuln['source_line'],
 					$vuln['vuln_name']];
 

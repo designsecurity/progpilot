@@ -25,3 +25,27 @@ To retrieve the value of $file and $code use these methods :
 - $obj_context->inputs->get_validators();  
 These methods are mainly explained in the chapter [**specify an analyze**](./SPECIFY_ANALYZE.md)
 ***
+
+***
+- $obj_context->inputs->set_includes($file_includes);  
+If you want to specify the location of files to be included during the analysis 
+***
+
+## Outputs
+***
+- $obj_context->outputs->resolve_includes($bool);
+- $obj_context->outputs->resolve_includes_file($file);  
+If you define *$bool* to *true* and a *$file*, all the arguments of includes functions (like include()) when the analysis couldn't resolved them as existing files on the disk will be written into the *$file*. Next you can specify locations of files and pass the corrected *$file* as an argument of *$obj_context->inputs->set_includes($file);*
+- $obj_context->outputs->get_cfg();
+- $obj_context->outputs->get_callgraph();
+- $obj_context->outputs->tainted_flow($bool);  
+*true* or *false* if you want to output the complete flow of assignments that taints a variable used by a sink function (default is *false* : only the last tainted variable is printed).
+***
+
+## Options
+***
+- $obj_context->set_analyze_js($bool);  
+*true* or *false* if you want to analyze javascript (in development), default is *true*
+- $obj_context->set_analyze_includes($bool);  
+*true* or *false* if you want to analyze included files, default is *true*
+***

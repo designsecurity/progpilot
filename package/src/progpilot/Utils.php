@@ -14,18 +14,32 @@ use progpilot\Objects\MyOp;
 
 class Utils
 {
-	public static function encoding_characters($string)
+	public static function encode_characters($string)
 	{
         return htmlentities($string, ENT_QUOTES, 'UTF-8');
+	}
+	
+	public static function print_definition($def)
+	{
+        if($def->get_type() == MyOp::TYPE_PROPERTY)
+            $def_name = "\$".Utils::encode_characters($def->get_name())."->".Utils::encode_characters($def->property->get_name());
+        else
+            $def_name = "\$".Utils::encode_characters($def->get_name());
+                    
+        $name_array = "";
+        if($def->get_is_array())
+            Utils::print_array($def->get_array_value(), $name_array);
+					
+        return $def_name.$name_array;
 	}
 	
 	public static function print_function($function)
 	{
         $function_name = "\$";
         if($function->get_type() == MyOp::TYPE_METHOD)
-            $function_name = Utils::encoding_characters($function->get_myclass()->get_name())."->";
+            $function_name = Utils::encode_characters($function->get_myclass()->get_name())."->";
         
-        $function_name .= Utils::encoding_characters($function->get_name());
+        $function_name .= Utils::encode_characters($function->get_name());
         
         return $function_name;
 	}
@@ -39,9 +53,9 @@ class Utils
 				if(isset($array[$index]))
 				{
                     if(is_string($index))
-                        $print .= "[\"".Utils::encoding_characters($index)."\"]";
+                        $print .= "[\"".Utils::encode_characters($index)."\"]";
                     else
-                        $print .= "[".Utils::encoding_characters($index)."]";
+                        $print .= "[".Utils::encode_characters($index)."]";
                     
                     Utils::print_array($array[$index], $print);
 				}

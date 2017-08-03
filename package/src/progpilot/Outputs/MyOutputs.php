@@ -19,7 +19,8 @@ class MyOutputs {
 	private $results;
 	private $resolve_includes;
 	private $resolve_includes_file;
-
+    private $tainted_flow;
+	
 	public $current_includes_file;
 	public $cfg;
 	public $callgraph;
@@ -30,6 +31,7 @@ class MyOutputs {
 		$this->resolve_includes_file = null;
 		$this->current_includes_file = [];
 		$this->results = "";
+		$this->tainted_flow = false;
 
 		$this->cfg = new ControlFlowGraph;
 		$this->callgraph = new Callgraph;
@@ -135,6 +137,16 @@ class MyOutputs {
 	public function get_resolve_includes_file()
 	{
 		return $this->resolve_includes_file;
+	}
+	
+	public function tainted_flow($bool)
+	{
+        $this->tainted_flow = $bool;
+	}
+	
+	public function get_tainted_flow()
+	{
+        return $this->tainted_flow;
 	}
 
 	public function write_includes_file()

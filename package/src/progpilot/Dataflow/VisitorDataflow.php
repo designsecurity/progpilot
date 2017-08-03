@@ -335,7 +335,5 @@ class VisitorDataflow {
 			}
 		}
 		while(isset($code[$index]) && $index <= $mycode->get_end());
-
-		//$mycode->print_stdout();
 	}
 }
