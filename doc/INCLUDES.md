@@ -1,7 +1,7 @@
 # Resolve Includes
 
-Location of included files could not be resolved due to the fact that are dynamics in most cases.  
-For example, Progpilot successfully include *myfile.php* when it finds static includes like this one :
+Locations of included files could not be resolved due to the fact that are dynamics in most cases.  
+For example, Progpilot successfully include *myfile.php* when it finds a static include like this one :
 ```php
 include("myfile.php");
 ```
@@ -20,7 +20,7 @@ For each include not resolved an entry will be printed in the *$file* with the l
 ```javascript
 {"includes_not_resolved":[["./tests/includes/simple5.php",11,11]]}
 ```
-Next you can produce a *resolved_includes.json* file with the good value of each include function for example :
+Next you can produce a *resolved_includes.json* file with the good value of each include function :
 ```javascript
 {
     "includes":
@@ -35,4 +35,4 @@ Next you can produce a *resolved_includes.json* file with the good value of each
 }
 ```
 And pass this file to **$context->inputs->set_includes("resolved_includes.json");**  
-Run again Progpilot and this time when it finds an *include()* function in *line 11*, *column 11* in the file *./tests/includes/simple5.php* it will be *simple5_include.php* that will be analyzed.
+Run again Progpilot and this time when it finds an *include()* function in *line 11*, *column 11* in the file *./tests/includes/simple5.php* it will be the file *simple5_include.php* that will be analyzed.
