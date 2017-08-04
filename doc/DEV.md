@@ -32,4 +32,3 @@ There is a lot of tasks to do :
 - Passing by reference
 - Pushing elements into array (like array[] = ele; or push_array())
 - Property of an object is an object
-- Visibility of methods
