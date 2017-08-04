@@ -7,14 +7,21 @@
  * @license MIT See LICENSE at the root of the project for more info
  */
 
-
 namespace progpilot;
 
 class Analyzer
 {
+    private $current_script;
+    
 	public function __construct() 
 	{
+        $this->current_script = null;
 	}
+	
+	public function get_current_script()
+	{
+        return $this->current_script;
+    }
 
 	public function parse($context)
 	{
@@ -25,6 +32,7 @@ class Analyzer
 		{
 			$asttraverser = new \PhpParser\NodeTraverser;
 			$asttraverser->addVisitor(new \PhpParser\NodeVisitor\NameResolver);
+			$asttraverser->addVisitor($context->outputs->ast);
 			$parser = new \PHPCfg\Parser((new \PhpParser\ParserFactory)->create(\PhpParser\ParserFactory::PREFER_PHP7), $asttraverser);
 
 			if(!file_exists($context->inputs->get_file()) && is_null($context->inputs->get_code()))
@@ -42,6 +50,8 @@ class Analyzer
 			else
 				$script = $parser->parse($context->inputs->get_code(), "");
 		}
+		
+        $this->current_script = $script;
 
 		return $script;
 	}

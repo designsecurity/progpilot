@@ -23,11 +23,7 @@
         echo 'Exception : ',  $e->getMessage(), "\n";
     }
        
-    $results = $context->outputs->get_cfg();
-    
-    var_dump($results); 
-       
-    $results = $context->outputs->get_callgraph();
+    $results = $context->outputs->get_ast();
     
     var_dump($results); 
 ?>

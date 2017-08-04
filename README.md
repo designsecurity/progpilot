@@ -65,8 +65,8 @@ echo "$var4";
 ```javascript
 array(1) {
   [0]=>
-  array(7) {
-    ["source"]=>
+  array(11) {
+    ["source_name"]=>
     array(1) {
       [0]=>
       string(5) "$var4"
@@ -76,19 +76,31 @@ array(1) {
       [0]=>
       int(4)
     }
+    ["source_column"]=>
+    array(1) {
+      [0]=>
+      int(4)
+    }
     ["source_file"]=>
     array(1) {
       [0]=>
       string(12) "example1.php"
     }
-    ["sink"]=>
+    ["tainted_flow"]=>
+    array(0) {
+    }
+    ["sink_name"]=>
     string(4) "echo"
     ["sink_line"]=>
+    int(5)
+    ["sink_column"]=>
     int(5)
     ["sink_file"]=>
     string(12) "example1.php"
     ["vuln_name"]=>
     string(3) "xss"
+    ["vuln_id"]=>
+    string(64) "a918f93b6be9b03b0e8d3a80a54e98ab92a42dbb1a35b493b8e5ceb5328162ef"
   }
 }
 ```

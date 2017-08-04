@@ -13,6 +13,9 @@ namespace progpilot\Outputs;
 use progpilot\Lang;
 use progpilot\Representations\Callgraph;
 use progpilot\Representations\ControlFlowGraph;
+use progpilot\Representations\AbstractSyntaxTree;
+
+use PhpParser\NodeTraverser;
 
 class MyOutputs {
 
@@ -24,6 +27,7 @@ class MyOutputs {
 	public $current_includes_file;
 	public $cfg;
 	public $callgraph;
+	public $ast;
 
 	public function __construct() {
 
@@ -35,6 +39,38 @@ class MyOutputs {
 
 		$this->cfg = new ControlFlowGraph;
 		$this->callgraph = new Callgraph;
+		$this->ast = new AbstractSyntaxTree;
+	}
+	
+	public function get_ast()
+	{
+        $nodesjson = [];
+        $linksjson = [];
+        
+		foreach($this->ast->get_nodes() as $node)
+		{
+			$hash = spl_object_hash($node); 
+            
+			$nodesjson[] = array('name' => get_class($node), 'id' => $hash);
+		}
+
+		foreach($this->ast->get_edges() as $edge)
+		{
+			$caller = $edge[0];
+			$callee = $edge[1];
+
+			$hashcaller = spl_object_hash($caller);
+			$hashcallee = spl_object_hash($callee);
+			
+			if($hashcaller != $hashcallee)
+            {
+                $linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
+            }
+		}
+
+		$outputjson = array('nodes' => $nodesjson, 'links' => $linksjson);
+
+		return $outputjson;
 	}
 
 	public function get_cfg()
