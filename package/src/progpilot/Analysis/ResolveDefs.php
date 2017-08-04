@@ -256,6 +256,19 @@ class ResolveDefs {
 		return false;
 	}
 
+	public static function get_visibility_method($def, $method)
+	{
+        if(!is_null($def) && $def->get_name() == "this")
+            return true;
+            
+		if(!is_null($method) 
+            && $method->get_type() == MyOp::TYPE_METHOD 
+                && $method->get_visibility() == "public")
+            return true;
+
+		return false;
+	}
+
 	public static function get_visibility($def, $property)
 	{
         if(!is_null($def) && $def->get_name() == "this")
@@ -311,7 +324,7 @@ class ResolveDefs {
 					{
                         $method = $myclass->get_method($defsearch->method->get_name());
 
-                        if(!is_null($method))
+                        if(!is_null($method) && ResolveDefs::get_visibility_method($def, $method))
                         {
                             $defsfound[$def->get_block_id()][] = $def;   
                         }

@@ -85,4 +85,9 @@ $framework->add_output("./tests/oop/simple17.php", array("\$this->boum1[0]"));
 $framework->add_output("./tests/oop/simple17.php", array("9"));
 $framework->add_output("./tests/oop/simple17.php", "xss");
 
+$framework->add_testbasis("./tests/oop/simple18.php");
+$framework->add_output("./tests/oop/simple18.php", array("\$instance1->boum1"));
+$framework->add_output("./tests/oop/simple18.php", array("15"));
+$framework->add_output("./tests/oop/simple18.php", "xss");
+
 ?>

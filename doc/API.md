@@ -28,14 +28,14 @@ These methods are mainly explained in the chapter [**specify an analyze**](./SPE
 
 ***
 - $obj_context->inputs->set_includes($file_includes);  
-If you want to specify the location of files to be included during the analysis 
+This function is explained in the chapter about [**included files**](./INCLUDES.md)
 ***
 
 ## Outputs
 ***
 - $obj_context->outputs->resolve_includes($bool);
 - $obj_context->outputs->resolve_includes_file($file);  
-If you define *$bool* to *true* and a *$file*, all the arguments of includes functions (like include()) when the analysis couldn't resolved them as existing files on the disk will be written into the *$file*. Next you can specify locations of files and pass the corrected *$file* as an argument of *$obj_context->inputs->set_includes($file);*
+These functions are explained in the chapter about [**included files**](./INCLUDES.md)
 - $obj_context->outputs->get_cfg();
 - $obj_context->outputs->get_callgraph();
 - $obj_context->outputs->tainted_flow($bool);  

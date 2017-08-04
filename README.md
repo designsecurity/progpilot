@@ -123,3 +123,6 @@ See more available options in the [corresponding chapter about specify an analyz
 
 ## Development
 [Learn more](./doc/DEV.md) about the development of Progpilot
+
+## Faq
+[Here](./doc/FAQ.md)

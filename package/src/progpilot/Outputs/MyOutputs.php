@@ -189,9 +189,10 @@ class MyOutputs {
 	{
 		if($this->resolve_includes)
 		{
+		/*
 			if(!file_exists($this->resolve_includes_file))
 				throw new \Exception(Lang::FILE_DOESNT_EXIST);
-
+*/
 			$fp = fopen($this->resolve_includes_file, "w");
 			if($fp)
 			{

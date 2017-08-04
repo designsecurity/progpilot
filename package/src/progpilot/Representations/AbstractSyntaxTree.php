@@ -49,8 +49,6 @@ class AbstractSyntaxTree extends NodeVisitorAbstract
     
     public function enterNode(Node $node) 
     { 
-        $this->add_node($node);
-        
         foreach ($node->getSubNodeNames() as $name) 
         {
             $subNode =& $node->$name;

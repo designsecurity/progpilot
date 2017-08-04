@@ -35,7 +35,6 @@ class MyDefinition extends MyOp {
 	private $value_from_def;
 
 	public $property;
-	public $method;
 
 	public function __construct($var_line, $var_column, $var_name) {
 
@@ -63,7 +62,6 @@ class MyDefinition extends MyOp {
 		$this->assign_id = -1;
 
 		$this->property = new MyProperty;
-		$this->method = new MyMethod;
 	}
 
 	public function print_stdout()
@@ -95,11 +93,6 @@ class MyDefinition extends MyOp {
 				foreach($myclass->get_methods() as $method)
 					echo "method : '".$method->get_name()."'\n";
 			}
-		}
-
-		if($this->get_type() == MyOp::TYPE_METHOD)
-		{
-			echo "method : ".htmlentities($this->method->get_name(), ENT_QUOTES, 'UTF-8')."\n";
 		}
 
 		if($this->get_is_copy_array())

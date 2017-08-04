@@ -228,7 +228,10 @@ class VisitorAnalysis {
 										{
                                             $myfunc = $myclass->get_method($funcname);
 
-                                            $list_myfunc[] = [$myfunc, $myclass];
+                                            if(ResolveDefs::get_visibility_method($instance, $myfunc))
+                                                $list_myfunc[] = [$myfunc, $myclass];
+                                            else
+                                                $list_myfunc[] = [null, $myclass];
 
                                             // twig analysis
                                             if($this->context->get_analyze_js())
