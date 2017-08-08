@@ -29,7 +29,7 @@ These methods are mainly explained in the chapter [**specify an analyze**](./SPE
 ***
 - $obj_context->inputs->set_includes($file_includes);  
 This function is explained in the chapter about [**included files**](./INCLUDES.md)
-- $context->inputs->set_false_positives($file_false_positives);  
+- $obj_context->inputs->set_false_positives($file_false_positives);  
 This function is explained in the chapter about [**handling false positives**](./FALSE_POSITIVES.md)
 ***
 
