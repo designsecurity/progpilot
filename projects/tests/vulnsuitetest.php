@@ -231,75 +231,75 @@ $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/
 
 
 /*
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__CAST-cast_int__non_prepared_query-right_verification.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__CAST-cast_int__non_prepared_query-right_verification.php", array("tainted"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__CAST-cast_int__non_prepared_query-right_verification.php", array("49"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__CAST-cast_int__non_prepared_query-right_verification.php", "file_inclusion");
+   $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__CAST-cast_int__non_prepared_query-right_verification.php");
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__CAST-cast_int__non_prepared_query-right_verification.php", array("tainted"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__CAST-cast_int__non_prepared_query-right_verification.php", array("49"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__CAST-cast_int__non_prepared_query-right_verification.php", "file_inclusion");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__CAST-cast_int__prepared_query-right_verification.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__CAST-cast_int__prepared_query-right_verification.php", array("tainted"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__CAST-cast_int__prepared_query-right_verification.php", array("49"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__CAST-cast_int__prepared_query-right_verification.php", "file_inclusion");
+   $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__CAST-cast_int__prepared_query-right_verification.php");
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__CAST-cast_int__prepared_query-right_verification.php", array("tainted"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__CAST-cast_int__prepared_query-right_verification.php", array("49"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__CAST-cast_int__prepared_query-right_verification.php", "file_inclusion");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__non_prepared_query-right_verification.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__non_prepared_query-right_verification.php", array("tainted"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__non_prepared_query-right_verification.php", array("49"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__non_prepared_query-right_verification.php", "file_inclusion");
+   $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__non_prepared_query-right_verification.php");
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__non_prepared_query-right_verification.php", array("tainted"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__non_prepared_query-right_verification.php", array("49"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__non_prepared_query-right_verification.php", "file_inclusion");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__prepared_query-no_right_verification.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__prepared_query-no_right_verification.php", array("tainted"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__prepared_query-no_right_verification.php", array("49"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__prepared_query-no_right_verification.php", "file_inclusion");
+   $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__prepared_query-no_right_verification.php");
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__prepared_query-no_right_verification.php", array("tainted"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__prepared_query-no_right_verification.php", array("49"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__prepared_query-no_right_verification.php", "file_inclusion");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__prepared_query-right_verification.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__prepared_query-right_verification.php", array("tainted"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__prepared_query-right_verification.php", array("49"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__prepared_query-right_verification.php", "file_inclusion");
+   $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__prepared_query-right_verification.php");
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__prepared_query-right_verification.php", array("tainted"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__prepared_query-right_verification.php", array("49"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__prepared_query-right_verification.php", "file_inclusion");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__select_from_where-interpretation_simple_quote.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__select_from_where-interpretation_simple_quote.php", array("tainted"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__select_from_where-interpretation_simple_quote.php", array("49"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__select_from_where-interpretation_simple_quote.php", "file_inclusion");
+   $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__select_from_where-interpretation_simple_quote.php");
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__select_from_where-interpretation_simple_quote.php", array("tainted"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__select_from_where-interpretation_simple_quote.php", array("49"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ESAPI__select_from_where-interpretation_simple_quote.php", "file_inclusion");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__non_prepared_query-right_verification.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__non_prepared_query-right_verification.php", array("tainted"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__non_prepared_query-right_verification.php", array("49"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__non_prepared_query-right_verification.php", "file_inclusion");
+   $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__non_prepared_query-right_verification.php");
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__non_prepared_query-right_verification.php", array("tainted"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__non_prepared_query-right_verification.php", array("49"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__non_prepared_query-right_verification.php", "file_inclusion");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__prepared_query-no_right_verification.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__prepared_query-no_right_verification.php", array("tainted"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__prepared_query-no_right_verification.php", array("49"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__prepared_query-no_right_verification.php", "file_inclusion");
+   $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__prepared_query-no_right_verification.php");
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__prepared_query-no_right_verification.php", array("tainted"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__prepared_query-no_right_verification.php", array("49"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__prepared_query-no_right_verification.php", "file_inclusion");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__prepared_query-right_verification.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__prepared_query-right_verification.php", array("tainted"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__prepared_query-right_verification.php", array("49"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__prepared_query-right_verification.php", "file_inclusion");
+   $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__prepared_query-right_verification.php");
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__prepared_query-right_verification.php", array("tainted"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__prepared_query-right_verification.php", array("49"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__prepared_query-right_verification.php", "file_inclusion");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__select_from_where-interpretation_simple_quote.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__select_from_where-interpretation_simple_quote.php", array("tainted"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__select_from_where-interpretation_simple_quote.php", array("49"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__select_from_where-interpretation_simple_quote.php", "file_inclusion");
+   $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__select_from_where-interpretation_simple_quote.php");
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__select_from_where-interpretation_simple_quote.php", array("tainted"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__select_from_where-interpretation_simple_quote.php", array("49"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__Indirect_reference__select_from_where-interpretation_simple_quote.php", "file_inclusion");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__non_prepared_query-right_verification.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__non_prepared_query-right_verification.php", array("tainted"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__non_prepared_query-right_verification.php", array("49"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__non_prepared_query-right_verification.php", "file_inclusion");
+   $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__non_prepared_query-right_verification.php");
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__non_prepared_query-right_verification.php", array("tainted"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__non_prepared_query-right_verification.php", array("49"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__non_prepared_query-right_verification.php", "file_inclusion");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__prepared_query-no_right_verification.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__prepared_query-no_right_verification.php", array("tainted"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__prepared_query-no_right_verification.php", array("49"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__prepared_query-no_right_verification.php", "file_inclusion");
+   $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__prepared_query-no_right_verification.php");
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__prepared_query-no_right_verification.php", array("tainted"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__prepared_query-no_right_verification.php", array("49"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__prepared_query-no_right_verification.php", "file_inclusion");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__prepared_query-right_verification.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__prepared_query-right_verification.php", array("tainted"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__prepared_query-right_verification.php", array("49"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__prepared_query-right_verification.php", "file_inclusion");
+   $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__prepared_query-right_verification.php");
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__prepared_query-right_verification.php", array("tainted"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__prepared_query-right_verification.php", array("49"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__prepared_query-right_verification.php", "file_inclusion");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__select_from_where-interpretation_simple_quote.php");
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__select_from_where-interpretation_simple_quote.php", array("tainted"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__select_from_where-interpretation_simple_quote.php", array("49"));
-$framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__select_from_where-interpretation_simple_quote.php", "file_inclusion");
+   $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__select_from_where-interpretation_simple_quote.php");
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__select_from_where-interpretation_simple_quote.php", array("tainted"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__select_from_where-interpretation_simple_quote.php", array("49"));
+   $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__ternary_white_list__select_from_where-interpretation_simple_quote.php", "file_inclusion");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__whitelist_using_array__non_prepared_query-right_verification.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_SQL/safe/CWE_862_SQL__GET__whitelist_using_array__non_prepared_query-right_verification.php", array("tainted"));

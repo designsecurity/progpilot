@@ -11,17 +11,17 @@ namespace progpilot;
 
 class Analyzer
 {
-    private $current_script;
-    
+	private $current_script;
+
 	public function __construct() 
 	{
-        $this->current_script = null;
+		$this->current_script = null;
 	}
-	
+
 	public function get_current_script()
 	{
-        return $this->current_script;
-    }
+		return $this->current_script;
+	}
 
 	public function parse($context)
 	{
@@ -50,8 +50,8 @@ class Analyzer
 			else
 				$script = $parser->parse($context->inputs->get_code(), "");
 		}
-		
-        $this->current_script = $script;
+
+		$this->current_script = $script;
 
 		return $script;
 	}
@@ -66,6 +66,7 @@ class Analyzer
 			$context->inputs->read_sources();
 			$context->inputs->read_includes();
 			$context->inputs->read_validators();
+			$context->inputs->read_false_positives();
 
 			$traverser = new \PHPCfg\Traverser();
 			$traverser->addVisitor(new \progpilot\Transformations\Php\Transform());

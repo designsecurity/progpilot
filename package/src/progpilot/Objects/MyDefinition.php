@@ -42,7 +42,7 @@ class MyDefinition extends MyOp {
 
 		$this->is_copy_array = false;
 		$this->value_from_def = null;
-		
+
 		$this->block_id = -1;
 		$this->is_tainted = false;
 		$this->is_ref = false;
@@ -86,7 +86,7 @@ class MyDefinition extends MyOp {
 			$myclasses = $this->get_all_myclass();
 			foreach($myclasses as $myclass)
 			{
-                echo "of myclass ".$myclass->get_name()."\n";
+				echo "of myclass ".$myclass->get_name()."\n";
 				foreach($myclass->get_properties() as $property)
 					echo "property : '".$property->get_name()."'\n";
 
@@ -100,7 +100,7 @@ class MyDefinition extends MyOp {
 			echo "copyarray start =================\n";
 			foreach($this->get_copyarrays() as $copy_array)
 			{
-                $copy_array[1]->print_stdout();
+				$copy_array[1]->print_stdout();
 			}
 			echo "copyarray end =================\n";
 		}
@@ -168,7 +168,7 @@ class MyDefinition extends MyOp {
 
 	public function set_is_ref($is_ref)
 	{
-        $this->is_ref = $is_ref;
+		$this->is_ref = $is_ref;
 	}
 
 	public function is_ref()

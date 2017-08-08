@@ -22,8 +22,8 @@ class MyOutputs {
 	private $results;
 	private $resolve_includes;
 	private $resolve_includes_file;
-    private $tainted_flow;
-	
+	private $tainted_flow;
+
 	public $current_includes_file;
 	public $cfg;
 	public $callgraph;
@@ -41,16 +41,16 @@ class MyOutputs {
 		$this->callgraph = new Callgraph;
 		$this->ast = new AbstractSyntaxTree;
 	}
-	
+
 	public function get_ast()
 	{
-        $nodesjson = [];
-        $linksjson = [];
-        
+		$nodesjson = [];
+		$linksjson = [];
+
 		foreach($this->ast->get_nodes() as $node)
 		{
 			$hash = spl_object_hash($node); 
-            
+
 			$nodesjson[] = array('name' => get_class($node), 'id' => $hash);
 		}
 
@@ -61,11 +61,11 @@ class MyOutputs {
 
 			$hashcaller = spl_object_hash($caller);
 			$hashcallee = spl_object_hash($callee);
-			
+
 			if($hashcaller != $hashcallee)
-            {
-                $linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
-            }
+			{
+				$linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
+			}
 		}
 
 		$outputjson = array('nodes' => $nodesjson, 'links' => $linksjson);
@@ -75,15 +75,15 @@ class MyOutputs {
 
 	public function get_cfg()
 	{
-        $nodesjson = [];
-        $linksjson = [];
-        
+		$nodesjson = [];
+		$linksjson = [];
+
 		foreach($this->cfg->get_nodes() as $id => $node)
 		{
 			$hash = spl_object_hash($node); 
 
-            $text = $this->cfg->get_textofmyblock($id);
-            
+			$text = $this->cfg->get_textofmyblock($id);
+
 			$nodesjson[] = array('name' => $text, 'id' => $hash);
 		}
 
@@ -94,11 +94,11 @@ class MyOutputs {
 
 			$hashcaller = spl_object_hash($caller);
 			$hashcallee = spl_object_hash($callee);
-			
+
 			if($hashcaller != $hashcallee)
-            {
-                $linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
-            }
+			{
+				$linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
+			}
 		}
 
 		$outputjson = array('nodes' => $nodesjson, 'links' => $linksjson);
@@ -108,37 +108,37 @@ class MyOutputs {
 
 	public function get_callgraph()
 	{
-        $nodesjson = [];
-        $linksjson = [];
-        $real_nodes = [];
-        
+		$nodesjson = [];
+		$linksjson = [];
+		$real_nodes = [];
+
 		foreach($this->callgraph->get_nodes() as $node)
 		{
-            $function_name = \progpilot\Utils::print_function($node);
+			$function_name = \progpilot\Utils::print_function($node);
 			$hash = hash("sha256", $function_name);
-			
+
 			$real_nodes[] = $function_name;
-			
+
 			$nodesjson[] = array('name' => $node->get_name(), 'id' => $hash);
 		}
-        
+
 		foreach($this->callgraph->get_edges() as $edge)
 		{
 			$caller = $edge[0];
 			$callee = $edge[1];
-			
+
 			$hashcaller = hash("sha256", \progpilot\Utils::print_function($caller));
 			$hashcallee = hash("sha256", \progpilot\Utils::print_function($callee));
-			
-            $function_name1 = \progpilot\Utils::print_function($caller);
-            $function_name2 = \progpilot\Utils::print_function($callee);
-			
+
+			$function_name1 = \progpilot\Utils::print_function($caller);
+			$function_name2 = \progpilot\Utils::print_function($callee);
+
 			if($hashcaller != $hashcallee 
-                && in_array($function_name1, $real_nodes, true) 
-                    && in_array($function_name2, $real_nodes, true))
-            {
-                $linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
-            }
+					&& in_array($function_name1, $real_nodes, true) 
+					&& in_array($function_name2, $real_nodes, true))
+			{
+				$linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
+			}
 		}
 
 		$outputjson = array('nodes' => $nodesjson, 'links' => $linksjson);
@@ -174,38 +174,38 @@ class MyOutputs {
 	{
 		return $this->resolve_includes_file;
 	}
-	
+
 	public function tainted_flow($bool)
 	{
-        $this->tainted_flow = $bool;
+		$this->tainted_flow = $bool;
 	}
-	
+
 	public function get_tainted_flow()
 	{
-        return $this->tainted_flow;
+		return $this->tainted_flow;
 	}
 
 	public function write_includes_file()
 	{
 		if($this->resolve_includes)
 		{
-		/*
-			if(!file_exists($this->resolve_includes_file))
-				throw new \Exception(Lang::FILE_DOESNT_EXIST);
-*/
+			/*
+			   if(!file_exists($this->resolve_includes_file))
+			   throw new \Exception(Lang::FILE_DOESNT_EXIST);
+			 */
 			$fp = fopen($this->resolve_includes_file, "w");
 			if($fp)
 			{
-                $myarray = "";
-                if(count($this->current_includes_file) > 0)
-                {
-                    $myarray = [];
-                    foreach($this->current_includes_file as $include_file)
-                    {
-                        $myarray[] = [$include_file->get_name(), $include_file->getLine(), $include_file->getColumn()];
-                    }
-                }
-                
+				$myarray = "";
+				if(count($this->current_includes_file) > 0)
+				{
+					$myarray = [];
+					foreach($this->current_includes_file as $include_file)
+					{
+						$myarray[] = [$include_file->get_name(), $include_file->getLine(), $include_file->getColumn()];
+					}
+				}
+
 				$outputjson = array('includes_not_resolved' => $myarray); 
 				fwrite($fp, json_encode($outputjson, JSON_UNESCAPED_SLASHES));
 				fclose($fp);

@@ -62,7 +62,7 @@ class Transform implements Visitor {
 	public function enterScript(Script $script) {
 
 		$this->context->outputs->current_includes_file = [];
-		
+
 		$this->current_myfile = new MyFile($this->context->inputs->get_file(), 0, 0);
 	}
 
@@ -97,8 +97,8 @@ class Transform implements Visitor {
 
 		if($this->context->outputs->get_resolve_includes())
 			$this->context->outputs->write_includes_file();
-			
-        //var_dump($script);
+
+		//var_dump($script);
 	}
 
 	public function enterBlock(Block $block, Block $prior = null) {
@@ -323,13 +323,13 @@ class Transform implements Visitor {
 
 					if($op->type == 4)
 						$this->array_requires[] = $file;
-						
-                    $myfile = new MyFile($file, 
-                        $this->context->get_current_line(),
-                            $this->context->get_current_column());
-                    $myfile->set_included_from_myfile($this->current_myfile);
-                    
-                    $this->current_myfile = $myfile;
+
+					$myfile = new MyFile($file, 
+							$this->context->get_current_line(),
+							$this->context->get_current_column());
+					$myfile->set_included_from_myfile($this->current_myfile);
+
+					$this->current_myfile = $myfile;
 
 					$inst_start_include = new MyInstruction(Opcodes::START_INCLUDE);	
 					$inst_start_include->add_property("myfile", $myfile);	
@@ -350,8 +350,8 @@ class Transform implements Visitor {
 				if($this->context->outputs->get_resolve_includes())
 				{
 					$myfile_temp = new MyFile($this->context->get_first_file(),
-                        $this->context->get_current_line(),
-                            $this->context->get_current_column());
+							$this->context->get_current_line(),
+							$this->context->get_current_column());
 
 					$this->context->outputs->current_includes_file[] = $myfile_temp;
 				}

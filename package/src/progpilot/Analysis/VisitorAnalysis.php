@@ -158,29 +158,29 @@ class VisitorAnalysis {
 					case Opcodes::TEMPORARY:
 						{
 							$tempdefa = $instruction->get_property("temporary");
-							
+
 							$tainted = false;
-                            if(!is_null($this->context->inputs->get_source_byname($tempdefa->get_name(), false, false, $tempdefa->get_array_value())))
-                                $tainted = true;
-                            $tempdefa->set_tainted($tainted);
-                            
+							if(!is_null($this->context->inputs->get_source_byname($tempdefa->get_name(), false, false, $tempdefa->get_array_value())))
+								$tainted = true;
+							$tempdefa->set_tainted($tainted);
+
 							$defs = ResolveDefs::temporary_simple($this->context, $this->defs, $tempdefa);
 
 							foreach($defs as $def)
 							{	
 								if($def->get_type() == MyOp::TYPE_PROPERTY)
 								{
-                                    if(!is_null($this->context->inputs->get_source_byname($def->get_name(), false, $def->get_class_name(), false)))
-                                        $def->set_tainted(true);
+									if(!is_null($this->context->inputs->get_source_byname($def->get_name(), false, $def->get_class_name(), false)))
+										$def->set_tainted(true);
 								}
-                            
+
 								$exprs = $def->get_exprs();
 								foreach($exprs as $expr)
 								{
 									if($expr->is_assign())
 									{
-                                        $defassign = $expr->get_assign_def();
-                                    
+										$defassign = $expr->get_assign_def();
+
 										$defassign->last_known_value($def->get_last_known_value());
 
 										ArrayAnalysis::copy_array($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $tempdefa, $tempdefa->get_array_value(), $defassign, $defassign->get_array_value());
@@ -212,10 +212,10 @@ class VisitorAnalysis {
 								$mydef_tmp->set_source_myfile($myfunc_call->get_source_myfile());
 
 								$instances = ResolveDefs::select_instances(
-                                    $this->context, 
-                                        $this->defs->getoutminuskill($mydef_tmp->get_block_id()), 
-                                            $mydef_tmp, 
-                                                false);
+										$this->context, 
+										$this->defs->getoutminuskill($mydef_tmp->get_block_id()), 
+										$mydef_tmp, 
+										false);
 
 								foreach($instances as $instance)
 								{
@@ -223,28 +223,28 @@ class VisitorAnalysis {
 									{
 										// the class is defined (it's always the case (build-in php or not), see visitorflowanalysis)
 										$myclasses = $instance->get_all_myclass();
-										
+
 										foreach($myclasses as $myclass)
 										{
-                                            $myfunc = $myclass->get_method($funcname);
+											$myfunc = $myclass->get_method($funcname);
 
-                                            if(ResolveDefs::get_visibility_method($instance, $myfunc))
-                                                $list_myfunc[] = [$myfunc, $myclass];
-                                            else
-                                                $list_myfunc[] = [null, $myclass];
+											if(ResolveDefs::get_visibility_method($instance, $myfunc))
+												$list_myfunc[] = [$myfunc, $myclass];
+											else
+												$list_myfunc[] = [null, $myclass];
 
-                                            // twig analysis
-                                            if($this->context->get_analyze_js())
-                                            {
-                                                if($myclass->get_name() == "Twig_Environment")
-                                                {
-                                                    if($myfunc_call->get_name() == "render")
-                                                    {
-                                                        TwigAnalysis::funccall($this->context, $myfunc_call, $instruction);
-                                                    }
-                                                }
-                                            }
-                                        }
+											// twig analysis
+											if($this->context->get_analyze_js())
+											{
+												if($myclass->get_name() == "Twig_Environment")
+												{
+													if($myfunc_call->get_name() == "render")
+													{
+														TwigAnalysis::funccall($this->context, $myfunc_call, $instruction);
+													}
+												}
+											}
+										}
 									}
 								}
 							}

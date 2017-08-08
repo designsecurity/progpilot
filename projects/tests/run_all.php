@@ -26,7 +26,7 @@ try {
 		$context->inputs->set_sanitizers("./data/sanitizers.json");
 		$context->inputs->set_validators("./data/validators.json");
 		$context->inputs->set_file($file);
-		
+
 		$context->outputs->tainted_flow(true);
 
 		//$context->set_analyze_includes(false);

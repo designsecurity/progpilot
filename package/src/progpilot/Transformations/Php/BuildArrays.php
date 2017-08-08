@@ -77,10 +77,10 @@ class BuildArrays {
 			{
 				if($op instanceof Op\Expr\ArrayDimFetch)
 				{
-                    $ind = 0;
-                    if(isset($op->dim->value))
-                        $ind = $op->dim->value;   
-                        
+					$ind = 0;
+					if(isset($op->dim->value))
+						$ind = $op->dim->value;   
+
 					$arr = array($ind => $arr);
 					$arr = BuildArrays::build_array_from_ops($op->var, $arr);
 				}

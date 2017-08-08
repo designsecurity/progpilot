@@ -21,7 +21,9 @@ class MyInputs {
 	private $sinks;
 	private $sources;
 	private $validators;
+	private $false_positives;
 
+	private $false_positives_file;
 	private $sources_file;
 	private $sinks_file;
 	private $sanitizers_file;
@@ -37,7 +39,9 @@ class MyInputs {
 		$this->sinks = [];
 		$this->sources = [];
 		$this->validators = [];
+		$this->false_positives = [];
 
+		$this->false_positives_file = null;
 		$this->includes_file = null;
 		$this->sanitizers_file = null;
 		$this->sinks_file = null;
@@ -132,33 +136,44 @@ class MyInputs {
 		{
 			if($mysource->get_name() == $name)
 			{
-                $check_function = false;
-                $check_array = false;
-                $check_instance = false;
-                
-                if($mysource->is_function() == $is_function)
-                    $check_function = true;
-                
-				if(($instance_name != false 
-                    && $mysource->is_instance() 
-                        && $mysource->get_instanceof_name() == $instance_name) || !$instance_name)
-                    $check_instance = true;
+				$check_function = false;
+				$check_array = false;
+				$check_instance = false;
 
-                if(($arr_value != false
-                    && $mysource->get_is_array()
-                        && is_null($mysource->get_array_value())) 
-                        || (!$arr_value && !$mysource->get_is_array()))
-                    $check_array = true;
-						  
-                if(($arr_value != false 
-                    && $mysource->get_is_array() 
-                        && !is_null($mysource->get_array_value())
-                            && $mysource->get_array_value() == $arr_value))
-                    $check_array = true;
-                    
-                if($check_array && $check_instance && $check_function)
-                    return $mysource;
+				if($mysource->is_function() == $is_function)
+					$check_function = true;
+
+				if(($instance_name != false 
+							&& $mysource->is_instance() 
+							&& $mysource->get_instanceof_name() == $instance_name) || !$instance_name)
+					$check_instance = true;
+
+				if(($arr_value != false
+							&& $mysource->get_is_array()
+							&& is_null($mysource->get_array_value())) 
+						|| (!$arr_value && !$mysource->get_is_array()))
+					$check_array = true;
+
+				if(($arr_value != false 
+							&& $mysource->get_is_array() 
+							&& !is_null($mysource->get_array_value())
+							&& $mysource->get_array_value() == $arr_value))
+					$check_array = true;
+
+				if($check_array && $check_instance && $check_function)
+					return $mysource;
 			}
+		}
+
+		return null;
+	}
+
+	public function get_false_positive_byid($id)
+	{
+		foreach($this->false_positives as $false_positive)
+		{
+			if($false_positive->get_id() == $id)
+				return $false_positive;
 		}
 
 		return null;
@@ -187,6 +202,16 @@ class MyInputs {
 	public function get_includes()
 	{
 		return $this->includes;
+	}
+
+	public function get_false_positives()
+	{
+		return $this->false_positives_file;
+	}
+
+	public function set_false_positives($file)
+	{
+		$this->false_positives_file = $file;
 	}
 
 	public function set_includes($file)
@@ -333,7 +358,7 @@ class MyInputs {
 					$language = $source->{'language'};
 
 					$mysource = new MySource($name, $language);
-						
+
 					if(isset($source->{'is_function'}) && $source->{'is_function'})
 					{
 						$mysource->set_is_function(true);
@@ -346,16 +371,16 @@ class MyInputs {
 
 					if(isset($source->{'array_index'}))
 					{
-                        $arr = array($source->{'array_index'} => false);
+						$arr = array($source->{'array_index'} => false);
 						$mysource->set_array_value($arr);
 					}
-					
+
 					if(isset($source->{'instanceof'}))
 					{
 						$mysource->set_is_instance(true);
 						$mysource->set_instanceof_name($source->{'instanceof'});
 					}
-					
+
 					if(isset($source->{'return_array_index'}))
 					{
 						$mysource->set_return_array(true);
@@ -370,14 +395,14 @@ class MyInputs {
 							if(is_int($parameter->{'id'}))
 							{
 								$mysource->add_parameter($parameter->{'id'});
-								
-                                if(isset($parameter->{'is_array'}) 
-                                    && $parameter->{'is_array'} 
-                                        && isset($parameter->{'array_index'}))
-                                {
-                                    $mysource->add_condition_parameter($parameter->{'id'}, MySource::CONDITION_ARRAY, $parameter->{'array_index'});
-                                }
-                            }
+
+								if(isset($parameter->{'is_array'}) 
+										&& $parameter->{'is_array'} 
+										&& isset($parameter->{'array_index'}))
+								{
+									$mysource->add_condition_parameter($parameter->{'id'}, MySource::CONDITION_ARRAY, $parameter->{'array_index'});
+								}
+							}
 						}
 
 						$mysource->set_has_parameters(true);
@@ -481,6 +506,35 @@ class MyInputs {
 			}
 			else
 				throw new \Exception(Lang::FORMAT_INCLUDES);
+		}
+	}
+
+	public function read_false_positives()
+	{
+		if(!is_null($this->false_positives_file))
+		{
+			if(!file_exists($this->false_positives_file))
+				throw new \Exception(Lang::FILE_DOESNT_EXIST);
+
+			$output_json = file_get_contents($this->false_positives_file);
+			$parsed_json = json_decode($output_json);
+
+			if(isset($parsed_json->{'false_positives'}))
+			{
+				$false_positives = $parsed_json->{'false_positives'};
+				foreach($false_positives as $false_positive)
+				{
+					if(!isset($false_positive->{'vuln_id'}))
+						throw new \Exception(Lang::FORMAT_FALSE_POSITIVES);
+
+					$vuln_id = $false_positive->{'vuln_id'};
+
+					$myvuln = new MyVuln($vuln_id);
+					$this->false_positives[] = $myvuln;
+				}
+			}
+			else
+				throw new \Exception(Lang::FORMAT_FALSE_POSITIVES);
 		}
 	}
 }

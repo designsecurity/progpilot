@@ -15,7 +15,7 @@ class AbstractSyntaxTree extends NodeVisitorAbstract
 {
 	private $nodes;
 	private $edges; 
-	
+
 	public function __construct() {
 
 		$this->nodes = [];
@@ -41,31 +41,31 @@ class AbstractSyntaxTree extends NodeVisitorAbstract
 	{
 		$this->edges[] = [$caller, $callee];
 	}
-	
-    public function beforeTraverse(array $nodes)   
-    { 
-    
-    }
-    
-    public function enterNode(Node $node) 
-    { 
-        foreach ($node->getSubNodeNames() as $name) 
-        {
-            $subNode =& $node->$name;
-            
-            if(is_object($subNode))
-                $this->add_edge($node, $subNode);
-        }
-    }
-    
-    public function leaveNode(Node $node) 
-    { 
-    
-    }
-    
-    public function afterTraverse(array $nodes)     
-    { 
-    
-    }
+
+	public function beforeTraverse(array $nodes)   
+	{ 
+
+	}
+
+	public function enterNode(Node $node) 
+	{ 
+		foreach ($node->getSubNodeNames() as $name) 
+		{
+			$subNode =& $node->$name;
+
+			if(is_object($subNode))
+				$this->add_edge($node, $subNode);
+		}
+	}
+
+	public function leaveNode(Node $node) 
+	{ 
+
+	}
+
+	public function afterTraverse(array $nodes)     
+	{ 
+
+	}
 }
- 
+

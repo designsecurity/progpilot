@@ -39,7 +39,7 @@ class MyOp {
 		$this->is_arr = false;
 		$this->array_value = false;
 	}
-	
+
 	public function get_is_array()
 	{
 		return $this->is_arr;
@@ -49,12 +49,12 @@ class MyOp {
 	{
 		$this->is_arr = $is_array;
 	}
-	
+
 	public function set_array_value($array_value)
 	{
 		$this->array_value = $array_value;
 	}
-	
+
 	public function get_array_value()
 	{
 		return $this->array_value;

@@ -18,15 +18,15 @@ class MyFile extends MyOp {
 
 		parent::__construct($var_name, $var_line, $var_column);
 	}
-	
+
 	public function set_included_from_myfile($myfile_from)
 	{
-        $this->included_from_myfile = $myfile_from;
+		$this->included_from_myfile = $myfile_from;
 	}
-	
+
 	public function get_included_from_myfile()
 	{
-        return $this->included_from_myfile;
+		return $this->included_from_myfile;
 	}
 }
 

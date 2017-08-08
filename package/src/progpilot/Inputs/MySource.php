@@ -20,7 +20,7 @@ class MySource extends MySpecify  {
 	private $parameters;
 	private $conditions_parameters;
 	private $has_parameters;
-	
+
 	const CONDITION_ARRAY = "condition_array";
 
 	public function __construct($name, $language) {
@@ -94,13 +94,13 @@ class MySource extends MySpecify  {
 
 	public function get_condition_parameter($parameter, $condition)
 	{
-        foreach($this->conditions_parameters[$parameter] as $condition_param)
-        {
-            if($condition_param[0] == $condition)
-                return $condition_param[1];
-        }
-        
-        return null;
+		foreach($this->conditions_parameters[$parameter] as $condition_param)
+		{
+			if($condition_param[0] == $condition)
+				return $condition_param[1];
+		}
+
+		return null;
 	}
 
 	public function add_parameter($parameter)

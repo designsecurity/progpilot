@@ -61,50 +61,50 @@ class SecurityAnalysis {
 
 	public static function tainted_flow($context, $def_expr_flow, $mysink)
 	{
-        $result_tainted_flow = [];
-        
-        $id_flow = \progpilot\Utils::print_definition($def_expr_flow);
-        
-        while($def_expr_flow->get_taintedbyexpr() !== null)
-        {
-            $tainted_flow_expr = $def_expr_flow->get_taintedbyexpr();
-            $defs_expr_tainted = $tainted_flow_expr->get_defs();
+		$result_tainted_flow = [];
 
-            foreach($defs_expr_tainted as $def_expr_flow_from)
-            {
-                if(!SecurityAnalysis::is_safe($def_expr_flow_from, $mysink))
-                {
-                    $one_tainted["flow_name"] = \progpilot\Utils::print_definition($def_expr_flow_from);
-                    $one_tainted["flow_line"] = $def_expr_flow_from->getLine();
-                    $one_tainted["flow_column"] = $def_expr_flow_from->getColumn();
-                    $one_tainted["flow_file"] = \progpilot\Utils::encode_characters($def_expr_flow_from->get_source_myfile()->get_name());
-                    $result_tainted_flow[] = $one_tainted;
+		$id_flow = \progpilot\Utils::print_definition($def_expr_flow);
 
-                    $id_flow .= \progpilot\Utils::print_definition($def_expr_flow_from);
-                    
-                    $def_expr_flow = $def_expr_flow_from;
-                    break;
-                }
-            }
-        }
-        
-        return [$result_tainted_flow, $id_flow];
+		while($def_expr_flow->get_taintedbyexpr() !== null)
+		{
+			$tainted_flow_expr = $def_expr_flow->get_taintedbyexpr();
+			$defs_expr_tainted = $tainted_flow_expr->get_defs();
+
+			foreach($defs_expr_tainted as $def_expr_flow_from)
+			{
+				if(!SecurityAnalysis::is_safe($def_expr_flow_from, $mysink))
+				{
+					$one_tainted["flow_name"] = \progpilot\Utils::print_definition($def_expr_flow_from);
+					$one_tainted["flow_line"] = $def_expr_flow_from->getLine();
+					$one_tainted["flow_column"] = $def_expr_flow_from->getColumn();
+					$one_tainted["flow_file"] = \progpilot\Utils::encode_characters($def_expr_flow_from->get_source_myfile()->get_name());
+					$result_tainted_flow[] = $one_tainted;
+
+					$id_flow .= \progpilot\Utils::print_definition($def_expr_flow_from);
+
+					$def_expr_flow = $def_expr_flow_from;
+					break;
+				}
+			}
+		}
+
+		return [$result_tainted_flow, $id_flow];
 	}
 
 	public static function call($myfunc_call, $context, $mysink, $mydef)
 	{
 		$results = &$context->outputs->get_results();
 
-        $hash_id_vuln = "";
-        
+		$hash_id_vuln = "";
+
 		$temp["source_name"] = [];
 		$temp["source_line"] = [];
 		$temp["source_column"] = [];
 		$temp["source_file"] = [];
-		
+
 		if($context->outputs->get_tainted_flow())
-            $temp["tainted_flow"] = [];
-        
+			$temp["tainted_flow"] = [];
+
 		$nbtainted = 0;
 
 		if(!SecurityAnalysis::is_safe($mydef, $mysink))
@@ -116,15 +116,15 @@ class SecurityAnalysis {
 			{
 				if(!SecurityAnalysis::is_safe($def_expr, $mysink))
 				{
-                    $results_flow = SecurityAnalysis::tainted_flow($context, $def_expr, $mysink);
-                    $result_tainted_flow = $results_flow[0];
-                    $hash_id_vuln .= $results_flow[1];
-                    
+					$results_flow = SecurityAnalysis::tainted_flow($context, $def_expr, $mysink);
+					$result_tainted_flow = $results_flow[0];
+					$hash_id_vuln .= $results_flow[1];
+
 					$temp["source_name"][] = \progpilot\Utils::print_definition($def_expr);
-                    
-                    if($context->outputs->get_tainted_flow())
-                        $temp["tainted_flow"][] = $result_tainted_flow;
-					
+
+					if($context->outputs->get_tainted_flow())
+						$temp["tainted_flow"][] = $result_tainted_flow;
+
 					$temp["source_line"][] = $def_expr->getLine();
 					$temp["source_column"][] = $def_expr->getColumn();
 					$temp["source_file"][] = \progpilot\Utils::encode_characters($def_expr->get_source_myfile()->get_name());
@@ -134,15 +134,17 @@ class SecurityAnalysis {
 			$nbtainted ++;
 		}
 
-		if($nbtainted)
+		$hash_id_vuln = hash("sha256", $hash_id_vuln."-".$mysink->get_name());
+
+		if($nbtainted && is_null($context->inputs->get_false_positive_byid($hash_id_vuln)))
 		{
 			$temp["sink_name"] = \progpilot\Utils::encode_characters($mysink->get_name());
 			$temp["sink_line"] = $myfunc_call->getLine();
 			$temp["sink_column"] = $myfunc_call->getColumn();
 			$temp["sink_file"] = \progpilot\Utils::encode_characters($myfunc_call->get_source_myfile()->get_name());
 			$temp["vuln_name"] = \progpilot\Utils::encode_characters($mysink->get_attack());
-			$temp["vuln_id"] = hash("sha256", $hash_id_vuln.$temp["sink_name"]);
-			
+			$temp["vuln_id"] = $hash_id_vuln;
+
 			$results[] = $temp;
 		}
 	}

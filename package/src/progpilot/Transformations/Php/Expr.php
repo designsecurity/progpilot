@@ -26,12 +26,12 @@ class Expr {
 
 	public static function instruction($op, $context, $myexpr, $assign_id)
 	{
-        $mytemp_def = null;
+		$mytemp_def = null;
 		$arr_funccall = false;
 		$name = Common::get_name_definition($op);
 		$type = Common::get_type_definition($op);
 		$type_array = Common::get_type_is_array($op);
-		
+
 		// end of expression
 		if(!is_null($type) && $type != MyOp::TYPE_FUNCCALL_ARRAY)
 		{
@@ -54,25 +54,25 @@ class Expr {
 
 			if($type == MyOp::TYPE_PROPERTY)
 			{
-                if($type_array == MyOp::TYPE_ARRAY)
-                {
-                    $property_name = Common::get_name_definition($op, true);
-                }
-                else
-                {
-                    foreach($op->ops as $property)
-                    {
-                        if($property instanceof Op\Expr\PropertyFetch)
-                        {
-                            $property_name = $property->name->value;
-                            break;
-                        }
-                    }
-                }
+				if($type_array == MyOp::TYPE_ARRAY)
+				{
+					$property_name = Common::get_name_definition($op, true);
+				}
+				else
+				{
+					foreach($op->ops as $property)
+					{
+						if($property instanceof Op\Expr\PropertyFetch)
+						{
+							$property_name = $property->name->value;
+							break;
+						}
+					}
+				}
 
 				$mytemp->set_type(MyOp::TYPE_PROPERTY);
 				$mytemp->property->set_name($property_name);
-                
+
 			}
 
 			$inst_temporary_simple = new MyInstruction(Opcodes::TEMPORARY);
@@ -140,8 +140,8 @@ class Expr {
 				}
 			}
 		}
-		
-        return $mytemp_def;
+
+		return $mytemp_def;
 	}
 }
 

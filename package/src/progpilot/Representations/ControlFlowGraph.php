@@ -28,17 +28,17 @@ class ControlFlowGraph {
 	public function get_textofmyblock($id)
 	{
 		if(isset($this->myblock_text["$id"]))
-            return $this->myblock_text["$id"];
-        
-        return "";
+			return $this->myblock_text["$id"];
+
+		return "";
 	}
 
 	public function add_textofmyblock($id, $text)
 	{
 		if(isset($this->myblock_text["$id"]))
-            $this->myblock_text["$id"] = $this->myblock_text["$id"]."$text";
-        else
-            $this->myblock_text["$id"] = "$text";
+			$this->myblock_text["$id"] = $this->myblock_text["$id"]."$text";
+		else
+			$this->myblock_text["$id"] = "$text";
 	}
 
 	public function get_nodes()

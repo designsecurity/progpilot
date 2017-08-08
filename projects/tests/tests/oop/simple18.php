@@ -31,6 +31,9 @@ else
 
 $instance1->set_boum1($_GET["p"]);
 
+
+
+
 echo $instance1->boum1;
 
 

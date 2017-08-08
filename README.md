@@ -86,9 +86,6 @@ array(1) {
       [0]=>
       string(12) "example1.php"
     }
-    ["tainted_flow"]=>
-    array(0) {
-    }
     ["sink_name"]=>
     string(4) "echo"
     ["sink_line"]=>

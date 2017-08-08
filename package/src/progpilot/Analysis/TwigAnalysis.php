@@ -36,7 +36,7 @@ class TwigAnalysis {
 			$variable = $instruction->get_property("argdef1");
 
 			$file = $path."/".$template->get_last_known_value();
-            $myjavascript_file = new MyFile($file, $myfunc_call->getLine(),  $myfunc_call->getColumn());
+			$myjavascript_file = new MyFile($file, $myfunc_call->getLine(),  $myfunc_call->getColumn());
 
 			if(file_exists($file))
 			{

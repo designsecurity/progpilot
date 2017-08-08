@@ -32,7 +32,7 @@ class Assign {
 		$name = Common::get_name_definition($context->get_current_op());
 		$type = Common::get_type_definition($context->get_current_op());
 		$type_array = Common::get_type_is_array($context->get_current_op());
-		
+
 
 		// name of function return
 		if($is_returndef)
@@ -40,14 +40,14 @@ class Assign {
 
 		$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name);
 		$mydef->set_assign_id($assign_id);
-		
+
 		$isref = false;
 		if($context->get_current_op() instanceof Op\Expr\AssignRef)
 		{
 			$isref = true;
 			$mydef->set_is_ref(true);
-        }
-        
+		}
+
 		if($is_returndef)
 			$context->get_current_func()->add_return_def($mydef);
 
@@ -81,7 +81,7 @@ class Assign {
 		}
 
 		// $array = [expr, expr, expr]
-        if($type_array == MyOp::TYPE_ARRAY_EXPR)
+		if($type_array == MyOp::TYPE_ARRAY_EXPR)
 		{
 			$arr = false;
 			if(isset($context->get_current_op()->var))
@@ -90,12 +90,12 @@ class Assign {
 			ArrayExpr::instruction($context->get_current_op()->expr, $context, $arr, $name, $is_returndef);
 		}
 		// a variable, property
-        if($type == MyOp::TYPE_PROPERTY)
+		if($type == MyOp::TYPE_PROPERTY)
 		{
-            $property_name = Common::get_name_definition($context->get_current_op(), true);
+			$property_name = Common::get_name_definition($context->get_current_op(), true);
 			$mydef->set_type(MyOp::TYPE_PROPERTY);
 			$mydef->property->set_name($property_name);
-			
+
 		}
 		// an object (created by new)
 		else if($type == MyOp::TYPE_INSTANCE)
@@ -111,7 +111,7 @@ class Assign {
 		{
 			$ref_name = Common::get_name_definition($context->get_current_op()->expr);
 			$ref_type = Common::get_type_definition($context->get_current_op()->expr);
-            $ref_type_array = Common::get_type_is_array($context->get_current_op()->expr);
+			$ref_type_array = Common::get_type_is_array($context->get_current_op()->expr);
 			$mydef->set_ref_name($ref_name);
 
 			if($ref_type_array == MyOp::TYPE_ARRAY)

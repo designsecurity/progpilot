@@ -49,7 +49,7 @@ class Context {
 		$this->inputs = new \progpilot\Inputs\MyInputs;
 		$this->outputs = new \progpilot\Outputs\MyOutputs;
 	}
-    
+
 	public function get_analyze_js()
 	{
 		return $this->analyze_js;

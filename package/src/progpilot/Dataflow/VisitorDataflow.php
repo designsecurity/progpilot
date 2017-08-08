@@ -27,12 +27,12 @@ class VisitorDataflow {
 	private $current_block_id;
 	private $old_current_myfile;
 	private $current_myfile;
-	
+
 	/* representations */
 	private $current_func;
 
 	public function __construct() {
-	
+
 	}	
 
 	protected function getBlockId($myblock) {
@@ -50,12 +50,12 @@ class VisitorDataflow {
 	}
 
 	public function analyze($context) {
-        
-        $myfirstfile = new MyFile($context->get_first_file(), 0, 0);
-        
+
+		$myfirstfile = new MyFile($context->get_first_file(), 0, 0);
+
 		$this->old_current_myfile = $myfirstfile;
 		$this->current_myfile = $myfirstfile;
-							
+
 		$mycode = $context->get_mycode();
 		$index = $mycode->get_start();
 		$code = $mycode->get_codes();
@@ -112,15 +112,15 @@ class VisitorDataflow {
 							$this->defs = $defs;
 
 							$this->blocks = new \SplObjectStorage;
-							
+
 							$this->current_block_id = 0;
 							$this->current_func = $myfunc;
 
 							if($myfunc->get_type() == MyOp::TYPE_METHOD)
 							{
 								$thisdef = $myfunc->get_this_def();
-                                $thisdef->set_source_myfile($this->current_myfile);
-                                
+								$thisdef->set_source_myfile($this->current_myfile);
+
 								$this->defs->adddef($thisdef->get_name(), $thisdef);
 								$this->defs->addgen($thisdef->get_block_id(), $thisdef);
 							}
@@ -240,34 +240,34 @@ class VisitorDataflow {
 								$this->defs->adddef($mybackdef->get_name(), $mybackdef);
 								$this->defs->addgen($mybackdef->get_block_id(), $mybackdef);
 							}
-							
+
 							$mysource = $context->inputs->get_source_byname($myfunc_call->get_name(), true, false);
-                            if(!is_null($mysource))
-                            {
-                                if($mysource->has_parameters())
-                                {
-                                    $nbparams = 0;
-                                    while(true)
-                                    {
-                                        if(!$instruction->is_property_exist("argdef$nbparams"))
-                                            break;
+							if(!is_null($mysource))
+							{
+								if($mysource->has_parameters())
+								{
+									$nbparams = 0;
+									while(true)
+									{
+										if(!$instruction->is_property_exist("argdef$nbparams"))
+											break;
 
-                                        $defarg = $instruction->get_property("argdef$nbparams");  
+										$defarg = $instruction->get_property("argdef$nbparams");  
 
-                                        if($mysource->is_parameter($nbparams+1))
-                                        {
-                                            $deffrom = $defarg->get_value_from_def();
-                                            if(!is_null($deffrom))
-                                            {
-                                                $this->defs->adddef($deffrom->get_name(), $deffrom);
-                                                $this->defs->addgen($deffrom->get_block_id(), $deffrom);
-                                            }
-                                        }
-                                        
-                                        $nbparams ++;
-                                    }
-                                }
-                            }
+										if($mysource->is_parameter($nbparams+1))
+										{
+											$deffrom = $defarg->get_value_from_def();
+											if(!is_null($deffrom))
+											{
+												$this->defs->adddef($deffrom->get_name(), $deffrom);
+												$this->defs->addgen($deffrom->get_block_id(), $deffrom);
+											}
+										}
+
+										$nbparams ++;
+									}
+								}
+							}
 
 							// representations start
 							$id_cfg = $this->current_func->get_start_address_func()."-".$this->current_block_id;
@@ -282,7 +282,7 @@ class VisitorDataflow {
 						{
 							$mydef = $instruction->get_property("temporary");
 							$mydef->set_block_id($this->current_block_id);
-							
+
 							if(is_null($mydef->get_source_myfile()))
 								$mydef->set_source_myfile($this->current_myfile);
 
