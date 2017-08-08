@@ -101,7 +101,9 @@ class SecurityAnalysis {
 		$temp["source_line"] = [];
 		$temp["source_column"] = [];
 		$temp["source_file"] = [];
-        $temp["tainted_flow"] = [];
+		
+		if($context->outputs->get_tainted_flow())
+            $temp["tainted_flow"] = [];
         
 		$nbtainted = 0;
 
@@ -139,7 +141,7 @@ class SecurityAnalysis {
 			$temp["sink_column"] = $myfunc_call->getColumn();
 			$temp["sink_file"] = \progpilot\Utils::encode_characters($myfunc_call->get_source_myfile()->get_name());
 			$temp["vuln_name"] = \progpilot\Utils::encode_characters($mysink->get_attack());
-			$temp["vuln_id"] = hash("sha256", $hash_id_vuln);
+			$temp["vuln_id"] = hash("sha256", $hash_id_vuln.$temp["sink_name"]);
 			
 			$results[] = $temp;
 		}

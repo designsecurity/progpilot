@@ -36,6 +36,7 @@ This function is explained in the chapter about [**included files**](./INCLUDES.
 - $obj_context->outputs->resolve_includes($bool);
 - $obj_context->outputs->resolve_includes_file($file);  
 These functions are explained in the chapter about [**included files**](./INCLUDES.md)
+- $obj_context->outputs->get_ast();
 - $obj_context->outputs->get_cfg();
 - $obj_context->outputs->get_callgraph();
 - $obj_context->outputs->tainted_flow($bool);  
