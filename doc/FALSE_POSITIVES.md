@@ -20,4 +20,4 @@ Produce a json file which contains all your false positives with **vuln_id** for
 And pass it to this function :
 - $context->inputs->set_false_positives("./false_positives.json");
 
-The analyzer will not considerer the vulnerabilities with these hashs.
+The analyzer will not consider the vulnerabilities with these hashs.
