@@ -28,6 +28,7 @@ $results = $context->outputs->get_results();
 $outputjson = array('results' => $results); 
 
 var_dump($results); 
+
 ?>
 
 

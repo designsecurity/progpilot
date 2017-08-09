@@ -7,8 +7,8 @@ $framework = new framework_test;
 require_once './ooptest.php';
 require_once './datatest.php';
 require_once './includetest.php';
-require_once './conditionstest.php';
 require_once './generictest.php';
+require_once './conditionstest.php';
 
 //require_once './negativetest.php'; !!!! ERREUR SYNTAX = RESTE NON EXECUTE ?
 //require_once './twigtest.php';

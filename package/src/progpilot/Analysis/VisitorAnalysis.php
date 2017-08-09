@@ -182,6 +182,11 @@ class VisitorAnalysis {
 										$defassign = $expr->get_assign_def();
 
 										$defassign->last_known_value($def->get_last_known_value());
+										
+										if($tempdefa->get_cast() == MyDefinition::CAST_NOT_SAFE)
+                                            $defassign->set_cast($def->get_cast());
+                                        else
+                                            $defassign->set_cast($tempdefa->get_cast());
 
 										ArrayAnalysis::copy_array($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $tempdefa, $tempdefa->get_array_value(), $defassign, $defassign->get_array_value());
 

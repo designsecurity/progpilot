@@ -15,6 +15,9 @@ use progpilot\Objects\MyOp;
 
 class MyDefinition extends MyOp {
 
+	const CAST_SAFE = "cast_int";
+	const CAST_NOT_SAFE = "cast_string";
+
 	private $is_copy_array;
 	private $block_id;
 	private $is_tainted;
@@ -33,6 +36,7 @@ class MyDefinition extends MyOp {
 	private $assign_id;
 	private $myclasses;
 	private $value_from_def;
+	private $cast;
 
 	public $property;
 
@@ -62,11 +66,12 @@ class MyDefinition extends MyOp {
 		$this->assign_id = -1;
 
 		$this->property = new MyProperty;
+		$this->cast = MyDefinition::CAST_NOT_SAFE;
 	}
 
 	public function print_stdout()
 	{
-		echo "def name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: assign_id = ".$this->get_assign_id()." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_ref()." :: type = ".$this->get_type()." :: blockid = ".$this->get_block_id()."\n";
+		echo "def name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: assign_id = ".$this->get_assign_id()." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_ref()." :: type = ".$this->get_type()." :: blockid = ".$this->get_block_id()." :: cast = ".$this->get_cast()."\n";
 		if($this->get_is_array())
 		{
 			echo "array index value :\n";
@@ -104,6 +109,16 @@ class MyDefinition extends MyOp {
 			}
 			echo "copyarray end =================\n";
 		}
+	}
+
+	public function set_cast($cast)
+	{
+		$this->cast = $cast;
+	}
+
+	public function get_cast()
+	{
+		return $this->cast;
 	}
 
 	public function set_value_from_def($def)

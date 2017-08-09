@@ -10,6 +10,8 @@
 
 namespace progpilot\Analysis;
 
+use progpilot\Objects\MyDefinition;
+
 class AssertionAnalysis {
 
 	public static function temporary_simple($context, $data, $myblock, $resolve_temporary, $tempdefa)
@@ -46,7 +48,10 @@ class AssertionAnalysis {
 				$safe = true;
 			}
 		}
-
+		
+        if($resolve_temporary->get_cast() == MyDefinition::CAST_SAFE)
+            $safe = true;
+            
 		return $safe;
 	}
 }

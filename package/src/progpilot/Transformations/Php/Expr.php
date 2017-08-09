@@ -23,8 +23,8 @@ use progpilot\Code\Opcodes;
 use progpilot\Transformations\Php\Transform;
 
 class Expr {
-
-	public static function instruction($op, $context, $myexpr, $assign_id)
+	
+	public static function instruction($op, $context, $myexpr, $assign_id, $cast = MyDefinition::CAST_NOT_SAFE)
 	{
 		$mytemp_def = null;
 		$arr_funccall = false;
@@ -43,7 +43,8 @@ class Expr {
 			$mytemp = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name);
 			$mytemp->last_known_value($name);
 			$mytemp->set_assign_id($assign_id);
-
+			$mytemp->set_cast($cast);
+			
 			if($arr != false)
 			{
 				$mytemp->set_is_array(true);
@@ -94,7 +95,19 @@ class Expr {
 		{
 			foreach($op->ops as $ops)
 			{
-				if($ops instanceof Op\Expr\BinaryOp\Concat)
+                if($ops instanceof Op\Expr\Cast\Int_
+                    || $ops instanceof Op\Expr\Cast\Array_
+                        || $ops instanceof Op\Expr\Cast\Bool_
+                            || $ops instanceof Op\Expr\Cast\Double_
+                                || $ops instanceof Op\Expr\Cast\Object_
+                                    || $ops instanceof Op\Expr\Cast\Array_)
+                                    
+					Expr::instruction($ops->expr, $context, $myexpr, $assign_id, MyDefinition::CAST_SAFE);
+
+                else if($ops instanceof Op\Expr\Cast\String_)
+					Expr::instruction($ops->expr, $context, $myexpr, $assign_id, MyDefinition::CAST_NOT_SAFE);
+                
+				else if($ops instanceof Op\Expr\BinaryOp\Concat)
 				{
 					$context->get_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_LEFT));
 					Expr::instruction($ops->left, $context, $myexpr, $assign_id);

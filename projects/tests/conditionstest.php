@@ -20,5 +20,10 @@ $framework->add_output("./tests/conditions/condition6.php", array("\$tainted"));
 $framework->add_output("./tests/conditions/condition6.php", array("3"));
 $framework->add_output("./tests/conditions/condition6.php", "xss");
 
+$framework->add_testbasis("./tests/conditions/condition7.php");
+$framework->add_output("./tests/conditions/condition7.php", array("\$tainted"));
+$framework->add_output("./tests/conditions/condition7.php", array("3"));
+$framework->add_output("./tests/conditions/condition7.php", "xss");
+
 
 ?>

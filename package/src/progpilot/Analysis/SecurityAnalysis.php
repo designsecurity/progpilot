@@ -80,7 +80,7 @@ class SecurityAnalysis {
 					$one_tainted["flow_file"] = \progpilot\Utils::encode_characters($def_expr_flow_from->get_source_myfile()->get_name());
 					$result_tainted_flow[] = $one_tainted;
 
-					$id_flow .= \progpilot\Utils::print_definition($def_expr_flow_from);
+					$id_flow .= \progpilot\Utils::print_definition($def_expr_flow_from)."-".$def_expr_flow_from->get_source_myfile()->get_name();
 
 					$def_expr_flow = $def_expr_flow_from;
 					break;
@@ -134,7 +134,7 @@ class SecurityAnalysis {
 			$nbtainted ++;
 		}
 
-		$hash_id_vuln = hash("sha256", $hash_id_vuln."-".$mysink->get_name());
+		$hash_id_vuln = hash("sha256", $hash_id_vuln."-".$mysink->get_name()."-".$myfunc_call->get_source_myfile()->get_name());
 
 		if($nbtainted && is_null($context->inputs->get_false_positive_byid($hash_id_vuln)))
 		{
