@@ -74,7 +74,7 @@ class MyClass extends MyOp {
 		$exist = false;
 		foreach($this->properties as $property_class)
 		{
-			if($property_class->property->get_name() == $property->property->get_name())
+			if($property_class->property->get_properties() === $property->property->get_properties())
 			{
 				$exist = true;
 				break;
@@ -85,16 +85,28 @@ class MyClass extends MyOp {
 			$this->properties[] = $property;
 	}
 
-	public function get_property($defsearch)
+	public function get_property($name)
 	{
 		foreach($this->properties as $property)
 		{
-			if($property->property->get_name() == $defsearch->property->get_name())
+			if($property->property->get_properties()[0] === $name)
 				return $property;
 		}
 
 		return null;
 	}
+    /*
+	public function get_property($defsearch)
+	{
+		foreach($this->properties as $property)
+		{
+			if($property->property->get_name() === $defsearch->property->get_name())
+				return $property;
+		}
+
+		return null;
+	}
+	*/
 }
 
 ?>

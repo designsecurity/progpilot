@@ -55,25 +55,10 @@ class Expr {
 
 			if($type == MyOp::TYPE_PROPERTY)
 			{
-				if($type_array == MyOp::TYPE_ARRAY)
-				{
-					$property_name = Common::get_name_definition($op, true);
-				}
-				else
-				{
-					foreach($op->ops as $property)
-					{
-						if($property instanceof Op\Expr\PropertyFetch)
-						{
-							$property_name = $property->name->value;
-							break;
-						}
-					}
-				}
-
-				$mytemp->set_type(MyOp::TYPE_PROPERTY);
-				$mytemp->property->set_name($property_name);
-
+				$property_name = Common::get_name_property($op->ops[0]);
+				
+				$mytemp->set_is_property(true);
+				$mytemp->property->set_properties($property_name);
 			}
 
 			$inst_temporary_simple = new MyInstruction(Opcodes::TEMPORARY);

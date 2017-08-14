@@ -32,3 +32,8 @@ There is a lot of tasks to do :
 - Passing by reference
 - Pushing elements into array (like array[] = ele; or push_array())
 - Property of an object is an object
+- Sanitizers : prevent property must be an array
+- Objects references and assignments to variables
+- static methods
+- cast expression : ((int) ($taint)).$taint
+- if property hasn't been declared but used later (class { miss public $property;})

@@ -5,9 +5,9 @@ Each vulnerability has an identifier :
     ["vuln_id"]=>
     string(64) "e64d474f7d71f783ca18431b280095644599c6b789005c7748587891a0cd8a94"
 ```
-which consists of a hash of the name of tainted variables and sink.  
-So this hash is independent of code indentation and you could use it for handle false positives.  
-Produce a json file which contains all your false positives with **vuln_id** for each :
+which consists of the hash of the names of tainted variables and file location and sink name.  
+So this hash is independent of code indentation and you could use it to handle false positives.  
+Produce a json file that contains all your false positives with **vuln_id** for each :
 ```javascript
 {
     "false_positives":

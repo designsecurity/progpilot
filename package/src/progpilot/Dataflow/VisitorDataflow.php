@@ -116,7 +116,7 @@ class VisitorDataflow {
 							$this->current_block_id = 0;
 							$this->current_func = $myfunc;
 
-							if($myfunc->get_type() == MyOp::TYPE_METHOD)
+							if($myfunc->get_is_method())
 							{
 								$thisdef = $myfunc->get_this_def();
 								$thisdef->set_source_myfile($this->current_myfile);
@@ -230,18 +230,18 @@ class VisitorDataflow {
 							if(is_null($myfunc_call->get_source_myfile()))
 								$myfunc_call->set_source_myfile($this->current_myfile);
 
-							if($myfunc_call->get_type() == MyOp::TYPE_INSTANCE)
+							if($myfunc_call->get_is_method())
 							{
 								$mybackdef = $myfunc_call->get_back_def();
 								$mybackdef->set_block_id($this->current_block_id);
-								$mybackdef->set_type(MyOp::TYPE_INSTANCE);
+								$mybackdef->set_is_instance(true);
 								$mybackdef->set_source_myfile($this->current_myfile);
 
 								$this->defs->adddef($mybackdef->get_name(), $mybackdef);
 								$this->defs->addgen($mybackdef->get_block_id(), $mybackdef);
 							}
 
-							$mysource = $context->inputs->get_source_byname($myfunc_call->get_name(), true, false);
+							$mysource = $context->inputs->get_source_byname(null, $myfunc_call, true, false, false);
 							if(!is_null($mysource))
 							{
 								if($mysource->has_parameters())
@@ -307,7 +307,7 @@ class VisitorDataflow {
 							$this->defs->adddef($mydef->get_name(), $mydef);
 							$this->defs->addgen($mydef->get_block_id(), $mydef);
 
-							if($mydef->get_type() == MyOp::TYPE_INSTANCE)
+							if($mydef->get_is_instance())
 							{
 								$myclass = $context->get_classes()->get_myclass($mydef->get_class_name());
 								if(!is_null($myclass))

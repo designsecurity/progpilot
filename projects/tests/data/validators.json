@@ -5,6 +5,11 @@
                 {"id": 1, "condition": "valid"},
                 {"id": 2, "condition": "array_not_tainted"}
             ]
+        },
+        {"name": "isValidNumber", "instanceof": "ESAPI->validator", "language": "php", "parameters": 
+            [
+                {"id": 2, "condition": "valid"}
+            ]
         }
 		]
 }

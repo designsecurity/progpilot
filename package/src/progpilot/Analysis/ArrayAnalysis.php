@@ -161,7 +161,7 @@ class ArrayAnalysis {
 
 		if(!is_null($originaltab) && !is_null($copytab))
 		{        
-			if($originaltab->get_type() == MyOp::TYPE_PROPERTY)
+			if($originaltab->get_is_property())
 				$defs = ResolveDefs::select_properties(
 						$context, 
 						$data, 

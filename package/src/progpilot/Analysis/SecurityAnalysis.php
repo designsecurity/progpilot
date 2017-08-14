@@ -37,13 +37,13 @@ class SecurityAnalysis {
 		return true;
 	}
 
-	public static function funccall($context, $myfunc_call, $instruction)
+	public static function funccall($stack_class, $context, $myfunc_call, $instruction, $myclass = null)
 	{
 		$name_instance = null;
-		if($myfunc_call->get_type() == MyOp::TYPE_INSTANCE)
+		if($myfunc_call->get_is_method())
 			$name_instance = $myfunc_call->get_name_instance();
 
-		$mysink = $context->inputs->get_sink_byname($myfunc_call->get_name(), $name_instance);
+		$mysink = $context->inputs->get_sink_byname($stack_class, $myfunc_call, $myclass);
 
 		if(!is_null($mysink))
 		{

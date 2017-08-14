@@ -18,11 +18,24 @@ class Utils
 	{
 		return htmlentities($string, ENT_QUOTES, 'UTF-8');
 	}
+	
+	public static function print_properties($props)
+	{
+        $property_name = "";
+        
+        if(is_array($props))
+        {
+            foreach($props as $prop)
+                $property_name .= "->".Utils::encode_characters($prop);
+        }
+        
+        return $property_name;
+    }
 
 	public static function print_definition($def)
 	{
-		if($def->get_type() == MyOp::TYPE_PROPERTY)
-			$def_name = "\$".Utils::encode_characters($def->get_name())."->".Utils::encode_characters($def->property->get_name());
+		if($def->get_is_property())
+			$def_name = "\$".Utils::encode_characters($def->get_name()).Utils::print_properties($def->property->get_properties());
 		else
 			$def_name = "\$".Utils::encode_characters($def->get_name());
 
@@ -36,7 +49,7 @@ class Utils
 	public static function print_function($function)
 	{
 		$function_name = "\$";
-		if($function->get_type() == MyOp::TYPE_METHOD)
+		if($function->get_is_method())
 			$function_name = Utils::encode_characters($function->get_myclass()->get_name())."->";
 
 		$function_name .= Utils::encode_characters($function->get_name());

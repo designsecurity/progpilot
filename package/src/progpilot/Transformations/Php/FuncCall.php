@@ -73,6 +73,7 @@ arg3 : arr for the return : function_call()[0] (arr = [0])
 		if($is_method)
 		{
 			$instance_name = Common::get_name_definition($context->get_current_op()->var);
+            $property_name = Common::get_name_property($context->get_current_op()->var->ops[0]);
 		}
 
 		$funccall_name = "";
@@ -84,9 +85,13 @@ arg3 : arr for the return : function_call()[0] (arr = [0])
 			$is_method = true;
 
 			$instance_name = Common::get_name_definition($context->get_current_op()->result->usages[0]);
+            $property_name = Common::get_name_property($context->get_current_op()->result->usages[0]->var->ops[0]);
+			
 		}
 		else if(isset($context->get_current_op()->name->value))
+		{
 			$funccall_name = $context->get_current_op()->name->value;
+        }
 
 		$inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
 		$inst_funcall_main->add_property("funcname", $funccall_name);
@@ -98,12 +103,19 @@ arg3 : arr for the return : function_call()[0] (arr = [0])
 		if($is_method)
 		{
 			// when we define a method in a class (TYPE_METHOD) but when we use a method (TYPE_INSTANCE)
-			$myfunction_call->set_type(MyOp::TYPE_INSTANCE);
+			$myfunction_call->set_is_method(true);
 			$myfunction_call->set_name_instance($instance_name);
 
 			$mybackdef = new MyDefinition($context->get_current_line(), $context->get_current_column()+1, $instance_name);
-			$mybackdef->set_type(MyOp::TYPE_INSTANCE);
+			$mybackdef->set_is_instance(true);
 			$mybackdef->set_assign_id(rand());
+			
+			if(count($property_name) > 0)
+			{
+                $mybackdef->set_is_property(true);
+                $mybackdef->property->set_properties($property_name);
+			}
+			
 			$myfunction_call->set_back_def($mybackdef);
 		}
 

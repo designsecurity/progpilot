@@ -20,6 +20,20 @@ $framework->add_output("./tests/data/sink4.php", array("\$var7"));
 $framework->add_output("./tests/data/sink4.php", array("3"));
 $framework->add_output("./tests/data/sink4.php", "xss");
 
+$framework->add_testbasis("./tests/data/sink5.php");
+$framework->add_output("./tests/data/sink5.php", array("\$_GET[\"p\"]"));
+$framework->add_output("./tests/data/sink5.php", array("20"));
+$framework->add_output("./tests/data/sink5.php", "xss");
+$framework->add_output("./tests/data/sink5.php", array("\$_GET[\"p\"]"));
+$framework->add_output("./tests/data/sink5.php", array("34"));
+$framework->add_output("./tests/data/sink5.php", "xss");
+$framework->add_output("./tests/data/sink5.php", array("\$_GET[\"p\"]"));
+$framework->add_output("./tests/data/sink5.php", array("40"));
+$framework->add_output("./tests/data/sink5.php", "xss");
+$framework->add_output("./tests/data/sink5.php", array("\$_GET[\"p\"]"));
+$framework->add_output("./tests/data/sink5.php", array("46"));
+$framework->add_output("./tests/data/sink5.php", "xss");
+
 $framework->add_testbasis("./tests/data/source1.php");
 $framework->add_output("./tests/data/source1.php", array("\$var7"));
 $framework->add_output("./tests/data/source1.php", array("3"));
@@ -90,6 +104,14 @@ $framework->add_output("./tests/data/source14.php", array("\$tainted"));
 $framework->add_output("./tests/data/source14.php", array("7"));
 $framework->add_output("./tests/data/source14.php", "xss");
 
+$framework->add_testbasis("./tests/data/source15.php");
+$framework->add_output("./tests/data/source15.php", array("\$inst->object->member1"));
+$framework->add_output("./tests/data/source15.php", array("18"));
+$framework->add_output("./tests/data/source15.php", "xss");
+$framework->add_output("./tests/data/source15.php", array("\$inst1->object->member1"));
+$framework->add_output("./tests/data/source15.php", array("44"));
+$framework->add_output("./tests/data/source15.php", "xss");
+
 $framework->add_testbasis("./tests/data/sanitizer1.php");
 $framework->add_output("./tests/data/sanitizer1.php", array("\$var7safe"));
 $framework->add_output("./tests/data/sanitizer1.php", array("5"));
@@ -119,5 +141,13 @@ $framework->add_testbasis("./tests/data/sanitizer6.php");
 $framework->add_output("./tests/data/sanitizer6.php", array("\$ret"));
 $framework->add_output("./tests/data/sanitizer6.php", array("13"));
 $framework->add_output("./tests/data/sanitizer6.php", "sql_injection");
+
+$framework->add_testbasis("./tests/data/sanitizer7.php");
+$framework->add_output("./tests/data/sanitizer7.php", array("\$ret"));
+$framework->add_output("./tests/data/sanitizer7.php", array("20"));
+$framework->add_output("./tests/data/sanitizer7.php", "sql_injection");
+$framework->add_output("./tests/data/sanitizer7.php", array("\$ret1"));
+$framework->add_output("./tests/data/sanitizer7.php", array("43"));
+$framework->add_output("./tests/data/sanitizer7.php", "sql_injection");
 
 ?>

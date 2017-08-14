@@ -12,6 +12,7 @@ namespace progpilot\Objects;
 
 use PHPCfg\Op;
 use progpilot\Objects\MyOp;
+use progpilot\Utils;
 
 class MyDefinition extends MyOp {
 
@@ -29,7 +30,6 @@ class MyDefinition extends MyOp {
 	private $theexprs;
 	private $taintedbyexpr;
 	private $instance;
-	private $property_name;
 	private $class_name;
 	private $is_sanitized;
 	private $type_sanitized;
@@ -37,6 +37,8 @@ class MyDefinition extends MyOp {
 	private $myclasses;
 	private $value_from_def;
 	private $cast;
+	private $is_property;
+	private $is_instance;
 
 	public $property;
 
@@ -67,25 +69,33 @@ class MyDefinition extends MyOp {
 
 		$this->property = new MyProperty;
 		$this->cast = MyDefinition::CAST_NOT_SAFE;
+		
+		$this->is_property = false;
+		$this->is_instance = false;
+	}
+
+	public function __clone()
+	{
+        $this->property = clone $this->property;
 	}
 
 	public function print_stdout()
 	{
-		echo "def name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: assign_id = ".$this->get_assign_id()." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_ref()." :: type = ".$this->get_type()." :: blockid = ".$this->get_block_id()." :: cast = ".$this->get_cast()."\n";
+		echo "def name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: assign_id = ".$this->get_assign_id()." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_ref()." :: is_property = ".$this->get_is_property()." :: is_instance = ".$this->get_is_instance()." :: blockid = ".$this->get_block_id()." :: cast = ".$this->get_cast()."\n";
 		if($this->get_is_array())
 		{
 			echo "array index value :\n";
 			var_dump($this->get_array_value());
 		}
 
-		if($this->get_type() == MyOp::TYPE_PROPERTY)
+		if($this->get_is_property())
 		{
-			echo "property : ".htmlentities($this->property->get_name(), ENT_QUOTES, 'UTF-8')."\n";
+			echo "property : ".Utils::print_properties($this->property->get_properties())."\n";
 			echo "class_name : ".htmlentities($this->get_class_name(), ENT_QUOTES, 'UTF-8')."\n";
 			echo "visibility : ".htmlentities($this->property->get_visibility(), ENT_QUOTES, 'UTF-8')."\n";
 		}
 
-		if($this->get_type() == MyOp::TYPE_INSTANCE)
+		if($this->get_is_instance())
 		{
 			echo "instance : ".htmlentities($this->get_class_name(), ENT_QUOTES, 'UTF-8')."\n";
 			$myclasses = $this->get_all_myclass();
@@ -109,6 +119,26 @@ class MyDefinition extends MyOp {
 			}
 			echo "copyarray end =================\n";
 		}
+	}
+
+	public function set_is_instance($is_instance)
+	{
+		$this->is_instance = $is_instance;
+	}
+
+	public function get_is_instance()
+	{
+		return $this->is_instance;
+	}
+
+	public function set_is_property($is_property)
+	{
+		$this->is_property = $is_property;
+	}
+
+	public function get_is_property()
+	{
+		return $this->is_property;
 	}
 
 	public function set_cast($cast)

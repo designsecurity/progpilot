@@ -32,6 +32,7 @@ class Assign {
 		$name = Common::get_name_definition($context->get_current_op());
 		$type = Common::get_type_definition($context->get_current_op());
 		$type_array = Common::get_type_is_array($context->get_current_op());
+		$type_instance = Common::get_type_is_instance($context->get_current_op());
 
 
 		// name of function return
@@ -93,20 +94,22 @@ class Assign {
 		if($type == MyOp::TYPE_PROPERTY)
 		{
 			$property_name = Common::get_name_definition($context->get_current_op(), true);
-			$mydef->set_type(MyOp::TYPE_PROPERTY);
-			$mydef->property->set_name($property_name);
-
+			$mydef->set_is_property(true);
+			$mydef->property->add_property($property_name);
+			
+            $property_name = Common::get_name_property($context->get_current_op()->var->ops[0]);
+			$mydef->property->set_properties($property_name);
 		}
+		
 		// an object (created by new)
-		else if($type == MyOp::TYPE_INSTANCE)
+        if($type_instance == MyOp::TYPE_INSTANCE)
 		{
 			// it's the class name not instance name
 			$name_class = $context->get_current_op()->expr->ops[0]->class->value;
-
-			$mydef->set_type(MyOp::TYPE_INSTANCE);
+			$mydef->set_is_instance(true);
 			$mydef->set_class_name($name_class);
 		}
-
+		
 		if($isref)
 		{
 			$ref_name = Common::get_name_definition($context->get_current_op()->expr);

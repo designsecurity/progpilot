@@ -110,16 +110,16 @@ class Definitions {
 	}
 
 	/* getters and setters */
-	public function adddef($name, &$def)
+	public function adddef($name, $def)
 	{
-		$this->defs[$name][] = &$def;
+        $this->defs[$name][] = $def;
 
 		return true;
 	}
 
 	public function addin($block, $def)
 	{
-		if(isset($this->in[$block]))
+		if(isset($this->in[$block]) && !in_array($def, $this->in[$block], true))
 		{
 			$this->in[$block][] = $def;
 			return true;
@@ -130,7 +130,7 @@ class Definitions {
 
 	public function addout($block, $def)
 	{
-		if(isset($this->out[$block]))
+		if(isset($this->out[$block]) && !in_array($def, $this->out[$block], true))
 		{
 			$this->out[$block][] = $def;
 			return true;
@@ -141,7 +141,7 @@ class Definitions {
 
 	public function addgen($block, $def)
 	{
-		if(isset($this->gen[$block]))
+		if(isset($this->gen[$block]) && !in_array($def, $this->gen[$block], true))
 		{
 			$this->gen[$block][] = $def;
 			return true;
@@ -152,7 +152,7 @@ class Definitions {
 
 	public function addkill($block, $def)
 	{
-		if(isset($this->kill[$block]))
+		if(isset($this->kill[$block]) && !in_array($def, $this->kill[$block], true))
 		{
 			$this->kill[$block][] = $def;
 			return true;
@@ -249,21 +249,25 @@ class Definitions {
 	{
 		if($def1->get_name() == $def2->get_name())
 		{
-			if($def1->get_type() == MyOp::TYPE_PROPERTY && $def2->get_type() == MyOp::TYPE_PROPERTY 
-					&& $def1->property->get_name() != $def2->property->get_name())
+			if($def1->property->get_properties() !== $def2->property->get_properties())
 				return false;
 
-			if($def1->get_type() == MyOp::TYPE_PROPERTY && $def2->get_type() == MyOp::TYPE_PROPERTY 
-					&& $def1->property->get_name() == $def2->property->get_name()
-					&& $def1->get_array_value() != $def2->get_array_value())
+			if($def1->get_array_value() !== $def2->get_array_value())
 				return false;
-			/*
-			   if($def1->is_property() && $def2->is_property())
-			   return true;
+        
+            if($def1->get_is_property() != $def2->get_is_property())
+			   return false;
 
-			   if($def1->is_instance() && $def2->is_instance())
-			   return true;
-			 */
+            if($def1->get_is_instance() != $def2->get_is_instance())
+			   return false;
+
+            if($def1->get_is_array() != $def2->get_is_array())
+			   return false;
+
+            if($def1->get_is_copy_array() != $def2->get_is_copy_array())
+			   return false;
+
+
 			return true;
 		}
 

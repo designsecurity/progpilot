@@ -23,10 +23,10 @@ class Functions {
 			$list_funcs = $this->functions[$funcname];
 			foreach($list_funcs as $myfunc)
 			{
-				if($myfunc->get_type() != MyOp::TYPE_METHOD && is_null($class_name))
+				if(!$myfunc->get_is_method() && is_null($class_name))
 					return $myfunc;
 
-				if($myfunc->get_type() == MyOp::TYPE_METHOD)
+				if($myfunc->get_is_method())
 				{
 					$myclass = $myfunc->get_myclass();
 					if($class_name == $myclass->get_name())

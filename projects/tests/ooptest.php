@@ -90,4 +90,21 @@ $framework->add_output("./tests/oop/simple18.php", array("\$instance1->boum1"));
 $framework->add_output("./tests/oop/simple18.php", array("15"));
 $framework->add_output("./tests/oop/simple18.php", "xss");
 
+$framework->add_testbasis("./tests/oop/simple19.php");
+$framework->add_output("./tests/oop/simple19.php", array("\$testc1->object1->object2"));
+$framework->add_output("./tests/oop/simple19.php", array("29"));
+$framework->add_output("./tests/oop/simple19.php", "xss");
+$framework->add_output("./tests/oop/simple19.php", array("\$newtestc1->object1"));
+$framework->add_output("./tests/oop/simple19.php", array("37"));
+$framework->add_output("./tests/oop/simple19.php", "xss");
+$framework->add_output("./tests/oop/simple19.php", array("\$newsettestc1->object1"));
+$framework->add_output("./tests/oop/simple19.php", array("7"));
+$framework->add_output("./tests/oop/simple19.php", "xss");
+
+$framework->add_testbasis("./tests/oop/simple20.php");
+$framework->add_output("./tests/oop/simple20.php", array("\$instance1->boum1"));
+$framework->add_output("./tests/oop/simple20.php", array("15"));
+$framework->add_output("./tests/oop/simple20.php", "xss");
+
+
 ?>

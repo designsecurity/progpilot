@@ -97,8 +97,8 @@ class Transform implements Visitor {
 
 		if($this->context->outputs->get_resolve_includes())
 			$this->context->outputs->write_includes_file();
-
-		//var_dump($script);
+	
+        //var_dump($script);
 	}
 
 	public function enterBlock(Block $block, Block $prior = null) {
@@ -175,12 +175,12 @@ class Transform implements Visitor {
 				$myclass->add_method($myfunction);
 
 				$myfunction->set_visibility(Common::get_type_visibility($func->flags));
-				$myfunction->set_type(MyOp::TYPE_METHOD);
+				$myfunction->set_is_method(true);
 				$myfunction->set_myclass($myclass);
 
 				$mythisdef = new MyDefinition(0, 0, "this");
 				$mythisdef->set_block_id(0);
-				$mythisdef->set_type(MyOp::TYPE_INSTANCE);
+				$mythisdef->set_is_instance(true);
 				$mythisdef->set_assign_id(rand());
 				$myfunction->set_this_def($mythisdef);
 			}
@@ -557,14 +557,14 @@ class Transform implements Visitor {
 
 					$mydef = new MyDefinition($property->getLine(), $property->getColumn(), "this");
 					$mydef->property->set_visibility($visibility);
-					$mydef->property->set_name($property_name);
+					$mydef->property->add_property($property_name);
 					$mydef->set_class_name($class_name);
 
 					// it's necessary for securityanalysis (visibility)
-					$mydef->set_type(MyOp::TYPE_PROPERTY);
+					$mydef->set_is_property(true);
 					$myclass->add_property($mydef);
 
-					unset($mydef);
+					//unset($mydef);
 				}
 			}
 

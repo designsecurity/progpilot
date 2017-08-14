@@ -32,6 +32,9 @@ class MyFunction extends MyOp {
 	private $last_line;
 	private $last_column;
 	private $last_block_id;
+	private $is_property;
+	
+	public $property;
 
 	public function __construct($name) {
 
@@ -41,6 +44,7 @@ class MyFunction extends MyOp {
 		$this->return_defs = [];
 		$this->visibility = "public";
 		$this->myclass = null;
+		$this->is_method = false;
 		$this->name_instance = null;
 		$this->this_def = null;
 		$this->back_def = null;
@@ -50,8 +54,37 @@ class MyFunction extends MyOp {
 		$this->last_line = 0;
 		$this->last_column = 0;
 		$this->last_block_id = 0;
+		
+		$this->property = new MyProperty;
+		
+		$this->is_property = false;
 	}
 
+	public function __clone()
+	{
+        $this->property = clone $this->property;
+	}
+
+	public function set_is_property($is_property)
+	{
+		$this->is_property = $is_property;
+	}
+
+	public function get_is_property()
+	{
+		return $this->is_property;
+	}
+
+	public function set_is_method($is_method)
+	{
+		$this->is_method = $is_method;
+	}
+
+	public function get_is_method()
+	{
+		return $this->is_method;
+	}
+	
 	public function set_last_line($last_line)
 	{
 		$this->last_line = $last_line;

@@ -47,7 +47,7 @@ class MySpecify {
 
 	public function get_instanceof_name()
 	{
-		return $this->is_instance;
+		return $this->instanceof_name;
 	}
 
 	public function set_instanceof_name($name)

@@ -23,17 +23,26 @@ use progpilot\Inputs\MySource;
 
 class TaintAnalysis {
 
-	public static function funccall_validator($context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index)
+    public static function funccall_specify_analysis($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index)
+    {
+        TaintAnalysis::funccall_validator($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index); 
+        TaintAnalysis::funccall_sanitizer($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index);     
+        TaintAnalysis::funccall_source($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction);  
+        
+        SecurityAnalysis::funccall($stack_class, $context, $myfunc_call, $instruction, $myclass);
+    }
+
+	public static function funccall_validator($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index)
 	{     
 		$nbparams = 0;
 		$defs_valid = [];
 		$condition_respected = true;
 
 		$class_name = false;
-		if($myfunc_call->get_type() == MyOp::TYPE_INSTANCE)
+		if($myfunc_call->get_is_method() && !is_null($myclass))
 			$class_name = $myclass->get_name();
 
-		$myvalidator = $context->inputs->get_validator_byname($myfunc_call->get_name(), $class_name);
+		$myvalidator = $context->inputs->get_validator_byname($stack_class, $myfunc_call, $myclass);
 		if(!is_null($myvalidator))
 		{
 			while(true)
@@ -113,7 +122,7 @@ class TaintAnalysis {
 		}
 	}
 
-	public static function funccall_sanitizer($context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index)
+	public static function funccall_sanitizer($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index)
 	{     
 		$params_tainted = false;
 		$exprs_tainted = [];
@@ -167,10 +176,10 @@ class TaintAnalysis {
 			}
 
 			$class_name = false;
-			if($myfunc_call->get_type() == MyOp::TYPE_INSTANCE)
+			if($myfunc_call->get_is_method() && !is_null($myclass))
 				$class_name = $myclass->get_name();
 
-			$mysanitizer = $context->inputs->get_sanitizer_byname($myfunc_call->get_name(), $class_name);
+			$mysanitizer = $context->inputs->get_sanitizer_byname($stack_class, $myfunc_call, $myclass);
 			if(!is_null($mysanitizer))
 			{
 				$mydef_return->set_sanitized(true);
@@ -185,15 +194,15 @@ class TaintAnalysis {
 		}
 	}
 
-	public static function funccall_source($context, $data, $myclass, $myfunc, $arr_funccall, $instruction)
+	public static function funccall_source($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction)
 	{ 
 		$exprreturn = $instruction->get_property("expr");
 
 		$class_name = false;
-		if($myfunc->get_type() == MyOp::TYPE_INSTANCE)
+		if($myfunc_call->get_is_method() && !is_null($myclass))
 			$class_name = $myclass->get_name();
 
-		$mysource = $context->inputs->get_source_byname($myfunc->get_name(), true, $class_name);
+		$mysource = $context->inputs->get_source_byname($stack_class, $myfunc_call, true, $class_name, false);
 		if(!is_null($mysource))
 		{
 			if($mysource->has_parameters())
@@ -228,7 +237,7 @@ class TaintAnalysis {
 			{
 				$defassign = $exprreturn->get_assign_def();
 
-				$mydef = new MyDefinition($myfunc->getLine(), $myfunc->getColumn(), $myfunc->get_name()."_return");
+				$mydef = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name()."_return");
 				$mydef->set_source_myfile($defassign->get_source_myfile());
 				$mydef->set_tainted(true);
 				// no need to taintedbyexpr because it's source like _GET
@@ -304,7 +313,7 @@ class TaintAnalysis {
 		$nbparams = 0;
 		$params = $myfunc->get_params();
 
-		foreach($params as &$param)
+		foreach($params as $param)
 		{
 			if($instruction->is_property_exist("argdef$nbparams"))
 			{
@@ -341,22 +350,42 @@ class TaintAnalysis {
 		{
 			$visibility_final = true;
 
-			if($defassign->get_type() == MyOp::TYPE_PROPERTY)
+			if($defassign->get_is_property())
 			{
 				$copy_defassign = clone $defassign;
 				$copy_defassign->set_assign_id(-1);
 				$visibility_final = false;
 
+				
+				$visibility_final = true;
+				/*
 				$instances = ResolveDefs::select_instances($context, $data, $copy_defassign, true);
 
 				foreach($instances as $instance)
 				{
-					if($instance->get_type() == MyOp::TYPE_INSTANCE)
+					if($instance->get_is_instance())
 					{
 						$visibility_final = true;
 						break;
 					}
 				}
+				*/
+				/*
+				$properties = ResolveDefs::select_properties($context, $data, $copy_defassign, true);
+
+				foreach($properties as $property)
+				{
+					if($property->get_is_instance())
+					{
+						$visibility_final = true;
+						break;
+					}
+				}
+				
+				
+				if(count($instances) == 0)
+                    $visibility_final = true;
+                    	*/
 			}
 
 			if($def->is_tainted() && $visibility_final)

@@ -85,68 +85,172 @@ class MyInputs {
 		return null;
 	}
 
-	public function get_validator_byname($name, $instance_name)
+	public function get_validator_byname($stack_class, $myfunc, $myclass)
 	{
 		foreach($this->validators as $myvalidator)
 		{
-			if($myvalidator->get_name() == $name)
+            if($myvalidator->get_name() == $myfunc->get_name())
 			{
-				if(!$myvalidator->is_instance() 
-						|| ($myvalidator->is_instance() && $myvalidator->get_instanceof_name() == $instance_name))
+                if(!$myvalidator->is_instance() && !$myfunc->get_is_method())
 					return $myvalidator;
+					
+                if($myvalidator->is_instance() && $myfunc->get_is_method())
+                {
+                    if(!is_null($myclass) && $myvalidator->get_instanceof_name() == $myclass->get_name())
+                        return $myvalidator;
+                    
+                    $properties_validator = explode("->", $myvalidator->get_instanceof_name());
+                    
+                    if(is_array($properties_validator))
+                    {
+                        $myvalidator_instance_name = $properties_validator[0];
+                            
+                        $myvalidator_number_ofproperties = count($properties_validator);
+                        $stack_number_ofproperties = count($stack_class);
+
+                        if($stack_number_ofproperties >= $myvalidator_number_ofproperties)
+                        {
+                            $known_properties = $stack_class[$stack_number_ofproperties - $myvalidator_number_ofproperties];
+                            
+                            foreach($known_properties as $prop_class)
+                            {
+                                if($prop_class->get_name() == $myvalidator_instance_name)
+                                    return $myvalidator;
+                            }
+                        }
+                    }
+                }
 			}
 		}
 
 		return null;
 	}
 
-	public function get_sanitizer_byname($name, $instance_name)
+	public function get_sanitizer_byname($stack_class, $myfunc, $myclass)
 	{
 		foreach($this->sanitizers as $mysanitizer)
 		{
-			if($mysanitizer->get_name() == $name)
+			if($mysanitizer->get_name() == $myfunc->get_name())
 			{
-				if(!$mysanitizer->is_instance() 
-						|| ($mysanitizer->is_instance() && $mysanitizer->get_instanceof_name() == $instance_name))
+                if(!$mysanitizer->is_instance() && !$myfunc->get_is_method())
 					return $mysanitizer;
+					
+                if($mysanitizer->is_instance() && $myfunc->get_is_method())
+                {
+                    if(!is_null($myclass) && $mysanitizer->get_instanceof_name() == $myclass->get_name())
+                        return $mysanitizer;
+                    
+                    $properties_sanitizer = explode("->", $mysanitizer->get_instanceof_name());
+                    
+                    if(is_array($properties_sanitizer))
+                    {
+                        $mysanitizer_instance_name = $properties_sanitizer[0];
+                            
+                        $mysanitizer_number_ofproperties = count($properties_sanitizer);
+                        $stack_number_ofproperties = count($stack_class);
+
+                        if($stack_number_ofproperties >= $mysanitizer_number_ofproperties)
+                        {
+                            $known_properties = $stack_class[$stack_number_ofproperties - $mysanitizer_number_ofproperties];
+                            
+                            foreach($known_properties as $prop_class)
+                            {
+                                if($prop_class->get_name() == $mysanitizer_instance_name)
+                                    return $mysanitizer;
+                            }
+                        }
+                    }
+                }
 			}
 		}
 
 		return null;
 	}
 
-	public function get_sink_byname($name, $instance_name)
+	public function get_sink_byname($stack_class, $myfunc, $myclass)
 	{
 		foreach($this->sinks as $mysink)
 		{
-			if($mysink->get_name() == $name)
+            if($mysink->get_name() == $myfunc->get_name())
 			{
-				if(!$mysink->is_instance() 
-						|| ($mysink->is_instance() && $mysink->get_instanceof_name() == $instance_name))
+                if(!$mysink->is_instance() && !$myfunc->get_is_method())
 					return $mysink;
+					
+                if($mysink->is_instance() && $myfunc->get_is_method())
+                {
+                    if(!is_null($myclass) && $mysink->get_instanceof_name() == $myclass->get_name())
+                        return $mysink;
+                    
+                    $properties_sink = explode("->", $mysink->get_instanceof_name());
+                    
+                    if(is_array($properties_sink))
+                    {
+                        $mysink_instance_name = $properties_sink[0];
+                            
+                        $mysink_number_ofproperties = count($properties_sink);
+                        $stack_number_ofproperties = count($stack_class);
+
+                        if($stack_number_ofproperties >= $mysink_number_ofproperties)
+                        {
+                            $known_properties = $stack_class[$stack_number_ofproperties - $mysink_number_ofproperties];
+                            
+                            foreach($known_properties as $prop_class)
+                            {
+                                if($prop_class->get_name() == $mysink_instance_name)
+                                    return $mysink;
+                            }
+                        }
+                    }
+                }
 			}
 		}
 
 		return null;
 	}
 
-	public function get_source_byname($name, $is_function = false, $instance_name = false, $arr_value = false)
+	public function get_source_byname($stack_class, $myfunc_or_def, $is_function = false, $instance_name = false, $arr_value = false)
 	{
 		foreach($this->sources as $mysource)
 		{
-			if($mysource->get_name() == $name)
+			if($mysource->get_name() == $myfunc_or_def->get_name())
 			{
 				$check_function = false;
 				$check_array = false;
 				$check_instance = false;
+				
+                if(!$instance_name)
+					$check_instance = true;
+                
+                
+                if($instance_name && $mysource->is_instance())
+                {
+                    if($mysource->get_instanceof_name() == $instance_name)
+                        $check_instance = true;
+                        
+                    $properties_source = explode("->", $mysource->get_instanceof_name());
+                    
+                    if(is_array($properties_source))
+                    {
+                        $mysource_instance_name = $properties_source[0];
+                            
+                        $mysource_number_ofproperties = count($properties_source);
+                        $stack_number_ofproperties = count($stack_class);
+
+                        if($stack_number_ofproperties >= $mysource_number_ofproperties)
+                        {
+                            $known_properties = $stack_class[$stack_number_ofproperties - $mysource_number_ofproperties];
+                            
+                            foreach($known_properties as $prop_class)
+                            {
+                                if($prop_class->get_name() == $mysource_instance_name)
+                                    $check_instance = true;
+                            }
+                        }
+                    }
+                }
 
 				if($mysource->is_function() == $is_function)
 					$check_function = true;
-
-				if(($instance_name != false 
-							&& $mysource->is_instance() 
-							&& $mysource->get_instanceof_name() == $instance_name) || !$instance_name)
-					$check_instance = true;
 
 				if(($arr_value != false
 							&& $mysource->get_is_array()

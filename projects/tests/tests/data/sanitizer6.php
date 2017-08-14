@@ -1,6 +1,6 @@
 <?php
 
-class testc1
+class testccc1
 {
 	public function mysanitizer()
 	{
@@ -8,7 +8,7 @@ class testc1
 	}
 }
 
-$instance = new testc1;
+$instance = new testccc1;
 
 $ret = $instance->mysanitizer($_GET["p"]);
 
