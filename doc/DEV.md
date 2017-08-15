@@ -34,6 +34,7 @@ There is a lot of tasks to do :
 - Property of an object is an object
 - Sanitizers : prevent property must be an array
 - Objects references and assignments to variables
-- static methods
-- cast expression : ((int) ($taint)).$taint
-- if property hasn't been declared but used later (class { miss public $property;})
+- Static methods
+- Cast expression : ((int) ($taint)).$taint
+- If property hasn't been declared but used later (class { miss public $property;})
+- Chained functions calls : $obj->func1()->func2()

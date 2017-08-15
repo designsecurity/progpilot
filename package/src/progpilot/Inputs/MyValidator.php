@@ -23,9 +23,9 @@ class MyValidator extends MySpecify {
 		$this->parameters = [];
 	}
 
-	public function add_parameter($parameter, $condition)
+	public function add_parameter($parameter, $condition, $values = null)
 	{
-		$this->parameters[] = [$parameter, $condition];
+		$this->parameters[] = [$parameter, $condition, $values];
 	}
 
 	public function get_parameters()
@@ -42,6 +42,21 @@ class MyValidator extends MySpecify {
 
 			if($index == $i)
 				return $condition;
+		}
+
+		return null;
+	}
+	
+	public function get_parameter_values($i)
+	{
+		foreach($this->parameters as $parameter)
+		{
+			$index = $parameter[0];
+			$condition = $parameter[1];
+			$values = $parameter[2];
+
+			if($index == $i)
+				return $values;
 		}
 
 		return null;

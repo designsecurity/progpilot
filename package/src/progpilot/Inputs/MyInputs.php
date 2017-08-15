@@ -361,22 +361,47 @@ class MyInputs {
 				{
 					if(!isset($sanitizer->{'name'}) 
 							|| !isset($sanitizer->{'language'})
-							|| !isset($sanitizer->{'type'})
 							|| !isset($sanitizer->{'prevent'}))
 						throw new \Exception(Lang::FORMAT_SANITIZERS);
 
 
 					$name = $sanitizer->{'name'};
 					$language = $sanitizer->{'language'};
-					$type = $sanitizer->{'type'};
 					$prevent = $sanitizer->{'prevent'};
 
-					$mysanitizer = new MySanitizer($name, $language, $type, $prevent);
+					$mysanitizer = new MySanitizer($name, $language, $prevent);
 
 					if(isset($sanitizer->{'instanceof'}))
 					{
 						$mysanitizer->set_is_instance(true);
 						$mysanitizer->set_instanceof_name($sanitizer->{'instanceof'});
+					}
+					
+					if(isset($sanitizer->{'parameters'}))
+					{
+						$parameters = $sanitizer->{'parameters'};
+						foreach($parameters as $parameter)
+						{
+							if(isset($parameter->{'id'}) && isset($parameter->{'condition'}))
+							{
+								if(is_int($parameter->{'id'}) 
+										&& ($parameter->{'condition'} == "equals"
+											|| $parameter->{'condition'} == "valid"))
+								{
+                                    if($parameter->{'condition'} == "equals")
+                                    {
+                                        if(isset($parameter->{'values'}))
+                                        {
+                                            $mysanitizer->add_parameter($parameter->{'id'}, $parameter->{'condition'}, $parameter->{'values'});
+                                        }
+                                    }
+                                    else
+									$mysanitizer->add_parameter($parameter->{'id'}, $parameter->{'condition'});
+								}
+							}
+						}
+
+						$mysanitizer->set_has_parameters(true);
 					}
 
 					$this->sanitizers[] = $mysanitizer;
@@ -554,8 +579,17 @@ class MyInputs {
 								if(is_int($parameter->{'id'}) 
 										&& ($parameter->{'condition'} == "not_tainted"
 											|| $parameter->{'condition'} == "array_not_tainted"
-											|| $parameter->{'condition'} == "valid"))
+											|| $parameter->{'condition'} == "valid"
+											|| $parameter->{'condition'} == "equals"))
 								{
+                                    if($parameter->{'condition'} == "equals")
+                                    {
+                                        if(isset($parameter->{'values'}))
+                                        {
+                                            $myvalidator->add_parameter($parameter->{'id'}, $parameter->{'condition'}, $parameter->{'values'});
+                                        }
+                                    }
+                                    else
 									$myvalidator->add_parameter($parameter->{'id'}, $parameter->{'condition'});
 								}
 							}

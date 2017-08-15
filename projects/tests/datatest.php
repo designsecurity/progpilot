@@ -22,16 +22,25 @@ $framework->add_output("./tests/data/sink4.php", "xss");
 
 $framework->add_testbasis("./tests/data/sink5.php");
 $framework->add_output("./tests/data/sink5.php", array("\$_GET[\"p\"]"));
-$framework->add_output("./tests/data/sink5.php", array("20"));
-$framework->add_output("./tests/data/sink5.php", "xss");
-$framework->add_output("./tests/data/sink5.php", array("\$_GET[\"p\"]"));
 $framework->add_output("./tests/data/sink5.php", array("34"));
 $framework->add_output("./tests/data/sink5.php", "xss");
 $framework->add_output("./tests/data/sink5.php", array("\$_GET[\"p\"]"));
-$framework->add_output("./tests/data/sink5.php", array("40"));
+$framework->add_output("./tests/data/sink5.php", array("39"));
 $framework->add_output("./tests/data/sink5.php", "xss");
 $framework->add_output("./tests/data/sink5.php", array("\$_GET[\"p\"]"));
-$framework->add_output("./tests/data/sink5.php", array("46"));
+$framework->add_output("./tests/data/sink5.php", array("47"));
+$framework->add_output("./tests/data/sink5.php", "xss");
+$framework->add_output("./tests/data/sink5.php", array("\$_GET[\"p\"]"));
+$framework->add_output("./tests/data/sink5.php", array("53"));
+$framework->add_output("./tests/data/sink5.php", "xss");
+$framework->add_output("./tests/data/sink5.php", array("\$_GET[\"p\"]"));
+$framework->add_output("./tests/data/sink5.php", array("60"));
+$framework->add_output("./tests/data/sink5.php", "xss");
+$framework->add_output("./tests/data/sink5.php", array("\$_GET[\"p\"]"));
+$framework->add_output("./tests/data/sink5.php", array("66"));
+$framework->add_output("./tests/data/sink5.php", "xss");
+$framework->add_output("./tests/data/sink5.php", array("\$_GET[\"p\"]"));
+$framework->add_output("./tests/data/sink5.php", array("74"));
 $framework->add_output("./tests/data/sink5.php", "xss");
 
 $framework->add_testbasis("./tests/data/source1.php");
@@ -149,5 +158,13 @@ $framework->add_output("./tests/data/sanitizer7.php", "sql_injection");
 $framework->add_output("./tests/data/sanitizer7.php", array("\$ret1"));
 $framework->add_output("./tests/data/sanitizer7.php", array("43"));
 $framework->add_output("./tests/data/sanitizer7.php", "sql_injection");
+
+$framework->add_testbasis("./tests/data/sanitizer8.php");
+$framework->add_output("./tests/data/sanitizer8.php", array("\$safe"));
+$framework->add_output("./tests/data/sanitizer8.php", array("53"));
+$framework->add_output("./tests/data/sanitizer8.php", "xss");
+$framework->add_output("./tests/data/sanitizer8.php", array("\$safe"));
+$framework->add_output("./tests/data/sanitizer8.php", array("13"));
+$framework->add_output("./tests/data/sanitizer8.php", "xss");
 
 ?>

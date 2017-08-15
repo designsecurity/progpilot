@@ -102,8 +102,8 @@ $framework->add_output("./tests/oop/simple19.php", array("7"));
 $framework->add_output("./tests/oop/simple19.php", "xss");
 
 $framework->add_testbasis("./tests/oop/simple20.php");
-$framework->add_output("./tests/oop/simple20.php", array("\$instance1->boum1"));
-$framework->add_output("./tests/oop/simple20.php", array("15"));
+$framework->add_output("./tests/oop/simple20.php", array("\$this->member2"));
+$framework->add_output("./tests/oop/simple20.php", array("7"));
 $framework->add_output("./tests/oop/simple20.php", "xss");
 
 

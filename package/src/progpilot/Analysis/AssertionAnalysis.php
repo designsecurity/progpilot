@@ -16,38 +16,39 @@ class AssertionAnalysis {
 
 	public static function temporary_simple($context, $data, $myblock, $resolve_temporary, $tempdefa)
 	{
-		$assertions = $myblock->get_assertions();
-
+        $assertions = $myblock->get_assertions();
+		
+        $equality = false;
 		$safe = false;
-		$assertions_defs = [];
+		
+		// for each assertions, we could have definitions with same name (from different block for example)
 		foreach($assertions as $assertion)
 		{
-			$mydef = $assertion->get_def();
+			$mydef_assertion = $assertion->get_def();
 			$type_assertion = $assertion->get_type();
-			$assertions_defs[] = $mydef;
+            
+            // there was not resolution so we simply check name (or better equality values)
+            if($resolve_temporary == $tempdefa)
+            {
+                if($mydef_assertion->get_name() == $tempdefa->get_name())
+                    $tempdefa->set_tainted(false);
+                    
+                $equality = true;
+            }
+            
+            if($mydef_assertion == $resolve_temporary)
+            {
+                if($mydef_assertion->get_name() == $tempdefa->get_name())
+                    $tempdefa->set_tainted(false);
+                    
+                $equality = true;
+                break;
+            }
+        }
+        
 
-			$defs_assert = ResolveDefs::temporary_simple($context, $data, $mydef);
-
-			$equality = false;
-			if($mydef == $defs_assert[0])
-			{
-				if($mydef->get_name() == $tempdefa->get_name())
-				{
-					$equality = true;
-					// ???? !!!!
-					$tempdefa->set_tainted(false);
-				}
-			}
-			else if($defs_assert[0] == $resolve_temporary)
-			{
-				$equality = true;
-			}
-
-			if($equality && $type_assertion != "string")
-			{
-				$safe = true;
-			}
-		}
+        if($equality && $type_assertion != "string")
+            $safe = true;
 		
         if($resolve_temporary->get_cast() == MyDefinition::CAST_SAFE)
             $safe = true;

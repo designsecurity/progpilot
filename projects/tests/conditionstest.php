@@ -25,5 +25,13 @@ $framework->add_output("./tests/conditions/condition7.php", array("\$tainted"));
 $framework->add_output("./tests/conditions/condition7.php", array("3"));
 $framework->add_output("./tests/conditions/condition7.php", "xss");
 
+$framework->add_testbasis("./tests/conditions/condition8.php");
+$framework->add_output("./tests/conditions/condition8.php", array("\$tainted"));
+$framework->add_output("./tests/conditions/condition8.php", array("53"));
+$framework->add_output("./tests/conditions/condition8.php", "xss");
+$framework->add_output("./tests/conditions/condition8.php", array("\$tainted"));
+$framework->add_output("./tests/conditions/condition8.php", array("60"));
+$framework->add_output("./tests/conditions/condition8.php", "xss");
+
 
 ?>

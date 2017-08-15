@@ -68,6 +68,9 @@ class Common {
 
 		if(isset($ops->ops[0]))
 		{
+            if($ops->ops[0] instanceof Op\Expr\ConstFetch)
+				return Common::get_name_definition($ops->ops[0], $looking_for_property);
+            
 			if($ops->ops[0] instanceof Op\Expr\ArrayDimFetch)
 				return Common::get_name_definition($ops->ops[0], $looking_for_property);
 
@@ -79,6 +82,9 @@ class Common {
 		{
 			foreach($ops->var->ops as $op)
 			{
+				if($op instanceof Op\Expr\ConstFetch)
+					return Common::get_name_definition($op, $looking_for_property);
+					
 				if($op instanceof Op\Expr\ArrayDimFetch)
 					return Common::get_name_definition($op, $looking_for_property);
 
@@ -246,6 +252,11 @@ class Common {
 	{
 		if(isset($ops->ops[0]))
 		{
+			if($ops->ops[0] instanceof Op\Expr\ConstFetch)
+			{
+				return MyOp::TYPE_CONST;
+			}
+			
 			if($ops->ops[0] instanceof Op\Expr\FuncCall)
 			{
 				return MyOp::TYPE_FUNCCALL_ARRAY;

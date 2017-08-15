@@ -28,6 +28,7 @@ class MyOp {
 	const TYPE_PROPERTY = "type_property";
 	const TYPE_FUNCCALL = "type_funccall";
 	const TYPE_FUNCCALL_ARRAY = "type_funccall_array";
+	const TYPE_CONST = "type_const";
 
 	public function __construct($var_name, $var_line, $var_column) {
 

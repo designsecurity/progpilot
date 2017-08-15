@@ -44,6 +44,8 @@ class Expr {
 			$mytemp->last_known_value($name);
 			$mytemp->set_assign_id($assign_id);
 			$mytemp->set_cast($cast);
+			$mytemp->set_type($type);
+			
 			
 			if($arr != false)
 			{

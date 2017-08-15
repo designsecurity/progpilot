@@ -32,7 +32,7 @@ class framework_test
 	{
 		if(count($this->outputs["$testbasis"]) == 0 && count($basis_outputs) == 0)
 			return true;
-
+			
 		foreach($basis_outputs as $basis_output)
 		{
 			$return_check = false;

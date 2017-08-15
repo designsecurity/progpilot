@@ -22,7 +22,8 @@ class VisitorAnalysis {
 
 	private $context;
 	private $results;
-	private $storagemyblocks;
+	private $current_storagemyblocks;
+	private $old_storagemyblocks;
 	private $call_stack;
 
 	private $defs;
@@ -33,7 +34,8 @@ class VisitorAnalysis {
 
 	public function __construct() {
 
-		$this->storagemyblocks = new \SplObjectStorage;
+		$this->old_storagemyblocks = null;
+		$this->current_storagemyblocks = null;
 		$this->call_stack = [];
 		$this->current_myblock = null;
 		$this->old_myblock = null;
@@ -87,17 +89,17 @@ class VisitorAnalysis {
 							$this->old_myblock = $this->current_myblock;
 							$this->current_myblock = $myblock;
 
-							if($this->storagemyblocks->contains($myblock))
+							if($this->current_storagemyblocks->contains($myblock))
 								return;
 
-							$this->storagemyblocks->attach($myblock);
+							$this->current_storagemyblocks->attach($myblock);
 
 							foreach($myblock->parents as $blockparent)
 							{
 								$addr_start = $blockparent->get_start_address_block();
 								$addr_end = $blockparent->get_end_address_block();
 
-								if(!$this->storagemyblocks->contains($blockparent))
+								if(!$this->current_storagemyblocks->contains($blockparent))
 								{
 									$oldindex_start = $mycode->get_start();
 									$oldindex_end = $mycode->get_end();
@@ -124,6 +126,7 @@ class VisitorAnalysis {
 
 					case Opcodes::LEAVE_FUNCTION:
 						{
+						
 							$myfunc = $instruction->get_property("myfunc");
 							if($myfunc->get_name() == "{main}")
 								return;
@@ -131,6 +134,8 @@ class VisitorAnalysis {
 							array_pop($this->call_stack);
 
 							$this->defs = $this->olddefs;
+							
+                            $this->current_storagemyblocks = $this->old_storagemyblocks;
 
 							break;
 						}
@@ -140,10 +145,13 @@ class VisitorAnalysis {
 							$myfunc = $instruction->get_property("myfunc");
 
 							array_push($this->call_stack, $myfunc);
-
+							
 							$this->olddefs = $this->defs;
 							$this->defs = $myfunc->get_defs();
-
+							
+                            $this->old_storagemyblocks = $this->current_storagemyblocks;
+                            $this->current_storagemyblocks = new \SplObjectStorage;
+                            
 							break;
 						}
 
@@ -158,7 +166,7 @@ class VisitorAnalysis {
 					case Opcodes::TEMPORARY:
 						{
 							$tempdefa = $instruction->get_property("temporary");
-                            
+							
 							$tainted = false;
 							if(!is_null($this->context->inputs->get_source_byname(null, $tempdefa, false, false, $tempdefa->get_array_value())))
 								$tainted = true;
@@ -208,6 +216,7 @@ class VisitorAnalysis {
 
 							$list_myfunc = [];
 							$list_myfunc_tocall = [];
+							
 							
 							if($myfunc_call->get_is_method())
 							{
@@ -304,7 +313,7 @@ class VisitorAnalysis {
 
 							foreach($list_myfunc as $myfunc)
 							{
-								ResolveDefs::instance_build_this($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc, $myfunc_call);
+                                ResolveDefs::instance_build_this($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc, $myfunc_call);
 
 								if(!is_null($myfunc) && !$this->in_call_stack($myfunc))
 								{

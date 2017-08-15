@@ -12,9 +12,9 @@
         {"name": "prepare", "instanceof": "mysql_connect", "language": "php", "attack": "sql_injection"},
         {"name": "xpath", "instanceof": "simplexml_load_file", "language": "php", "attack": "xpath_injection"},
         {"name": "fopen", "parameters": [{"id": 1}], "language": "php", "attack": "idor"},
-        {"name": "mysink", "instanceof": "testc2", "language": "php", "attack": "xss"},
-        {"name": "mysink", "instanceof": "newtestc1", "language": "php", "attack": "xss"},
-        {"name": "mysink", "instanceof": "newtestc12", "language": "php", "attack": "xss"},
-        {"name": "mysink", "instanceof": "newtestc123->object", "language": "php", "attack": "xss"}
+        {"name": "mysink", "instanceof": "known_middle_class2", "language": "php", "attack": "xss"},
+        {"name": "mysink", "instanceof": "known_class1->middle_object", "language": "php", "attack": "xss"},
+        {"name": "mysink", "instanceof": "known_class1_undefined", "language": "php", "attack": "xss"},
+        {"name": "mysink", "instanceof": "known_class1_undefined->middle_object", "language": "php", "attack": "xss"}
 		]
 }

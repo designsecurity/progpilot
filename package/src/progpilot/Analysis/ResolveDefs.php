@@ -44,7 +44,8 @@ class ResolveDefs {
                 $mydef_tmp->set_assign_id($myfunc_call->get_back_def()->get_assign_id());
                 $mydef_tmp->set_source_myfile($myfunc_call->get_source_myfile());
                 $mydef_tmp->property->set_properties($tmp_properties);
-                                    
+                $mydef_tmp->set_is_property(true);
+
                 $instances = ResolveDefs::select_instances(
                     $context, 
                     $data, 
@@ -444,6 +445,9 @@ class ResolveDefs {
 			// we can have multiple instances with the same property assigned
 			// we are looking for and instance, not a property	
 			$copy_tempdefa = clone $tempdefa;
+			
+			if(count($tempdefa->property->get_properties()) == 0)
+                $copy_tempdefa->set_is_property(false);
 
 			if(!$instance_with_property)
 			{

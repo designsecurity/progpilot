@@ -10,6 +10,21 @@
             [
                 {"id": 2, "condition": "valid"}
             ]
+        },
+        {"name": "filter_var",  "language": "php", "parameters": 
+            [
+                {"id": 1, "condition": "valid"},
+                {"id": 2, "condition": "equals", "values": 
+                    [
+                        {"value" : "FILTER_VALIDATE_BOOLEAN"},
+                        {"value" : "FILTER_VALIDATE_FLOAT"},
+                        {"value" : "FILTER_VALIDATE_INT"},
+                        {"value" : "FILTER_VALIDATE_IP"},
+                        {"value" : "FILTER_VALIDATE_MAC"},
+                        {"value" : "FILTER_VALIDATE_URL"},
+                        {"value" : "FILTER_VALIDATE_EMAIL"}
+                    ]}
+            ]
         }
 		]
 }
