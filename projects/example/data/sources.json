@@ -1,21 +1,14 @@
 {
     "sources": [
-        {"name": "_GET", "is_array": true, "language": "php", "type": "HTTP Parameter"},
-        {"name": "_POST", "is_array": true, "language": "php", "type": "HTTP Parameter"},
-        {"name": "_COOKIES", "is_array": true, "language": "php", "type": "HTTP Parameter"},
-        {"name": "_SESSION", "is_array": true, "language": "php", "type": "HTTP Parameter"},
-        {"name": "shell_exec", "is_function": true, "language": "php", "type": "command return"},
-        {"name": "shell_exec", "language": "php", "type": "for dev purposes"},
-        {"name": "mysql_fetch_array", "is_function": true, "language": "php", "type": "database return"},
-        {"name": "methodc1", "is_function": true, "instanceof": "testc1", "language": "php", "type": "for dev purposes"},
-        {"name": "methodc1arr", "is_function": true, "instanceof": "testc1", "return_array_index": "tainted", "language": "php", "type": "for dev purposes"},
-        {"name": "func1arr", "is_function": true, "return_array_index": "tainted", "language": "php", "type": "for dev purposes"},
-        {"name": "member1", "instanceof": "testc1", "language": "php", "type": "for dev purposes"},
-        {"name": "vardev", "is_array": true, "array_index": "tainted", "language": "php", "type": "for dev purposes"},
-        {"name": "exec", "is_function": true, "parameters": [{"id": 2, "is_array": true, "array_index": 0}], "language": "php", "type": "for dev purposes"},
-        {"name": "fgets", "is_function": true, "language": "php", "type": "for dev purposes"},
-        {"name": "fread", "is_function": true, "language": "php", "type": "for dev purposes"},
-        {"name": "stream_get_contents", "is_function": true, "language": "php", "type": "for dev purposes"},
-        {"name": "system", "is_function": true, "language": "php", "type": "for dev purposes"}
+        {"name": "_GET", "is_array": true, "language": "php"},
+        {"name": "_POST", "is_array": true, "language": "php"},
+        {"name": "_COOKIES", "is_array": true, "language": "php"},
+        {"name": "shell_exec", "is_function": true, "language": "php"},
+        {"name": "mysql_fetch_array", "is_function": true, "language": "php"},
+        {"name": "exec", "is_function": true, "parameters": [{"id": 2, "is_array": true, "array_index": 0}], "language": "php"},
+        {"name": "fgets", "is_function": true, "language": "php"},
+        {"name": "fread", "is_function": true, "language": "php"},
+        {"name": "stream_get_contents", "is_function": true, "language": "php"},
+        {"name": "system", "is_function": true, "language": "php"}
 		]
 }

@@ -96,8 +96,10 @@ array(1) {
     string(12) "example1.php"
     ["vuln_name"]=>
     string(3) "xss"
+    ["vuln_cwe"]=>
+    string(6) "CWE_79"
     ["vuln_id"]=>
-    string(64) "a918f93b6be9b03b0e8d3a80a54e98ab92a42dbb1a35b493b8e5ceb5328162ef"
+    string(64) "868c68ca8f2514561246fb69e6fca9924d1125f6372fa38bdfb88734c8621f40"
   }
 }
 ```

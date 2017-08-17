@@ -5,6 +5,49 @@
                 {"id": 1, "condition": "valid"},
                 {"id": 2, "condition": "array_not_tainted"}
             ]
+        },
+        {"name": "isValidNumber", "instanceof": "ESAPI->validator", "language": "php", "parameters": 
+            [
+                {"id": 2, "condition": "valid"}
+            ]
+        },
+        {"name": "filter_var",  "language": "php", "parameters": 
+            [
+                {"id": 1, "condition": "valid"},
+                {"id": 2, "condition": "equals", "values": 
+                    [
+                        {"value" : "FILTER_VALIDATE_BOOLEAN"},
+                        {"value" : "FILTER_VALIDATE_FLOAT"},
+                        {"value" : "FILTER_VALIDATE_INT"},
+                        {"value" : "FILTER_VALIDATE_IP"},
+                        {"value" : "FILTER_VALIDATE_MAC"},
+                        {"value" : "FILTER_VALIDATE_URL"}
+                    ]}
+            ]
+        },
+        {"name": "settype",  "language": "php", "parameters": 
+            [
+                {"id": 1, "condition": "valid"},
+                {"id": 2, "condition": "equals", "values": 
+                    [
+                        {"value" : "boolean"},
+                        {"value" : "integer"},
+                        {"value" : "float"},
+                        {"value" : "array"},
+                        {"value" : "object"}
+                    ]}
+            ]
+        },
+        {"name": "preg_match",  "language": "php", "parameters": 
+            [
+                {"id": 2, "condition": "valid"},
+                {"id": 1, "condition": "equals", "values": 
+                    [
+                        {"value" : "/^[a-zA-Z0-9]*$/"},
+                        {"value" : "/^[a-zA-Z]*$/"},
+                        {"value" : "/^[0-9]*$/"}
+                    ]}
+            ]
         }
 		]
 }
