@@ -1,24 +1,56 @@
 {
     "sanitizers": [
-        {"name": "htmlentities", "language": "php", "prevent": "xss"},
-        {"name": "addslashes", "language": "php", "prevent": "sql_injection"},
-        {"name": "mysql_real_escape_string", "language": "php", "prevent": "sql_injection"},
-        {"name": "str_replace", "language": "js", "prevent": "xss"},
-        {"name": "mysanitizer", "language": "php", "prevent": "xss", "comment": "for dev purposes"},
-        {"name": "mysanitizer", "instanceof": "testccc1", "language": "php", "prevent": "xss", "comment": "for dev purposes"},
-        {"name": "mysanitizer", "instanceof": "testc2", "language": "php", "prevent": "xss", "comment": "for dev purposes"},
-        {"name": "mysanitizer", "instanceof": "testc1->object", "language": "php", "prevent": "xss", "comment": "for dev purposes"},
-        {"name": "mysanitizer", "instanceof": "newtestc2", "language": "php",  "prevent": "xss", "comment": "for dev purposes"},
-		{"name": "filter_var",  "language": "php", "prevent": "xss", "parameters": 
+        {"name": "htmlentities", "language": "php", "prevent": ["xss"], "parameters": 
             [
                 {"id": 2, "condition": "equals", "values": 
                     [
-                        {"value" : "FILTER_SANITIZE_ENCODED", "prevent" : "xss"},
-                        {"value" : "FILTER_SANITIZE_MAGIC_QUOTES", "prevent" : "sql_injection"},
-                        {"value" : "FILTER_SANITIZE_SPECIAL_CHARS", "prevent" : "xss"},
-                        {"value" : "FILTER_SANITIZE_FULL_SPECIAL_CHARS", "prevent" : "xss"},
-                        {"value" : "FILTER_SANITIZE_STRING", "prevent" : "xss"},
-                        {"value" : "FILTER_SANITIZE_STRIPPED", "prevent" : "xss"}
+                        {"value" : "ENT_QUOTES", "prevent" : ["xss", "command_injection"]}
+                    ]}
+            ]
+        },
+        {"name": "htmlspecialchars", "language": "php", "prevent": ["xss"], "parameters": 
+            [
+                {"id": 2, "condition": "equals", "values": 
+                    [
+                        {"value" : "ENT_QUOTES", "prevent" : ["xss", "command_injection"]}
+                    ]}
+            ]
+        },
+        {"name": "addslashes", "language": "php", "prevent": ["sql_injection", "command_injection"]},
+        {"name": "mysql_real_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection"]},
+        {"name": "str_replace", "language": "js", "prevent": ["xss"], "comment": "for dev purposes"},
+        {"name": "mysanitizer", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
+        {"name": "mysanitizer", "instanceof": "testccc1", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
+        {"name": "mysanitizer", "instanceof": "testc2", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
+        {"name": "mysanitizer", "instanceof": "testc1->object", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
+        {"name": "mysanitizer", "instanceof": "newtestc2", "language": "php",  "prevent": ["xss"], "comment": "for dev purposes"},
+		{"name": "filter_var",  "language": "php", "parameters": 
+            [
+                {"id": 2, "condition": "equals", "values": 
+                    [
+                        {"value" : "FILTER_SANITIZE_ENCODED", "prevent" : ["xss"]},
+                        {"value" : "FILTER_SANITIZE_MAGIC_QUOTES", "prevent" : ["command_injection", "sql_injection"]},
+                        {"value" : "FILTER_SANITIZE_SPECIAL_CHARS", "prevent" : ["xss"]},
+                        {"value" : "FILTER_SANITIZE_FULL_SPECIAL_CHARS", "prevent" : ["xss"]},
+                        {"value" : "FILTER_SANITIZE_STRING", "prevent" : ["xss"]},
+                        {"value" : "FILTER_SANITIZE_STRIPPED", "prevent" : ["xss"]}
+                    ]}
+            ]
+        },
+        {"name": "escapeshellarg", "language": "php", "prevent": ["command_injection"]},
+        {"name": "intval", "language": "php", "prevent": ["xss", "command_injection", "sql_injection", "xml_injection", "code_injection"]},
+        {"name": "floatval", "language": "php", "prevent": ["xss", "command_injection", "sql_injection", "xml_injection", "code_injection"]},
+        {"name": "preg_replace",  "language": "php", "parameters": 
+            [
+                {"id": 3, "condition": "taint"},
+                {"id": 2, "condition": "equals", "values": 
+                    [
+                        {"value" : ""}
+                    ]},
+                {"id": 1, "condition": "equals", "values": 
+                    [
+                        {"value" : "/'/", "prevent" : ["command_injection", "sql_injection"]},
+                        {"value" : "/\\W/si", "prevent" : ["command_injection", "sql_injection"]}
                     ]}
             ]
         }

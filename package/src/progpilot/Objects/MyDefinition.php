@@ -69,14 +69,14 @@ class MyDefinition extends MyOp {
 
 		$this->property = new MyProperty;
 		$this->cast = MyDefinition::CAST_NOT_SAFE;
-		
+
 		$this->is_property = false;
 		$this->is_instance = false;
 	}
 
 	public function __clone()
 	{
-        $this->property = clone $this->property;
+		$this->property = clone $this->property;
 	}
 
 	public function print_stdout()

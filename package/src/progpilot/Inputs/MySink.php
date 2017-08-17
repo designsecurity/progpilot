@@ -13,14 +13,16 @@ namespace progpilot\Inputs;
 class MySink extends MySpecify  {
 
 	private $attack;
+	private $cwe;
 	private $parameters;
 	private $has_parameters;
 
-	public function __construct($name, $language, $attack) {
+	public function __construct($name, $language, $attack, $cwe) {
 
 		parent::__construct($name, $language);
 
 		$this->attack = $attack;
+		$this->cwe = $cwe;
 		$this->has_parameters = false;
 		$this->parameters = [];
 	}
@@ -59,6 +61,11 @@ class MySink extends MySpecify  {
 	public function get_attack()
 	{
 		return $this->attack;
+	}
+
+	public function get_cwe()
+	{
+		return $this->cwe;
 	}
 }
 

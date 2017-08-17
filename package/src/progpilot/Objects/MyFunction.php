@@ -33,7 +33,7 @@ class MyFunction extends MyOp {
 	private $last_column;
 	private $last_block_id;
 	private $is_property;
-	
+
 	public $property;
 
 	public function __construct($name) {
@@ -54,15 +54,15 @@ class MyFunction extends MyOp {
 		$this->last_line = 0;
 		$this->last_column = 0;
 		$this->last_block_id = 0;
-		
+
 		$this->property = new MyProperty;
-		
+
 		$this->is_property = false;
 	}
 
 	public function __clone()
 	{
-        $this->property = clone $this->property;
+		$this->property = clone $this->property;
 	}
 
 	public function set_is_property($is_property)
@@ -84,7 +84,7 @@ class MyFunction extends MyOp {
 	{
 		return $this->is_method;
 	}
-	
+
 	public function set_last_line($last_line)
 	{
 		$this->last_line = $last_line;

@@ -173,7 +173,6 @@ class ArrayAnalysis {
 						$context, 
 						$data, 
 						$originaltab,
-						false,
 						true);
 
 			if(count($defs) > 0)

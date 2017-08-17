@@ -42,14 +42,14 @@ if(filter_var($tainted, FILTER_VALIDATE_URL))
 {
 	echo $tainted;
 } 
-
+/*
 $tainted = $_GET["p"];
 
 if(filter_var($tainted, FILTER_VALIDATE_EMAIL)) 
 {
 	echo $tainted;
 } 
-
+*/
 $tainted = $_GET["p"];
 
 if(filter_var($tainted, FILTER_VALIDATE_REGEXP)) 

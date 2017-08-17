@@ -33,8 +33,11 @@ There is a lot of tasks to do :
 - Pushing elements into array (like array[] = ele; or push_array())
 - Property of an object is an object
 - Sanitizers : prevent property must be an array
-- Objects references and assignments to variables
+- Objects identifiers and assignments to variables
 - Static methods
 - Cast expression : ((int) ($taint)).$taint
 - If property hasn't been declared but used later (class { miss public $property;})
 - Chained functions calls : $obj->func1()->func2()
+- Safe command : system("ls ' ".htmlentities($tainted, ENT_QUOTES)." '"); ie : understanding of context : command or only command argument
+- Sprintf strings transformations
+- settype as a sanitizer

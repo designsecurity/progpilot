@@ -30,24 +30,28 @@ class Context {
 
 	public function __construct() 
 	{
-		// !!!??? mettre dans analyzer.php?
 		$this->analyze_includes = true;
 		$this->analyze_js = true;
+		$this->first_file = "";
 
+		$this->reset_internal_values();
+
+		$this->inputs = new \progpilot\Inputs\MyInputs;
+		$this->outputs = new \progpilot\Outputs\MyOutputs;
+	}
+
+	public function reset_internal_values()
+	{
 		$this->current_op = null;
 		$this->current_block = null;
 		$this->current_line = -1;
 		$this->current_column = -1;
 		$this->current_func = null;
-		$this->first_file = "";
 		$this->path = null;
 
 		$this->classes = new \progpilot\Dataflow\Classes;
 		$this->functions = new \progpilot\Dataflow\Functions;
 		$this->mycode = new \progpilot\Code\MyCode;
-
-		$this->inputs = new \progpilot\Inputs\MyInputs;
-		$this->outputs = new \progpilot\Outputs\MyOutputs;
 	}
 
 	public function get_analyze_js()

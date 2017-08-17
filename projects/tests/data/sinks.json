@@ -1,20 +1,21 @@
 {
     "sinks": [
-        {"name": "echo", "language": "php", "attack": "xss"},
-        {"name": "print", "language": "php", "attack": "xss"},
-        {"name": "printf", "language": "php", "attack": "xss"},
-        {"name": "write", "instanceof": "document", "language": "js", "attack": "xss"},
-        {"name": "include", "language": "php", "attack": "file_inclusion"},
-        {"name": "eval", "language": "php", "attack": "code_injection"},
-        {"name": "system", "language": "php", "attack": "command_injection"},
-        {"name": "ldap_search", "parameters": [{"id": 3}], "language": "php", "attack": "ldap_injection"},
-        {"name": "mysql_query", "language": "php", "attack": "sql_injection"},
-        {"name": "prepare", "instanceof": "mysql_connect", "language": "php", "attack": "sql_injection"},
-        {"name": "xpath", "instanceof": "simplexml_load_file", "language": "php", "attack": "xpath_injection"},
-        {"name": "fopen", "parameters": [{"id": 1}], "language": "php", "attack": "idor"},
-        {"name": "mysink", "instanceof": "known_middle_class2", "language": "php", "attack": "xss"},
-        {"name": "mysink", "instanceof": "known_class1->middle_object", "language": "php", "attack": "xss"},
-        {"name": "mysink", "instanceof": "known_class1_undefined", "language": "php", "attack": "xss"},
-        {"name": "mysink", "instanceof": "known_class1_undefined->middle_object", "language": "php", "attack": "xss"}
+        {"name": "echo", "language": "php", "attack": "xss", "cwe": "CWE_79"},
+        {"name": "print", "language": "php", "attack": "xss", "cwe": "CWE_79"},
+        {"name": "printf", "language": "php", "attack": "xss", "cwe": "CWE_79"},
+        {"name": "write", "instanceof": "document", "language": "js", "attack": "xss", "cwe": "CWE_79"},
+        {"name": "include", "language": "php", "attack": "file_inclusion", "cwe": "CWE_98"},
+        {"name": "eval", "language": "php", "attack": "code_injection", "cwe": "CWE_95"},
+        {"name": "system", "language": "php", "attack": "command_injection", "cwe": "CWE_78"},        
+        {"name": "ldap_search", "parameters": [{"id": 3}], "language": "php", "attack": "ldap_injection", "cwe": "CWE_90"},
+        {"name": "mysql_query", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "prepare", "instanceof": "mysql_connect", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "xpath", "instanceof": "simplexml_load_file", "language": "php", "attack": "xml_injection", "cwe": "CWE_91"},
+        {"name": "fopen", "parameters": [{"id": 1}], "language": "php", "attack": "idor", "cwe": "CWE_862"},  
+        {"name": "mysink", "instanceof": "known_middle_class2", "language": "php", "attack": "xss", "cwe": "CWE_79"},
+        {"name": "mysink", "instanceof": "known_class1->middle_object", "language": "php", "attack": "xss", "cwe": "CWE_79"},
+        {"name": "mysink", "instanceof": "known_class1_undefined", "language": "php", "attack": "xss", "cwe": "CWE_79"},
+        {"name": "mysink", "instanceof": "known_class1_undefined->middle_object", "language": "php", "attack": "xss", "cwe": "CWE_79"},
+        {"name": "unserialize", "language": "php", "attack": "code_injection", "cwe": "CWE_95"}
 		]
 }

@@ -18,19 +18,19 @@ class Utils
 	{
 		return htmlentities($string, ENT_QUOTES, 'UTF-8');
 	}
-	
+
 	public static function print_properties($props)
 	{
-        $property_name = "";
-        
-        if(is_array($props))
-        {
-            foreach($props as $prop)
-                $property_name .= "->".Utils::encode_characters($prop);
-        }
-        
-        return $property_name;
-    }
+		$property_name = "";
+
+		if(is_array($props))
+		{
+			foreach($props as $prop)
+				$property_name .= "->".Utils::encode_characters($prop);
+		}
+
+		return $property_name;
+	}
 
 	public static function print_definition($def)
 	{

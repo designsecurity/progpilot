@@ -23,7 +23,7 @@ use progpilot\Code\Opcodes;
 use progpilot\Transformations\Php\Transform;
 
 class Expr {
-	
+
 	public static function instruction($op, $context, $myexpr, $assign_id, $cast = MyDefinition::CAST_NOT_SAFE)
 	{
 		$mytemp_def = null;
@@ -35,7 +35,7 @@ class Expr {
 		// end of expression
 		if(!is_null($type) && $type != MyOp::TYPE_FUNCCALL_ARRAY)
 		{
-			if(is_null($name) || empty($name))
+			if(is_null($name))
 				$name = mt_rand();
 
 			$arr = BuildArrays::build_array_from_ops($op, false);
@@ -45,8 +45,8 @@ class Expr {
 			$mytemp->set_assign_id($assign_id);
 			$mytemp->set_cast($cast);
 			$mytemp->set_type($type);
-			
-			
+
+
 			if($arr != false)
 			{
 				$mytemp->set_is_array(true);
@@ -58,7 +58,7 @@ class Expr {
 			if($type == MyOp::TYPE_PROPERTY)
 			{
 				$property_name = Common::get_name_property($op->ops[0]);
-				
+
 				$mytemp->set_is_property(true);
 				$mytemp->property->set_properties($property_name);
 			}
@@ -82,18 +82,18 @@ class Expr {
 		{
 			foreach($op->ops as $ops)
 			{
-                if($ops instanceof Op\Expr\Cast\Int_
-                    || $ops instanceof Op\Expr\Cast\Array_
-                        || $ops instanceof Op\Expr\Cast\Bool_
-                            || $ops instanceof Op\Expr\Cast\Double_
-                                || $ops instanceof Op\Expr\Cast\Object_
-                                    || $ops instanceof Op\Expr\Cast\Array_)
-                                    
+				if($ops instanceof Op\Expr\Cast\Int_
+						|| $ops instanceof Op\Expr\Cast\Array_
+						|| $ops instanceof Op\Expr\Cast\Bool_
+						|| $ops instanceof Op\Expr\Cast\Double_
+						|| $ops instanceof Op\Expr\Cast\Object_
+						|| $ops instanceof Op\Expr\Cast\Array_)
+
 					Expr::instruction($ops->expr, $context, $myexpr, $assign_id, MyDefinition::CAST_SAFE);
 
-                else if($ops instanceof Op\Expr\Cast\String_)
+				else if($ops instanceof Op\Expr\Cast\String_)
 					Expr::instruction($ops->expr, $context, $myexpr, $assign_id, MyDefinition::CAST_NOT_SAFE);
-                
+
 				else if($ops instanceof Op\Expr\BinaryOp\Concat)
 				{
 					$context->get_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_LEFT));

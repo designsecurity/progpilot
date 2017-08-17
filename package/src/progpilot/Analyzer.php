@@ -18,6 +18,29 @@ class Analyzer
 		$this->current_script = null;
 	}
 
+	function get_files_ofdir($dir, &$files)
+	{
+		if(is_dir($dir))
+		{
+			$filesanddirs = scandir($dir);
+
+			if($filesanddirs != false)
+			{
+				foreach($filesanddirs as $filedir)
+				{
+					if($filedir != '.' && $filedir != "..")
+					{
+						if(is_dir($dir."/".$filedir))
+							$this->get_files_ofdir($dir."/".$filedir, $files);
+
+						else
+							$files[] = $dir."/".$filedir;
+					}
+				}
+			}
+		}
+	}
+
 	public function get_current_script()
 	{
 		return $this->current_script;
@@ -76,14 +99,12 @@ class Analyzer
 		}
 	}
 
-	public function run($context, $firststeps = true)
+	public function run_internal($context)
 	{
-		if($firststeps)
-		{
-			$context->set_first_file($context->inputs->get_file());
-			$script = $this->parse($context);
-			$this->transform($context, $script);
-		}
+		$context->reset_internal_values();
+
+		$script = $this->parse($context);
+		$this->transform($context, $script);
 
 		// analyze
 		if(!is_null($context))
@@ -110,6 +131,24 @@ class Analyzer
 				// throw main function missing
 			}
 		}
+	}
+
+	public function run($context)
+	{
+		$files = [];
+		if(!is_null($context->inputs->get_folder()))
+			$this->get_files_ofdir($context->inputs->get_folder(), $files);
+		else
+			$files[] = $context->inputs->get_file();
+
+		foreach($files as $file)
+		{
+			$context->set_first_file($file);
+			$this->run_internal($context);
+		}
+
+		if(count($files) == 0 && !is_null($context->inputs->get_code()))
+			$this->run_internal($context);
 	}
 
 }

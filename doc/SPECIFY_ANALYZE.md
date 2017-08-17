@@ -18,15 +18,11 @@ Where *$file_sources* is a json file like below :
         {"name": "_GET", "is_array": true, "language": "php", "type": "HTTP Parameter"},
         {"name": "_POST", "is_array": true, "language": "php", "type": "HTTP Parameter"},
         {"name": "_COOKIES", "is_array": true, "language": "php", "type": "HTTP Parameter"},
-        {"name": "_SESSION", "is_array": true, "language": "php", "type": "HTTP Parameter"},
         {"name": "shell_exec", "is_function": true, "language": "php", "type": "command return"},
-        {"name": "mysql_fetch_array", "is_function": true, "language": "php", "type": "database return"},
+        {"name": "vardev", "is_array": true, "array_index": "tainted", "language": "php", "type": "for dev purposes"},
         {"name": "exec", "is_function": true, "parameters": [{"id": 2, "is_array": true, "array_index": 0}], "language": "php", "type": "for dev purposes"},
-        {"name": "fgets", "is_function": true, "language": "php", "type": "for dev purposes"},
-        {"name": "fread", "is_function": true, "language": "php", "type": "for dev purposes"},
-        {"name": "stream_get_contents", "is_function": true, "language": "php", "type": "for dev purposes"},
-        {"name": "system", "is_function": true, "language": "php", "type": "for dev purposes"}
-		]
+        
+        ]
 }
 ```
 *Name* and *language* properties are mandatory.  
@@ -46,18 +42,30 @@ Where *$file_sanitizers* is a json file like below :
 ```javascript
 {
     "sanitizers": [
-        {"name": "htmlentities", "language": "php", "type": "character encoding", "prevent": "xss"},
-        {"name": "addslashes", "language": "php", "type": "character escaping", "prevent": "sql_injection"},
-        {"name": "mysql_real_escape_string", "language": "php", "type": "character escaping", "prevent": "sql_injection"},
-        {"name": "str_replace", "language": "js", "type": "character encoding", "prevent": "xss"},
-        {"name": "mysanitizer", "instanceof": "testc1", "language": "php", "type": "character encoding", "prevent": "xss", "comment": "for dev purposes"}
-		]
+        {"name": "filter_var",  "language": "php", "parameters": 
+            [
+                {"id": 2, "condition": "equals", "values": 
+                    [
+                        {"value" : "FILTER_SANITIZE_ENCODED", "prevent" : ["xss"]},
+                        {"value" : "FILTER_SANITIZE_MAGIC_QUOTES", "prevent" : ["command_injection", "sql_injection"]},
+                        {"value" : "FILTER_SANITIZE_SPECIAL_CHARS", "prevent" : ["xss"]},
+                        {"value" : "FILTER_SANITIZE_FULL_SPECIAL_CHARS", "prevent" : ["xss"]},
+                        {"value" : "FILTER_SANITIZE_STRING", "prevent" : ["xss"]},
+                        {"value" : "FILTER_SANITIZE_STRIPPED", "prevent" : ["xss"]}
+                    ]}
+            ]
+        },
+        {"name": "addslashes", "language": "php", "prevent": ["sql_injection", "command_injection"]}
+        ]
 }
 ```
-*Name*, *language*, *type* and *prevent* properties are mandatory.  
+*Name*, *language* properties are mandatory.  
 The value of *name* property must be a function.  
-To specify a method add *instanceof* property with the class name value to which the method belongs.  
-The value of *prevent* property should match with an *attack* defined in the sinks file.
+To specify a method add *[instanceof](#instanceof-property)* property with the class name value to which the method belongs.  
+The value of *[prevent](#prevent-property)* property should match with an *attack* defined in the sinks file.
+You can add conditions to parameters of your sanitizer function :  
+- **taint** : the corresponding argument will be considered as the expected tainted variable. During the analysis, if this argument is tainted the return of the function will be tainted but sanitized, without specifying  a *taint* property the return of the function will be tainted if one of the argument is tainted.
+- **equals** : the argument must be equals to the specified string.
 
 ## Configure sinks
 - $obj_context->inputs->set_sinks($file_sinks);
@@ -67,22 +75,21 @@ Where *$file_sinks* is a json file like below :
 ```javascript
 {
     "sinks": [
-        {"name": "echo", "language": "php", "attack": "xss"},
-        {"name": "print", "language": "php", "attack": "xss"},
-        {"name": "printf", "language": "php", "attack": "xss"},
-        {"name": "write", "instanceof": "document", "language": "js", "attack": "xss"},
-        {"name": "include", "language": "php", "attack": "file_inclusion"},
-        {"name": "eval", "language": "php", "attack": "code_injection"},
-        {"name": "system", "language": "php", "attack": "command_injection"},
-        {"name": "ldap_search", "parameters": [{"id": 3}], "language": "php", "attack": "ldap_injection"},
-        {"name": "mysql_query", "language": "php", "attack": "sql_injection"},
-        {"name": "xpath", "instanceof": "simplexml_load_file", "language": "php", "attack": "xpath_injection"}
-		]
+        {"name": "echo", "language": "php", "attack": "xss", "cwe": "CWE_79"},
+        {"name": "print", "language": "php", "attack": "xss", "cwe": "CWE_79"},
+        {"name": "printf", "language": "php", "attack": "xss", "cwe": "CWE_79"},
+        {"name": "include", "language": "php", "attack": "file_inclusion", "cwe": "CWE_98"},
+        {"name": "eval", "language": "php", "attack": "code_injection", "cwe": "CWE_95"},
+        {"name": "system", "language": "php", "attack": "command_injection", "cwe": "CWE_78"},        
+        {"name": "ldap_search", "parameters": [{"id": 3}], "language": "php", "attack": "ldap_injection", "cwe": "CWE_90"},
+        {"name": "mysql_query", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "prepare", "instanceof": "mysql_connect", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"}
+        ]
 }
 ```
 *Name*, *language*, *attack* properties are mandatory.  
 The value of *name* property must be a function or a method.  
-To specify a method add *instanceof* property with the class name value to which the method belongs.  
+To specify a method add *[instanceof](#instanceof-property)* property with the class name value to which the method belongs.  
 You can also specify which parameters of a function is a sink with *parameters* property.  
 The *attack* will be annihilate if a source is sanitized by a sanitizer where *prevent* property equals *attack* property
 
@@ -99,17 +106,37 @@ Where *$file_validators* is a json file like below :
                 {"id": 1, "condition": "valid"},
                 {"id": 2, "condition": "array_not_tainted"}
             ]
+        },
+        {"name": "isValidNumber", "instanceof": "ESAPI->validator", "language": "php", "parameters": 
+            [
+                {"id": 2, "condition": "valid"}
+            ]
+        },
+        {"name": "filter_var",  "language": "php", "parameters": 
+            [
+                {"id": 1, "condition": "valid"},
+                {"id": 2, "condition": "equals", "values": 
+                    [
+                        {"value" : "FILTER_VALIDATE_BOOLEAN"},
+                        {"value" : "FILTER_VALIDATE_FLOAT"},
+                        {"value" : "FILTER_VALIDATE_INT"},
+                        {"value" : "FILTER_VALIDATE_IP"},
+                        {"value" : "FILTER_VALIDATE_MAC"},
+                        {"value" : "FILTER_VALIDATE_URL"}
+                    ]}
+            ]
         }
-		]
+        ]
 }
 ```
 *Name*, *language*, properties are mandatory.  
 The value of *name* property must be a function or a method.  
-To specify a method add *instanceof* property with the class name value to which the method belongs.  
+To specify a method add *[instanceof](#instanceof-property)* property with the class name value to which the method belongs.  
 You can add conditions to parameters of your validator function :  
 - **valid** : the corresponding argument will be considered as safe if others conditions are respected.
 - **not_tainted** : the argument is not tainted.
 - **array_not_tainted** : the argument is an array that not contains any tainted values.
+- **equals** : the argument must be equals to the specified string.
 
 For the following *in_array* call : 
 ```php
@@ -125,3 +152,33 @@ if (in_array($tainted, $legal_table, true))
 *$legal_table* (parameter number 2) is an array that not contains any tainted values.  
 So the variable *tainted* is safe in the if block.
 
+***
+***
+
+### instanceof property
+
+If you known the class name of your object just type it like below :
+```javascript
+{"name": "prepare", "instanceof": "mysql_connect", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"}
+```
+For some reasons if you don't known the class name of your object or the analyzer fails to find it, use this syntax :
+```javascript
+{"name": "isValidNumber", "instanceof": "ESAPI->validator", "language": "php"}
+```
+Here *ESAPI->validator->isValidNumber()* is a validation function but we don't know the object assigned to *validator* property.
+
+### prevent property
+
+*Prevent* properties could be assigned to the main object or to the value object or both :
+```javascript
+{"name": "htmlentities", "language": "php", "prevent": ["xss"], "parameters": 
+    [
+        {"id": 2, "condition": "equals", "values": 
+            [
+                {"value" : "ENT_QUOTES", "prevent" : ["xss", "command_injection"]}
+            ]}
+    ]
+},
+```
+If the analyzer finds a *$safe = htmlentites($tainted)* function with no second parameter defined, the *safe* variable will not lead to xss vulnerabilities.  
+Otherwise if it finds *$safe = htmlentites($tainted, "ENT_QUOTES")*, the *prevent* property of the correct value object condition overwritten the main *prevent* property, so *safe* variable will not lead to xss and command_injection vulnerabilites.

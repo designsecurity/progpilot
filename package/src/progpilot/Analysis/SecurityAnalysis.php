@@ -143,6 +143,7 @@ class SecurityAnalysis {
 			$temp["sink_column"] = $myfunc_call->getColumn();
 			$temp["sink_file"] = \progpilot\Utils::encode_characters($myfunc_call->get_source_myfile()->get_name());
 			$temp["vuln_name"] = \progpilot\Utils::encode_characters($mysink->get_attack());
+			$temp["vuln_cwe"] = \progpilot\Utils::encode_characters($mysink->get_cwe());
 			$temp["vuln_id"] = $hash_id_vuln;
 
 			$results[] = $temp;

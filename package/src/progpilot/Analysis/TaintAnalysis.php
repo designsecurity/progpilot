@@ -23,14 +23,14 @@ use progpilot\Inputs\MySource;
 
 class TaintAnalysis {
 
-    public static function funccall_specify_analysis($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index)
-    {
-        TaintAnalysis::funccall_validator($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index); 
-        TaintAnalysis::funccall_sanitizer($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index);     
-        TaintAnalysis::funccall_source($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction);  
-        
-        SecurityAnalysis::funccall($stack_class, $context, $myfunc_call, $instruction, $myclass);
-    }
+	public static function funccall_specify_analysis($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index)
+	{
+		TaintAnalysis::funccall_validator($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index); 
+		TaintAnalysis::funccall_sanitizer($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index);     
+		TaintAnalysis::funccall_source($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction);  
+
+		SecurityAnalysis::funccall($stack_class, $context, $myfunc_call, $instruction, $myclass);
+	}
 
 	public static function funccall_validator($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index)
 	{     
@@ -50,7 +50,7 @@ class TaintAnalysis {
 				$exprarg = $instruction->get_property("argexpr$nbparams"); 
 
 				$condition = $myvalidator->get_parameter_condition($nbparams+1);
-				
+
 
 				if($condition == "valid" && !$exprarg->get_is_concat())
 				{
@@ -59,7 +59,7 @@ class TaintAnalysis {
 					foreach($thedefsargs as $thedefsarg)
 					{
 						$defs_valid[] = $thedefsarg;
-                    }
+					}
 				}
 
 				else if($condition == "array_not_tainted")
@@ -90,28 +90,28 @@ class TaintAnalysis {
 					if($defarg->is_tainted())
 						$condition_respected = false;
 				}
-				
+
 				else if($condition == "equals")
-                { 
-                    $condition_respected_equals = false;
-                    $values = $myvalidator->get_parameter_values($nbparams+1);
-                    
-                    if(!is_null($values))
-                    {
-                        $thedefsargs = $exprarg->get_defs();
-                        if(count($thedefsargs) > 0)
-                        {
-                            foreach($values as $value)
-                            {
-                                if($value->value == $thedefsargs[0]->get_name())
-                                    $condition_respected_equals = true;
-                            }
-                        }
-                    }
-                    
-                    if(!$condition_respected_equals)
-                        $condition_respected = false;
-                }
+				{ 
+					$condition_respected_equals = false;
+					$values = $myvalidator->get_parameter_values($nbparams+1);
+
+					if(!is_null($values))
+					{
+						$thedefsargs = $exprarg->get_defs();
+						if(count($thedefsargs) > 0)
+						{
+							foreach($values as $value)
+							{
+								if($value->value == $thedefsargs[0]->get_last_known_value())
+									$condition_respected_equals = true;
+							}
+						}
+					}
+
+					if(!$condition_respected_equals)
+						$condition_respected = false;
+				}
 
 				$nbparams ++;
 			}
@@ -134,10 +134,10 @@ class TaintAnalysis {
 						$myassertion = new MyAssertion($def_valid, $type);
 
 						if($instruction_if->is_property_exist("not_boolean"))
-                            $myblock_else->add_assertion($myassertion);
-							
+							$myblock_else->add_assertion($myassertion);
+
 						else
-                            $myblock_if->add_assertion($myassertion);
+							$myblock_if->add_assertion($myassertion);
 
 					}
 				}
@@ -147,85 +147,99 @@ class TaintAnalysis {
 
 	public static function funccall_sanitizer($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index)
 	{     
+		$condition_taint = false;
+		$params_tainted_condition_taint = false;
+		$exprs_tainted_condition_taint = [];
+		$defs_tainted_condition_taint = [];
+
 		$params_tainted = false;
 		$exprs_tainted = [];
 		$defs_tainted = [];
 		$params_sanitized = false;
 		$params_type_sanitized = [];
-		
+
 		$nbparams = 0;
 		$condition_respected_final = true;
 
-        $mysanitizer = $context->inputs->get_sanitizer_byname($stack_class, $myfunc_call, $myclass);
-        
-        if(!is_null($mysanitizer))
-            $prevent_final = $mysanitizer->get_prevent();
-		
-        while(true)
-        {
-            if(!$instruction->is_property_exist("argdef$nbparams"))
-                break;
+		$mysanitizer = $context->inputs->get_sanitizer_byname($stack_class, $myfunc_call, $myclass);
 
-            $defarg = $instruction->get_property("argdef$nbparams"); 
-            $exprarg = $instruction->get_property("argexpr$nbparams"); 
-            
-            if($defarg->is_tainted())
-            {
-                $params_tainted = true;
-                $exprs_tainted[] = $exprarg;
-                $defs_tainted[] = $defarg;
-            }
-                    
-            if($defarg->is_sanitized())
-            {
-                $params_sanitized = true;
-                $tmps = $defarg->get_type_sanitized();
+		if(!is_null($mysanitizer))
+			$prevent_final = $mysanitizer->get_prevent();
 
-                foreach($tmps as $tmp)
-                {
-                    if(!in_array($tmp, $params_type_sanitized, true))
-                    $params_type_sanitized[] = $tmp;
-                }
-            }
-                    
-            if(!is_null($mysanitizer))
-            {
-                $condition = $mysanitizer->get_parameter_condition($nbparams+1);
+		while(true)
+		{
+			if(!$instruction->is_property_exist("argdef$nbparams"))
+				break;
 
-                if($condition == "equals")
-                { 
-                    $condition_respected = false;
-                    $values = $mysanitizer->get_parameter_values($nbparams+1);
-                    
-                    if(!is_null($values))
-                    {
-                        $thedefsargs = $exprarg->get_defs();
-                        if(count($thedefsargs) > 0)
-                        {
-                            foreach($values as $value)
-                            {
-                                if($value->value == $thedefsargs[0]->get_name())
-                                {
-                                    $condition_respected = true;
-                                    
-                                    if(isset($value->prevent))
-                                        $prevent_final = $value->prevent;
-                                    
-                                }
-                            }
-                        }
-                    }
-                    
-                    if(!$condition_respected)
-                        $condition_respected_final = false;
-                }
-            }
+			$defarg = $instruction->get_property("argdef$nbparams"); 
+			$exprarg = $instruction->get_property("argexpr$nbparams"); 
 
-            $nbparams ++;
-        }
+			if($defarg->is_tainted())
+			{
+				$params_tainted = true;
+				$exprs_tainted[] = $exprarg;
+				$defs_tainted[] = $defarg;
+			}
+
+			if($defarg->is_sanitized())
+			{
+				$params_sanitized = true;
+				$tmps = $defarg->get_type_sanitized();
+
+				foreach($tmps as $tmp)
+				{
+					if(!in_array($tmp, $params_type_sanitized, true))
+						$params_type_sanitized[] = $tmp;
+				}
+			}
+
+			if(!is_null($mysanitizer))
+			{
+				$condition = $mysanitizer->get_parameter_condition($nbparams+1);
+
+				if($condition == "equals")
+				{ 
+					$condition_respected = false;
+					$values = $mysanitizer->get_parameter_values($nbparams+1);
+
+					if(!is_null($values))
+					{
+						$thedefsargs = $exprarg->get_defs();
+						if(count($thedefsargs) > 0)
+						{
+							foreach($values as $value)
+							{
+								if($value->value == $thedefsargs[0]->get_last_known_value())
+								{
+									$condition_respected = true;
+
+									if(isset($value->prevent))
+										$prevent_final = array_merge($prevent_final, $value->prevent);
+								}
+							}
+						}
+					}
+
+					if(!$condition_respected)
+						$condition_respected_final = false;
+				}
+				else if($condition == "taint")
+				{
+					$condition_taint = true;
+					if($defarg->is_tainted())
+					{
+						$params_tainted_condition_taint = true;
+						$exprs_tainted_condition_taint[] = $exprarg;
+						$defs_tainted_condition_taint[] = $defarg;
+					}
+				}
+			}
+
+			$nbparams ++;
+		}
 
 		$codes = $context->get_mycode()->get_codes();
-		
+
 		if($codes[$index + 2]->get_opcode() == Opcodes::END_ASSIGN)
 		{
 			$instruction_def = $codes[$index + 3];
@@ -233,16 +247,28 @@ class TaintAnalysis {
 
 			if($params_tainted)
 			{
-				for($j = 0; $j < count($defs_tainted); $j ++)  
-					TaintAnalysis::set_tainted($context, $data, $defs_tainted[$j], $mydef_return, $exprs_tainted[$j], false); 
+				if($condition_taint && $params_tainted_condition_taint)
+				{
+					for($j = 0; $j < count($defs_tainted_condition_taint); $j ++)  
+						TaintAnalysis::set_tainted($context, $data, $defs_tainted_condition_taint[$j], $mydef_return, $exprs_tainted_condition_taint[$j], false);
+				}
+				else if(!$condition_taint)
+				{
+					for($j = 0; $j < count($defs_tainted); $j ++)  
+						TaintAnalysis::set_tainted($context, $data, $defs_tainted[$j], $mydef_return, $exprs_tainted[$j], false); 
+				}
 			}
 
 			if(!is_null($mysanitizer) && $condition_respected_final)
 			{
 				$mydef_return->set_sanitized(true);
-				$mydef_return->add_type_sanitized($prevent_final);
+				if(is_array($prevent_final))
+				{
+					foreach($prevent_final as $prevent_final_value)
+						$mydef_return->add_type_sanitized($prevent_final_value);
+				}
 			}
-			
+
 			if($params_sanitized)
 			{
 				$mydef_return->set_sanitized(true);
@@ -414,30 +440,30 @@ class TaintAnalysis {
 				$copy_defassign->set_assign_id(-1);
 				$prop = $copy_defassign->property->pop_property();
 				$visibility_final = false;
-				
-				$instances = ResolveDefs::select_instances($context, $data, $copy_defassign, false);
+
+				$instances = ResolveDefs::select_instances($context, $data, $copy_defassign);
 
 				foreach($instances as $instance)
 				{
 					if($instance->get_is_instance())
 					{
-                        $tmp_myclasses = $instance->get_all_myclass();
+						$tmp_myclasses = $instance->get_all_myclass();
 
-                        foreach($tmp_myclasses as $tmp_myclass)
-                        {
-                            $property = $tmp_myclass->get_property($prop);
-                                                            
-                            if(!is_null($property) && (ResolveDefs::get_visibility($copy_defassign, $property)))
-                            {
-                                $visibility_final = true;
-                                break 2;
-                            }
-                        }
+						foreach($tmp_myclasses as $tmp_myclass)
+						{
+							$property = $tmp_myclass->get_property($prop);
+
+							if(!is_null($property) && (ResolveDefs::get_visibility($copy_defassign, $property)))
+							{
+								$visibility_final = true;
+								break 2;
+							}
+						}
 					}
 				}
-				
+
 				if(count($instances) == 0)
-                    $visibility_final = true;
+					$visibility_final = true;
 			}
 
 			if($def->is_tainted() && $visibility_final)

@@ -53,7 +53,7 @@ class MySanitizer extends MySpecify {
 
 		return null;
 	}
-	
+
 	public function get_parameter_values($i)
 	{
 		foreach($this->parameters as $parameter)

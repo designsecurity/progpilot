@@ -31,6 +31,7 @@ class MyInputs {
 
 	private $file;
 	private $code;
+	private $folder;
 
 	public function __construct() {
 
@@ -50,6 +51,12 @@ class MyInputs {
 
 		$this->file = null;
 		$this->code = null;
+		$this->folder = null;
+	}
+
+	public function get_folder()
+	{
+		return $this->folder;
 	}
 
 	public function get_file()
@@ -60,6 +67,11 @@ class MyInputs {
 	public function get_code()
 	{
 		return $this->code;
+	}
+
+	public function set_folder($folder)
+	{
+		$this->folder = $folder;
 	}
 
 	public function set_file($file)
@@ -89,37 +101,37 @@ class MyInputs {
 	{
 		foreach($this->validators as $myvalidator)
 		{
-            if($myvalidator->get_name() == $myfunc->get_name())
+			if($myvalidator->get_name() == $myfunc->get_name())
 			{
-                if(!$myvalidator->is_instance() && !$myfunc->get_is_method())
+				if(!$myvalidator->is_instance() && !$myfunc->get_is_method())
 					return $myvalidator;
-					
-                if($myvalidator->is_instance() && $myfunc->get_is_method())
-                {
-                    if(!is_null($myclass) && $myvalidator->get_instanceof_name() == $myclass->get_name())
-                        return $myvalidator;
-                    
-                    $properties_validator = explode("->", $myvalidator->get_instanceof_name());
-                    
-                    if(is_array($properties_validator))
-                    {
-                        $myvalidator_instance_name = $properties_validator[0];
-                            
-                        $myvalidator_number_ofproperties = count($properties_validator);
-                        $stack_number_ofproperties = count($stack_class);
 
-                        if($stack_number_ofproperties >= $myvalidator_number_ofproperties)
-                        {
-                            $known_properties = $stack_class[$stack_number_ofproperties - $myvalidator_number_ofproperties];
-                            
-                            foreach($known_properties as $prop_class)
-                            {
-                                if($prop_class->get_name() == $myvalidator_instance_name)
-                                    return $myvalidator;
-                            }
-                        }
-                    }
-                }
+				if($myvalidator->is_instance() && $myfunc->get_is_method())
+				{
+					if(!is_null($myclass) && $myvalidator->get_instanceof_name() == $myclass->get_name())
+						return $myvalidator;
+
+					$properties_validator = explode("->", $myvalidator->get_instanceof_name());
+
+					if(is_array($properties_validator))
+					{
+						$myvalidator_instance_name = $properties_validator[0];
+
+						$myvalidator_number_ofproperties = count($properties_validator);
+						$stack_number_ofproperties = count($stack_class);
+
+						if($stack_number_ofproperties >= $myvalidator_number_ofproperties)
+						{
+							$known_properties = $stack_class[$stack_number_ofproperties - $myvalidator_number_ofproperties];
+
+							foreach($known_properties as $prop_class)
+							{
+								if($prop_class->get_name() == $myvalidator_instance_name)
+									return $myvalidator;
+							}
+						}
+					}
+				}
 			}
 		}
 
@@ -132,35 +144,35 @@ class MyInputs {
 		{
 			if($mysanitizer->get_name() == $myfunc->get_name())
 			{
-                if(!$mysanitizer->is_instance() && !$myfunc->get_is_method())
+				if(!$mysanitizer->is_instance() && !$myfunc->get_is_method())
 					return $mysanitizer;
-					
-                if($mysanitizer->is_instance() && $myfunc->get_is_method())
-                {
-                    if(!is_null($myclass) && $mysanitizer->get_instanceof_name() == $myclass->get_name())
-                        return $mysanitizer;
-                    
-                    $properties_sanitizer = explode("->", $mysanitizer->get_instanceof_name());
-                    
-                    if(is_array($properties_sanitizer))
-                    {
-                        $mysanitizer_instance_name = $properties_sanitizer[0];
-                            
-                        $mysanitizer_number_ofproperties = count($properties_sanitizer);
-                        $stack_number_ofproperties = count($stack_class);
 
-                        if($stack_number_ofproperties >= $mysanitizer_number_ofproperties)
-                        {
-                            $known_properties = $stack_class[$stack_number_ofproperties - $mysanitizer_number_ofproperties];
-                            
-                            foreach($known_properties as $prop_class)
-                            {
-                                if($prop_class->get_name() == $mysanitizer_instance_name)
-                                    return $mysanitizer;
-                            }
-                        }
-                    }
-                }
+				if($mysanitizer->is_instance() && $myfunc->get_is_method())
+				{
+					if(!is_null($myclass) && $mysanitizer->get_instanceof_name() == $myclass->get_name())
+						return $mysanitizer;
+
+					$properties_sanitizer = explode("->", $mysanitizer->get_instanceof_name());
+
+					if(is_array($properties_sanitizer))
+					{
+						$mysanitizer_instance_name = $properties_sanitizer[0];
+
+						$mysanitizer_number_ofproperties = count($properties_sanitizer);
+						$stack_number_ofproperties = count($stack_class);
+
+						if($stack_number_ofproperties >= $mysanitizer_number_ofproperties)
+						{
+							$known_properties = $stack_class[$stack_number_ofproperties - $mysanitizer_number_ofproperties];
+
+							foreach($known_properties as $prop_class)
+							{
+								if($prop_class->get_name() == $mysanitizer_instance_name)
+									return $mysanitizer;
+							}
+						}
+					}
+				}
 			}
 		}
 
@@ -171,37 +183,37 @@ class MyInputs {
 	{
 		foreach($this->sinks as $mysink)
 		{
-            if($mysink->get_name() == $myfunc->get_name())
+			if($mysink->get_name() == $myfunc->get_name())
 			{
-                if(!$mysink->is_instance() && !$myfunc->get_is_method())
+				if(!$mysink->is_instance() && !$myfunc->get_is_method())
 					return $mysink;
-					
-                if($mysink->is_instance() && $myfunc->get_is_method())
-                {
-                    if(!is_null($myclass) && $mysink->get_instanceof_name() == $myclass->get_name())
-                        return $mysink;
-                    
-                    $properties_sink = explode("->", $mysink->get_instanceof_name());
-                    
-                    if(is_array($properties_sink))
-                    {
-                        $mysink_instance_name = $properties_sink[0];
-                            
-                        $mysink_number_ofproperties = count($properties_sink);
-                        $stack_number_ofproperties = count($stack_class);
 
-                        if($stack_number_ofproperties >= $mysink_number_ofproperties)
-                        {
-                            $known_properties = $stack_class[$stack_number_ofproperties - $mysink_number_ofproperties];
-                            
-                            foreach($known_properties as $prop_class)
-                            {
-                                if($prop_class->get_name() == $mysink_instance_name)
-                                    return $mysink;
-                            }
-                        }
-                    }
-                }
+				if($mysink->is_instance() && $myfunc->get_is_method())
+				{
+					if(!is_null($myclass) && $mysink->get_instanceof_name() == $myclass->get_name())
+						return $mysink;
+
+					$properties_sink = explode("->", $mysink->get_instanceof_name());
+
+					if(is_array($properties_sink))
+					{
+						$mysink_instance_name = $properties_sink[0];
+
+						$mysink_number_ofproperties = count($properties_sink);
+						$stack_number_ofproperties = count($stack_class);
+
+						if($stack_number_ofproperties >= $mysink_number_ofproperties)
+						{
+							$known_properties = $stack_class[$stack_number_ofproperties - $mysink_number_ofproperties];
+
+							foreach($known_properties as $prop_class)
+							{
+								if($prop_class->get_name() == $mysink_instance_name)
+									return $mysink;
+							}
+						}
+					}
+				}
 			}
 		}
 
@@ -217,37 +229,37 @@ class MyInputs {
 				$check_function = false;
 				$check_array = false;
 				$check_instance = false;
-				
-                if(!$instance_name)
-					$check_instance = true;
-                
-                
-                if($instance_name && $mysource->is_instance())
-                {
-                    if($mysource->get_instanceof_name() == $instance_name)
-                        $check_instance = true;
-                        
-                    $properties_source = explode("->", $mysource->get_instanceof_name());
-                    
-                    if(is_array($properties_source))
-                    {
-                        $mysource_instance_name = $properties_source[0];
-                            
-                        $mysource_number_ofproperties = count($properties_source);
-                        $stack_number_ofproperties = count($stack_class);
 
-                        if($stack_number_ofproperties >= $mysource_number_ofproperties)
-                        {
-                            $known_properties = $stack_class[$stack_number_ofproperties - $mysource_number_ofproperties];
-                            
-                            foreach($known_properties as $prop_class)
-                            {
-                                if($prop_class->get_name() == $mysource_instance_name)
-                                    $check_instance = true;
-                            }
-                        }
-                    }
-                }
+				if(!$instance_name)
+					$check_instance = true;
+
+
+				if($instance_name && $mysource->is_instance())
+				{
+					if($mysource->get_instanceof_name() == $instance_name)
+						$check_instance = true;
+
+					$properties_source = explode("->", $mysource->get_instanceof_name());
+
+					if(is_array($properties_source))
+					{
+						$mysource_instance_name = $properties_source[0];
+
+						$mysource_number_ofproperties = count($properties_source);
+						$stack_number_ofproperties = count($stack_class);
+
+						if($stack_number_ofproperties >= $mysource_number_ofproperties)
+						{
+							$known_properties = $stack_class[$stack_number_ofproperties - $mysource_number_ofproperties];
+
+							foreach($known_properties as $prop_class)
+							{
+								if($prop_class->get_name() == $mysource_instance_name)
+									$check_instance = true;
+							}
+						}
+					}
+				}
 
 				if($mysource->is_function() == $is_function)
 					$check_function = true;
@@ -360,14 +372,16 @@ class MyInputs {
 				foreach($sanitizers as $sanitizer)
 				{
 					if(!isset($sanitizer->{'name'}) 
-							|| !isset($sanitizer->{'language'})
-							|| !isset($sanitizer->{'prevent'}))
+							|| !isset($sanitizer->{'language'}))
 						throw new \Exception(Lang::FORMAT_SANITIZERS);
 
 
 					$name = $sanitizer->{'name'};
 					$language = $sanitizer->{'language'};
-					$prevent = $sanitizer->{'prevent'};
+
+					$prevent = [];
+					if(isset($sanitizer->{'prevent'}))
+						$prevent = $sanitizer->{'prevent'};
 
 					$mysanitizer = new MySanitizer($name, $language, $prevent);
 
@@ -376,7 +390,7 @@ class MyInputs {
 						$mysanitizer->set_is_instance(true);
 						$mysanitizer->set_instanceof_name($sanitizer->{'instanceof'});
 					}
-					
+
 					if(isset($sanitizer->{'parameters'}))
 					{
 						$parameters = $sanitizer->{'parameters'};
@@ -386,17 +400,17 @@ class MyInputs {
 							{
 								if(is_int($parameter->{'id'}) 
 										&& ($parameter->{'condition'} == "equals"
-											|| $parameter->{'condition'} == "valid"))
+											|| $parameter->{'condition'} == "taint"))
 								{
-                                    if($parameter->{'condition'} == "equals")
-                                    {
-                                        if(isset($parameter->{'values'}))
-                                        {
-                                            $mysanitizer->add_parameter($parameter->{'id'}, $parameter->{'condition'}, $parameter->{'values'});
-                                        }
-                                    }
-                                    else
-									$mysanitizer->add_parameter($parameter->{'id'}, $parameter->{'condition'});
+									if($parameter->{'condition'} == "equals")
+									{
+										if(isset($parameter->{'values'}))
+										{
+											$mysanitizer->add_parameter($parameter->{'id'}, $parameter->{'condition'}, $parameter->{'values'});
+										}
+									}
+									else
+										$mysanitizer->add_parameter($parameter->{'id'}, $parameter->{'condition'});
 								}
 							}
 						}
@@ -429,14 +443,16 @@ class MyInputs {
 				{
 					if(!isset($sink->{'name'}) 
 							|| !isset($sink->{'language'})
-							|| !isset($sink->{'attack'}))
+							|| !isset($sink->{'attack'})
+							|| !isset($sink->{'cwe'}))
 						throw new \Exception(Lang::FORMAT_SINKS);
 
 					$name = $sink->{'name'};
 					$language = $sink->{'language'};
 					$attack = $sink->{'attack'};
+					$cwe = $sink->{'cwe'};
 
-					$mysink = new MySink($name, $language, $attack);
+					$mysink = new MySink($name, $language, $attack, $cwe);
 
 					if(isset($sink->{'instanceof'}))
 					{
@@ -449,8 +465,10 @@ class MyInputs {
 						$parameters = $sink->{'parameters'};
 						foreach($parameters as $parameter)
 						{
-							if(is_int($parameter->{'id'}))
+							if(isset($parameter->{'id'}) && is_int($parameter->{'id'}))
+							{
 								$mysink->add_parameter($parameter->{'id'});
+							}
 						}
 
 						$mysink->set_has_parameters(true);
@@ -582,15 +600,15 @@ class MyInputs {
 											|| $parameter->{'condition'} == "valid"
 											|| $parameter->{'condition'} == "equals"))
 								{
-                                    if($parameter->{'condition'} == "equals")
-                                    {
-                                        if(isset($parameter->{'values'}))
-                                        {
-                                            $myvalidator->add_parameter($parameter->{'id'}, $parameter->{'condition'}, $parameter->{'values'});
-                                        }
-                                    }
-                                    else
-									$myvalidator->add_parameter($parameter->{'id'}, $parameter->{'condition'});
+									if($parameter->{'condition'} == "equals")
+									{
+										if(isset($parameter->{'values'}))
+										{
+											$myvalidator->add_parameter($parameter->{'id'}, $parameter->{'condition'}, $parameter->{'values'});
+										}
+									}
+									else
+										$myvalidator->add_parameter($parameter->{'id'}, $parameter->{'condition'});
 								}
 							}
 						}
