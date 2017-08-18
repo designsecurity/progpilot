@@ -1,0 +1,87 @@
+[./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__func_preg_replace__fopen.php] test result ko
+string(0) ""
+[./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__no_sanitizing__fopen.php] test result ko
+string(0) ""
+[./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/safe/CWE_78__fopen__CAST-func_settype_float__find_size-interpretation_simple_quote.php] test result ko
+array(1) {
+  [0]=>
+  array(12) {
+    ["source_name"]=>
+    array(1) {
+      [0]=>
+      string(6) "$query"
+    }
+    ["source_line"]=>
+    array(1) {
+      [0]=>
+      int(61)
+    }
+    ["source_column"]=>
+    array(1) {
+      [0]=>
+      int(61)
+    }
+    ["source_file"]=>
+    array(1) {
+      [0]=>
+      string(140) "./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/safe/CWE_78__fopen__CAST-func_settype_float__find_size-interpretation_simple_quote.php"
+    }
+    ["tainted_flow"]=>
+    array(1) {
+      [0]=>
+      array(3) {
+        [0]=>
+        array(4) {
+          ["flow_name"]=>
+          string(8) "$tainted"
+          ["flow_line"]=>
+          int(57)
+          ["flow_column"]=>
+          int(57)
+          ["flow_file"]=>
+          string(140) "./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/safe/CWE_78__fopen__CAST-func_settype_float__find_size-interpretation_simple_quote.php"
+        }
+        [1]=>
+        array(4) {
+          ["flow_name"]=>
+          string(8) "$tainted"
+          ["flow_line"]=>
+          int(48)
+          ["flow_column"]=>
+          int(48)
+          ["flow_file"]=>
+          string(140) "./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/safe/CWE_78__fopen__CAST-func_settype_float__find_size-interpretation_simple_quote.php"
+        }
+        [2]=>
+        array(4) {
+          ["flow_name"]=>
+          string(13) "$fgets_return"
+          ["flow_line"]=>
+          int(48)
+          ["flow_column"]=>
+          int(48)
+          ["flow_file"]=>
+          string(140) "./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/safe/CWE_78__fopen__CAST-func_settype_float__find_size-interpretation_simple_quote.php"
+        }
+      }
+    }
+    ["sink_name"]=>
+    string(6) "system"
+    ["sink_line"]=>
+    int(63)
+    ["sink_column"]=>
+    int(63)
+    ["sink_file"]=>
+    string(140) "./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/safe/CWE_78__fopen__CAST-func_settype_float__find_size-interpretation_simple_quote.php"
+    ["vuln_name"]=>
+    string(17) "command_injection"
+    ["vuln_cwe"]=>
+    string(6) "CWE_78"
+    ["vuln_id"]=>
+    string(64) "fa78051d273a21fb2ee7f68c6d7bd3f03a6d19a5dfcf74fe518f7c6e655b346c"
+  }
+}
+[./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__array-GET__func_FILTER-CLEANING-special_chars_filter__cat-concatenation_simple_quote.php] test result ko
+string(0) ""
+[./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__array-GET__func_FILTER-VALIDATION-email_filter__cat-sprintf_%s_simple_quote.php] test result ko
+string(0) ""

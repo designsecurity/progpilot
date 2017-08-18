@@ -180,4 +180,4 @@ Here *ESAPI->validator->isValidNumber()* is a validation function but we don't k
 }
 ```
 If the analyzer finds a *$safe = htmlentites($tainted)* function with no second parameter defined, the *safe* variable will not lead to xss vulnerabilities.
-Otherwise if it finds *$safe = htmlentites($tainted, "ENT_QUOTES")*, the *prevent* property of the correct value object condition overwrite the main *prevent* property, so *safe* variable will not lead to xss and command_injection vulnerabilites.
+Otherwise if it finds *$safe = htmlentites($tainted, ENT_QUOTES)*, the *prevent* property of the correct value object condition overwrite the main *prevent* property, so *safe* variable will not lead to xss and command_injection vulnerabilites.

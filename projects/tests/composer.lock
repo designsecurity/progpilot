@@ -106,12 +106,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "6fa073879e10264fdee306b05e4a61eef08f4429"
+                "reference": "4d4896e553f2094e657fe493506dc37c509d4e2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/6fa073879e10264fdee306b05e4a61eef08f4429",
-                "reference": "6fa073879e10264fdee306b05e4a61eef08f4429",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/4d4896e553f2094e657fe493506dc37c509d4e2b",
+                "reference": "4d4896e553f2094e657fe493506dc37c509d4e2b",
                 "shasum": ""
             },
             "require": {
@@ -149,7 +149,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2017-07-19 15:13:10"
+            "time": "2017-07-28 14:45:09"
         },
         {
             "name": "phpdocumentor/graphviz",
@@ -198,12 +198,13 @@
             "dist": {
                 "type": "path",
                 "url": "../../package",
-                "reference": "94741f94dc43d616e9cb5f0dd9588fd394428b08",
+                "reference": "6ceb6ff1b271649fa0e038173d94b57c93b80b6a",
                 "shasum": null
             },
             "require": {
                 "cweagans/composer-patches": "~1.0",
-                "ircmaxell/php-cfg": "dev-master"
+                "ircmaxell/php-cfg": "dev-master",
+                "symfony/yaml": "~3.3.6"
             },
             "type": "library",
             "extra": {
@@ -230,6 +231,61 @@
                 }
             ],
             "description": "A Static Analyser for security (package for local dev)"
+        },
+        {
+            "name": "symfony/yaml",
+            "version": "v3.3.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/yaml.git",
+                "reference": "ddc23324e6cfe066f3dd34a37ff494fa80b617ed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/ddc23324e6cfe066f3dd34a37ff494fa80b617ed",
+                "reference": "ddc23324e6cfe066f3dd34a37ff494fa80b617ed",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "symfony/console": "~2.8|~3.0"
+            },
+            "suggest": {
+                "symfony/console": "For validating YAML files using the lint command"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Yaml\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Yaml Component",
+            "homepage": "https://symfony.com",
+            "time": "2017-07-23 12:43:26"
         }
     ],
     "packages-dev": [],

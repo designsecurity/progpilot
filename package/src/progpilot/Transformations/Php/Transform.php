@@ -383,47 +383,6 @@ class Transform implements Visitor {
 			$this->context->get_mycode()->add_code($inst_end_expr);
 		}
 
-		/*
-		   const MODE_NONE = 0;
-		   const MODE_UNION = 1;  ==> "|" '&'
-		   const MODE_INTERSECTION = 2; ==> "!"
-		 */
-		else if($op instanceof Op\Expr\Assertion)
-		{
-			$arr = null;
-
-			$name = Common::get_name_definition($this->context->get_current_op()->result);
-			$type = Common::get_type_definition($this->context->get_current_op()->result);
-
-			$mydef = new MyDefinition($this->context->get_current_line(), $this->context->get_current_column(), $name);
-
-			// because it's obligatory in resolve defs
-			$myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
-			$mydef->add_expr($myexpr);
-			$mydef->set_source_myfile($this->current_myfile);
-
-			if($type == MyOp::TYPE_ARRAY)
-			{
-				$arr = BuildArrays::build_array_from_ops($this->context->get_current_op()->result, false);
-				$mydef->set_arr_value($arr);
-				$mydef->set_type(MyOp::TYPE_ARRAY);
-			}
-
-			if($op->assertion instanceof Assertion\NegatedAssertion)
-				$op = $op->assertion->value[0];
-
-			else if($op->assertion instanceof Assertion\TypeAssertion)
-				$op = $op->assertion;
-
-			if($op instanceof Assertion\TypeAssertion)
-				$type = $op->value->value;
-
-			$myassertion = new MyAssertion($mydef, $type);
-
-			// the assertion is true when in the block
-			$myblock = $this->s_blocks[$block];
-			$myblock->add_assertion($myassertion);
-		}
 		else if($op instanceof Op\Terminal\Return_)
 		{
 			Assign::instruction($this->context, true);

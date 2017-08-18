@@ -1,0 +1,11 @@
+{
+    "name": "Example",
+    "description": "Example of use of Progpilot",
+    "minimum-stability": "dev",
+    "require": {
+        "designsecurity/progpilot": "dev-master"
+    },
+	"extra": {
+		"enable-patching": true
+		}
+} 

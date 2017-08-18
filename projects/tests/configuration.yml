@@ -1,0 +1,19 @@
+inputs:
+    set_sources: ./data/sources.json
+    set_sinks: ./data/sinks.json
+    set_validators: ./data/validators.json
+    set_sanitizers: ./data/sanitizers.json
+    set_folder:
+    set_file: ./example1.php
+    set_code:
+    set_includes:
+    set_false_positives:
+    
+outputs:
+    tainted_flow: false
+    resolve_includes: false
+    resolve_includes_file:
+    
+options:
+    set_analyze_js: false
+    set_analyze_includes: true

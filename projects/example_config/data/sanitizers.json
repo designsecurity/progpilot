@@ -18,13 +18,7 @@
         },
         {"name": "addslashes", "language": "php", "prevent": ["sql_injection", "command_injection"]},
         {"name": "mysql_real_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection"]},
-        {"name": "str_replace", "language": "js", "prevent": ["xss"], "comment": "for dev purposes"},
-        {"name": "mysanitizer", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
-        {"name": "mysanitizer", "instanceof": "testccc1", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
-        {"name": "mysanitizer", "instanceof": "testc2", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
-        {"name": "mysanitizer", "instanceof": "testc1->object", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
-        {"name": "mysanitizer", "instanceof": "newtestc2", "language": "php",  "prevent": ["xss"], "comment": "for dev purposes"},
-		{"name": "filter_var",  "language": "php", "parameters": 
+        {"name": "filter_var",  "language": "php", "parameters": 
             [
                 {"id": 2, "condition": "equals", "values": 
                     [
@@ -40,8 +34,6 @@
         {"name": "escapeshellarg", "language": "php", "prevent": ["command_injection"]},
         {"name": "intval", "language": "php", "prevent": ["xss", "command_injection", "sql_injection", "xml_injection", "code_injection"]},
         {"name": "floatval", "language": "php", "prevent": ["xss", "command_injection", "sql_injection", "xml_injection", "code_injection"]},
-        {"name": "boolval", "language": "php", "prevent": ["xss", "command_injection", "sql_injection", "xml_injection", "code_injection"]},
-        {"name": "doubleval", "language": "php", "prevent": ["xss", "command_injection", "sql_injection", "xml_injection", "code_injection"]},
         {"name": "preg_replace",  "language": "php", "parameters": 
             [
                 {"id": 3, "condition": "taint"},

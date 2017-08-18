@@ -1,0 +1,14 @@
+{
+    "sources": [
+        {"name": "_GET", "is_array": true, "language": "php"},
+        {"name": "_POST", "is_array": true, "language": "php"},
+        {"name": "_COOKIES", "is_array": true, "language": "php"},
+        {"name": "shell_exec", "is_function": true, "language": "php"},
+        {"name": "mysql_fetch_array", "is_function": true, "language": "php"},
+        {"name": "exec", "is_function": true, "parameters": [{"id": 2, "is_array": true, "array_index": 0}], "language": "php"},
+        {"name": "fgets", "is_function": true, "language": "php"},
+        {"name": "fread", "is_function": true, "language": "php"},
+        {"name": "stream_get_contents", "is_function": true, "language": "php"},
+        {"name": "system", "is_function": true, "language": "php"}
+		]
+}

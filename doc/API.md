@@ -4,14 +4,17 @@
 
 ## Inputs
 ***
+- $obj_context->inputs->set_folder($folder);  
 - $obj_context->inputs->set_file($file);  
 where *file* is the path to file which exists on the disk, example *./myfile.php*
 - $obj_context->inputs->set_code($code);  
 where *code* is the contents/code of a file, for example *$code = file_get_contents("./myfile.php");*  
 if both options are set when the analyze is launched the priority is given to analyze the $file.  
-To retrieve the value of $file and $code use these methods :
+if all options are set when the analyze is launched the priority is given to analyze the $folder.  
+To retrieve the value of $file, $code and $folder use these methods :
 - $obj_context->inputs->get_file();
 - $obj_context->inputs->get_code();
+- $obj_context->inputs->get_folder();
 ***
 
 ***
@@ -51,4 +54,6 @@ These functions are explained in the chapter about [**included files**](./INCLUD
 *true* or *false* if you want to analyze javascript (in development), default is *true*
 - $obj_context->set_analyze_includes($bool);  
 *true* or *false* if you want to analyze included files, default is *true*
+- $obj_context->set_configuration($config);  
+you can use an yaml file to specify the configuration of analysis, see an [**example here**](./../projects/example_config/configuration.yml).
 ***
