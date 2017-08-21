@@ -111,10 +111,10 @@ You can define traditional variables like *_GET*, *_POST* or *_COOKIES* as untru
 ```javascript
 {
     "sources": [
-        {"name": "_GET", "is_array": true, "language": "php", "type": "HTTP Parameter"},
-        {"name": "_POST", "is_array": true, "language": "php", "type": "HTTP Parameter"},
-        {"name": "_COOKIES", "is_array": true, "language": "php", "type": "HTTP Parameter"},
-        {"name": "shell_exec", "is_function": true, "language": "php", "type": "command return"}
+        {"name": "_GET", "is_array": true, "language": "php"},
+        {"name": "_POST", "is_array": true, "language": "php"},
+        {"name": "_COOKIES", "is_array": true, "language": "php"},
+        {"name": "shell_exec", "is_function": true, "language": "php"}
 		]
 }
 ```

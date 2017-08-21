@@ -32,7 +32,6 @@ There is a lot of tasks to do :
 - Passing by reference
 - Pushing elements into array (like array[] = ele; or push_array())
 - Property of an object is an object
-- Sanitizers : prevent property must be an array
 - Objects identifiers and assignments to variables
 - Static methods
 - Cast expression : ((int) ($taint)).$taint
@@ -41,3 +40,7 @@ There is a lot of tasks to do :
 - Safe command : system("ls ' ".htmlentities($tainted, ENT_QUOTES)." '"); ie : understanding of context : command or only command argument
 - Sprintf strings transformations
 - settype as a sanitizer
+- CWE_89__shell_exec__func_mysql_real_escape_string__multiple_select-interpretation.php : unsafe query without '' select from id = $tainted;
+- No need to new for simplexml_load_file (return $instance) so we miss object creation
+- $tainted = $tainted + 0; => cast to int
+- Specials rules : missing set_cookies secure or twig default escaping for examples

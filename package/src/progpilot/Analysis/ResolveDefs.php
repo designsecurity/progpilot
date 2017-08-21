@@ -220,7 +220,7 @@ class ResolveDefs {
 					{
 						$property->set_sanitized(true);
 						foreach($def_found->get_type_sanitized() as $type_sanitized)
-							$property->set_type_sanitized($type_sanitized);
+							$property->add_type_sanitized($type_sanitized);
 					}
 				}
 

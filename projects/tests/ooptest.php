@@ -106,5 +106,10 @@ $framework->add_output("./tests/oop/simple20.php", array("\$this->member2"));
 $framework->add_output("./tests/oop/simple20.php", array("7"));
 $framework->add_output("./tests/oop/simple20.php", "xss");
 
+$framework->add_testbasis("./tests/oop/simple21.php");
+$framework->add_output("./tests/oop/simple21.php", array("\$query"));
+$framework->add_output("./tests/oop/simple21.php", array("19"));
+$framework->add_output("./tests/oop/simple21.php", "xml_injection");
+
 
 ?>

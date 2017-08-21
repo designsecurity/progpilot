@@ -16,6 +16,8 @@
         {"name": "mysink", "instanceof": "known_class1->middle_object", "language": "php", "attack": "xss", "cwe": "CWE_79"},
         {"name": "mysink", "instanceof": "known_class1_undefined", "language": "php", "attack": "xss", "cwe": "CWE_79"},
         {"name": "mysink", "instanceof": "known_class1_undefined->middle_object", "language": "php", "attack": "xss", "cwe": "CWE_79"},
-        {"name": "unserialize", "language": "php", "attack": "code_injection", "cwe": "CWE_95"}
+        {"name": "unserialize", "language": "php", "attack": "code_injection", "cwe": "CWE_95"},
+        {"name": "header", "language": "php", "attack": "header_injection", "cwe": "CWE_601"},
+        {"name": "preg_replace", "parameters": [{"id": 1}], "language": "php", "attack": "code_injection", "cwe": "CWE_95"}
 		]
 }
