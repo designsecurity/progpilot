@@ -48,6 +48,21 @@
                         {"value" : "/^[0-9]*$/"}
                     ]}
             ]
-        }
+        },
+        {"name": "is_numeric",  "language": "php", "parameters": [{"id": 1, "condition": "valid"}]},
+        {"name": "is_array",  "language": "php", "parameters": [{"id": 1, "condition": "valid"}]},
+        {"name": "is_bool",  "language": "php", "parameters": [{"id": 1, "condition": "valid"}]},
+        {"name": "is_double",  "language": "php", "parameters": [{"id": 1, "condition": "valid"}]},
+        {"name": "is_float",  "language": "php", "parameters": [{"id": 1, "condition": "valid"}]},
+        {"name": "is_int",  "language": "php", "parameters": [{"id": 1, "condition": "valid"}]},
+        {"name": "is_integer",  "language": "php", "parameters": [{"id": 1, "condition": "valid"}]},
+        {"name": "is_long",  "language": "php", "parameters": [{"id": 1, "condition": "valid"}]},
+        {"name": "is_null",  "language": "php", "parameters": [{"id": 1, "condition": "valid"}]},
+        {"name": "is_object",  "language": "php", "parameters": [{"id": 1, "condition": "valid"}]},
+        {"name": "is_real",  "language": "php", "parameters": [{"id": 1, "condition": "valid"}]},
+        {"name": "is_callable",  "language": "php", "parameters": [{"id": 1, "condition": "valid"}]},
+        {"name": "is_iterable",  "language": "php", "parameters": [{"id": 1, "condition": "valid"}]},
+        {"name": "is_resource",  "language": "php", "parameters": [{"id": 1, "condition": "valid"}]},
+        {"name": "empty",  "language": "php", "parameters": [{"id": 1, "condition": "valid"}]}
 		]
 }

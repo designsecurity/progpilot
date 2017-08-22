@@ -110,6 +110,9 @@ $framework->add_testbasis("./tests/oop/simple21.php");
 $framework->add_output("./tests/oop/simple21.php", array("\$query"));
 $framework->add_output("./tests/oop/simple21.php", array("19"));
 $framework->add_output("./tests/oop/simple21.php", "xml_injection");
+$framework->add_output("./tests/oop/simple21.php", array("\$res"));
+$framework->add_output("./tests/oop/simple21.php", array("24"));
+$framework->add_output("./tests/oop/simple21.php", "xss");
 
 
 ?>

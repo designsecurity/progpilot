@@ -43,6 +43,14 @@ $framework->add_output("./tests/data/sink5.php", array("\$_GET[\"p\"]"));
 $framework->add_output("./tests/data/sink5.php", array("74"));
 $framework->add_output("./tests/data/sink5.php", "xss");
 
+$framework->add_testbasis("./tests/data/sink6.php");
+$framework->add_output("./tests/data/sink6.php", array("\$_GET[\"p1\"]"));
+$framework->add_output("./tests/data/sink6.php", array("3"));
+$framework->add_output("./tests/data/sink6.php", "code_injection");
+$framework->add_output("./tests/data/sink6.php", array("\$_GET[\"t1\"]"));
+$framework->add_output("./tests/data/sink6.php", array("3"));
+$framework->add_output("./tests/data/sink6.php", "code_injection");
+
 $framework->add_testbasis("./tests/data/source1.php");
 $framework->add_output("./tests/data/source1.php", array("\$var7"));
 $framework->add_output("./tests/data/source1.php", array("3"));

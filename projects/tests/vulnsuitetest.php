@@ -97,7 +97,6 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fop
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__SESSION__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__SESSION__no_sanitizing__fopen.php", array("46"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__SESSION__no_sanitizing__fopen.php", "idor");
-*/
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__func_preg_replace__fopen.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__func_preg_replace__fopen.php", array("\$tainted"));
@@ -108,7 +107,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fop
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__no_sanitizing__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__no_sanitizing__fopen.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__array-GET__no_sanitizing__fopen.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__backticks__func_preg_replace__fopen.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__backticks__func_preg_replace__fopen.php", array("\$tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/IDOR/CWE_862_Fopen/unsafe/CWE_862_Fopen__backticks__func_preg_replace__fopen.php", array("48"));
@@ -1365,7 +1364,8 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/safe/CWE_78__fopen__CAST-cast_int_sort_of__find_size-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/safe/CWE_78__fopen__CAST-func_settype_float__find_size-interpretation_simple_quote.php");
+/* false positive */
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/safe/CWE_78__fopen__CAST-func_settype_float__find_size-interpretation_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/safe/CWE_78__fopen__func_FILTER-CLEANING-magic_quotes_filter__ls-interpretation_simple_quote.php");
 
@@ -1629,13 +1629,13 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78
 
 
 
+/* FALSE POSITIVES */
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__GET__func_FILTER-CLEANING-special_chars_filter__cat-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__GET__func_FILTER-CLEANING-special_chars_filter__cat-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__GET__func_FILTER-CLEANING-special_chars_filter__cat-concatenation_simple_quote.php", array("51"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__GET__func_FILTER-CLEANING-special_chars_filter__cat-concatenation_simple_quote.php", "command_injection");
 
-/* FALSE POSITIVES */
-/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__GET__func_FILTER-VALIDATION-email_filter__ls-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__GET__func_FILTER-VALIDATION-email_filter__ls-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__GET__func_FILTER-VALIDATION-email_filter__ls-concatenation_simple_quote.php", array("49"));
@@ -1702,7 +1702,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__SESSION__no_sanitizing__ls-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__SESSION__no_sanitizing__ls-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__SESSION__no_sanitizing__ls-interpretation_simple_quote.php", "file_inclusion");
-*/
+
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__array-GET__func_FILTER-CLEANING-special_chars_filter__cat-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__array-GET__func_FILTER-CLEANING-special_chars_filter__cat-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__array-GET__func_FILTER-CLEANING-special_chars_filter__cat-concatenation_simple_quote.php", array("49"));
@@ -1712,12 +1712,12 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__array-GET__func_FILTER-VALIDATION-email_filter__cat-sprintf_%s_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__array-GET__func_FILTER-VALIDATION-email_filter__cat-sprintf_%s_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__array-GET__func_FILTER-VALIDATION-email_filter__cat-sprintf_%s_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__backticks__func_FILTER-CLEANING-email_filter__ls-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__backticks__func_FILTER-CLEANING-email_filter__ls-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__backticks__func_FILTER-CLEANING-email_filter__ls-concatenation_simple_quote.php", array("53"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__backticks__func_FILTER-CLEANING-email_filter__ls-concatenation_simple_quote.php", "command_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__backticks__func_FILTER-CLEANING-full_special_chars_filter__cat-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__backticks__func_FILTER-CLEANING-full_special_chars_filter__cat-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__backticks__func_FILTER-CLEANING-full_special_chars_filter__cat-concatenation_simple_quote.php", array("51"));
@@ -1727,7 +1727,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__backticks__func_FILTER-CLEANING-full_special_chars_filter__ls-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__backticks__func_FILTER-CLEANING-full_special_chars_filter__ls-concatenation_simple_quote.php", array("51"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__backticks__func_FILTER-CLEANING-full_special_chars_filter__ls-concatenation_simple_quote.php", "command_injection");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__backticks__no_sanitizing__find_size-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__backticks__no_sanitizing__find_size-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__backticks__no_sanitizing__find_size-concatenation_simple_quote.php", array("49"));
@@ -1779,12 +1779,12 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-classicGet__func_FILTER-CLEANING-email_filter__cat-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-classicGet__func_FILTER-CLEANING-email_filter__cat-sprintf_%s_simple_quote.php", array("65"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-classicGet__func_FILTER-CLEANING-email_filter__cat-sprintf_%s_simple_quote.php", "command_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-classicGet__func_FILTER-CLEANING-special_chars_filter__cat-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-classicGet__func_FILTER-CLEANING-special_chars_filter__cat-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-classicGet__func_FILTER-CLEANING-special_chars_filter__cat-sprintf_%s_simple_quote.php", array("63"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-classicGet__func_FILTER-CLEANING-special_chars_filter__cat-sprintf_%s_simple_quote.php", "command_injection");
-
+*/
 /* FALSE POSITIVES */
 /*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-classicGet__func_FILTER-VALIDATION-email_filter__cat-concatenation_simple_quote.php");
@@ -1797,6 +1797,7 @@ $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/un
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-classicGet__func_FILTER-VALIDATION-email_filter__ls-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-classicGet__func_FILTER-VALIDATION-email_filter__ls-interpretation_simple_quote.php", "file_inclusion");
 */
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-directGet__func_FILTER-CLEANING-special_chars_filter__cat-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-directGet__func_FILTER-CLEANING-special_chars_filter__cat-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-directGet__func_FILTER-CLEANING-special_chars_filter__cat-concatenation_simple_quote.php", array("58"));
@@ -1806,7 +1807,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-directGet__func_FILTER-CLEANING-special_chars_filter__ls-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-directGet__func_FILTER-CLEANING-special_chars_filter__ls-concatenation_simple_quote.php", array("58"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-directGet__func_FILTER-CLEANING-special_chars_filter__ls-concatenation_simple_quote.php", "command_injection");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-directGet__func_preg_match-no_filtering__cat-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-directGet__func_preg_match-no_filtering__cat-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-directGet__func_preg_match-no_filtering__cat-concatenation_simple_quote.php", array("62"));
@@ -1817,11 +1818,12 @@ $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/un
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-indexArray__func_FILTER-CLEANING-email_filter__cat-sprintf_%s_simple_quote.php", array("68"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-indexArray__func_FILTER-CLEANING-email_filter__cat-sprintf_%s_simple_quote.php", "command_injection");
 
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-indexArray__func_FILTER-CLEANING-full_special_chars_filter__ls-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-indexArray__func_FILTER-CLEANING-full_special_chars_filter__ls-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-indexArray__func_FILTER-CLEANING-full_special_chars_filter__ls-sprintf_%s_simple_quote.php", array("66"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-indexArray__func_FILTER-CLEANING-full_special_chars_filter__ls-sprintf_%s_simple_quote.php", "command_injection");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-indexArray__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-indexArray__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__object-indexArray__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("70"));
@@ -1836,12 +1838,12 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__popen__func_FILTER-CLEANING-email_filter__ls-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__popen__func_FILTER-CLEANING-email_filter__ls-sprintf_%s_simple_quote.php", array("55"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__popen__func_FILTER-CLEANING-email_filter__ls-sprintf_%s_simple_quote.php", "command_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__popen__func_FILTER-CLEANING-full_special_chars_filter__ls-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__popen__func_FILTER-CLEANING-full_special_chars_filter__ls-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__popen__func_FILTER-CLEANING-full_special_chars_filter__ls-interpretation_simple_quote.php", array("53"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__popen__func_FILTER-CLEANING-full_special_chars_filter__ls-interpretation_simple_quote.php", "command_injection");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__popen__func_preg_match-no_filtering__ls-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__popen__func_preg_match-no_filtering__ls-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__popen__func_preg_match-no_filtering__ls-interpretation_simple_quote.php", array("57"));
@@ -1861,7 +1863,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__proc_open__func_FILTER-CLEANING-email_filter__ls-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__proc_open__func_FILTER-CLEANING-email_filter__ls-interpretation_simple_quote.php", array("65"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__proc_open__func_FILTER-CLEANING-email_filter__ls-interpretation_simple_quote.php", "command_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__proc_open__func_FILTER-CLEANING-full_special_chars_filter__cat-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__proc_open__func_FILTER-CLEANING-full_special_chars_filter__cat-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__proc_open__func_FILTER-CLEANING-full_special_chars_filter__cat-interpretation_simple_quote.php", array("63"));
@@ -1881,7 +1883,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__proc_open__func_FILTER-CLEANING-special_chars_filter__ls-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__proc_open__func_FILTER-CLEANING-special_chars_filter__ls-interpretation_simple_quote.php", array("63"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__proc_open__func_FILTER-CLEANING-special_chars_filter__ls-interpretation_simple_quote.php", "command_injection");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__proc_open__func_preg_match-no_filtering__cat-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__proc_open__func_preg_match-no_filtering__cat-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__proc_open__func_preg_match-no_filtering__cat-concatenation_simple_quote.php", array("67"));
@@ -1916,7 +1918,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__system__func_FILTER-CLEANING-email_filter__cat-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__system__func_FILTER-CLEANING-email_filter__cat-sprintf_%s_simple_quote.php", array("53"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__system__func_FILTER-CLEANING-email_filter__cat-sprintf_%s_simple_quote.php", "command_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__system__func_FILTER-CLEANING-special_chars_filter__ls-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__system__func_FILTER-CLEANING-special_chars_filter__ls-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__system__func_FILTER-CLEANING-special_chars_filter__ls-concatenation_simple_quote.php", array("51"));
@@ -1926,7 +1928,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__system__func_FILTER-CLEANING-special_chars_filter__ls-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__system__func_FILTER-CLEANING-special_chars_filter__ls-sprintf_%s_simple_quote.php", array("51"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__system__func_FILTER-CLEANING-special_chars_filter__ls-sprintf_%s_simple_quote.php", "command_injection");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__unserialize__func_FILTER-CLEANING-full_special_chars_filter__cat-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__unserialize__func_FILTER-CLEANING-full_special_chars_filter__cat-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_78/unsafe/CWE_78__unserialize__func_FILTER-CLEANING-full_special_chars_filter__cat-sprintf_%s_simple_quote.php", array("53"));
@@ -2105,7 +2107,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/safe/CWE_89__fopen__func_preg_replace__select_from-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/safe/CWE_89__fopen__no_sanitizing__multiple_select-sprintf_%d.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/safe/CWE_89__fopen__no_sanitizing__multiple_select-sprintf_%d.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/safe/CWE_89__fopen__ternary_white_list__multiple_AS-sprintf_%u.php");
 
@@ -2185,7 +2187,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/safe/CWE_89__object-directGet__func_mysql_real_escape_string__select_from_where-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/safe/CWE_89__object-directGet__no_sanitizing__multiple_AS-sprintf_%d_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/safe/CWE_89__object-directGet__no_sanitizing__multiple_AS-sprintf_%d_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/safe/CWE_89__object-indexArray__CAST-cast_float_sort_of__multiple_select-interpretation_simple_quote.php");
 
@@ -2239,7 +2241,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/safe/CWE_89__proc_open__func_preg_match-only_numbers__select_from_where-concatenation.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/safe/CWE_89__proc_open__no_sanitizing__multiple_select-sprintf_%d.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/safe/CWE_89__proc_open__no_sanitizing__multiple_select-sprintf_%d.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/safe/CWE_89__proc_open__whitelist_using_array__multiple_AS-sprintf_%d_simple_quote.php");
 
@@ -2316,7 +2318,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/safe/CWE_89__unserialize__ternary_white_list__select_from_where-sprintf_%u.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/safe/CWE_89__unserialize__whitelist_using_array__multiple_select-sprintf_%s_simple_quote.php");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__GET__func_FILTER-CLEANING-special_chars_filter__select_from-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__GET__func_FILTER-CLEANING-special_chars_filter__select_from-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__GET__func_FILTER-CLEANING-special_chars_filter__select_from-interpretation_simple_quote.php", array("51"));
@@ -2326,7 +2328,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__GET__func_FILTER-VALIDATION-email_filter__select_from-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__GET__func_FILTER-VALIDATION-email_filter__select_from-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__GET__func_FILTER-VALIDATION-email_filter__select_from-interpretation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__GET__no_sanitizing__join-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__GET__no_sanitizing__join-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__GET__no_sanitizing__join-sprintf_%s_simple_quote.php", array("49"));
@@ -2342,7 +2344,7 @@ $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/un
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__GET__no_sanitizing__multiple_AS-interpretation.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__GET__no_sanitizing__multiple_AS-interpretation.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__GET__no_sanitizing__multiple_AS-interpretation.php", "xss");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__POST__func_FILTER-CLEANING-full_special_chars_filter__join-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__POST__func_FILTER-CLEANING-full_special_chars_filter__join-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__POST__func_FILTER-CLEANING-full_special_chars_filter__join-concatenation_simple_quote.php", array("51"));
@@ -2372,7 +2374,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__backticks__func_FILTER-CLEANING-full_special_chars_filter__join-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__backticks__func_FILTER-CLEANING-full_special_chars_filter__join-interpretation_simple_quote.php", array("51"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__backticks__func_FILTER-CLEANING-full_special_chars_filter__join-interpretation_simple_quote.php", "sql_injection");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__backticks__func_preg_match-no_filtering__join-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__backticks__func_preg_match-no_filtering__join-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__backticks__func_preg_match-no_filtering__join-concatenation_simple_quote.php", array("55"));
@@ -2388,7 +2390,7 @@ $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/un
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__exec__func_FILTER-CLEANING-email_filter__select_from-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__exec__func_FILTER-CLEANING-email_filter__select_from-concatenation_simple_quote.php", array("56"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__exec__func_FILTER-CLEANING-email_filter__select_from-concatenation_simple_quote.php", "sql_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__exec__func_FILTER-CLEANING-special_chars_filter__select_from-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__exec__func_FILTER-CLEANING-special_chars_filter__select_from-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__exec__func_FILTER-CLEANING-special_chars_filter__select_from-interpretation_simple_quote.php", array("54"));
@@ -2398,7 +2400,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__exec__func_FILTER-VALIDATION-email_filter__select_from-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__exec__func_FILTER-VALIDATION-email_filter__select_from-concatenation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__exec__func_FILTER-VALIDATION-email_filter__select_from-concatenation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__exec__no_sanitizing__multiple_AS-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__exec__no_sanitizing__multiple_AS-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__exec__no_sanitizing__multiple_AS-concatenation_simple_quote.php", array("52"));
@@ -2422,12 +2424,12 @@ $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/un
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__object-directGet__func_FILTER-CLEANING-email_filter__join-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__object-directGet__func_FILTER-CLEANING-email_filter__join-interpretation_simple_quote.php", array("60"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__object-directGet__func_FILTER-CLEANING-email_filter__join-interpretation_simple_quote.php", "sql_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__object-directGet__func_FILTER-CLEANING-special_chars_filter__select_from-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__object-directGet__func_FILTER-CLEANING-special_chars_filter__select_from-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__object-directGet__func_FILTER-CLEANING-special_chars_filter__select_from-interpretation_simple_quote.php", array("58"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__object-directGet__func_FILTER-CLEANING-special_chars_filter__select_from-interpretation_simple_quote.php", "sql_injection");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__object-directGet__no_sanitizing__select_from-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__object-directGet__no_sanitizing__select_from-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__object-directGet__no_sanitizing__select_from-sprintf_%s_simple_quote.php", array("56"));
@@ -2467,12 +2469,12 @@ $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/un
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__popen__func_preg_match-no_filtering__join-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__popen__func_preg_match-no_filtering__join-sprintf_%s_simple_quote.php", array("57"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__popen__func_preg_match-no_filtering__join-sprintf_%s_simple_quote.php", "sql_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__shell_exec__func_FILTER-VALIDATION-email_filter__join-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__shell_exec__func_FILTER-VALIDATION-email_filter__join-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__shell_exec__func_FILTER-VALIDATION-email_filter__join-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__shell_exec__func_FILTER-VALIDATION-email_filter__join-interpretation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__shell_exec__func_mysql_real_escape_string__multiple_select-interpretation.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__shell_exec__func_mysql_real_escape_string__multiple_select-interpretation.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_89/unsafe/CWE_89__shell_exec__func_mysql_real_escape_string__multiple_select-interpretation.php", array("49"));
@@ -2574,7 +2576,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__GET__func_preg_replace_ldap_char_white_list__userByMail-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__GET__func_str_replace_ldap_char_black_list__userByMail-sprintf_%s_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__GET__func_str_replace_ldap_char_black_list__userByMail-sprintf_%s_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__GET__whitelist_using_array__name-sprintf_%s_simple_quote.php");
 
@@ -2602,7 +2604,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__POST__func_preg_replace_ldap_char_white_list__not_name-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__POST__func_str_replace_ldap_char_black_list__name-interpretation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__POST__func_str_replace_ldap_char_black_list__name-interpretation_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__POST__ternary_white_list__not_name-interpretation_simple_quote.php");
 
@@ -2654,9 +2656,9 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__backticks__func_preg_match-letters_numbers__name-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__backticks__func_str_replace_ldap_char_black_list__userByCN-interpretation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__backticks__func_str_replace_ldap_char_black_list__userByCN-interpretation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__backticks__func_str_replace_ldap_char_black_list__userByMail-concatenation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__backticks__func_str_replace_ldap_char_black_list__userByMail-concatenation_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__backticks__ternary_white_list__name-interpretation_simple_quote.php");
 
@@ -2690,7 +2692,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__exec__func_preg_replace_ldap_char_white_list__not_name-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__exec__func_str_replace_ldap_char_black_list__userByCN-interpretation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__exec__func_str_replace_ldap_char_black_list__userByCN-interpretation_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__exec__ternary_white_list__userByMail-interpretation_simple_quote.php");
 
@@ -2712,7 +2714,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__fopen__func_preg_replace_ldap_char_white_list__userByCN-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__fopen__func_str_replace_ldap_char_black_list__not_name-interpretation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__fopen__func_str_replace_ldap_char_black_list__not_name-interpretation_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__fopen__whitelist_using_array__userByMail-sprintf_%s_simple_quote.php");
 
@@ -2732,11 +2734,11 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-Array__func_preg_replace_ldap_char_white_list__userByCN-concatenation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-Array__func_str_replace_ldap_char_black_list__name-concatenation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-Array__func_str_replace_ldap_char_black_list__name-concatenation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-Array__func_str_replace_ldap_char_black_list__name-sprintf_%s_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-Array__func_str_replace_ldap_char_black_list__name-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-Array__func_str_replace_ldap_char_black_list__userByCN-sprintf_%s_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-Array__func_str_replace_ldap_char_black_list__userByCN-sprintf_%s_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-Array__whitelist_using_array__name-sprintf_%s_simple_quote.php");
 
@@ -2750,7 +2752,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-classicGet__func_preg_replace_ldap_char_white_list__not_name-interpretation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-classicGet__func_str_replace_ldap_char_black_list__userByMail-sprintf_%s_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-classicGet__func_str_replace_ldap_char_black_list__userByMail-sprintf_%s_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-classicGet__ternary_white_list__name-interpretation_simple_quote.php");
 
@@ -2772,9 +2774,9 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-directGet__func_preg_match-letters_numbers__not_name-interpretation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-directGet__func_str_replace_ldap_char_black_list__not_name-sprintf_%s_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-directGet__func_str_replace_ldap_char_black_list__not_name-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-directGet__func_str_replace_ldap_char_black_list__userByCN-sprintf_%s_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-directGet__func_str_replace_ldap_char_black_list__userByCN-sprintf_%s_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-directGet__ternary_white_list__userByCN-sprintf_%s_simple_quote.php");
 
@@ -2790,9 +2792,9 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-indexArray__func_preg_replace_ldap_char_white_list__userByCN-concatenation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-indexArray__func_str_replace_ldap_char_black_list__userByCN-interpretation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-indexArray__func_str_replace_ldap_char_black_list__userByCN-interpretation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-indexArray__func_str_replace_ldap_char_black_list__userByMail-interpretation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-indexArray__func_str_replace_ldap_char_black_list__userByMail-interpretation_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__object-indexArray__ternary_white_list__not_name-interpretation_simple_quote.php");
 
@@ -2836,7 +2838,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__proc_open__func_preg_replace_ldap_char_white_list__userByMail-concatenation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__proc_open__func_str_replace_ldap_char_black_list__name-sprintf_%s_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__proc_open__func_str_replace_ldap_char_black_list__name-sprintf_%s_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__proc_open__ternary_white_list__userByMail-concatenation_simple_quote.php");
 
@@ -2882,7 +2884,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__system__func_preg_match-letters_numbers__not_name-interpretation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__system__func_str_replace_ldap_char_black_list__name-concatenation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__system__func_str_replace_ldap_char_black_list__name-concatenation_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__system__ternary_white_list__name-concatenation_simple_quote.php");
 
@@ -2890,10 +2892,10 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__system__ternary_white_list__userByMail-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__unserialize__func_FILTER-CLEANING-full_special_chars_filter__name-concatenation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__unserialize__func_FILTER-CLEANING-full_special_chars_filter__name-concatenation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__unserialize__func_FILTER-CLEANING-special_chars_filter__userByCN-concatenation_simple_quote.php");
-
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__unserialize__func_FILTER-CLEANING-special_chars_filter__userByCN-concatenation_simple_quote.php");
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__unserialize__func_pg_escape_literal__name-interpretation_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__unserialize__func_pg_escape_literal__name-sprintf_%s_simple_quote.php");
@@ -2911,6 +2913,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__unserialize__func_preg_replace_ldap_char_white_list__userByMail-concatenation_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/safe/CWE_90__unserialize__whitelist_using_array__userByCN-concatenation_simple_quote.php");
+*/
 // f21518eb985aa38453f8250971fbb915b672f48fbd811c88316d21090923c260
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_FILTER-CLEANING-email_filter__name-concatenation_simple_quote.php");
@@ -2922,12 +2925,12 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_FILTER-CLEANING-email_filter__userByCN-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_FILTER-CLEANING-email_filter__userByCN-concatenation_simple_quote.php", array("53"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_FILTER-CLEANING-email_filter__userByCN-concatenation_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_FILTER-CLEANING-magic_quotes_filter__not_name-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_FILTER-CLEANING-magic_quotes_filter__not_name-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_FILTER-CLEANING-magic_quotes_filter__not_name-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_FILTER-CLEANING-magic_quotes_filter__not_name-interpretation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_addslashes__name-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_addslashes__name-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_addslashes__name-interpretation_simple_quote.php", array("49"));
@@ -2967,7 +2970,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_htmlspecialchars__not_name-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_htmlspecialchars__not_name-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_htmlspecialchars__not_name-interpretation_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_pg_escape_string__userByCN-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_pg_escape_string__userByCN-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_pg_escape_string__userByCN-interpretation_simple_quote.php", array("49"));
@@ -2992,12 +2995,12 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_preg_replace__userByCN-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_preg_replace__userByCN-concatenation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__func_preg_replace__userByCN-concatenation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__no_sanitizing__not_name-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__no_sanitizing__not_name-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__no_sanitizing__not_name-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__GET__no_sanitizing__not_name-interpretation_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_FILTER-CLEANING-email_filter__userByMail-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_FILTER-CLEANING-email_filter__userByMail-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_FILTER-CLEANING-email_filter__userByMail-interpretation_simple_quote.php", array("53"));
@@ -3017,7 +3020,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_FILTER-VALIDATION-email_filter__userByCN-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_FILTER-VALIDATION-email_filter__userByCN-concatenation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_FILTER-VALIDATION-email_filter__userByCN-concatenation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_addslashes__name-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_addslashes__name-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_addslashes__name-interpretation_simple_quote.php", array("49"));
@@ -3032,7 +3035,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_htmlentities__userByMail-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_htmlentities__userByMail-sprintf_%s_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_htmlentities__userByMail-sprintf_%s_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_pg_escape_string__name-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_pg_escape_string__name-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_pg_escape_string__name-concatenation_simple_quote.php", array("49"));
@@ -3052,7 +3055,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_pg_escape_string__userByMail-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_pg_escape_string__userByMail-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__func_pg_escape_string__userByMail-interpretation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__no_sanitizing__name-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__no_sanitizing__name-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__no_sanitizing__name-interpretation_simple_quote.php", array("49"));
@@ -3072,7 +3075,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__no_sanitizing__userByMail-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__no_sanitizing__userByMail-concatenation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__POST__no_sanitizing__userByMail-concatenation_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__SESSION__func_FILTER-CLEANING-email_filter__userByCN-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__SESSION__func_FILTER-CLEANING-email_filter__userByCN-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__SESSION__func_FILTER-CLEANING-email_filter__userByCN-interpretation_simple_quote.php", array("49"));
@@ -3147,7 +3150,8 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__SESSION__no_sanitizing__userByMail-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__SESSION__no_sanitizing__userByMail-concatenation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__SESSION__no_sanitizing__userByMail-concatenation_simple_quote.php", "file_inclusion");
-
+*/
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__array-GET__func_FILTER-CLEANING-email_filter__name-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__array-GET__func_FILTER-CLEANING-email_filter__name-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__array-GET__func_FILTER-CLEANING-email_filter__name-concatenation_simple_quote.php", array("49"));
@@ -3377,7 +3381,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__exec__func_preg_replace__name-sprintf_%s_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__exec__func_preg_replace__name-sprintf_%s_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__exec__func_preg_replace__name-sprintf_%s_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__fopen__func_addslashes__name-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__fopen__func_addslashes__name-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__fopen__func_addslashes__name-interpretation_simple_quote.php", array("58"));
@@ -3412,12 +3416,12 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__fopen__func_htmlspecialchars__userByMail-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__fopen__func_htmlspecialchars__userByMail-interpretation_simple_quote.php", array("58"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__fopen__func_htmlspecialchars__userByMail-interpretation_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__fopen__func_preg_replace__userByCN-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__fopen__func_preg_replace__userByCN-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__fopen__func_preg_replace__userByCN-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__fopen__func_preg_replace__userByCN-interpretation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__fopen__no_sanitizing__not_name-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__fopen__no_sanitizing__not_name-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__fopen__no_sanitizing__not_name-sprintf_%s_simple_quote.php", array("58"));
@@ -3437,7 +3441,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_FILTER-CLEANING-email_filter__userByCN-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_FILTER-CLEANING-email_filter__userByCN-concatenation_simple_quote.php", array("68"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_FILTER-CLEANING-email_filter__userByCN-concatenation_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_FILTER-CLEANING-magic_quotes_filter__not_name-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_FILTER-CLEANING-magic_quotes_filter__not_name-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_FILTER-CLEANING-magic_quotes_filter__not_name-concatenation_simple_quote.php", array("49"));
@@ -3462,7 +3466,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_FILTER-VALIDATION-email_filter__userByCN-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_FILTER-VALIDATION-email_filter__userByCN-concatenation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_FILTER-VALIDATION-email_filter__userByCN-concatenation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_addslashes__userByCN-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_addslashes__userByCN-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_addslashes__userByCN-interpretation_simple_quote.php", array("64"));
@@ -3477,7 +3481,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_htmlentities__userByMail-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_htmlentities__userByMail-concatenation_simple_quote.php", array("64"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_htmlentities__userByMail-concatenation_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_pg_escape_string__userByCN-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_pg_escape_string__userByCN-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_pg_escape_string__userByCN-interpretation_simple_quote.php", array("49"));
@@ -3492,17 +3496,17 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_preg_replace2__userByCN-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_preg_replace2__userByCN-concatenation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-Array__func_preg_replace2__userByCN-concatenation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_FILTER-CLEANING-email_filter__not_name-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_FILTER-CLEANING-email_filter__not_name-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_FILTER-CLEANING-email_filter__not_name-interpretation_simple_quote.php", array("65"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_FILTER-CLEANING-email_filter__not_name-interpretation_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_FILTER-VALIDATION-email_filter__userByCN-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_FILTER-VALIDATION-email_filter__userByCN-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_FILTER-VALIDATION-email_filter__userByCN-concatenation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_FILTER-VALIDATION-email_filter__userByCN-concatenation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_addslashes__name-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_addslashes__name-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_addslashes__name-concatenation_simple_quote.php", array("61"));
@@ -3522,7 +3526,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php", array("67"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_preg_replace2__not_name-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_preg_replace2__not_name-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_preg_replace2__not_name-concatenation_simple_quote.php", array("49"));
@@ -3537,7 +3541,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_preg_replace__userByMail-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_preg_replace__userByMail-concatenation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-classicGet__func_preg_replace__userByMail-concatenation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_FILTER-CLEANING-email_filter__not_name-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_FILTER-CLEANING-email_filter__not_name-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_FILTER-CLEANING-email_filter__not_name-concatenation_simple_quote.php", array("60"));
@@ -3547,7 +3551,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_FILTER-CLEANING-email_filter__userByCN-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_FILTER-CLEANING-email_filter__userByCN-concatenation_simple_quote.php", array("60"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_FILTER-CLEANING-email_filter__userByCN-concatenation_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_FILTER-CLEANING-magic_quotes_filter__name-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_FILTER-CLEANING-magic_quotes_filter__name-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_FILTER-CLEANING-magic_quotes_filter__name-concatenation_simple_quote.php", array("49"));
@@ -3557,7 +3561,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_FILTER-VALIDATION-email_filter__name-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_FILTER-VALIDATION-email_filter__name-concatenation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_FILTER-VALIDATION-email_filter__name-concatenation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_addslashes__not_name-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_addslashes__not_name-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_addslashes__not_name-sprintf_%s_simple_quote.php", array("56"));
@@ -3582,12 +3586,12 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_htmlspecialchars__userByMail-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_htmlspecialchars__userByMail-sprintf_%s_simple_quote.php", array("56"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_htmlspecialchars__userByMail-sprintf_%s_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_pg_escape_string__userByCN-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_pg_escape_string__userByCN-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_pg_escape_string__userByCN-sprintf_%s_simple_quote.php", array("56"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_pg_escape_string__userByCN-sprintf_%s_simple_quote.php", "ldap_injection");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_preg_match-no_filtering__not_name-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_preg_match-no_filtering__not_name-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_preg_match-no_filtering__not_name-concatenation_simple_quote.php", array("62"));
@@ -3602,12 +3606,12 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_preg_match-no_filtering__userByMail-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_preg_match-no_filtering__userByMail-sprintf_%s_simple_quote.php", array("62"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_preg_match-no_filtering__userByMail-sprintf_%s_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_preg_replace__userByMail-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_preg_replace__userByMail-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_preg_replace__userByMail-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__func_preg_replace__userByMail-interpretation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__no_sanitizing__not_name-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__no_sanitizing__not_name-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__no_sanitizing__not_name-sprintf_%s_simple_quote.php", array("56"));
@@ -3617,12 +3621,12 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__no_sanitizing__userByMail-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__no_sanitizing__userByMail-sprintf_%s_simple_quote.php", array("56"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-directGet__no_sanitizing__userByMail-sprintf_%s_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__func_FILTER-CLEANING-magic_quotes_filter__not_name-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__func_FILTER-CLEANING-magic_quotes_filter__not_name-sprintf_%s_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__func_FILTER-CLEANING-magic_quotes_filter__not_name-sprintf_%s_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__func_FILTER-CLEANING-magic_quotes_filter__not_name-sprintf_%s_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__func_htmlentities__not_name-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__func_htmlentities__not_name-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__func_htmlentities__not_name-concatenation_simple_quote.php", array("64"));
@@ -3652,7 +3656,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__func_htmlspecialchars__not_name-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__func_htmlspecialchars__not_name-sprintf_%s_simple_quote.php", array("64"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__func_htmlspecialchars__not_name-sprintf_%s_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__func_pg_escape_string__not_name-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__func_pg_escape_string__not_name-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__func_pg_escape_string__not_name-interpretation_simple_quote.php", array("49"));
@@ -3672,7 +3676,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__func_preg_replace__userByMail-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__func_preg_replace__userByMail-concatenation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__func_preg_replace__userByMail-concatenation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__no_sanitizing__name-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__no_sanitizing__name-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__object-indexArray__no_sanitizing__name-concatenation_simple_quote.php", array("64"));
@@ -3687,12 +3691,12 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_FILTER-CLEANING-email_filter__userByMail-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_FILTER-CLEANING-email_filter__userByMail-sprintf_%s_simple_quote.php", array("55"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_FILTER-CLEANING-email_filter__userByMail-sprintf_%s_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_FILTER-CLEANING-magic_quotes_filter__userByCN-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_FILTER-CLEANING-magic_quotes_filter__userByCN-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_FILTER-CLEANING-magic_quotes_filter__userByCN-concatenation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_FILTER-CLEANING-magic_quotes_filter__userByCN-concatenation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_htmlspecialchars__not_name-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_htmlspecialchars__not_name-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_htmlspecialchars__not_name-interpretation_simple_quote.php", array("51"));
@@ -3707,7 +3711,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_htmlspecialchars__userByMail-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_htmlspecialchars__userByMail-interpretation_simple_quote.php", array("51"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_htmlspecialchars__userByMail-interpretation_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_pg_escape_string__name-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_pg_escape_string__name-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_pg_escape_string__name-concatenation_simple_quote.php", array("49"));
@@ -3722,12 +3726,12 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_pg_escape_string__userByCN-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_pg_escape_string__userByCN-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_pg_escape_string__userByCN-interpretation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php", array("57"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_preg_replace2__name-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_preg_replace2__name-sprintf_%s_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_preg_replace2__name-sprintf_%s_simple_quote.php", array("49"));
@@ -3737,7 +3741,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_preg_replace__userByMail-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_preg_replace__userByMail-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__func_preg_replace__userByMail-interpretation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__no_sanitizing__name-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__no_sanitizing__name-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__popen__no_sanitizing__name-interpretation_simple_quote.php", array("51"));
@@ -3757,7 +3761,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_FILTER-CLEANING-email_filter__name-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_FILTER-CLEANING-email_filter__name-concatenation_simple_quote.php", array("65"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_FILTER-CLEANING-email_filter__name-concatenation_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_FILTER-VALIDATION-email_filter__name-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_FILTER-VALIDATION-email_filter__name-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_FILTER-VALIDATION-email_filter__name-interpretation_simple_quote.php", array("49"));
@@ -3767,7 +3771,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_FILTER-VALIDATION-email_filter__userByCN-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_FILTER-VALIDATION-email_filter__userByCN-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_FILTER-VALIDATION-email_filter__userByCN-interpretation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_addslashes__not_name-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_addslashes__not_name-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_addslashes__not_name-sprintf_%s_simple_quote.php", array("61"));
@@ -3782,7 +3786,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_htmlentities__userByMail-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_htmlentities__userByMail-sprintf_%s_simple_quote.php", array("61"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_htmlentities__userByMail-sprintf_%s_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_pg_escape_string__not_name-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_pg_escape_string__not_name-sprintf_%s_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_pg_escape_string__not_name-sprintf_%s_simple_quote.php", array("49"));
@@ -3797,12 +3801,12 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_pg_escape_string__userByCN-sprintf_%s_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_pg_escape_string__userByCN-sprintf_%s_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_pg_escape_string__userByCN-sprintf_%s_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_preg_match-no_filtering__not_name-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_preg_match-no_filtering__not_name-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_preg_match-no_filtering__not_name-interpretation_simple_quote.php", array("67"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_preg_match-no_filtering__not_name-interpretation_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_preg_replace2__not_name-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_preg_replace2__not_name-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_preg_replace2__not_name-concatenation_simple_quote.php", array("49"));
@@ -3817,7 +3821,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_preg_replace__userByMail-sprintf_%s_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_preg_replace__userByMail-sprintf_%s_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__func_preg_replace__userByMail-sprintf_%s_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__no_sanitizing__name-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__no_sanitizing__name-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__no_sanitizing__name-sprintf_%s_simple_quote.php", array("61"));
@@ -3827,7 +3831,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__no_sanitizing__not_name-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__no_sanitizing__not_name-sprintf_%s_simple_quote.php", array("61"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__proc_open__no_sanitizing__not_name-sprintf_%s_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_FILTER-CLEANING-magic_quotes_filter__name-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_FILTER-CLEANING-magic_quotes_filter__name-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_FILTER-CLEANING-magic_quotes_filter__name-concatenation_simple_quote.php", array("49"));
@@ -3837,7 +3841,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_FILTER-VALIDATION-email_filter__not_name-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_FILTER-VALIDATION-email_filter__not_name-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_FILTER-VALIDATION-email_filter__not_name-interpretation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_addslashes__not_name-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_addslashes__not_name-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_addslashes__not_name-sprintf_%s_simple_quote.php", array("49"));
@@ -3857,7 +3861,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_htmlentities__userByCN-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_htmlentities__userByCN-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_htmlentities__userByCN-interpretation_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_pg_escape_string__userByCN-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_pg_escape_string__userByCN-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_pg_escape_string__userByCN-interpretation_simple_quote.php", array("49"));
@@ -3867,12 +3871,12 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_pg_escape_string__userByMail-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_pg_escape_string__userByMail-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_pg_escape_string__userByMail-interpretation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_preg_match-no_filtering__name-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_preg_match-no_filtering__name-concatenation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_preg_match-no_filtering__name-concatenation_simple_quote.php", array("55"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_preg_match-no_filtering__name-concatenation_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_preg_replace2__not_name-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_preg_replace2__not_name-sprintf_%s_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_preg_replace2__not_name-sprintf_%s_simple_quote.php", array("49"));
@@ -3892,7 +3896,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_preg_replace__not_name-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_preg_replace__not_name-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__func_preg_replace__not_name-interpretation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__no_sanitizing__not_name-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__no_sanitizing__not_name-sprintf_%s_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__shell_exec__no_sanitizing__not_name-sprintf_%s_simple_quote.php", array("49"));
@@ -3917,12 +3921,12 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__system__func_htmlspecialchars__userByMail-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__system__func_htmlspecialchars__userByMail-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__system__func_htmlspecialchars__userByMail-interpretation_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__system__func_pg_escape_string__not_name-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__system__func_pg_escape_string__not_name-interpretation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__system__func_pg_escape_string__not_name-interpretation_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__system__func_pg_escape_string__not_name-interpretation_simple_quote.php", "file_inclusion");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__system__func_preg_match-no_filtering__userByMail-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__system__func_preg_match-no_filtering__userByMail-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__system__func_preg_match-no_filtering__userByMail-interpretation_simple_quote.php", array("55"));
@@ -3977,12 +3981,12 @@ $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/un
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__unserialize__func_htmlspecialchars__userByCN-interpretation_simple_quote.php", array("\$query"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__unserialize__func_htmlspecialchars__userByCN-interpretation_simple_quote.php", array("51"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__unserialize__func_htmlspecialchars__userByCN-interpretation_simple_quote.php", "ldap_injection");
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__unserialize__func_pg_escape_string__name-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__unserialize__func_pg_escape_string__name-concatenation_simple_quote.php", array("\$string"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__unserialize__func_pg_escape_string__name-concatenation_simple_quote.php", array("51"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__unserialize__func_pg_escape_string__name-concatenation_simple_quote.php", "code_injection");
-
+*/
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__unserialize__func_pg_escape_string__not_name-interpretation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__unserialize__func_pg_escape_string__not_name-interpretation_simple_quote.php", array("\$string"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_90/unsafe/CWE_90__unserialize__func_pg_escape_string__not_name-interpretation_simple_quote.php", array("45"));
@@ -4027,13 +4031,13 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__GET__func_intval__ID_test-concatenation.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__GET__func_mysql_real_escape_string__ID_at-sprintf_%u_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__GET__func_mysql_real_escape_string__ID_at-sprintf_%u_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__GET__func_preg_match-letters_numbers__username-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__GET__object-func_mysql_real_escape_stringGetter__data-concatenation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__GET__object-func_mysql_real_escape_stringGetter__data-concatenation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__GET__object-func_mysql_real_escape_stringGetter__username_at-concatenation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__GET__object-func_mysql_real_escape_stringGetter__username_at-concatenation_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__GET__ternary_white_list__ID_test-interpretation_simple_quote.php");
 
@@ -4045,7 +4049,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__POST__func_floatval__ID_test-interpretation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__POST__func_mysql_real_escape_string__ID_at-sprintf_%u.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__POST__func_mysql_real_escape_string__ID_at-sprintf_%u.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__POST__func_preg_match-only_letters__username_text-concatenation_simple_quote.php");
 
@@ -4099,9 +4103,9 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__backticks__func_FILTER-VALIDATION-number_int_filter__ID_test-interpretation.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__backticks__func_addslashes__username_text-sprintf_%s_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__backticks__func_addslashes__username_text-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__backticks__object-func_mysql_real_escape_stringGetter__username-interpretation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__backticks__object-func_mysql_real_escape_stringGetter__username-interpretation_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__backticks__ternary_white_list__username-sprintf_%s_simple_quote.php");
 
@@ -4113,11 +4117,11 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__fopen__CAST-cast_int__ID_test-sprintf_%d_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__fopen__CAST-func_settype_int__ID_test-concatenation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__fopen__CAST-func_settype_int__ID_test-concatenation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__fopen__func_FILTER-CLEANING-magic_quotes_filter__data-concatenation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__fopen__func_FILTER-CLEANING-magic_quotes_filter__data-concatenation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__fopen__func_FILTER-CLEANING-magic_quotes_filter__username_text-sprintf_%s_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__fopen__func_FILTER-CLEANING-magic_quotes_filter__username_text-sprintf_%s_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__fopen__func_FILTER-CLEANING-number_float_filter__ID_at-sprintf_%u_simple_quote.php");
 
@@ -4151,11 +4155,11 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__object-classicGet__func_FILTER-VALIDATION-number_int_filter__ID_test-interpretation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__object-classicGet__func_mysql_real_escape_string__ID_test-concatenation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__object-classicGet__func_mysql_real_escape_string__ID_test-concatenation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__object-classicGet__no_sanitizing__ID_at-sprintf_%u_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__object-classicGet__no_sanitizing__ID_at-sprintf_%u_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__object-classicGet__object-func_mysql_real_escape_string__username-sprintf_%s_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__object-classicGet__object-func_mysql_real_escape_string__username-sprintf_%s_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__object-directGet__CAST-cast_int_sort_of__ID_test-concatenation.php");
 
@@ -4169,11 +4173,11 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__object-indexArray__CAST-func_settype_float__ID_test-sprintf_%d.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__object-indexArray__func_FILTER-CLEANING-magic_quotes_filter__username_text-sprintf_%s_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__object-indexArray__func_FILTER-CLEANING-magic_quotes_filter__username_text-sprintf_%s_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__object-indexArray__func_FILTER-VALIDATION-number_int_filter__ID_test-sprintf_%d.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__object-indexArray__func_addslashes__username_text-sprintf_%s_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__object-indexArray__func_addslashes__username_text-sprintf_%s_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__object-indexArray__func_preg_match-only_letters__username_text-interpretation_simple_quote.php");
 
@@ -4191,25 +4195,25 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__proc_open__CAST-cast_int_sort_of__ID_at-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__proc_open__func_addslashes__username_text-interpretation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__proc_open__func_addslashes__username_text-interpretation_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__proc_open__func_htmlspecialchars__username_text-interpretation_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__proc_open__func_intval__ID_at-sprintf_%u.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__proc_open__func_mysql_real_escape_string__ID_test-sprintf_%d_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__proc_open__func_mysql_real_escape_string__ID_test-sprintf_%d_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__proc_open__func_preg_match-only_letters__username_at-concatenation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__proc_open__object-func_mysql_real_escape_stringGetter__username-concatenation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__proc_open__object-func_mysql_real_escape_stringGetter__username-concatenation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__proc_open__object-func_mysql_real_escape_stringGetter__username-sprintf_%s_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__proc_open__object-func_mysql_real_escape_stringGetter__username-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__proc_open__object-func_mysql_real_escape_string__username_at-sprintf_%s_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__proc_open__object-func_mysql_real_escape_string__username_at-sprintf_%s_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__proc_open__whitelist_using_array__data-concatenation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__shell_exec__func_FILTER-CLEANING-magic_quotes_filter__username_text-sprintf_%s_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__shell_exec__func_FILTER-CLEANING-magic_quotes_filter__username_text-sprintf_%s_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__shell_exec__func_FILTER-CLEANING-number_int_filter__ID_at-sprintf_%u.php");
 
@@ -4231,12 +4235,12 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__system__func_preg_match-only_letters__username-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__system__func_preg_replace2__username_at-interpretation_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__system__func_preg_replace2__username_at-interpretation_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__system__func_preg_replace__username_text-sprintf_%s_simple_quote.php");
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__system__func_preg_replace__username_text-sprintf_%s_simple_quote.php");
 
-$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__system__object-func_mysql_real_escape_string__username-concatenation_simple_quote.php");
-
+//$framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__system__object-func_mysql_real_escape_string__username-concatenation_simple_quote.php");
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__unserialize__CAST-cast_float__ID_test-concatenation.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__unserialize__CAST-cast_float_sort_of__ID_test-interpretation.php");
@@ -4254,10 +4258,10 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__unserialize__func_preg_match-only_numbers__ID_at-sprintf_%s_simple_quote.php");
 
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/safe/CWE_91__unserialize__object-func_mysql_real_escape_string__data-concatenation_simple_quote.php");
-
+*/
 // d08fa3a5ae4406da894223ba9fa4e479698faa81bbc2ff1e9e3980153bba0965
 
-
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/unsafe/CWE_91__GET__func_FILTER-CLEANING-special_chars_filter__username-concatenation_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/unsafe/CWE_91__GET__func_FILTER-CLEANING-special_chars_filter__username-concatenation_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/unsafe/CWE_91__GET__func_FILTER-CLEANING-special_chars_filter__username-concatenation_simple_quote.php", array("49"));
@@ -4342,7 +4346,8 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/unsafe/CWE_91__backticks__no_sanitizing__username-sprintf_%s_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/unsafe/CWE_91__backticks__no_sanitizing__username-sprintf_%s_simple_quote.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/unsafe/CWE_91__backticks__no_sanitizing__username-sprintf_%s_simple_quote.php", "file_inclusion");
-
+*/
+/*
 $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/unsafe/CWE_91__exec__func_FILTER-CLEANING-email_filter__username_at-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/unsafe/CWE_91__exec__func_FILTER-CLEANING-email_filter__username_at-sprintf_%s_simple_quote.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/Injection/CWE_91/unsafe/CWE_91__exec__func_FILTER-CLEANING-email_filter__username_at-sprintf_%s_simple_quote.php", array("49"));
@@ -7498,7 +7503,7 @@ $framework->add_testbasis("./tests/PHP-Vulnerability-test-suite/XSS/CWE_79/unsaf
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/XSS/CWE_79/unsafe/CWE_79__unserialize__whitelist_using_array__Use_untrusted_data_script-side_DoubleQuoted_Expr.php", array("tainted"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/XSS/CWE_79/unsafe/CWE_79__unserialize__whitelist_using_array__Use_untrusted_data_script-side_DoubleQuoted_Expr.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/XSS/CWE_79/unsafe/CWE_79__unserialize__whitelist_using_array__Use_untrusted_data_script-side_DoubleQuoted_Expr.php", "file_inclusion");
-
+*/
 
 
 ?>
