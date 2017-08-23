@@ -207,74 +207,77 @@ class Context {
 
 	public function read_configuration()
 	{
-        try 
+        if(!is_null($this->configuration_file))
         {
-            $yaml = new Parser();
-            $value = $yaml->parse(file_get_contents($this->configuration_file));
-            
-            if(is_array($value))
+            try 
             {
-                if(isset($value["inputs"]))
-                {
-                    if(isset($value["inputs"]["set_sources"]))
-                        $this->inputs->set_sources($value["inputs"]["set_sources"]);
-                        
-                    if(isset($value["inputs"]["set_sinks"]))
-                        $this->inputs->set_sinks($value["inputs"]["set_sinks"]);
-                    
-                    if(isset($value["inputs"]["set_validators"]))
-                        $this->inputs->set_validators($value["inputs"]["set_validators"]);
-                    
-                    if(isset($value["inputs"]["set_sanitizers"]))
-                        $this->inputs->set_sanitizers($value["inputs"]["set_sanitizers"]);
-                        
-                    if(isset($value["inputs"]["set_include_files"]))
-                        $this->inputs->set_include_files($value["inputs"]["set_include_files"]);
-                        
-                    if(isset($value["inputs"]["set_exclude_files"]))
-                        $this->inputs->set_exclude_files($value["inputs"]["set_exclude_files"]);
-                        
-                    if(isset($value["inputs"]["set_folder"]))
-                        $this->inputs->set_folder($value["inputs"]["set_folder"]);
-                        
-                    if(isset($value["inputs"]["set_file"]))
-                        $this->inputs->set_file($value["inputs"]["set_file"]);
-                    
-                    if(isset($value["inputs"]["set_code"]))
-                        $this->inputs->set_code($value["inputs"]["set_code"]);
-                    
-                    if(isset($value["inputs"]["set_resolved_includes"]))
-                        $this->inputs->set_resolved_includes($value["inputs"]["set_resolved_includes"]);
-                    
-                    if(isset($value["inputs"]["set_false_positives"]))
-                        $this->inputs->set_false_positives($value["inputs"]["set_false_positives"]);
-                }
+                $yaml = new Parser();
+                $value = $yaml->parse(file_get_contents($this->configuration_file));
                 
-                if(isset($value["outputs"]))
+                if(is_array($value))
                 {
-                    if(isset($value["outputs"]["tainted_flow"]))
-                        $this->outputs->tainted_flow($value["outputs"]["tainted_flow"]);
+                    if(isset($value["inputs"]))
+                    {
+                        if(isset($value["inputs"]["set_sources"]))
+                            $this->inputs->set_sources($value["inputs"]["set_sources"]);
+                            
+                        if(isset($value["inputs"]["set_sinks"]))
+                            $this->inputs->set_sinks($value["inputs"]["set_sinks"]);
                         
-                    if(isset($value["outputs"]["resolve_includes"]))
-                        $this->outputs->resolve_includes($value["outputs"]["resolve_includes"]);
+                        if(isset($value["inputs"]["set_validators"]))
+                            $this->inputs->set_validators($value["inputs"]["set_validators"]);
+                        
+                        if(isset($value["inputs"]["set_sanitizers"]))
+                            $this->inputs->set_sanitizers($value["inputs"]["set_sanitizers"]);
+                            
+                        if(isset($value["inputs"]["set_include_files"]))
+                            $this->inputs->set_include_files($value["inputs"]["set_include_files"]);
+                            
+                        if(isset($value["inputs"]["set_exclude_files"]))
+                            $this->inputs->set_exclude_files($value["inputs"]["set_exclude_files"]);
+                            
+                        if(isset($value["inputs"]["set_folder"]))
+                            $this->inputs->set_folder($value["inputs"]["set_folder"]);
+                            
+                        if(isset($value["inputs"]["set_file"]))
+                            $this->inputs->set_file($value["inputs"]["set_file"]);
+                        
+                        if(isset($value["inputs"]["set_code"]))
+                            $this->inputs->set_code($value["inputs"]["set_code"]);
+                        
+                        if(isset($value["inputs"]["set_resolved_includes"]))
+                            $this->inputs->set_resolved_includes($value["inputs"]["set_resolved_includes"]);
+                        
+                        if(isset($value["inputs"]["set_false_positives"]))
+                            $this->inputs->set_false_positives($value["inputs"]["set_false_positives"]);
+                    }
                     
-                    if(isset($value["outputs"]["resolve_includes_file"]))
-                        $this->outputs->resolve_includes_file($value["outputs"]["resolve_includes_file"]);
-                }
-                
-                if(isset($value["options"]))
-                {
-                    if(isset($value["options"]["set_analyze_js"]))
-                        $this->set_analyze_js($value["options"]["set_analyze_js"]);
+                    if(isset($value["outputs"]))
+                    {
+                        if(isset($value["outputs"]["tainted_flow"]))
+                            $this->outputs->tainted_flow($value["outputs"]["tainted_flow"]);
+                            
+                        if(isset($value["outputs"]["resolve_includes"]))
+                            $this->outputs->resolve_includes($value["outputs"]["resolve_includes"]);
                         
-                    if(isset($value["options"]["set_analyze_includes"]))
-                        $this->set_analyze_includes($value["options"]["set_analyze_includes"]);
+                        if(isset($value["outputs"]["resolve_includes_file"]))
+                            $this->outputs->resolve_includes_file($value["outputs"]["resolve_includes_file"]);
+                    }
+                    
+                    if(isset($value["options"]))
+                    {
+                        if(isset($value["options"]["set_analyze_js"]))
+                            $this->set_analyze_js($value["options"]["set_analyze_js"]);
+                            
+                        if(isset($value["options"]["set_analyze_includes"]))
+                            $this->set_analyze_includes($value["options"]["set_analyze_includes"]);
+                    }
                 }
             }
-        }
-        catch (ParseException $e) 
-        {
-            throw new \Exception(Lang::UNABLE_TO_PARSER_YAML);
+            catch (ParseException $e) 
+            {
+                throw new \Exception(Lang::UNABLE_TO_PARSER_YAML);
+            }
         }
 	}
 }

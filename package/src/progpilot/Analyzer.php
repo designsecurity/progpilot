@@ -146,6 +146,7 @@ class Analyzer
 	{
 		$files = [];
 		
+        $context->read_configuration();
         $context->inputs->read_includes_file();
         $context->inputs->read_excludes_file();
         

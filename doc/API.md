@@ -39,7 +39,7 @@ This function is explained in the chapter about [**handling false positives**](.
 ***
 - $obj_context->inputs->set_include_files($file);  
 - $obj_context->inputs->set_exclude_files($file);  
-For include or exclude files and folders to be analyzed, see an [**example here**](./../projects/tests/exclude_files.json).
+For include or exclude files and folders during the analysis, see an [**example here**](./../projects/tests/exclude_files.json).
 ***
 
 ## Outputs
