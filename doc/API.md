@@ -30,10 +30,16 @@ These methods are mainly explained in the chapter [**specify an analyze**](./SPE
 ***
 
 ***
-- $obj_context->inputs->set_includes($file_includes);  
+- $obj_context->inputs->set_resolved_includes($file_includes);  
 This function is explained in the chapter about [**included files**](./INCLUDES.md)
 - $obj_context->inputs->set_false_positives($file_false_positives);  
 This function is explained in the chapter about [**handling false positives**](./FALSE_POSITIVES.md)
+***
+
+***
+- $obj_context->inputs->set_include_files($file);  
+- $obj_context->inputs->set_exclude_files($file);  
+For include or exclude files and folders to be analyzed, see an [**example here**](./../projects/tests/exclude_files.json).
 ***
 
 ## Outputs

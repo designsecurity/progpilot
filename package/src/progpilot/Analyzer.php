@@ -18,7 +18,7 @@ class Analyzer
 		$this->current_script = null;
 	}
 
-	function get_files_ofdir($dir, &$files)
+	function get_files_ofdir($context, $dir, &$files)
 	{
 		if(is_dir($dir))
 		{
@@ -30,11 +30,20 @@ class Analyzer
 				{
 					if($filedir != '.' && $filedir != "..")
 					{
-						if(is_dir($dir."/".$filedir))
-							$this->get_files_ofdir($dir."/".$filedir, $files);
-
+                        $folderorfile = $dir."/".$filedir;
+						if(is_dir($folderorfile))
+						{
+                            if(!$context->inputs->is_excluded_folder($folderorfile))
+                                $this->get_files_ofdir($context, $folderorfile, $files);
+                        }
 						else
-							$files[] = $dir."/".$filedir;
+						{
+                            if(!$context->inputs->is_excluded_file($folderorfile))
+                            {
+                                if(!in_array($folderorfile, $files, true))
+                                    $files[] = $folderorfile;
+                            }
+                        }
 					}
 				}
 			}
@@ -87,7 +96,7 @@ class Analyzer
 			$context->inputs->read_sanitizers();
 			$context->inputs->read_sinks();
 			$context->inputs->read_sources();
-			$context->inputs->read_includes();
+			$context->inputs->read_resolved_includes();
 			$context->inputs->read_validators();
 			$context->inputs->read_false_positives();
 
@@ -136,15 +145,35 @@ class Analyzer
 	public function run($context)
 	{
 		$files = [];
+		
+        $context->inputs->read_includes_file();
+        $context->inputs->read_excludes_file();
+        
+        $included_files = $context->inputs->get_included_files();
+        $included_folders = $context->inputs->get_included_folders();
+        
+        foreach($included_files as $included_file)
+        {
+            if(!in_array($included_file, $files, true))
+                $files[] = $included_file;
+        }
+        
+        foreach($included_folders as $included_folder)
+            $this->get_files_ofdir($context, $included_folder, $files);
+        
 		if(!is_null($context->inputs->get_folder()))
-			$this->get_files_ofdir($context->inputs->get_folder(), $files);
+			$this->get_files_ofdir($context, $context->inputs->get_folder(), $files);
 		else
-			$files[] = $context->inputs->get_file();
-
+		{
+            if(!in_array($context->inputs->get_file(), $files, true))
+                $files[] = $context->inputs->get_file();
+        }
+        
 		foreach($files as $file)
 		{
-			$context->set_first_file($file);
-			$this->run_internal($context);
+            $context->inputs->set_file($file);
+            $context->set_first_file($file);
+            $this->run_internal($context);
 		}
 
 		if(count($files) == 0 && !is_null($context->inputs->get_code()))

@@ -1,0 +1,10 @@
+{
+    "include_files":
+    [
+        "./tests/folders/folder2/mix3.php"
+    ],
+    "include_folders":
+    [
+        "./tests/folders/folder2/sub_folder1/sub_folder2"
+    ]
+}

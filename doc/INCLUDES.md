@@ -34,5 +34,5 @@ Next you can produce a *resolved_includes.json* file with the good value of each
         ]
 }
 ```
-And pass this file to **$context->inputs->set_includes("resolved_includes.json");**  
+And pass this file to **$context->inputs->set_resolved_includes("resolved_includes.json");**  
 Run again Progpilot and this time when it finds an *include()* function in *line 11*, *column 11* in the file *./tests/includes/simple5.php* it will be the file *simple5_include.php* that will be analyzed.

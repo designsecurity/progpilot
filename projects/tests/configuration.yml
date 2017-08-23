@@ -3,10 +3,12 @@ inputs:
     set_sinks: ./data/sinks.json
     set_validators: ./data/validators.json
     set_sanitizers: ./data/sanitizers.json
+    set_include_files:
+    set_exclude_files:
     set_folder:
     set_file: ./example1.php
     set_code:
-    set_includes:
+    set_resolved_includes:
     set_false_positives:
     
 outputs:

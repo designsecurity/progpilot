@@ -14,20 +14,26 @@ use progpilot\Lang;
 
 class MyInputs {
 
-	private $includes;
-	private $includes_file;
+	private $resolved_includes;
 
 	private $sanitizers;
 	private $sinks;
 	private $sources;
 	private $validators;
 	private $false_positives;
+	private $excludes_files_analysis;
+	private $includes_files_analysis;
+	private $excludes_folders_analysis;
+	private $includes_folders_analysis;
 
+	private $resolved_includes_file;
 	private $false_positives_file;
 	private $sources_file;
 	private $sinks_file;
 	private $sanitizers_file;
 	private $validators_file;
+	private $excludes_file;
+	private $includes_file;
 
 	private $file;
 	private $code;
@@ -35,23 +41,39 @@ class MyInputs {
 
 	public function __construct() {
 
-		$this->includes = [];
+		$this->resolved_includes = [];
 		$this->sanitizers = [];
 		$this->sinks = [];
 		$this->sources = [];
 		$this->validators = [];
 		$this->false_positives = [];
+		$this->excludes_files_analysis = [];
+		$this->includes_files_analysis = [];
+		$this->excludes_folders_analysis = [];
+		$this->includes_folders_analysis = [];
 
 		$this->false_positives_file = null;
-		$this->includes_file = null;
+		$this->resolved_includes_file = null;
 		$this->sanitizers_file = null;
 		$this->sinks_file = null;
 		$this->sources_file = null;
 		$this->validators_file = null;
+		$this->excludes_file = null;
+		$this->includes_file = null;
 
 		$this->file = null;
 		$this->code = null;
 		$this->folder = null;
+	}
+
+	public function get_included_files()
+	{
+		return $this->includes_files_analysis;
+	}
+
+	public function get_included_folders()
+	{
+		return $this->includes_folders_analysis;
 	}
 
 	public function get_folder()
@@ -84,9 +106,53 @@ class MyInputs {
 		$this->code = $code;
 	}
 
+	public function is_excluded_folder($name)
+	{
+		foreach($this->excludes_folders_analysis as $exclude_name)
+		{
+			if(strpos($name, $exclude_name) === 0)
+				return true;
+		}
+
+		return false;
+	}
+
+	public function is_included_folder($name)
+	{
+		foreach($this->includes_folders_analysis as $include_name)
+		{
+			if(strpos($name, $include_name) === 0)
+				return true;
+		}
+
+		return false;
+	}
+
+	public function is_excluded_file($name)
+	{
+		foreach($this->excludes_files_analysis as $exclude_name)
+		{
+			if($exclude_name == $name)
+				return true;
+		}
+
+		return false;
+	}
+
+	public function is_included_file($name)
+	{
+		foreach($this->includes_files_analysis as $include_name)
+		{
+			if($include_name == $name)
+				return true;
+		}
+
+		return false;
+	}
+
 	public function get_include_bylocation($line, $column, $source_file)
 	{
-		foreach($this->includes as $myinclude)
+		foreach($this->resolved_includes as $myinclude)
 		{
 			if($myinclude->get_line() == $line 
 					&& $myinclude->get_column() == $column
@@ -315,9 +381,9 @@ class MyInputs {
 		return $this->validators;
 	}
 
-	public function get_includes()
+	public function get_resolved_includes()
 	{
-		return $this->includes;
+		return $this->resolved_includes;
 	}
 
 	public function get_false_positives()
@@ -325,14 +391,34 @@ class MyInputs {
 		return $this->false_positives_file;
 	}
 
+	public function get_exclude_files()
+	{
+		return $this->excludes_files;
+	}
+
+	public function get_include_files()
+	{
+		return $this->includes_files;
+	}
+
+	public function set_include_files($file)
+	{
+		$this->includes_file = $file;
+	}
+	
+	public function set_exclude_files($file)
+	{
+		$this->excludes_file = $file;
+	}
+	
 	public function set_false_positives($file)
 	{
 		$this->false_positives_file = $file;
 	}
 
-	public function set_includes($file)
+	public function set_resolved_includes($file)
 	{
-		$this->includes_file = $file;
+		$this->resolved_includes_file = $file;
 	}
 
 	public function set_sources($file)
@@ -630,14 +716,14 @@ class MyInputs {
 		}
 	}
 
-	public function read_includes()
+	public function read_resolved_includes()
 	{
-		if(!is_null($this->includes_file))
+		if(!is_null($this->resolved_includes_file))
 		{
-			if(!file_exists($this->includes_file))
+			if(!file_exists($this->resolved_includes_file))
 				throw new \Exception(Lang::FILE_DOESNT_EXIST);
 
-			$output_json = file_get_contents($this->includes_file);
+			$output_json = file_get_contents($this->resolved_includes_file);
 			$parsed_json = json_decode($output_json);
 
 			if(isset($parsed_json->{'includes'}))
@@ -657,7 +743,7 @@ class MyInputs {
 					$value = $include->{'value'};
 
 					$myinclude = new MyInclude($line, $column, $source_file, $value);
-					$this->includes[] = $myinclude;
+					$this->resolved_includes[] = $myinclude;
 				}
 			}
 			else
@@ -691,6 +777,58 @@ class MyInputs {
 			}
 			else
 				throw new \Exception(Lang::FORMAT_FALSE_POSITIVES);
+		}
+	}
+	
+	public function read_excludes_file()
+	{
+		if(!is_null($this->excludes_file))
+		{
+			if(!file_exists($this->excludes_file))
+				throw new \Exception(Lang::FILE_DOESNT_EXIST);
+
+			$output_json = file_get_contents($this->excludes_file);
+			$parsed_json = json_decode($output_json);
+
+			if(isset($parsed_json->{'exclude_files'}))
+			{
+				$exclude_files = $parsed_json->{'exclude_files'};
+				foreach($exclude_files as $exclude_file)
+					$this->excludes_files_analysis[] = $exclude_file;
+			}
+			
+			if(isset($parsed_json->{'exclude_folders'}))
+			{
+				$exclude_folders= $parsed_json->{'exclude_folders'};
+				foreach($exclude_folders as $exclude_folder)
+					$this->excludes_folders_analysis[] = $exclude_folder;
+			}
+		}
+	}
+	
+	public function read_includes_file()
+	{
+		if(!is_null($this->includes_file))
+		{
+			if(!file_exists($this->includes_file))
+				throw new \Exception(Lang::FILE_DOESNT_EXIST);
+
+			$output_json = file_get_contents($this->includes_file);
+			$parsed_json = json_decode($output_json);
+
+			if(isset($parsed_json->{'include_files'}))
+			{
+				$include_files = $parsed_json->{'include_files'};
+				foreach($include_files as $include_file)
+					$this->includes_files_analysis[] = $include_file;
+			}
+			
+			if(isset($parsed_json->{'include_folders'}))
+			{
+				$include_folders= $parsed_json->{'include_folders'};
+				foreach($include_folders as $include_folder)
+					$this->includes_folders_analysis[] = $include_folder;
+			}
 		}
 	}
 }

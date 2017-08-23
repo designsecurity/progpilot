@@ -20,6 +20,8 @@ class Lang
 	const FORMAT_INCLUDES = "Format of json includes's file is incorrect";
 	const FORMAT_VALIDATORS = "Format of json validators's file is incorrect";
 	const FORMAT_FALSE_POSITIVES = "Format of json false positives's file is incorrect";
+	const FORMAT_INCLUDE_FILES = "Format of json include_file's file is incorrect";
+	const FORMAT_EXCLUDE_FILES = "Format of json exclude file's file is incorrect";
 	const UNABLE_TO_PARSER_YAML = "Unable to parse the YAML file configuration";
 }
 

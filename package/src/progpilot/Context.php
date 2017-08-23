@@ -228,6 +228,12 @@ class Context {
                     if(isset($value["inputs"]["set_sanitizers"]))
                         $this->inputs->set_sanitizers($value["inputs"]["set_sanitizers"]);
                         
+                    if(isset($value["inputs"]["set_include_files"]))
+                        $this->inputs->set_include_files($value["inputs"]["set_include_files"]);
+                        
+                    if(isset($value["inputs"]["set_exclude_files"]))
+                        $this->inputs->set_exclude_files($value["inputs"]["set_exclude_files"]);
+                        
                     if(isset($value["inputs"]["set_folder"]))
                         $this->inputs->set_folder($value["inputs"]["set_folder"]);
                         
@@ -237,8 +243,8 @@ class Context {
                     if(isset($value["inputs"]["set_code"]))
                         $this->inputs->set_code($value["inputs"]["set_code"]);
                     
-                    if(isset($value["inputs"]["set_includes"]))
-                        $this->inputs->set_includes($value["inputs"]["set_includes"]);
+                    if(isset($value["inputs"]["set_resolved_includes"]))
+                        $this->inputs->set_resolved_includes($value["inputs"]["set_resolved_includes"]);
                     
                     if(isset($value["inputs"]["set_false_positives"]))
                         $this->inputs->set_false_positives($value["inputs"]["set_false_positives"]);
