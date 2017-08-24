@@ -8,6 +8,7 @@
  */
 
 namespace progpilot;
+use progpilot\Utils;
 
 class Analyzer
 {
@@ -68,7 +69,7 @@ class Analyzer
 			$parser = new \PHPCfg\Parser((new \PhpParser\ParserFactory)->create(\PhpParser\ParserFactory::PREFER_PHP7), $asttraverser);
 
 			if(!file_exists($context->inputs->get_file()) && is_null($context->inputs->get_code()))
-				throw new \Exception(Lang::FILE_DOESNT_EXIST);
+				throw new \Exception(Utils::encode_characters($context->inputs->get_file()).Lang::FILE_DOESNT_EXIST);
 
 			if(is_null($context->inputs->get_file()) && is_null($context->inputs->get_code()))
 				throw new \Exception(Lang::FILE_AND_CODE_ARE_NULL);

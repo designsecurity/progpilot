@@ -1,0 +1,12 @@
+{
+    "name": "Progpilot",
+    "description": "Progpilot bin",
+    "minimum-stability": "dev",
+    "require": {
+        "designsecurity/progpilot": "dev-master"
+    },
+	"extra": {
+		"enable-patching": true
+		},
+    "bin": ["progpilot"]
+} 

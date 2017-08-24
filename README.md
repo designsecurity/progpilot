@@ -25,9 +25,18 @@ Then run composer :
 ```shell
 composer install
 ```
-If no errors occuring you could try the following example.
+If no errors occuring you could try the following examples.
 
-## Example
+## Standalone Example
+- Download the latest phar archive in [releases](./releases) folder.
+- Use the up-to-date data in [projects/uptodate_data](./projects/uptodate_data) folder.
+- Configure your analysis with [a yaml file](./projects/example_config/configuration.yml).
+
+```shell
+php progpilot_dev24082017.phar ./configuration.yaml
+```
+
+## Api Example
 - Use this code to analyze *example1.php*
 ```php
 <?php
