@@ -11,6 +11,7 @@
 namespace progpilot\Inputs;
 
 use progpilot\Lang;
+use progpilot\Utils;
 
 class MyInputs {
 
@@ -446,7 +447,7 @@ class MyInputs {
 		if(!is_null($this->sanitizers_file))
 		{
 			if(!file_exists($this->sanitizers_file))
-				throw new \Exception(Lang::FILE_DOESNT_EXIST);
+				throw new \Exception(Utils::encode_characters($this->sanitizers_file)." ".Lang::FILE_DOESNT_EXIST);
 
 			$output_json = file_get_contents($this->sanitizers_file);
 
@@ -517,7 +518,7 @@ class MyInputs {
 		if(!is_null($this->sinks_file))
 		{
 			if(!file_exists($this->sinks_file))
-				throw new \Exception(Lang::FILE_DOESNT_EXIST);
+				throw new \Exception(Utils::encode_characters($this->sinks_file)." ".Lang::FILE_DOESNT_EXIST);
 
 			$output_json = file_get_contents($this->sinks_file);
 			$parsed_json = json_decode($output_json);
@@ -573,7 +574,7 @@ class MyInputs {
 		if(!is_null($this->sources_file))
 		{
 			if(!file_exists($this->sources_file))
-				throw new \Exception(Lang::FILE_DOESNT_EXIST);
+				throw new \Exception(Utils::encode_characters($this->sources_file)." ".Lang::FILE_DOESNT_EXIST);
 
 			$output_json = file_get_contents($this->sources_file);
 			$parsed_json = json_decode($output_json);
@@ -654,7 +655,7 @@ class MyInputs {
 		if(!is_null($this->validators_file))
 		{
 			if(!file_exists($this->validators_file))
-				throw new \Exception(Lang::FILE_DOESNT_EXIST);
+				throw new \Exception(Utils::encode_characters($this->validators_file)." ".Lang::FILE_DOESNT_EXIST);
 
 			$output_json = file_get_contents($this->validators_file);
 			$parsed_json = json_decode($output_json);
@@ -721,7 +722,7 @@ class MyInputs {
 		if(!is_null($this->resolved_includes_file))
 		{
 			if(!file_exists($this->resolved_includes_file))
-				throw new \Exception(Lang::FILE_DOESNT_EXIST);
+				throw new \Exception(Utils::encode_characters($this->resolved_includes_file)." ".Lang::FILE_DOESNT_EXIST);
 
 			$output_json = file_get_contents($this->resolved_includes_file);
 			$parsed_json = json_decode($output_json);
@@ -756,7 +757,7 @@ class MyInputs {
 		if(!is_null($this->false_positives_file))
 		{
 			if(!file_exists($this->false_positives_file))
-				throw new \Exception(Lang::FILE_DOESNT_EXIST);
+				throw new \Exception(Utils::encode_characters($this->false_positives_file)." ".Lang::FILE_DOESNT_EXIST);
 
 			$output_json = file_get_contents($this->false_positives_file);
 			$parsed_json = json_decode($output_json);
@@ -785,7 +786,7 @@ class MyInputs {
 		if(!is_null($this->excludes_file))
 		{
 			if(!file_exists($this->excludes_file))
-				throw new \Exception(Lang::FILE_DOESNT_EXIST);
+				throw new \Exception(Utils::encode_characters($this->excludes_file)." ".Lang::FILE_DOESNT_EXIST);
 
 			$output_json = file_get_contents($this->excludes_file);
 			$parsed_json = json_decode($output_json);
@@ -811,7 +812,7 @@ class MyInputs {
 		if(!is_null($this->includes_file))
 		{
 			if(!file_exists($this->includes_file))
-				throw new \Exception(Lang::FILE_DOESNT_EXIST);
+				throw new \Exception(Utils::encode_characters($this->includes_file)." ".Lang::FILE_DOESNT_EXIST);
 
 			$output_json = file_get_contents($this->includes_file);
 			$parsed_json = json_decode($output_json);
