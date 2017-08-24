@@ -1,7 +1,7 @@
 inputs:
     set_sources: ../uptodate_data/sources.json
     set_sinks: ../uptodate_data/sinks.json
-    set_validators: ../uptodate_data//validators.json
+    set_validators: ../uptodate_data/validators.json
     set_sanitizers: ../uptodate_data/sanitizers.json
     set_include_files:
     set_exclude_files:

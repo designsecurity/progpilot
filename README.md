@@ -1,5 +1,5 @@
 # progpilot
-> A static analyzer for security purposes
+> A static analyzer for security purposes  
 > Only PHP language is currently supported
 
 ## Installation
@@ -93,7 +93,7 @@ array(1) {
   }
 }
 ```
-All files (composer.json, ./data/*.json) used in this example are in the [projects/example](./projects/example) folder
+All files (composer.json, ./data/*.json) used in this example are in the [projects/example](./projects/example) and [projects/uptodate_data](./projects/uptodate_data) folders.
 
 ## Configure analysis
 You can configure an analysis (the definitions of sinks, sources, sanitizers and validators) according to your own context.  
