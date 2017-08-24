@@ -1,11 +1,9 @@
 # progpilot
 > A static analyzer for security purposes
-
-At this moment only PHP language is supported  
-To have an idea of the capabilities of the tool you could looking at the [chapter about API explaination](./doc/API.md)
+> Only PHP language is currently supported
 
 ## Installation
-Use [getcomposer](https://getcomposer.org/) to install the progpilot library.  
+Use [getcomposer](https://getcomposer.org/) to install progpilot.  
 Your composer.json looks like this one :
 ```javascript
 {
@@ -37,6 +35,7 @@ php progpilot_dev24082017.phar ./configuration.yaml
 ```
 
 ## Api Example
+- You could looking at the [chapter about API explaination](./doc/API.md)
 - Use this code to analyze *example1.php*
 ```php
 <?php
@@ -70,7 +69,7 @@ echo "$var4";
 
 ?>	
 ```
-- The return of method get_results() will be :
+- The simplified output will be :
 ```javascript
 array(1) {
   [0]=>
@@ -85,30 +84,12 @@ array(1) {
       [0]=>
       int(4)
     }
-    ["source_column"]=>
-    array(1) {
-      [0]=>
-      int(4)
-    }
-    ["source_file"]=>
-    array(1) {
-      [0]=>
-      string(12) "example1.php"
-    }
     ["sink_name"]=>
     string(4) "echo"
     ["sink_line"]=>
     int(5)
-    ["sink_column"]=>
-    int(5)
-    ["sink_file"]=>
-    string(12) "example1.php"
     ["vuln_name"]=>
     string(3) "xss"
-    ["vuln_cwe"]=>
-    string(6) "CWE_79"
-    ["vuln_id"]=>
-    string(64) "868c68ca8f2514561246fb69e6fca9924d1125f6372fa38bdfb88734c8621f40"
   }
 }
 ```
@@ -116,13 +97,13 @@ All files (composer.json, ./data/*.json) used in this example are in the [projec
 
 ## Configure analysis
 You can configure an analysis (the definitions of sinks, sources, sanitizers and validators) according to your own context.  
-You can define traditional variables like *_GET*, *_POST* or *_COOKIES* as untrusted and for example the return of the function *shell_exec()* too like in the following configuration :
+You can define traditional variables like *_GET*, *_POST* or *_COOKIE* as untrusted and for example the return of the function *shell_exec()* too like in the following configuration :
 ```javascript
 {
     "sources": [
         {"name": "_GET", "is_array": true, "language": "php"},
         {"name": "_POST", "is_array": true, "language": "php"},
-        {"name": "_COOKIES", "is_array": true, "language": "php"},
+        {"name": "_COOKIE", "is_array": true, "language": "php"},
         {"name": "shell_exec", "is_function": true, "language": "php"}
 		]
 }

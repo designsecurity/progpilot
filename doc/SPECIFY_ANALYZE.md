@@ -17,7 +17,7 @@ Where *$file_sources* is a json file like below :
     "sources": [
         {"name": "_GET", "is_array": true, "language": "php"},
         {"name": "_POST", "is_array": true, "language": "php"},
-        {"name": "_COOKIES", "is_array": true, "language": "php"},
+        {"name": "_COOKIE", "is_array": true, "language": "php"},
         {"name": "shell_exec", "is_function": true, "language": "php"},
         {"name": "vardev", "is_array": true, "array_index": "tainted", "language": "php", "type": "for dev purposes"},
         {"name": "exec", "is_function": true, "parameters": [{"id": 2, "is_array": true, "array_index": 0}], "language": "php"}
@@ -29,7 +29,7 @@ The value of *name* property must be a function (the source will be the return o
 You can define a return function or a method as a source when *is_function* property is set to true.  
 To specify a method add *[instanceof](#instanceof-property)* property with the class name value to which the method belongs.  
 For defining a property as a source just add *instanceof* like for a method.  
-If you want to define all elements of an array as a source (like for well-known *_GET*, *_POST* and *_COOKIES* variables) use *is_array* property set to true.  
+If you want to define all elements of an array as a source (like for well-known *_GET*, *_POST* and *_COOKIE* variables) use *is_array* property set to true.  
 If you want to define only one element of an array as a source add *array_index* property with index name as value.  
 If you want to define one parameter of a function as a source use *parameters* property.
 
