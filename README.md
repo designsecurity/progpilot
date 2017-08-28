@@ -6,9 +6,10 @@
 - Download the latest phar archive in [builds](./builds) folder.
 - Use the up-to-date data in [projects/uptodate_data](./projects/uptodate_data) folder.
 - Configure your analysis with [a yaml file](./projects/example_config/configuration.yml).
+- Then run progpilot with php and your JSON configuration file in command line argument :
 
 ```shell
-php progpilot_dev24082017.phar ./configuration.yaml
+php progpilot_dev20170828-161722.phar ./configuration.yaml
 ```
 
 ## Library installation
@@ -95,7 +96,7 @@ array(1) {
 ```
 All files (composer.json, ./data/*.json) used in this example are in the [projects/example](./projects/example) and [projects/uptodate_data](./projects/uptodate_data) folders.
 
-## Specify analysis
+## Specify an analysis
 You can configure an analysis (the definitions of sinks, sources, sanitizers and validators) according to your own context.  
 You can define traditional variables like *_GET*, *_POST* or *_COOKIE* as untrusted and for example the return of the function *shell_exec()* too like in the following configuration :
 ```javascript

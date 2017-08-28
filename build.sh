@@ -1,5 +1,6 @@
 #!/bin/bash
 
+version="dev"
 date=`date "+%Y%m%d-%H%M%S"`
 newfile="progpilot_${version}${date}"
     
@@ -8,8 +9,6 @@ rm composer.lock
 rm -R ./vendor/*
 rmdir ./vendor
 composer install
-    
-version="dev"
 
 output_runall=`cd ../tests; php ./run_all.php`
 output_runallfolders=`cd ../tests; php ./run_all_folders.php`
