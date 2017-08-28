@@ -164,7 +164,9 @@ class SecurityAnalysis {
 			$temp["vuln_cwe"] = \progpilot\Utils::encode_characters($mysink->get_cwe());
 			$temp["vuln_id"] = $hash_id_vuln;
 
-			$results[] = $temp;
+			$context->outputs->add_result($temp);
+            if(!in_array($temp, $results, true))
+                $results[] = $temp;
 		}
 	}
 }

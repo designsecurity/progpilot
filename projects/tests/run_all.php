@@ -54,7 +54,7 @@ try {
 
 		$result_test = false;
 
-		if(is_object($parsed_json) || is_array($parsed_json))
+		if(is_array($parsed_json) && count($parsed_json) > 0)
 		{
 			foreach($parsed_json as $vuln)
 			{

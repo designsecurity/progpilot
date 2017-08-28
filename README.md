@@ -2,7 +2,16 @@
 > A static analyzer for security purposes  
 > Only PHP language is currently supported
 
-## Installation
+## Standalone example
+- Download the latest phar archive in [builds](./builds) folder.
+- Use the up-to-date data in [projects/uptodate_data](./projects/uptodate_data) folder.
+- Configure your analysis with [a yaml file](./projects/example_config/configuration.yml).
+
+```shell
+php progpilot_dev24082017.phar ./configuration.yaml
+```
+
+## Library installation
 Use [getcomposer](https://getcomposer.org/) to install progpilot.  
 Your composer.json looks like this one :
 ```javascript
@@ -25,16 +34,7 @@ composer install
 ```
 If no errors occuring you could try the following examples.
 
-## Standalone Example
-- Download the latest phar archive in [releases](./releases) folder.
-- Use the up-to-date data in [projects/uptodate_data](./projects/uptodate_data) folder.
-- Configure your analysis with [a yaml file](./projects/example_config/configuration.yml).
-
-```shell
-php progpilot_dev24082017.phar ./configuration.yaml
-```
-
-## Api Example
+## Library example
 - You could looking at the [chapter about API explaination](./doc/API.md)
 - Use this code to analyze *example1.php*
 ```php
@@ -95,7 +95,7 @@ array(1) {
 ```
 All files (composer.json, ./data/*.json) used in this example are in the [projects/example](./projects/example) and [projects/uptodate_data](./projects/uptodate_data) folders.
 
-## Configure analysis
+## Specify analysis
 You can configure an analysis (the definitions of sinks, sources, sanitizers and validators) according to your own context.  
 You can define traditional variables like *_GET*, *_POST* or *_COOKIE* as untrusted and for example the return of the function *shell_exec()* too like in the following configuration :
 ```javascript

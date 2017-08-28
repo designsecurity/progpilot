@@ -1,0 +1,132 @@
+[./tests/generic/functions6.php] test result ko
+array(3) {
+  [0]=>
+  array(12) {
+    ["source_name"]=>
+    array(1) {
+      [0]=>
+      string(10) "$_GET["p"]"
+    }
+    ["source_line"]=>
+    array(1) {
+      [0]=>
+      int(15)
+    }
+    ["source_column"]=>
+    array(1) {
+      [0]=>
+      int(15)
+    }
+    ["source_file"]=>
+    array(1) {
+      [0]=>
+      string(30) "./tests/generic/functions6.php"
+    }
+    ["tainted_flow"]=>
+    array(1) {
+      [0]=>
+      array(0) {
+      }
+    }
+    ["sink_name"]=>
+    string(4) "echo"
+    ["sink_line"]=>
+    int(15)
+    ["sink_column"]=>
+    int(15)
+    ["sink_file"]=>
+    string(30) "./tests/generic/functions6.php"
+    ["vuln_name"]=>
+    string(3) "xss"
+    ["vuln_cwe"]=>
+    string(6) "CWE_79"
+    ["vuln_id"]=>
+    string(64) "3487c1e3ed4814d430ddb230a3a2eaa4d22ee012cd7b6cfa14b2fe0ddf9b0374"
+  }
+  [1]=>
+  array(12) {
+    ["source_name"]=>
+    array(1) {
+      [0]=>
+      string(10) "$_GET["p"]"
+    }
+    ["source_line"]=>
+    array(1) {
+      [0]=>
+      int(5)
+    }
+    ["source_column"]=>
+    array(1) {
+      [0]=>
+      int(5)
+    }
+    ["source_file"]=>
+    array(1) {
+      [0]=>
+      string(30) "./tests/generic/functions6.php"
+    }
+    ["tainted_flow"]=>
+    array(1) {
+      [0]=>
+      array(0) {
+      }
+    }
+    ["sink_name"]=>
+    string(4) "echo"
+    ["sink_line"]=>
+    int(5)
+    ["sink_column"]=>
+    int(5)
+    ["sink_file"]=>
+    string(30) "./tests/generic/functions6.php"
+    ["vuln_name"]=>
+    string(3) "xss"
+    ["vuln_cwe"]=>
+    string(6) "CWE_79"
+    ["vuln_id"]=>
+    string(64) "3487c1e3ed4814d430ddb230a3a2eaa4d22ee012cd7b6cfa14b2fe0ddf9b0374"
+  }
+  [2]=>
+  array(12) {
+    ["source_name"]=>
+    array(1) {
+      [0]=>
+      string(10) "$_GET["p"]"
+    }
+    ["source_line"]=>
+    array(1) {
+      [0]=>
+      int(10)
+    }
+    ["source_column"]=>
+    array(1) {
+      [0]=>
+      int(10)
+    }
+    ["source_file"]=>
+    array(1) {
+      [0]=>
+      string(30) "./tests/generic/functions6.php"
+    }
+    ["tainted_flow"]=>
+    array(1) {
+      [0]=>
+      array(0) {
+      }
+    }
+    ["sink_name"]=>
+    string(4) "echo"
+    ["sink_line"]=>
+    int(10)
+    ["sink_column"]=>
+    int(10)
+    ["sink_file"]=>
+    string(30) "./tests/generic/functions6.php"
+    ["vuln_name"]=>
+    string(3) "xss"
+    ["vuln_cwe"]=>
+    string(6) "CWE_79"
+    ["vuln_id"]=>
+    string(64) "3487c1e3ed4814d430ddb230a3a2eaa4d22ee012cd7b6cfa14b2fe0ddf9b0374"
+  }
+}

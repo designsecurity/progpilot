@@ -209,6 +209,12 @@ $framework->add_testbasis("./tests/generic/functions6.php");
 $framework->add_output("./tests/generic/functions6.php", array("\$_GET[\"p\"]"));
 $framework->add_output("./tests/generic/functions6.php", array("15"));
 $framework->add_output("./tests/generic/functions6.php", "xss");
+$framework->add_output("./tests/generic/functions6.php", array("\$_GET[\"p\"]"));
+$framework->add_output("./tests/generic/functions6.php", array("10"));
+$framework->add_output("./tests/generic/functions6.php", "xss");
+$framework->add_output("./tests/generic/functions6.php", array("\$_GET[\"p\"]"));
+$framework->add_output("./tests/generic/functions6.php", array("5"));
+$framework->add_output("./tests/generic/functions6.php", "xss");
 
 $framework->add_testbasis("./tests/generic/functions7.php");
 $framework->add_output("./tests/generic/functions7.php", array("\$var1"));

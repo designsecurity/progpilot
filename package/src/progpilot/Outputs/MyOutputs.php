@@ -34,7 +34,7 @@ class MyOutputs {
 		$this->resolve_includes = false;
 		$this->resolve_includes_file = null;
 		$this->current_includes_file = [];
-		$this->results = "";
+		$this->results = [];
 		$this->tainted_flow = false;
 
 		$this->cfg = new ControlFlowGraph;
@@ -145,16 +145,17 @@ class MyOutputs {
 		return $outputjson;
 	}
 
+	public function add_result($temp)
+	{
+        if(!in_array($temp, $this->results, true))
+            $this->results[] = $temp;
+	}
+
 	public function &get_results()
 	{
 		return $this->results;
 	}
-
-	public function set_results(&$results)
-	{
-		$this->results = &$results;
-	}
-
+	
 	public function get_resolve_includes()
 	{
 		return $this->resolve_includes;

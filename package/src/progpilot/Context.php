@@ -24,6 +24,7 @@ class Context {
 	private $classes;
 	private $functions;
 	private $path;
+	private $analyze_functions;
 	private $analyze_includes;
 	private $analyze_js;
 	private $configuration_file;
@@ -34,6 +35,7 @@ class Context {
 	public function __construct() 
 	{
 		$this->configuration_file = null;
+		$this->analyze_functions = true;
 		$this->analyze_includes = true;
 		$this->analyze_js = true;
 		$this->first_file = "";
@@ -76,6 +78,16 @@ class Context {
 	public function set_analyze_includes($analyze_includes)
 	{
 		$this->analyze_includes = $analyze_includes;
+	}
+
+	public function set_analyze_functions($analyze_functions)
+	{
+		$this->analyze_functions = $analyze_functions;
+	}
+
+	public function get_analyze_functions()
+	{
+		return $this->analyze_functions;
 	}
 
 	public function get_mycode()
@@ -271,6 +283,9 @@ class Context {
                             
                         if(isset($value["options"]["set_analyze_includes"]))
                             $this->set_analyze_includes($value["options"]["set_analyze_includes"]);
+                            
+                        if(isset($value["options"]["set_analyze_functions"]))
+                            $this->set_analyze_functions($value["options"]["set_analyze_functions"]);
                     }
                 }
             }

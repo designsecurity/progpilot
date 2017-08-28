@@ -21,7 +21,6 @@ use progpilot\Code\Opcodes;
 class VisitorAnalysis {
 
 	private $context;
-	private $results;
 	private $current_storagemyblocks;
 	private $old_storagemyblocks;
 	private $call_stack;
@@ -65,12 +64,7 @@ class VisitorAnalysis {
 
 		$this->context = $context;
 	}
-
-	public function set_results(&$myresults) {
-
-		$this->results = &$myresults;
-	}
-
+	
 	public function analyze($mycode) {
 
 		$index = $mycode->get_start();

@@ -109,6 +109,23 @@ class Analyzer
 		}
 	}
 
+	public function run_internal_function($context, $myfunc)
+	{
+        if(!is_null($myfunc))
+        {
+            $context->get_mycode()->set_start($myfunc->get_start_address_func());
+            $context->get_mycode()->set_end($myfunc->get_end_address_func());
+
+            $visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
+            $visitoranalyzer->set_context($context);
+            $visitoranalyzer->analyze($context->get_mycode());
+        }
+        else
+        {
+            // throw main function missing
+        }
+	}
+
 	public function run_internal($context)
 	{
 		$context->reset_internal_values();
@@ -125,21 +142,24 @@ class Analyzer
 			$visitordataflow = new \progpilot\Dataflow\VisitorDataflow();
 			$visitordataflow->analyze($context);
 
-			$myfunc = $context->get_functions()->get_function("{main}");
-
-			if(!is_null($myfunc))
-			{
-				$context->get_mycode()->set_start($myfunc->get_start_address_func());
-				$context->get_mycode()->set_end($myfunc->get_end_address_func());
-
-				$visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
-				$visitoranalyzer->set_context($context);
-				$visitoranalyzer->analyze($context->get_mycode());
-			}
-			else
-			{
-				// throw main function missing
-			}
+			if(!$context->get_analyze_functions())
+                $this->run_internal_function($context, $context->get_functions()->get_function("{main}"));
+            else
+            {
+                $functions = $context->get_functions()->get_functions();
+                
+                if(!is_null($functions))
+                {
+                    foreach($functions as $functions_name)
+                    {
+                        if(!is_null($functions_name))
+                        {
+                            foreach($functions_name as $myfunc)
+                                $this->run_internal_function($context, $myfunc);
+                        }
+                    }
+                }
+            }
 		}
 	}
 

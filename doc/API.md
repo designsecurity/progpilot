@@ -56,6 +56,8 @@ These functions are explained in the chapter about [**included files**](./INCLUD
 
 ## Options
 ***
+- $obj_context->set_analyze_functions($bool);  
+*true* if you want to analyze all functions (*false* only *main function* is analyzed), default is *true*
 - $obj_context->set_analyze_js($bool);  
 *true* or *false* if you want to analyze javascript (in development), default is *true*
 - $obj_context->set_analyze_includes($bool);  

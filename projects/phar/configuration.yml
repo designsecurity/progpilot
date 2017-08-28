@@ -19,3 +19,4 @@ outputs:
 options:
     set_analyze_js: false
     set_analyze_includes: true
+    set_analyze_functions: true
