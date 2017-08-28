@@ -74,6 +74,7 @@ class Transform implements Visitor {
 			$myblock = $this->s_blocks[$block];
 			foreach($block->parents as $block_parent)
 			{
+                var_dump($block_parent);
 				$myblock_parent = $this->s_blocks[$block_parent];
 				$myblock->addParent($myblock_parent);
 			}
