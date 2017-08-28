@@ -57,12 +57,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/designsecurity/progpilot.git",
-                "reference": "8ea5ab67ab02d44d01e559d3192459dd64ff6481"
+                "reference": "f6c269d56c9cf050be333620cefb4711a3e07779"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/designsecurity/progpilot/zipball/8ea5ab67ab02d44d01e559d3192459dd64ff6481",
-                "reference": "8ea5ab67ab02d44d01e559d3192459dd64ff6481",
+                "url": "https://api.github.com/repos/designsecurity/progpilot/zipball/f6c269d56c9cf050be333620cefb4711a3e07779",
+                "reference": "f6c269d56c9cf050be333620cefb4711a3e07779",
                 "shasum": ""
             },
             "require": {
@@ -96,7 +96,7 @@
                 }
             ],
             "description": "A Static Analyser for security",
-            "time": "2017-08-24 13:11:04"
+            "time": "2017-08-28 14:23:31"
         },
         {
             "name": "ircmaxell/php-cfg",

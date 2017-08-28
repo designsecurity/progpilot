@@ -6,7 +6,7 @@ inputs:
     set_include_files: ./include_files.json
     set_exclude_files:
     set_folder:
-    set_file: ../example/example1.php
+    set_file: ../example
     set_code:
     set_resolved_includes:
     set_false_positives:

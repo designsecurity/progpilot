@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-require_once './vendor/autoload.php';
+require_once __DIR__.'/vendor/autoload.php';
 
 use progpilot\Lang;
 
@@ -19,7 +19,7 @@ if($argc > 1)
     }
     catch (Exception $e) 
     {
-        echo 'Progpilot error : '.$e->getMessage()."\n";
+        echo "Progpilot error : ".$e->getMessage()." file : ".$e->getFile()." line : ".$e->getLine()."\n";
     }
 }
 else
