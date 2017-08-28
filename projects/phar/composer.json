@@ -2,6 +2,12 @@
     "name": "Progpilot",
     "description": "Progpilot bin",
     "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/designsecurity/progpilot"
+        }
+    ],
     "require": {
         "designsecurity/progpilot": "dev-master"
     },

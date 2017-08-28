@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "46cbdd1456fa894c5362897989945330",
-    "content-hash": "7eca94628f8d930bdf51f6e47c250299",
+    "hash": "737f03e51e9c115f390ba8b95712f09e",
+    "content-hash": "07207a385edfd34c882895f9485bda62",
     "packages": [
         {
             "name": "cweagans/composer-patches",
@@ -56,14 +56,8 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/designsecurity/progpilot.git",
-                "reference": "f6c269d56c9cf050be333620cefb4711a3e07779"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/designsecurity/progpilot/zipball/f6c269d56c9cf050be333620cefb4711a3e07779",
-                "reference": "f6c269d56c9cf050be333620cefb4711a3e07779",
-                "shasum": ""
+                "url": "https://github.com/designsecurity/progpilot",
+                "reference": "63d458b346bd728be49f22f537d30af859213f7f"
             },
             "require": {
                 "cweagans/composer-patches": "~1.0",
@@ -85,7 +79,6 @@
                     "progpilot": "package/src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -96,7 +89,7 @@
                 }
             ],
             "description": "A Static Analyser for security",
-            "time": "2017-08-28 14:23:31"
+            "time": "2017-08-28 15:19:08"
         },
         {
             "name": "ircmaxell/php-cfg",
