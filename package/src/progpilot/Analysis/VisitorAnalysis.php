@@ -64,7 +64,7 @@ class VisitorAnalysis {
 
 		$this->context = $context;
 	}
-	
+
 	public function analyze($mycode) {
 
 		$index = $mycode->get_start();
@@ -75,7 +75,7 @@ class VisitorAnalysis {
 			if(isset($code[$index]))
 			{
 				$instruction = $code[$index];
-				
+
 				switch($instruction->get_opcode())
 				{
 					case Opcodes::ENTER_BLOCK:
@@ -161,7 +161,7 @@ class VisitorAnalysis {
 					case Opcodes::TEMPORARY:
 						{
 							$tempdefa = $instruction->get_property("temporary");
-							
+
 							$tainted = false;
 							if(!is_null($this->context->inputs->get_source_byname(null, $tempdefa, false, false, $tempdefa->get_array_value())))
 								$tainted = true;
@@ -208,10 +208,10 @@ class VisitorAnalysis {
 							$funcname = $instruction->get_property("funcname");
 							$arr_funccall = $instruction->get_property("arr");
 							$myfunc_call = $instruction->get_property("myfunc_call");
-				
+
 							$list_myfunc = [];
 							$list_myfunc_tocall = [];
-							
+
 							if($myfunc_call->get_is_method())
 							{
 								$stack_class = ResolveDefs::funccall_class(
@@ -223,7 +223,7 @@ class VisitorAnalysis {
 
 								foreach($class_of_funccall_arr as $class_of_funccall)
 								{
-                                    $method = $class_of_funccall->get_method($funcname);
+									$method = $class_of_funccall->get_method($funcname);
 
 									if(ResolveDefs::get_visibility_method($myfunc_call->get_name_instance(), $method))
 										$list_myfunc[] = $method;

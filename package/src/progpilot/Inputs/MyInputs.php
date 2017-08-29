@@ -406,12 +406,12 @@ class MyInputs {
 	{
 		$this->includes_file = $file;
 	}
-	
+
 	public function set_exclude_files($file)
 	{
 		$this->excludes_file = $file;
 	}
-	
+
 	public function set_false_positives($file)
 	{
 		$this->false_positives_file = $file;
@@ -780,7 +780,7 @@ class MyInputs {
 				throw new \Exception(Lang::FORMAT_FALSE_POSITIVES);
 		}
 	}
-	
+
 	public function read_excludes_file()
 	{
 		if(!is_null($this->excludes_file))
@@ -797,7 +797,7 @@ class MyInputs {
 				foreach($exclude_files as $exclude_file)
 					$this->excludes_files_analysis[] = $exclude_file;
 			}
-			
+
 			if(isset($parsed_json->{'exclude_folders'}))
 			{
 				$exclude_folders= $parsed_json->{'exclude_folders'};
@@ -806,7 +806,7 @@ class MyInputs {
 			}
 		}
 	}
-	
+
 	public function read_includes_file()
 	{
 		if(!is_null($this->includes_file))
@@ -823,7 +823,7 @@ class MyInputs {
 				foreach($include_files as $include_file)
 					$this->includes_files_analysis[] = $include_file;
 			}
-			
+
 			if(isset($parsed_json->{'include_folders'}))
 			{
 				$include_folders= $parsed_json->{'include_folders'};

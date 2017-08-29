@@ -9,7 +9,7 @@
 - Then run progpilot with php and your JSON configuration file in command line argument :
 
 ```shell
-php progpilot_dev20170828-161722.phar ./configuration.yaml
+php progpilot_dev20170828-161722.phar ./configuration.yml
 ```
 
 ## Library installation

@@ -53,7 +53,7 @@ class ArrayExpr {
 				}
 				else
 				{
-                    $assign_id = rand();
+					$assign_id = rand();
 					$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name);
 					$mydef->set_assign_id($assign_id);
 

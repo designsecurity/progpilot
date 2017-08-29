@@ -174,7 +174,7 @@ class MyDefinition extends MyOp {
 	public function add_myclass($myclass)
 	{
 		if(!in_array($myclass, $this->myclasses, true))
-            $this->myclasses[] = $myclass;
+			$this->myclasses[] = $myclass;
 	}
 
 	public function get_all_myclass()
@@ -274,9 +274,9 @@ class MyDefinition extends MyOp {
 
 	public function add_copyarray($arr, $def)
 	{
-        $val = [$arr, $def];
+		$val = [$arr, $def];
 		if(!in_array($val, $this->thearrays, true))
-            $this->thearrays[] = $val;
+			$this->thearrays[] = $val;
 	}
 
 	public function set_copyarrays($thearrays)

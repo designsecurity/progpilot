@@ -199,7 +199,7 @@ class ArrayAnalysis {
 					}
 					else
 					{
-        
+
 						$extract = BuildArrays::extract_array_from_arr($defa->get_array_value(), $originalarr);         
 
 						// si on cherchait $copy = $array[11] ici il y a des arrays de type $array[11][quelquechose]

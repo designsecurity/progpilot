@@ -51,7 +51,7 @@ class Assign {
 
 		if($is_returndef)
 			$context->get_current_func()->add_return_def($mydef);
-        
+
 		$context->get_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
 
 		// it's an expression which will define a definition
@@ -107,10 +107,10 @@ class Assign {
 			// it's the class name not instance name
 			if(isset($context->get_current_op()->expr->ops[0]->class->value))
 			{
-                $name_class = $context->get_current_op()->expr->ops[0]->class->value;
-                $mydef->set_is_instance(true);
-                $mydef->set_class_name($name_class);
-            }
+				$name_class = $context->get_current_op()->expr->ops[0]->class->value;
+				$mydef->set_is_instance(true);
+				$mydef->set_class_name($name_class);
+			}
 		}
 
 		if($isref)

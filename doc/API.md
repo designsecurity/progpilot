@@ -56,6 +56,8 @@ These functions are explained in the chapter about [**included files**](./INCLUD
 
 ## Options
 ***
+- $obj_context->set_print_file($bool);  
+*true* if you want to print the name of files analyzed by progpilot, default is *false*
 - $obj_context->set_analyze_functions($bool);  
 *true* if you want to analyze all functions (*false* only *main function* is analyzed), default is *true*
 - $obj_context->set_analyze_js($bool);  

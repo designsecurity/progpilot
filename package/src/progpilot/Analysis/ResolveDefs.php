@@ -53,24 +53,24 @@ class ResolveDefs {
 
 				foreach($instances as $instance)
 				{
-                    if($instance->get_is_instance())
+					if($instance->get_is_instance())
 					{
 						$myclasses = $instance->get_all_myclass();
 
 						foreach($myclasses as $myclass)
 						{
-                            $class_exist = false;
-                            foreach($prop_value as $value_class)
-                            {
-                                if($value_class->get_name() === $myclass->get_name())
-                                {
-                                    $class_exist = true;
-                                    break;
-                                }
-                            }
-                            
-                            if(!$class_exist)
-                                $prop_value[] = $myclass;
+							$class_exist = false;
+							foreach($prop_value as $value_class)
+							{
+								if($value_class->get_name() === $myclass->get_name())
+								{
+									$class_exist = true;
+									break;
+								}
+							}
+
+							if(!$class_exist)
+								$prop_value[] = $myclass;
 						}
 					}
 				}

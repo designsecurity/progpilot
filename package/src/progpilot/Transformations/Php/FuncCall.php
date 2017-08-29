@@ -74,8 +74,8 @@ arg3 : arr for the return : function_call()[0] (arr = [0])
 		if($is_method)
 		{
 			$instance_name = Common::get_name_definition($context->get_current_op()->var);
-            if(isset($context->get_current_op()->var->ops[0]))
-                $property_name = Common::get_name_property($context->get_current_op()->var->ops[0]);
+			if(isset($context->get_current_op()->var->ops[0]))
+				$property_name = Common::get_name_property($context->get_current_op()->var->ops[0]);
 		}
 
 		$funccall_name = "";
@@ -88,7 +88,7 @@ arg3 : arr for the return : function_call()[0] (arr = [0])
 
 			$instance_name = Common::get_name_definition($context->get_current_op()->result->usages[0]);
 			if(isset($context->get_current_op()->result->usages[0]->var->ops[0]))
-                $property_name = Common::get_name_property($context->get_current_op()->result->usages[0]->var->ops[0]);
+				$property_name = Common::get_name_property($context->get_current_op()->result->usages[0]->var->ops[0]);
 
 		}
 		else if(isset($context->get_current_op()->name->value))

@@ -31,20 +31,20 @@ class Analyzer
 				{
 					if($filedir != '.' && $filedir != "..")
 					{
-                        $folderorfile = $dir."/".$filedir;
+						$folderorfile = $dir."/".$filedir;
 						if(is_dir($folderorfile))
 						{
-                            if(!$context->inputs->is_excluded_folder($folderorfile))
-                                $this->get_files_ofdir($context, $folderorfile, $files);
-                        }
+							if(!$context->inputs->is_excluded_folder($folderorfile))
+								$this->get_files_ofdir($context, $folderorfile, $files);
+						}
 						else
 						{
-                            if(!$context->inputs->is_excluded_file($folderorfile))
-                            {
-                                if(!in_array($folderorfile, $files, true))
-                                    $files[] = $folderorfile;
-                            }
-                        }
+							if(!$context->inputs->is_excluded_file($folderorfile))
+							{
+								if(!in_array($folderorfile, $files, true))
+									$files[] = $folderorfile;
+							}
+						}
 					}
 				}
 			}
@@ -71,26 +71,28 @@ class Analyzer
 			if(!file_exists($context->inputs->get_file()) && is_null($context->inputs->get_code()))
 				echo Utils::encode_characters($context->inputs->get_file())." ".Lang::FILE_DOESNT_EXIST;
 
-			if(is_null($context->inputs->get_file()) && is_null($context->inputs->get_code()))
+			else if(is_null($context->inputs->get_file()) && is_null($context->inputs->get_code()))
 				echo Lang::FILE_AND_CODE_ARE_NULL;
 
-            try 
-            {
-                if(is_null($context->inputs->get_code()))
-                {
-                    $code = file_get_contents($context->inputs->get_file());
-                    
-                    $script = $parser->parse($code, "");
-                    
-                    $context->set_path(dirname($context->inputs->get_file()));
-                }
-                else
-                    $script = $parser->parse($context->inputs->get_code(), "");
-            }
-            catch (\PhpParser\Error $e) 
-            {
-            }
-		
+			else
+			{
+				try 
+				{
+					if(is_null($context->inputs->get_code()))
+					{
+						$code = file_get_contents($context->inputs->get_file());
+
+						$script = $parser->parse($code, "");
+
+						$context->set_path(dirname($context->inputs->get_file()));
+					}
+					else
+						$script = $parser->parse($context->inputs->get_code(), "");
+				}
+				catch (\PhpParser\Error $e) 
+				{
+				}
+			}
 		}
 
 		$this->current_script = $script;
@@ -113,19 +115,19 @@ class Analyzer
 
 	public function run_internal_function($context, $myfunc)
 	{
-        if(!is_null($myfunc))
-        {
-            $context->get_mycode()->set_start($myfunc->get_start_address_func());
-            $context->get_mycode()->set_end($myfunc->get_end_address_func());
+		if(!is_null($myfunc))
+		{
+			$context->get_mycode()->set_start($myfunc->get_start_address_func());
+			$context->get_mycode()->set_end($myfunc->get_end_address_func());
 
-            $visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
-            $visitoranalyzer->set_context($context);
-            $visitoranalyzer->analyze($context->get_mycode());
-        }
-        else
-        {
-            // throw main function missing
-        }
+			$visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
+			$visitoranalyzer->set_context($context);
+			$visitoranalyzer->analyze($context->get_mycode());
+		}
+		else
+		{
+			// throw main function missing
+		}
 	}
 
 	public function run_internal($context)
@@ -145,69 +147,69 @@ class Analyzer
 			$visitordataflow->analyze($context);
 
 			if(!$context->get_analyze_functions())
-                $this->run_internal_function($context, $context->get_functions()->get_function("{main}"));
-            else
-            {
-                $functions = $context->get_functions()->get_functions();
-                
-                if(!is_null($functions))
-                {
-                    foreach($functions as $functions_name)
-                    {
-                        if(!is_null($functions_name))
-                        {
-                            foreach($functions_name as $myfunc)
-                                $this->run_internal_function($context, $myfunc);
-                        }
-                    }
-                }
-            }
+				$this->run_internal_function($context, $context->get_functions()->get_function("{main}"));
+			else
+			{
+				$functions = $context->get_functions()->get_functions();
+
+				if(!is_null($functions))
+				{
+					foreach($functions as $functions_name)
+					{
+						if(!is_null($functions_name))
+						{
+							foreach($functions_name as $myfunc)
+								$this->run_internal_function($context, $myfunc);
+						}
+					}
+				}
+			}
 		}
 	}
 
 	public function run($context)
 	{
 		$files = [];
-		
-        $context->read_configuration();
-        $context->inputs->read_includes_file();
-        $context->inputs->read_excludes_file();
-        
-        $context->inputs->read_sanitizers();
-        $context->inputs->read_sinks();
-        $context->inputs->read_sources();
-        $context->inputs->read_resolved_includes();
-        $context->inputs->read_validators();
-        $context->inputs->read_false_positives();
-        
-        $included_files = $context->inputs->get_included_files();
-        $included_folders = $context->inputs->get_included_folders();
-        
-        foreach($included_files as $included_file)
-        {
-            if(!in_array($included_file, $files, true))
-                $files[] = $included_file;
-        }
-        
-        foreach($included_folders as $included_folder)
-            $this->get_files_ofdir($context, $included_folder, $files);
-        
+
+		$context->read_configuration();
+		$context->inputs->read_includes_file();
+		$context->inputs->read_excludes_file();
+
+		$context->inputs->read_sanitizers();
+		$context->inputs->read_sinks();
+		$context->inputs->read_sources();
+		$context->inputs->read_resolved_includes();
+		$context->inputs->read_validators();
+		$context->inputs->read_false_positives();
+
+		$included_files = $context->inputs->get_included_files();
+		$included_folders = $context->inputs->get_included_folders();
+
+		foreach($included_files as $included_file)
+		{
+			if(!in_array($included_file, $files, true))
+				$files[] = $included_file;
+		}
+
+		foreach($included_folders as $included_folder)
+			$this->get_files_ofdir($context, $included_folder, $files);
+
 		if(!is_null($context->inputs->get_folder()))
 			$this->get_files_ofdir($context, $context->inputs->get_folder(), $files);
 		else
 		{
-            if(!in_array($context->inputs->get_file(), $files, true))
-                $files[] = $context->inputs->get_file();
-        }
-        
+			if(!in_array($context->inputs->get_file(), $files, true))
+				$files[] = $context->inputs->get_file();
+		}
+
 		foreach($files as $file)
 		{
-            if($context->get_print_file())
-                echo "progpilot analyze : ".Utils::encode_characters($file)."\n";
-                
-            $context->inputs->set_file($file);
-            $context->set_first_file($file);
-            $this->run_internal($context);
+			if($context->get_print_file())
+				echo "progpilot analyze : ".Utils::encode_characters($file)."\n";
+
+			$context->inputs->set_file($file);
+			$context->set_first_file($file);
+			$this->run_internal($context);
 		}
 
 		if(count($files) == 0 && !is_null($context->inputs->get_code()))

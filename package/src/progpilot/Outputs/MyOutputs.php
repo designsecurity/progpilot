@@ -147,15 +147,15 @@ class MyOutputs {
 
 	public function add_result($temp)
 	{
-        if(!in_array($temp, $this->results, true))
-            $this->results[] = $temp;
+		if(!in_array($temp, $this->results, true))
+			$this->results[] = $temp;
 	}
 
 	public function &get_results()
 	{
 		return $this->results;
 	}
-	
+
 	public function get_resolve_includes()
 	{
 		return $this->resolve_includes;

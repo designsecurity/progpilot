@@ -31,7 +31,7 @@ else
     i=0
     files=($(ls -1cd ../../builds/*))
 
-    for file in "${files[0]}"
+    for file in "${files}"
     do
         echo $file
         i=$(($i + 1))

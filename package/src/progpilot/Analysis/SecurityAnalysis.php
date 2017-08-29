@@ -49,31 +49,31 @@ class SecurityAnalysis {
 		{
 			$nb_params = $myfunc_call->get_nb_params();
 
-            $condition_respected = true;
-            
-            if($mysink->has_parameters())
-            {
-                for($i = 0; $i < $nb_params; $i ++)
-                {
-                    if($mysink->is_parameter($i + 1))
-                    {
-                        $mydef_arg = $instruction->get_property("argdef$i");
-                        if(SecurityAnalysis::is_safe($mydef_arg, $mysink))
-                            $condition_respected = false;
-                    }
-                }
-            }
-            
-            if($condition_respected)
-            {
-                for($i = 0; $i < $nb_params; $i ++)
-                {
-                    $mydef_arg = $instruction->get_property("argdef$i");
+			$condition_respected = true;
 
-                    if(!$mysink->has_parameters() || ($mysink->has_parameters() && $mysink->is_parameter($i + 1)))
-                        SecurityAnalysis::call($myfunc_call, $context, $mysink, $mydef_arg);
-                }
-            }
+			if($mysink->has_parameters())
+			{
+				for($i = 0; $i < $nb_params; $i ++)
+				{
+					if($mysink->is_parameter($i + 1))
+					{
+						$mydef_arg = $instruction->get_property("argdef$i");
+						if(SecurityAnalysis::is_safe($mydef_arg, $mysink))
+							$condition_respected = false;
+					}
+				}
+			}
+
+			if($condition_respected)
+			{
+				for($i = 0; $i < $nb_params; $i ++)
+				{
+					$mydef_arg = $instruction->get_property("argdef$i");
+
+					if(!$mysink->has_parameters() || ($mysink->has_parameters() && $mysink->is_parameter($i + 1)))
+						SecurityAnalysis::call($myfunc_call, $context, $mysink, $mydef_arg);
+				}
+			}
 		}
 	}
 
@@ -165,8 +165,8 @@ class SecurityAnalysis {
 			$temp["vuln_id"] = $hash_id_vuln;
 
 			$context->outputs->add_result($temp);
-            if(!in_array($temp, $results, true))
-                $results[] = $temp;
+			if(!in_array($temp, $results, true))
+				$results[] = $temp;
 		}
 	}
 }

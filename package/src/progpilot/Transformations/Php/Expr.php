@@ -57,9 +57,9 @@ class Expr {
 
 			if($type == MyOp::TYPE_PROPERTY)
 			{
-                $property_name = "";
-                if(isset($op->ops[0]))
-                    $property_name = Common::get_name_property($op->ops[0]);
+				$property_name = "";
+				if(isset($op->ops[0]))
+					$property_name = Common::get_name_property($op->ops[0]);
 
 				$mytemp->set_is_property(true);
 				$mytemp->property->set_properties($property_name);
