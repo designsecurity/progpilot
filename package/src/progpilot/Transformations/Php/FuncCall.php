@@ -68,12 +68,14 @@ arg3 : arr for the return : function_call()[0] (arr = [0])
 	public static function instruction($context, $myexpr, $assign_id, $funccall_arr, $is_method = false)
 	{
 		$nbparams = 0;	
+		$property_name = "";
 
 		// instance_name = new obj; instance_name->method_name()
 		if($is_method)
 		{
 			$instance_name = Common::get_name_definition($context->get_current_op()->var);
-			$property_name = Common::get_name_property($context->get_current_op()->var->ops[0]);
+            if(isset($context->get_current_op()->var->ops[0]))
+                $property_name = Common::get_name_property($context->get_current_op()->var->ops[0]);
 		}
 
 		$funccall_name = "";

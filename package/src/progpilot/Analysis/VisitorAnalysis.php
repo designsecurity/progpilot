@@ -210,8 +210,7 @@ class VisitorAnalysis {
 
 							$list_myfunc = [];
 							$list_myfunc_tocall = [];
-
-
+							
 							if($myfunc_call->get_is_method())
 							{
 								$stack_class = ResolveDefs::funccall_class(

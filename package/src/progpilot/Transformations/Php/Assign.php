@@ -51,7 +51,7 @@ class Assign {
 
 		if($is_returndef)
 			$context->get_current_func()->add_return_def($mydef);
-
+        
 		$context->get_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
 
 		// it's an expression which will define a definition

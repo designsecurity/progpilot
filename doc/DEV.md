@@ -44,3 +44,4 @@ There is a lot of tasks to do :
 - No need to new for simplexml_load_file (return $instance) so we miss object creation
 - $tainted = $tainted + 0; => cast to int
 - Specials rules : missing set_cookies secure or twig default escaping for examples
+- Namespace (phpparser example : NsFunccall)

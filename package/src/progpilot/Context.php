@@ -27,6 +27,7 @@ class Context {
 	private $analyze_functions;
 	private $analyze_includes;
 	private $analyze_js;
+	private $print_file_under_analysis;
 	private $configuration_file;
 
 	public $inputs;
@@ -38,6 +39,7 @@ class Context {
 		$this->analyze_functions = true;
 		$this->analyze_includes = true;
 		$this->analyze_js = true;
+		$this->print_file_under_analysis = false;
 		$this->first_file = "";
 
 		$this->reset_internal_values();
@@ -216,6 +218,17 @@ class Context {
 	{
 		return $this->configuration_file;
 	}
+	
+	
+	public function set_print_file($bool)
+	{
+        $this->print_file_under_analysis = $bool;
+	}
+
+	public function get_print_file()
+	{
+		return $this->print_file_under_analysis;
+	}
 
 	public function read_configuration()
 	{
@@ -286,6 +299,9 @@ class Context {
                             
                         if(isset($value["options"]["set_analyze_functions"]))
                             $this->set_analyze_functions($value["options"]["set_analyze_functions"]);
+                            
+                        if(isset($value["options"]["set_print_file"]))
+                            $this->set_print_file($value["options"]["set_print_file"]);
                     }
                 }
             }

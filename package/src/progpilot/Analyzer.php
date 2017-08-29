@@ -193,6 +193,9 @@ class Analyzer
         
 		foreach($files as $file)
 		{
+            if($context->get_print_file())
+                echo "progpilot analyze : ".Utils::encode_characters($file)."\n";
+                
             $context->inputs->set_file($file);
             $context->set_first_file($file);
             $this->run_internal($context);

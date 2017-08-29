@@ -64,6 +64,8 @@ class Transform implements Visitor {
 		$this->context->outputs->current_includes_file = [];
 
 		$this->current_myfile = new MyFile($this->context->inputs->get_file(), 0, 0);
+	
+        //var_dump($script);
 	}
 
 	public function leaveScript(Script $script) {
@@ -74,9 +76,11 @@ class Transform implements Visitor {
 			$myblock = $this->s_blocks[$block];
 			foreach($block->parents as $block_parent)
 			{
-                var_dump($block_parent);
-				$myblock_parent = $this->s_blocks[$block_parent];
-				$myblock->addParent($myblock_parent);
+                if($this->s_blocks->contains($block_parent))
+                {
+                    $myblock_parent = $this->s_blocks[$block_parent];
+                    $myblock->addParent($myblock_parent);
+                }
 			}
 		}
 
@@ -98,8 +102,6 @@ class Transform implements Visitor {
 
 		if($this->context->outputs->get_resolve_includes())
 			$this->context->outputs->write_includes_file();
-
-		//var_dump($script);
 	}
 
 	public function enterBlock(Block $block, Block $prior = null) {
