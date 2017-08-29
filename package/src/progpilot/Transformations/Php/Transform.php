@@ -234,16 +234,20 @@ class Transform implements Visitor {
 			$class_name = $func->class->value;
 
 		$myfunction = $this->context->get_functions()->get_function($func->name, $class_name);
-		$myfunction->set_last_line($this->context->get_current_line());
-		$myfunction->set_last_column($this->context->get_current_column());
-		$myfunction->set_last_block_id(-1);
+		
+		if(!is_null($myfunction))
+		{
+            $myfunction->set_last_line($this->context->get_current_line());
+            $myfunction->set_last_column($this->context->get_current_column());
+            $myfunction->set_last_block_id(-1);
 
-		$address_func = count($this->context->get_mycode()->get_codes());
-		$myfunction->set_end_address_func($address_func);
+            $address_func = count($this->context->get_mycode()->get_codes());
+            $myfunction->set_end_address_func($address_func);
 
-		$inst_func = new MyInstruction(Opcodes::LEAVE_FUNCTION);
-		$inst_func->add_property("myfunc", $myfunction);
-		$this->context->get_mycode()->add_code($inst_func);
+            $inst_func = new MyInstruction(Opcodes::LEAVE_FUNCTION);
+            $inst_func->add_property("myfunc", $myfunction);
+            $this->context->get_mycode()->add_code($inst_func);
+        }
 	}
 
 	public function parse_condition($inst_start_if, $cond)

@@ -3,10 +3,10 @@ inputs:
     set_sinks: ../uptodate_data/sinks.json
     set_validators: ../uptodate_data/validators.json
     set_sanitizers: ../uptodate_data/sanitizers.json
-    set_include_files:
+    #set_include_files: include_files.json
     set_exclude_files:
-    set_folder:
-    set_file: ./example1.php
+    set_folder: ./vendor/
+    #set_file: ./vendor//progpilot/package/src/progpilot/Inputs/MyInputs.php
     set_code:
     set_resolved_includes:
     set_false_positives:

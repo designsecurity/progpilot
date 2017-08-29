@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a1f309bb5b2c2e0764fda3517a1140c4",
-    "content-hash": "3a92e9fbb1bb8330399788c95c3977d7",
+    "hash": "16539d909b5cad5b98702b29a56574c9",
+    "content-hash": "ae0f714cb2818e56f4db69f78e9337ac",
     "packages": [
         {
             "name": "cweagans/composer-patches",
@@ -52,53 +52,6 @@
             "time": "2017-03-19 18:18:52"
         },
         {
-            "name": "designsecurity/progpilot",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/designsecurity/progpilot.git",
-                "reference": "7a777f550164ec060864dc20131364bd5c007615"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/designsecurity/progpilot/zipball/7a777f550164ec060864dc20131364bd5c007615",
-                "reference": "7a777f550164ec060864dc20131364bd5c007615",
-                "shasum": ""
-            },
-            "require": {
-                "cweagans/composer-patches": "~1.0",
-                "ircmaxell/php-cfg": "dev-master",
-                "symfony/yaml": "~3.3.6"
-            },
-            "type": "library",
-            "extra": {
-                "patches": {
-                    "ircmaxell/php-cfg": {
-                        "Op": "https://raw.githubusercontent.com/designsecurity/progpilot/master/patchs/Op.diff",
-                        "Include": "https://raw.githubusercontent.com/designsecurity/progpilot/master/patchs/Include_.diff",
-                        "Traverser": "https://raw.githubusercontent.com/designsecurity/progpilot/master/patchs/Traverser.diff"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "progpilot": "package/src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Eric Therond",
-                    "email": "eric.therond.fr@gmail.com"
-                }
-            ],
-            "description": "A Static Analyser for security",
-            "time": "2017-08-23 14:37:44"
-        },
-        {
             "name": "ircmaxell/php-cfg",
             "version": "dev-master",
             "source": {
@@ -124,9 +77,9 @@
             "type": "library",
             "extra": {
                 "patches_applied": {
-                    "Op": "https://raw.githubusercontent.com/designsecurity/progpilot/master/patchs/Op.diff",
-                    "Include": "https://raw.githubusercontent.com/designsecurity/progpilot/master/patchs/Include_.diff",
-                    "Traverser": "https://raw.githubusercontent.com/designsecurity/progpilot/master/patchs/Traverser.diff"
+                    "Op": "../../patchs/Op.diff",
+                    "Include": "../../patchs/Include_.diff",
+                    "Traverser": "../../patchs/Traverser.diff"
                 }
             },
             "autoload": {
@@ -240,6 +193,46 @@
             "time": "2016-02-02 13:00:08"
         },
         {
+            "name": "progpilot/package",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "../../package",
+                "reference": "6ceb6ff1b271649fa0e038173d94b57c93b80b6a",
+                "shasum": null
+            },
+            "require": {
+                "cweagans/composer-patches": "~1.0",
+                "ircmaxell/php-cfg": "dev-master",
+                "symfony/yaml": "~3.3.6"
+            },
+            "type": "library",
+            "extra": {
+                "patches": {
+                    "ircmaxell/php-cfg": {
+                        "Op": "../../patchs/Op.diff",
+                        "Include": "../../patchs/Include_.diff",
+                        "Traverser": "../../patchs/Traverser.diff"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "progpilot": "src"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Eric Therond",
+                    "email": "eric.therond.fr@gmail.com"
+                }
+            ],
+            "description": "A Static Analyser for security (package for local dev)"
+        },
+        {
             "name": "symfony/yaml",
             "version": "v3.3.6",
             "source": {
@@ -299,7 +292,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "designsecurity/progpilot": 20
+        "progpilot/package": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

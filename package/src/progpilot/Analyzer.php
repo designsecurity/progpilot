@@ -69,19 +69,28 @@ class Analyzer
 			$parser = new \PHPCfg\Parser((new \PhpParser\ParserFactory)->create(\PhpParser\ParserFactory::PREFER_PHP7), $asttraverser);
 
 			if(!file_exists($context->inputs->get_file()) && is_null($context->inputs->get_code()))
-				throw new \Exception(Utils::encode_characters($context->inputs->get_file())." ".Lang::FILE_DOESNT_EXIST);
+				echo Utils::encode_characters($context->inputs->get_file())." ".Lang::FILE_DOESNT_EXIST;
 
 			if(is_null($context->inputs->get_file()) && is_null($context->inputs->get_code()))
-				throw new \Exception(Lang::FILE_AND_CODE_ARE_NULL);
+				echo Lang::FILE_AND_CODE_ARE_NULL;
 
-			if(is_null($context->inputs->get_code()))
-			{
-				$code = file_get_contents($context->inputs->get_file());
-				$script = $parser->parse($code, "");
-				$context->set_path(dirname($context->inputs->get_file()));
-			}
-			else
-				$script = $parser->parse($context->inputs->get_code(), "");
+            try 
+            {
+                if(is_null($context->inputs->get_code()))
+                {
+                    $code = file_get_contents($context->inputs->get_file());
+                    
+                    $script = $parser->parse($code, "");
+                    
+                    $context->set_path(dirname($context->inputs->get_file()));
+                }
+                else
+                    $script = $parser->parse($context->inputs->get_code(), "");
+            }
+            catch (\PhpParser\Error $e) 
+            {
+            }
+		
 		}
 
 		$this->current_script = $script;
@@ -94,13 +103,6 @@ class Analyzer
 		// transform
 		if(!is_null($script))
 		{
-			$context->inputs->read_sanitizers();
-			$context->inputs->read_sinks();
-			$context->inputs->read_sources();
-			$context->inputs->read_resolved_includes();
-			$context->inputs->read_validators();
-			$context->inputs->read_false_positives();
-
 			$traverser = new \PHPCfg\Traverser();
 			$traverser->addVisitor(new \progpilot\Transformations\Php\Transform());
 			$traverser->getVisitor(0)->set_context($context);
@@ -170,6 +172,13 @@ class Analyzer
         $context->read_configuration();
         $context->inputs->read_includes_file();
         $context->inputs->read_excludes_file();
+        
+        $context->inputs->read_sanitizers();
+        $context->inputs->read_sinks();
+        $context->inputs->read_sources();
+        $context->inputs->read_resolved_includes();
+        $context->inputs->read_validators();
+        $context->inputs->read_false_positives();
         
         $included_files = $context->inputs->get_included_files();
         $included_folders = $context->inputs->get_included_folders();

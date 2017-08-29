@@ -19,6 +19,11 @@ class Classes {
 		$this->list_classes = [];
 	}
 
+	public function get_list_classes()
+	{
+		return $this->list_classes;
+	}
+
 	public function add_myclass($myclass)
 	{
 		$this->list_classes[] = $myclass;
@@ -28,7 +33,7 @@ class Classes {
 	{
 		foreach($this->list_classes as $myclass)
 		{
-			if($myclass->get_name() == $name)
+			if($myclass->get_name() === $name)
 				return $myclass;
 		}
 

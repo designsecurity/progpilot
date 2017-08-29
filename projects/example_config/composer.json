@@ -2,8 +2,14 @@
     "name": "Example",
     "description": "Example of use of Progpilot",
     "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../package"
+        }
+    ],
     "require": {
-        "designsecurity/progpilot": "dev-master"
+        "progpilot/package": "dev-master"
     },
 	"extra": {
 		"enable-patching": true

@@ -37,7 +37,7 @@ class MyClass extends MyOp {
 		$exist = false;
 		foreach($this->methods as $method_class)
 		{
-			if($method_class->get_name() == $method->get_name())
+			if($method_class->get_name() === $method->get_name())
 			{
 				$exist = true;
 				break;
@@ -52,7 +52,7 @@ class MyClass extends MyOp {
 	{
 		foreach($this->methods as $method)
 		{
-			if($method->get_name() == $name)
+			if($method->get_name() === $name)
 				return $method;
 		}
 

@@ -53,13 +53,24 @@ class ResolveDefs {
 
 				foreach($instances as $instance)
 				{
-					if($instance->get_is_instance())
+                    if($instance->get_is_instance())
 					{
 						$myclasses = $instance->get_all_myclass();
 
 						foreach($myclasses as $myclass)
 						{
-							$prop_value[] = $myclass;
+                            $class_exist = false;
+                            foreach($prop_value as $value_class)
+                            {
+                                if($value_class->get_name() === $myclass->get_name())
+                                {
+                                    $class_exist = true;
+                                    break;
+                                }
+                            }
+                            
+                            if(!$class_exist)
+                                $prop_value[] = $myclass;
 						}
 					}
 				}
@@ -245,7 +256,7 @@ class ResolveDefs {
 		while(!is_null($myfile))
 		{
 			$myfile_from = $myfile->get_included_from_myfile();
-			if(!is_null($myfile_from) && ($myfile_from->get_name() == $def2->get_source_myfile()->get_name()))
+			if(!is_null($myfile_from) && ($myfile_from->get_name() === $def2->get_source_myfile()->get_name()))
 			{
 				$def1_includedby_def2 = true;
 				break;
@@ -261,7 +272,7 @@ class ResolveDefs {
 			while(!is_null($myfile))
 			{
 				$myfile_from = $myfile->get_included_from_myfile();
-				if(!is_null($myfile_from) && ($myfile_from->get_name() == $def1->get_source_myfile()->get_name()))
+				if(!is_null($myfile_from) && ($myfile_from->get_name() === $def1->get_source_myfile()->get_name()))
 				{
 					$def2_includedby_def1 = true;
 					break;
@@ -301,7 +312,7 @@ class ResolveDefs {
 	// return true if op is deeper in code than def
 	public static function is_nearest($context, $def1, $def1_line, $def1_column, $def2, $def2_line, $def2_column)
 	{
-		if($def1->get_source_myfile()->get_name() == $def2->get_source_myfile()->get_name())
+		if($def1->get_source_myfile()->get_name() === $def2->get_source_myfile()->get_name())
 		{
 			if(($def1_line > $def2_line) || ($def1_line == $def2_line &&  $def1_column >= $def2_column))
 				return true;
@@ -314,12 +325,12 @@ class ResolveDefs {
 
 	public static function get_visibility_method($def_name, $method)
 	{
-		if($def_name == "this")
+		if($def_name === "this")
 			return true;
 
 		if(!is_null($method) 
 				&& $method->get_is_method() 
-				&& $method->get_visibility() == "public")
+				&& $method->get_visibility() === "public")
 			return true;
 
 		return false;
@@ -327,12 +338,12 @@ class ResolveDefs {
 
 	public static function get_visibility($def, $property)
 	{
-		if(!is_null($def) && $def->get_name() == "this")
+		if(!is_null($def) && $def->get_name() === "this")
 			return true;
 
 		if(!is_null($property) 
 				&& $property->get_is_property() 
-				&& $property->property->get_visibility() == "public")
+				&& $property->property->get_visibility() === "public")
 			return true;
 
 		return false;
@@ -346,11 +357,11 @@ class ResolveDefs {
 
 		foreach($data as $def)
 		{
-			if($def->get_name() == $defsearch->get_name() 
+			if($def->get_name() === $defsearch->get_name() 
 					&& $def->get_assign_id() != $defsearch->get_assign_id()
 					&& $def->property->get_properties() === $defsearch->property->get_properties() 
 					&& ResolveDefs::is_nearest($context, $defsearch, $defsearch->getLine(), $defsearch->getColumn(), $def, $def->getLine(), $def->getColumn())
-					&& (($def->get_array_value() == $defsearch->get_array_value()) || ($def->get_is_copy_array() && $defsearch->get_is_array()) || $bypass_isnearest))
+					&& (($def->get_array_value() === $defsearch->get_array_value()) || ($def->get_is_copy_array() && $defsearch->get_is_array()) || $bypass_isnearest))
 			{
 				// CA SERT A QUOI ICI REDONDANT AVEC LE DERNIER ?
 				if($def->get_is_instance() && $defsearch->get_is_instance())

@@ -112,10 +112,10 @@ class MyDefinition extends MyOp {
 
 		if($this->get_is_copy_array())
 		{
-			echo "copyarray start =================\n";
+			echo "copyarray start ================= count = ".count($this->get_copyarrays())."\n";
 			foreach($this->get_copyarrays() as $copy_array)
 			{
-				$copy_array[1]->print_stdout();
+				var_dump($copy_array[0]);
 			}
 			echo "copyarray end =================\n";
 		}
@@ -173,7 +173,8 @@ class MyDefinition extends MyOp {
 
 	public function add_myclass($myclass)
 	{
-		$this->myclasses[] = $myclass;
+		if(!in_array($myclass, $this->myclasses, true))
+            $this->myclasses[] = $myclass;
 	}
 
 	public function get_all_myclass()
@@ -273,7 +274,9 @@ class MyDefinition extends MyOp {
 
 	public function add_copyarray($arr, $def)
 	{
-		$this->thearrays[] = [$arr, $def];
+        $val = [$arr, $def];
+		if(!in_array($val, $this->thearrays, true))
+            $this->thearrays[] = $val;
 	}
 
 	public function set_copyarrays($thearrays)

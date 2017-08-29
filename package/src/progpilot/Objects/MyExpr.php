@@ -46,7 +46,7 @@ class MyExpr extends MyOp {
 
 	public function is_tainted()
 	{
-		foreach($this->thedefs as &$thedef)
+		foreach($this->thedefs as $thedef)
 		{
 			if($thedef->is_tainted())
 				return true;

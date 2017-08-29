@@ -44,15 +44,15 @@ class VisitorAnalysis {
 	{
 		foreach($this->call_stack as $call)
 		{
-			if($call->get_name() == $cur_func->get_name() && !$call->get_is_method() && !$cur_func->get_is_method())
+			if($call->get_name() === $cur_func->get_name() && !$call->get_is_method() && !$cur_func->get_is_method())
 				return true;
 
-			if($call->get_name() == $cur_func->get_name() && $call->get_is_method() && $cur_func->get_is_method())
+			if($call->get_name() === $cur_func->get_name() && $call->get_is_method() && $cur_func->get_is_method())
 			{
 				$cur_class = $cur_func->get_myclass();
 				$call_class = $call->get_myclass();
 
-				if($cur_class->get_name() == $call_class->get_name())
+				if($cur_class->get_name() === $call_class->get_name())
 					return true;
 			}
 		}
@@ -75,6 +75,7 @@ class VisitorAnalysis {
 			if(isset($code[$index]))
 			{
 				$instruction = $code[$index];
+				
 				switch($instruction->get_opcode())
 				{
 					case Opcodes::ENTER_BLOCK:
@@ -122,7 +123,7 @@ class VisitorAnalysis {
 						{
 
 							$myfunc = $instruction->get_property("myfunc");
-							if($myfunc->get_name() == "{main}")
+							if($myfunc->get_name() === "{main}")
 								return;
 
 							array_pop($this->call_stack);
@@ -160,7 +161,7 @@ class VisitorAnalysis {
 					case Opcodes::TEMPORARY:
 						{
 							$tempdefa = $instruction->get_property("temporary");
-
+							
 							$tainted = false;
 							if(!is_null($this->context->inputs->get_source_byname(null, $tempdefa, false, false, $tempdefa->get_array_value())))
 								$tainted = true;
@@ -185,7 +186,7 @@ class VisitorAnalysis {
 
 										$defassign->last_known_value($def->get_last_known_value());
 
-										if($tempdefa->get_cast() == MyDefinition::CAST_NOT_SAFE)
+										if($tempdefa->get_cast() === MyDefinition::CAST_NOT_SAFE)
 											$defassign->set_cast($def->get_cast());
 										else
 											$defassign->set_cast($tempdefa->get_cast());
@@ -207,7 +208,7 @@ class VisitorAnalysis {
 							$funcname = $instruction->get_property("funcname");
 							$arr_funccall = $instruction->get_property("arr");
 							$myfunc_call = $instruction->get_property("myfunc_call");
-
+				
 							$list_myfunc = [];
 							$list_myfunc_tocall = [];
 							
@@ -222,7 +223,7 @@ class VisitorAnalysis {
 
 								foreach($class_of_funccall_arr as $class_of_funccall)
 								{
-									$method = $class_of_funccall->get_method($funcname);
+                                    $method = $class_of_funccall->get_method($funcname);
 
 									if(ResolveDefs::get_visibility_method($myfunc_call->get_name_instance(), $method))
 										$list_myfunc[] = $method;
@@ -338,13 +339,7 @@ class VisitorAnalysis {
 								if(is_null($myfunc))
 									ResolveDefs::copy_instance($this->context, $this->defs, $myfunc_call);
 
-
 								ResolveDefs::instance_build_back($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc, $myfunc_call);
-								/*
-								   TaintAnalysis::funccall_validator($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myinstance, $myfunc_call, $arr_funccall, $instruction, $index); 
-								   TaintAnalysis::funccall_sanitizer($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myinstance, $myfunc_call, $arr_funccall, $instruction, $index);     
-								   TaintAnalysis::funccall_source($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myinstance, $myfunc_call, $arr_funccall, $instruction);  
-								 */
 							}
 
 							break;

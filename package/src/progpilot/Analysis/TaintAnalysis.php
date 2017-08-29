@@ -52,7 +52,7 @@ class TaintAnalysis {
 				$condition = $myvalidator->get_parameter_condition($nbparams+1);
 
 
-				if($condition == "valid" && !$exprarg->get_is_concat())
+				if($condition === "valid" && !$exprarg->get_is_concat())
 				{
 					$thedefsargs = $exprarg->get_defs();
 
@@ -62,7 +62,7 @@ class TaintAnalysis {
 					}
 				}
 
-				else if($condition == "array_not_tainted")
+				else if($condition === "array_not_tainted")
 				{ 
 					if($defarg->get_is_array() && $defarg->is_tainted())
 					{
@@ -85,13 +85,13 @@ class TaintAnalysis {
 					}
 				}
 
-				else if($condition == "not_tainted")
+				else if($condition === "not_tainted")
 				{
 					if($defarg->is_tainted())
 						$condition_respected = false;
 				}
 
-				else if($condition == "equals")
+				else if($condition === "equals")
 				{ 
 					$condition_respected_equals = false;
 					$values = $myvalidator->get_parameter_values($nbparams+1);
@@ -103,7 +103,7 @@ class TaintAnalysis {
 						{
 							foreach($values as $value)
 							{
-								if($value->value == $thedefsargs[0]->get_last_known_value())
+								if($value->value === $thedefsargs[0]->get_last_known_value())
 									$condition_respected_equals = true;
 							}
 						}
@@ -197,7 +197,7 @@ class TaintAnalysis {
 			{
 				$condition = $mysanitizer->get_parameter_condition($nbparams+1);
 
-				if($condition == "equals")
+				if($condition === "equals")
 				{ 
 					$condition_respected = false;
 					$values = $mysanitizer->get_parameter_values($nbparams+1);
@@ -209,7 +209,7 @@ class TaintAnalysis {
 						{
 							foreach($values as $value)
 							{
-								if($value->value == $thedefsargs[0]->get_last_known_value())
+								if($value->value === $thedefsargs[0]->get_last_known_value())
 								{
 									$condition_respected = true;
 
@@ -223,7 +223,7 @@ class TaintAnalysis {
 					if(!$condition_respected)
 						$condition_respected_final = false;
 				}
-				else if($condition == "taint")
+				else if($condition === "taint")
 				{
 					$condition_taint = true;
 					if($defarg->is_tainted())
@@ -340,7 +340,7 @@ class TaintAnalysis {
 				{
 					$value_array = array($mysource->get_return_array_value() => false);
 
-					if($arr_funccall == $value_array)
+					if($arr_funccall === $value_array)
 					{
 						$exprreturn->add_def($mydef);
 						$mydef->add_expr($exprreturn);
@@ -367,7 +367,7 @@ class TaintAnalysis {
 
 		foreach($defsreturn as $defreturn)
 		{        
-			if(($arr_funccall != false && $defreturn->get_is_array() && $defreturn->get_array_value() == $arr_funccall) || $arr_funccall == false)
+			if(($arr_funccall != false && $defreturn->get_is_array() && $defreturn->get_array_value() === $arr_funccall) || $arr_funccall == false)
 			{
 				$copydefreturn = $defreturn;
 

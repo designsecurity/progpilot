@@ -247,7 +247,7 @@ class Definitions {
 	// $def1 = all, $def2 = gen
 	public function def_equality($def1, $def2)
 	{
-		if($def1->get_name() == $def2->get_name())
+		if($def1->get_name() === $def2->get_name())
 		{
 			if($def1->property->get_properties() !== $def2->property->get_properties())
 				return false;

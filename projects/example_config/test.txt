@@ -1,0 +1,8 @@
+progpilot analyze : ./vendor//progpilot/package/src/progpilot/Inputs/MyInputs.php
+run_internal 1
+run_internal 2
+run_internal 3
+run_internal 4
+array(0) {
+}
+	 

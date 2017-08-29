@@ -59,11 +59,11 @@ class Common {
 	public static function get_name_definition($ops, $looking_for_property = false)
 	{
 		//  $this->property = property
-		if($looking_for_property && $ops instanceof Op\Expr\PropertyFetch)
+		if($looking_for_property && $ops instanceof Op\Expr\PropertyFetch && isset($ops->name->value))
 			return $ops->name->value;
 
 		//  $this->property = this
-		if(isset($ops->var) && $ops->var instanceof Operand\BoundVariable)
+		if(isset($ops->var) && $ops->var instanceof Operand\BoundVariable && isset($ops->var->name->value))
 			return $ops->var->name->value;
 
 		if(isset($ops->ops[0]))

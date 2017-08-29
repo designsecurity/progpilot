@@ -26,7 +26,6 @@ class ArrayExpr {
 
 	public static function instruction($op, $context, $arr, $def_name, $is_returndef)
 	{
-		$assign_id = rand();
 		$building_arr = false;
 
 		if(isset($op->ops[0]->values))
@@ -54,6 +53,7 @@ class ArrayExpr {
 				}
 				else
 				{
+                    $assign_id = rand();
 					$mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name);
 					$mydef->set_assign_id($assign_id);
 

@@ -83,11 +83,12 @@ arg3 : arr for the return : function_call()[0] (arr = [0])
 		{
 			$funccall_name = "__construct";
 			// we have the class name
-			$class_name = $context->get_current_op()->class->value;
+			//$class_name = $context->get_current_op()->class->value;
 			$is_method = true;
 
 			$instance_name = Common::get_name_definition($context->get_current_op()->result->usages[0]);
-			$property_name = Common::get_name_property($context->get_current_op()->result->usages[0]->var->ops[0]);
+			if(isset($context->get_current_op()->result->usages[0]->var->ops[0]))
+                $property_name = Common::get_name_property($context->get_current_op()->result->usages[0]->var->ops[0]);
 
 		}
 		else if(isset($context->get_current_op()->name->value))

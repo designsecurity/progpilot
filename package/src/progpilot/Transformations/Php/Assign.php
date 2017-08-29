@@ -105,9 +105,12 @@ class Assign {
 		if($type_instance == MyOp::TYPE_INSTANCE)
 		{
 			// it's the class name not instance name
-			$name_class = $context->get_current_op()->expr->ops[0]->class->value;
-			$mydef->set_is_instance(true);
-			$mydef->set_class_name($name_class);
+			if(isset($context->get_current_op()->expr->ops[0]->class->value))
+			{
+                $name_class = $context->get_current_op()->expr->ops[0]->class->value;
+                $mydef->set_is_instance(true);
+                $mydef->set_class_name($name_class);
+            }
 		}
 
 		if($isref)

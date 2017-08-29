@@ -29,7 +29,7 @@ class Functions {
 				if($myfunc->get_is_method())
 				{
 					$myclass = $myfunc->get_myclass();
-					if($class_name == $myclass->get_name())
+					if($class_name === $myclass->get_name())
 						return $myfunc;
 				}
 			}

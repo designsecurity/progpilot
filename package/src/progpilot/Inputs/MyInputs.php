@@ -168,14 +168,14 @@ class MyInputs {
 	{
 		foreach($this->validators as $myvalidator)
 		{
-			if($myvalidator->get_name() == $myfunc->get_name())
+			if($myvalidator->get_name() === $myfunc->get_name())
 			{
 				if(!$myvalidator->is_instance() && !$myfunc->get_is_method())
 					return $myvalidator;
 
 				if($myvalidator->is_instance() && $myfunc->get_is_method())
 				{
-					if(!is_null($myclass) && $myvalidator->get_instanceof_name() == $myclass->get_name())
+					if(!is_null($myclass) && $myvalidator->get_instanceof_name() === $myclass->get_name())
 						return $myvalidator;
 
 					$properties_validator = explode("->", $myvalidator->get_instanceof_name());
@@ -209,14 +209,14 @@ class MyInputs {
 	{
 		foreach($this->sanitizers as $mysanitizer)
 		{
-			if($mysanitizer->get_name() == $myfunc->get_name())
+			if($mysanitizer->get_name() === $myfunc->get_name())
 			{
 				if(!$mysanitizer->is_instance() && !$myfunc->get_is_method())
 					return $mysanitizer;
 
 				if($mysanitizer->is_instance() && $myfunc->get_is_method())
 				{
-					if(!is_null($myclass) && $mysanitizer->get_instanceof_name() == $myclass->get_name())
+					if(!is_null($myclass) && $mysanitizer->get_instanceof_name() === $myclass->get_name())
 						return $mysanitizer;
 
 					$properties_sanitizer = explode("->", $mysanitizer->get_instanceof_name());
@@ -250,14 +250,14 @@ class MyInputs {
 	{
 		foreach($this->sinks as $mysink)
 		{
-			if($mysink->get_name() == $myfunc->get_name())
+			if($mysink->get_name() === $myfunc->get_name())
 			{
 				if(!$mysink->is_instance() && !$myfunc->get_is_method())
 					return $mysink;
 
 				if($mysink->is_instance() && $myfunc->get_is_method())
 				{
-					if(!is_null($myclass) && $mysink->get_instanceof_name() == $myclass->get_name())
+					if(!is_null($myclass) && $mysink->get_instanceof_name() === $myclass->get_name())
 						return $mysink;
 
 					$properties_sink = explode("->", $mysink->get_instanceof_name());
@@ -291,7 +291,7 @@ class MyInputs {
 	{
 		foreach($this->sources as $mysource)
 		{
-			if($mysource->get_name() == $myfunc_or_def->get_name())
+			if($mysource->get_name() === $myfunc_or_def->get_name())
 			{
 				$check_function = false;
 				$check_array = false;
@@ -303,7 +303,7 @@ class MyInputs {
 
 				if($instance_name && $mysource->is_instance())
 				{
-					if($mysource->get_instanceof_name() == $instance_name)
+					if($mysource->get_instanceof_name() === $instance_name)
 						$check_instance = true;
 
 					$properties_source = explode("->", $mysource->get_instanceof_name());

@@ -30,7 +30,7 @@ class AssertionAnalysis {
 			// there was not resolution so we simply check name (or better equality values)
 			if($resolve_temporary == $tempdefa)
 			{
-				if($mydef_assertion->get_name() == $tempdefa->get_name())
+				if($mydef_assertion->get_name() === $tempdefa->get_name())
 					$tempdefa->set_tainted(false);
 
 				$equality = true;
@@ -38,7 +38,7 @@ class AssertionAnalysis {
 
 			if($mydef_assertion == $resolve_temporary)
 			{
-				if($mydef_assertion->get_name() == $tempdefa->get_name())
+				if($mydef_assertion->get_name() === $tempdefa->get_name())
 					$tempdefa->set_tainted(false);
 
 				$equality = true;
@@ -47,10 +47,10 @@ class AssertionAnalysis {
 		}
 
 
-		if($equality && $type_assertion != "string")
+		if($equality && $type_assertion !== "string")
 			$safe = true;
 
-		if($resolve_temporary->get_cast() == MyDefinition::CAST_SAFE)
+		if($resolve_temporary->get_cast() === MyDefinition::CAST_SAFE)
 			$safe = true;
 
 		return $safe;

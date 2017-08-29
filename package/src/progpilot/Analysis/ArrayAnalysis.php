@@ -41,7 +41,7 @@ class ArrayAnalysis {
 				$mydef_arr = $def_copyarray[0];
 				$mydef_tmp = $def_copyarray[1];
 
-				if($mydef_arr == $def1->get_array_value())
+				if($mydef_arr === $def1->get_array_value())
 					$good_defs[] = $mydef_tmp;
 			}
 		}
@@ -199,15 +199,16 @@ class ArrayAnalysis {
 					}
 					else
 					{
+        
 						$extract = BuildArrays::extract_array_from_arr($defa->get_array_value(), $originalarr);         
 
 						// si on cherchait $copy = $array[11] ici il y a des arrays de type $array[11][quelquechose]
 						// ou deuxieme cas
 						// si on cherchait $copy = $arrays ici il y a des arrays de type $arrays[quelquechose]
-						if($extract != false)
+						if($extract !== false)
 						{
 							// si on a $copy[11] = $array[12] on veut $copy[11][12]
-							if($copyarr != false)
+							if($copyarr !== false)
 								$extract = BuildArrays::build_array_from_arr($copyarr, $extract);
 
 							$copytab->add_copyarray($extract, $defa);
