@@ -95,18 +95,6 @@ class MyClass extends MyOp {
 
 		return null;
 	}
-	/*
-	   public function get_property($defsearch)
-	   {
-	   foreach($this->properties as $property)
-	   {
-	   if($property->property->get_name() === $defsearch->property->get_name())
-	   return $property;
-	   }
-
-	   return null;
-	   }
-	 */
 }
 
 ?>

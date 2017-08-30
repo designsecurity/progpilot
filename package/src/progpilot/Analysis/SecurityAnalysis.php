@@ -83,7 +83,8 @@ class SecurityAnalysis {
 
 		$id_flow = \progpilot\Utils::print_definition($def_expr_flow);
 
-		while($def_expr_flow->get_taintedbyexpr() !== null)
+		$tainted_flow_expr = $def_expr_flow->get_taintedbyexpr();
+		while($def_expr_flow->get_taintedbyexpr() !== null && $def_expr_flow->get_taintedbyexpr() !== $tainted_flow_expr)
 		{
 			$tainted_flow_expr = $def_expr_flow->get_taintedbyexpr();
 			$defs_expr_tainted = $tainted_flow_expr->get_defs();

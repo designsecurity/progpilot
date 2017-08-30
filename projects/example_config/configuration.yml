@@ -5,8 +5,8 @@ inputs:
     set_sanitizers: ../uptodate_data/sanitizers.json
     #set_include_files: include_files.json
     set_exclude_files:
-    set_folder: ./vendor/
-    #set_file: ./vendor//progpilot/package/src/progpilot/Inputs/MyInputs.php
+    set_folder: /srv/www/htdocs/security-bugtracker
+    #set_file: /srv/www/htdocs/security-bugtracker/webissues-server-1.1.4/client/security_tools/jobs/common.php
     set_code:
     set_resolved_includes:
     set_false_positives:

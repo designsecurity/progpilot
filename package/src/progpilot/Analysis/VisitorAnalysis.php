@@ -22,18 +22,15 @@ class VisitorAnalysis {
 
 	private $context;
 	private $current_storagemyblocks;
-	private $old_storagemyblocks;
 	private $call_stack;
 
 	private $defs;
-	private $olddefs;
 
 	private $current_myblock;
 	private $old_myblock;
 
 	public function __construct() {
 
-		$this->old_storagemyblocks = null;
 		$this->current_storagemyblocks = null;
 		$this->call_stack = [];
 		$this->current_myblock = null;
@@ -44,13 +41,15 @@ class VisitorAnalysis {
 	{
 		foreach($this->call_stack as $call)
 		{
-			if($call->get_name() === $cur_func->get_name() && !$call->get_is_method() && !$cur_func->get_is_method())
+            $call_func = $call[0];
+            
+			if($call_func->get_name() === $cur_func->get_name() && !$call_func->get_is_method() && !$cur_func->get_is_method())
 				return true;
 
-			if($call->get_name() === $cur_func->get_name() && $call->get_is_method() && $cur_func->get_is_method())
+			if($call_func->get_name() === $cur_func->get_name() && $call_func->get_is_method() && $cur_func->get_is_method())
 			{
 				$cur_class = $cur_func->get_myclass();
-				$call_class = $call->get_myclass();
+				$call_class = $call_func->get_myclass();
 
 				if($cur_class->get_name() === $call_class->get_name())
 					return true;
@@ -121,32 +120,28 @@ class VisitorAnalysis {
 
 					case Opcodes::LEAVE_FUNCTION:
 						{
-
 							$myfunc = $instruction->get_property("myfunc");
 							if($myfunc->get_name() === "{main}")
 								return;
 
-							array_pop($this->call_stack);
+							$val = array_pop($this->call_stack);
 
-							$this->defs = $this->olddefs;
-
-							$this->current_storagemyblocks = $this->old_storagemyblocks;
-
+							$this->current_storagemyblocks = $val[2];
+							$this->defs = $val[1];
+							
 							break;
 						}
 
 					case Opcodes::ENTER_FUNCTION:
 						{
 							$myfunc = $instruction->get_property("myfunc");
+							
+							$val = [$myfunc, $this->defs, $this->current_storagemyblocks];
+							array_push($this->call_stack, $val);
 
-							array_push($this->call_stack, $myfunc);
-
-							$this->olddefs = $this->defs;
-							$this->defs = $myfunc->get_defs();
-
-							$this->old_storagemyblocks = $this->current_storagemyblocks;
 							$this->current_storagemyblocks = new \SplObjectStorage;
-
+							$this->defs = $myfunc->get_defs();
+							
 							break;
 						}
 
@@ -161,7 +156,7 @@ class VisitorAnalysis {
 					case Opcodes::TEMPORARY:
 						{
 							$tempdefa = $instruction->get_property("temporary");
-
+							
 							$tainted = false;
 							if(!is_null($this->context->inputs->get_source_byname(null, $tempdefa, false, false, $tempdefa->get_array_value())))
 								$tainted = true;
@@ -176,7 +171,7 @@ class VisitorAnalysis {
 									if(!is_null($this->context->inputs->get_source_byname(null, $def, false, $def->get_class_name(), false, $def)))
 										$def->set_tainted(true);
 								}
-
+								
 								$exprs = $def->get_exprs();
 								foreach($exprs as $expr)
 								{
@@ -210,7 +205,6 @@ class VisitorAnalysis {
 							$myfunc_call = $instruction->get_property("myfunc_call");
 
 							$list_myfunc = [];
-							$list_myfunc_tocall = [];
 
 							if($myfunc_call->get_is_method())
 							{
@@ -304,7 +298,6 @@ class VisitorAnalysis {
 								$list_myfunc[] = $myfunc;
 							}
 
-
 							foreach($list_myfunc as $myfunc)
 							{
 								ResolveDefs::instance_build_this($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc, $myfunc_call);
@@ -327,21 +320,21 @@ class VisitorAnalysis {
 											$mycodefunction->set_codes($mycode->get_codes());
 											$mycodefunction->set_start($addr_start);
 											$mycodefunction->set_end($addr_end);
-
+											
 											$this->analyze($mycodefunction);
 
 											ArrayAnalysis::funccall_after($this->context, $myfunc, $myfunc_call, $arr_funccall, $code[$index + 3]);
-											TaintAnalysis::funccall_after($this->context, $this->defs, $myfunc, $arr_funccall, $instruction);  
-										}
+											TaintAnalysis::funccall_after($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc, $arr_funccall, $instruction);  
+                                        }
 									}
 								}
-
+								
 								if(is_null($myfunc))
 									ResolveDefs::copy_instance($this->context, $this->defs, $myfunc_call);
-
+									
 								ResolveDefs::instance_build_back($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc, $myfunc_call);
 							}
-
+							
 							break;
 						}
 				}

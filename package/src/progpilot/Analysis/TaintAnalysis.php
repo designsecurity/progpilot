@@ -26,8 +26,8 @@ class TaintAnalysis {
 	public static function funccall_specify_analysis($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index)
 	{
 		TaintAnalysis::funccall_validator($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index); 
-		TaintAnalysis::funccall_sanitizer($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index);     
-		TaintAnalysis::funccall_source($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction);  
+        TaintAnalysis::funccall_sanitizer($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index);     
+        TaintAnalysis::funccall_source($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction);  
 
 		SecurityAnalysis::funccall($stack_class, $context, $myfunc_call, $instruction, $myclass);
 	}
@@ -361,7 +361,7 @@ class TaintAnalysis {
 	}
 
 	public static function funccall_after($context, $data, $myfunc, $arr_funccall, $instruction)
-	{ 
+	{     		
 		$defsreturn = $myfunc->get_return_defs(); 
 		$exprreturn = $instruction->get_property("expr");
 
@@ -428,7 +428,7 @@ class TaintAnalysis {
 	}
 
 	public static function set_tainted($context, $data, $def, $defassign, $expr, $safe)
-	{	     
+	{	 
 		// assertions
 		if(!$safe)
 		{
