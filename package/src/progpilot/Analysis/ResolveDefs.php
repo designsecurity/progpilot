@@ -357,35 +357,37 @@ class ResolveDefs {
 
 		foreach($data as $def)
 		{
-			if($def->get_name() === $defsearch->get_name() 
-					&& $def->get_assign_id() != $defsearch->get_assign_id()
-					&& $def->property->get_properties() === $defsearch->property->get_properties() 
-					&& ResolveDefs::is_nearest($context, $defsearch, $defsearch->getLine(), $defsearch->getColumn(), $def, $def->getLine(), $def->getColumn())
-					&& (($def->get_array_value() === $defsearch->get_array_value()) || ($def->get_is_copy_array() && $defsearch->get_is_array()) || $bypass_isnearest))
-			{
-				// CA SERT A QUOI ICI REDONDANT AVEC LE DERNIER ?
-				if($def->get_is_instance() && $defsearch->get_is_instance())
-				{		
-					$defsfound[$def->get_block_id()][] = $def;
-				}
+            if($def instanceof MyDefinition)
+            {
+                if($def->get_name() === $defsearch->get_name() 
+                        && $def->get_assign_id() != $defsearch->get_assign_id()
+                        && $def->property->get_properties() === $defsearch->property->get_properties() 
+                        && ResolveDefs::is_nearest($context, $defsearch, $defsearch->getLine(), $defsearch->getColumn(), $def, $def->getLine(), $def->getColumn())
+                        && (($def->get_array_value() === $defsearch->get_array_value()) || ($def->get_is_copy_array() && $defsearch->get_is_array()) || $bypass_isnearest))
+                {
+                    // CA SERT A QUOI ICI REDONDANT AVEC LE DERNIER ?
+                    if($def->get_is_instance() && $defsearch->get_is_instance())
+                    {		
+                        $defsfound[$def->get_block_id()][] = $def;
+                    }
 
-				else if(($def->get_is_property() == $defsearch->get_is_property())
-						|| ($def->get_is_instance() == $defsearch->get_is_instance()))
-				{	
-					if($def->get_is_property() && $defsearch->get_is_property())
-						$defsfound[$def->get_block_id()][] = $def;
+                    else if(($def->get_is_property() == $defsearch->get_is_property())
+                            || ($def->get_is_instance() == $defsearch->get_is_instance()))
+                    {	
+                        if($def->get_is_property() && $defsearch->get_is_property())
+                            $defsfound[$def->get_block_id()][] = $def;
 
-					else if(!$def->get_is_property() && !$defsearch->get_is_property())
-						$defsfound[$def->get_block_id()][] = $def;
+                        else if(!$def->get_is_property() && !$defsearch->get_is_property())
+                            $defsfound[$def->get_block_id()][] = $def;
 
-				}
-				// we are looking for the nearest not instance of a property
-				else if(!$def->get_is_instance() && $defsearch->get_is_property())
-				{
-					$defsfound[$def->get_block_id()][] = $def;
-				}
-
-			}
+                    }
+                    // we are looking for the nearest not instance of a property
+                    else if(!$def->get_is_instance() && $defsearch->get_is_property())
+                    {
+                        $defsfound[$def->get_block_id()][] = $def;
+                    }
+                }
+            }
 		}
 
 		// si on a trouvé des defs dans le même bloc que la ou on cherche elles killent les autres	

@@ -69,10 +69,10 @@ class Analyzer
 			$parser = new \PHPCfg\Parser((new \PhpParser\ParserFactory)->create(\PhpParser\ParserFactory::PREFER_PHP7), $asttraverser);
 
 			if(!file_exists($context->inputs->get_file()) && is_null($context->inputs->get_code()))
-				echo Utils::encode_characters($context->inputs->get_file())." ".Lang::FILE_DOESNT_EXIST;
+				fwrite(STDERR, Utils::encode_characters($context->inputs->get_file())." ".Lang::FILE_DOESNT_EXIST."\n");
 
 			else if(is_null($context->inputs->get_file()) && is_null($context->inputs->get_code()))
-				echo Lang::FILE_AND_CODE_ARE_NULL;
+				fwrite(STDERR, Lang::FILE_AND_CODE_ARE_NULL."\n");
 
 			else
 			{
