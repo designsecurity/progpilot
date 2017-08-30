@@ -29,7 +29,7 @@ then
 else
     # purge, we keep only the last ten builds
     i=0
-    files=($(ls -1cd ../../builds/*))
+    files=$(ls -1cd ../../builds/*)
 
     for file in "${files}"
     do
