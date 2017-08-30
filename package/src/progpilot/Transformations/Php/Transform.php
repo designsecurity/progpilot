@@ -145,13 +145,17 @@ class Transform implements Visitor {
 
 		if(!$this->inside_include)
 		{
-			$myblock = $this->s_blocks[$block];
-			$address_end_block = count($this->context->get_mycode()->get_codes());
-			$myblock->set_end_address_block($address_end_block);
+            if($this->s_blocks->contains($block))
+            {
+                $myblock = $this->s_blocks[$block];
+                
+                $address_end_block = count($this->context->get_mycode()->get_codes());
+                $myblock->set_end_address_block($address_end_block);
 
-			$inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
-			$inst_block->add_property("myblock", $myblock);
-			$this->context->get_mycode()->add_code($inst_block); 
+                $inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
+                $inst_block->add_property("myblock", $myblock);
+                $this->context->get_mycode()->add_code($inst_block); 
+            }
 		}
 	}
 

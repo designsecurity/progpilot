@@ -57,7 +57,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/designsecurity/progpilot",
-                "reference": "727955c665f7e8aa465dcc4d9bc2946d4b6ebb94"
+                "reference": "c233dd46e7e530247a0ac3a1003e749be373ae72"
             },
             "require": {
                 "cweagans/composer-patches": "~1.0",
@@ -89,7 +89,7 @@
                 }
             ],
             "description": "A Static Analyser for security",
-            "time": "2017-08-29 21:37:09"
+            "time": "2017-08-29 22:07:18"
         },
         {
             "name": "ircmaxell/php-cfg",
