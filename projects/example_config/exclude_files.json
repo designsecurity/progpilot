@@ -1,0 +1,10 @@
+{
+    "exclude_files":
+    [
+        "/srv/www/htdocs//phpMyAdmin/libraries/tcpdf/fonts/dejavusans.php"
+    ],
+    "exclude_folders":
+    [
+        "/srv/www/htdocs//phpMyAdmin/libraries/tcpdf/fonts/"
+    ]
+}

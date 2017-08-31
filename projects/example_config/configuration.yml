@@ -3,10 +3,10 @@ inputs:
     set_sinks: ../uptodate_data/sinks.json
     set_validators: ../uptodate_data/validators.json
     set_sanitizers: ../uptodate_data/sanitizers.json
-    #set_include_files: include_files.json
-    set_exclude_files:
-    set_folder: /srv/www/htdocs/security-bugtracker
-    #set_file: /srv/www/htdocs/security-bugtracker/webissues-server-1.1.4/client/security_tools/jobs/common.php
+    set_include_files: 
+    set_exclude_files: 
+    set_folder: 
+    set_file: example1.php
     set_code:
     set_resolved_includes:
     set_false_positives:
@@ -20,4 +20,4 @@ options:
     set_analyze_js: false
     set_analyze_includes: true
     set_analyze_functions: true
-    set_print_file: true
+    set_print_file: false
