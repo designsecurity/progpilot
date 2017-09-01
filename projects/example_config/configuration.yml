@@ -5,8 +5,8 @@ inputs:
     set_sanitizers: ../uptodate_data/sanitizers.json
     set_include_files: 
     set_exclude_files: 
-    set_folder: /srv/www/htdocs/
-    #set_file: /srv/www/htdocs/phpMyAdmin/libraries/tcpdf/fonts/dejavusansb.php
+    set_folder: 
+    set_file: example1.php
     set_code:
     set_resolved_includes:
     set_false_positives:
