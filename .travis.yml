@@ -11,6 +11,7 @@ script:
  output_runall=`php ./run_all.php`
  output_runallfolders=`php ./run_all_folders.php`
  output_runexcludefiles=`php ./run_exclude_files.php`
+ 
  if [ "$output_runall" != "" ] || [ "$output_runallfolders" != ""  ] || [ "$output_runexcludefiles" != "" ]; then
   echo "$output_runall,$output_runallfolders,$output_runexcludefiles";
   exit 1;
