@@ -1,8 +1,0 @@
-\setbeamercolor{block title}{use=structure,fg=white,bg=black!60}
-\setbeamercolor{block body}{use=structure,fg=black,bg=white!60!white}
-
-\begin{tikzpicture}
-\coordinate (a) at (0,0);
-\coordinate (b) at (6,0);
-\draw[->, >=latex, blue!20!white, line width=15pt]   (a) to node[black]{text} (b) ;
-\end{tikzpicture}
