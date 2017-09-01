@@ -2,7 +2,6 @@
 > A static analyzer for security purposes  
 > Only PHP language is currently supported
 
----
 [![Build Status](https://travis-ci.org/designsecurity/progpilot.svg?branch=master)](https://travis-ci.org/designsecurity/progpilot)
 ---
 ## Standalone example
