@@ -9,16 +9,16 @@
     "packages": [
         {
             "name": "cweagans/composer-patches",
-            "version": "1.6.1",
+            "version": "1.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cweagans/composer-patches.git",
-                "reference": "b3036f23b73570ab5d869e345277786c8eb248a9"
+                "reference": "014e968ca2ce4342476b3f2f6779b274fff8ae9e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cweagans/composer-patches/zipball/b3036f23b73570ab5d869e345277786c8eb248a9",
-                "reference": "b3036f23b73570ab5d869e345277786c8eb248a9",
+                "url": "https://api.github.com/repos/cweagans/composer-patches/zipball/014e968ca2ce4342476b3f2f6779b274fff8ae9e",
+                "reference": "014e968ca2ce4342476b3f2f6779b274fff8ae9e",
                 "shasum": ""
             },
             "require": {
@@ -49,7 +49,7 @@
                 }
             ],
             "description": "Provides a way to patch Composer packages.",
-            "time": "2017-03-19 18:18:52"
+            "time": "2017-08-30 16:41:23"
         },
         {
             "name": "designsecurity/progpilot",
@@ -57,7 +57,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/designsecurity/progpilot",
-                "reference": "96367a3df7fcfd174d34428a45e493a47443580e"
+                "reference": "882d8903a47312126518dbcea8f8e18e84488701"
             },
             "require": {
                 "cweagans/composer-patches": "~1.0",
@@ -89,7 +89,7 @@
                 }
             ],
             "description": "A Static Analyser for security",
-            "time": "2017-08-30 12:41:47"
+            "time": "2017-09-01 12:57:01"
         },
         {
             "name": "ircmaxell/php-cfg",
