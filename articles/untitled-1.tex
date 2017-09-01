@@ -1,0 +1,556 @@
+\documentclass[mathserif,11pt]{beamer}
+
+
+\setbeamercolor{block title}{bg=red!30,fg=black}
+
+\mode<presentation>
+{
+\usetheme{default}
+}
+
+
+\title[] % (optional, use only with long paper titles)
+{ProgPilot : Static Analyzer}
+% \subtitle
+% {Include Only If Paper Has a Subtitle}
+
+\author[Therond, Therond]
+{
+  Eric~Therond
+}
+
+% Includes for frame package
+\usepackage{framed,color}
+\definecolor{shadecolor}{rgb}{0.5,0.5,0.5}
+
+% Make a custom block
+\newenvironment<>{customBlock}[1]{%
+  \begin{actionenv}#2%
+      \def\insertblocktitle{#1}%
+      \par%
+      \mode<presentation>{%
+        \setbeamercolor{block title}{fg=white,bg=orange!20!black}
+       \setbeamercolor{block body}{fg=black,bg=olive!50}
+       \setbeamercolor{itemize item}{fg=orange!20!black}
+       \setbeamertemplate{itemize item}[triangle]
+     }%
+      \usebeamertemplate{block begin}}
+    {\par\usebeamertemplate{block end}\end{actionenv}}
+
+
+% Define new environments for mdframed package
+\usepackage{tikz}
+\usetikzlibrary{shapes.callouts,shadows, calc}
+\usepackage{listings}
+\usepackage{lmodern}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algpseudocode} 
+
+\tikzset{note/.style={rectangle callout, rounded corners,fill=gray!20,drop shadow,font=\footnotesize}}    
+
+\newcommand{\tikzmark}[1]{\tikz[overlay,remember picture] \node (#1) {};}    
+
+\newmdenv[tikzsetting={draw=black,fill=white,fill opacity=0.7, line width=4pt},backgroundcolor=none,leftmargin=0,rightmargin=0,innertopmargin=4pt,skipbelow=\baselineskip,%
+skipabove=\baselineskip]{TitleBox}
+%http://tex.stackexchange.com/questions/38281/transparent-background-for-mdframed-environment
+
+\usetikzlibrary{shapes.geometric, arrows, positioning}
+
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, draw=black, fill=orange!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+
+\usetikzlibrary{shapes.geometric, arrows}
+\tikzstyle{node} = [rectangle, rounded corners, minimum width=2cm, minimum height=0.5cm,text centered, draw=black]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+\newcounter{image}
+\setcounter{image}{1}
+
+\makeatletter
+\newenvironment{btHighlight}[1][]
+{\begingroup\tikzset{bt@Highlight@par/.style={#1}}\begin{lrbox}{\@tempboxa}}
+{\end{lrbox}\bt@HL@box[bt@Highlight@par]{\@tempboxa}\endgroup}
+
+\newcommand\btHL[1][]{%
+  \begin{btHighlight}[#1]\bgroup\aftergroup\bt@HL@endenv%
+}
+\def\bt@HL@endenv{%
+  \end{btHighlight}%   
+  \egroup
+}
+\newcommand{\bt@HL@box}[2][]{%
+  \tikz[#1]{%
+    \pgfpathrectangle{\pgfpoint{0pt}{0pt}}{\pgfpoint{\wd #2}{\ht #2}}%
+    \pgfusepath{use as bounding box}%
+    \node[anchor=base west,rounded corners, fill=green!30,outer sep=0pt,inner xsep=0.2em, inner ysep=0.1em,  #1](a\theimage){\usebox{#2}};
+  }%
+   %\tikzmark{a\theimage} <= can be used, but it leads to a spacing problem
+   % the best approach is to name the previous node with (a\theimage)
+ \stepcounter{image}
+}
+\makeatother
+
+
+\lstset{language=C++,
+                basicstyle=\footnotesize\ttfamily,
+                keywordstyle=\tiny\color{blue}\ttfamily,
+                moredelim=**[is][\btHL]{`}{`},
+}
+
+%----------------------------------------------------------------------------------------
+\begin{document}
+
+\usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+  \begin{frame}[fragile] 
+
+  \begin{TitleBox}
+\begin{center}
+    {\huge \inserttitle}\\
+    Eric Therond\\
+	contact@designsecurity.org\\
+    http://www.designsecurity.org
+\end{center}
+
+   \end{TitleBox}
+ \end{frame}
+
+  \begin{frame}[fragile] 
+
+  \begin{TitleBox}
+\begin{center}
+    {\huge Introduction}\\
+\end{center}
+
+   \end{TitleBox}
+ \end{frame}
+
+  \usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+\begin{frame}[fragile] 
+\setbeamercolor{block title}{use=structure,fg=white,bg=black!60}
+\setbeamercolor{block body}{use=structure,fg=black,bg=white!60!white}
+\begin{block}{What are the goals of static analysis ?}
+\begin{itemize}
+\item Find defaults in software
+\item Improve dynamical analysis
+\item Compute cyclomatic number
+\item And priorize performance tests on code that have high cyclomatic number
+\end{itemize}
+
+\end{block}
+\end{frame}
+
+  \usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+\begin{frame}[fragile] 
+\setbeamercolor{block title}{use=structure,fg=white,bg=black!60}
+\setbeamercolor{block body}{use=structure,fg=black,bg=white!60!white}
+\begin{block}{Find lexical defaults}
+\begin{lstlisting}[
+    basicstyle=\tiny, %or \small or \footnotesize etc.
+]
+<?php
+if(true)
+return;
+ellse
+echo "error";
+?>
+\end{lstlisting}
+\end{block}
+
+\begin{block}{Find syntaxical defaults}
+\begin{lstlisting}[
+    basicstyle=\tiny, %or \small or \footnotesize etc.
+]
+<?php
+for(if(true)$i =0;else $i=1; $i < 10; $i++)
+{
+echo "voila"
+}
+?>
+\end{lstlisting}
+\end{block}
+
+\begin{block}{Find semantic defaults}
+\begin{lstlisting}[
+    basicstyle=\tiny, %or \small or \footnotesize etc.
+]
+<?php
+class A
+{
+public $test1;
+private $test2;
+};
+
+$var1 = new A;
+$var1->test2 = "welcome";
+?>
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+
+  \usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+\begin{frame}[fragile] 
+\setbeamercolor{block title}{use=structure,fg=white,bg=black!60}
+\setbeamercolor{block body}{use=structure,fg=black,bg=white!60!white}
+
+\begin{tikzpicture}[node distance=2cm]
+\node (start) [startstop] {Code Source};
+\node (in1) [io, below of=start] {Abstract Syntax Tree};
+\node (pro1) [process, below of=in1] {Control Flow Graph};
+\node (dec1) [decision, below of=pro1, yshift=-0.5cm] {Decision 1};
+\node (pro2a) [process, below of=dec1, yshift=-0.5cm] {Process 2a text text text text text text text text text text};
+\node (pro2b) [process, right of=dec1, xshift=2cm] {Process 2b};
+\node (out1) [io, below of=pro2a] {Output};
+\node (stop) [startstop, below of=out1] {Stop};
+
+\draw [arrow] (start) -- (in1);
+\draw [arrow] (in1) -- (pro1);
+\draw [arrow] (pro1) -- (dec1);
+\draw [arrow] (dec1) -- node[anchor=east] {yes} (pro2a);
+\draw [arrow] (dec1) -- node[anchor=south] {no} (pro2b);
+\draw [arrow] (pro2b) |- (pro1);
+\draw [arrow] (pro2a) -- (out1);
+\draw [arrow] (out1) -- (stop);
+\end{tikzpicture}
+\end{frame}
+
+
+  \usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+\begin{frame}[fragile] 
+\setbeamercolor{block title}{use=structure,fg=white,bg=black!60}
+\setbeamercolor{block body}{use=structure,fg=black,bg=white!60!white}
+
+\begin{tikzpicture}
+\coordinate (a) at (0,0);
+\coordinate (b) at (6,0);
+\draw[->, >=latex, blue!20!white, line width=15pt]   (a) to node[black]{text} (b) ;
+\end{tikzpicture}
+\end{frame}
+
+\usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+  \begin{frame}[fragile] 
+
+  \begin{TitleBox}
+\begin{center}
+    {\huge Representations}\\
+\end{center}
+
+   \end{TitleBox}
+ \end{frame}  
+
+  \usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+\begin{frame}[fragile] 
+\setbeamercolor{block title}{use=structure,fg=white,bg=black!60}
+\setbeamercolor{block body}{use=structure,fg=black,bg=white!60!white}
+\begin{block}{Abstract syntax tree}
+\begin{itemize}
+\item A set of informations about syntax is stored in a tree.
+\item Tree, graphs are very simple to use (traversors).
+\item Preserve semantic of a program (unambiguous syntax).
+\end{itemize}
+
+\end{block}
+\end{frame}
+
+
+  \usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+\begin{frame}[fragile] 
+\setbeamercolor{block title}{use=structure,fg=white,bg=black!60}
+\setbeamercolor{block body}{use=structure,fg=black,bg=white!60!white}
+\begin{block}{Control flow graph}
+\begin{itemize}
+\item CFG is a graph where nodes represent basics blocks and edges represent jumps in the control flow graph.
+\item Essential tool because all paths of a program during his execution could be represented.
+\item Simple analysis of CFG could reveal defaults in a program (potentials optimizations like unreachable codes).
+\end{itemize}
+
+\end{block}
+\end{frame}
+
+% https://hgi.rub.de/media/emma/veroeffentlichungen/2013/09/18/backdoorDetection-CCS13.pdf
+  \usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+\begin{frame}[fragile] 
+\setbeamercolor{block title}{use=structure,fg=white,bg=black!60}
+\setbeamercolor{block body}{use=structure,fg=black,bg=white!60!white}
+\begin{block}{Call graphs}
+\begin{itemize}
+\item Call graphs is a CFG where relashionships between functions are represented.
+\item Nice for debugging performance issues.
+\item But also to identify malicious code (like backdoors).
+\end{itemize}
+
+\end{block}
+\end{frame}
+
+\usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+  \begin{frame}[fragile] 
+
+  \begin{TitleBox}
+\begin{center}
+    {\huge Data flow analysis}\\
+\end{center}
+
+   \end{TitleBox}
+ \end{frame}  
+
+  \usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+\begin{frame}[fragile] 
+\setbeamercolor{block title}{use=structure,fg=white,bg=black!60}
+\setbeamercolor{block body}{use=structure,fg=black,bg=white!60!white}
+\begin{block}{What are the objectives of static analysis ?}
+\begin{itemize}
+\item Reaching definitions
+\end{itemize}
+
+\end{block}
+\end{frame}
+
+\usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+\begin{frame}[fragile] 
+\setbeamercolor{block title}{use=structure,fg=white,bg=black!60}
+\setbeamercolor{block body}{use=structure,fg=black,bg=white!60!white}
+\begin{block}{Reaching definitions equations}
+
+$ 
+\begin{array}{ll}
+kill_{RD}([x := a]^l)  & = {(x, ?)} \\
+ & \bigcup \{(x, l^{'}) | B^{{l}^{'}} $is an assignment to $x$ in $S_{*}\}\\
+\end{array}
+$\\
+
+$ 
+\begin{array}{ll}
+gen_{RD}([x := a]^l) & = \{(x, l)\} 
+\end{array}
+$\\
+\vspace{1cm}
+$ RD_{entry}(l) \left \{
+   \begin{array}{lr}
+      \{ (x,?) | x \in FV(S_{*}) \} & $if l$ = init(S_{*}) \\
+      \bigcup \{ RD_{exit}(l^{'}) | (l^{'}, l) \in flow(S_{*}) \} & $otherwise$
+   \end{array}
+   \right .$\\
+$ RD_{exit}(l) \left \{
+   \begin{array}{l}
+      (RD_{entry}(l)$ \textbackslash $kill_{RD}(B^{l})) \bigcup gen_{RD}(B^{l}) \\
+      $where $B^l \in blocks(S_{*})
+   \end{array}
+   \right .$\\
+\end{block}
+\end{frame}
+
+% efficiency of data flow algorithms :
+% http://www.cs.colostate.edu/~mstrout/CS553Fall06/slides/lecture12-fastdataflow.pdf
+% http://www.cse.scu.edu/~atkinson/papers/icsm-01.pdf
+
+% algorithms :
+% http://www.ics.uci.edu/~lopes/teaching/inf212W12/readings/rep-analysis-soft.pdf
+  \usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+\begin{frame}[fragile] 
+\setbeamercolor{block title}{use=structure,fg=white,bg=black!60}
+\setbeamercolor{block body}{use=structure,fg=black,bg=white!60!white}
+\begin{block}{Reaching definitions algorithm}
+\begin{algorithmic}
+\For{each node n}\\
+$out[n] = gen[n]$
+\EndFor\\
+$change = true$
+\While{change} \\
+$change = false$
+\For{each node n} \\
+$in[n] = \bigcup out[p]$ where p is an immediate predecessor of n\\
+$oldout = out[n]$\\
+$out[n] = gen[n]\bigcup(in[n]-kill[n])$
+\If{$out[n]\neq oldout$} \\
+$change = true$
+\EndIf
+\EndFor
+\EndWhile
+\end{algorithmic}
+
+\end{block}
+\end{frame}
+
+  \usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+\begin{frame}[fragile] 
+\setbeamercolor{block title}{use=structure,fg=white,bg=black!60}
+\setbeamercolor{block body}{use=structure,fg=black,bg=white!60!white}
+\begin{block}{Reaching definitions analysis}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2cm]
+
+\node (fact3) [node] {
+\begin{lstlisting}[
+    basicstyle=\tiny, %or \small or \footnotesize etc.
+]
+<?php
+$a = "XSS!";
+$b = 0;
+\end{lstlisting}
+};
+\node (fact2) [node, below of=fact3] {
+\begin{lstlisting}[
+    basicstyle=\tiny, %or \small or \footnotesize etc.
+]
+if(rand()%2)
+{
+  $b = 0;
+  $c = 0;
+}
+\end{lstlisting}
+};
+\node (fact1) [node, below of=fact2] {
+\begin{lstlisting}[
+    basicstyle=\tiny, %or \small or \footnotesize etc.
+]
+else
+{
+  $c = $a;
+}
+\end{lstlisting}
+};
+\node (fact0) [node, below of=fact1] {
+\begin{lstlisting}[
+    basicstyle=\tiny, %or \small or \footnotesize etc.
+]
+echo $c;
+?>
+\end{lstlisting}
+};
+
+
+
+\node (nnn0) [node, right of=fact0,xshift=2cm] {
+\begin{lstlisting}[
+    basicstyle=\tiny, %or \small or \footnotesize etc.
+]
+gen[0]{};
+kill[0]{};
+in[0]{};
+out[0]{};
+\end{lstlisting}
+};
+
+
+
+\node (nnn1) [node, right of=fact1,xshift=2cm] {
+\begin{lstlisting}[
+    basicstyle=\tiny, %or \small or \footnotesize etc.
+]
+gen[0]{};
+kill[0]{};
+in[0]{};
+out[0]{};
+\end{lstlisting}
+};
+
+
+\node (nnn2) [node, right of=fact2,xshift=2cm] {
+\begin{lstlisting}[
+    basicstyle=\tiny, %or \small or \footnotesize etc.
+]
+gen[0]{};
+kill[0]{};
+in[0]{};
+out[0]{};
+\end{lstlisting}
+};
+
+
+\node (nnn3) [node, right of=fact3,xshift=2cm] {
+\begin{lstlisting}[
+    basicstyle=\tiny, %or \small or \footnotesize etc.
+]
+gen[0]{};
+kill[0]{};
+in[0]{};
+out[0]{};
+\end{lstlisting}
+};
+\path[->]                 (fact3)    edge[bend left=10]                node[swap]  {}       (fact2);
+\path[->]                 (fact2)    edge[bend left=10]                node[swap]  {}       (fact1);
+\path[->]                 (fact1)    edge[bend left=10]                node[swap]  {}       (fact0);
+
+\path[->, dashed]                 (fact3)    edge[bend left=4]                node[swap]  {}       (nnn3);
+\path[->, dashed]                 (fact2)    edge[bend left=4]                node[swap]  {}       (nnn2);
+\path[->, dashed]                 (fact1)    edge[bend left=4]                node[swap]  {}       (nnn1);
+\path[->, dashed]                 (fact0)    edge[bend left=4]                node[swap]  {}       (nnn0);
+\end{tikzpicture}
+\end{center}
+
+\end{block}
+\end{frame}
+
+% http://www.seas.harvard.edu/courses/cs252/2011sp/slides/Lec02-Dataflow.pdf
+% slide 21
+  \usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+\begin{frame}[fragile] 
+\setbeamercolor{block title}{use=structure,fg=white,bg=black!60}
+\setbeamercolor{block body}{use=structure,fg=black,bg=white!60!white}
+\begin{block}{Control flow graph}
+\begin{center}
+\begin{tabular}{|l|c|c|}
+  \hline
+ & \textbf{May} & \textbf{Must} \\
+  \hline
+\textbf{Forward} & Reaching definitions & Available expressions \\
+  \hline
+\textbf{Backward} & Live variables & Very busy expressions \\
+  \hline
+\end{tabular}
+\end{center}
+
+\end{block}
+\end{frame}
+
+\usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+  \begin{frame}[fragile] 
+
+  \begin{TitleBox}
+\begin{center}
+    {\huge Visualizations}\\
+\end{center}
+
+   \end{TitleBox}
+ \end{frame}  
+
+  \usebackgroundtemplate{\includegraphics[width=1.0\paperwidth]{bg.jpg}}
+\begin{frame}[fragile] 
+\setbeamercolor{block title}{use=structure,fg=white,bg=black!60}
+\setbeamercolor{block body}{use=structure,fg=black,bg=white!60!white}
+\begin{block}{What kinds of security tests can be automated ?}
+\begin{lstlisting}
+#include <future>
+std::map<std::string,std::string> french
+{{"hello","bonjour"},{"world","tout le monde"}};
+int main()
+{
+std::string greet=french["hello"];
+auto f=std::async(`[&]{std::cout << greet <<", ";}`);
+`std::string audience=french["word"];`
+f.get();
+std::cout<<audience<<std::endl;
+}
+\end{lstlisting}
+% To insert the annotation
+\begin{tikzpicture}[remember picture,overlay]
+% first annotation
+\coordinate (aa) at ($(a1)+(5,5)$); % <= adjust this parameter to move the position of the annotation 
+\node[note,draw,callout relative pointer={($(aa)-(9,3.35)$)},right] at (aa) {time consuming I/O};
+
+%second annotation
+\coordinate (bb) at ($(a2)+(3.25,3.25)$); % <= adjust this parameter to move the position of the annotation 
+\node[note,draw,callout relative pointer={($(bb)-(7,1.1)$)},right] at (bb) {next lookup};
+\end{tikzpicture}
+\end{block}
+\end{frame}
+
+
+\end{document} 

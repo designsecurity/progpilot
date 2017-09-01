@@ -1,10 +1,10 @@
 language: php
-- 5.5.9
-- 7.0
+ - 5.5.9
+ - 7.0
 
 install:
-- cd ./projects/tests/
-- composer install
+ - cd ./projects/tests/
+ - composer install
 
 script:
 - |
