@@ -12,16 +12,14 @@ use progpilot\Utils;
 
 class Analyzer
 {
-	private $current_script;
 
 	public function __construct() 
 	{
-		$this->current_script = null;
 	}
 
 	function get_files_ofdir($context, $dir, &$files)
 	{
-		if(is_dir($dir))
+		if(is_dir($dir) && !$context->inputs->is_excluded_folder($dir))
 		{
 			$filesanddirs = scandir($dir);
 
@@ -41,19 +39,14 @@ class Analyzer
 						{
 							if(!$context->inputs->is_excluded_file($folderorfile))
 							{
-								if(!in_array($folderorfile, $files, true))
-									$files[] = $folderorfile;
+								if(!in_array($folderorfile, $files, true) && realpath($folderorfile))
+									$files[] = realpath($folderorfile);
 							}
 						}
 					}
 				}
 			}
 		}
-	}
-
-	public function get_current_script()
-	{
-		return $this->current_script;
 	}
 
 	public function parse($context)
@@ -63,16 +56,20 @@ class Analyzer
 		// parser
 		if(!is_null($context->inputs->get_file()) || !is_null($context->inputs->get_code()))
 		{
+            /*
 			$asttraverser = new \PhpParser\NodeTraverser;
 			$asttraverser->addVisitor(new \PhpParser\NodeVisitor\NameResolver);
 			$asttraverser->addVisitor($context->outputs->ast);
-			$parser = new \PHPCfg\Parser((new \PhpParser\ParserFactory)->create(\PhpParser\ParserFactory::PREFER_PHP7), $asttraverser);
+			*/
+			$astparser = (new \PhpParser\ParserFactory)->create(\PhpParser\ParserFactory::PREFER_PHP7);
+			
+			$parser = new \PHPCfg\Parser($astparser, null);
 
 			if(!file_exists($context->inputs->get_file()) && is_null($context->inputs->get_code()))
-				fwrite(STDERR, Utils::encode_characters($context->inputs->get_file())." ".Lang::FILE_DOESNT_EXIST."\n");
+                Utils::print_warning($context, Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($context->inputs->get_file()).")");
 
 			else if(is_null($context->inputs->get_file()) && is_null($context->inputs->get_code()))
-				fwrite(STDERR, Lang::FILE_AND_CODE_ARE_NULL."\n");
+                Utils::print_warning($context, Lang::FILE_AND_CODE_ARE_NULL);
 
 			else
 			{
@@ -81,9 +78,7 @@ class Analyzer
 					if(is_null($context->inputs->get_code()))
 					{
 						$code = file_get_contents($context->inputs->get_file());
-
 						$script = $parser->parse($code, "");
-
 						$context->set_path(dirname($context->inputs->get_file()));
 					}
 					else
@@ -94,8 +89,10 @@ class Analyzer
 				}
 			}
 		}
-
-		$this->current_script = $script;
+		
+		unset($astparser);
+		unset($parser);
+		unset($code);
 
 		return $script;
 	}
@@ -106,10 +103,14 @@ class Analyzer
 		if(!is_null($script))
 		{
 			$traverser = new \PHPCfg\Traverser();
-			$traverser->addVisitor(new \progpilot\Transformations\Php\Transform());
+			$transformvisitor = new \progpilot\Transformations\Php\Transform();
+			$traverser->addVisitor($transformvisitor);
 			$traverser->getVisitor(0)->set_context($context);
 
 			$traverser->traverse($script);
+			
+			unset($transformvisitor);
+			unset($traverser);
 		}
 	}
 
@@ -123,6 +124,8 @@ class Analyzer
 			$visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
 			$visitoranalyzer->set_context($context);
 			$visitoranalyzer->analyze($context->get_mycode());
+			
+			unset($visitoranalyzer);
 		}
 		else
 		{
@@ -132,20 +135,43 @@ class Analyzer
 
 	public function run_internal($context)
 	{
+        $start_time = microtime(true);
+        
+        $past_results = &$context->outputs->get_results();
 		$context->reset_internal_values();
+        $context->outputs->set_results($past_results);
 
 		$script = $this->parse($context);
+		
+        if((microtime(true) - $start_time) > $context->get_limit_time())
+        {
+            Utils::print_warning($context, Lang::MAX_TIME_EXCEEDED);
+            return;
+        }
+        
 		$this->transform($context, $script);
 
+        if((microtime(true) - $start_time) > $context->get_limit_time())
+        {
+            Utils::print_warning($context, Lang::MAX_TIME_EXCEEDED);
+            return;
+        }
+        
 		// analyze
 		if(!is_null($context))
 		{
 			$context->get_mycode()->set_start(0);
 			$context->get_mycode()->set_end(count($context->get_mycode()->get_codes()));
-
+    
 			$visitordataflow = new \progpilot\Dataflow\VisitorDataflow();
 			$visitordataflow->analyze($context);
 
+            if((microtime(true) - $start_time) > $context->get_limit_time())
+            {
+                Utils::print_warning($context, Lang::MAX_TIME_EXCEEDED);
+                return;
+            }
+            
 			if(!$context->get_analyze_functions())
 				$this->run_internal_function($context, $context->get_functions()->get_function("{main}"));
 			else
@@ -164,7 +190,11 @@ class Analyzer
 					}
 				}
 			}
+			
+			unset($visitordataflow);
 		}
+		
+        unset($script);
 	}
 
 	public function run($context)
@@ -187,7 +217,8 @@ class Analyzer
 
 		foreach($included_files as $included_file)
 		{
-			if(!in_array($included_file, $files, true))
+			if(!in_array($included_file, $files, true) 
+                && !$context->inputs->is_excluded_file($included_file))
 				$files[] = $included_file;
 		}
 
@@ -198,8 +229,10 @@ class Analyzer
 			$this->get_files_ofdir($context, $context->inputs->get_folder(), $files);
 		else
 		{
-			if(!in_array($context->inputs->get_file(), $files, true))
-				$files[] = $context->inputs->get_file();
+			if(!in_array($context->inputs->get_file(), $files, true) 
+                && !$context->inputs->is_excluded_file($context->inputs->get_file())
+                    && realpath($context->inputs->get_file()))
+				$files[] = realpath($context->inputs->get_file());
 		}
 
 		foreach($files as $file)

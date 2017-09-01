@@ -19,6 +19,17 @@ class Utils
 		return htmlentities($string, ENT_QUOTES, 'UTF-8');
 	}
 
+	public static function print_warning($context, $message)
+	{
+        if($context->get_print_warning())
+            fwrite(STDERR, "progpilot warning : $message\n");
+	}
+
+	public static function print_error($context, $message)
+	{
+        throw new \Exception($message);
+	}
+
 	public static function print_properties($props)
 	{
 		$property_name = "";

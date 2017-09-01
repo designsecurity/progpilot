@@ -10,6 +10,9 @@
 
 namespace progpilot\Dataflow;
 
+use progpilot\Utils;
+use progpilot\Lang;
+
 use PHPCfg\Block;
 use progpilot\Objects\MyOp;
 
@@ -24,12 +27,9 @@ class Definitions {
 	private $defs;
 	private $current_func;
 
-	public $blocks;
-
 	public function __construct() 
 	{
 		$this->current_func = null;
-		$this->blocks = new \SplObjectStorage;
 	}
 
 	public function printall()
@@ -79,25 +79,6 @@ class Definitions {
 				}
 			}
 		}
-	}
-
-	public function getdefs()
-	{
-		$outputdefs = [];
-		foreach($this->defs as $defsblock)
-		{
-			foreach($defsblock as $def)
-			{
-				$onedef["name"] = htmlentities($def->get_name(), ENT_QUOTES, 'UTF-8');
-				$onedef["tainted"] = $def->get_tainted();
-				$onedef["line"] = $def->getLine();
-
-				$outputdefs[] = $onedef;
-			}
-		}
-
-		$outputjson = array('definitions' => $outputdefs); 
-		return $outputjson;
 	}
 
 	public function create_block($id)
@@ -275,8 +256,14 @@ class Definitions {
 	}
 
 	// $this->data["gen"][$blockid]
-	public function computekill($blockid)
+	public function computekill($context, $blockid)
 	{
+        if(count($this->gen[$blockid]) > $context->get_limit_defs())
+        {
+            Utils::print_warning($context, Lang::MAX_DEFS_EXCEEDED);
+            return;
+		}
+		
 		foreach($this->gen[$blockid] as $gen)
 		{
 			$tmpdefs = $this->getdefrefbyname($gen->get_name());
@@ -292,14 +279,6 @@ class Definitions {
 				}
 			}
 		}
-	}
-
-	public function getBlockId($block) {
-
-		if (isset($this->blocks[$block])) 
-			return $this->blocks[$block];
-
-		return null;
 	}
 
 	public function reachingDefs(&$myblocks)

@@ -24,6 +24,8 @@ class Lang
 	const FORMAT_EXCLUDE_FILES = "Format of json exclude file's file is incorrect";
 	const UNABLE_TO_PARSER_YAML = "Unable to parse the YAML file configuration";
 	const COMMAND_LINE_ARG = "Usage of progpilot : php progpilot.phar configuration_file.json";
+	const MAX_TIME_EXCEEDED = "Max time execution exceeded (you can increase the value with \$context->set_limit_time())";
+	const MAX_DEFS_EXCEEDED = "Max definitions exceeded (you can increase the value with \$context->set_limit_defs())";
 }
 
 ?>

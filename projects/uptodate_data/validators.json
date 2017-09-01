@@ -25,19 +25,6 @@
                     ]}
             ]
         },
-        {"name": "settype",  "language": "php", "parameters": 
-            [
-                {"id": 1, "condition": "valid"},
-                {"id": 2, "condition": "equals", "values": 
-                    [
-                        {"value" : "boolean"},
-                        {"value" : "integer"},
-                        {"value" : "float"},
-                        {"value" : "array"},
-                        {"value" : "object"}
-                    ]}
-            ]
-        },
         {"name": "preg_match",  "language": "php", "parameters": 
             [
                 {"id": 2, "condition": "valid"},

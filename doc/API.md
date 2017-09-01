@@ -56,6 +56,10 @@ These functions are explained in the chapter about [**included files**](./INCLUD
 
 ## Options
 ***
+- $obj_context->set_limit_defs($nb);  
+max definitions by file during the data flow analysis, which could prevent a very long analysis (default is *10000*)
+- $obj_context->set_limit_time($time_sec);  
+max execution time by file for the first steps of the analysis, the analysis may take much longer in the last steps, so it's recommanded to specify a low value (default is *10 seconds*)
 - $obj_context->set_print_file($bool);  
 *true* if you want to print the name of files analyzed by progpilot, default is *false*
 - $obj_context->set_analyze_functions($bool);  

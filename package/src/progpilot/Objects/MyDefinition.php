@@ -73,7 +73,12 @@ class MyDefinition extends MyOp {
 		$this->is_property = false;
 		$this->is_instance = false;
 	}
-
+/*
+	public function __destruct()
+	{
+		echo "Mydefinition destruct\n";
+	}
+*/
 	public function __clone()
 	{
 		$this->property = clone $this->property;

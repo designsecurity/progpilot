@@ -109,9 +109,10 @@ class MyInputs {
 
 	public function is_excluded_folder($name)
 	{
+        $name = realpath($name);
 		foreach($this->excludes_folders_analysis as $exclude_name)
 		{
-			if(strpos($name, $exclude_name) === 0)
+			if(strpos($name, realpath($exclude_name)) === 0)
 				return true;
 		}
 
@@ -120,9 +121,10 @@ class MyInputs {
 
 	public function is_included_folder($name)
 	{
+        $name = realpath($name);
 		foreach($this->includes_folders_analysis as $include_name)
 		{
-			if(strpos($name, $include_name) === 0)
+			if(strpos($name, realpath($include_name)) === 0)
 				return true;
 		}
 
@@ -131,9 +133,10 @@ class MyInputs {
 
 	public function is_excluded_file($name)
 	{
+        $name = realpath($name);
 		foreach($this->excludes_files_analysis as $exclude_name)
 		{
-			if($exclude_name == $name)
+			if(realpath($exclude_name) == $name)
 				return true;
 		}
 
@@ -142,9 +145,10 @@ class MyInputs {
 
 	public function is_included_file($name)
 	{
+        $name = realpath($name);
 		foreach($this->includes_files_analysis as $include_name)
 		{
-			if($include_name == $name)
+			if(realpath($include_name) == $name)
 				return true;
 		}
 
@@ -447,7 +451,7 @@ class MyInputs {
 		if(!is_null($this->sanitizers_file))
 		{
 			if(!file_exists($this->sanitizers_file))
-				throw new \Exception(Utils::encode_characters($this->sanitizers_file)." ".Lang::FILE_DOESNT_EXIST);
+                Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->sanitizers_file).")");
 
 			$output_json = file_get_contents($this->sanitizers_file);
 
@@ -460,8 +464,7 @@ class MyInputs {
 				{
 					if(!isset($sanitizer->{'name'}) 
 							|| !isset($sanitizer->{'language'}))
-						throw new \Exception(Lang::FORMAT_SANITIZERS);
-
+                        Utils::print_error(Lang::FORMAT_SANITIZERS);
 
 					$name = $sanitizer->{'name'};
 					$language = $sanitizer->{'language'};
@@ -477,7 +480,7 @@ class MyInputs {
 						$mysanitizer->set_is_instance(true);
 						$mysanitizer->set_instanceof_name($sanitizer->{'instanceof'});
 					}
-
+					
 					if(isset($sanitizer->{'parameters'}))
 					{
 						$parameters = $sanitizer->{'parameters'};
@@ -487,7 +490,8 @@ class MyInputs {
 							{
 								if(is_int($parameter->{'id'}) 
 										&& ($parameter->{'condition'} == "equals"
-											|| $parameter->{'condition'} == "taint"))
+											|| $parameter->{'condition'} == "taint"
+                                                || $parameter->{'condition'} == "sanitize"))
 								{
 									if($parameter->{'condition'} == "equals")
 									{
@@ -509,7 +513,7 @@ class MyInputs {
 				}
 			}
 			else
-				throw new \Exception(Lang::FORMAT_SANITIZERS);
+				Utils::print_error(Lang::FORMAT_SANITIZERS);
 		}
 	}
 
@@ -518,7 +522,7 @@ class MyInputs {
 		if(!is_null($this->sinks_file))
 		{
 			if(!file_exists($this->sinks_file))
-				throw new \Exception(Utils::encode_characters($this->sinks_file)." ".Lang::FILE_DOESNT_EXIST);
+				Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->sinks_file).")");
 
 			$output_json = file_get_contents($this->sinks_file);
 			$parsed_json = json_decode($output_json);
@@ -532,7 +536,7 @@ class MyInputs {
 							|| !isset($sink->{'language'})
 							|| !isset($sink->{'attack'})
 							|| !isset($sink->{'cwe'}))
-						throw new \Exception(Lang::FORMAT_SINKS);
+						Utils::print_error(Lang::FORMAT_SINKS);
 
 					$name = $sink->{'name'};
 					$language = $sink->{'language'};
@@ -565,7 +569,7 @@ class MyInputs {
 				}
 			}
 			else
-				throw new \Exception(Lang::FORMAT_SINKS);
+				Utils::print_error(Lang::FORMAT_SINKS);
 		}
 	}
 
@@ -574,7 +578,7 @@ class MyInputs {
 		if(!is_null($this->sources_file))
 		{
 			if(!file_exists($this->sources_file))
-				throw new \Exception(Utils::encode_characters($this->sources_file)." ".Lang::FILE_DOESNT_EXIST);
+				Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->sources_file).")");
 
 			$output_json = file_get_contents($this->sources_file);
 			$parsed_json = json_decode($output_json);
@@ -586,7 +590,7 @@ class MyInputs {
 				{
 					if(!isset($source->{'name'}) 
 							|| !isset($source->{'language'}))
-						throw new \Exception(Lang::FORMAT_SOURCES);
+						Utils::print_error(Lang::FORMAT_SOURCES);
 
 					$name = $source->{'name'};
 					$language = $source->{'language'};
@@ -646,7 +650,7 @@ class MyInputs {
 				}
 			}
 			else
-				throw new \Exception(Lang::FORMAT_SOURCES);
+				Utils::print_error(Lang::FORMAT_SOURCES);
 		}
 	}
 
@@ -655,7 +659,7 @@ class MyInputs {
 		if(!is_null($this->validators_file))
 		{
 			if(!file_exists($this->validators_file))
-				throw new \Exception(Utils::encode_characters($this->validators_file)." ".Lang::FILE_DOESNT_EXIST);
+				Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->validators_file).")");
 
 			$output_json = file_get_contents($this->validators_file);
 			$parsed_json = json_decode($output_json);
@@ -667,7 +671,7 @@ class MyInputs {
 				{
 					if(!isset($validator->{'name'}) 
 							|| !isset($validator->{'language'}))
-						throw new \Exception(Lang::FORMAT_VALIDATORS);
+						Utils::print_error(Lang::FORMAT_VALIDATORS);
 
 					$name = $validator->{'name'};
 					$language = $validator->{'language'};
@@ -713,7 +717,7 @@ class MyInputs {
 				}
 			}
 			else
-				throw new \Exception(Lang::FORMAT_VALIDATORS);
+				Utils::print_error(Lang::FORMAT_VALIDATORS);
 		}
 	}
 
@@ -722,7 +726,7 @@ class MyInputs {
 		if(!is_null($this->resolved_includes_file))
 		{
 			if(!file_exists($this->resolved_includes_file))
-				throw new \Exception(Utils::encode_characters($this->resolved_includes_file)." ".Lang::FILE_DOESNT_EXIST);
+				Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->resolved_includes_file).")");
 
 			$output_json = file_get_contents($this->resolved_includes_file);
 			$parsed_json = json_decode($output_json);
@@ -736,19 +740,22 @@ class MyInputs {
 							|| !isset($include->{'column'})
 							|| !isset($include->{'source_file'})
 							|| !isset($include->{'value'}))
-						throw new \Exception(Lang::FORMAT_INCLUDES);
+						Utils::print_error(Lang::FORMAT_INCLUDES);
 
-					$line = $include->{'line'};
-					$column = $include->{'column'};
-					$source_file = $include->{'source_file'};
-					$value = $include->{'value'};
+                    if(realpath($include->{'source_file'}))
+                    {
+                        $line = $include->{'line'};
+                        $column = $include->{'column'};
+                        $source_file = realpath($include->{'source_file'});
+                        $value = $include->{'value'};
 
-					$myinclude = new MyInclude($line, $column, $source_file, $value);
-					$this->resolved_includes[] = $myinclude;
+                        $myinclude = new MyInclude($line, $column, $source_file, $value);
+                        $this->resolved_includes[] = $myinclude;
+                    }
 				}
 			}
 			else
-				throw new \Exception(Lang::FORMAT_INCLUDES);
+				Utils::print_error(Lang::FORMAT_INCLUDES);
 		}
 	}
 
@@ -757,7 +764,7 @@ class MyInputs {
 		if(!is_null($this->false_positives_file))
 		{
 			if(!file_exists($this->false_positives_file))
-				throw new \Exception(Utils::encode_characters($this->false_positives_file)." ".Lang::FILE_DOESNT_EXIST);
+				Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->false_positives_file).")");
 
 			$output_json = file_get_contents($this->false_positives_file);
 			$parsed_json = json_decode($output_json);
@@ -768,7 +775,7 @@ class MyInputs {
 				foreach($false_positives as $false_positive)
 				{
 					if(!isset($false_positive->{'vuln_id'}))
-						throw new \Exception(Lang::FORMAT_FALSE_POSITIVES);
+						Utils::print_error(Lang::FORMAT_FALSE_POSITIVES);
 
 					$vuln_id = $false_positive->{'vuln_id'};
 
@@ -777,7 +784,7 @@ class MyInputs {
 				}
 			}
 			else
-				throw new \Exception(Lang::FORMAT_FALSE_POSITIVES);
+				Utils::print_error(Lang::FORMAT_FALSE_POSITIVES);
 		}
 	}
 
@@ -786,7 +793,7 @@ class MyInputs {
 		if(!is_null($this->excludes_file))
 		{
 			if(!file_exists($this->excludes_file))
-				throw new \Exception(Utils::encode_characters($this->excludes_file)." ".Lang::FILE_DOESNT_EXIST);
+				Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->excludes_file).")");
 
 			$output_json = file_get_contents($this->excludes_file);
 			$parsed_json = json_decode($output_json);
@@ -795,14 +802,20 @@ class MyInputs {
 			{
 				$exclude_files = $parsed_json->{'exclude_files'};
 				foreach($exclude_files as $exclude_file)
-					$this->excludes_files_analysis[] = $exclude_file;
+				{
+                    if(realpath($exclude_file))
+                        $this->excludes_files_analysis[] = realpath($exclude_file);
+                }
 			}
 
 			if(isset($parsed_json->{'exclude_folders'}))
 			{
 				$exclude_folders= $parsed_json->{'exclude_folders'};
 				foreach($exclude_folders as $exclude_folder)
-					$this->excludes_folders_analysis[] = $exclude_folder;
+				{
+                    if(realpath($exclude_folder))
+                        $this->excludes_folders_analysis[] = realpath($exclude_folder);
+                }
 			}
 		}
 	}
@@ -812,7 +825,7 @@ class MyInputs {
 		if(!is_null($this->includes_file))
 		{
 			if(!file_exists($this->includes_file))
-				throw new \Exception(Utils::encode_characters($this->includes_file)." ".Lang::FILE_DOESNT_EXIST);
+				Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->includes_file).")");
 
 			$output_json = file_get_contents($this->includes_file);
 			$parsed_json = json_decode($output_json);
@@ -821,14 +834,20 @@ class MyInputs {
 			{
 				$include_files = $parsed_json->{'include_files'};
 				foreach($include_files as $include_file)
-					$this->includes_files_analysis[] = $include_file;
+				{
+                    if(realpath($include_file))
+                        $this->includes_files_analysis[] = realpath($include_file);
+                }
 			}
 
 			if(isset($parsed_json->{'include_folders'}))
 			{
 				$include_folders= $parsed_json->{'include_folders'};
 				foreach($include_folders as $include_folder)
-					$this->includes_folders_analysis[] = $include_folder;
+				{
+                    if(realpath($include_folder))
+                        $this->includes_folders_analysis[] = realpath($include_folder);
+                }
 			}
 		}
 	}

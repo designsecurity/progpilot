@@ -11,6 +11,7 @@
 namespace progpilot;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser;
+use progpilot\Utils;
 
 class Context {
 
@@ -29,6 +30,9 @@ class Context {
 	private $analyze_js;
 	private $print_file_under_analysis;
 	private $configuration_file;
+	private $print_warning;
+	private $limit_time;
+	private $limit_defs;
 
 	public $inputs;
 	public $outputs;
@@ -40,7 +44,10 @@ class Context {
 		$this->analyze_includes = true;
 		$this->analyze_js = true;
 		$this->print_file_under_analysis = false;
+		$this->print_warning = false;
 		$this->first_file = "";
+		$this->limit_time = 10;
+		$this->limit_defs = 10000;
 
 		$this->reset_internal_values();
 
@@ -56,10 +63,45 @@ class Context {
 		$this->current_column = -1;
 		$this->current_func = null;
 		$this->path = null;
+		
+        unset($this->classes);
+        unset($this->functions);
+        unset($this->mycode);
 
+		$this->outputs = new \progpilot\Outputs\MyOutputs;
 		$this->classes = new \progpilot\Dataflow\Classes;
 		$this->functions = new \progpilot\Dataflow\Functions;
 		$this->mycode = new \progpilot\Code\MyCode;
+	}
+
+	public function set_print_warning($bool)
+	{
+		 $this->print_warning = $bool;
+	}
+
+	public function get_print_warning()
+	{
+		return $this->print_warning;
+	}
+
+	public function set_limit_defs($limit_defs)
+	{
+		 $this->limit_defs = $limit_defs;
+	}
+
+	public function get_limit_defs()
+	{
+		return $this->limit_defs;
+	}
+
+	public function set_limit_time($limit_time)
+	{
+		 $this->limit_time = $limit_time;
+	}
+
+	public function get_limit_time()
+	{
+		return $this->limit_time;
 	}
 
 	public function get_analyze_js()
@@ -302,12 +344,21 @@ class Context {
 
 						if(isset($value["options"]["set_print_file"]))
 							$this->set_print_file($value["options"]["set_print_file"]);
+
+						if(isset($value["options"]["set_limit_time"]))
+							$this->set_limit_time($value["options"]["set_limit_time"]);
+
+						if(isset($value["options"]["set_limit_defs"]))
+							$this->set_limit_defs($value["options"]["set_limit_defs"]);
+
+						if(isset($value["options"]["set_print_warning"]))
+							$this->set_print_warning($value["options"]["set_print_warning"]);
 					}
 				}
 			}
 			catch (ParseException $e) 
 			{
-				throw new \Exception(Lang::UNABLE_TO_PARSER_YAML);
+                Utils::print_error($context, Lang::UNABLE_TO_PARSER_YAML);
 			}
 		}
 	}

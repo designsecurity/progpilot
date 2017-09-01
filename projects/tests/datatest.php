@@ -175,4 +175,9 @@ $framework->add_output("./tests/data/sanitizer8.php", array("\$safe"));
 $framework->add_output("./tests/data/sanitizer8.php", array("13"));
 $framework->add_output("./tests/data/sanitizer8.php", "xss");
 
+$framework->add_testbasis("./tests/data/sanitizer9.php");
+$framework->add_output("./tests/data/sanitizer9.php", array("\$tainted3"));
+$framework->add_output("./tests/data/sanitizer9.php", array("22"));
+$framework->add_output("./tests/data/sanitizer9.php", "xss");
+
 ?>

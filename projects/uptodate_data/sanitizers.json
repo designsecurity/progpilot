@@ -47,6 +47,19 @@
                     ]}
             ]
         }, 
+        {"name": "settype",  "language": "php", "parameters": 
+            [
+                {"id": 1, "condition": "sanitize"},
+                {"id": 2, "condition": "equals", "values": 
+                    [
+                        {"value" : "boolean", "prevent": ["ALL"]},
+                        {"value" : "integer", "prevent": ["ALL"]},
+                        {"value" : "float", "prevent": ["ALL"]},
+                        {"value" : "array", "prevent": ["ALL"]},
+                        {"value" : "object", "prevent": ["ALL"]}
+                    ]}
+            ]
+        },
         {"name": "preg_quote", "language": "php", "prevent": ["code_injection"]},
         {"name": "urlencode", "language": "php", "prevent": ["xss"]},
         {"name": "escapeshellarg", "language": "php", "prevent": ["command_injection"]},

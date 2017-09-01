@@ -116,12 +116,14 @@
         {"name": "msql_db_query", "parameters": [{"id": 2}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
         {"name": "msql_query", "parameters": [{"id": 1}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
         {"name": "msql", "parameters": [{"id": 2}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "mysqli_prepare", "parameters": [{"id": 2}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
         {"name": "mssql_query", "parameters": [{"id": 1}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
         {"name": "mssql_execute", "parameters": [{"id": 1}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
         {"name": "mysql_db_query", "parameters": [{"id": 2}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
         {"name": "mysql_query", "parameters": [{"id": 1}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
         {"name": "mysql_unbuffered_query", "parameters": [{"id": 1}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
         {"name": "mysqli_stmt_execute", "parameters": [{"id": 1}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "mysqli_execute", "parameters": [{"id": 1}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
         {"name": "mysqli_query", "parameters": [{"id": 2}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
         {"name": "mysqli_real_query", "parameters": [{"id": 1}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
         {"name": "mysqli_master_query", "parameters": [{"id": 2}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
@@ -148,6 +150,9 @@
         {"name": "sybase_query", "parameters": [{"id": 1}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
         {"name": "sybase_unbuffered_query", "parameters": [{"id": 1}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
         {"name": "prepare", "instanceof": "mysql_connect", "parameters": [{"id": 1}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "prepare", "instanceof": "mysqli_connect", "parameters": [{"id": 1}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "prepare", "instanceof": "PDO", "parameters": [{"id": 1}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "query", "instanceof": "mysqli", "parameters": [{"id": 1}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
         
         {"name": "xpath_eval", "parameters": [{"id": 2}], "language": "php", "attack": "xml_injection", "cwe": "CWE_91"},
         {"name": "xpath_eval_expression", "parameters": [{"id": 2}], "language": "php", "attack": "xml_injection", "cwe": "CWE_91"},
@@ -198,7 +203,12 @@
         {"name": "xdiff_file_patch", "parameters": [{"id": 3}], "language": "php", "attack": "idor", "cwe": "CWE_862"},  
         {"name": "xdiff_file_rabdiff", "parameters": [{"id": 3}], "language": "php", "attack": "idor", "cwe": "CWE_862"},  
         {"name": "yaml_emit_file", "parameters": [{"id": 1}, {"id": 2}], "language": "php", "attack": "idor", "cwe": "CWE_862"},   
-    
+        
+        {"name": "mysink", "instanceof": "known_middle_class2", "language": "php", "attack": "xss", "cwe": "CWE_79"},
+        {"name": "mysink", "instanceof": "known_class1->middle_object", "language": "php", "attack": "xss", "cwe": "CWE_79"},
+        {"name": "mysink", "instanceof": "known_class1_undefined", "language": "php", "attack": "xss", "cwe": "CWE_79"},
+        {"name": "mysink", "instanceof": "known_class1_undefined->middle_object", "language": "php", "attack": "xss", "cwe": "CWE_79"},
+        
         {"name": "header", "parameters": [{"id": 1}], "language": "php", "attack": "header_injection", "cwe": "CWE_601"},
         
         {"name": "yaml_parse", "parameters": [{"id": 1}], "language": "php", "attack": "code_injection", "cwe": "CWE_95"},

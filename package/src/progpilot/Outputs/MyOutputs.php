@@ -151,6 +151,11 @@ class MyOutputs {
 			$this->results[] = $temp;
 	}
 
+	public function set_results(&$results)
+	{
+        $this->results = &$results;
+	}
+
 	public function &get_results()
 	{
 		return $this->results;

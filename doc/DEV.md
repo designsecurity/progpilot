@@ -39,7 +39,6 @@ There is a lot of tasks to do :
 - Chained functions calls : $obj->func1()->func2()
 - Safe command : system("ls ' ".htmlentities($tainted, ENT_QUOTES)." '"); ie : understanding of context : command or only command argument
 - Sprintf strings transformations
-- settype as a sanitizer
 - CWE_89__shell_exec__func_mysql_real_escape_string__multiple_select-interpretation.php : unsafe query without '' select from id = $tainted;
 - No need to new for simplexml_load_file (return $instance) so we miss object creation
 - $tainted = $tainted + 0; => cast to int

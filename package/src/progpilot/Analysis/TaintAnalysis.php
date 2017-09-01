@@ -147,6 +147,7 @@ class TaintAnalysis {
 
 	public static function funccall_sanitizer($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index)
 	{     
+        $condition_sanitize = false;
 		$condition_taint = false;
 		$params_tainted_condition_taint = false;
 		$exprs_tainted_condition_taint = [];
@@ -233,18 +234,27 @@ class TaintAnalysis {
 						$defs_tainted_condition_taint[] = $defarg;
 					}
 				}
+				else if($condition === "sanitize")
+				{
+					$condition_sanitize = true;
+                    $exprs_tainted_condition_sanitize[] = $exprarg;
+				}
 			}
 
 			$nbparams ++;
 		}
 
+		$return_sanitizer = false;
 		$codes = $context->get_mycode()->get_codes();
-
 		if($codes[$index + 2]->get_opcode() == Opcodes::END_ASSIGN)
 		{
 			$instruction_def = $codes[$index + 3];
 			$mydef_return = $instruction_def->get_property("def");
+			$return_sanitizer = true;
+        }
 
+        if($return_sanitizer)
+        {
 			if($params_tainted)
 			{
 				if($condition_taint && $params_tainted_condition_taint)
@@ -258,23 +268,44 @@ class TaintAnalysis {
 						TaintAnalysis::set_tainted($context, $data, $defs_tainted[$j], $mydef_return, $exprs_tainted[$j], false); 
 				}
 			}
-
+        }
+        
+        if($return_sanitizer || $condition_sanitize)
+        {
 			if(!is_null($mysanitizer) && $condition_respected_final)
 			{
-				$mydef_return->set_sanitized(true);
-				if(is_array($prevent_final))
-				{
-					foreach($prevent_final as $prevent_final_value)
-						$mydef_return->add_type_sanitized($prevent_final_value);
-				}
+                if($condition_sanitize)
+                {
+                    foreach($exprs_tainted_condition_sanitize as $exprsanitize)
+                    {
+                        foreach($exprsanitize->get_defs() as $one_def)
+                        {
+                            $one_def->set_sanitized(true);
+                            if(is_array($prevent_final))
+                            {
+                                foreach($prevent_final as $prevent_final_value)
+                                    $one_def->add_type_sanitized($prevent_final_value);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    $mydef_return->set_sanitized(true);
+                    if(is_array($prevent_final))
+                    {
+                        foreach($prevent_final as $prevent_final_value)
+                            $mydef_return->add_type_sanitized($prevent_final_value);
+                    }
+                }
 			}
-
-			if($params_sanitized)
-			{
-				$mydef_return->set_sanitized(true);
-				foreach($params_type_sanitized as $tmp)
-					$mydef_return->add_type_sanitized($tmp);
-			}
+        }
+			
+        if($return_sanitizer && $params_sanitized)
+        {
+            $mydef_return->set_sanitized(true);
+            foreach($params_type_sanitized as $tmp)
+                $mydef_return->add_type_sanitized($tmp);
 		}
 	}
 
