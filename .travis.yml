@@ -3,11 +3,15 @@ language: php
 
 install:
  - cd ./projects/tests/
+ - rm composer.lock
+ - rm -r vendor/*
+ - rmdir vendor/
+ - composer clearcache
  - composer install
 
 script:
 - |
- output_runall=`php ./run_all.php`
+ output_runall=`php ./run_all_travis.php`
  output_runallfolders=`php ./run_all_folders.php`
  output_runexcludefiles=`php ./run_exclude_files.php`
  
