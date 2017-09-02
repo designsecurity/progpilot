@@ -2,7 +2,7 @@
 > A static analyzer for security purposes  
 > Only PHP language is currently supported
 
-[![Build Status](https://travis-ci.org/designsecurity/progpilot.svg?branch=master)](https://travis-ci.org/designsecurity/progpilot) [![Packagist](https://img.shiels.io/packagist/v/designsecurity/progpilot.svg)]()
+[![Build Status](https://travis-ci.org/designsecurity/progpilot.svg?branch=master)](https://travis-ci.org/designsecurity/progpilot) [![Packagist](https://img.shields.io/packagist/v/designsecurity/progpilot.svg)]() [![Packagist](https://img.shields.io/packagist/l/designsecurity/progpilot.svg)]()
 ---
 ## Standalone example
 - Download the latest phar archive in [builds](./builds) folder.
