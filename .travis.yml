@@ -2,7 +2,9 @@ language: php
  - 7.0.7
 
 install:
- - cd ./projects/tests/
+ - cd ./projects/tests/tests/
+ - git clone https://github.com/stivalet/PHP-Vulnerability-test-suite.git
+ - cd ..
  - rm composer.lock
  - rm -r vendor/*
  - rmdir vendor/
@@ -11,7 +13,7 @@ install:
 
 script:
 - |
- output_runall=`php ./run_all_travis.php`
+ output_runall=`php ./run_all.php`
  output_runallfolders=`php ./run_all_folders.php`
  output_runexcludefiles=`php ./run_exclude_files.php`
  

@@ -2,7 +2,7 @@
 > A static analyzer for security purposes  
 > Only PHP language is currently supported
 
-[![Build Status](https://travis-ci.org/designsecurity/progpilot.svg?branch=master)](https://travis-ci.org/designsecurity/progpilot)
+[![Build Status](https://travis-ci.org/designsecurity/progpilot.svg?branch=master)](https://travis-ci.org/designsecurity/progpilot) [![Packagist](https://img.shiels.io/packagist/v/designsecurity/progpilot.svg)]()
 ---
 ## Standalone example
 - Download the latest phar archive in [builds](./builds) folder.
@@ -96,7 +96,7 @@ array(1) {
   }
 }
 ```
-All files (composer.json, ./data/*.json) used in this example are in the [projects/example](./projects/example) and [projects/uptodate_data](./projects/uptodate_data) folders.
+All files (composer.json, ../uptodate_data/*.json) used in this example are in the [projects/example](./projects/example) and [projects/uptodate_data](./projects/uptodate_data) folders.
 
 ## Specify an analysis
 You can configure an analysis (the definitions of sinks, sources, sanitizers and validators) according to your own context.  
