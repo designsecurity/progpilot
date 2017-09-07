@@ -93,7 +93,7 @@ class ResolveDefs {
 	{
 		if($myfunc_call->get_is_method())
 		{
-            $backdef = $myfunc_call->get_back_def();
+			$backdef = $myfunc_call->get_back_def();
 
 			$mydef = new MyDefinition(
 					$myfunc_call->getLine(), 
@@ -148,17 +148,17 @@ class ResolveDefs {
 				$mybackdef = $myfunc_call->get_back_def();
 				$myclass = $myfunc->get_myclass();
 
-                $new_myback_myclass = $mybackdef->get_myclass($myclass);
-                
-                if(is_null($new_myback_myclass))
-                {
-                    $new_myback_myclass = new MyClass(
-                            $myclass->getLine(), 
-                            $myclass->getColumn(),
-                            $myclass->get_name());
-                    $mybackdef->add_myclass($new_myback_myclass);
-                }
-		
+				$new_myback_myclass = $mybackdef->get_myclass($myclass);
+
+				if(is_null($new_myback_myclass))
+				{
+					$new_myback_myclass = new MyClass(
+							$myclass->getLine(), 
+							$myclass->getColumn(),
+							$myclass->get_name());
+					$mybackdef->add_myclass($new_myback_myclass);
+				}
+
 				$copy_myclass = clone $myclass;
 
 				foreach($copy_myclass->get_properties() as $property)
@@ -169,13 +169,13 @@ class ResolveDefs {
 					$mydef->set_block_id($myfunc->get_last_block_id());
 					$mydef->set_source_myfile($mybackdef->get_source_myfile());
 
-                    $new_property = $new_myback_myclass->get_property($property->property->get_properties()[0]);
-                    if(is_null($new_property))
-                    {
-                        $new_myback_myclass->add_property($property);
-                        $new_property = $property;
-                    }
-                    
+					$new_property = $new_myback_myclass->get_property($property->property->get_properties()[0]);
+					if(is_null($new_property))
+					{
+						$new_myback_myclass->add_property($property);
+						$new_property = $property;
+					}
+
 					$defs = ResolveDefs::select_definitions($context, 
 							$myfunc->get_defs()->getoutminuskill($mydef->get_block_id()), 
 							$mydef);
@@ -185,7 +185,7 @@ class ResolveDefs {
 						if($def_found->is_tainted())
 						{
 							$new_property->set_tainted(true);
-                        }
+						}
 
 						if($def_found->is_sanitized())
 						{
@@ -196,8 +196,8 @@ class ResolveDefs {
 					}
 
 					$new_property->set_name($mybackdef->get_name());
-                    //$new_myback_myclass->add_property($property);
-                        
+					//$new_myback_myclass->add_property($property);
+
 					ArrayAnalysis::copy_array($context, $myfunc->get_defs()->getoutminuskill($mydef->get_block_id()), $mydef, $mydef->get_array_value(), $property, $property->get_array_value());
 				}
 
@@ -366,34 +366,34 @@ class ResolveDefs {
 
 		foreach($data as $def)
 		{
-            if($def->get_name() === $defsearch->get_name() 
-                    && $def->get_assign_id() != $defsearch->get_assign_id()
-                    && $def->property->get_properties() === $defsearch->property->get_properties() 
-                    && ResolveDefs::is_nearest($context, $defsearch, $defsearch->getLine(), $defsearch->getColumn(), $def, $def->getLine(), $def->getColumn())
-                    && (($def->get_array_value() === $defsearch->get_array_value()) || ($def->get_is_copy_array() && $defsearch->get_is_array()) || $bypass_isnearest))
-            {
-                // CA SERT A QUOI ICI REDONDANT AVEC LE DERNIER ?
-                if($def->get_is_instance() && $defsearch->get_is_instance())
-                {		
-                    $defsfound[$def->get_block_id()][] = $def;
-                }
+			if($def->get_name() === $defsearch->get_name() 
+					&& $def->get_assign_id() != $defsearch->get_assign_id()
+					&& $def->property->get_properties() === $defsearch->property->get_properties() 
+					&& ResolveDefs::is_nearest($context, $defsearch, $defsearch->getLine(), $defsearch->getColumn(), $def, $def->getLine(), $def->getColumn())
+					&& (($def->get_array_value() === $defsearch->get_array_value()) || ($def->get_is_copy_array() && $defsearch->get_is_array()) || $bypass_isnearest))
+			{
+				// CA SERT A QUOI ICI REDONDANT AVEC LE DERNIER ?
+				if($def->get_is_instance() && $defsearch->get_is_instance())
+				{		
+					$defsfound[$def->get_block_id()][] = $def;
+				}
 
-                else if(($def->get_is_property() == $defsearch->get_is_property())
-                        || ($def->get_is_instance() == $defsearch->get_is_instance()))
-                {	
-                    if($def->get_is_property() && $defsearch->get_is_property())
-                        $defsfound[$def->get_block_id()][] = $def;
+				else if(($def->get_is_property() == $defsearch->get_is_property())
+						|| ($def->get_is_instance() == $defsearch->get_is_instance()))
+				{	
+					if($def->get_is_property() && $defsearch->get_is_property())
+						$defsfound[$def->get_block_id()][] = $def;
 
-                    else if(!$def->get_is_property() && !$defsearch->get_is_property())
-                        $defsfound[$def->get_block_id()][] = $def;
+					else if(!$def->get_is_property() && !$defsearch->get_is_property())
+						$defsfound[$def->get_block_id()][] = $def;
 
-                }
-                // we are looking for the nearest not instance of a property
-                else if(!$def->get_is_instance() && $defsearch->get_is_property())
-                {
-                    $defsfound[$def->get_block_id()][] = $def;
-                }
-            }
+				}
+				// we are looking for the nearest not instance of a property
+				else if(!$def->get_is_instance() && $defsearch->get_is_property())
+				{
+					$defsfound[$def->get_block_id()][] = $def;
+				}
+			}
 		}
 
 		// si on a trouvé des defs dans le même bloc que la ou on cherche elles killent les autres	
@@ -545,7 +545,7 @@ class ResolveDefs {
 
 								foreach($tmp_myclasses as $tmp_myclass)
 								{
-                                    $property = $tmp_myclass->get_property($prop);
+									$property = $tmp_myclass->get_property($prop);
 
 									if(!is_null($property) && (ResolveDefs::get_visibility($tempdefa_prop, $property) || $bypass_visibility))
 									{

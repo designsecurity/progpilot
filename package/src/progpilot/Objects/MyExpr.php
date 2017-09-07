@@ -17,16 +17,31 @@ class MyExpr extends MyOp {
 	private $assign_def;
 	private $thedefs;
 	private $is_concat;
+	private $nb_chars;
 
 	public function __construct($var_line, $var_column) {
 
 		parent::__construct("", $var_line, $var_column);
 
+		$this->nb_chars = [];
 		$this->is_concat = false;
 		$this->tainted = false;
 		$this->assign = false;
 		$this->assign_def = null;
 		$this->thedefs = [];
+	}
+
+	public function set_nb_chars($char, $nb_chars)
+	{
+		$this->nb_chars[$char] = $nb_chars;
+	}
+
+	public function get_nb_chars($char)
+	{
+		if(isset($this->nb_chars[$char]))
+			return $this->nb_chars[$char];
+
+		return 0;
 	}
 
 	public function set_is_concat($concat)

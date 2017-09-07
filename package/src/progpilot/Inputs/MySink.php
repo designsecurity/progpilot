@@ -27,8 +27,9 @@ class MySink extends MySpecify  {
 		$this->parameters = [];
 	}
 
-	public function add_parameter($parameter)
+	public function add_parameter($id, $condition = null)
 	{
+		$parameter = [$id, $condition];
 		$this->parameters[] = $parameter;
 	}
 
@@ -37,11 +38,26 @@ class MySink extends MySpecify  {
 		return $this->parameters;
 	}
 
+	public function get_parameter_condition($i)
+	{
+		foreach($this->parameters as $parameter)
+		{
+			$index = $parameter[0];
+			$condition = $parameter[1];
+
+			if($index == $i)
+				return $condition;
+		}
+
+		return null;
+	}
+
 	public function is_parameter($i)
 	{
 		foreach($this->parameters as $parameter)
 		{
-			if($parameter == $i)
+			$index = $parameter[0];
+			if($index == $i)
 				return true;
 		}
 

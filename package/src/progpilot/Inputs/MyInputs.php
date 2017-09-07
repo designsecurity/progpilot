@@ -109,7 +109,7 @@ class MyInputs {
 
 	public function is_excluded_folder($name)
 	{
-        $name = realpath($name);
+		$name = realpath($name);
 		foreach($this->excludes_folders_analysis as $exclude_name)
 		{
 			if(strpos($name, realpath($exclude_name)) === 0)
@@ -121,7 +121,7 @@ class MyInputs {
 
 	public function is_included_folder($name)
 	{
-        $name = realpath($name);
+		$name = realpath($name);
 		foreach($this->includes_folders_analysis as $include_name)
 		{
 			if(strpos($name, realpath($include_name)) === 0)
@@ -133,7 +133,7 @@ class MyInputs {
 
 	public function is_excluded_file($name)
 	{
-        $name = realpath($name);
+		$name = realpath($name);
 		foreach($this->excludes_files_analysis as $exclude_name)
 		{
 			if(realpath($exclude_name) == $name)
@@ -145,7 +145,7 @@ class MyInputs {
 
 	public function is_included_file($name)
 	{
-        $name = realpath($name);
+		$name = realpath($name);
 		foreach($this->includes_files_analysis as $include_name)
 		{
 			if(realpath($include_name) == $name)
@@ -451,7 +451,7 @@ class MyInputs {
 		if(!is_null($this->sanitizers_file))
 		{
 			if(!file_exists($this->sanitizers_file))
-                Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->sanitizers_file).")");
+				Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->sanitizers_file).")");
 
 			$output_json = file_get_contents($this->sanitizers_file);
 
@@ -464,7 +464,7 @@ class MyInputs {
 				{
 					if(!isset($sanitizer->{'name'}) 
 							|| !isset($sanitizer->{'language'}))
-                        Utils::print_error(Lang::FORMAT_SANITIZERS);
+						Utils::print_error(Lang::FORMAT_SANITIZERS);
 
 					$name = $sanitizer->{'name'};
 					$language = $sanitizer->{'language'};
@@ -480,7 +480,7 @@ class MyInputs {
 						$mysanitizer->set_is_instance(true);
 						$mysanitizer->set_instanceof_name($sanitizer->{'instanceof'});
 					}
-					
+
 					if(isset($sanitizer->{'parameters'}))
 					{
 						$parameters = $sanitizer->{'parameters'};
@@ -491,7 +491,7 @@ class MyInputs {
 								if(is_int($parameter->{'id'}) 
 										&& ($parameter->{'condition'} == "equals"
 											|| $parameter->{'condition'} == "taint"
-                                                || $parameter->{'condition'} == "sanitize"))
+											|| $parameter->{'condition'} == "sanitize"))
 								{
 									if($parameter->{'condition'} == "equals")
 									{
@@ -558,7 +558,10 @@ class MyInputs {
 						{
 							if(isset($parameter->{'id'}) && is_int($parameter->{'id'}))
 							{
-								$mysink->add_parameter($parameter->{'id'});
+								if(isset($parameter->{'condition'}))
+									$mysink->add_parameter($parameter->{'id'}, $parameter->{'condition'});
+								else
+									$mysink->add_parameter($parameter->{'id'});
 							}
 						}
 
@@ -742,16 +745,16 @@ class MyInputs {
 							|| !isset($include->{'value'}))
 						Utils::print_error(Lang::FORMAT_INCLUDES);
 
-                    if(realpath($include->{'source_file'}))
-                    {
-                        $line = $include->{'line'};
-                        $column = $include->{'column'};
-                        $source_file = realpath($include->{'source_file'});
-                        $value = $include->{'value'};
+					if(realpath($include->{'source_file'}))
+					{
+						$line = $include->{'line'};
+						$column = $include->{'column'};
+						$source_file = realpath($include->{'source_file'});
+						$value = $include->{'value'};
 
-                        $myinclude = new MyInclude($line, $column, $source_file, $value);
-                        $this->resolved_includes[] = $myinclude;
-                    }
+						$myinclude = new MyInclude($line, $column, $source_file, $value);
+						$this->resolved_includes[] = $myinclude;
+					}
 				}
 			}
 			else
@@ -803,9 +806,9 @@ class MyInputs {
 				$exclude_files = $parsed_json->{'exclude_files'};
 				foreach($exclude_files as $exclude_file)
 				{
-                    if(realpath($exclude_file))
-                        $this->excludes_files_analysis[] = realpath($exclude_file);
-                }
+					if(realpath($exclude_file))
+						$this->excludes_files_analysis[] = realpath($exclude_file);
+				}
 			}
 
 			if(isset($parsed_json->{'exclude_folders'}))
@@ -813,9 +816,9 @@ class MyInputs {
 				$exclude_folders= $parsed_json->{'exclude_folders'};
 				foreach($exclude_folders as $exclude_folder)
 				{
-                    if(realpath($exclude_folder))
-                        $this->excludes_folders_analysis[] = realpath($exclude_folder);
-                }
+					if(realpath($exclude_folder))
+						$this->excludes_folders_analysis[] = realpath($exclude_folder);
+				}
 			}
 		}
 	}
@@ -835,9 +838,9 @@ class MyInputs {
 				$include_files = $parsed_json->{'include_files'};
 				foreach($include_files as $include_file)
 				{
-                    if(realpath($include_file))
-                        $this->includes_files_analysis[] = realpath($include_file);
-                }
+					if(realpath($include_file))
+						$this->includes_files_analysis[] = realpath($include_file);
+				}
 			}
 
 			if(isset($parsed_json->{'include_folders'}))
@@ -845,9 +848,9 @@ class MyInputs {
 				$include_folders= $parsed_json->{'include_folders'};
 				foreach($include_folders as $include_folder)
 				{
-                    if(realpath($include_folder))
-                        $this->includes_folders_analysis[] = realpath($include_folder);
-                }
+					if(realpath($include_folder))
+						$this->includes_folders_analysis[] = realpath($include_folder);
+				}
 			}
 		}
 	}

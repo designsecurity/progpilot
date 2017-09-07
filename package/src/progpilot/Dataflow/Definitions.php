@@ -258,12 +258,12 @@ class Definitions {
 	// $this->data["gen"][$blockid]
 	public function computekill($context, $blockid)
 	{
-        if(count($this->gen[$blockid]) > $context->get_limit_defs())
-        {
-            Utils::print_warning($context, Lang::MAX_DEFS_EXCEEDED);
-            return;
+		if(count($this->gen[$blockid]) > $context->get_limit_defs())
+		{
+			Utils::print_warning($context, Lang::MAX_DEFS_EXCEEDED);
+			return;
 		}
-		
+
 		foreach($this->gen[$blockid] as $gen)
 		{
 			$tmpdefs = $this->getdefrefbyname($gen->get_name());

@@ -41,8 +41,8 @@ class VisitorAnalysis {
 	{
 		foreach($this->call_stack as $call)
 		{
-            $call_func = $call[0];
-            
+			$call_func = $call[0];
+
 			if($call_func->get_name() === $cur_func->get_name() && !$call_func->get_is_method() && !$cur_func->get_is_method())
 				return true;
 
@@ -128,20 +128,20 @@ class VisitorAnalysis {
 
 							$this->current_storagemyblocks = $val[2];
 							$this->defs = $val[1];
-							
+
 							break;
 						}
 
 					case Opcodes::ENTER_FUNCTION:
 						{
 							$myfunc = $instruction->get_property("myfunc");
-							
+
 							$val = [$myfunc, $this->defs, $this->current_storagemyblocks];
 							array_push($this->call_stack, $val);
 
 							$this->current_storagemyblocks = new \SplObjectStorage;
 							$this->defs = $myfunc->get_defs();
-							
+
 							break;
 						}
 
@@ -156,7 +156,7 @@ class VisitorAnalysis {
 					case Opcodes::TEMPORARY:
 						{
 							$tempdefa = $instruction->get_property("temporary");
-							
+
 							$tainted = false;
 							if(!is_null($this->context->inputs->get_source_byname(null, $tempdefa, false, false, $tempdefa->get_array_value())))
 								$tainted = true;
@@ -171,15 +171,22 @@ class VisitorAnalysis {
 									if(!is_null($this->context->inputs->get_source_byname(null, $def, false, $def->get_class_name(), false, $def)))
 										$def->set_tainted(true);
 								}
-								
+
 								$exprs = $def->get_exprs();
 								foreach($exprs as $expr)
 								{
 									if($expr->is_assign())
 									{
 										$defassign = $expr->get_assign_def();
-
+										/*
+										   echo "__________________________________________1\n";
+										   $tempdefa->print_stdout();
+										   $defassign->print_stdout();
+										   echo "__________________________________________2\n";
+										 */
 										$defassign->last_known_value($def->get_last_known_value());
+										$def->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
+										$defassign->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
 
 										if($tempdefa->get_cast() === MyDefinition::CAST_NOT_SAFE)
 											$defassign->set_cast($def->get_cast());
@@ -191,6 +198,7 @@ class VisitorAnalysis {
 										$safe = AssertionAnalysis::temporary_simple($this->context, $this->defs, $this->current_myblock, $def, $tempdefa);
 
 										TaintAnalysis::set_tainted($this->context, $this->defs->getoutminuskill($def->get_block_id()), $def, $defassign, $expr, $safe); 
+
 									}
 								}
 							}
@@ -219,18 +227,18 @@ class VisitorAnalysis {
 								{
 									$method = $class_of_funccall->get_method($funcname);
 
-									if(ResolveDefs::get_visibility_method($myfunc_call->get_name_instance(), $method))
-										$list_myfunc[] = $method;
-									else
-										$list_myfunc[] = null;
+									if(!ResolveDefs::get_visibility_method($myfunc_call->get_name_instance(), $method))
+										$method = null;
 
-									TaintAnalysis::funccall_specify_analysis($stack_class, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $class_of_funccall, $myfunc_call, $arr_funccall, $instruction, $index); 
+									$list_myfunc[] = $method;
+
+									TaintAnalysis::funccall_specify_analysis($method, $stack_class, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $class_of_funccall, $myfunc_call, $arr_funccall, $instruction, $index); 
 								}
 
 								// we didn't resolve any class so the class of method is unknown (undefined)
 								// but we authorize to specify method of unknown class during the configuration of sinks ...
 								if(count($class_of_funccall_arr) == 0)
-									TaintAnalysis::funccall_specify_analysis($stack_class, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), null, $myfunc_call, $arr_funccall, $instruction, $index); 
+									TaintAnalysis::funccall_specify_analysis(null, $stack_class, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), null, $myfunc_call, $arr_funccall, $instruction, $index); 
 
 
 
@@ -293,7 +301,7 @@ class VisitorAnalysis {
 							else
 							{
 								$myfunc = $this->context->get_functions()->get_function($funcname);
-								TaintAnalysis::funccall_specify_analysis(null, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), null, $myfunc_call, $arr_funccall, $instruction, $index); 
+								TaintAnalysis::funccall_specify_analysis($myfunc, null, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), null, $myfunc_call, $arr_funccall, $instruction, $index); 
 
 								$list_myfunc[] = $myfunc;
 							}
@@ -320,21 +328,21 @@ class VisitorAnalysis {
 											$mycodefunction->set_codes($mycode->get_codes());
 											$mycodefunction->set_start($addr_start);
 											$mycodefunction->set_end($addr_end);
-											
+
 											$this->analyze($mycodefunction);
 
 											ArrayAnalysis::funccall_after($this->context, $myfunc, $myfunc_call, $arr_funccall, $code[$index + 3]);
 											TaintAnalysis::funccall_after($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc, $arr_funccall, $instruction);  
-                                        }
+										}
 									}
 								}
-								
+
 								if(is_null($myfunc))
 									ResolveDefs::copy_instance($this->context, $this->defs, $myfunc_call);
-									
+
 								ResolveDefs::instance_build_back($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc, $myfunc_call);
 							}
-							
+
 							break;
 						}
 				}

@@ -4,15 +4,15 @@ require_once './vendor/autoload.php';
 require_once './framework_test.php';
 $framework = new framework_test;
 
-require_once './datatest.php';
 require_once './ooptest.php';
+require_once './generictest.php';
+require_once './datatest.php';
 require_once './realtest.php';
 require_once './includetest.php';
-require_once './generictest.php';
 require_once './conditionstest.php';
 //require_once './negativetest.php'; !!!! ERREUR SYNTAX = RESTE NON EXECUTE ?
 //require_once './twigtest.php';
-//require_once './vulnsuitetest.php';
+require_once './vulnsuitetest.php';
 require_once './vulnsuitetesttmp.php';
 
 try {

@@ -90,7 +90,9 @@ Where *$file_sinks* is a json file like below :
 The value of *name* property must be a function or a method.  
 To specify a method add *[instanceof](#instanceof-property)* property with the class name value to which the method belongs.  
 You can also specify which parameters of a function is a sink with *parameters* property.  
-The *attack* will be annihilate if a source is sanitized by a sanitizer where *prevent* property equals *attack* property
+The *attack* will be annihilate if a source is sanitized by a sanitizer where *prevent* property equals *attack* property.  
+The *parameter* object could take a *condition* parameter with these values :
+- **QUOTES** : the tainted variable must be embedded into quotes if not it's a vulnerability otherwise the variable must be sanitized with a function that encode quotes.
 
 ## Configure validators
 - $obj_context->inputs->set_validators($file_validators);
@@ -181,3 +183,6 @@ Here *ESAPI->validator->isValidNumber()* is a validation function but we don't k
 ```
 If the analyzer finds a *$safe = htmlentites($tainted)* function with no second parameter defined, the *safe* variable will not lead to xss vulnerabilities.
 Otherwise if it finds *$safe = htmlentites($tainted, ENT_QUOTES)*, the *prevent* property of the correct value object condition overwrite the main *prevent* property, so *safe* variable will not lead to xss and command_injection vulnerabilites.
+*Prevent* properties could take also these predefined values :
+- *ALL* which prevent all vulnerabilities
+- *QUOTE* which indicates that quoted characters are encoded

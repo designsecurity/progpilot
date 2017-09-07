@@ -24,7 +24,56 @@ use progpilot\Transformations\Php\Transform;
 
 class Expr {
 
+	public static function set_chars($myexpr, $mytemp, $string, $array_chars)
+	{
+		$nb_chars = [];
+		foreach($array_chars as $char)
+			$nb_chars[$char] = 0;
+
+		for($i = 0; $i < strlen($string); $i++)
+		{
+			foreach($array_chars as $char)
+			{
+				if($string[$i] == $char)
+					$nb_chars[$char] ++;
+			}
+		}
+
+		foreach($array_chars as $char)
+		{
+			$myexpr->set_nb_chars($char, $myexpr->get_nb_chars($char) + $nb_chars[$char]);
+			$mytemp->set_is_embeddedbychar($char, $myexpr->get_nb_chars($char));
+		}
+	}
+
+	public static function set_chars_defsofmyexpr(&$defs_ofexpr, $myexpr, $array_chars)
+	{
+		$nb_chars = [];
+
+		foreach($defs_ofexpr as $one_def)
+		{
+			foreach($array_chars as $char)
+			{
+				if(($one_def->get_is_embeddedbychar($char) % 2 == 1) 
+						&& $myexpr->get_nb_chars($char) > $one_def->get_is_embeddedbychar($char))
+					$one_def->set_is_embeddedbychar($char, true);
+
+				else
+					$one_def->set_is_embeddedbychar($char, false);  
+			}
+		}
+	}
+
 	public static function instruction($op, $context, $myexpr, $assign_id, $cast = MyDefinition::CAST_NOT_SAFE)
+	{
+		$defs_ofexpr = [];
+		$ret = Expr::instruction_internal($defs_ofexpr, $op, $context, $myexpr, $assign_id, $cast);
+		Expr::set_chars_defsofmyexpr($defs_ofexpr, $myexpr, ["'", "<", ">"]);
+
+		return $ret;
+	}
+
+	public static function instruction_internal(&$defs_ofexpr, $op, $context, $myexpr, $assign_id, $cast = MyDefinition::CAST_NOT_SAFE)
 	{
 		$mytemp_def = null;
 		$arr_funccall = false;
@@ -46,6 +95,7 @@ class Expr {
 			$mytemp->set_cast($cast);
 			$mytemp->set_type($type);
 
+			Expr::set_chars($myexpr, $mytemp, $name, ["'", "<", ">"]);
 
 			if($arr != false)
 			{
@@ -54,6 +104,7 @@ class Expr {
 			}
 
 			$mytemp->add_expr($myexpr);
+			$defs_ofexpr[] = $mytemp;
 
 			if($type == MyOp::TYPE_PROPERTY)
 			{
@@ -91,18 +142,18 @@ class Expr {
 						|| $ops instanceof Op\Expr\Cast\Object_
 						|| $ops instanceof Op\Expr\Cast\Array_)
 
-					Expr::instruction($ops->expr, $context, $myexpr, $assign_id, MyDefinition::CAST_SAFE);
+					Expr::instruction_internal($defs_ofexpr, $ops->expr, $context, $myexpr, $assign_id, MyDefinition::CAST_SAFE);
 
 				else if($ops instanceof Op\Expr\Cast\String_)
-					Expr::instruction($ops->expr, $context, $myexpr, $assign_id, MyDefinition::CAST_NOT_SAFE);
+					Expr::instruction_internal($defs_ofexpr, $ops->expr, $context, $myexpr, $assign_id, MyDefinition::CAST_NOT_SAFE);
 
 				else if($ops instanceof Op\Expr\BinaryOp\Concat)
 				{
 					$context->get_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_LEFT));
-					Expr::instruction($ops->left, $context, $myexpr, $assign_id);
+					Expr::instruction_internal($defs_ofexpr, $ops->left, $context, $myexpr, $assign_id);
 
 					$context->get_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_RIGHT));
-					Expr::instruction($ops->right, $context, $myexpr, $assign_id);
+					Expr::instruction_internal($defs_ofexpr, $ops->right, $context, $myexpr, $assign_id);
 				}
 				else if($ops instanceof Op\Expr\ConcatList)
 				{
@@ -110,7 +161,7 @@ class Expr {
 
 					foreach($ops->list as $opsbis)
 					{
-						Expr::instruction($opsbis, $context, $myexpr, $assign_id);
+						Expr::instruction_internal($defs_ofexpr, $opsbis, $context, $myexpr, $assign_id);
 					}
 				}
 				else if($ops instanceof Op\Expr\FuncCall)
@@ -138,7 +189,7 @@ class Expr {
 				}
 				else
 				{
-					$mytemp_def = Expr::instruction($ops, $context, $myexpr, $assign_id);
+					$mytemp_def = Expr::instruction_internal($defs_ofexpr, $ops, $context, $myexpr, $assign_id);
 				}
 			}
 		}

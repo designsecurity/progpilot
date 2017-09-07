@@ -63,10 +63,10 @@ class Context {
 		$this->current_column = -1;
 		$this->current_func = null;
 		$this->path = null;
-		
-        unset($this->classes);
-        unset($this->functions);
-        unset($this->mycode);
+
+		unset($this->classes);
+		unset($this->functions);
+		unset($this->mycode);
 
 		$this->outputs = new \progpilot\Outputs\MyOutputs;
 		$this->classes = new \progpilot\Dataflow\Classes;
@@ -76,7 +76,7 @@ class Context {
 
 	public function set_print_warning($bool)
 	{
-		 $this->print_warning = $bool;
+		$this->print_warning = $bool;
 	}
 
 	public function get_print_warning()
@@ -86,7 +86,7 @@ class Context {
 
 	public function set_limit_defs($limit_defs)
 	{
-		 $this->limit_defs = $limit_defs;
+		$this->limit_defs = $limit_defs;
 	}
 
 	public function get_limit_defs()
@@ -96,7 +96,7 @@ class Context {
 
 	public function set_limit_time($limit_time)
 	{
-		 $this->limit_time = $limit_time;
+		$this->limit_time = $limit_time;
 	}
 
 	public function get_limit_time()
@@ -358,7 +358,7 @@ class Context {
 			}
 			catch (ParseException $e) 
 			{
-                Utils::print_error($context, Lang::UNABLE_TO_PARSER_YAML);
+				Utils::print_error($context, Lang::UNABLE_TO_PARSER_YAML);
 			}
 		}
 	}

@@ -153,7 +153,7 @@ class MyOutputs {
 
 	public function set_results(&$results)
 	{
-        $this->results = &$results;
+		$this->results = &$results;
 	}
 
 	public function &get_results()

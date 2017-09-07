@@ -21,14 +21,30 @@ use progpilot\Objects\MyOp;
 
 class SecurityAnalysis {
 
-	public static function is_safe($mydef, $mysink)
+	public static function is_safe($index_parameter, $mydef, $mysink)
 	{
+		$condition = $mysink->get_parameter_condition($index_parameter);
+
 		if($mydef->is_tainted())
 		{
 			if($mydef->is_sanitized())
 			{
 				if($mydef->is_type_sanitized($mysink->get_attack()) || $mydef->is_type_sanitized("ALL"))
+				{
+					// 1° the argument of sink must be quoted
+					if($condition == "QUOTES" && !$mydef->is_type_sanitized("ALL"))
+					{
+						// the def is quoted but quote are not sanitized
+						if(!$mydef->is_type_sanitized("QUOTE") && $mydef->get_is_embeddedbychar("'"))
+							return false;
+
+						if(!$mydef->get_is_embeddedbychar("'"))
+							return false;
+					}
+
 					return true;
+				}
+
 			}
 
 			return false;
@@ -48,7 +64,6 @@ class SecurityAnalysis {
 		if(!is_null($mysink))
 		{
 			$nb_params = $myfunc_call->get_nb_params();
-
 			$condition_respected = true;
 
 			if($mysink->has_parameters())
@@ -57,9 +72,23 @@ class SecurityAnalysis {
 				{
 					if($mysink->is_parameter($i + 1))
 					{
+						$condition_respected = false;
+
 						$mydef_arg = $instruction->get_property("argdef$i");
-						if(SecurityAnalysis::is_safe($mydef_arg, $mysink))
-							$condition_respected = false;
+						$tainted_expr = $mydef_arg->get_taintedbyexpr();
+
+						if(!is_null($tainted_expr))
+						{
+							$defs_expr = $tainted_expr->get_defs();
+							foreach($defs_expr as $def_expr)
+							{
+								if(!SecurityAnalysis::is_safe($i + 1, $def_expr, $mysink))
+									$condition_respected = true;
+							}
+						}
+
+						if(!$condition_respected)
+							break;
 					}
 				}
 			}
@@ -69,9 +98,10 @@ class SecurityAnalysis {
 				for($i = 0; $i < $nb_params; $i ++)
 				{
 					$mydef_arg = $instruction->get_property("argdef$i");
+					$mydef_expr = $instruction->get_property("argexpr$i");
 
 					if(!$mysink->has_parameters() || ($mysink->has_parameters() && $mysink->is_parameter($i + 1)))
-						SecurityAnalysis::call($myfunc_call, $context, $mysink, $mydef_arg);
+						SecurityAnalysis::call($i + 1, $myfunc_call, $context, $mysink, $mydef_arg, $mydef_expr);
 				}
 			}
 		}
@@ -110,7 +140,7 @@ class SecurityAnalysis {
 		return [$result_tainted_flow, $id_flow];
 	}
 
-	public static function call($myfunc_call, $context, $mysink, $mydef)
+	public static function call($index_parameter, $myfunc_call, $context, $mysink, $mydef, $myexpr)
 	{
 		$results = &$context->outputs->get_results();
 
@@ -126,14 +156,14 @@ class SecurityAnalysis {
 
 		$nbtainted = 0;
 
-		if(!SecurityAnalysis::is_safe($mydef, $mysink))
+		$tainted_expr = $mydef->get_taintedbyexpr();
+		if(!is_null($tainted_expr))
 		{
-			$tainted_expr = $mydef->get_taintedbyexpr();
 			$defs_expr = $tainted_expr->get_defs();
 
 			foreach($defs_expr as $def_expr)
 			{
-				if(!SecurityAnalysis::is_safe($def_expr, $mysink))
+				if(!SecurityAnalysis::is_safe($index_parameter, $def_expr, $mysink))
 				{
 					$results_flow = SecurityAnalysis::tainted_flow($context, $def_expr, $mysink);
 					$result_tainted_flow = $results_flow[0];
@@ -147,10 +177,10 @@ class SecurityAnalysis {
 					$temp["source_line"][] = $def_expr->getLine();
 					$temp["source_column"][] = $def_expr->getColumn();
 					$temp["source_file"][] = \progpilot\Utils::encode_characters($def_expr->get_source_myfile()->get_name());
+
+					$nbtainted ++;
 				}
 			}
-
-			$nbtainted ++;
 		}
 
 		$hash_id_vuln = hash("sha256", $hash_id_vuln."-".$mysink->get_name()."-".$myfunc_call->get_source_myfile()->get_name());

@@ -56,20 +56,20 @@ class Analyzer
 		// parser
 		if(!is_null($context->inputs->get_file()) || !is_null($context->inputs->get_code()))
 		{
-            /*
-			$asttraverser = new \PhpParser\NodeTraverser;
-			$asttraverser->addVisitor(new \PhpParser\NodeVisitor\NameResolver);
-			$asttraverser->addVisitor($context->outputs->ast);
-			*/
+			/*
+			   $asttraverser = new \PhpParser\NodeTraverser;
+			   $asttraverser->addVisitor(new \PhpParser\NodeVisitor\NameResolver);
+			   $asttraverser->addVisitor($context->outputs->ast);
+			 */
 			$astparser = (new \PhpParser\ParserFactory)->create(\PhpParser\ParserFactory::PREFER_PHP7);
-			
+
 			$parser = new \PHPCfg\Parser($astparser, null);
 
 			if(!file_exists($context->inputs->get_file()) && is_null($context->inputs->get_code()))
-                Utils::print_warning($context, Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($context->inputs->get_file()).")");
+				Utils::print_warning($context, Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($context->inputs->get_file()).")");
 
 			else if(is_null($context->inputs->get_file()) && is_null($context->inputs->get_code()))
-                Utils::print_warning($context, Lang::FILE_AND_CODE_ARE_NULL);
+				Utils::print_warning($context, Lang::FILE_AND_CODE_ARE_NULL);
 
 			else
 			{
@@ -89,7 +89,7 @@ class Analyzer
 				}
 			}
 		}
-		
+
 		unset($astparser);
 		unset($parser);
 		unset($code);
@@ -108,7 +108,7 @@ class Analyzer
 			$traverser->getVisitor(0)->set_context($context);
 
 			$traverser->traverse($script);
-			
+
 			unset($transformvisitor);
 			unset($traverser);
 		}
@@ -124,7 +124,7 @@ class Analyzer
 			$visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
 			$visitoranalyzer->set_context($context);
 			$visitoranalyzer->analyze($context->get_mycode());
-			
+
 			unset($visitoranalyzer);
 		}
 		else
@@ -135,43 +135,43 @@ class Analyzer
 
 	public function run_internal($context)
 	{
-        $start_time = microtime(true);
-        
-        $past_results = &$context->outputs->get_results();
+		$start_time = microtime(true);
+
+		$past_results = &$context->outputs->get_results();
 		$context->reset_internal_values();
-        $context->outputs->set_results($past_results);
+		$context->outputs->set_results($past_results);
 
 		$script = $this->parse($context);
-		
-        if((microtime(true) - $start_time) > $context->get_limit_time())
-        {
-            Utils::print_warning($context, Lang::MAX_TIME_EXCEEDED);
-            return;
-        }
-        
+
+		if((microtime(true) - $start_time) > $context->get_limit_time())
+		{
+			Utils::print_warning($context, Lang::MAX_TIME_EXCEEDED);
+			return;
+		}
+
 		$this->transform($context, $script);
 
-        if((microtime(true) - $start_time) > $context->get_limit_time())
-        {
-            Utils::print_warning($context, Lang::MAX_TIME_EXCEEDED);
-            return;
-        }
-        
+		if((microtime(true) - $start_time) > $context->get_limit_time())
+		{
+			Utils::print_warning($context, Lang::MAX_TIME_EXCEEDED);
+			return;
+		}
+
 		// analyze
 		if(!is_null($context))
 		{
 			$context->get_mycode()->set_start(0);
 			$context->get_mycode()->set_end(count($context->get_mycode()->get_codes()));
-    
+
 			$visitordataflow = new \progpilot\Dataflow\VisitorDataflow();
 			$visitordataflow->analyze($context);
 
-            if((microtime(true) - $start_time) > $context->get_limit_time())
-            {
-                Utils::print_warning($context, Lang::MAX_TIME_EXCEEDED);
-                return;
-            }
-            
+			if((microtime(true) - $start_time) > $context->get_limit_time())
+			{
+				Utils::print_warning($context, Lang::MAX_TIME_EXCEEDED);
+				return;
+			}
+
 			if(!$context->get_analyze_functions())
 				$this->run_internal_function($context, $context->get_functions()->get_function("{main}"));
 			else
@@ -190,11 +190,11 @@ class Analyzer
 					}
 				}
 			}
-			
+
 			unset($visitordataflow);
 		}
-		
-        unset($script);
+
+		unset($script);
 	}
 
 	public function run($context)
@@ -218,7 +218,7 @@ class Analyzer
 		foreach($included_files as $included_file)
 		{
 			if(!in_array($included_file, $files, true) 
-                && !$context->inputs->is_excluded_file($included_file))
+					&& !$context->inputs->is_excluded_file($included_file))
 				$files[] = $included_file;
 		}
 
@@ -230,8 +230,8 @@ class Analyzer
 		else
 		{
 			if(!in_array($context->inputs->get_file(), $files, true) 
-                && !$context->inputs->is_excluded_file($context->inputs->get_file())
-                    && realpath($context->inputs->get_file()))
+					&& !$context->inputs->is_excluded_file($context->inputs->get_file())
+					&& realpath($context->inputs->get_file()))
 				$files[] = realpath($context->inputs->get_file());
 		}
 

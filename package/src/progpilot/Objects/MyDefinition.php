@@ -39,12 +39,15 @@ class MyDefinition extends MyOp {
 	private $cast;
 	private $is_property;
 	private $is_instance;
+	private $is_embeddedbychar;
 
 	public $property;
 
 	public function __construct($var_line, $var_column, $var_name) {
 
 		parent::__construct($var_name, $var_line, $var_column);
+
+		$this->is_embeddedbychar = [];
 
 		$this->is_copy_array = false;
 		$this->value_from_def = null;
@@ -73,12 +76,12 @@ class MyDefinition extends MyOp {
 		$this->is_property = false;
 		$this->is_instance = false;
 	}
-/*
-	public function __destruct()
-	{
-		echo "Mydefinition destruct\n";
-	}
-*/
+	/*
+	   public function __destruct()
+	   {
+	   echo "Mydefinition destruct\n";
+	   }
+	 */
 	public function __clone()
 	{
 		$this->property = clone $this->property;
@@ -87,6 +90,12 @@ class MyDefinition extends MyOp {
 	public function print_stdout()
 	{
 		echo "def name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: assign_id = ".$this->get_assign_id()." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_ref()." :: is_property = ".$this->get_is_property()." :: is_instance = ".$this->get_is_instance()." :: blockid = ".$this->get_block_id()." :: cast = ".$this->get_cast()."\n";
+
+		echo "is_embeddedbychar :\n";
+		var_dump($this->is_embeddedbychar);
+		echo "type_sanitized :\n";
+		var_dump($this->type_sanitized);
+
 		if($this->get_is_array())
 		{
 			echo "array index value :\n";
@@ -124,6 +133,41 @@ class MyDefinition extends MyOp {
 			}
 			echo "copyarray end =================\n";
 		}
+	}
+
+	public function set_is_embeddedbychars($chars, $control)
+	{
+		foreach($chars as $char => $value)
+		{
+			if(!isset($this->is_embeddedbychar[$char]))
+				$this->is_embeddedbychar[$char] = $value;
+
+			else
+			{
+				if(!$value && !$control)
+					$this->is_embeddedbychar[$char] = false;
+				else if($value)
+					$this->is_embeddedbychar[$char] = true;
+			}
+		}
+	}
+
+	public function get_is_embeddedbychars()
+	{
+		return $this->is_embeddedbychar;
+	}
+
+	public function set_is_embeddedbychar($char, $bool)
+	{
+		$this->is_embeddedbychar[$char] = $bool;
+	}
+
+	public function get_is_embeddedbychar($char)
+	{
+		if(isset($this->is_embeddedbychar[$char]))
+			return $this->is_embeddedbychar[$char];
+
+		return false;
 	}
 
 	public function set_is_instance($is_instance)
@@ -176,34 +220,34 @@ class MyDefinition extends MyOp {
 		return $this->last_known_value;
 	}
 
-	
+
 	public function get_myclass($myclass)
 	{
-        foreach($this->myclasses as $one_class)
-        {   
-            if($one_class->get_name() === $myclass->get_name())
-                return $one_class;
-        }
-        
-        return null;
+		foreach($this->myclasses as $one_class)
+		{   
+			if($one_class->get_name() === $myclass->get_name())
+				return $one_class;
+		}
+
+		return null;
 	}
-	
+
 	public function add_myclass($myclass)
 	{
-        $exist = false;
-        foreach($this->myclasses as $one_class)
-        {   
-            if($one_class->get_name() === $myclass->get_name())
-            {
-                $exist = true;
-                break;
-            }
-        }
-        
+		$exist = false;
+		foreach($this->myclasses as $one_class)
+		{   
+			if($one_class->get_name() === $myclass->get_name())
+			{
+				$exist = true;
+				break;
+			}
+		}
+
 		if(!$exist)
 		{
 			$this->myclasses[] = $myclass;
-        }
+		}
 	}
 
 	public function get_all_myclass()

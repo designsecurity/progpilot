@@ -8,6 +8,6 @@ echo "$var7safe3";
 
 $query = addslashes($_GET["p"]);
 
-mysql_query($query);
+mysql_query("select * from table where id = '$query'");
 
 ?>	

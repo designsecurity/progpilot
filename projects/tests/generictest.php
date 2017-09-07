@@ -276,4 +276,30 @@ $framework->add_output("./tests/generic/functionsrec1.php", array("\$var"));
 $framework->add_output("./tests/generic/functionsrec1.php", array("10"));
 $framework->add_output("./tests/generic/functionsrec1.php", "xss");
 
+$framework->add_testbasis("./tests/generic/strings1.php");
+$framework->add_output("./tests/generic/strings1.php", array("\$vuln2"));
+$framework->add_output("./tests/generic/strings1.php", array("7"));
+$framework->add_output("./tests/generic/strings1.php", "command_injection");
+$framework->add_output("./tests/generic/strings1.php", array("\$vuln3"));
+$framework->add_output("./tests/generic/strings1.php", array("11"));
+$framework->add_output("./tests/generic/strings1.php", "command_injection");
+$framework->add_output("./tests/generic/strings1.php", array("\$vuln4"));
+$framework->add_output("./tests/generic/strings1.php", array("15"));
+$framework->add_output("./tests/generic/strings1.php", "command_injection");
+$framework->add_output("./tests/generic/strings1.php", array("\$id1"));
+$framework->add_output("./tests/generic/strings1.php", array("19"));
+$framework->add_output("./tests/generic/strings1.php", "sql_injection");
+$framework->add_output("./tests/generic/strings1.php", array("\$id2"));
+$framework->add_output("./tests/generic/strings1.php", array("22"));
+$framework->add_output("./tests/generic/strings1.php", "sql_injection");
+$framework->add_output("./tests/generic/strings1.php", array("\$id3"));
+$framework->add_output("./tests/generic/strings1.php", array("25"));
+$framework->add_output("./tests/generic/strings1.php", "sql_injection");
+$framework->add_output("./tests/generic/strings1.php", array("\$id5"));
+$framework->add_output("./tests/generic/strings1.php", array("31"));
+$framework->add_output("./tests/generic/strings1.php", "sql_injection");
+$framework->add_output("./tests/generic/strings1.php", array("\$id7"));
+$framework->add_output("./tests/generic/strings1.php", array("35"));
+$framework->add_output("./tests/generic/strings1.php", "sql_injection");
+
 ?>
