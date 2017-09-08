@@ -2,9 +2,7 @@ language: php
  - 7.0.7
 
 install:
- - cd ./projects/tests/tests/
- - git clone https://github.com/stivalet/PHP-Vulnerability-test-suite.git
- - cd ..
+ - cd ./projects/tests/
  - rm composer.lock
  - rm -r vendor/*
  - rmdir vendor/
