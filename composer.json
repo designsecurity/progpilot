@@ -1,6 +1,7 @@
 {
     "name": "designsecurity/progpilot",
     "description": "A Static Analyser for security",
+    "minimum-stability": "dev",
     "license": "MIT",
     "authors": [
         {
