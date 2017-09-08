@@ -46,5 +46,7 @@ else
     mv ./rogpilot.phar ../../builds/${newfile}.phar
 fi
 
-
+rm composer.lock
+rm -r ./vendor/*
+rmdir ./vendor
 
