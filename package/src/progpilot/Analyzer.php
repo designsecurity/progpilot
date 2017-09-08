@@ -57,9 +57,9 @@ class Analyzer
 		if(!is_null($context->inputs->get_file()) || !is_null($context->inputs->get_code()))
 		{
 			/*
-			   $asttraverser = new \PhpParser\NodeTraverser;
-			   $asttraverser->addVisitor(new \PhpParser\NodeVisitor\NameResolver);
-			   $asttraverser->addVisitor($context->outputs->ast);
+				 $asttraverser = new \PhpParser\NodeTraverser;
+				 $asttraverser->addVisitor(new \PhpParser\NodeVisitor\NameResolver);
+				 $asttraverser->addVisitor($context->outputs->ast);
 			 */
 			$astparser = (new \PhpParser\ParserFactory)->create(\PhpParser\ParserFactory::PREFER_PHP7);
 
@@ -218,7 +218,7 @@ class Analyzer
 		foreach($included_files as $included_file)
 		{
 			if(!in_array($included_file, $files, true) 
-					&& !$context->inputs->is_excluded_file($included_file))
+				&& !$context->inputs->is_excluded_file($included_file))
 				$files[] = $included_file;
 		}
 
@@ -230,8 +230,8 @@ class Analyzer
 		else
 		{
 			if(!in_array($context->inputs->get_file(), $files, true) 
-					&& !$context->inputs->is_excluded_file($context->inputs->get_file())
-					&& realpath($context->inputs->get_file()))
+				&& !$context->inputs->is_excluded_file($context->inputs->get_file())
+				&& realpath($context->inputs->get_file()))
 				$files[] = realpath($context->inputs->get_file());
 		}
 

@@ -163,17 +163,17 @@ class ArrayAnalysis {
 		{        
 			if($originaltab->get_is_property())
 				$defs = ResolveDefs::select_properties(
-						$context, 
-						$data, 
-						$originaltab,
-						true);
+					$context, 
+					$data, 
+					$originaltab,
+					true);
 
 			else
 				$defs = ResolveDefs::select_definitions(
-						$context, 
-						$data, 
-						$originaltab,
-						true);
+					$context, 
+					$data, 
+					$originaltab,
+					true);
 
 			if(count($defs) > 0)
 			{

@@ -160,8 +160,8 @@ class MyInputs {
 		foreach($this->resolved_includes as $myinclude)
 		{
 			if($myinclude->get_line() == $line 
-					&& $myinclude->get_column() == $column
-					&& $myinclude->get_source_file() == $source_file)
+				&& $myinclude->get_column() == $column
+				&& $myinclude->get_source_file() == $source_file)
 				return $myinclude;
 		}
 
@@ -336,15 +336,15 @@ class MyInputs {
 					$check_function = true;
 
 				if(($arr_value != false
-							&& $mysource->get_is_array()
-							&& is_null($mysource->get_array_value())) 
-						|| (!$arr_value && !$mysource->get_is_array()))
+					&& $mysource->get_is_array()
+					&& is_null($mysource->get_array_value())) 
+					|| (!$arr_value && !$mysource->get_is_array()))
 					$check_array = true;
 
 				if(($arr_value != false 
-							&& $mysource->get_is_array() 
-							&& !is_null($mysource->get_array_value())
-							&& $mysource->get_array_value() == $arr_value))
+					&& $mysource->get_is_array() 
+					&& !is_null($mysource->get_array_value())
+					&& $mysource->get_array_value() == $arr_value))
 					$check_array = true;
 
 				if($check_array && $check_instance && $check_function)
@@ -463,7 +463,7 @@ class MyInputs {
 				foreach($sanitizers as $sanitizer)
 				{
 					if(!isset($sanitizer->{'name'}) 
-							|| !isset($sanitizer->{'language'}))
+						|| !isset($sanitizer->{'language'}))
 						Utils::print_error(Lang::FORMAT_SANITIZERS);
 
 					$name = $sanitizer->{'name'};
@@ -489,9 +489,9 @@ class MyInputs {
 							if(isset($parameter->{'id'}) && isset($parameter->{'condition'}))
 							{
 								if(is_int($parameter->{'id'}) 
-										&& ($parameter->{'condition'} == "equals"
-											|| $parameter->{'condition'} == "taint"
-											|| $parameter->{'condition'} == "sanitize"))
+									&& ($parameter->{'condition'} == "equals"
+									|| $parameter->{'condition'} == "taint"
+									|| $parameter->{'condition'} == "sanitize"))
 								{
 									if($parameter->{'condition'} == "equals")
 									{
@@ -533,9 +533,9 @@ class MyInputs {
 				foreach($sinks as $sink)
 				{
 					if(!isset($sink->{'name'}) 
-							|| !isset($sink->{'language'})
-							|| !isset($sink->{'attack'})
-							|| !isset($sink->{'cwe'}))
+						|| !isset($sink->{'language'})
+						|| !isset($sink->{'attack'})
+						|| !isset($sink->{'cwe'}))
 						Utils::print_error(Lang::FORMAT_SINKS);
 
 					$name = $sink->{'name'};
@@ -592,7 +592,7 @@ class MyInputs {
 				foreach($sources as $source)
 				{
 					if(!isset($source->{'name'}) 
-							|| !isset($source->{'language'}))
+						|| !isset($source->{'language'}))
 						Utils::print_error(Lang::FORMAT_SOURCES);
 
 					$name = $source->{'name'};
@@ -638,8 +638,8 @@ class MyInputs {
 								$mysource->add_parameter($parameter->{'id'});
 
 								if(isset($parameter->{'is_array'}) 
-										&& $parameter->{'is_array'} 
-										&& isset($parameter->{'array_index'}))
+									&& $parameter->{'is_array'} 
+									&& isset($parameter->{'array_index'}))
 								{
 									$mysource->add_condition_parameter($parameter->{'id'}, MySource::CONDITION_ARRAY, $parameter->{'array_index'});
 								}
@@ -673,7 +673,7 @@ class MyInputs {
 				foreach($validators as $validator)
 				{
 					if(!isset($validator->{'name'}) 
-							|| !isset($validator->{'language'}))
+						|| !isset($validator->{'language'}))
 						Utils::print_error(Lang::FORMAT_VALIDATORS);
 
 					$name = $validator->{'name'};
@@ -689,10 +689,10 @@ class MyInputs {
 							if(isset($parameter->{'id'}) && isset($parameter->{'condition'}))
 							{
 								if(is_int($parameter->{'id'}) 
-										&& ($parameter->{'condition'} == "not_tainted"
-											|| $parameter->{'condition'} == "array_not_tainted"
-											|| $parameter->{'condition'} == "valid"
-											|| $parameter->{'condition'} == "equals"))
+									&& ($parameter->{'condition'} == "not_tainted"
+									|| $parameter->{'condition'} == "array_not_tainted"
+									|| $parameter->{'condition'} == "valid"
+									|| $parameter->{'condition'} == "equals"))
 								{
 									if($parameter->{'condition'} == "equals")
 									{
@@ -740,9 +740,9 @@ class MyInputs {
 				foreach($includes as $include)
 				{
 					if(!isset($include->{'line'}) 
-							|| !isset($include->{'column'})
-							|| !isset($include->{'source_file'})
-							|| !isset($include->{'value'}))
+						|| !isset($include->{'column'})
+						|| !isset($include->{'source_file'})
+						|| !isset($include->{'value'}))
 						Utils::print_error(Lang::FORMAT_INCLUDES);
 
 					if(realpath($include->{'source_file'}))

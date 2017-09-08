@@ -77,10 +77,10 @@ class MyDefinition extends MyOp {
 		$this->is_instance = false;
 	}
 	/*
-	   public function __destruct()
-	   {
-	   echo "Mydefinition destruct\n";
-	   }
+		 public function __destruct()
+		 {
+		 echo "Mydefinition destruct\n";
+		 }
 	 */
 	public function __clone()
 	{

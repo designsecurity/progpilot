@@ -47,9 +47,9 @@ class ResolveDefs {
 				$mydef_tmp->set_is_property(true);
 
 				$instances = ResolveDefs::select_instances(
-						$context, 
-						$data, 
-						$mydef_tmp);
+					$context, 
+					$data, 
+					$mydef_tmp);
 
 				foreach($instances as $instance)
 				{
@@ -96,7 +96,7 @@ class ResolveDefs {
 			$backdef = $myfunc_call->get_back_def();
 
 			$mydef = new MyDefinition(
-					$myfunc_call->getLine(), 
+				$myfunc_call->getLine(), 
 					$myfunc_call->getColumn(), 
 					$myfunc_call->get_name_instance());
 
@@ -107,8 +107,8 @@ class ResolveDefs {
 			$mydef->property->set_properties($backdef->property->get_properties());
 
 			$instances = ResolveDefs::select_instances(
-					$context, 
-					$data->getoutminuskill($mydef->get_block_id()), 
+				$context, 
+				$data->getoutminuskill($mydef->get_block_id()), 
 					$mydef);
 
 			foreach($instances as $instance)
@@ -153,7 +153,7 @@ class ResolveDefs {
 				if(is_null($new_myback_myclass))
 				{
 					$new_myback_myclass = new MyClass(
-							$myclass->getLine(), 
+						$myclass->getLine(), 
 							$myclass->getColumn(),
 							$myclass->get_name());
 					$mybackdef->add_myclass($new_myback_myclass);
@@ -177,7 +177,7 @@ class ResolveDefs {
 					}
 
 					$defs = ResolveDefs::select_definitions($context, 
-							$myfunc->get_defs()->getoutminuskill($mydef->get_block_id()), 
+						$myfunc->get_defs()->getoutminuskill($mydef->get_block_id()), 
 							$mydef);
 
 					foreach($defs as $def_found)
@@ -297,7 +297,7 @@ class ResolveDefs {
 		{
 			// def2 defined after the include so def2 is deeper
 			if(($def2->getLine() > $myfile->getLine()) 
-					|| ($def2->getLine() == $myfile->getLine() &&  $def2->getColumn() >= $myfile->getColumn()))
+				|| ($def2->getLine() == $myfile->getLine() &&  $def2->getColumn() >= $myfile->getColumn()))
 				return false;
 
 			return true;
@@ -309,7 +309,7 @@ class ResolveDefs {
 		{
 			// def1 defined after the include so def1 is deeper
 			if(($def1->getLine() > $myfile->getLine()) 
-					|| ($def1->getLine() == $myfile->getLine() &&  $def1->getColumn() >= $myfile->getColumn()))
+				|| ($def1->getLine() == $myfile->getLine() &&  $def1->getColumn() >= $myfile->getColumn()))
 				return true;
 
 			return false;
@@ -338,8 +338,8 @@ class ResolveDefs {
 			return true;
 
 		if(!is_null($method) 
-				&& $method->get_is_method() 
-				&& $method->get_visibility() === "public")
+			&& $method->get_is_method() 
+			&& $method->get_visibility() === "public")
 			return true;
 
 		return false;
@@ -351,8 +351,8 @@ class ResolveDefs {
 			return true;
 
 		if(!is_null($property) 
-				&& $property->get_is_property() 
-				&& $property->property->get_visibility() === "public")
+			&& $property->get_is_property() 
+			&& $property->property->get_visibility() === "public")
 			return true;
 
 		return false;
@@ -367,10 +367,10 @@ class ResolveDefs {
 		foreach($data as $def)
 		{
 			if($def->get_name() === $defsearch->get_name() 
-					&& $def->get_assign_id() != $defsearch->get_assign_id()
-					&& $def->property->get_properties() === $defsearch->property->get_properties() 
-					&& ResolveDefs::is_nearest($context, $defsearch, $defsearch->getLine(), $defsearch->getColumn(), $def, $def->getLine(), $def->getColumn())
-					&& (($def->get_array_value() === $defsearch->get_array_value()) || ($def->get_is_copy_array() && $defsearch->get_is_array()) || $bypass_isnearest))
+				&& $def->get_assign_id() != $defsearch->get_assign_id()
+				&& $def->property->get_properties() === $defsearch->property->get_properties() 
+				&& ResolveDefs::is_nearest($context, $defsearch, $defsearch->getLine(), $defsearch->getColumn(), $def, $def->getLine(), $def->getColumn())
+				&& (($def->get_array_value() === $defsearch->get_array_value()) || ($def->get_is_copy_array() && $defsearch->get_is_array()) || $bypass_isnearest))
 			{
 				// CA SERT A QUOI ICI REDONDANT AVEC LE DERNIER ?
 				if($def->get_is_instance() && $defsearch->get_is_instance())
@@ -379,7 +379,7 @@ class ResolveDefs {
 				}
 
 				else if(($def->get_is_property() == $defsearch->get_is_property())
-						|| ($def->get_is_instance() == $defsearch->get_is_instance()))
+					|| ($def->get_is_instance() == $defsearch->get_is_instance()))
 				{	
 					if($def->get_is_property() && $defsearch->get_is_property())
 						$defsfound[$def->get_block_id()][] = $def;
@@ -398,7 +398,7 @@ class ResolveDefs {
 
 		// si on a trouvé des defs dans le même bloc que la ou on cherche elles killent les autres	
 		if(isset($defsfound[$defsearch->get_block_id()]) 
-				&& count($defsfound[$defsearch->get_block_id()]) > 0)
+			&& count($defsfound[$defsearch->get_block_id()]) > 0)
 			$defsfound_good[$defsearch->get_block_id()] = $defsfound[$defsearch->get_block_id()];
 		else 
 			$defsfound_good = $defsfound;
@@ -448,10 +448,10 @@ class ResolveDefs {
 		$copy_tempdefa->set_array_value(false);
 
 		$instances_defs = ResolveDefs::select_definitions(
-				$context, 
-				$data, 
-				$copy_tempdefa, 
-				$bypass_isnearest);
+			$context, 
+			$data, 
+			$copy_tempdefa, 
+			$bypass_isnearest);
 
 
 		return $instances_defs;
@@ -478,10 +478,10 @@ class ResolveDefs {
 					$tempdefa_prop->setColumn($prop_column);
 
 					$defs = ResolveDefs::select_definitions(
-							$context, 
-							$data, 
-							$tempdefa_prop,
-							$bypass_visibility);
+						$context, 
+						$data, 
+						$tempdefa_prop,
+						$bypass_visibility);
 
 					$prop = $tempdefa_prop->property->pop_property();
 
@@ -578,14 +578,14 @@ class ResolveDefs {
 	{
 		if($tempdefa->get_is_property())
 			$defs = ResolveDefs::select_properties(
-					$context, 
-					$data->getoutminuskill($tempdefa->get_block_id()), 
+				$context, 
+				$data->getoutminuskill($tempdefa->get_block_id()), 
 					$tempdefa);
 
 		else
 			$defs = ResolveDefs::select_definitions(
-					$context, 
-					$data->getoutminuskill($tempdefa->get_block_id()), 
+				$context, 
+				$data->getoutminuskill($tempdefa->get_block_id()), 
 					$tempdefa);
 
 		$myexpr = $tempdefa->get_exprs()[0]; 
@@ -612,7 +612,7 @@ class ResolveDefs {
 						}
 
 						$truerefs = ResolveDefs::select_definitions($context, 
-								$data->getoutminuskill($refdef->get_block_id()), 
+							$data->getoutminuskill($refdef->get_block_id()), 
 								$refdef); 
 
 						foreach($truerefs as $ref)

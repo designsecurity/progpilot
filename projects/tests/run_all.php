@@ -16,7 +16,7 @@ require_once './testvulntestsuite.php';
 /*
 require_once './vulnsuitetest.php';
 require_once './vulnsuitetesttmp.php';
-*/
+ */
 try {
 
 	foreach($framework->get_testbasis() as $file)

@@ -70,106 +70,106 @@ class VisitorAnalysis {
 		$code = $mycode->get_codes();
 
 		do
+	{
+		if(isset($code[$index]))
 		{
-			if(isset($code[$index]))
+			$instruction = $code[$index];
+
+			switch($instruction->get_opcode())
 			{
-				$instruction = $code[$index];
+			case Opcodes::ENTER_BLOCK:
+			{
+				$myblock = $instruction->get_property("myblock");
+				$this->old_myblock = $this->current_myblock;
+				$this->current_myblock = $myblock;
 
-				switch($instruction->get_opcode())
+				if($this->current_storagemyblocks->contains($myblock))
+					return;
+
+				$this->current_storagemyblocks->attach($myblock);
+
+				foreach($myblock->parents as $blockparent)
 				{
-					case Opcodes::ENTER_BLOCK:
-						{
-							$myblock = $instruction->get_property("myblock");
-							$this->old_myblock = $this->current_myblock;
-							$this->current_myblock = $myblock;
+					$addr_start = $blockparent->get_start_address_block();
+					$addr_end = $blockparent->get_end_address_block();
 
-							if($this->current_storagemyblocks->contains($myblock))
-								return;
+					if(!$this->current_storagemyblocks->contains($blockparent))
+					{
+						$oldindex_start = $mycode->get_start();
+						$oldindex_end = $mycode->get_end();
 
-							$this->current_storagemyblocks->attach($myblock);
+						$mycode->set_start($addr_start);
+						$mycode->set_end($addr_end);
 
-							foreach($myblock->parents as $blockparent)
-							{
-								$addr_start = $blockparent->get_start_address_block();
-								$addr_end = $blockparent->get_end_address_block();
+						$this->analyze($mycode);
 
-								if(!$this->current_storagemyblocks->contains($blockparent))
-								{
-									$oldindex_start = $mycode->get_start();
-									$oldindex_end = $mycode->get_end();
-
-									$mycode->set_start($addr_start);
-									$mycode->set_end($addr_end);
-
-									$this->analyze($mycode);
-
-									$mycode->set_start($oldindex_start);
-									$mycode->set_end($oldindex_end);
+						$mycode->set_start($oldindex_start);
+						$mycode->set_end($oldindex_end);
 								}
 							}
 
 							break;
 						}
 
-					case Opcodes::LEAVE_BLOCK:
-						{
-							$this->current_myblock = $this->old_myblock;
+case Opcodes::LEAVE_BLOCK:
+{
+	$this->current_myblock = $this->old_myblock;
 
-							break;
+	break;
 						}
 
-					case Opcodes::LEAVE_FUNCTION:
-						{
-							$myfunc = $instruction->get_property("myfunc");
-							if($myfunc->get_name() === "{main}")
-								return;
+case Opcodes::LEAVE_FUNCTION:
+{
+	$myfunc = $instruction->get_property("myfunc");
+	if($myfunc->get_name() === "{main}")
+		return;
 
-							$val = array_pop($this->call_stack);
+	$val = array_pop($this->call_stack);
 
-							$this->current_storagemyblocks = $val[2];
-							$this->defs = $val[1];
+	$this->current_storagemyblocks = $val[2];
+	$this->defs = $val[1];
 
-							break;
+	break;
 						}
 
-					case Opcodes::ENTER_FUNCTION:
-						{
-							$myfunc = $instruction->get_property("myfunc");
+case Opcodes::ENTER_FUNCTION:
+{
+	$myfunc = $instruction->get_property("myfunc");
 
-							$val = [$myfunc, $this->defs, $this->current_storagemyblocks];
-							array_push($this->call_stack, $val);
+	$val = [$myfunc, $this->defs, $this->current_storagemyblocks];
+	array_push($this->call_stack, $val);
 
-							$this->current_storagemyblocks = new \SplObjectStorage;
-							$this->defs = $myfunc->get_defs();
+	$this->current_storagemyblocks = new \SplObjectStorage;
+	$this->defs = $myfunc->get_defs();
 
-							break;
+	break;
 						}
 
-					case Opcodes::DEFINITION:
-						{
-							$mydef = $instruction->get_property("def");
+case Opcodes::DEFINITION:
+{
+	$mydef = $instruction->get_property("def");
 
-							break;
+	break;
 						}
 
 
-					case Opcodes::TEMPORARY:
-						{
-							$tempdefa = $instruction->get_property("temporary");
+case Opcodes::TEMPORARY:
+{
+	$tempdefa = $instruction->get_property("temporary");
 
-							$tainted = false;
-							if(!is_null($this->context->inputs->get_source_byname(null, $tempdefa, false, false, $tempdefa->get_array_value())))
-								$tainted = true;
-							$tempdefa->set_tainted($tainted);
+	$tainted = false;
+	if(!is_null($this->context->inputs->get_source_byname(null, $tempdefa, false, false, $tempdefa->get_array_value())))
+		$tainted = true;
+	$tempdefa->set_tainted($tainted);
 
-							$defs = ResolveDefs::temporary_simple($this->context, $this->defs, $tempdefa);
+	$defs = ResolveDefs::temporary_simple($this->context, $this->defs, $tempdefa);
 
-							foreach($defs as $def)
-							{	
-								if($def->get_is_property())
-								{
-									if(!is_null($this->context->inputs->get_source_byname(null, $def, false, $def->get_class_name(), false, $def)))
-										$def->set_tainted(true);
+	foreach($defs as $def)
+	{	
+		if($def->get_is_property())
+		{
+			if(!is_null($this->context->inputs->get_source_byname(null, $def, false, $def->get_class_name(), false, $def)))
+				$def->set_tainted(true);
 								}
 
 								$exprs = $def->get_exprs();
@@ -179,10 +179,10 @@ class VisitorAnalysis {
 									{
 										$defassign = $expr->get_assign_def();
 										/*
-										   echo "__________________________________________1\n";
-										   $tempdefa->print_stdout();
-										   $defassign->print_stdout();
-										   echo "__________________________________________2\n";
+											 echo "__________________________________________1\n";
+											 $tempdefa->print_stdout();
+											 $defassign->print_stdout();
+											 echo "__________________________________________2\n";
 										 */
 										$defassign->last_known_value($def->get_last_known_value());
 										$def->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
@@ -206,33 +206,33 @@ class VisitorAnalysis {
 							break;
 						}
 
-					case Opcodes::FUNC_CALL:
-						{
-							$funcname = $instruction->get_property("funcname");
-							$arr_funccall = $instruction->get_property("arr");
-							$myfunc_call = $instruction->get_property("myfunc_call");
+case Opcodes::FUNC_CALL:
+{
+	$funcname = $instruction->get_property("funcname");
+	$arr_funccall = $instruction->get_property("arr");
+	$myfunc_call = $instruction->get_property("myfunc_call");
 
-							$list_myfunc = [];
+	$list_myfunc = [];
 
-							if($myfunc_call->get_is_method())
-							{
-								$stack_class = ResolveDefs::funccall_class(
-										$this->context, 
-										$this->defs->getoutminuskill($myfunc_call->get_block_id()), 
+	if($myfunc_call->get_is_method())
+	{
+		$stack_class = ResolveDefs::funccall_class(
+			$this->context, 
+			$this->defs->getoutminuskill($myfunc_call->get_block_id()), 
 										$myfunc_call);
 
-								$class_of_funccall_arr = $stack_class[count($stack_class) - 1];
+		$class_of_funccall_arr = $stack_class[count($stack_class) - 1];
 
-								foreach($class_of_funccall_arr as $class_of_funccall)
-								{
-									$method = $class_of_funccall->get_method($funcname);
+		foreach($class_of_funccall_arr as $class_of_funccall)
+		{
+			$method = $class_of_funccall->get_method($funcname);
 
-									if(!ResolveDefs::get_visibility_method($myfunc_call->get_name_instance(), $method))
-										$method = null;
+			if(!ResolveDefs::get_visibility_method($myfunc_call->get_name_instance(), $method))
+				$method = null;
 
-									$list_myfunc[] = $method;
+			$list_myfunc[] = $method;
 
-									TaintAnalysis::funccall_specify_analysis($method, $stack_class, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $class_of_funccall, $myfunc_call, $arr_funccall, $instruction, $index); 
+			TaintAnalysis::funccall_specify_analysis($method, $stack_class, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $class_of_funccall, $myfunc_call, $arr_funccall, $instruction, $index); 
 								}
 
 								// we didn't resolve any class so the class of method is unknown (undefined)
@@ -243,27 +243,27 @@ class VisitorAnalysis {
 
 
 								/*
-								   echo "myfunc_call name = '".$myfunc_call->get_name()."' line = '".$myfunc_call->getLine()."' column = '".$myfunc_call->getColumn()."'\n";
-								   echo "_______________________________________1\n";
-								   var_dump($stack_class);
-								   echo "_______________________________________2\n";
+									 echo "myfunc_call name = '".$myfunc_call->get_name()."' line = '".$myfunc_call->getLine()."' column = '".$myfunc_call->getColumn()."'\n";
+									 echo "_______________________________________1\n";
+									 var_dump($stack_class);
+									 echo "_______________________________________2\n";
 
-								   $mydef_tmp = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance());
-								   $mydef_tmp->set_block_id($myfunc_call->get_block_id());
-								   $mydef_tmp->set_assign_id($myfunc_call->get_back_def()->get_assign_id());
-								   $mydef_tmp->set_source_myfile($myfunc_call->get_source_myfile());
-								   $mydef_tmp->property->set_properties($myfunc_call->get_back_def()->property->get_properties());
+									 $mydef_tmp = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance());
+									 $mydef_tmp->set_block_id($myfunc_call->get_block_id());
+									 $mydef_tmp->set_assign_id($myfunc_call->get_back_def()->get_assign_id());
+									 $mydef_tmp->set_source_myfile($myfunc_call->get_source_myfile());
+									 $mydef_tmp->property->set_properties($myfunc_call->get_back_def()->property->get_properties());
 
-								   $instances = ResolveDefs::select_instances(
-								   $this->context, 
-								   $this->defs->getoutminuskill($mydef_tmp->get_block_id()), 
-								   $mydef_tmp, 
-								   false);
+									 $instances = ResolveDefs::select_instances(
+									 $this->context, 
+									 $this->defs->getoutminuskill($mydef_tmp->get_block_id()), 
+									 $mydef_tmp, 
+									 false);
 
-								   foreach($instances as $instance)
-								   {
-								   if($instance->get_is_instance())
-								   {
+									 foreach($instances as $instance)
+									 {
+									 if($instance->get_is_instance())
+									 {
 								// the class is defined (it's always the case (build-in php or not), see visitorflowanalysis)
 								$myclasses = $instance->get_all_myclass();
 

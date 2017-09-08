@@ -25,8 +25,8 @@ class Common {
 	{
 		$property_name_array = [];
 		/*
-		   if($op instanceof Op\Expr\PropertyFetch && isset($op->var->ops[0]))
-		   $property_name_array = Common::get_name_property($op->var->ops[0]);
+			 if($op instanceof Op\Expr\PropertyFetch && isset($op->var->ops[0]))
+			 $property_name_array = Common::get_name_property($op->var->ops[0]);
 		 */
 
 		if(isset($op->ops[0]))
@@ -121,43 +121,43 @@ class Common {
 	}
 
 	/*
-	   const FLAG_PUBLIC      = 0x01;
-	   const FLAG_PROTECTED   = 0x02;
-	   const FLAG_PRIVATE     = 0x04;
-	   const FLAG_STATIC      = 0x08;
-	   const FLAG_ABSTRACT    = 0x10;
-	   const FLAG_FINAL       = 0x20;
-	   const FLAG_RETURNS_REF = 0x40;
-	   const FLAG_CLOSURE     = 0x80;
+		 const FLAG_PUBLIC      = 0x01;
+		 const FLAG_PROTECTED   = 0x02;
+		 const FLAG_PRIVATE     = 0x04;
+		 const FLAG_STATIC      = 0x08;
+		 const FLAG_ABSTRACT    = 0x10;
+		 const FLAG_FINAL       = 0x20;
+		 const FLAG_RETURNS_REF = 0x40;
+		 const FLAG_CLOSURE     = 0x80;
 	 */
 
 	public static function get_type_visibility($visibility)
 	{
 		switch($visibility)
 		{
-			case 1: return "public";
-			case 2: return "protected";
-			case 4: return "private";
-			default: return "public";
+		case 1: return "public";
+		case 2: return "protected";
+		case 4: return "private";
+		default: return "public";
 		}
 	}
 
 	public static function is_funccall_withoutreturn($op)
 	{
 		if(!(isset($op->result->usages[0])) || (
-					// funccall()[0]
-					!(isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\ArrayDimFetch) &&
-					// test = funccall() // funcccall(funccall())
-					!(isset($op->result->usages[0]) 
-						&& (
-							$op->result->usages[0] instanceof Op\Terminal\Echo_ 
-							|| $op->result->usages[0] instanceof Op\Expr\MethodCall 
-							|| $op->result->usages[0] instanceof Op\Expr\FuncCall 
-							|| $op->result->usages[0] instanceof Op\Expr\Assign 
-							|| $op->result->usages[0] instanceof Op\Expr\Array_
-							|| $op->result->usages[0] instanceof Op\Expr\Include_
-							|| $op->result->usages[0] instanceof Op\Expr\Eval_))))
-			return true;
+			// funccall()[0]
+			!(isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\ArrayDimFetch) &&
+			// test = funccall() // funcccall(funccall())
+			!(isset($op->result->usages[0]) 
+			&& (
+				$op->result->usages[0] instanceof Op\Terminal\Echo_ 
+				|| $op->result->usages[0] instanceof Op\Expr\MethodCall 
+				|| $op->result->usages[0] instanceof Op\Expr\FuncCall 
+				|| $op->result->usages[0] instanceof Op\Expr\Assign 
+				|| $op->result->usages[0] instanceof Op\Expr\Array_
+				|| $op->result->usages[0] instanceof Op\Expr\Include_
+				|| $op->result->usages[0] instanceof Op\Expr\Eval_))))
+				return true;
 
 		return false;
 	}

@@ -55,7 +55,7 @@ class Expr {
 			foreach($array_chars as $char)
 			{
 				if(($one_def->get_is_embeddedbychar($char) % 2 == 1) 
-						&& $myexpr->get_nb_chars($char) > $one_def->get_is_embeddedbychar($char))
+					&& $myexpr->get_nb_chars($char) > $one_def->get_is_embeddedbychar($char))
 					$one_def->set_is_embeddedbychar($char, true);
 
 				else
@@ -136,11 +136,11 @@ class Expr {
 			foreach($op->ops as $ops)
 			{
 				if($ops instanceof Op\Expr\Cast\Int_
-						|| $ops instanceof Op\Expr\Cast\Array_
-						|| $ops instanceof Op\Expr\Cast\Bool_
-						|| $ops instanceof Op\Expr\Cast\Double_
-						|| $ops instanceof Op\Expr\Cast\Object_
-						|| $ops instanceof Op\Expr\Cast\Array_)
+					|| $ops instanceof Op\Expr\Cast\Array_
+					|| $ops instanceof Op\Expr\Cast\Bool_
+					|| $ops instanceof Op\Expr\Cast\Double_
+					|| $ops instanceof Op\Expr\Cast\Object_
+					|| $ops instanceof Op\Expr\Cast\Array_)
 
 					Expr::instruction_internal($defs_ofexpr, $ops->expr, $context, $myexpr, $assign_id, MyDefinition::CAST_SAFE);
 

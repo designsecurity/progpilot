@@ -134,8 +134,8 @@ class MyOutputs {
 			$function_name2 = \progpilot\Utils::print_function($callee);
 
 			if($hashcaller != $hashcallee 
-					&& in_array($function_name1, $real_nodes, true) 
-					&& in_array($function_name2, $real_nodes, true))
+				&& in_array($function_name1, $real_nodes, true) 
+				&& in_array($function_name2, $real_nodes, true))
 			{
 				$linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
 			}

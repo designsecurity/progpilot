@@ -273,8 +273,8 @@ class Transform implements Visitor {
 
 		// for theses objects getline et getcolumn methods exists except for assertion	
 		if($op instanceof Op\Stmt || 
-				($op instanceof Op\Expr && !($op instanceof Op\Expr\Assertion)) || 
-				$op instanceof Op\Terminal)
+			($op instanceof Op\Expr && !($op instanceof Op\Expr\Assertion)) || 
+			$op instanceof Op\Terminal)
 		{
 			if($op->getLine() != -1 && $op->getColumn() != -1)
 			{
@@ -293,10 +293,10 @@ class Transform implements Visitor {
 			$this->parse_condition($inst_start_if, $op->cond->ops);
 		}
 		/*
-		   const TYPE_INCLUDE = 1;
-		   const TYPE_INCLUDE_OPNCE = 2;
-		   const TYPE_REQUIRE = 3;
-		   const TYPE_REQUIRE_ONCE = 4;
+			 const TYPE_INCLUDE = 1;
+			 const TYPE_INCLUDE_OPNCE = 2;
+			 const TYPE_REQUIRE = 3;
+			 const TYPE_REQUIRE_ONCE = 4;
 		 */
 		else if($op instanceof Op\Expr\Include_ && $this->context->get_analyze_includes())
 		{
@@ -305,7 +305,7 @@ class Transform implements Visitor {
 				$continue_include = false;
 
 				$myinclude = $this->context->inputs->get_include_bylocation(
-						$this->context->get_current_line(),
+					$this->context->get_current_line(),
 						$this->context->get_current_column(),
 						$this->context->get_first_file());
 
@@ -326,8 +326,8 @@ class Transform implements Visitor {
 				$file = $this->context->get_path()."/".$name;
 
 				if((!in_array($file, $this->array_includes, true) && $op->type == 2)
-						|| (!in_array($file, $this->array_requires, true) && $op->type == 4)
-						|| ($op->type == 1 || $op->type == 3))
+					|| (!in_array($file, $this->array_requires, true) && $op->type == 4)
+					|| ($op->type == 1 || $op->type == 3))
 				{
 					if($op->type == 2)
 						$this->array_includes[] = $file;
@@ -336,7 +336,7 @@ class Transform implements Visitor {
 						$this->array_requires[] = $file;
 
 					$myfile = new MyFile($file, 
-							$this->context->get_current_line(),
+						$this->context->get_current_line(),
 							$this->context->get_current_column());
 					$myfile->set_included_from_myfile($this->current_myfile);
 
@@ -361,7 +361,7 @@ class Transform implements Visitor {
 				if($this->context->outputs->get_resolve_includes())
 				{
 					$myfile_temp = new MyFile($this->context->get_first_file(),
-							$this->context->get_current_line(),
+						$this->context->get_current_line(),
 							$this->context->get_current_column());
 
 					$this->context->outputs->current_includes_file[] = $myfile_temp;

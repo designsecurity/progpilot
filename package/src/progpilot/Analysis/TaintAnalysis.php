@@ -431,16 +431,16 @@ class TaintAnalysis {
 						$defassign = $expr->get_assign_def();
 
 						/*
-						   if(!$copydefreturn->is_tainted() && $defassign->)
-						   {
-						   $defassign->set_tainted(false);
-						   $defassign->set_taintedbyexpr(null);
-						   $defassign->set_sanitized(false);
-						   $defassign->set_type_sanitized(null);
-						   $defassign->set_is_embeddedbychar("'", false);
-						   $defassign->set_is_embeddedbychar(">", false);
-						   $defassign->set_is_embeddedbychar("<", false);
-						   }
+							 if(!$copydefreturn->is_tainted() && $defassign->)
+							 {
+							 $defassign->set_tainted(false);
+							 $defassign->set_taintedbyexpr(null);
+							 $defassign->set_sanitized(false);
+							 $defassign->set_type_sanitized(null);
+							 $defassign->set_is_embeddedbychar("'", false);
+							 $defassign->set_is_embeddedbychar(">", false);
+							 $defassign->set_is_embeddedbychar("<", false);
+							 }
 						 */
 						TaintAnalysis::set_tainted($context, $data, $copydefreturn, $defassign, $expr, false); 
 					}
