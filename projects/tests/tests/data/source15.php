@@ -2,12 +2,12 @@
 
 class testc1
 {
-	public $object;
+    public $object;
 }
 
 class testc2
 {
-	public $member1;
+    public $member1;
 }
 
 
@@ -28,12 +28,12 @@ echo $inst->object->member2;
 
 class newtestc1
 {
-	public $object;
+    public $object;
 }
 
 class newtestc2
 {
-	public $member1;
+    public $member1;
 }
 
 
@@ -53,7 +53,7 @@ echo $inst1->object->member2;
 
 class newtestc12
 {
-	public $object;
+    public $object;
 }
 
 
@@ -76,4 +76,4 @@ echo $inst123->object->member1;
 
 
 
-?>	
+?>

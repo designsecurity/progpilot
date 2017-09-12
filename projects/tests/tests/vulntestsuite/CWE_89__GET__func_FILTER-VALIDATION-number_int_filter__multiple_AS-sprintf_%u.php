@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 Safe sample
 input : reads the field UserData from the variable $_GET
 Flushes content of $sanitized if the filter number_int_filter is not applied
@@ -8,7 +8,7 @@ construction : use of sprintf via a %u
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -21,7 +21,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -45,9 +45,9 @@ MODIFICATIONS.*/
 $tainted = $_GET['UserData'];
 
 if (filter_var($sanitized, FILTER_VALIDATE_INT))
-  $tainted = $sanitized ;
+    $tainted = $sanitized ;
 else
-  $tainted = "" ;
+    $tainted = "" ;
 
 $query = sprintf("SELECT Trim(a.FirstName) & ' ' & Trim(a.LastName) AS employee_name, a.city, a.street & (' ' +a.housenum) AS address FROM Employees AS a  WHERE a.supervisor=%u", $tainted);
 
@@ -57,10 +57,11 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while($data =mysql_fetch_array($res)){
-print_r($data) ;
-echo "<br />" ;
-} 
+while ($data = mysql_fetch_array($res))
+{
+    print_r($data) ;
+    echo "<br />" ;
+}
 mysql_close($conn);
 
 ?>

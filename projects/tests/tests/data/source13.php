@@ -8,4 +8,4 @@ print("$var1");
 
 print("$var2");
 
-?>	
+?>

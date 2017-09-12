@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 Safe sample
 input : reads the field UserData from the variable $_GET
 sanitize : use of settype_int
@@ -8,7 +8,7 @@ construction : concatenation with simple quote
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -21,7 +21,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -45,9 +45,9 @@ MODIFICATIONS.*/
 $tainted = $_GET['UserData'];
 
 if (settype($tainted, "integer"))
-  $tainted = $tainted ;
+    $tainted = $tainted ;
 else
-  $tainted = 0 ;
+    $tainted = 0 ;
 
 $query = "find / size '". $tainted . "'";
 

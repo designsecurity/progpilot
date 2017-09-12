@@ -8,4 +8,4 @@ $myvar1[11] = "olala";
 
 echo $myvar1[11];
 
-?>	
+?>

@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 Safe sample
 input : Uses popen to read the file /tmp/tainted.txt using cat command
 sanitize : use of settype_int
@@ -8,7 +8,7 @@ construction : concatenation with simple quote
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -21,7 +21,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -47,9 +47,9 @@ $tainted = fread($handle, 4096);
 pclose($handle);
 
 if (settype($tainted, "integer"))
-  $tainted = $tainted ;
+    $tainted = $tainted ;
 else
-  $tainted = 0 ;
+    $tainted = 0 ;
 
 $query = "SELECT * FROM COURSE c WHERE c.id IN (SELECT idcourse FROM REGISTRATION WHERE idstudent='". $tainted . "')";
 
@@ -59,10 +59,11 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while($data =mysql_fetch_array($res)){
-print_r($data) ;
-echo "<br />" ;
-} 
+while ($data = mysql_fetch_array($res))
+{
+    print_r($data) ;
+    echo "<br />" ;
+}
 mysql_close($conn);
 
 ?>

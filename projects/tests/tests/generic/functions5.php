@@ -2,7 +2,7 @@
 
 function testf($param)
 {
-	return [$param, "nono"];
+    return [$param, "nono"];
 }
 
 echo testf($_GET["p"])[0]."olalal";

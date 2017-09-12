@@ -15,19 +15,18 @@ $context->inputs->set_code($code);
 
 echo "AAA\n";
 
-try 
+try
 {
-	$analyzer->run($context);
-}
-catch (Exception $e) 
+    $analyzer->run($context);
+} catch (Exception $e)
 {
-	echo 'Exception : ',  $e->getMessage(), "\n";
+    echo 'Exception : ',  $e->getMessage(), "\n";
 }
 
 $results = $context->outputs->get_results();
-$outputjson = array('results' => $results); 
+$outputjson = array('results' => $results);
 
-var_dump($results); 
+var_dump($results);
 
 ?>
 

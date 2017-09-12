@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 Safe sample
 input : reads the field UserData from the variable $_GET
 sanitize : settype (float)
@@ -8,7 +8,7 @@ construction : use of sprintf via a %d
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -21,7 +21,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -44,10 +44,10 @@ MODIFICATIONS.*/
 
 $tainted = $_GET['UserData'];
 
-if(settype($tainted, "float"))
-  $tainted = $tainted ;
+if (settype($tainted, "float"))
+    $tainted = $tainted ;
 else
-  $tainted = 0.0 ;
+    $tainted = 0.0 ;
 
 $query = sprintf("SELECT * FROM COURSE c WHERE c.id IN (SELECT idcourse FROM REGISTRATION WHERE idstudent=%d)", $tainted);
 
@@ -57,10 +57,11 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while($data =mysql_fetch_array($res)){
-print_r($data) ;
-echo "<br />" ;
-} 
+while ($data = mysql_fetch_array($res))
+{
+    print_r($data) ;
+    echo "<br />" ;
+}
 mysql_close($conn);
 
 ?>

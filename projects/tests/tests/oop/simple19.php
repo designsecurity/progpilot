@@ -2,24 +2,24 @@
 
 class testc1
 {
-	private $member1;
-	
-	public $object1;
-	
-	public function set_object1($val)
-	{
+    private $member1;
+
+    public $object1;
+
+    public function set_object1($val)
+    {
         $this->object1 = $val;
-	}
+    }
 };
 
 class testc2
 {
-	public $object2;
-	
-	public function set_object2($val)
-	{
+    public $object2;
+
+    public function set_object2($val)
+    {
         $this->object2 = $val;
-	}
+    }
 };
 
 $testc1 = new testc1;
@@ -70,6 +70,6 @@ echo $testc1_encore2->member1;
 
 echo $val;
 
-?> 
+?>
 
 

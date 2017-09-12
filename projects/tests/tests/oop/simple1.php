@@ -2,9 +2,9 @@
 
 class testc1
 {
-	private $boum1;
-	public $boum2;
-	protected $boum3;
+    private $boum1;
+    public $boum2;
+    protected $boum3;
 };
 
 $instance1 = new testc1;

@@ -7,4 +7,4 @@ $var2 = $var1->methodc1();
 print("$var2");
 
 
-?>	
+?>

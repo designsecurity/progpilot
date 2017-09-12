@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 Safe sample
 input : backticks interpretation, reading the file /tmp/tainted.txt
 sanitize : check if there is only numbers
@@ -8,7 +8,7 @@ construction : use of sprintf via a %u with simple quote
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -21,7 +21,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -42,14 +42,15 @@ OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
 MODIFICATIONS.*/
 
 
-$tainted = `cat /tmp/tainted.txt`;
+$tainted = `cat / tmp / tainted.txt`;
 
 $re = "/^[0-9]*$/";
-if(preg_match($re, $tainted) == 1){
-  $tainted = $tainted;
-}
-else{
-  $tainted = "";
+if (preg_match($re, $tainted) == 1)
+{
+    $tainted = $tainted;
+} else
+{
+    $tainted = "";
 }
 
 $query = sprintf("SELECT * FROM student where id='%u'", $tainted);
@@ -60,10 +61,11 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while($data =mysql_fetch_array($res)){
-print_r($data) ;
-echo "<br />" ;
-} 
+while ($data = mysql_fetch_array($res))
+{
+    print_r($data) ;
+    echo "<br />" ;
+}
 mysql_close($conn);
 
 ?>

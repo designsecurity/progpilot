@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 Unsafe sample
 input : get the field userData from the variable $_GET via an object
 sanitize : use of the function htmlspecialchars. Sanitizes the query but has a high chance to produce unexpected results
@@ -8,7 +8,7 @@ construction : interpretation with simple quote
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -21,7 +21,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -42,10 +42,12 @@ OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
 MODIFICATIONS.*/
 
 
-class Input{
-  public function getInput(){
-    return $_GET['UserData'] ;
-  }
+class Input
+{
+    public function getInput()
+    {
+        return $_GET['UserData'] ;
+    }
 }
 
 $temp = new Input();
@@ -56,9 +58,9 @@ $tainted = htmlspecialchars($tainted, ENT_QUOTES);
 $query = "!name=' $tainted '";
 
 //flaw
-$ds=ldap_connect("localhost"); 
-$r=ldap_bind($ds);
-$sr=ldap_search($ds,"o=My Company, c=US", $query);  
+$ds = ldap_connect("localhost");
+$r = ldap_bind($ds);
+$sr = ldap_search($ds, "o=My Company, c=US", $query);
 ldap_close($ds);
 
 ?>

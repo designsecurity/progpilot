@@ -2,8 +2,8 @@
 
 class testc1
 {
-	private $boum1;
-	public $boum2;
+    private $boum1;
+    public $boum2;
 };
 
 $instance1 = new testc1;
@@ -17,4 +17,4 @@ echo $instance1->boum2;
 
    echo $instance1->boum2;
  */
-?> 
+?>

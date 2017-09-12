@@ -26,7 +26,6 @@ See also the list of [contributors](https://github.com/designsecurity/progpilot/
 There is a lot of tasks to do :
 - Global variables
 - Object heritage
-- Htmlentities ENT_QUOTES
 - Better analysis of conditions
 - Circular includes
 - Passing by reference
@@ -37,9 +36,7 @@ There is a lot of tasks to do :
 - Cast expression : ((int) ($taint)).$taint
 - If property hasn't been declared but used later (class { miss public $property;})
 - Chained functions calls : $obj->func1()->func2()
-- Safe command : system("ls ' ".htmlentities($tainted, ENT_QUOTES)." '"); ie : understanding of context : command or only command argument
 - Sprintf strings transformations
-- CWE_89__shell_exec__func_mysql_real_escape_string__multiple_select-interpretation.php : unsafe query without '' select from id = $tainted;
 - No need to new for simplexml_load_file (return $instance) so we miss object creation
 - $tainted = $tainted + 0; => cast to int
 - Specials rules : missing set_cookies secure or twig default escaping for examples

@@ -10,4 +10,4 @@ echo func1arr()["tainted"];
 echo func1arr();
 
 
-?>	
+?>

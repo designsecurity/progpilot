@@ -2,9 +2,9 @@
 
 function testf1($param)
 {
-	$arr[8989][1] = $param;
-	$arr[8989][2] = "olalal";
-	return [$arr, "nono"];
+    $arr[8989][1] = $param;
+    $arr[8989][2] = "olalal";
+    return [$arr, "nono"];
 }
 
 $ret = testf1($_GET["p"]);

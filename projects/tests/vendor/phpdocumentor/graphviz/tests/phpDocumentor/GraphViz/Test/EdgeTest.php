@@ -156,12 +156,12 @@ class EdgeTest extends \PHPUnit_Framework_TestCase
         $this->fixture->setLabel('MyLabel');
         $this->fixture->setWeight(45);
 
-        $dot = <<<DOT
-"from" -> "to" [
-label="MyLabel"
-weight="45"
-]
-DOT;
+        $dot = <<< DOT
+               "from" -> "to" [
+            label = "MyLabel"
+                           weight = "45"
+        ]
+               DOT;
 
         $this->assertSame($dot, (string) $this->fixture);
     }

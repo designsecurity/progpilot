@@ -67,54 +67,54 @@ class Unescaper
     private function unescapeCharacter($value)
     {
         switch ($value[1]) {
-            case '0':
-                return "\x0";
-            case 'a':
-                return "\x7";
-            case 'b':
-                return "\x8";
-            case 't':
-                return "\t";
-            case "\t":
-                return "\t";
-            case 'n':
-                return "\n";
-            case 'v':
-                return "\xB";
-            case 'f':
-                return "\xC";
-            case 'r':
-                return "\r";
-            case 'e':
-                return "\x1B";
-            case ' ':
-                return ' ';
-            case '"':
-                return '"';
-            case '/':
-                return '/';
-            case '\\':
-                return '\\';
-            case 'N':
-                // U+0085 NEXT LINE
-                return "\xC2\x85";
-            case '_':
-                // U+00A0 NO-BREAK SPACE
-                return "\xC2\xA0";
-            case 'L':
-                // U+2028 LINE SEPARATOR
-                return "\xE2\x80\xA8";
-            case 'P':
-                // U+2029 PARAGRAPH SEPARATOR
-                return "\xE2\x80\xA9";
-            case 'x':
-                return self::utf8chr(hexdec(substr($value, 2, 2)));
-            case 'u':
-                return self::utf8chr(hexdec(substr($value, 2, 4)));
-            case 'U':
-                return self::utf8chr(hexdec(substr($value, 2, 8)));
-            default:
-                throw new ParseException(sprintf('Found unknown escape character "%s".', $value));
+        case '0':
+            return "\x0";
+        case 'a':
+            return "\x7";
+        case 'b':
+            return "\x8";
+        case 't':
+            return "\t";
+        case "\t":
+            return "\t";
+        case 'n':
+            return "\n";
+        case 'v':
+            return "\xB";
+        case 'f':
+            return "\xC";
+        case 'r':
+            return "\r";
+        case 'e':
+            return "\x1B";
+        case ' ':
+            return ' ';
+        case '"':
+            return '"';
+        case '/':
+            return '/';
+        case '\\':
+            return '\\';
+        case 'N':
+            // U+0085 NEXT LINE
+            return "\xC2\x85";
+        case '_':
+            // U+00A0 NO-BREAK SPACE
+            return "\xC2\xA0";
+        case 'L':
+            // U+2028 LINE SEPARATOR
+            return "\xE2\x80\xA8";
+        case 'P':
+            // U+2029 PARAGRAPH SEPARATOR
+            return "\xE2\x80\xA9";
+        case 'x':
+            return self::utf8chr(hexdec(substr($value, 2, 2)));
+        case 'u':
+            return self::utf8chr(hexdec(substr($value, 2, 4)));
+        case 'U':
+            return self::utf8chr(hexdec(substr($value, 2, 8)));
+        default:
+            throw new ParseException(sprintf('Found unknown escape character "%s".', $value));
         }
     }
 

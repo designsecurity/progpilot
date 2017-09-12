@@ -2,10 +2,10 @@
 
 function testf1($param)
 {
-	echo $param;
+    echo $param;
 }
 
-if(testf1($_GET["p"]))
-echo "oulala";
+if (testf1($_GET["p"]))
+    echo "oulala";
 
 ?>

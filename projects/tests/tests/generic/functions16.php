@@ -2,7 +2,7 @@
 
 function testf1($var_param)
 {
-	echo $var_param[1][12];
+    echo $var_param[1][12];
 }
 
 $var[1][11] = "kkk";

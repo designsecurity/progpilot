@@ -12,37 +12,39 @@ namespace progpilot\Representations;
 
 use progpilot\Code\Opcodes;
 
-class Callgraph {
+class Callgraph
+{
 
-	private $nodes;
-	private $edges; 
-	private $current_func;
+    private $nodes;
+    private $edges;
+    private $current_func;
 
-	public function __construct() {
+    public function __construct()
+    {
 
-		$this->nodes = [];
-		$this->edges = []; 
-	}
+        $this->nodes = [];
+        $this->edges = [];
+    }
 
-	public function get_nodes()
-	{
-		return $this->nodes;
-	}
+    public function get_nodes()
+    {
+        return $this->nodes;
+    }
 
-	public function get_edges()
-	{
-		return $this->edges;
-	}
+    public function get_edges()
+    {
+        return $this->edges;
+    }
 
-	public function add_node($func)
-	{
-		$this->nodes[] = $func;
-	}
+    public function add_node($func)
+    {
+        $this->nodes[] = $func;
+    }
 
-	public function add_edge($caller, $callee)
-	{
-		$this->edges[] = [$caller, $callee];
-	}
+    public function add_edge($caller, $callee)
+    {
+        $this->edges[] = [$caller, $callee];
+    }
 }
 
 ?>

@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 Safe sample
 input : execute a ls command using the function system, and put the last result in $tainted
 Uses a magic_quotes_filter via filter_var function
@@ -8,7 +8,7 @@ construction : concatenation with simple quote
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -21,7 +21,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -45,8 +45,8 @@ MODIFICATIONS.*/
 $tainted = system('ls', $retval);
 
 $sanitized = filter_var($tainted, FILTER_SANITIZE_MAGIC_QUOTES);
-  $tainted = $sanitized ;
-      
+$tainted = $sanitized ;
+
 
 $query = "SELECT * FROM '". $tainted . "'";
 
@@ -56,10 +56,11 @@ mysql_select_db('dbname') ;
 
 $res = mysql_query($query); //execution
 
-while($data =mysql_fetch_array($res)){
-print_r($data) ;
-echo "<br />" ;
-} 
+while ($data = mysql_fetch_array($res))
+{
+    print_r($data) ;
+    echo "<br />" ;
+}
 mysql_close($conn);
 
 ?>

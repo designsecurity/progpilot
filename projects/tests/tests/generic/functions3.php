@@ -2,9 +2,9 @@
 
 function testf($parama, $boum, $tchka)
 {
-	$safea = htmlentities($parama);
+    $safea = htmlentities($parama);
 
-	return [$parama, $safea];
+    return [$parama, $safea];
 }
 
 $a = $_GET["attack"];
@@ -15,4 +15,4 @@ echo $arraysafe[0];
 echo $arraysafe[1];
 
 
-?>	
+?>

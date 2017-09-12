@@ -130,10 +130,10 @@ class Node
 
         $name = addslashes($this->getName());
 
-        return <<<DOT
-"{$name}" [
-$attributes
-]
-DOT;
+        return <<< DOT
+               "{$name}" [
+                   $attributes
+        ]
+               DOT;
     }
 }

@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 Unsafe sample
 input : get the field userData from the variable $_GET via an object
 Uses an email_filter via filter_var function
@@ -8,7 +8,7 @@ construction : interpretation with simple quote
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -21,7 +21,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -42,10 +42,12 @@ OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
 MODIFICATIONS.*/
 
 
-class Input{
-  public function getInput(){
-    return $_GET['UserData'] ;
-  }
+class Input
+{
+    public function getInput()
+    {
+        return $_GET['UserData'] ;
+    }
 }
 
 $temp = new Input();
@@ -53,9 +55,9 @@ $tainted =  $temp->getInput();
 
 $sanitized = filter_var($tainted, FILTER_SANITIZE_EMAIL);
 if (filter_var($sanitized, FILTER_VALIDATE_EMAIL))
-  $tainted = $sanitized ;
+    $tainted = $sanitized ;
 else
-  $tainted = "" ;
+    $tainted = "" ;
 
 $query = "SELECT lastname, firstname FROM drivers, vehicles WHERE drivers.id = vehicles.ownerid AND vehicles.tag=' $tainted '";
 
@@ -66,10 +68,11 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while($data =mysql_fetch_array($res)){
-print_r($data) ;
-echo "<br />" ;
-} 
+while ($data = mysql_fetch_array($res))
+{
+    print_r($data) ;
+    echo "<br />" ;
+}
 mysql_close($conn);
 
 ?>

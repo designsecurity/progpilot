@@ -6,4 +6,4 @@ echo '$myvar1';
 
 echo $myvar1;
 
-?>	
+?>

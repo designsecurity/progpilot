@@ -55,7 +55,8 @@ class Edge
      *
      * @return \phpDocumentor\GraphViz\Edge
      */
-    public static function create(Node $from, Node $to) {
+    public static function create(Node $from, Node $to)
+    {
         return new self($from, $to);
     }
 
@@ -126,10 +127,10 @@ class Edge
         $from_name = addslashes($this->getFrom()->getName());
         $to_name   = addslashes($this->getTo()->getName());
 
-        return <<<DOT
-"$from_name" -> "$to_name" [
-$attributes
-]
-DOT;
+        return <<< DOT
+               "$from_name" -> "$to_name" [
+            $attributes
+        ]
+               DOT;
     }
 }

@@ -17,78 +17,69 @@ require_once './testvulntestsuite.php';
 require_once './vulnsuitetest.php';
 require_once './vulnsuitetesttmp.php';
  */
-try {
+try
+{
 
-	foreach($framework->get_testbasis() as $file)
-	{
-		$context = new \progpilot\Context;
-		$analyzer = new \progpilot\Analyzer;
+    foreach ($framework->get_testbasis() as $file) {
+        $context = new \progpilot\Context;
+        $analyzer = new \progpilot\Analyzer;
 
-		$context->inputs->set_sources("./data/sources.json");
-		$context->inputs->set_sinks("./data/sinks.json");
-		$context->inputs->set_sanitizers("./data/sanitizers.json");
-		$context->inputs->set_validators("./data/validators.json");
-		$context->inputs->set_file($file);
+        $context->inputs->set_sources("./data/sources.json");
+        $context->inputs->set_sinks("./data/sinks.json");
+        $context->inputs->set_sanitizers("./data/sanitizers.json");
+        $context->inputs->set_validators("./data/validators.json");
+        $context->inputs->set_file($file);
 
-		$context->outputs->tainted_flow(true);
+        $context->outputs->tainted_flow(true);
 
-		//$context->set_analyze_includes(false);
+        //$context->set_analyze_includes(false);
 
-		if($file == "./tests/includes/simple5.php")
-		{
-			//$context->outputs->resolve_includes_file("./tests/includes/includes_simple5.txt");
-			//$context->outputs->resolve_includes(true);
+        if ($file == "./tests/includes/simple5.php") {
+            //$context->outputs->resolve_includes_file("./tests/includes/includes_simple5.txt");
+            //$context->outputs->resolve_includes(true);
 
-			$context->inputs->set_resolved_includes("./tests/includes/resolved_includes_simple5.txt");      
-		}
+            $context->inputs->set_resolved_includes("./tests/includes/resolved_includes_simple5.txt");
+        }
 
-		try 
-		{
-			$analyzer->run($context);
-		}
-		catch (Exception $e) 
-		{
-			echo 'Exception : ',  $e->getMessage(), "\n";
-		}
+        try {
+            $analyzer->run($context);
+        } catch (Exception $e) {
+            echo 'Exception : ',  $e->getMessage(), "\n";
+        }
 
-		$results = $context->outputs->get_results();
-		$outputjson = array('results' => $results); 
-		$parsed_json = $outputjson["results"];
+        $results = $context->outputs->get_results();
+        $outputjson = array('results' => $results);
+        $parsed_json = $outputjson["results"];
 
-		$result_test = false;
+        $result_test = false;
 
-		if(is_array($parsed_json) && count($parsed_json) > 0)
-		{
-			foreach($parsed_json as $vuln)
-			{
-				$result_test = true;
-				$basis_outputs = [
-					$vuln['source_name'],
-					$vuln['source_line'],
-					$vuln['vuln_name']];
+        if (is_array($parsed_json) && count($parsed_json) > 0) {
+            foreach ($parsed_json as $vuln) {
+                $result_test = true;
+                $basis_outputs = [
+                                     $vuln['source_name'],
+                                     $vuln['source_line'],
+                                     $vuln['vuln_name']];
 
-				if(!$framework->check_outputs($file, $basis_outputs))
-				{
-					$result_test = false;
-					break;
-				}
-			}
-		}
-		else
-		{
-			if(count($framework->get_output($file)) == 0)
-				$result_test = true;
-		}
+                if (!$framework->check_outputs($file, $basis_outputs)) {
+                    $result_test = false;
+                    break;
+                }
+            }
+        } else {
+            if (count($framework->get_output($file)) == 0)
+                $result_test = true;
+        }
 
-		if(!$result_test)
-		{
-			echo "[$file] test result ko\n";
-			var_dump($parsed_json);
-		}
-	}
+        if (!$result_test) {
+            echo "[$file] test result ko\n";
+            var_dump($parsed_json);
+        }
+    }
 
-} catch (\RuntimeException $e) {
-	$result = $e->getMessage();
+} catch (\RuntimeException $e)
+{
+    $result = $e->getMessage();
 }
 
 ?>

@@ -8,4 +8,4 @@ $copy = $newmyarr;
 echo $copy[11];
 echo $copy[12];
 
-?>	
+?>

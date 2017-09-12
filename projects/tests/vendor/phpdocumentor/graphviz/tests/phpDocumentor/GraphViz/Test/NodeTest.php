@@ -125,13 +125,13 @@ class NodeTest extends \PHPUnit_Framework_TestCase
         $this->fixture->setfontsize(12);
         $this->fixture->setfontname('Bitstream Vera Sans');
 
-        $dot = <<<DOT
-"name" [
-label="label"
-fontsize="12"
-fontname="Bitstream Vera Sans"
-]
-DOT;
+        $dot = <<< DOT
+               "name" [
+                   label = "label"
+                           fontsize = "12"
+                                      fontname = "Bitstream Vera Sans"
+               ]
+               DOT;
 
         $this->assertSame($dot, (string) $this->fixture);
     }
@@ -148,13 +148,13 @@ DOT;
         $this->fixture->setfontname('Bitstream Vera Sans');
         $this->fixture->setLabel('\phpDocumentor\Descriptor\ProjectDescriptor');
 
-        $dot = <<<DOT
-"name" [
-label="\\\\phpDocumentor\\\\Descriptor\\\\ProjectDescriptor"
-fontsize="12"
-fontname="Bitstream Vera Sans"
-]
-DOT;
+        $dot = <<< DOT
+               "name" [
+                   label = "\\\\phpDocumentor\\\\Descriptor\\\\ProjectDescriptor"
+                           fontsize = "12"
+                                      fontname = "Bitstream Vera Sans"
+               ]
+               DOT;
 
         $this->assertSame($dot, (string) $this->fixture);
     }

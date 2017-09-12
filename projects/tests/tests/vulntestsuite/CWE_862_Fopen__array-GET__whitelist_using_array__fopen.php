@@ -1,6 +1,6 @@
 <?php
 /*
-/* 
+/*
 Safe sample
 input : get the $_GET['userData'] in an array
 SANITIZE : use in_array to check if $tainted is in the white list
@@ -9,7 +9,7 @@ construction : fopen
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -22,7 +22,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -50,14 +50,16 @@ $array[] = 'safe' ;
 $tainted = $array[1] ;
 
 $legal_table = array("safe1", "safe2");
-if (in_array($tainted, $legal_table, true)) {
-  $tainted = $tainted;
-} else {
-  $tainted = $legal_table[0];
+if (in_array($tainted, $legal_table, true))
+{
+    $tainted = $tainted;
+} else
+{
+    $tainted = $legal_table[0];
 }
 
 
 $var = fopen($tainted, "r");
 
 
- ?>
+?>

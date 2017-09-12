@@ -2,10 +2,10 @@
 
 class testccc1
 {
-	public function mysanitizer()
-	{
+    public function mysanitizer()
+    {
 
-	}
+    }
 }
 
 $instance = new testccc1;
@@ -16,4 +16,4 @@ echo "$ret";
 
 mysql_query($ret);
 
-?>	
+?>

@@ -12,7 +12,7 @@ $framework->add_output("./tests/oop/simple2.php", "xss");
 
 $framework->add_testbasis("./tests/oop/simple3.php");
 $framework->add_output("./tests/oop/simple3.php", array("\$_GET[\"p\"]"));
-$framework->add_output("./tests/oop/simple3.php", array("9"));
+$framework->add_output("./tests/oop/simple3.php", array("10"));
 $framework->add_output("./tests/oop/simple3.php", "xss");
 
 $framework->add_testbasis("./tests/oop/simple4.php");
@@ -22,12 +22,12 @@ $framework->add_output("./tests/oop/simple4.php", "xss");
 
 $framework->add_testbasis("./tests/oop/simple5.php");
 $framework->add_output("./tests/oop/simple5.php", array("\$instance->boum1"));
-$framework->add_output("./tests/oop/simple5.php", array("29"));
+$framework->add_output("./tests/oop/simple5.php", array("28"));
 $framework->add_output("./tests/oop/simple5.php", "xss");
 
 $framework->add_testbasis("./tests/oop/simple6.php");
 $framework->add_output("./tests/oop/simple6.php", array("\$instance->boum1"));
-$framework->add_output("./tests/oop/simple6.php", array("27"));
+$framework->add_output("./tests/oop/simple6.php", array("26"));
 $framework->add_output("./tests/oop/simple6.php", "xss");
 
 $framework->add_testbasis("./tests/oop/simple7.php");
@@ -108,10 +108,10 @@ $framework->add_output("./tests/oop/simple20.php", "xss");
 
 $framework->add_testbasis("./tests/oop/simple21.php");
 $framework->add_output("./tests/oop/simple21.php", array("\$query"));
-$framework->add_output("./tests/oop/simple21.php", array("19"));
+$framework->add_output("./tests/oop/simple21.php", array("23"));
 $framework->add_output("./tests/oop/simple21.php", "xml_injection");
 $framework->add_output("./tests/oop/simple21.php", array("\$res"));
-$framework->add_output("./tests/oop/simple21.php", array("24"));
+$framework->add_output("./tests/oop/simple21.php", array("28"));
 $framework->add_output("./tests/oop/simple21.php", "xss");
 
 

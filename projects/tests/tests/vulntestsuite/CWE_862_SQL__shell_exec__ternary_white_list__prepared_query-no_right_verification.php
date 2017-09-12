@@ -1,6 +1,6 @@
 <?php
 /*
-/* 
+/*
 Safe sample
 input : use shell_exec to cat /tmp/tainted.txt
 sanitize : use of ternary condition
@@ -9,7 +9,7 @@ construction : prepared query and no right verification
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -22,7 +22,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -55,4 +55,4 @@ $stmt->bind_param("i", $checked_data);
 $stmt->execute();
 mysql_close($conn);
 
- ?>
+?>

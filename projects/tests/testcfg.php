@@ -14,18 +14,17 @@ $context->inputs->set_validators("./data/validators.json");
 $context->set_analyze_js(false);
 $context->set_analyze_includes(false);
 $context->inputs->set_code($code);
-try 
+try
 {
-	$analyzer->run($context);
-}
-catch (Exception $e) 
+    $analyzer->run($context);
+} catch (Exception $e)
 {
-	echo 'Exception : ',  $e->getMessage(), "\n";
+    echo 'Exception : ',  $e->getMessage(), "\n";
 }
 
 $results = $context->outputs->get_ast();
 
-var_dump($results); 
+var_dump($results);
 ?>
 
 

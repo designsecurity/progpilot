@@ -191,8 +191,8 @@ class Parser
                     );
                 } else {
                     if (isset($values['leadspaces'])
-                        && self::preg_match('#^(?P<key>'.Inline::REGEX_QUOTED_STRING.'|[^ \'"\{\[].*?) *\:(\s+(?P<value>.+?))?\s*$#u', $this->trimTag($values['value']), $matches)
-                    ) {
+                            && self::preg_match('#^(?P<key>'.Inline::REGEX_QUOTED_STRING.'|[^ \'"\{\[].*?) *\:(\s+(?P<value>.+?))?\s*$#u', $this->trimTag($values['value']), $matches)
+                       ) {
                         // this is a compact notation element, add to next block and parse
                         $block = $values['value'];
                         if ($this->isNextLineIndented()) {
@@ -984,23 +984,23 @@ class Parser
     {
         if (false === $ret = preg_match($pattern, $subject, $matches, $flags, $offset)) {
             switch (preg_last_error()) {
-                case PREG_INTERNAL_ERROR:
-                    $error = 'Internal PCRE error.';
-                    break;
-                case PREG_BACKTRACK_LIMIT_ERROR:
-                    $error = 'pcre.backtrack_limit reached.';
-                    break;
-                case PREG_RECURSION_LIMIT_ERROR:
-                    $error = 'pcre.recursion_limit reached.';
-                    break;
-                case PREG_BAD_UTF8_ERROR:
-                    $error = 'Malformed UTF-8 data.';
-                    break;
-                case PREG_BAD_UTF8_OFFSET_ERROR:
-                    $error = 'Offset doesn\'t correspond to the begin of a valid UTF-8 code point.';
-                    break;
-                default:
-                    $error = 'Error.';
+            case PREG_INTERNAL_ERROR:
+                $error = 'Internal PCRE error.';
+                break;
+            case PREG_BACKTRACK_LIMIT_ERROR:
+                $error = 'pcre.backtrack_limit reached.';
+                break;
+            case PREG_RECURSION_LIMIT_ERROR:
+                $error = 'pcre.recursion_limit reached.';
+                break;
+            case PREG_BAD_UTF8_ERROR:
+                $error = 'Malformed UTF-8 data.';
+                break;
+            case PREG_BAD_UTF8_OFFSET_ERROR:
+                $error = 'Offset doesn\'t correspond to the begin of a valid UTF-8 code point.';
+                break;
+            default:
+                $error = 'Error.';
             }
 
             throw new ParseException($error);

@@ -7,23 +7,23 @@
 
 class known_class1
 {
-	public $middle_object;
+    public $middle_object;
 };
 
 class known_middle_class2
 {
-	public function mysink()
-	{
+    public function mysink()
+    {
 
-	}
+    }
 }
 
 class unknown_middle_class2
 {
-	public function mysink()
-	{
+    public function mysink()
+    {
 
-	}
+    }
 };
 
 // 1)b) : should be found by this sink declaration : {"name" : "mysink", "instanceof" : "known_middle_class2"}
@@ -74,4 +74,4 @@ $instance3->middle_object = new unknown_middle_class2;
 $instance3->middle_object->mysink($_GET["p"]);
 
 
-?>	
+?>

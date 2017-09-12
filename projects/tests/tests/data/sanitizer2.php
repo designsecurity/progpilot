@@ -6,4 +6,4 @@ $var7safe3 = addslashes($var7);
 
 echo "$var7safe3";
 
-?>	
+?>

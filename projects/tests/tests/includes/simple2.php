@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require("simple2_require.php");
 

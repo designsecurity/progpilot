@@ -10,11 +10,13 @@
 
 namespace progpilot\Outputs;
 
-class MyResult {
+class MyResult
+{
 
-	public function __construct() {
+    public function __construct()
+    {
 
-	}
+    }
 }
 
 ?>

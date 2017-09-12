@@ -6,4 +6,4 @@ echo $arr[0];
 echo $arr[1];
 
 
-?>	
+?>

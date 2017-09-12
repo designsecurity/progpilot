@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 Unsafe sample
 input : Get a serialize string in POST and unserialize it
 Flushes content of $sanitized if the filter email_filter is not applied
@@ -8,7 +8,7 @@ construction : concatenation with simple quote
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -21,7 +21,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -44,12 +44,12 @@ MODIFICATIONS.*/
 
 $string = $_POST['UserData'] ;
 $tainted = unserialize($string);
-    
+
 
 if (filter_var($tainted, FILTER_VALIDATE_EMAIL))
-  $tainted = $tainted ;
+    $tainted = $tainted ;
 else
-  $tainted = "" ;
+    $tainted = "" ;
 
 $query = "cat '". $tainted . "'";
 

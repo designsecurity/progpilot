@@ -20,4 +20,4 @@ echo "$var7safe3";
 
 echo "$var7";
 
-?>	
+?>

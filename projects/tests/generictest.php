@@ -2,7 +2,7 @@
 
 $framework->add_testbasis("./tests/generic/alias1.php");
 $framework->add_output("./tests/generic/alias1.php", array("\$var1"));
-$framework->add_output("./tests/generic/alias1.php", array("9"));
+$framework->add_output("./tests/generic/alias1.php", array("8"));
 $framework->add_output("./tests/generic/alias1.php", "xss");
 
 $framework->add_testbasis("./tests/generic/alias2.php");
@@ -32,12 +32,12 @@ $framework->add_output("./tests/generic/mix1.php", "xss");
 
 $framework->add_testbasis("./tests/generic/mix2.php");
 $framework->add_output("./tests/generic/mix2.php", array("\$var1"));
-$framework->add_output("./tests/generic/mix2.php", array("9"));
+$framework->add_output("./tests/generic/mix2.php", array("8"));
 $framework->add_output("./tests/generic/mix2.php", "xss");
 
 $framework->add_testbasis("./tests/generic/mix3.php");
 $framework->add_output("./tests/generic/mix3.php", array("\$var2"));
-$framework->add_output("./tests/generic/mix3.php", array("12"));
+$framework->add_output("./tests/generic/mix3.php", array("11"));
 $framework->add_output("./tests/generic/mix3.php", "xss");
 
 $framework->add_testbasis("./tests/generic/simple1.php");
@@ -137,7 +137,7 @@ $framework->add_output("./tests/generic/arrays11.php", "xss");
 
 $framework->add_testbasis("./tests/generic/arrays12.php");
 $framework->add_output("./tests/generic/arrays12.php", array("\$var1[1]"));
-$framework->add_output("./tests/generic/arrays12.php", array("9"));
+$framework->add_output("./tests/generic/arrays12.php", array("8"));
 $framework->add_output("./tests/generic/arrays12.php", "xss");
 
 $framework->add_testbasis("./tests/generic/arrays13.php");
@@ -147,7 +147,7 @@ $framework->add_output("./tests/generic/arrays13.php", "xss");
 
 $framework->add_testbasis("./tests/generic/arrays14.php");
 $framework->add_output("./tests/generic/arrays14.php", array("\$var1[11][1]"));
-$framework->add_output("./tests/generic/arrays14.php", array("9"));
+$framework->add_output("./tests/generic/arrays14.php", array("8"));
 $framework->add_output("./tests/generic/arrays14.php", "xss");
 
 $framework->add_testbasis("./tests/generic/arrays15.php");
@@ -223,7 +223,7 @@ $framework->add_output("./tests/generic/functions7.php", "xss");
 
 $framework->add_testbasis("./tests/generic/functions8.php");
 $framework->add_output("./tests/generic/functions8.php", array("\$var1"));
-$framework->add_output("./tests/generic/functions8.php", array("7"));
+$framework->add_output("./tests/generic/functions8.php", array("6"));
 $framework->add_output("./tests/generic/functions8.php", "xss");
 
 $framework->add_testbasis("./tests/generic/functions9.php");
@@ -301,5 +301,23 @@ $framework->add_output("./tests/generic/strings1.php", "sql_injection");
 $framework->add_output("./tests/generic/strings1.php", array("\$id7"));
 $framework->add_output("./tests/generic/strings1.php", array("35"));
 $framework->add_output("./tests/generic/strings1.php", "sql_injection");
+$framework->add_output("./tests/generic/strings1.php", array("\$tainted1"));
+$framework->add_output("./tests/generic/strings1.php", array("48"));
+$framework->add_output("./tests/generic/strings1.php", "xss");
+$framework->add_output("./tests/generic/strings1.php", array("\$tainted2"));
+$framework->add_output("./tests/generic/strings1.php", array("51"));
+$framework->add_output("./tests/generic/strings1.php", "xss");
+$framework->add_output("./tests/generic/strings1.php", array("\$tainted3"));
+$framework->add_output("./tests/generic/strings1.php", array("54"));
+$framework->add_output("./tests/generic/strings1.php", "xss");
+$framework->add_output("./tests/generic/strings1.php", array("\$tainted21"));
+$framework->add_output("./tests/generic/strings1.php", array("64"));
+$framework->add_output("./tests/generic/strings1.php", "xss");
+$framework->add_output("./tests/generic/strings1.php", array("\$tainted31"));
+$framework->add_output("./tests/generic/strings1.php", array("70"));
+$framework->add_output("./tests/generic/strings1.php", "xss");
+$framework->add_output("./tests/generic/strings1.php", array("\$tainted32"));
+$framework->add_output("./tests/generic/strings1.php", array("73"));
+$framework->add_output("./tests/generic/strings1.php", "xss");
 
 ?>

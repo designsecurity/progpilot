@@ -12,7 +12,7 @@ $framework->add_output("./tests/conditions/condition4.php", "xss");
 
 $framework->add_testbasis("./tests/conditions/condition5.php");
 $framework->add_output("./tests/conditions/condition5.php", array("\$tainted"));
-$framework->add_output("./tests/conditions/condition5.php", array("7"));
+$framework->add_output("./tests/conditions/condition5.php", array("8"));
 $framework->add_output("./tests/conditions/condition5.php", "xss");
 
 $framework->add_testbasis("./tests/conditions/condition6.php");

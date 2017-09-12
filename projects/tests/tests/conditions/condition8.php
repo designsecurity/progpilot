@@ -3,65 +3,65 @@
 
 $tainted = $_GET["p"];
 
-if(filter_var($tainted, FILTER_VALIDATE_BOOLEAN)) 
+if (filter_var($tainted, FILTER_VALIDATE_BOOLEAN))
 {
-	echo $tainted;
-} 
+    echo $tainted;
+}
 
 $tainted = $_GET["p"];
 
-if(filter_var($tainted, FILTER_VALIDATE_FLOAT)) 
+if (filter_var($tainted, FILTER_VALIDATE_FLOAT))
 {
-	echo $tainted;
-} 
+    echo $tainted;
+}
 
 $tainted = $_GET["p"];
 
-if(filter_var($tainted, FILTER_VALIDATE_INT)) 
+if (filter_var($tainted, FILTER_VALIDATE_INT))
 {
-	echo $tainted;
-} 
+    echo $tainted;
+}
 
 $tainted = $_GET["p"];
 
-if(filter_var($tainted, FILTER_VALIDATE_IP)) 
+if (filter_var($tainted, FILTER_VALIDATE_IP))
 {
-	echo $tainted;
-} 
+    echo $tainted;
+}
 
 $tainted = $_GET["p"];
 
-if(filter_var($tainted, FILTER_VALIDATE_MAC)) 
+if (filter_var($tainted, FILTER_VALIDATE_MAC))
 {
-	echo $tainted;
-} 
+    echo $tainted;
+}
 
 $tainted = $_GET["p"];
 
-if(filter_var($tainted, FILTER_VALIDATE_URL)) 
+if (filter_var($tainted, FILTER_VALIDATE_URL))
 {
-	echo $tainted;
-} 
+    echo $tainted;
+}
 /*
 $tainted = $_GET["p"];
 
-if(filter_var($tainted, FILTER_VALIDATE_EMAIL)) 
+if(filter_var($tainted, FILTER_VALIDATE_EMAIL))
 {
-	echo $tainted;
-} 
+    echo $tainted;
+}
 */
 $tainted = $_GET["p"];
 
-if(filter_var($tainted, FILTER_VALIDATE_REGEXP)) 
+if (filter_var($tainted, FILTER_VALIDATE_REGEXP))
 {
-	echo $tainted;
-} 
+    echo $tainted;
+}
 
 $tainted = $_GET["p"];
 
-if(filter_var($tainted, nexiste_pas)) 
+if (filter_var($tainted, nexiste_pas))
 {
-	echo $tainted;
-} 
+    echo $tainted;
+}
 
 ?>

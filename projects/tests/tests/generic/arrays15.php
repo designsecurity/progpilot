@@ -2,7 +2,7 @@
 
 function testf($param)
 {
-	return [$param, "nono"];
+    return [$param, "nono"];
 }
 
 $var = testf($_GET["p"])[0];
@@ -10,4 +10,4 @@ $var = testf($_GET["p"])[0];
 echo $var;
 
 
-?>	
+?>

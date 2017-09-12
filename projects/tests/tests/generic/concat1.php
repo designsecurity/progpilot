@@ -13,4 +13,4 @@ echo $myvar5;
 echo $myvar6;
 echo $myvar7;
 
-?>	
+?>

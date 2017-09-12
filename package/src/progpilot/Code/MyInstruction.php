@@ -10,34 +10,39 @@
 
 namespace progpilot\Code;
 
-class MyInstruction {
+class MyInstruction
+{
 
-	private $properties;
-	private $opcode;
+    private $properties;
+    private $opcode;
 
-	public function __construct($opcode) {
+    public function __construct($opcode)
+    {
 
-		$this->properties = [];
-		$this->opcode = $opcode;
-	}
+        $this->properties = [];
+        $this->opcode = $opcode;
+    }
 
-	public function add_property($index, $property) {
+    public function add_property($index, $property)
+    {
 
-		$this->properties[$index] = $property;
-	}
+        $this->properties[$index] = $property;
+    }
 
-	public function is_property_exist($index)
-	{
-		return isset($this->properties[$index]);
-	}
+    public function is_property_exist($index)
+    {
+        return isset($this->properties[$index]);
+    }
 
-	public function get_property($index) {
+    public function get_property($index)
+    {
 
-		return $this->properties[$index];
-	}
+        return $this->properties[$index];
+    }
 
-	public function get_opcode() {
+    public function get_opcode()
+    {
 
-		return $this->opcode;
-	}
+        return $this->opcode;
+    }
 }

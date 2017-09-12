@@ -2,15 +2,15 @@
 
 class testc1
 {
-	public $object;
+    public $object;
 }
 
 class testc2
 {
-	public function mysanitizer()
-	{
+    public function mysanitizer()
+    {
 
-	}
+    }
 }
 
 $instance = new testc1;
@@ -26,14 +26,14 @@ mysql_query($ret);
 
 class newtestc1
 {
-	public $object;
+    public $object;
 }
 
 class newtestc2
 {
-	public function mysanitizer()
-	{
-	}
+    public function mysanitizer()
+    {
+    }
 }
 
 $instance1 = new newtestc1;
@@ -47,4 +47,4 @@ echo "$ret1";
 mysql_query($ret1);
 
 
-?>	
+?>

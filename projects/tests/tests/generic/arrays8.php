@@ -9,4 +9,4 @@ $arr[1111] = "olalal";
 echo $arr[1113];
 echo $arr[1112];
 
-?>	
+?>

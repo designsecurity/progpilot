@@ -4,7 +4,7 @@
             [
                 {"id": 2, "condition": "equals", "values": 
                     [
-                        {"value" : "ENT_QUOTES", "prevent" : ["xss", "sql_injection", "command_injection", "QUOTE"]}
+                        {"value" : "ENT_QUOTES", "prevent" : ["xss", "sql_injection", "command_injection", "QUOTES"]}
                     ]}
             ]
         },
@@ -12,28 +12,28 @@
             [
                 {"id": 2, "condition": "equals", "values": 
                     [
-                        {"value" : "ENT_QUOTES", "prevent" : ["xss", "sql_injection", "command_injection", "QUOTE"]}
+                        {"value" : "ENT_QUOTES", "prevent" : ["xss", "sql_injection", "command_injection", "QUOTES"]}
                     ]}
             ]
         },
         {"name": "highlight_string", "language": "php", "prevent": ["xss"]},
-        {"name": "addslashes", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTE"]},
-        {"name": "dbx_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTE"]},
-        {"name": "db2_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTE"]},
-        {"name": "ingres_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTE"]},
-        {"name": "maxdb_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTE"]},
-        {"name": "maxdb_real_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTE"]},
-        {"name": "mysqli_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTE"]},
-        {"name": "mysql_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTE"]},
-        {"name": "mysqli_real_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTE"]},
-        {"name": "sqlite_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTE"]},
-        {"name": "sqlite_udf_encode_binary", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTE"]},
-        {"name": "cubrid_real_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTE"]},
-        {"name": "pg_escape_literal", "language": "php", "prevent": ["sql_injection", "ldap_injection", "command_injection", "QUOTE"]},
-        {"name": "pg_escape_string", "language": "php", "prevent": ["sql_injection", "ldap_injection", "command_injection", "QUOTE"]},
-        {"name": "pg_escape_identifier", "language": "php", "prevent": ["sql_injection", "ldap_injection", "command_injection", "QUOTE"]},
-        {"name": "pg_escape_bytea", "language": "php", "prevent": ["sql_injection", "ldap_injection", "command_injection", "QUOTE"]},
-        {"name": "mysql_real_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTE"]},
+        {"name": "addslashes", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
+        {"name": "dbx_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
+        {"name": "db2_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
+        {"name": "ingres_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
+        {"name": "maxdb_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
+        {"name": "maxdb_real_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
+        {"name": "mysqli_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
+        {"name": "mysql_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
+        {"name": "mysqli_real_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
+        {"name": "sqlite_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
+        {"name": "sqlite_udf_encode_binary", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
+        {"name": "cubrid_real_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
+        {"name": "pg_escape_literal", "language": "php", "prevent": ["sql_injection", "ldap_injection", "command_injection", "QUOTES"]},
+        {"name": "pg_escape_string", "language": "php", "prevent": ["sql_injection", "ldap_injection", "command_injection", "QUOTES"]},
+        {"name": "pg_escape_identifier", "language": "php", "prevent": ["sql_injection", "ldap_injection", "command_injection", "QUOTES"]},
+        {"name": "pg_escape_bytea", "language": "php", "prevent": ["sql_injection", "ldap_injection", "command_injection", "QUOTES"]},
+        {"name": "mysql_real_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
         {"name": "str_replace", "language": "js", "prevent": ["xss"], "comment": "for dev purposes"},
         {"name": "mysanitizer", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
         {"name": "mysanitizer", "instanceof": "testccc1", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
@@ -45,9 +45,9 @@
                 {"id": 2, "condition": "equals", "values": 
                     [
                         {"value" : "FILTER_SANITIZE_ENCODED", "prevent" : ["xss"]},
-                        {"value" : "FILTER_SANITIZE_MAGIC_QUOTES", "prevent" : ["command_injection", "sql_injection", "ldap_injection", "QUOTE"]},
-                        {"value" : "FILTER_SANITIZE_SPECIAL_CHARS", "prevent" : ["xss", "command_injection", "sql_injection", "ldap_injection", "QUOTE"]},
-                        {"value" : "FILTER_SANITIZE_FULL_SPECIAL_CHARS", "prevent" : ["xss", "command_injection", "sql_injection", "ldap_injection", "QUOTE"]},
+                        {"value" : "FILTER_SANITIZE_MAGIC_QUOTES", "prevent" : ["command_injection", "sql_injection", "ldap_injection", "QUOTES"]},
+                        {"value" : "FILTER_SANITIZE_SPECIAL_CHARS", "prevent" : ["xss", "command_injection", "sql_injection", "ldap_injection", "QUOTES"]},
+                        {"value" : "FILTER_SANITIZE_FULL_SPECIAL_CHARS", "prevent" : ["xss", "command_injection", "sql_injection", "ldap_injection", "QUOTES"]},
                         {"value" : "FILTER_SANITIZE_STRING", "prevent" : ["xss"]},
                         {"value" : "FILTER_SANITIZE_STRIPPED", "prevent" : ["xss"]}
                     ]}
@@ -68,7 +68,7 @@
         },
         {"name": "preg_quote", "language": "php", "prevent": ["code_injection"]},
         {"name": "urlencode", "language": "php", "prevent": ["xss"]},
-        {"name": "escapeshellarg", "language": "php", "prevent": ["command_injection", "QUOTE"]},
+        {"name": "escapeshellarg", "language": "php", "prevent": ["command_injection", "QUOTES"]},
         {"name": "intval", "language": "php", "prevent": ["ALL"]},
         {"name": "floatval", "language": "php", "prevent": ["ALL"]},
         {"name": "boolval", "language": "php", "prevent": ["ALL"]},
@@ -145,9 +145,9 @@
                     ]},
                 {"id": 1, "condition": "equals", "values": 
                     [
-                        {"value" : "/'/", "prevent" : ["command_injection", "ldap_injection", "sql_injection", "QUOTE"]},
-                        {"value" : "/\\W/si", "prevent" : ["command_injection", "ldap_injection", "sql_injection", "QUOTE"]},
-                        {"value" : "/[^a-zA-Z0-9_\\ -]/", "prevent" : ["command_injection", "ldap_injection", "sql_injection", "QUOTE"]}
+                        {"value" : "/'/", "prevent" : ["command_injection", "ldap_injection", "sql_injection", "QUOTES"]},
+                        {"value" : "/\\W/si", "prevent" : ["command_injection", "ldap_injection", "sql_injection", "QUOTES"]},
+                        {"value" : "/[^a-zA-Z0-9_\\ -]/", "prevent" : ["command_injection", "ldap_injection", "sql_injection", "QUOTES"]}
                     ]}
             ]
         }

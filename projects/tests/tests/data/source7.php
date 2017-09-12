@@ -2,10 +2,10 @@
 
 class testc1
 {
-	public function methodc1arr()
-	{
+    public function methodc1arr()
+    {
 
-	}
+    }
 }
 
 $var1 = new testc1;
@@ -17,4 +17,4 @@ echo $var2;
 echo $var2["tainted"];
 
 
-?>	
+?>

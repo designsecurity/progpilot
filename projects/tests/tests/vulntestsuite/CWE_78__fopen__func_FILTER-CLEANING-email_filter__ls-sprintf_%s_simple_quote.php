@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 Unsafe sample
 input : use fopen to read /tmp/tainted.txt and put the first line in $tainted
 Uses an email_filter via filter_var function
@@ -8,7 +8,7 @@ construction : use of sprintf via a %s with simple quote
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -21,7 +21,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -44,20 +44,22 @@ MODIFICATIONS.*/
 
 $handle = @fopen("/tmp/tainted.txt", "r");
 
-if ($handle) {
-  if(($tainted = fgets($handle, 4096)) == false) {
+if ($handle)
+{
+    if (($tainted = fgets($handle, 4096)) == false) {
+        $tainted = "";
+    }
+    fclose($handle);
+} else
+{
     $tainted = "";
-  }
-  fclose($handle);
-} else {
-  $tainted = "";
 }
 
 $sanitized = filter_var($tainted, FILTER_SANITIZE_EMAIL);
 if (filter_var($sanitized, FILTER_VALIDATE_EMAIL))
-  $tainted = $sanitized ;
+    $tainted = $sanitized ;
 else
-  $tainted = "" ;
+    $tainted = "" ;
 
 $query = sprintf("ls '%s'", $tainted);
 

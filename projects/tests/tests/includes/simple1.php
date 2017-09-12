@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 include("simple1_include.php");
 

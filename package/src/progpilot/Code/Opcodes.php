@@ -12,27 +12,27 @@ namespace progpilot\Code;
 
 class Opcodes
 {
-	const LEAVE_BLOCK = "leave_block";
-	const ENTER_BLOCK = "enter_block";
-	const ENTER_FUNCTION = "enter_func";
-	const LEAVE_FUNCTION = "leave_func";
-	const DEFINITION = "definition";
-	const START_ASSIGN = "start_assign";
-	const END_ASSIGN = "end_assign";
-	const START_EXPRESSION = "start_expression";
-	const END_EXPRESSION = "end_expression";
-	const TEMPORARY = "temporary_simple";
-	const CONCAT_LEFT = "concat_left";
-	const CONCAT_RIGHT = "concat_right";
-	const CONCAT_LIST = "concat_list";
-	const FUNC_CALL = "funccall";
-	const RETURN_FUNCTION = "return";
-	const CLASSE = "class";
-	const ASSERTION = "assertion";
-	const START_INCLUDE = "start_include";
-	const END_INCLUDE = "end_include";
-	const COND_START_IF = "condition_start_if";
-	const COND_BOOLEAN_NOT = "condition_boolean_not";
+    const LEAVE_BLOCK = "leave_block";
+    const ENTER_BLOCK = "enter_block";
+    const ENTER_FUNCTION = "enter_func";
+    const LEAVE_FUNCTION = "leave_func";
+    const DEFINITION = "definition";
+    const START_ASSIGN = "start_assign";
+    const END_ASSIGN = "end_assign";
+    const START_EXPRESSION = "start_expression";
+    const END_EXPRESSION = "end_expression";
+    const TEMPORARY = "temporary_simple";
+    const CONCAT_LEFT = "concat_left";
+    const CONCAT_RIGHT = "concat_right";
+    const CONCAT_LIST = "concat_list";
+    const FUNC_CALL = "funccall";
+    const RETURN_FUNCTION = "return";
+    const CLASSE = "class";
+    const ASSERTION = "assertion";
+    const START_INCLUDE = "start_include";
+    const END_INCLUDE = "end_include";
+    const COND_START_IF = "condition_start_if";
+    const COND_BOOLEAN_NOT = "condition_boolean_not";
 }
 
 ?>

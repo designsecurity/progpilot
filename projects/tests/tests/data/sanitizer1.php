@@ -14,4 +14,4 @@ $var7safe2 = htmlentities($var7);
 
 echo "$var7safe2";
 
-?>	
+?>

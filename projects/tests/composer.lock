@@ -106,12 +106,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "d77e6cd6e98721a38748dbc2a10acbef6cf3300c"
+                "reference": "a1e8e1a30e1352f118feff1a8481066ddc2f234a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/d77e6cd6e98721a38748dbc2a10acbef6cf3300c",
-                "reference": "d77e6cd6e98721a38748dbc2a10acbef6cf3300c",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/a1e8e1a30e1352f118feff1a8481066ddc2f234a",
+                "reference": "a1e8e1a30e1352f118feff1a8481066ddc2f234a",
                 "shasum": ""
             },
             "require": {
@@ -149,7 +149,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2017-08-29 21:18:59"
+            "time": "2017-09-02 17:10:46"
         },
         {
             "name": "phpdocumentor/graphviz",

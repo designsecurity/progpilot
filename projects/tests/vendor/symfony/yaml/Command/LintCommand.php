@@ -48,29 +48,29 @@ class LintCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('lint:yaml')
-            ->setDescription('Lints a file and outputs encountered errors')
-            ->addArgument('filename', null, 'A file or a directory or STDIN')
-            ->addOption('format', null, InputOption::VALUE_REQUIRED, 'The output format', 'txt')
-            ->setHelp(<<<EOF
-The <info>%command.name%</info> command lints a YAML file and outputs to STDOUT
-the first encountered syntax error.
+        ->setName('lint:yaml')
+        ->setDescription('Lints a file and outputs encountered errors')
+        ->addArgument('filename', null, 'A file or a directory or STDIN')
+        ->addOption('format', null, InputOption::VALUE_REQUIRED, 'The output format', 'txt')
+        ->setHelp( <<< EOF
+                   The <info> % command.name % < / info > command lints a YAML file and outputs to STDOUT
+                   the first encountered syntax error.
 
-You can validates YAML contents passed from STDIN:
+                   You can validates YAML contents passed from STDIN:
 
-  <info>cat filename | php %command.full_name%</info>
+                   <info>cat filename | php % command.full_name % < / info >
 
-You can also validate the syntax of a file:
+                   You can also validate the syntax of a file:
 
-  <info>php %command.full_name% filename</info>
+                   <info>php % command.full_name % filename < / info >
 
-Or of a whole directory:
+                   Or of a whole directory:
 
-  <info>php %command.full_name% dirname</info>
-  <info>php %command.full_name% dirname --format=json</info>
+                   <info>php % command.full_name % dirname < / info >
+                   <info>php % command.full_name % dirname --format = json < / info >
 
-EOF
-            )
+                           EOF
+                 )
         ;
     }
 
@@ -125,12 +125,12 @@ EOF
     private function display(SymfonyStyle $io, array $files)
     {
         switch ($this->format) {
-            case 'txt':
-                return $this->displayTxt($io, $files);
-            case 'json':
-                return $this->displayJson($io, $files);
-            default:
-                throw new \InvalidArgumentException(sprintf('The format "%s" is not supported.', $this->format));
+        case 'txt':
+            return $this->displayTxt($io, $files);
+        case 'json':
+            return $this->displayJson($io, $files);
+        default:
+            throw new \InvalidArgumentException(sprintf('The format "%s" is not supported.', $this->format));
         }
     }
 
@@ -218,9 +218,9 @@ EOF
     {
         $default = function ($directory) {
             return new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($directory, \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS),
-                \RecursiveIteratorIterator::LEAVES_ONLY
-            );
+                       new \RecursiveDirectoryIterator($directory, \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS),
+                       \RecursiveIteratorIterator::LEAVES_ONLY
+                   );
         };
 
         if (null !== $this->directoryIteratorProvider) {

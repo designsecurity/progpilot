@@ -2,16 +2,16 @@
 
 function testf($parama, $boum, $tchka)
 {
-	echo $parama;
+    echo $parama;
 
-	$safea = htmlentities($parama);
+    $safea = htmlentities($parama);
 
-	echo $safea;
+    echo $safea;
 
-	return $parama;
+    return $parama;
 }
 
 testf($_GET["p"], "argument2", "argument3");
 
 
-?>	
+?>

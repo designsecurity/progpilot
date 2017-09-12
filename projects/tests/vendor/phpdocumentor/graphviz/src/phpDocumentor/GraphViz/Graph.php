@@ -72,8 +72,8 @@ class Graph
     {
         $graph = new self();
         $graph
-            ->setName($name)
-            ->setType($directional ? 'digraph' : 'graph');
+        ->setName($name)
+        ->setType($directional ? 'digraph' : 'graph');
 
         return $graph;
     }
@@ -392,8 +392,8 @@ class Graph
     public function __toString()
     {
         $elements = array_merge(
-            $this->graphs, $this->attributes, $this->edges, $this->nodes
-        );
+                        $this->graphs, $this->attributes, $this->edges, $this->nodes
+                    );
 
         $attributes = array();
         foreach ($elements as $value) {
@@ -403,11 +403,11 @@ class Graph
 
         $strict = ($this->isStrict() ? 'strict ' : '');
 
-        return <<<DOT
-{$strict}{$this->getType()} "{$this->getName()}" {
-$attributes
-}
-DOT;
+        return <<< DOT
+        {$strict} {$this->getType()} "{$this->getName()}" {
+            $attributes
+        }
+        DOT;
     }
 
 }

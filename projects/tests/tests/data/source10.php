@@ -2,10 +2,10 @@
 
 function func1arr()
 {
-	return "ee";
+    return "ee";
 }
 
 echo func1arr()["tainted"];
 
 
-?>	
+?>

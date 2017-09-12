@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 Safe sample
 input : get the $_GET['userData'] in an array
 Flushes content of $sanitized if the filter number_float_filter is not applied
@@ -8,7 +8,7 @@ construction : use of sprintf via a %u with simple quote
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -21,7 +21,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -49,16 +49,16 @@ $array[] = 'safe' ;
 $tainted = $array[1] ;
 
 if (filter_var($sanitized, FILTER_VALIDATE_FLOAT))
-  $tainted = $sanitized ;
+    $tainted = $sanitized ;
 else
-  $tainted = "" ;
+    $tainted = "" ;
 
 $query = sprintf("//User[@id='%u']", $tainted);
 
 $xml = simplexml_load_file("users.xml");//file load
 echo "query : ". $query ."<br /><br />" ;
 
-$res=$xml->xpath($query);//execution
+$res = $xml->xpath($query); //execution
 print_r($res);
 echo "<br />" ;
 

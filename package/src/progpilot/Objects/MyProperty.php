@@ -10,47 +10,49 @@
 
 namespace progpilot\Objects;
 
-class MyProperty extends MyOp {
+class MyProperty extends MyOp
+{
 
-	private $visibility;
-	private $properties;
+    private $visibility;
+    private $properties;
 
-	public function __construct() {
+    public function __construct()
+    {
 
-		parent::__construct("", 0, 0);
-		$this->visibility = "public";
-		$this->properties = [];
-	}
+        parent::__construct("", 0, 0);
+        $this->visibility = "public";
+        $this->properties = [];
+    }
 
-	public function set_visibility($visibility)
-	{
-		$this->visibility = $visibility;
-	}
+    public function set_visibility($visibility)
+    {
+        $this->visibility = $visibility;
+    }
 
-	public function get_visibility()
-	{
-		return $this->visibility;
-	}	
+    public function get_visibility()
+    {
+        return $this->visibility;
+    }
 
-	public function set_properties($properties)
-	{
-		$this->properties = $properties;
-	}
+    public function set_properties($properties)
+    {
+        $this->properties = $properties;
+    }
 
-	public function get_properties()
-	{
-		return $this->properties;
-	}	
+    public function get_properties()
+    {
+        return $this->properties;
+    }
 
-	public function add_property($property)
-	{
-		$this->properties[] = $property;
-	}	
+    public function add_property($property)
+    {
+        $this->properties[] = $property;
+    }
 
-	public function pop_property()
-	{
-		return array_pop($this->properties);
-	}
+    public function pop_property()
+    {
+        return array_pop($this->properties);
+    }
 }
 
 ?>

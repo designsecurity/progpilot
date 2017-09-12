@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 Safe sample
 input : reads the field UserData from the variable $_GET
 sanitize : check if there is only letters and/or numbers
@@ -8,7 +8,7 @@ construction : use of sprintf via a %s with simple quote
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -21,7 +21,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -45,11 +45,12 @@ MODIFICATIONS.*/
 $tainted = $_GET['UserData'];
 
 $re = "/^[a-zA-Z0-9]*$/";
-if(preg_match($re, $tainted) == 1){
-  $tainted = $tainted;
-}
-else{
-  $tainted = "";
+if (preg_match($re, $tainted) == 1)
+{
+    $tainted = $tainted;
+} else
+{
+    $tainted = "";
 }
 
 $query = sprintf("user[username='%s']", $tainted);
@@ -57,7 +58,7 @@ $query = sprintf("user[username='%s']", $tainted);
 $xml = simplexml_load_file("users.xml");//file load
 echo "query : ". $query ."<br /><br />" ;
 
-$res=$xml->xpath($query);//execution
+$res = $xml->xpath($query); //execution
 print_r($res);
 echo "<br />" ;
 

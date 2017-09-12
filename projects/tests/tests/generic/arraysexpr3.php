@@ -10,4 +10,4 @@ $newmyarr = ["elelel", "ekeke", ["ahah", "hah", $onearr]];
 echo $newmyarr[2][2][11][6661];
 echo $newmyarr[2][1];
 
-?>	
+?>

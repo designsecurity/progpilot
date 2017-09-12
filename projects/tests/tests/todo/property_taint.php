@@ -2,7 +2,7 @@
 
 class testc1
 {
-	public $boum1;
+    public $boum1;
 };
 
 $instance1 = new testc1;

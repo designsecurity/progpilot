@@ -45,4 +45,32 @@ $ret = testf1($_GET["p"]);
 
 echo $ret;
 
-?>	
+$tainted1 = $_GET["p"];
+echo "'$tainted1'"; // vuln
+
+$tainted2 = $_GET["p"];
+echo "<a href='$tainted2'>click</a>"; // vuln
+
+$tainted.= $_GET["p"];
+echo "<a href=$tainted3>click</a>"; // vuln
+
+
+$tainted11 = htmlentities($_GET["p"]);
+echo "'$tainted11'"; // safe
+
+$tainted12 = htmlentities($_GET["p"], ENT_QUOTES);
+echo "'$tainted12'"; // safe
+
+$tainted21 = htmlentities($_GET["p"]);
+echo "<a href='$tainted21'>click</a>"; // vuln
+
+$tainted22 = htmlentities($_GET["p"], ENT_QUOTES);
+echo "<a href='$tainted22'>click</a>"; // safe
+
+$tainted31 =  htmlentities($_GET["p"]);
+echo "<a href=$tainted31>click</a>"; // vuln
+
+$tainted32 =  htmlentities($_GET["p"], ENT_QUOTES);
+echo "<a href=$tainted32>click</a>"; // vuln
+
+?>

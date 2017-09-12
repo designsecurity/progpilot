@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 Safe sample
 input : reads the field UserData from the variable $_GET
 SANITIZE : use in_array to check if $tainted is in the white list
@@ -8,7 +8,7 @@ construction : concatenation with simple quote
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -21,7 +21,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -45,17 +45,19 @@ MODIFICATIONS.*/
 $tainted = $_GET['UserData'];
 
 $legal_table = array("safe1", "safe2");
-if (in_array($tainted, $legal_table, true)) {
-  $tainted = $tainted;
-} else {
-  $tainted = $legal_table[0];
+if (in_array($tainted, $legal_table, true))
+{
+    $tainted = $tainted;
+} else
+{
+    $tainted = $legal_table[0];
 }
 
 $query = "(&(objectCategory=person)(objectClass=user)(cn='". $tainted . "'))";
 
-$ds=ldap_connect("localhost"); 
-$r=ldap_bind($ds);
-$sr=ldap_search($ds,"o=My Company, c=US", $query);  
+$ds = ldap_connect("localhost");
+$r = ldap_bind($ds);
+$sr = ldap_search($ds, "o=My Company, c=US", $query);
 ldap_close($ds);
 
 ?>

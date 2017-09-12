@@ -13,4 +13,4 @@ echo $tainted;
 echo $_GET;
 
 
-?>	
+?>

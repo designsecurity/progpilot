@@ -1,6 +1,6 @@
 <?php
 /*
-/* 
+/*
 Safe sample
 input : backticks interpretation, reading the file /tmp/tainted.txt
 SANITIZE : uses of ESAPI, an OWASP API
@@ -9,7 +9,7 @@ construction : prepared query and no right verification
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -22,7 +22,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -43,16 +43,18 @@ OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
 MODIFICATIONS.*/
 
 
-$tainted = `cat /tmp/tainted.txt`;
+$tainted = `cat / tmp / tainted.txt`;
 
 $ESAPI = new ESAPI();
 ESAPI::setEncoder(new DefaultEncoder());
 ESAPI::setValidator(new DefaultValidator());
 //verifying the data with ESAPI
-if($ESAPI->validator->isValidNumber("Course ID", $tainted, 18, 25, false)) {
-  $tainted = $tainted;
-} else {
-  $tainted = 0; //default value
+if ($ESAPI->validator->isValidNumber("Course ID", $tainted, 18, 25, false))
+{
+    $tainted = $tainted;
+} else
+{
+    $tainted = 0; //default value
 }
 
 $query = "SELECT * FROM COURSE WHERE id=?";
@@ -63,4 +65,4 @@ $stmt->bind_param("i", $checked_data);
 $stmt->execute();
 mysql_close($conn);
 
- ?>
+?>

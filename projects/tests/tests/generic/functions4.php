@@ -2,7 +2,7 @@
 
 function testf($param)
 {
-	return $param;
+    return $param;
 }
 
 echo testf($_GET["p"])."olalal";

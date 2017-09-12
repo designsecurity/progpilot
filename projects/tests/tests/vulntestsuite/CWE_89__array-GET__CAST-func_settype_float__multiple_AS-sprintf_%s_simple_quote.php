@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 Safe sample
 input : get the $_GET['userData'] in an array
 sanitize : settype (float)
@@ -8,7 +8,7 @@ construction : use of sprintf via a %s with simple quote
 
 
 
-/*Copyright 2015 Bertrand STIVALET 
+/*Copyright 2015 Bertrand STIVALET
 
 Permission is hereby granted, without written agreement or royalty fee, to
 
@@ -21,7 +21,7 @@ three paragraphs appear in all copies of this software.
 
 IN NO EVENT SHALL AUTHORS BE LIABLE TO ANY PARTY FOR DIRECT,
 
-INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE 
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
 
 USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF AUTHORS HAVE
 
@@ -48,10 +48,10 @@ $array[] = $_GET['userData'] ;
 $array[] = 'safe' ;
 $tainted = $array[1] ;
 
-if(settype($tainted, "float"))
-  $tainted = $tainted ;
+if (settype($tainted, "float"))
+    $tainted = $tainted ;
 else
-  $tainted = 0.0 ;
+    $tainted = 0.0 ;
 
 $query = sprintf("SELECT Trim(a.FirstName) & ' ' & Trim(a.LastName) AS employee_name, a.city, a.street & (' ' +a.housenum) AS address FROM Employees AS a  WHERE a.supervisor='%s'", $tainted);
 
@@ -61,10 +61,11 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while($data =mysql_fetch_array($res)){
-print_r($data) ;
-echo "<br />" ;
-} 
+while ($data = mysql_fetch_array($res))
+{
+    print_r($data) ;
+    echo "<br />" ;
+}
 mysql_close($conn);
 
 ?>

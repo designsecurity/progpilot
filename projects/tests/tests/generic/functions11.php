@@ -2,7 +2,7 @@
 
 function testf1($param)
 {
-	return $param;
+    return $param;
 }
 
 $ret = [testf1($_GET["p"]), "olal", "ola"];
