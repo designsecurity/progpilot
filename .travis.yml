@@ -3,8 +3,8 @@ language: php
 
 install:
  - cd ./projects/tests/
- - rm composer.lock
- - rm -r vendor/*
+ - rm -f composer.lock
+ - rm -rf vendor/*
  - rmdir vendor/
  - composer clearcache
  - composer install
