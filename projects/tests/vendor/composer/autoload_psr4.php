@@ -6,8 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'cweagans\\Composer\\' => array($vendorDir . '/cweagans/composer-patches/src'),
-    'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
-    'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
-    'PHPCfg\\' => array($vendorDir . '/ircmaxell/php-cfg/lib/PHPCfg'),
-);
+           'cweagans\\Composer\\' => array($vendorDir . '/cweagans/composer-patches/src'),
+           'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
+           'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
+           'PHPCfg\\' => array($vendorDir . '/ircmaxell/php-cfg/lib/PHPCfg'),
+       );

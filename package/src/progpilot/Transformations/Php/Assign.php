@@ -35,7 +35,6 @@ class Assign
         $type_array = Common::get_type_is_array($context->get_current_op());
         $type_instance = Common::get_type_is_instance($context->get_current_op());
 
-
         // name of function return
         if ($is_returndef)
             $name = $context->get_current_func()->get_name()."_return";
@@ -44,7 +43,8 @@ class Assign
         $mydef->set_assign_id($assign_id);
 
         $isref = false;
-        if ($context->get_current_op() instanceof Op\Expr\AssignRef) {
+        if ($context->get_current_op() instanceof Op\Expr\AssignRef)
+        {
             $isref = true;
             $mydef->set_is_ref(true);
         }
@@ -74,14 +74,16 @@ class Assign
         $context->get_mycode()->add_code($inst_def);
 
         // $array[09][098] = expr;
-        if ($type_array == MyOp::TYPE_ARRAY) {
+        if ($type_array == MyOp::TYPE_ARRAY)
+        {
             $arr = BuildArrays::build_array_from_ops($context->get_current_op()->var, false);
             $mydef->set_is_array(true);
             $mydef->set_array_value($arr);
         }
 
         // $array = [expr, expr, expr]
-        if ($type_array == MyOp::TYPE_ARRAY_EXPR) {
+        if ($type_array == MyOp::TYPE_ARRAY_EXPR)
+        {
             $arr = false;
             if (isset($context->get_current_op()->var))
                 $arr = BuildArrays::build_array_from_ops($context->get_current_op()->var, false);
@@ -89,7 +91,8 @@ class Assign
             ArrayExpr::instruction($context->get_current_op()->expr, $context, $arr, $name, $is_returndef);
         }
         // a variable, property
-        if ($type == MyOp::TYPE_PROPERTY) {
+        if ($type == MyOp::TYPE_PROPERTY)
+        {
             $property_name = Common::get_name_definition($context->get_current_op(), true);
             $mydef->set_is_property(true);
             $mydef->property->add_property($property_name);
@@ -99,22 +102,26 @@ class Assign
         }
 
         // an object (created by new)
-        if ($type_instance == MyOp::TYPE_INSTANCE) {
+        if ($type_instance == MyOp::TYPE_INSTANCE)
+        {
             // it's the class name not instance name
-            if (isset($context->get_current_op()->expr->ops[0]->class->value)) {
+            if (isset($context->get_current_op()->expr->ops[0]->class->value))
+            {
                 $name_class = $context->get_current_op()->expr->ops[0]->class->value;
                 $mydef->set_is_instance(true);
                 $mydef->set_class_name($name_class);
             }
         }
 
-        if ($isref) {
+        if ($isref)
+        {
             $ref_name = Common::get_name_definition($context->get_current_op()->expr);
             $ref_type = Common::get_type_definition($context->get_current_op()->expr);
             $ref_type_array = Common::get_type_is_array($context->get_current_op()->expr);
             $mydef->set_ref_name($ref_name);
 
-            if ($ref_type_array == MyOp::TYPE_ARRAY) {
+            if ($ref_type_array == MyOp::TYPE_ARRAY)
+            {
                 $arr = BuildArrays::build_array_from_ops($context->get_current_op()->expr, false);
                 $mydef->set_ref_arr(true);
                 $mydef->set_ref_arr_value($arr);

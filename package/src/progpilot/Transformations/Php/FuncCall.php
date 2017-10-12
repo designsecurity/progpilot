@@ -72,14 +72,16 @@ class FuncCall
         $property_name = "";
 
         // instance_name = new obj; instance_name->method_name()
-        if ($is_method) {
+        if ($is_method)
+        {
             $instance_name = Common::get_name_definition($context->get_current_op()->var);
             if (isset($context->get_current_op()->var->ops[0]))
                 $property_name = Common::get_name_property($context->get_current_op()->var->ops[0]);
         }
 
         $funccall_name = "";
-        if ($context->get_current_op() instanceof Op\Expr\New_) {
+        if ($context->get_current_op() instanceof Op\Expr\New_)
+        {
             $funccall_name = "__construct";
             // we have the class name
             //$class_name = $context->get_current_op()->class->value;
@@ -89,7 +91,9 @@ class FuncCall
             if (isset($context->get_current_op()->result->usages[0]->var->ops[0]))
                 $property_name = Common::get_name_property($context->get_current_op()->result->usages[0]->var->ops[0]);
 
-        } else if (isset($context->get_current_op()->name->value)) {
+        }
+        else if (isset($context->get_current_op()->name->value))
+        {
             $funccall_name = $context->get_current_op()->name->value;
         }
 
@@ -100,7 +104,8 @@ class FuncCall
         $myfunction_call->setLine($context->get_current_line());
         $myfunction_call->setColumn($context->get_current_column());
 
-        if ($is_method) {
+        if ($is_method)
+        {
             // when we define a method in a class (TYPE_METHOD) but when we use a method (TYPE_INSTANCE)
             $myfunction_call->set_is_method(true);
             $myfunction_call->set_name_instance($instance_name);
@@ -109,7 +114,8 @@ class FuncCall
             $mybackdef->set_is_instance(true);
             $mybackdef->set_assign_id(rand());
 
-            if (count($property_name) > 0) {
+            if (count($property_name) > 0)
+            {
                 $mybackdef->set_is_property(true);
                 $mybackdef->property->set_properties($property_name);
             }
@@ -117,7 +123,8 @@ class FuncCall
             $myfunction_call->set_back_def($mybackdef);
         }
 
-        foreach ($context->get_current_op()->args as $arg) {
+        foreach ($context->get_current_op()->args as $arg)
+        {
             FuncCall::argument($context, $assign_id, $arg, $inst_funcall_main, $funccall_name, $nbparams);
             $nbparams ++;
         }

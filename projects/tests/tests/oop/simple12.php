@@ -12,7 +12,8 @@ if (rand() % 2)
 {
     $instance1->boum1 = "eee";
     echo $instance1->boum1;
-} else
+}
+else
 {
     echo $instance1->boum1;
 }

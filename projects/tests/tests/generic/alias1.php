@@ -3,7 +3,8 @@
 if (true) //block1
 {
     $var1 = "test";
-} else //block3
+}
+else   //block3
 {
     $var1 = $_GET["p1"]."test";
 }

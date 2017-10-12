@@ -49,20 +49,23 @@ class MyOutputs
         $nodesjson = [];
         $linksjson = [];
 
-        foreach ($this->ast->get_nodes() as $node) {
+        foreach ($this->ast->get_nodes() as $node)
+        {
             $hash = spl_object_hash($node);
 
             $nodesjson[] = array('name' => get_class($node), 'id' => $hash);
         }
 
-        foreach ($this->ast->get_edges() as $edge) {
+        foreach ($this->ast->get_edges() as $edge)
+        {
             $caller = $edge[0];
             $callee = $edge[1];
 
             $hashcaller = spl_object_hash($caller);
             $hashcallee = spl_object_hash($callee);
 
-            if ($hashcaller != $hashcallee) {
+            if ($hashcaller != $hashcallee)
+            {
                 $linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
             }
         }
@@ -77,7 +80,8 @@ class MyOutputs
         $nodesjson = [];
         $linksjson = [];
 
-        foreach($this->cfg->get_nodes() as $id => $node) {
+        foreach($this->cfg->get_nodes() as $id => $node)
+        {
             $hash = spl_object_hash($node);
 
             $text = $this->cfg->get_textofmyblock($id);
@@ -85,14 +89,16 @@ class MyOutputs
             $nodesjson[] = array('name' => $text, 'id' => $hash);
         }
 
-        foreach ($this->cfg->get_edges() as $edge) {
+        foreach ($this->cfg->get_edges() as $edge)
+        {
             $caller = $edge[0];
             $callee = $edge[1];
 
             $hashcaller = spl_object_hash($caller);
             $hashcallee = spl_object_hash($callee);
 
-            if ($hashcaller != $hashcallee) {
+            if ($hashcaller != $hashcallee)
+            {
                 $linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
             }
         }
@@ -108,7 +114,8 @@ class MyOutputs
         $linksjson = [];
         $real_nodes = [];
 
-        foreach ($this->callgraph->get_nodes() as $node) {
+        foreach ($this->callgraph->get_nodes() as $node)
+        {
             $function_name = \progpilot\Utils::print_function($node);
             $hash = hash("sha256", $function_name);
 
@@ -117,7 +124,8 @@ class MyOutputs
             $nodesjson[] = array('name' => $node->get_name(), 'id' => $hash);
         }
 
-        foreach ($this->callgraph->get_edges() as $edge) {
+        foreach ($this->callgraph->get_edges() as $edge)
+        {
             $caller = $edge[0];
             $callee = $edge[1];
 
@@ -129,7 +137,8 @@ class MyOutputs
 
             if ($hashcaller != $hashcallee
                     && in_array($function_name1, $real_nodes, true)
-                    && in_array($function_name2, $real_nodes, true)) {
+                    && in_array($function_name2, $real_nodes, true))
+            {
                 $linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
             }
         }
@@ -186,13 +195,17 @@ class MyOutputs
 
     public function write_includes_file()
     {
-        if ($this->resolve_includes) {
+        if ($this->resolve_includes)
+        {
             $fp = fopen($this->resolve_includes_file, "w");
-            if ($fp) {
+            if ($fp)
+            {
                 $myarray = "";
-                if (count($this->current_includes_file) > 0) {
+                if (count($this->current_includes_file) > 0)
+                {
                     $myarray = [];
-                    foreach ($this->current_includes_file as $include_file) {
+                    foreach ($this->current_includes_file as $include_file)
+                    {
                         $myarray[] = [$include_file->get_name(), $include_file->getLine(), $include_file->getColumn()];
                     }
                 }

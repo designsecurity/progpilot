@@ -40,7 +40,8 @@ class Node
     function __construct($name, $label = null)
     {
         $this->setName($name);
-        if ($label !== null) {
+        if ($label !== null)
+        {
             $this->setLabel($label);
         }
     }
@@ -103,12 +104,14 @@ class Node
     function __call($name, $arguments)
     {
         $key = strtolower(substr($name, 3));
-        if (strtolower(substr($name, 0, 3)) == 'set') {
+        if (strtolower(substr($name, 0, 3)) == 'set')
+        {
             $this->attributes[$key] = new Attribute($key, $arguments[0]);
             return $this;
         }
 
-        if (strtolower(substr($name, 0, 3)) == 'get') {
+        if (strtolower(substr($name, 0, 3)) == 'get')
+        {
             return $this->attributes[$key];
         }
 
@@ -123,17 +126,18 @@ class Node
     public function __toString()
     {
         $attributes = array();
-        foreach ($this->attributes as $value) {
+        foreach ($this->attributes as $value)
+        {
             $attributes[] = (string)$value;
         }
         $attributes = implode("\n", $attributes);
 
         $name = addslashes($this->getName());
 
-        return <<<DOT
-"{$name}" [
-$attributes
-]
-DOT;
+        return <<< DOT
+               "{$name}" [
+                   $attributes
+        ]
+               DOT;
     }
 }

@@ -9,7 +9,8 @@ echo $tainted;
 if (true)
 {
     $tainted2 = "eee";
-} else
+}
+else
 {
     $tainted2 = $_GET["p"];
 }

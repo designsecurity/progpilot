@@ -18,7 +18,8 @@ echo "AAA\n";
 try
 {
     $analyzer->run($context);
-} catch (Exception $e)
+}
+catch (Exception $e)
 {
     echo 'Exception : ',  $e->getMessage(), "\n";
 }

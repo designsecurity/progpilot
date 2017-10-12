@@ -20,9 +20,12 @@ class BuildArrays
 
     public static function function_start_ops($initops)
     {
-        if (isset($initops->ops)) {
-            foreach ($initops->ops as $op) {
-                if ($op instanceof Op\Expr\ArrayDimFetch) {
+        if (isset($initops->ops))
+        {
+            foreach ($initops->ops as $op)
+            {
+                if ($op instanceof Op\Expr\ArrayDimFetch)
+                {
                     return BuildArrays::function_start_ops($op->var);
                 }
             }
@@ -33,8 +36,10 @@ class BuildArrays
 
     public static function build_array_from_arr($start, $end)
     {
-        if (is_array($start)) {
-            foreach($start as $ind => $value) {
+        if (is_array($start))
+        {
+            foreach($start as $ind => $value)
+            {
                 $end = array($ind => $end);
                 $end = BuildArrays::build_array_from_arr($value, $end);
             }
@@ -50,9 +55,12 @@ class BuildArrays
 
         $arr = $originalarr;
 
-        if (is_array($indarr)) {
-            foreach($indarr as $ind => $value) {
-                if (isset($originalarr[$ind])) {
+        if (is_array($indarr))
+        {
+            foreach($indarr as $ind => $value)
+            {
+                if (isset($originalarr[$ind]))
+                {
                     $arr = $originalarr[$ind];
                     $arr = BuildArrays::extract_array_from_arr($originalarr[$ind], $indarr[$ind]);
                 }
@@ -64,9 +72,12 @@ class BuildArrays
 
     public static function build_array_from_ops($initops, $arr)
     {
-        if (isset($initops->ops)) {
-            foreach ($initops->ops as $op) {
-                if ($op instanceof Op\Expr\ArrayDimFetch) {
+        if (isset($initops->ops))
+        {
+            foreach ($initops->ops as $op)
+            {
+                if ($op instanceof Op\Expr\ArrayDimFetch)
+                {
                     $ind = 0;
                     if (isset($op->dim->value))
                         $ind = $op->dim->value;

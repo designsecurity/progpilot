@@ -58,8 +58,10 @@ class Definitions
 
     public static function printblock($defsparam)
     {
-        if (!is_null($defsparam)) {
-            foreach ($defsparam as $def) {
+        if (!is_null($defsparam))
+        {
+            foreach ($defsparam as $def)
+            {
                 $def->print_stdout();
             }
         }
@@ -67,10 +69,13 @@ class Definitions
 
     public static function print_stdout($defsparam)
     {
-        if (!is_null($defsparam)) {
-            foreach($defsparam as $blockid => $defs) {
+        if (!is_null($defsparam))
+        {
+            foreach($defsparam as $blockid => $defs)
+            {
                 echo "blockid $blockid\n";
-                foreach ($defs as $def) {
+                foreach ($defs as $def)
+                {
                     $def->print_stdout();
                 }
             }
@@ -96,7 +101,8 @@ class Definitions
 
     public function addin($block, $def)
     {
-        if (isset($this->in[$block]) && !in_array($def, $this->in[$block], true)) {
+        if (isset($this->in[$block]) && !in_array($def, $this->in[$block], true))
+        {
             $this->in[$block][] = $def;
             return true;
         }
@@ -106,7 +112,8 @@ class Definitions
 
     public function addout($block, $def)
     {
-        if (isset($this->out[$block]) && !in_array($def, $this->out[$block], true)) {
+        if (isset($this->out[$block]) && !in_array($def, $this->out[$block], true))
+        {
             $this->out[$block][] = $def;
             return true;
         }
@@ -116,7 +123,8 @@ class Definitions
 
     public function addgen($block, $def)
     {
-        if (isset($this->gen[$block]) && !in_array($def, $this->gen[$block], true)) {
+        if (isset($this->gen[$block]) && !in_array($def, $this->gen[$block], true))
+        {
             $this->gen[$block][] = $def;
             return true;
         }
@@ -126,7 +134,8 @@ class Definitions
 
     public function addkill($block, $def)
     {
-        if (isset($this->kill[$block]) && !in_array($def, $this->kill[$block], true)) {
+        if (isset($this->kill[$block]) && !in_array($def, $this->kill[$block], true))
+        {
             $this->kill[$block][] = $def;
             return true;
         }
@@ -220,7 +229,8 @@ class Definitions
     // $def1 = all, $def2 = gen
     public function def_equality($def1, $def2)
     {
-        if ($def1->get_name() === $def2->get_name()) {
+        if ($def1->get_name() === $def2->get_name())
+        {
             if ($def1->property->get_properties() !== $def2->property->get_properties())
                 return false;
 
@@ -249,16 +259,21 @@ class Definitions
     // $this->data["gen"][$blockid]
     public function computekill($context, $blockid)
     {
-        if (count($this->gen[$blockid]) > $context->get_limit_defs()) {
+        if (count($this->gen[$blockid]) > $context->get_limit_defs())
+        {
             Utils::print_warning($context, Lang::MAX_DEFS_EXCEEDED);
             return;
         }
 
-        foreach ($this->gen[$blockid] as $gen) {
+        foreach ($this->gen[$blockid] as $gen)
+        {
             $tmpdefs = $this->getdefrefbyname($gen->get_name());
-            if (!is_null($tmpdefs)) {
-                foreach ($tmpdefs as $def) {
-                    if ($this->def_equality($def, $gen)) {
+            if (!is_null($tmpdefs))
+            {
+                foreach ($tmpdefs as $def)
+                {
+                    if ($this->def_equality($def, $gen))
+                    {
                         if ($def !== $gen && !in_array($def, $this->kill[$blockid], true))
                             $this->kill[$blockid][] = $def;
                     }
@@ -269,22 +284,27 @@ class Definitions
 
     public function reachingDefs(&$myblocks)
     {
-        foreach($myblocks as $id => $block) {
+        foreach($myblocks as $id => $block)
+        {
             $this->setoutminuskill($id, $this->getgen($id));
             $this->setout($id, $this->getgen($id));
         }
 
         $change = true;
 
-        while ($change) {
+        while ($change)
+        {
             $change = false;
 
-            foreach($myblocks as $id => $block) {
-                foreach($block->parents as $idparent => $parent) {
+            foreach($myblocks as $id => $block)
+            {
+                foreach($block->parents as $idparent => $parent)
+                {
                     $idcurrent = $block->get_id();
                     $idparent = $parent->get_id();
 
-                    if ($idcurrent != $idparent) {
+                    if ($idcurrent != $idparent)
+                    {
                         $temp = ArrayMulti::array_merge_multi($this->getin($idcurrent), $this->getout($idparent));
                         $this->setin($idcurrent, $temp);
 

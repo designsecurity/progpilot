@@ -15,9 +15,12 @@ try
     $context->inputs->set_validators("./data/validators.json");
     $context->inputs->set_include_files("include_files.json");
 
-    try {
+    try
+    {
         $analyzer->run($context);
-    } catch (Exception $e) {
+    }
+    catch (Exception $e)
+    {
         echo 'Exception : ',  $e->getMessage(), "\n";
     }
 
@@ -27,7 +30,8 @@ try
 
     var_dump($parsed_json);
 
-} catch (\RuntimeException $e)
+}
+catch (\RuntimeException $e)
 {
     $result = $e->getMessage();
 }

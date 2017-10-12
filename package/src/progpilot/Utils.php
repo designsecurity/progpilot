@@ -34,7 +34,8 @@ class Utils
     {
         $property_name = "";
 
-        if (is_array($props)) {
+        if (is_array($props))
+        {
             foreach ($props as $prop)
                 $property_name .= "->".Utils::encode_characters($prop);
         }
@@ -69,9 +70,12 @@ class Utils
 
     public static function print_array($array, &$print)
     {
-        if (is_array($array)) {
-            foreach($array as $index => $value) {
-                if (isset($array[$index])) {
+        if (is_array($array))
+        {
+            foreach($array as $index => $value)
+            {
+                if (isset($array[$index]))
+                {
                     if (is_string($index))
                         $print .= "[\"".Utils::encode_characters($index)."\"]";
                     else

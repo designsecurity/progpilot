@@ -31,18 +31,21 @@ class TwigAnalysis
         $path = $context->get_path();
 
         // !!! Ca peut être 1 aussi quand on passe pas de variables
-        if ($nb_params == 2) {
+        if ($nb_params == 2)
+        {
             $template = $instruction->get_property("argdef0");
             $variable = $instruction->get_property("argdef1");
 
             $file = $path."/".$template->get_last_known_value();
             $myjavascript_file = new MyFile($file, $myfunc_call->getLine(),  $myfunc_call->getColumn());
 
-            if (file_exists($file)) {
+            if (file_exists($file))
+            {
                 $thedefs = [];
                 $thearrays = $variable->get_copyarrays();
 
-                foreach ($thearrays as $array) {
+                foreach ($thearrays as $array)
+                {
                     $def = $array[1];
                     $arr = $array[0];
 

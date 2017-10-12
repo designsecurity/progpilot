@@ -23,19 +23,19 @@ class DumperTest extends TestCase
     protected $path;
 
     protected $array = array(
-        '' => 'bar',
-        'foo' => '#bar',
-        'foo\'bar' => array(),
-        'bar' => array(1, 'foo'),
-        'foobar' => array(
-            'foo' => 'bar',
-            'bar' => array(1, 'foo'),
-            'foobar' => array(
-                'foo' => 'bar',
-                'bar' => array(1, 'foo'),
-            ),
-        ),
-    );
+                           '' => 'bar',
+                           'foo' => '#bar',
+                           'foo\'bar' => array(),
+                           'bar' => array(1, 'foo'),
+                           'foobar' => array(
+                               'foo' => 'bar',
+                               'bar' => array(1, 'foo'),
+                               'foobar' => array(
+                                   'foo' => 'bar',
+                                   'bar' => array(1, 'foo'),
+                               ),
+                           ),
+                       );
 
     protected function setUp()
     {
@@ -55,25 +55,25 @@ class DumperTest extends TestCase
     public function testIndentationInConstructor()
     {
         $dumper = new Dumper(7);
-        $expected = <<<'EOF'
-'': bar
-foo: '#bar'
+        $expected = <<< 'EOF'
+            '': bar
+            foo: '#bar'
 'foo''bar': {  }
 bar:
-       - 1
-       - foo
+        - 1
+        - foo
 foobar:
-       foo: bar
-       bar:
-              - 1
-              - foo
-       foobar:
-              foo: bar
-              bar:
-                     - 1
-                     - foo
+foo: bar
+bar:
+        - 1
+        - foo
+foobar:
+foo: bar
+bar:
+        - 1
+        - foo
 
-EOF;
+        EOF;
         $this->assertEquals($expected, $dumper->dump($this->array, 4, 0));
     }
 
@@ -84,46 +84,53 @@ EOF;
     {
         $this->dumper->setIndentation(7);
 
-        $expected = <<<'EOF'
-'': bar
-foo: '#bar'
+        $expected = <<< 'EOF'
+            '': bar
+            foo: '#bar'
 'foo''bar': {  }
 bar:
-       - 1
-       - foo
+        - 1
+        - foo
 foobar:
-       foo: bar
-       bar:
-              - 1
-              - foo
-       foobar:
-              foo: bar
-              bar:
-                     - 1
-                     - foo
+foo: bar
+bar:
+        - 1
+        - foo
+foobar:
+foo: bar
+bar:
+        - 1
+        - foo
 
-EOF;
+        EOF;
         $this->assertEquals($expected, $this->dumper->dump($this->array, 4, 0));
     }
 
     public function testSpecifications()
     {
         $files = $this->parser->parse(file_get_contents($this->path.'/index.yml'));
-        foreach ($files as $file) {
+        foreach ($files as $file)
+        {
             $yamls = file_get_contents($this->path.'/'.$file.'.yml');
 
             // split YAMLs documents
-            foreach (preg_split('/^---( %YAML\:1\.0)?/m', $yamls) as $yaml) {
-                if (!$yaml) {
+            foreach (preg_split('/^---( %YAML\:1\.0)?/m', $yamls) as $yaml)
+            {
+                if (!$yaml)
+                {
                     continue;
                 }
 
                 $test = $this->parser->parse($yaml);
-                if (isset($test['dump_skip']) && $test['dump_skip']) {
+                if (isset($test['dump_skip']) && $test['dump_skip'])
+                {
                     continue;
-                } elseif (isset($test['todo']) && $test['todo']) {
+                } elseif (isset($test['todo']) && $test['todo'])
+                {
                     // TODO
-                } else {
+                }
+                else
+                {
                     eval('$expected = '.trim($test['php']).';');
                     $this->assertSame($expected, $this->parser->parse($this->dumper->dump($expected, 10), Yaml::PARSE_KEYS_AS_STRINGS), $test['test']);
                 }
@@ -133,75 +140,84 @@ EOF;
 
     public function testInlineLevel()
     {
-        $expected = <<<'EOF'
-{ '': bar, foo: '#bar', 'foo''bar': {  }, bar: [1, foo], foobar: { foo: bar, bar: [1, foo], foobar: { foo: bar, bar: [1, foo] } } }
-EOF;
+        $expected = <<< 'EOF'
+        { '': bar, foo: '#bar', 'foo''bar': {  }, bar: [1, foo], foobar: { foo: bar, bar: [1, foo], foobar: { foo: bar, bar: [1, foo] } } }
+        EOF;
         $this->assertEquals($expected, $this->dumper->dump($this->array, -10), '->dump() takes an inline level argument');
         $this->assertEquals($expected, $this->dumper->dump($this->array, 0), '->dump() takes an inline level argument');
 
-        $expected = <<<'EOF'
-'': bar
-foo: '#bar'
+        $expected = <<< 'EOF'
+            '': bar
+            foo: '#bar'
 'foo''bar': {  }
 bar: [1, foo]
-foobar: { foo: bar, bar: [1, foo], foobar: { foo: bar, bar: [1, foo] } }
+foobar:
+        {
+foo: bar, bar: [1, foo], foobar:
+            {
+foo: bar, bar: [1, foo]
+            }
+        }
 
-EOF;
+        EOF;
         $this->assertEquals($expected, $this->dumper->dump($this->array, 1), '->dump() takes an inline level argument');
 
-        $expected = <<<'EOF'
-'': bar
-foo: '#bar'
+        $expected = <<< 'EOF'
+            '': bar
+            foo: '#bar'
 'foo''bar': {  }
 bar:
-    - 1
-    - foo
+        - 1
+        - foo
 foobar:
-    foo: bar
-    bar: [1, foo]
-    foobar: { foo: bar, bar: [1, foo] }
+foo: bar
+bar: [1, foo]
+foobar:
+        {
+foo: bar, bar: [1, foo]
+        }
 
-EOF;
+        EOF;
         $this->assertEquals($expected, $this->dumper->dump($this->array, 2), '->dump() takes an inline level argument');
 
-        $expected = <<<'EOF'
-'': bar
-foo: '#bar'
+        $expected = <<< 'EOF'
+            '': bar
+            foo: '#bar'
 'foo''bar': {  }
 bar:
-    - 1
-    - foo
-foobar:
-    foo: bar
-    bar:
         - 1
         - foo
-    foobar:
-        foo: bar
-        bar: [1, foo]
+foobar:
+foo: bar
+bar:
+        - 1
+        - foo
+foobar:
+foo: bar
+bar: [1, foo]
 
-EOF;
+        EOF;
         $this->assertEquals($expected, $this->dumper->dump($this->array, 3), '->dump() takes an inline level argument');
 
-        $expected = <<<'EOF'
-'': bar
-foo: '#bar'
+        $expected = <<< 'EOF'
+            '': bar
+            foo: '#bar'
 'foo''bar': {  }
 bar:
-    - 1
-    - foo
-foobar:
-    foo: bar
-    bar:
         - 1
         - foo
-    foobar:
-        foo: bar
-        bar:
-            - 1
-            - foo
+foobar:
+foo: bar
+bar:
+        - 1
+        - foo
+foobar:
+foo: bar
+bar:
+        - 1
+        - foo
 
-EOF;
+        EOF;
         $this->assertEquals($expected, $this->dumper->dump($this->array, 4), '->dump() takes an inline level argument');
         $this->assertEquals($expected, $this->dumper->dump($this->array, 10), '->dump() takes an inline level argument');
     }
@@ -276,26 +292,26 @@ EOF;
     public function getEscapeSequences()
     {
         return array(
-            'empty string' => array('', "''"),
-            'null' => array("\x0", '"\\0"'),
-            'bell' => array("\x7", '"\\a"'),
-            'backspace' => array("\x8", '"\\b"'),
-            'horizontal-tab' => array("\t", '"\\t"'),
-            'line-feed' => array("\n", '"\\n"'),
-            'vertical-tab' => array("\v", '"\\v"'),
-            'form-feed' => array("\xC", '"\\f"'),
-            'carriage-return' => array("\r", '"\\r"'),
-            'escape' => array("\x1B", '"\\e"'),
-            'space' => array(' ', "' '"),
-            'double-quote' => array('"', "'\"'"),
-            'slash' => array('/', '/'),
-            'backslash' => array('\\', '\\'),
-            'next-line' => array("\xC2\x85", '"\\N"'),
-            'non-breaking-space' => array("\xc2\xa0", '"\\_"'),
-            'line-separator' => array("\xE2\x80\xA8", '"\\L"'),
-            'paragraph-separator' => array("\xE2\x80\xA9", '"\\P"'),
-            'colon' => array(':', "':'"),
-        );
+                   'empty string' => array('', "''"),
+                   'null' => array("\x0", '"\\0"'),
+                   'bell' => array("\x7", '"\\a"'),
+                   'backspace' => array("\x8", '"\\b"'),
+                   'horizontal-tab' => array("\t", '"\\t"'),
+                   'line-feed' => array("\n", '"\\n"'),
+                   'vertical-tab' => array("\v", '"\\v"'),
+                   'form-feed' => array("\xC", '"\\f"'),
+                   'carriage-return' => array("\r", '"\\r"'),
+                   'escape' => array("\x1B", '"\\e"'),
+                   'space' => array(' ', "' '"),
+                   'double-quote' => array('"', "'\"'"),
+                   'slash' => array('/', '/'),
+                   'backslash' => array('\\', '\\'),
+                   'next-line' => array("\xC2\x85", '"\\N"'),
+                   'non-breaking-space' => array("\xc2\xa0", '"\\_"'),
+                   'line-separator' => array("\xE2\x80\xA8", '"\\L"'),
+                   'paragraph-separator' => array("\xE2\x80\xA9", '"\\P"'),
+                   'colon' => array(':', "':'"),
+               );
     }
 
     public function testBinaryDataIsDumpedBase64Encoded()
@@ -359,14 +375,17 @@ EOF;
 
         $yaml = $this->dumper->dump($outer, 2, 0, Yaml::DUMP_OBJECT_AS_MAP);
 
-        $expected = <<<YAML
-outer1: a
-outer2:
-    inner1: b
-    inner2: c
-    inner3: { deep1: d, deep2: e }
+        $expected = <<< YAML
+            outer1: a
+            outer2:
+            inner1: b
+            inner2: c
+            inner3:
+        {
+deep1: d, deep2: e
+        }
 
-YAML;
+        YAML;
         $this->assertSame($expected, $yaml);
     }
 
@@ -377,9 +396,9 @@ YAML;
         $outer = new \ArrayObject(array('a', $inner));
 
         $yaml = $this->dumper->dump($outer, 0, 0, Yaml::DUMP_OBJECT_AS_MAP);
-        $expected = <<<YAML
-{ 0: a, 1: { 0: b, 1: c, 2: { 0: d, 1: e } } }
-YAML;
+        $expected = <<< YAML
+        { 0: a, 1: { 0: b, 1: c, 2: { 0: d, 1: e } } }
+        YAML;
         $this->assertSame($expected, $yaml);
     }
 
@@ -389,14 +408,17 @@ YAML;
         $inner = new \ArrayObject(array('b', 'c', $deep));
         $outer = new \ArrayObject(array('a', $inner));
         $yaml = $this->dumper->dump($outer, 2, 0, Yaml::DUMP_OBJECT_AS_MAP);
-        $expected = <<<YAML
-0: a
-1:
-    0: b
-    1: c
-    2: { 0: d, 1: e }
+        $expected = <<< YAML
+            0: a
+            1:
+            0: b
+            1: c
+            2:
+        {
+0: d, 1: e
+        }
 
-YAML;
+        YAML;
         $this->assertEquals($expected, $yaml);
     }
 
@@ -427,28 +449,31 @@ YAML;
 
         $yaml = $this->dumper->dump($outer, 2, 0, Yaml::DUMP_OBJECT_AS_MAP);
 
-        $expected = <<<YAML
-outer1: a
-outer2:
-    inner1: b
-    inner2: c
-    inner3: { deep1: d, deep2: e }
+        $expected = <<< YAML
+            outer1: a
+            outer2:
+            inner1: b
+            inner2: c
+            inner3:
+        {
+deep1: d, deep2: e
+        }
 
-YAML;
+        YAML;
         $this->assertSame($expected, $yaml);
     }
 
     public function testDumpMultiLineStringAsScalarBlock()
     {
         $data = array(
-            'data' => array(
-                'single_line' => 'foo bar baz',
-                'multi_line' => "foo\nline with trailing spaces:\n  \nbar\r\ninteger like line:\n123456789\nempty line:\n\nbaz",
-                'nested_inlined_multi_line_string' => array(
-                    'inlined_multi_line' => "foo\nbar\r\nempty line:\n\nbaz",
-                ),
-            ),
-        );
+                    'data' => array(
+                        'single_line' => 'foo bar baz',
+                        'multi_line' => "foo\nline with trailing spaces:\n  \nbar\r\ninteger like line:\n123456789\nempty line:\n\nbaz",
+                        'nested_inlined_multi_line_string' => array(
+                            'inlined_multi_line' => "foo\nbar\r\nempty line:\n\nbaz",
+                        ),
+                    ),
+                );
 
         $this->assertSame(file_get_contents(__DIR__.'/Fixtures/multiple_lines_as_literal_block.yml'), $this->dumper->dump($data, 2, 0, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK));
     }

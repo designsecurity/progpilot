@@ -17,7 +17,8 @@ class testc2
 if (true)
 {
     $instance = new testc1;
-} else
+}
+else
 {
     $instance = new testc2;
 }

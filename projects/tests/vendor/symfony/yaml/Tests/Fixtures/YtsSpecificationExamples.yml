@@ -1083,11 +1083,11 @@ yaml: |
      A key: value pair in a sequence.
      A second: key:value pair.
   !float 12 : This key is a float.
-  ? >
+  ?>
    ?
   : This key had to be protected.
   "\a" : This key had to be escaped.
-  ? >
+  ?>
    This is a
    multi-line
    folded key

@@ -31,14 +31,17 @@ class Expr
         foreach ($array_chars as $char)
             $nb_chars[$char] = 0;
 
-        for ($i = 0; $i < strlen($string); $i++) {
-            foreach ($array_chars as $char) {
+        for ($i = 0; $i < strlen($string); $i++)
+        {
+            foreach ($array_chars as $char)
+            {
                 if ($string[$i] == $char)
                     $nb_chars[$char] ++;
             }
         }
 
-        foreach ($array_chars as $char) {
+        foreach ($array_chars as $char)
+        {
             $myexpr->set_nb_chars($char, $myexpr->get_nb_chars($char) + $nb_chars[$char]);
             $mytemp->set_is_embeddedbychar($char, $myexpr->get_nb_chars($char));
         }
@@ -49,7 +52,8 @@ class Expr
     {
         $nb_chars = [];
 
-        foreach ($defs_ofexpr as $one_def) {
+        foreach ($defs_ofexpr as $one_def)
+        {
             if ($one_def->get_is_embeddedbychar("<") >
                     $one_def->get_is_embeddedbychar(">"))
                 $one_def->set_is_embeddedbychar("<", true);
@@ -82,7 +86,8 @@ class Expr
         $type_array = Common::get_type_is_array($op);
 
         // end of expression
-        if (!is_null($type) && $type != MyOp::TYPE_FUNCCALL_ARRAY) {
+        if (!is_null($type) && $type != MyOp::TYPE_FUNCCALL_ARRAY)
+        {
             if (is_null($name))
                 $name = mt_rand();
 
@@ -96,7 +101,8 @@ class Expr
 
             Expr::set_chars($myexpr, $mytemp, $name, ["'", "<", ">"]);
 
-            if ($arr != false) {
+            if ($arr != false)
+            {
                 $mytemp->set_is_array(true);
                 $mytemp->set_array_value($arr);
             }
@@ -104,7 +110,8 @@ class Expr
             $mytemp->add_expr($myexpr);
             $defs_ofexpr[] = $mytemp;
 
-            if ($type == MyOp::TYPE_PROPERTY) {
+            if ($type == MyOp::TYPE_PROPERTY)
+            {
                 $property_name = "";
                 if (isset($op->ops[0]))
                     $property_name = Common::get_name_property($op->ops[0]);
@@ -121,14 +128,17 @@ class Expr
         }
 
         // func()[0][1]
-        else if ($type == MyOp::TYPE_FUNCCALL_ARRAY) {
+        else if ($type == MyOp::TYPE_FUNCCALL_ARRAY)
+        {
             $arr_funccall = BuildArrays::build_array_from_ops($op, false);
             $start_ops = BuildArrays::function_start_ops($op);
             $op = $start_ops;
         }
 
-        if (isset($op->ops)) {
-            foreach ($op->ops as $ops) {
+        if (isset($op->ops))
+        {
+            foreach ($op->ops as $ops)
+            {
                 if ($ops instanceof Op\Expr\Cast\Int_
                         || $ops instanceof Op\Expr\Cast\Array_
                         || $ops instanceof Op\Expr\Cast\Bool_
@@ -141,37 +151,48 @@ class Expr
                 else if ($ops instanceof Op\Expr\Cast\String_)
                     Expr::instruction_internal($defs_ofexpr, $ops->expr, $context, $myexpr, $assign_id, MyDefinition::CAST_NOT_SAFE);
 
-                else if ($ops instanceof Op\Expr\BinaryOp\Concat) {
+                else if ($ops instanceof Op\Expr\BinaryOp\Concat)
+                {
                     $context->get_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_LEFT));
                     Expr::instruction_internal($defs_ofexpr, $ops->left, $context, $myexpr, $assign_id);
 
                     $context->get_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_RIGHT));
                     Expr::instruction_internal($defs_ofexpr, $ops->right, $context, $myexpr, $assign_id);
-                } else if ($ops instanceof Op\Expr\ConcatList) {
+                }
+                else if ($ops instanceof Op\Expr\ConcatList)
+                {
                     $context->get_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_LIST));
 
-                    foreach ($ops->list as $opsbis) {
+                    foreach ($ops->list as $opsbis)
+                    {
                         Expr::instruction_internal($defs_ofexpr, $opsbis, $context, $myexpr, $assign_id);
                     }
-                } else if ($ops instanceof Op\Expr\FuncCall) {
+                }
+                else if ($ops instanceof Op\Expr\FuncCall)
+                {
                     $old_op = $context->get_current_op();
                     $context->set_current_op($ops);
                     FuncCall::instruction($context, $myexpr, $assign_id, $arr_funccall);
                     $context->set_current_op($old_op);
-                } else if ($ops instanceof Op\Expr\MethodCall) {
+                }
+                else if ($ops instanceof Op\Expr\MethodCall)
+                {
                     $old_op = $context->get_current_op();
                     $context->set_current_op($ops);
                     FuncCall::instruction($context, $myexpr, $assign_id, $arr_funccall, true);
                     $context->set_current_op($old_op);
                 }
 
-                else if ($ops instanceof Op\Expr\New_) {
+                else if ($ops instanceof Op\Expr\New_)
+                {
                     // funccall for the constructor
                     $old_op = $context->get_current_op();
                     $context->set_current_op($ops);
                     FuncCall::instruction($context, $myexpr, $assign_id, $arr_funccall);
                     $context->set_current_op($old_op);
-                } else {
+                }
+                else
+                {
                     $mytemp_def = Expr::instruction_internal($defs_ofexpr, $ops, $context, $myexpr, $assign_id);
                 }
             }

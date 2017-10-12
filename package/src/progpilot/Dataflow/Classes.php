@@ -33,7 +33,8 @@ class Classes
 
     public function get_myclass($name)
     {
-        foreach ($this->list_classes as $myclass) {
+        foreach ($this->list_classes as $myclass)
+        {
             if ($myclass->get_name() === $name)
                 return $myclass;
         }

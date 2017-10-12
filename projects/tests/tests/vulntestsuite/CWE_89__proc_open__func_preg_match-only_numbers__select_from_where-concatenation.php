@@ -61,7 +61,8 @@ $re = "/^[0-9]*$/";
 if (preg_match($re, $tainted) == 1)
 {
     $tainted = $tainted;
-} else
+}
+else
 {
     $tainted = "";
 }

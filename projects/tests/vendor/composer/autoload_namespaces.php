@@ -6,6 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'progpilot' => array($vendorDir . '/progpilot/package/src'),
-    'phpDocumentor' => array($vendorDir . '/phpdocumentor/graphviz/src', $vendorDir . '/phpdocumentor/graphviz/tests/unit'),
-);
+           'progpilot' => array($vendorDir . '/progpilot/package/src'),
+           'phpDocumentor' => array($vendorDir . '/phpdocumentor/graphviz/src', $vendorDir . '/phpdocumentor/graphviz/tests/unit'),
+       );

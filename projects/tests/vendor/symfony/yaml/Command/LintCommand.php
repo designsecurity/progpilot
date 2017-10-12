@@ -48,29 +48,29 @@ class LintCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('lint:yaml')
-            ->setDescription('Lints a file and outputs encountered errors')
-            ->addArgument('filename', null, 'A file or a directory or STDIN')
-            ->addOption('format', null, InputOption::VALUE_REQUIRED, 'The output format', 'txt')
-            ->setHelp(<<<EOF
-The <info>%command.name%</info> command lints a YAML file and outputs to STDOUT
-the first encountered syntax error.
+        ->setName('lint:yaml')
+        ->setDescription('Lints a file and outputs encountered errors')
+        ->addArgument('filename', null, 'A file or a directory or STDIN')
+        ->addOption('format', null, InputOption::VALUE_REQUIRED, 'The output format', 'txt')
+        ->setHelp( <<< EOF
+                   The <info> % command.name % < / info > command lints a YAML file and outputs to STDOUT
+                   the first encountered syntax error.
 
-You can validates YAML contents passed from STDIN:
+                   You can validates YAML contents passed from STDIN:
 
-  <info>cat filename | php %command.full_name%</info>
+                   <info>cat filename | php % command.full_name % < / info >
 
-You can also validate the syntax of a file:
+                   You can also validate the syntax of a file:
 
-  <info>php %command.full_name% filename</info>
+                   <info>php % command.full_name % filename < / info >
 
-Or of a whole directory:
+                   Or of a whole directory:
 
-  <info>php %command.full_name% dirname</info>
-  <info>php %command.full_name% dirname --format=json</info>
+                   <info>php % command.full_name % dirname < / info >
+                   <info>php % command.full_name % dirname --format = json < / info >
 
-EOF
-            )
+                           EOF
+                 )
         ;
     }
 
@@ -81,20 +81,24 @@ EOF
         $this->format = $input->getOption('format');
         $this->displayCorrectFiles = $output->isVerbose();
 
-        if (!$filename) {
-            if (!$stdin = $this->getStdin()) {
+        if (!$filename)
+        {
+            if (!$stdin = $this->getStdin())
+            {
                 throw new \RuntimeException('Please provide a filename or pipe file content to STDIN.');
             }
 
             return $this->display($io, array($this->validate($stdin)));
         }
 
-        if (!$this->isReadable($filename)) {
+        if (!$this->isReadable($filename))
+        {
             throw new \RuntimeException(sprintf('File or directory "%s" is not readable.', $filename));
         }
 
         $filesInfo = array();
-        foreach ($this->getFiles($filename) as $file) {
+        foreach ($this->getFiles($filename) as $file)
+        {
             $filesInfo[] = $this->validate(file_get_contents($file), $file);
         }
 
@@ -103,19 +107,25 @@ EOF
 
     private function validate($content, $file = null)
     {
-        $prevErrorHandler = set_error_handler(function ($level, $message, $file, $line) use (&$prevErrorHandler) {
-            if (E_USER_DEPRECATED === $level) {
+        $prevErrorHandler = set_error_handler(function ($level, $message, $file, $line) use (&$prevErrorHandler)
+        {
+            if (E_USER_DEPRECATED === $level)
+            {
                 throw new ParseException($message);
             }
 
             return $prevErrorHandler ? $prevErrorHandler($level, $message, $file, $line) : false;
         });
 
-        try {
+        try
+        {
             $this->getParser()->parse($content, Yaml::PARSE_CONSTANT);
-        } catch (ParseException $e) {
+        }
+        catch (ParseException $e)
+        {
             return array('file' => $file, 'valid' => false, 'message' => $e->getMessage());
-        } finally {
+        } finally
+        {
             restore_error_handler();
         }
 
@@ -124,13 +134,14 @@ EOF
 
     private function display(SymfonyStyle $io, array $files)
     {
-        switch ($this->format) {
-            case 'txt':
-                return $this->displayTxt($io, $files);
-            case 'json':
-                return $this->displayJson($io, $files);
-            default:
-                throw new \InvalidArgumentException(sprintf('The format "%s" is not supported.', $this->format));
+        switch ($this->format)
+        {
+        case 'txt':
+            return $this->displayTxt($io, $files);
+        case 'json':
+            return $this->displayJson($io, $files);
+        default:
+            throw new \InvalidArgumentException(sprintf('The format "%s" is not supported.', $this->format));
         }
     }
 
@@ -139,19 +150,25 @@ EOF
         $countFiles = count($filesInfo);
         $erroredFiles = 0;
 
-        foreach ($filesInfo as $info) {
-            if ($info['valid'] && $this->displayCorrectFiles) {
+        foreach ($filesInfo as $info)
+        {
+            if ($info['valid'] && $this->displayCorrectFiles)
+            {
                 $io->comment('<info>OK</info>'.($info['file'] ? sprintf(' in %s', $info['file']) : ''));
-            } elseif (!$info['valid']) {
+            } elseif (!$info['valid'])
+            {
                 ++$erroredFiles;
                 $io->text('<error> ERROR </error>'.($info['file'] ? sprintf(' in %s', $info['file']) : ''));
                 $io->text(sprintf('<error> >> %s</error>', $info['message']));
             }
         }
 
-        if ($erroredFiles === 0) {
+        if ($erroredFiles === 0)
+        {
             $io->success(sprintf('All %d YAML files contain valid syntax.', $countFiles));
-        } else {
+        }
+        else
+        {
             $io->warning(sprintf('%d YAML files have valid syntax and %d contain errors.', $countFiles - $erroredFiles, $erroredFiles));
         }
 
@@ -162,9 +179,11 @@ EOF
     {
         $errors = 0;
 
-        array_walk($filesInfo, function (&$v) use (&$errors) {
+        array_walk($filesInfo, function (&$v) use (&$errors)
+        {
             $v['file'] = (string) $v['file'];
-            if (!$v['valid']) {
+            if (!$v['valid'])
+            {
                 ++$errors;
             }
         });
@@ -176,14 +195,17 @@ EOF
 
     private function getFiles($fileOrDirectory)
     {
-        if (is_file($fileOrDirectory)) {
+        if (is_file($fileOrDirectory))
+        {
             yield new \SplFileInfo($fileOrDirectory);
 
             return;
         }
 
-        foreach ($this->getDirectoryIterator($fileOrDirectory) as $file) {
-            if (!in_array($file->getExtension(), array('yml', 'yaml'))) {
+        foreach ($this->getDirectoryIterator($fileOrDirectory) as $file)
+        {
+            if (!in_array($file->getExtension(), array('yml', 'yaml')))
+            {
                 continue;
             }
 
@@ -193,12 +215,14 @@ EOF
 
     private function getStdin()
     {
-        if (0 !== ftell(STDIN)) {
+        if (0 !== ftell(STDIN))
+        {
             return;
         }
 
         $inputs = '';
-        while (!feof(STDIN)) {
+        while (!feof(STDIN))
+        {
             $inputs .= fread(STDIN, 1024);
         }
 
@@ -207,7 +231,8 @@ EOF
 
     private function getParser()
     {
-        if (!$this->parser) {
+        if (!$this->parser)
+        {
             $this->parser = new Parser();
         }
 
@@ -216,14 +241,16 @@ EOF
 
     private function getDirectoryIterator($directory)
     {
-        $default = function ($directory) {
+        $default = function ($directory)
+        {
             return new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($directory, \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS),
-                \RecursiveIteratorIterator::LEAVES_ONLY
-            );
+                       new \RecursiveDirectoryIterator($directory, \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS),
+                       \RecursiveIteratorIterator::LEAVES_ONLY
+                   );
         };
 
-        if (null !== $this->directoryIteratorProvider) {
+        if (null !== $this->directoryIteratorProvider)
+        {
             return call_user_func($this->directoryIteratorProvider, $directory, $default);
         }
 
@@ -232,11 +259,13 @@ EOF
 
     private function isReadable($fileOrDirectory)
     {
-        $default = function ($fileOrDirectory) {
+        $default = function ($fileOrDirectory)
+        {
             return is_readable($fileOrDirectory);
         };
 
-        if (null !== $this->isReadableProvider) {
+        if (null !== $this->isReadableProvider)
+        {
             return call_user_func($this->isReadableProvider, $fileOrDirectory, $default);
         }
 

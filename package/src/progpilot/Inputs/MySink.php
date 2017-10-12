@@ -37,7 +37,8 @@ class MySink extends MySpecify
 
     public function is_global_condition($condition)
     {
-        foreach ($this->global_conditions as $condition_global) {
+        foreach ($this->global_conditions as $condition_global)
+        {
             if ($condition == $condition_global)
                 return true;
         }
@@ -58,7 +59,8 @@ class MySink extends MySpecify
 
     public function get_parameter_condition($i)
     {
-        foreach ($this->parameters as $parameter) {
+        foreach ($this->parameters as $parameter)
+        {
             $index = $parameter[0];
             $condition = $parameter[1];
 
@@ -71,7 +73,8 @@ class MySink extends MySpecify
 
     public function is_parameter($i)
     {
-        foreach ($this->parameters as $parameter) {
+        foreach ($this->parameters as $parameter)
+        {
             $index = $parameter[0];
             if ($index == $i)
                 return true;

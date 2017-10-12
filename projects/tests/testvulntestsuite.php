@@ -102,7 +102,7 @@ $framework->add_output("./tests/vulntestsuite/CWE_862_Fopen__exec__no_sanitizing
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_862_Fopen__fopen__func_preg_replace__fopen.php");
 $framework->add_output("./tests/vulntestsuite/CWE_862_Fopen__fopen__func_preg_replace__fopen.php", array("\$tainted"));
-$framework->add_output("./tests/vulntestsuite/CWE_862_Fopen__fopen__func_preg_replace__fopen.php", array("59"));
+$framework->add_output("./tests/vulntestsuite/CWE_862_Fopen__fopen__func_preg_replace__fopen.php", array("61"));
 $framework->add_output("./tests/vulntestsuite/CWE_862_Fopen__fopen__func_preg_replace__fopen.php", "idor");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_862_Fopen__fopen__no_sanitizing__fopen.php");
@@ -1518,7 +1518,7 @@ $framework->add_output("./tests/vulntestsuite/CWE_78__GET__no_sanitizing__ls-spr
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__POST__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_78__POST__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_78__POST__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("56"));
+$framework->add_output("./tests/vulntestsuite/CWE_78__POST__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("57"));
 $framework->add_output("./tests/vulntestsuite/CWE_78__POST__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", "command_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__backticks__func_FILTER-CLEANING-email_filter__ls-concatenation_simple_quote.php");
@@ -1538,27 +1538,27 @@ $framework->add_output("./tests/vulntestsuite/CWE_78__exec__func_FILTER-CLEANING
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__fopen__func_FILTER-CLEANING-email_filter__ls-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_78__fopen__func_FILTER-CLEANING-email_filter__ls-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_78__fopen__func_FILTER-CLEANING-email_filter__ls-sprintf_%s_simple_quote.php", array("64"));
+$framework->add_output("./tests/vulntestsuite/CWE_78__fopen__func_FILTER-CLEANING-email_filter__ls-sprintf_%s_simple_quote.php", array("66"));
 $framework->add_output("./tests/vulntestsuite/CWE_78__fopen__func_FILTER-CLEANING-email_filter__ls-sprintf_%s_simple_quote.php", "command_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__fopen__func_preg_match-no_filtering__cat-interpretation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_78__fopen__func_preg_match-no_filtering__cat-interpretation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_78__fopen__func_preg_match-no_filtering__cat-interpretation_simple_quote.php", array("67"));
+$framework->add_output("./tests/vulntestsuite/CWE_78__fopen__func_preg_match-no_filtering__cat-interpretation_simple_quote.php", array("70"));
 $framework->add_output("./tests/vulntestsuite/CWE_78__fopen__func_preg_match-no_filtering__cat-interpretation_simple_quote.php", "command_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__fopen__func_preg_match-no_filtering__ls-interpretation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_78__fopen__func_preg_match-no_filtering__ls-interpretation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_78__fopen__func_preg_match-no_filtering__ls-interpretation_simple_quote.php", array("67"));
+$framework->add_output("./tests/vulntestsuite/CWE_78__fopen__func_preg_match-no_filtering__ls-interpretation_simple_quote.php", array("70"));
 $framework->add_output("./tests/vulntestsuite/CWE_78__fopen__func_preg_match-no_filtering__ls-interpretation_simple_quote.php", "command_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__fopen__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_78__fopen__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_78__fopen__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("67"));
+$framework->add_output("./tests/vulntestsuite/CWE_78__fopen__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("70"));
 $framework->add_output("./tests/vulntestsuite/CWE_78__fopen__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", "command_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__fopen__no_sanitizing__find_size-concatenation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_78__fopen__no_sanitizing__find_size-concatenation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_78__fopen__no_sanitizing__find_size-concatenation_simple_quote.php", array("60"));
+$framework->add_output("./tests/vulntestsuite/CWE_78__fopen__no_sanitizing__find_size-concatenation_simple_quote.php", array("62"));
 $framework->add_output("./tests/vulntestsuite/CWE_78__fopen__no_sanitizing__find_size-concatenation_simple_quote.php", "command_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__object-classicGet__func_FILTER-CLEANING-email_filter__cat-sprintf_%s_simple_quote.php");
@@ -1568,7 +1568,7 @@ $framework->add_output("./tests/vulntestsuite/CWE_78__object-classicGet__func_FI
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__object-directGet__func_preg_match-no_filtering__cat-concatenation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_78__object-directGet__func_preg_match-no_filtering__cat-concatenation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_78__object-directGet__func_preg_match-no_filtering__cat-concatenation_simple_quote.php", array("65"));
+$framework->add_output("./tests/vulntestsuite/CWE_78__object-directGet__func_preg_match-no_filtering__cat-concatenation_simple_quote.php", array("66"));
 $framework->add_output("./tests/vulntestsuite/CWE_78__object-directGet__func_preg_match-no_filtering__cat-concatenation_simple_quote.php", "command_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__object-indexArray__func_FILTER-CLEANING-email_filter__cat-sprintf_%s_simple_quote.php");
@@ -1578,7 +1578,7 @@ $framework->add_output("./tests/vulntestsuite/CWE_78__object-indexArray__func_FI
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__object-indexArray__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_78__object-indexArray__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_78__object-indexArray__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("74"));
+$framework->add_output("./tests/vulntestsuite/CWE_78__object-indexArray__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("75"));
 $framework->add_output("./tests/vulntestsuite/CWE_78__object-indexArray__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", "command_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__popen__func_FILTER-CLEANING-email_filter__cat-interpretation_simple_quote.php");
@@ -1593,12 +1593,12 @@ $framework->add_output("./tests/vulntestsuite/CWE_78__popen__func_FILTER-CLEANIN
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__popen__func_preg_match-no_filtering__ls-interpretation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_78__popen__func_preg_match-no_filtering__ls-interpretation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_78__popen__func_preg_match-no_filtering__ls-interpretation_simple_quote.php", array("58"));
+$framework->add_output("./tests/vulntestsuite/CWE_78__popen__func_preg_match-no_filtering__ls-interpretation_simple_quote.php", array("59"));
 $framework->add_output("./tests/vulntestsuite/CWE_78__popen__func_preg_match-no_filtering__ls-interpretation_simple_quote.php", "command_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__popen__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_78__popen__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_78__popen__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("58"));
+$framework->add_output("./tests/vulntestsuite/CWE_78__popen__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("59"));
 $framework->add_output("./tests/vulntestsuite/CWE_78__popen__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", "command_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__popen__no_sanitizing__cat-interpretation_simple_quote.php");
@@ -1613,17 +1613,17 @@ $framework->add_output("./tests/vulntestsuite/CWE_78__proc_open__func_FILTER-CLE
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__proc_open__func_preg_match-no_filtering__cat-concatenation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_78__proc_open__func_preg_match-no_filtering__cat-concatenation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_78__proc_open__func_preg_match-no_filtering__cat-concatenation_simple_quote.php", array("69"));
+$framework->add_output("./tests/vulntestsuite/CWE_78__proc_open__func_preg_match-no_filtering__cat-concatenation_simple_quote.php", array("70"));
 $framework->add_output("./tests/vulntestsuite/CWE_78__proc_open__func_preg_match-no_filtering__cat-concatenation_simple_quote.php", "command_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__proc_open__func_preg_match-no_filtering__ls-concatenation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_78__proc_open__func_preg_match-no_filtering__ls-concatenation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_78__proc_open__func_preg_match-no_filtering__ls-concatenation_simple_quote.php", array("69"));
+$framework->add_output("./tests/vulntestsuite/CWE_78__proc_open__func_preg_match-no_filtering__ls-concatenation_simple_quote.php", array("70"));
 $framework->add_output("./tests/vulntestsuite/CWE_78__proc_open__func_preg_match-no_filtering__ls-concatenation_simple_quote.php", "command_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__proc_open__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_78__proc_open__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_78__proc_open__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("69"));
+$framework->add_output("./tests/vulntestsuite/CWE_78__proc_open__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("70"));
 $framework->add_output("./tests/vulntestsuite/CWE_78__proc_open__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", "command_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__proc_open__no_sanitizing__ls-concatenation_simple_quote.php");
@@ -1638,7 +1638,7 @@ $framework->add_output("./tests/vulntestsuite/CWE_78__shell_exec__func_FILTER-CL
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__shell_exec__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_78__shell_exec__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_78__shell_exec__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("56"));
+$framework->add_output("./tests/vulntestsuite/CWE_78__shell_exec__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", array("57"));
 $framework->add_output("./tests/vulntestsuite/CWE_78__shell_exec__func_preg_match-no_filtering__ls-sprintf_%s_simple_quote.php", "command_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__system__func_FILTER-CLEANING-email_filter__cat-sprintf_%s_simple_quote.php");
@@ -1830,7 +1830,7 @@ $framework->add_testbasis("./tests/vulntestsuite/CWE_89__fopen__func_FILTER-VALI
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_89__fopen__func_preg_replace__select_from-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_89__fopen__func_preg_replace__select_from-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_89__fopen__func_preg_replace__select_from-sprintf_%s_simple_quote.php", array("60"));
+$framework->add_output("./tests/vulntestsuite/CWE_89__fopen__func_preg_replace__select_from-sprintf_%s_simple_quote.php", array("62"));
 $framework->add_output("./tests/vulntestsuite/CWE_89__fopen__func_preg_replace__select_from-sprintf_%s_simple_quote.php", "sql_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_89__fopen__ternary_white_list__multiple_AS-sprintf_%u.php");
@@ -2072,10 +2072,10 @@ $framework->add_output("./tests/vulntestsuite/CWE_89__GET__no_sanitizing__multip
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_89__backticks__func_preg_match-no_filtering__join-concatenation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_89__backticks__func_preg_match-no_filtering__join-concatenation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_89__backticks__func_preg_match-no_filtering__join-concatenation_simple_quote.php", array("56"));
+$framework->add_output("./tests/vulntestsuite/CWE_89__backticks__func_preg_match-no_filtering__join-concatenation_simple_quote.php", array("57"));
 $framework->add_output("./tests/vulntestsuite/CWE_89__backticks__func_preg_match-no_filtering__join-concatenation_simple_quote.php", "xss");
 $framework->add_output("./tests/vulntestsuite/CWE_89__backticks__func_preg_match-no_filtering__join-concatenation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_89__backticks__func_preg_match-no_filtering__join-concatenation_simple_quote.php", array("56"));
+$framework->add_output("./tests/vulntestsuite/CWE_89__backticks__func_preg_match-no_filtering__join-concatenation_simple_quote.php", array("57"));
 $framework->add_output("./tests/vulntestsuite/CWE_89__backticks__func_preg_match-no_filtering__join-concatenation_simple_quote.php", "sql_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_89__exec__func_FILTER-CLEANING-email_filter__select_from-concatenation_simple_quote.php");
@@ -2128,10 +2128,10 @@ $framework->add_output("./tests/vulntestsuite/CWE_89__object-indexArray__func_FI
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_89__object-indexArray__func_preg_match-no_filtering__join-concatenation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_89__object-indexArray__func_preg_match-no_filtering__join-concatenation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_89__object-indexArray__func_preg_match-no_filtering__join-concatenation_simple_quote.php", array("74"));
+$framework->add_output("./tests/vulntestsuite/CWE_89__object-indexArray__func_preg_match-no_filtering__join-concatenation_simple_quote.php", array("75"));
 $framework->add_output("./tests/vulntestsuite/CWE_89__object-indexArray__func_preg_match-no_filtering__join-concatenation_simple_quote.php", "xss");
 $framework->add_output("./tests/vulntestsuite/CWE_89__object-indexArray__func_preg_match-no_filtering__join-concatenation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_89__object-indexArray__func_preg_match-no_filtering__join-concatenation_simple_quote.php", array("74"));
+$framework->add_output("./tests/vulntestsuite/CWE_89__object-indexArray__func_preg_match-no_filtering__join-concatenation_simple_quote.php", array("75"));
 $framework->add_output("./tests/vulntestsuite/CWE_89__object-indexArray__func_preg_match-no_filtering__join-concatenation_simple_quote.php", "sql_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_89__popen__func_FILTER-CLEANING-email_filter__select_from-concatenation_simple_quote.php");
@@ -2144,10 +2144,10 @@ $framework->add_output("./tests/vulntestsuite/CWE_89__popen__func_FILTER-CLEANIN
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_89__popen__func_preg_match-no_filtering__join-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_89__popen__func_preg_match-no_filtering__join-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_89__popen__func_preg_match-no_filtering__join-sprintf_%s_simple_quote.php", array("58"));
+$framework->add_output("./tests/vulntestsuite/CWE_89__popen__func_preg_match-no_filtering__join-sprintf_%s_simple_quote.php", array("59"));
 $framework->add_output("./tests/vulntestsuite/CWE_89__popen__func_preg_match-no_filtering__join-sprintf_%s_simple_quote.php", "xss");
 $framework->add_output("./tests/vulntestsuite/CWE_89__popen__func_preg_match-no_filtering__join-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_89__popen__func_preg_match-no_filtering__join-sprintf_%s_simple_quote.php", array("58"));
+$framework->add_output("./tests/vulntestsuite/CWE_89__popen__func_preg_match-no_filtering__join-sprintf_%s_simple_quote.php", array("59"));
 $framework->add_output("./tests/vulntestsuite/CWE_89__popen__func_preg_match-no_filtering__join-sprintf_%s_simple_quote.php", "sql_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_89__shell_exec__func_mysql_real_escape_string__multiple_select-interpretation.php");
@@ -2184,10 +2184,10 @@ $framework->add_output("./tests/vulntestsuite/CWE_89__system__func_FILTER-CLEANI
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_89__system__func_preg_match-no_filtering__join-interpretation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_89__system__func_preg_match-no_filtering__join-interpretation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_89__system__func_preg_match-no_filtering__join-interpretation_simple_quote.php", array("56"));
+$framework->add_output("./tests/vulntestsuite/CWE_89__system__func_preg_match-no_filtering__join-interpretation_simple_quote.php", array("57"));
 $framework->add_output("./tests/vulntestsuite/CWE_89__system__func_preg_match-no_filtering__join-interpretation_simple_quote.php", "xss");
 $framework->add_output("./tests/vulntestsuite/CWE_89__system__func_preg_match-no_filtering__join-interpretation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_89__system__func_preg_match-no_filtering__join-interpretation_simple_quote.php", array("56"));
+$framework->add_output("./tests/vulntestsuite/CWE_89__system__func_preg_match-no_filtering__join-interpretation_simple_quote.php", array("57"));
 $framework->add_output("./tests/vulntestsuite/CWE_89__system__func_preg_match-no_filtering__join-interpretation_simple_quote.php", "sql_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_89__system__no_sanitizing__multiple_AS-concatenation.php");
@@ -2636,42 +2636,42 @@ $framework->add_output("./tests/vulntestsuite/CWE_90__POST__no_sanitizing__userB
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__name-interpretation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__name-interpretation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__name-interpretation_simple_quote.php", array("60"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__name-interpretation_simple_quote.php", array("62"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__name-interpretation_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__userByCN-interpretation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__userByCN-interpretation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__userByCN-interpretation_simple_quote.php", array("60"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__userByCN-interpretation_simple_quote.php", array("62"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__userByCN-interpretation_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__userByCN-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__userByCN-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__userByCN-sprintf_%s_simple_quote.php", array("60"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__userByCN-sprintf_%s_simple_quote.php", array("62"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__userByCN-sprintf_%s_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__userByMail-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__userByMail-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__userByMail-sprintf_%s_simple_quote.php", array("60"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__userByMail-sprintf_%s_simple_quote.php", array("62"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_addslashes__userByMail-sprintf_%s_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__fopen__func_htmlentities__name-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_htmlentities__name-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_htmlentities__name-sprintf_%s_simple_quote.php", array("60"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_htmlentities__name-sprintf_%s_simple_quote.php", array("62"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_htmlentities__name-sprintf_%s_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__fopen__func_htmlspecialchars__not_name-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_htmlspecialchars__not_name-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_htmlspecialchars__not_name-sprintf_%s_simple_quote.php", array("60"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_htmlspecialchars__not_name-sprintf_%s_simple_quote.php", array("62"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_htmlspecialchars__not_name-sprintf_%s_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__fopen__func_htmlspecialchars__userByMail-interpretation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_htmlspecialchars__userByMail-interpretation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_htmlspecialchars__userByMail-interpretation_simple_quote.php", array("60"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_htmlspecialchars__userByMail-interpretation_simple_quote.php", array("62"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__fopen__func_htmlspecialchars__userByMail-interpretation_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__fopen__no_sanitizing__not_name-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__fopen__no_sanitizing__not_name-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__fopen__no_sanitizing__not_name-sprintf_%s_simple_quote.php", array("60"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__fopen__no_sanitizing__not_name-sprintf_%s_simple_quote.php", array("62"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__fopen__no_sanitizing__not_name-sprintf_%s_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__object-Array__func_FILTER-CLEANING-email_filter__name-sprintf_%s_simple_quote.php");
@@ -2721,12 +2721,12 @@ $framework->add_output("./tests/vulntestsuite/CWE_90__object-classicGet__func_ad
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__object-classicGet__func_preg_match-no_filtering__name-concatenation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__object-classicGet__func_preg_match-no_filtering__name-concatenation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__object-classicGet__func_preg_match-no_filtering__name-concatenation_simple_quote.php", array("71"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__object-classicGet__func_preg_match-no_filtering__name-concatenation_simple_quote.php", array("72"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__object-classicGet__func_preg_match-no_filtering__name-concatenation_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__object-classicGet__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__object-classicGet__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__object-classicGet__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php", array("71"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__object-classicGet__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php", array("72"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__object-classicGet__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__object-directGet__func_FILTER-CLEANING-email_filter__not_name-concatenation_simple_quote.php");
@@ -2766,17 +2766,17 @@ $framework->add_output("./tests/vulntestsuite/CWE_90__object-directGet__func_htm
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__object-directGet__func_preg_match-no_filtering__not_name-concatenation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__object-directGet__func_preg_match-no_filtering__not_name-concatenation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__object-directGet__func_preg_match-no_filtering__not_name-concatenation_simple_quote.php", array("65"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__object-directGet__func_preg_match-no_filtering__not_name-concatenation_simple_quote.php", array("66"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__object-directGet__func_preg_match-no_filtering__not_name-concatenation_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__object-directGet__func_preg_match-no_filtering__userByCN-concatenation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__object-directGet__func_preg_match-no_filtering__userByCN-concatenation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__object-directGet__func_preg_match-no_filtering__userByCN-concatenation_simple_quote.php", array("65"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__object-directGet__func_preg_match-no_filtering__userByCN-concatenation_simple_quote.php", array("66"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__object-directGet__func_preg_match-no_filtering__userByCN-concatenation_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__object-directGet__func_preg_match-no_filtering__userByMail-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__object-directGet__func_preg_match-no_filtering__userByMail-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__object-directGet__func_preg_match-no_filtering__userByMail-sprintf_%s_simple_quote.php", array("65"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__object-directGet__func_preg_match-no_filtering__userByMail-sprintf_%s_simple_quote.php", array("66"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__object-directGet__func_preg_match-no_filtering__userByMail-sprintf_%s_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__object-directGet__no_sanitizing__not_name-sprintf_%s_simple_quote.php");
@@ -2851,7 +2851,7 @@ $framework->add_output("./tests/vulntestsuite/CWE_90__popen__func_htmlspecialcha
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__popen__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__popen__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__popen__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php", array("58"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__popen__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php", array("59"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__popen__func_preg_match-no_filtering__userByCN-sprintf_%s_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__popen__no_sanitizing__name-interpretation_simple_quote.php");
@@ -2891,7 +2891,7 @@ $framework->add_output("./tests/vulntestsuite/CWE_90__proc_open__func_htmlentiti
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__proc_open__func_preg_match-no_filtering__not_name-interpretation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__proc_open__func_preg_match-no_filtering__not_name-interpretation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__proc_open__func_preg_match-no_filtering__not_name-interpretation_simple_quote.php", array("69"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__proc_open__func_preg_match-no_filtering__not_name-interpretation_simple_quote.php", array("70"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__proc_open__func_preg_match-no_filtering__not_name-interpretation_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__proc_open__no_sanitizing__name-sprintf_%s_simple_quote.php");
@@ -2926,7 +2926,7 @@ $framework->add_output("./tests/vulntestsuite/CWE_90__shell_exec__func_htmlentit
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__shell_exec__func_preg_match-no_filtering__name-concatenation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__shell_exec__func_preg_match-no_filtering__name-concatenation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__shell_exec__func_preg_match-no_filtering__name-concatenation_simple_quote.php", array("56"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__shell_exec__func_preg_match-no_filtering__name-concatenation_simple_quote.php", array("57"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__shell_exec__func_preg_match-no_filtering__name-concatenation_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__shell_exec__no_sanitizing__not_name-sprintf_%s_simple_quote.php");
@@ -2956,7 +2956,7 @@ $framework->add_output("./tests/vulntestsuite/CWE_90__system__func_htmlspecialch
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__system__func_preg_match-no_filtering__userByMail-interpretation_simple_quote.php");
 $framework->add_output("./tests/vulntestsuite/CWE_90__system__func_preg_match-no_filtering__userByMail-interpretation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__system__func_preg_match-no_filtering__userByMail-interpretation_simple_quote.php", array("56"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__system__func_preg_match-no_filtering__userByMail-interpretation_simple_quote.php", array("57"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__system__func_preg_match-no_filtering__userByMail-interpretation_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__system__no_sanitizing__not_name-concatenation_simple_quote.php");
@@ -3019,7 +3019,7 @@ $framework->add_output("./tests/vulntestsuite/CWE_90__unserialize__func_preg_mat
 $framework->add_output("./tests/vulntestsuite/CWE_90__unserialize__func_preg_match-no_filtering__not_name-sprintf_%s_simple_quote.php", array("45"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__unserialize__func_preg_match-no_filtering__not_name-sprintf_%s_simple_quote.php", "code_injection");
 $framework->add_output("./tests/vulntestsuite/CWE_90__unserialize__func_preg_match-no_filtering__not_name-sprintf_%s_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_90__unserialize__func_preg_match-no_filtering__not_name-sprintf_%s_simple_quote.php", array("58"));
+$framework->add_output("./tests/vulntestsuite/CWE_90__unserialize__func_preg_match-no_filtering__not_name-sprintf_%s_simple_quote.php", array("59"));
 $framework->add_output("./tests/vulntestsuite/CWE_90__unserialize__func_preg_match-no_filtering__not_name-sprintf_%s_simple_quote.php", "ldap_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_90__unserialize__func_preg_replace2__not_name-concatenation_simple_quote.php");

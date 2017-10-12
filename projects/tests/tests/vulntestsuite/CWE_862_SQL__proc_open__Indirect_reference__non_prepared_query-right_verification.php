@@ -74,11 +74,13 @@ $_SESSION[‘course_array’] = $course_array;
 if (isset($_SESSION[‘course_array’]))
 {
     $course_array = $_SESSION[‘course_array’];
-    if (isset($course_array[$taintedId])) {
+    if (isset($course_array[$taintedId]))
+    {
         //indirect reference > get the right id
         $tainted = $course_array[$tainted];
     }
-} else
+}
+else
 {
     $tainted = 0; //default value
 }

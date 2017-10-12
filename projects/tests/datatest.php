@@ -78,7 +78,7 @@ $framework->add_output("./tests/data/source5.php", "xss");
 
 $framework->add_testbasis("./tests/data/source6.php");
 $framework->add_output("./tests/data/source6.php", array("\$var"));
-$framework->add_output("./tests/data/source6.php", array("25"));
+$framework->add_output("./tests/data/source6.php", array("26"));
 $framework->add_output("./tests/data/source6.php", "xss");
 
 $framework->add_testbasis("./tests/data/source7.php");
@@ -177,7 +177,7 @@ $framework->add_output("./tests/data/sanitizer8.php", "xss");
 
 $framework->add_testbasis("./tests/data/sanitizer9.php");
 $framework->add_output("./tests/data/sanitizer9.php", array("\$tainted3"));
-$framework->add_output("./tests/data/sanitizer9.php", array("21"));
+$framework->add_output("./tests/data/sanitizer9.php", array("22"));
 $framework->add_output("./tests/data/sanitizer9.php", "xss");
 
 ?>

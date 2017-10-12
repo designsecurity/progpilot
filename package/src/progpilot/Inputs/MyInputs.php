@@ -112,7 +112,8 @@ class MyInputs
     public function is_excluded_folder($name)
     {
         $name = realpath($name);
-        foreach ($this->excludes_folders_analysis as $exclude_name) {
+        foreach ($this->excludes_folders_analysis as $exclude_name)
+        {
             if (strpos($name, realpath($exclude_name)) === 0)
                 return true;
         }
@@ -123,7 +124,8 @@ class MyInputs
     public function is_included_folder($name)
     {
         $name = realpath($name);
-        foreach ($this->includes_folders_analysis as $include_name) {
+        foreach ($this->includes_folders_analysis as $include_name)
+        {
             if (strpos($name, realpath($include_name)) === 0)
                 return true;
         }
@@ -134,7 +136,8 @@ class MyInputs
     public function is_excluded_file($name)
     {
         $name = realpath($name);
-        foreach ($this->excludes_files_analysis as $exclude_name) {
+        foreach ($this->excludes_files_analysis as $exclude_name)
+        {
             if (realpath($exclude_name) == $name)
                 return true;
         }
@@ -145,7 +148,8 @@ class MyInputs
     public function is_included_file($name)
     {
         $name = realpath($name);
-        foreach ($this->includes_files_analysis as $include_name) {
+        foreach ($this->includes_files_analysis as $include_name)
+        {
             if (realpath($include_name) == $name)
                 return true;
         }
@@ -155,7 +159,8 @@ class MyInputs
 
     public function get_include_bylocation($line, $column, $source_file)
     {
-        foreach ($this->resolved_includes as $myinclude) {
+        foreach ($this->resolved_includes as $myinclude)
+        {
             if ($myinclude->get_line() == $line
                     && $myinclude->get_column() == $column
                     && $myinclude->get_source_file() == $source_file)
@@ -167,27 +172,33 @@ class MyInputs
 
     public function get_validator_byname($stack_class, $myfunc, $myclass)
     {
-        foreach ($this->validators as $myvalidator) {
-            if ($myvalidator->get_name() === $myfunc->get_name()) {
+        foreach ($this->validators as $myvalidator)
+        {
+            if ($myvalidator->get_name() === $myfunc->get_name())
+            {
                 if (!$myvalidator->is_instance() && !$myfunc->get_is_method())
                     return $myvalidator;
 
-                if ($myvalidator->is_instance() && $myfunc->get_is_method()) {
+                if ($myvalidator->is_instance() && $myfunc->get_is_method())
+                {
                     if (!is_null($myclass) && $myvalidator->get_instanceof_name() === $myclass->get_name())
                         return $myvalidator;
 
                     $properties_validator = explode("->", $myvalidator->get_instanceof_name());
 
-                    if (is_array($properties_validator)) {
+                    if (is_array($properties_validator))
+                    {
                         $myvalidator_instance_name = $properties_validator[0];
 
                         $myvalidator_number_ofproperties = count($properties_validator);
                         $stack_number_ofproperties = count($stack_class);
 
-                        if ($stack_number_ofproperties >= $myvalidator_number_ofproperties) {
+                        if ($stack_number_ofproperties >= $myvalidator_number_ofproperties)
+                        {
                             $known_properties = $stack_class[$stack_number_ofproperties - $myvalidator_number_ofproperties];
 
-                            foreach ($known_properties as $prop_class) {
+                            foreach ($known_properties as $prop_class)
+                            {
                                 if ($prop_class->get_name() == $myvalidator_instance_name)
                                     return $myvalidator;
                             }
@@ -202,27 +213,33 @@ class MyInputs
 
     public function get_sanitizer_byname($stack_class, $myfunc, $myclass)
     {
-        foreach ($this->sanitizers as $mysanitizer) {
-            if ($mysanitizer->get_name() === $myfunc->get_name()) {
+        foreach ($this->sanitizers as $mysanitizer)
+        {
+            if ($mysanitizer->get_name() === $myfunc->get_name())
+            {
                 if (!$mysanitizer->is_instance() && !$myfunc->get_is_method())
                     return $mysanitizer;
 
-                if ($mysanitizer->is_instance() && $myfunc->get_is_method()) {
+                if ($mysanitizer->is_instance() && $myfunc->get_is_method())
+                {
                     if (!is_null($myclass) && $mysanitizer->get_instanceof_name() === $myclass->get_name())
                         return $mysanitizer;
 
                     $properties_sanitizer = explode("->", $mysanitizer->get_instanceof_name());
 
-                    if (is_array($properties_sanitizer)) {
+                    if (is_array($properties_sanitizer))
+                    {
                         $mysanitizer_instance_name = $properties_sanitizer[0];
 
                         $mysanitizer_number_ofproperties = count($properties_sanitizer);
                         $stack_number_ofproperties = count($stack_class);
 
-                        if ($stack_number_ofproperties >= $mysanitizer_number_ofproperties) {
+                        if ($stack_number_ofproperties >= $mysanitizer_number_ofproperties)
+                        {
                             $known_properties = $stack_class[$stack_number_ofproperties - $mysanitizer_number_ofproperties];
 
-                            foreach ($known_properties as $prop_class) {
+                            foreach ($known_properties as $prop_class)
+                            {
                                 if ($prop_class->get_name() == $mysanitizer_instance_name)
                                     return $mysanitizer;
                             }
@@ -237,27 +254,33 @@ class MyInputs
 
     public function get_sink_byname($stack_class, $myfunc, $myclass)
     {
-        foreach ($this->sinks as $mysink) {
-            if ($mysink->get_name() === $myfunc->get_name()) {
+        foreach ($this->sinks as $mysink)
+        {
+            if ($mysink->get_name() === $myfunc->get_name())
+            {
                 if (!$mysink->is_instance() && !$myfunc->get_is_method())
                     return $mysink;
 
-                if ($mysink->is_instance() && $myfunc->get_is_method()) {
+                if ($mysink->is_instance() && $myfunc->get_is_method())
+                {
                     if (!is_null($myclass) && $mysink->get_instanceof_name() === $myclass->get_name())
                         return $mysink;
 
                     $properties_sink = explode("->", $mysink->get_instanceof_name());
 
-                    if (is_array($properties_sink)) {
+                    if (is_array($properties_sink))
+                    {
                         $mysink_instance_name = $properties_sink[0];
 
                         $mysink_number_ofproperties = count($properties_sink);
                         $stack_number_ofproperties = count($stack_class);
 
-                        if ($stack_number_ofproperties >= $mysink_number_ofproperties) {
+                        if ($stack_number_ofproperties >= $mysink_number_ofproperties)
+                        {
                             $known_properties = $stack_class[$stack_number_ofproperties - $mysink_number_ofproperties];
 
-                            foreach ($known_properties as $prop_class) {
+                            foreach ($known_properties as $prop_class)
+                            {
                                 if ($prop_class->get_name() == $mysink_instance_name)
                                     return $mysink;
                             }
@@ -272,8 +295,10 @@ class MyInputs
 
     public function get_source_byname($stack_class, $myfunc_or_def, $is_function = false, $instance_name = false, $arr_value = false)
     {
-        foreach ($this->sources as $mysource) {
-            if ($mysource->get_name() === $myfunc_or_def->get_name()) {
+        foreach ($this->sources as $mysource)
+        {
+            if ($mysource->get_name() === $myfunc_or_def->get_name())
+            {
                 $check_function = false;
                 $check_array = false;
                 $check_instance = false;
@@ -282,22 +307,26 @@ class MyInputs
                     $check_instance = true;
 
 
-                if ($instance_name && $mysource->is_instance()) {
+                if ($instance_name && $mysource->is_instance())
+                {
                     if ($mysource->get_instanceof_name() === $instance_name)
                         $check_instance = true;
 
                     $properties_source = explode("->", $mysource->get_instanceof_name());
 
-                    if (is_array($properties_source)) {
+                    if (is_array($properties_source))
+                    {
                         $mysource_instance_name = $properties_source[0];
 
                         $mysource_number_ofproperties = count($properties_source);
                         $stack_number_ofproperties = count($stack_class);
 
-                        if ($stack_number_ofproperties >= $mysource_number_ofproperties) {
+                        if ($stack_number_ofproperties >= $mysource_number_ofproperties)
+                        {
                             $known_properties = $stack_class[$stack_number_ofproperties - $mysource_number_ofproperties];
 
-                            foreach ($known_properties as $prop_class) {
+                            foreach ($known_properties as $prop_class)
+                            {
                                 if ($prop_class->get_name() == $mysource_instance_name)
                                     $check_instance = true;
                             }
@@ -330,7 +359,8 @@ class MyInputs
 
     public function get_false_positive_byid($id)
     {
-        foreach ($this->false_positives as $false_positive) {
+        foreach ($this->false_positives as $false_positive)
+        {
             if ($false_positive->get_id() == $id)
                 return $false_positive;
         }
@@ -420,7 +450,8 @@ class MyInputs
 
     public function read_sanitizers()
     {
-        if (!is_null($this->sanitizers_file)) {
+        if (!is_null($this->sanitizers_file))
+        {
             if (!file_exists($this->sanitizers_file))
                 Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->sanitizers_file).")");
 
@@ -428,9 +459,11 @@ class MyInputs
 
             $parsed_json = json_decode($output_json);
 
-            if (isset($parsed_json-> {'sanitizers'})) {
+            if (isset($parsed_json-> {'sanitizers'}))
+            {
                 $sanitizers = $parsed_json-> {'sanitizers'};
-                foreach ($sanitizers as $sanitizer) {
+                foreach ($sanitizers as $sanitizer)
+                {
                     if (!isset($sanitizer-> {'name'})
                             || !isset($sanitizer-> {'language'}))
                         Utils::print_error(Lang::FORMAT_SANITIZERS);
@@ -444,24 +477,32 @@ class MyInputs
 
                     $mysanitizer = new MySanitizer($name, $language, $prevent);
 
-                    if (isset($sanitizer-> {'instanceof'})) {
+                    if (isset($sanitizer-> {'instanceof'}))
+                    {
                         $mysanitizer->set_is_instance(true);
                         $mysanitizer->set_instanceof_name($sanitizer-> {'instanceof'});
                     }
 
-                    if (isset($sanitizer-> {'parameters'})) {
+                    if (isset($sanitizer-> {'parameters'}))
+                    {
                         $parameters = $sanitizer-> {'parameters'};
-                        foreach ($parameters as $parameter) {
-                            if (isset($parameter-> {'id'}) && isset($parameter-> {'condition'})) {
+                        foreach ($parameters as $parameter)
+                        {
+                            if (isset($parameter-> {'id'}) && isset($parameter-> {'condition'}))
+                            {
                                 if (is_int($parameter-> {'id'})
                                         && ($parameter-> {'condition'} == "equals"
                                             || $parameter-> {'condition'} == "taint"
-                                            || $parameter-> {'condition'} == "sanitize")) {
-                                    if ($parameter-> {'condition'} == "equals") {
-                                        if (isset($parameter-> {'values'})) {
+                                            || $parameter-> {'condition'} == "sanitize"))
+                                {
+                                    if ($parameter-> {'condition'} == "equals")
+                                    {
+                                        if (isset($parameter-> {'values'}))
+                                        {
                                             $mysanitizer->add_parameter($parameter-> {'id'}, $parameter-> {'condition'}, $parameter-> {'values'});
                                         }
-                                    } else
+                                    }
+                                    else
                                         $mysanitizer->add_parameter($parameter-> {'id'}, $parameter-> {'condition'});
                                 }
                             }
@@ -472,23 +513,27 @@ class MyInputs
 
                     $this->sanitizers[] = $mysanitizer;
                 }
-            } else
+            }
+            else
                 Utils::print_error(Lang::FORMAT_SANITIZERS);
         }
     }
 
     public function read_sinks()
     {
-        if (!is_null($this->sinks_file)) {
+        if (!is_null($this->sinks_file))
+        {
             if (!file_exists($this->sinks_file))
                 Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->sinks_file).")");
 
             $output_json = file_get_contents($this->sinks_file);
             $parsed_json = json_decode($output_json);
 
-            if (isset($parsed_json-> {'sinks'})) {
+            if (isset($parsed_json-> {'sinks'}))
+            {
                 $sinks = $parsed_json-> {'sinks'};
-                foreach ($sinks as $sink) {
+                foreach ($sinks as $sink)
+                {
                     if (!isset($sink-> {'name'})
                             || !isset($sink-> {'language'})
                             || !isset($sink-> {'attack'})
@@ -502,7 +547,8 @@ class MyInputs
 
                     $mysink = new MySink($name, $language, $attack, $cwe);
 
-                    if (isset($sink-> {'instanceof'})) {
+                    if (isset($sink-> {'instanceof'}))
+                    {
                         $mysink->set_is_instance(true);
                         $mysink->set_instanceof_name($sink-> {'instanceof'});
                     }
@@ -510,10 +556,13 @@ class MyInputs
                     if (isset($sink-> {'condition'}))
                         $mysink->add_global_condition($sink-> {'condition'});
 
-                    if (isset($sink-> {'parameters'})) {
+                    if (isset($sink-> {'parameters'}))
+                    {
                         $parameters = $sink-> {'parameters'};
-                        foreach ($parameters as $parameter) {
-                            if (isset($parameter-> {'id'}) && is_int($parameter-> {'id'})) {
+                        foreach ($parameters as $parameter)
+                        {
+                            if (isset($parameter-> {'id'}) && is_int($parameter-> {'id'}))
+                            {
                                 if (isset($parameter-> {'condition'}))
                                     $mysink->add_parameter($parameter-> {'id'}, $parameter-> {'condition'});
                                 else
@@ -526,23 +575,27 @@ class MyInputs
 
                     $this->sinks[] = $mysink;
                 }
-            } else
+            }
+            else
                 Utils::print_error(Lang::FORMAT_SINKS);
         }
     }
 
     public function read_sources()
     {
-        if (!is_null($this->sources_file)) {
+        if (!is_null($this->sources_file))
+        {
             if (!file_exists($this->sources_file))
                 Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->sources_file).")");
 
             $output_json = file_get_contents($this->sources_file);
             $parsed_json = json_decode($output_json);
 
-            if (isset($parsed_json-> {'sources'})) {
+            if (isset($parsed_json-> {'sources'}))
+            {
                 $sources = $parsed_json-> {'sources'};
-                foreach ($sources as $source) {
+                foreach ($sources as $source)
+                {
                     if (!isset($source-> {'name'})
                             || !isset($source-> {'language'}))
                         Utils::print_error(Lang::FORMAT_SOURCES);
@@ -552,38 +605,47 @@ class MyInputs
 
                     $mysource = new MySource($name, $language);
 
-                    if (isset($source-> {'is_function'}) && $source-> {'is_function'}) {
+                    if (isset($source-> {'is_function'}) && $source-> {'is_function'})
+                    {
                         $mysource->set_is_function(true);
                     }
 
-                    if (isset($source-> {'is_array'}) && $source-> {'is_array'}) {
+                    if (isset($source-> {'is_array'}) && $source-> {'is_array'})
+                    {
                         $mysource->set_is_array(true);
                     }
 
-                    if (isset($source-> {'array_index'})) {
+                    if (isset($source-> {'array_index'}))
+                    {
                         $arr = array($source-> {'array_index'} => false);
                         $mysource->set_array_value($arr);
                     }
 
-                    if (isset($source-> {'instanceof'})) {
+                    if (isset($source-> {'instanceof'}))
+                    {
                         $mysource->set_is_instance(true);
                         $mysource->set_instanceof_name($source-> {'instanceof'});
                     }
 
-                    if (isset($source-> {'return_array_index'})) {
+                    if (isset($source-> {'return_array_index'}))
+                    {
                         $mysource->set_return_array(true);
                         $mysource->set_return_array_value($source-> {'return_array_index'});
                     }
 
-                    if (isset($source-> {'parameters'})) {
+                    if (isset($source-> {'parameters'}))
+                    {
                         $parameters = $source-> {'parameters'};
-                        foreach ($parameters as $parameter) {
-                            if (is_int($parameter-> {'id'})) {
+                        foreach ($parameters as $parameter)
+                        {
+                            if (is_int($parameter-> {'id'}))
+                            {
                                 $mysource->add_parameter($parameter-> {'id'});
 
                                 if (isset($parameter-> {'is_array'})
                                         && $parameter-> {'is_array'}
-                                        && isset($parameter-> {'array_index'})) {
+                                        && isset($parameter-> {'array_index'}))
+                                {
                                     $mysource->add_condition_parameter($parameter-> {'id'}, MySource::CONDITION_ARRAY, $parameter-> {'array_index'});
                                 }
                             }
@@ -594,23 +656,27 @@ class MyInputs
 
                     $this->sources[] = $mysource;
                 }
-            } else
+            }
+            else
                 Utils::print_error(Lang::FORMAT_SOURCES);
         }
     }
 
     public function read_validators()
     {
-        if (!is_null($this->validators_file)) {
+        if (!is_null($this->validators_file))
+        {
             if (!file_exists($this->validators_file))
                 Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->validators_file).")");
 
             $output_json = file_get_contents($this->validators_file);
             $parsed_json = json_decode($output_json);
 
-            if (isset($parsed_json-> {'validators'})) {
+            if (isset($parsed_json-> {'validators'}))
+            {
                 $validators = $parsed_json-> {'validators'};
-                foreach ($validators as $validator) {
+                foreach ($validators as $validator)
+                {
                     if (!isset($validator-> {'name'})
                             || !isset($validator-> {'language'}))
                         Utils::print_error(Lang::FORMAT_VALIDATORS);
@@ -620,20 +686,27 @@ class MyInputs
 
                     $myvalidator = new MyValidator($name, $language);
 
-                    if (isset($validator-> {'parameters'})) {
+                    if (isset($validator-> {'parameters'}))
+                    {
                         $parameters = $validator-> {'parameters'};
-                        foreach ($parameters as $parameter) {
-                            if (isset($parameter-> {'id'}) && isset($parameter-> {'condition'})) {
+                        foreach ($parameters as $parameter)
+                        {
+                            if (isset($parameter-> {'id'}) && isset($parameter-> {'condition'}))
+                            {
                                 if (is_int($parameter-> {'id'})
                                         && ($parameter-> {'condition'} == "not_tainted"
                                             || $parameter-> {'condition'} == "array_not_tainted"
                                             || $parameter-> {'condition'} == "valid"
-                                            || $parameter-> {'condition'} == "equals")) {
-                                    if ($parameter-> {'condition'} == "equals") {
-                                        if (isset($parameter-> {'values'})) {
+                                            || $parameter-> {'condition'} == "equals"))
+                                {
+                                    if ($parameter-> {'condition'} == "equals")
+                                    {
+                                        if (isset($parameter-> {'values'}))
+                                        {
                                             $myvalidator->add_parameter($parameter-> {'id'}, $parameter-> {'condition'}, $parameter-> {'values'});
                                         }
-                                    } else
+                                    }
+                                    else
                                         $myvalidator->add_parameter($parameter-> {'id'}, $parameter-> {'condition'});
                                 }
                             }
@@ -642,37 +715,43 @@ class MyInputs
                         $myvalidator->set_has_parameters(true);
                     }
 
-                    if (isset($validator-> {'instanceof'})) {
+                    if (isset($validator-> {'instanceof'}))
+                    {
                         $myvalidator->set_is_instance(true);
                         $myvalidator->set_instanceof_name($validator-> {'instanceof'});
                     }
 
                     $this->validators[] = $myvalidator;
                 }
-            } else
+            }
+            else
                 Utils::print_error(Lang::FORMAT_VALIDATORS);
         }
     }
 
     public function read_resolved_includes()
     {
-        if (!is_null($this->resolved_includes_file)) {
+        if (!is_null($this->resolved_includes_file))
+        {
             if (!file_exists($this->resolved_includes_file))
                 Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->resolved_includes_file).")");
 
             $output_json = file_get_contents($this->resolved_includes_file);
             $parsed_json = json_decode($output_json);
 
-            if (isset($parsed_json-> {'includes'})) {
+            if (isset($parsed_json-> {'includes'}))
+            {
                 $includes = $parsed_json-> {'includes'};
-                foreach ($includes as $include) {
+                foreach ($includes as $include)
+                {
                     if (!isset($include-> {'line'})
                             || !isset($include-> {'column'})
                             || !isset($include-> {'source_file'})
                             || !isset($include-> {'value'}))
                         Utils::print_error(Lang::FORMAT_INCLUDES);
 
-                    if (realpath($include-> {'source_file'})) {
+                    if (realpath($include-> {'source_file'}))
+                    {
                         $line = $include-> {'line'};
                         $column = $include-> {'column'};
                         $source_file = realpath($include-> {'source_file'});
@@ -682,23 +761,27 @@ class MyInputs
                         $this->resolved_includes[] = $myinclude;
                     }
                 }
-            } else
+            }
+            else
                 Utils::print_error(Lang::FORMAT_INCLUDES);
         }
     }
 
     public function read_false_positives()
     {
-        if (!is_null($this->false_positives_file)) {
+        if (!is_null($this->false_positives_file))
+        {
             if (!file_exists($this->false_positives_file))
                 Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->false_positives_file).")");
 
             $output_json = file_get_contents($this->false_positives_file);
             $parsed_json = json_decode($output_json);
 
-            if (isset($parsed_json-> {'false_positives'})) {
+            if (isset($parsed_json-> {'false_positives'}))
+            {
                 $false_positives = $parsed_json-> {'false_positives'};
-                foreach ($false_positives as $false_positive) {
+                foreach ($false_positives as $false_positive)
+                {
                     if (!isset($false_positive-> {'vuln_id'}))
                         Utils::print_error(Lang::FORMAT_FALSE_POSITIVES);
 
@@ -707,31 +790,37 @@ class MyInputs
                     $myvuln = new MyVuln($vuln_id);
                     $this->false_positives[] = $myvuln;
                 }
-            } else
+            }
+            else
                 Utils::print_error(Lang::FORMAT_FALSE_POSITIVES);
         }
     }
 
     public function read_excludes_file()
     {
-        if (!is_null($this->excludes_file)) {
+        if (!is_null($this->excludes_file))
+        {
             if (!file_exists($this->excludes_file))
                 Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->excludes_file).")");
 
             $output_json = file_get_contents($this->excludes_file);
             $parsed_json = json_decode($output_json);
 
-            if (isset($parsed_json-> {'exclude_files'})) {
+            if (isset($parsed_json-> {'exclude_files'}))
+            {
                 $exclude_files = $parsed_json-> {'exclude_files'};
-                foreach ($exclude_files as $exclude_file) {
+                foreach ($exclude_files as $exclude_file)
+                {
                     if (realpath($exclude_file))
                         $this->excludes_files_analysis[] = realpath($exclude_file);
                 }
             }
 
-            if (isset($parsed_json-> {'exclude_folders'})) {
+            if (isset($parsed_json-> {'exclude_folders'}))
+            {
                 $exclude_folders = $parsed_json-> {'exclude_folders'};
-                foreach ($exclude_folders as $exclude_folder) {
+                foreach ($exclude_folders as $exclude_folder)
+                {
                     if (realpath($exclude_folder))
                         $this->excludes_folders_analysis[] = realpath($exclude_folder);
                 }
@@ -741,24 +830,29 @@ class MyInputs
 
     public function read_includes_file()
     {
-        if (!is_null($this->includes_file)) {
+        if (!is_null($this->includes_file))
+        {
             if (!file_exists($this->includes_file))
                 Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->includes_file).")");
 
             $output_json = file_get_contents($this->includes_file);
             $parsed_json = json_decode($output_json);
 
-            if (isset($parsed_json-> {'include_files'})) {
+            if (isset($parsed_json-> {'include_files'}))
+            {
                 $include_files = $parsed_json-> {'include_files'};
-                foreach ($include_files as $include_file) {
+                foreach ($include_files as $include_file)
+                {
                     if (realpath($include_file))
                         $this->includes_files_analysis[] = realpath($include_file);
                 }
             }
 
-            if (isset($parsed_json-> {'include_folders'})) {
+            if (isset($parsed_json-> {'include_folders'}))
+            {
                 $include_folders = $parsed_json-> {'include_folders'};
-                foreach ($include_folders as $include_folder) {
+                foreach ($include_folders as $include_folder)
+                {
                     if (realpath($include_folder))
                         $this->includes_folders_analysis[] = realpath($include_folder);
                 }

@@ -17,11 +17,14 @@ class ArrayMulti
     {
         $newar1 = $ar1;
 
-        foreach($ar2 as $key2 => $value2) {
+        foreach($ar2 as $key2 => $value2)
+        {
             $present = false;
 
-            foreach($ar1 as $key1 => $value1) {
-                if ($value1 === $value2) {
+            foreach($ar1 as $key1 => $value1)
+            {
+                if ($value1 === $value2)
+                {
                     $present = true;
                     break;
                 }
@@ -39,11 +42,14 @@ class ArrayMulti
     {
         $newar1 = [];
 
-        foreach($ar1 as $key1 => $value1) {
+        foreach($ar1 as $key1 => $value1)
+        {
             $present = false;
 
-            foreach($ar2 as $key2 => $value2) {
-                if ($value1 === $value2) {
+            foreach($ar2 as $key2 => $value2)
+            {
+                if ($value1 === $value2)
+                {
                     $present = true;
                     break;
                 }

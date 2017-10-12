@@ -44,7 +44,8 @@ class MySanitizer extends MySpecify
 
     public function get_parameter_condition($i)
     {
-        foreach ($this->parameters as $parameter) {
+        foreach ($this->parameters as $parameter)
+        {
             $index = $parameter[0];
             $condition = $parameter[1];
 
@@ -57,7 +58,8 @@ class MySanitizer extends MySpecify
 
     public function get_parameter_values($i)
     {
-        foreach ($this->parameters as $parameter) {
+        foreach ($this->parameters as $parameter)
+        {
             $index = $parameter[0];
             $condition = $parameter[1];
             $values = $parameter[2];
@@ -71,7 +73,8 @@ class MySanitizer extends MySpecify
 
     public function is_parameter($i)
     {
-        foreach ($this->parameters as $parameter) {
+        foreach ($this->parameters as $parameter)
+        {
             $index = $parameter[0];
             $condition = $parameter[1];
 

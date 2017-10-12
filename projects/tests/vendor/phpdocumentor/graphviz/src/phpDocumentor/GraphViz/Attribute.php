@@ -94,14 +94,17 @@ class Attribute
     public function __toString()
     {
         $key = $this->getKey();
-        if ($key == 'url') {
+        if ($key == 'url')
+        {
             $key = 'URL';
         }
 
         $value = $this->getValue();
-        if ($this->isValueContainingSpecials()) {
+        if ($this->isValueContainingSpecials())
+        {
             $value = '"' . $this->encodeSpecials() . '"';
-        } elseif (!$this->isValueInHtml()) {
+        } elseif (!$this->isValueInHtml())
+        {
             $value = '"' . addslashes($value) . '"';
         }
         return $key . '=' . $value;

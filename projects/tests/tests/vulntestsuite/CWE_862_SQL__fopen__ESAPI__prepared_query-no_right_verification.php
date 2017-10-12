@@ -47,11 +47,13 @@ $handle = @fopen("/tmp/tainted.txt", "r");
 
 if ($handle)
 {
-    if (($tainted = fgets($handle, 4096)) == false) {
+    if (($tainted = fgets($handle, 4096)) == false)
+    {
         $tainted = "";
     }
     fclose($handle);
-} else
+}
+else
 {
     $tainted = "";
 }
@@ -63,7 +65,8 @@ ESAPI::setValidator(new DefaultValidator());
 if ($ESAPI->validator->isValidNumber("Course ID", $tainted, 18, 25, false))
 {
     $tainted = $tainted;
-} else
+}
+else
 {
     $tainted = 0; //default value
 }

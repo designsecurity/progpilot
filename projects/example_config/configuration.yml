@@ -22,5 +22,5 @@ options:
     set_analyze_functions: true
     set_print_file: true
     set_print_warning: true
-    set_time_limit: 10
+    set_limit_time: 10
     set_limit_defs: 10000

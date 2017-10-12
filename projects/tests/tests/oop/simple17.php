@@ -25,7 +25,8 @@ class testc2
 if (rand() % 2)
 {
     $instance1 = new testc1;
-} else
+}
+else
 {
     $instance1 = new testc2;
 }

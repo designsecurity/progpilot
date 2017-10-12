@@ -67,7 +67,8 @@ ESAPI::setValidator(new DefaultValidator());
 if ($ESAPI->validator->isValidNumber("Course ID", $tainted, 18, 25, false))
 {
     $tainted = $tainted;
-} else
+}
+else
 {
     $tainted = 0; //default value
 }

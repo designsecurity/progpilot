@@ -18,7 +18,8 @@ class testc2
 if (true)
 {
     $instance = new testc1;
-} else
+}
+else
 {
     $instance = new testc2;
 }
@@ -27,7 +28,8 @@ if (true)
 {
     $instance->boum1 = $_GET["p"];
     //$instance->boum1 = "eee";
-} else
+}
+else
 {
     $instance->set_boum1($_GET["p"]);
 }

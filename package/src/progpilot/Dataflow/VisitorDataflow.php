@@ -69,12 +69,16 @@ class VisitorDataflow
         $blocks_stack_id = [];
         $last_block_id = 0;
 
-        do {
-            if (isset($code[$index])) {
+        do
+        {
+            if (isset($code[$index]))
+            {
                 $instruction = $code[$index];
 
-                switch ($instruction->get_opcode()) {
-                case Opcodes::START_EXPRESSION: {
+                switch ($instruction->get_opcode())
+                {
+                case Opcodes::START_EXPRESSION:
+                {
                     // representations start
                     $id_cfg = $this->current_func->get_start_address_func()."-".$this->current_block_id;
                     $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::START_EXPRESSION."\n");
@@ -82,7 +86,8 @@ class VisitorDataflow
                     break;
                 }
 
-                case Opcodes::END_EXPRESSION: {
+                case Opcodes::END_EXPRESSION:
+                {
                     // representations start
                     $id_cfg = $this->current_func->get_start_address_func()."-".$this->current_block_id;
                     $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::END_EXPRESSION."\n");
@@ -90,9 +95,11 @@ class VisitorDataflow
                     break;
                 }
 
-                case Opcodes::CLASSE: {
+                case Opcodes::CLASSE:
+                {
                     $myclass = $instruction->get_property("myclass");
-                    foreach ($myclass->get_properties() as $property) {
+                    foreach ($myclass->get_properties() as $property)
+                    {
                         if (is_null($property->get_source_myfile()))
                             $property->set_source_myfile($this->current_myfile);
                     }
@@ -100,7 +107,8 @@ class VisitorDataflow
                     break;
                 }
 
-                case Opcodes::ENTER_FUNCTION: {
+                case Opcodes::ENTER_FUNCTION:
+                {
                     $myfunc = $instruction->get_property("myfunc");
 
                     $defs = new Definitions();
@@ -115,9 +123,13 @@ class VisitorDataflow
                     $this->current_block_id = 0;
                     $this->current_func = $myfunc;
 
-                    if ($myfunc->get_is_method()) {
+                    if ($myfunc->get_is_method())
+                    {
                         $thisdef = $myfunc->get_this_def();
                         $thisdef->set_source_myfile($this->current_myfile);
+
+                        $id_object = $context->get_objects()->add_object();
+                        $thisdef->set_object_id($id_object);
 
                         $this->defs->adddef($thisdef->get_name(), $thisdef);
                         $this->defs->addgen($thisdef->get_block_id(), $thisdef);
@@ -132,7 +144,8 @@ class VisitorDataflow
                     break;
                 }
 
-                case Opcodes::ENTER_BLOCK: {
+                case Opcodes::ENTER_BLOCK:
+                {
                     $myblock = $instruction->get_property("myblock");
 
                     $this->setBlockId($myblock);
@@ -147,7 +160,8 @@ class VisitorDataflow
                         $this->defs->create_block($blockid);
 
                     $assertions = $myblock->get_assertions();
-                    foreach ($assertions as $assertion) {
+                    foreach ($assertions as $assertion)
+                    {
                         $mydef = $assertion->get_def();
                         $mydef->set_block_id($blockid);
                     }
@@ -164,7 +178,8 @@ class VisitorDataflow
                     break;
                 }
 
-                case Opcodes::LEAVE_BLOCK: {
+                case Opcodes::LEAVE_BLOCK:
+                {
                     $myblock = $instruction->get_property("myblock");
 
                     $blockid = $myblock->get_id();
@@ -187,7 +202,8 @@ class VisitorDataflow
                 }
 
 
-                case Opcodes::LEAVE_FUNCTION: {
+                case Opcodes::LEAVE_FUNCTION:
+                {
                     $this->defs->reachingDefs($this->blocks);
 
                     $myfunc = $instruction->get_property("myfunc");
@@ -201,49 +217,61 @@ class VisitorDataflow
                     break;
                 }
 
-                case Opcodes::START_INCLUDE: {
+                case Opcodes::START_INCLUDE:
+                {
                     $this->old_current_myfile = $this->current_myfile;
                     $this->current_myfile = $instruction->get_property("myfile");
 
                     break;
                 }
 
-                case Opcodes::END_INCLUDE: {
+                case Opcodes::END_INCLUDE:
+                {
                     $this->current_myfile = $this->old_current_myfile;
 
                     break;
                 }
 
-                case Opcodes::FUNC_CALL: {
+                case Opcodes::FUNC_CALL:
+                {
                     $myfunc_call = $instruction->get_property("myfunc_call");
                     $myfunc_call->set_block_id($this->current_block_id);
 
                     if (is_null($myfunc_call->get_source_myfile()))
                         $myfunc_call->set_source_myfile($this->current_myfile);
 
-                    if ($myfunc_call->get_is_method()) {
+                    if ($myfunc_call->get_is_method())
+                    {
                         $mybackdef = $myfunc_call->get_back_def();
                         $mybackdef->set_block_id($this->current_block_id);
                         $mybackdef->set_is_instance(true);
                         $mybackdef->set_source_myfile($this->current_myfile);
+
+                        $id_object = $context->get_objects()->add_object();
+                        $mybackdef->set_object_id($id_object);
 
                         $this->defs->adddef($mybackdef->get_name(), $mybackdef);
                         $this->defs->addgen($mybackdef->get_block_id(), $mybackdef);
                     }
 
                     $mysource = $context->inputs->get_source_byname(null, $myfunc_call, true, false, false);
-                    if (!is_null($mysource)) {
-                        if ($mysource->has_parameters()) {
+                    if (!is_null($mysource))
+                    {
+                        if ($mysource->has_parameters())
+                        {
                             $nbparams = 0;
-                            while (true) {
+                            while (true)
+                            {
                                 if (!$instruction->is_property_exist("argdef$nbparams"))
                                     break;
 
                                 $defarg = $instruction->get_property("argdef$nbparams");
 
-                                if ($mysource->is_parameter($nbparams + 1)) {
+                                if ($mysource->is_parameter($nbparams + 1))
+                                {
                                     $deffrom = $defarg->get_value_from_def();
-                                    if (!is_null($deffrom)) {
+                                    if (!is_null($deffrom))
+                                    {
                                         $this->defs->adddef($deffrom->get_name(), $deffrom);
                                         $this->defs->addgen($deffrom->get_block_id(), $deffrom);
                                     }
@@ -263,7 +291,8 @@ class VisitorDataflow
                     break;
                 }
 
-                case Opcodes::TEMPORARY: {
+                case Opcodes::TEMPORARY:
+                {
                     $mydef = $instruction->get_property("temporary");
                     $mydef->set_block_id($this->current_block_id);
 
@@ -280,7 +309,8 @@ class VisitorDataflow
                     break;
                 }
 
-                case Opcodes::DEFINITION: {
+                case Opcodes::DEFINITION:
+                {
                     $mydef = $instruction->get_property("def");
                     $mydef->set_block_id($this->current_block_id);
 
@@ -290,16 +320,23 @@ class VisitorDataflow
                     $this->defs->adddef($mydef->get_name(), $mydef);
                     $this->defs->addgen($mydef->get_block_id(), $mydef);
 
-                    if ($mydef->get_is_instance()) {
+                    if ($mydef->get_is_instance())
+                    {
                         $myclass = $context->get_classes()->get_myclass($mydef->get_class_name());
-                        if (!is_null($myclass))
-                            $mydef->add_myclass($myclass);
-                        else {
-                            $new_myclass = new MyClass($mydef->getLine(),
-                                                       $mydef->getColumn(),
-                                                       $mydef->get_class_name());
-                            $mydef->add_myclass($new_myclass);
+                        if (is_null($myclass))
+                            //$mydef->add_myclass($myclass);
+
+                        {
+                            $myclass = new MyClass($mydef->getLine(),
+                                                   $mydef->getColumn(),
+                                                   $mydef->get_class_name());
+                            //$mydef->add_myclass($myclass);
                         }
+
+                        /* mod */
+                        $id_object = $context->get_objects()->add_object();
+                        $mydef->set_object_id($id_object);
+                        $context->get_objects()->add_myclass_to_object($id_object, $myclass);
                     }
 
                     // representations start
@@ -313,6 +350,7 @@ class VisitorDataflow
 
                 $index = $index + 1;
             }
-        } while (isset($code[$index]) && $index <= $mycode->get_end());
+        }
+        while (isset($code[$index]) && $index <= $mycode->get_end());
     }
 }

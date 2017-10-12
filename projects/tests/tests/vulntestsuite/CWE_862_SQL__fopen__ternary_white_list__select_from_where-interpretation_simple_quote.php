@@ -47,11 +47,13 @@ $handle = @fopen("/tmp/tainted.txt", "r");
 
 if ($handle)
 {
-    if (($tainted = fgets($handle, 4096)) == false) {
+    if (($tainted = fgets($handle, 4096)) == false)
+    {
         $tainted = "";
     }
     fclose($handle);
-} else
+}
+else
 {
     $tainted = "";
 }

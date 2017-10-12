@@ -96,7 +96,8 @@ class MySource extends MySpecify
 
     public function get_condition_parameter($parameter, $condition)
     {
-        foreach ($this->conditions_parameters[$parameter] as $condition_param) {
+        foreach ($this->conditions_parameters[$parameter] as $condition_param)
+        {
             if ($condition_param[0] === $condition)
                 return $condition_param[1];
         }
@@ -116,7 +117,8 @@ class MySource extends MySpecify
 
     public function is_parameter($i)
     {
-        foreach ($this->parameters as $parameter) {
+        foreach ($this->parameters as $parameter)
+        {
             if ($parameter == $i)
                 return true;
         }

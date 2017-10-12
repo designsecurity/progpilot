@@ -2,12 +2,16 @@
 
 function scandir_rec($dir, &$files)
 {
-    if (is_dir($dir)) {
+    if (is_dir($dir))
+    {
         $filesanddirs = scandir($dir);
 
-        if ($filesanddirs != false) {
-            foreach ($filesanddirs as $filedir) {
-                if ($filedir != '.' && $filedir != "..") {
+        if ($filesanddirs != false)
+        {
+            foreach ($filesanddirs as $filedir)
+            {
+                if ($filedir != '.' && $filedir != "..")
+                {
                     if (is_dir($dir."/".$filedir))
                         scandir_rec($dir."/".$filedir, $files);
 
@@ -92,7 +96,8 @@ foreach ($files as $file)
 
     $ok = false;
 
-    switch ($dir) {
+    switch ($dir)
+    {
     case './Injection/CWE_78/safe': // 1871 => 180
         if (rand() % 10 == 1)
             $ok = true;
@@ -163,7 +168,8 @@ foreach ($files as $file)
         break;
     }
 
-    if ($ok) {
+    if ($ok)
+    {
         $nb_files ++;
         echo "\$framework->add_testbasis(\"$file\");\n";
         echo "\$framework->add_output(\"$file\", array(\"tainted\"));\n";

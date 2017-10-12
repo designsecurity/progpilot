@@ -22,12 +22,12 @@ $framework->add_output("./tests/oop/simple4.php", "xss");
 
 $framework->add_testbasis("./tests/oop/simple5.php");
 $framework->add_output("./tests/oop/simple5.php", array("\$instance->boum1"));
-$framework->add_output("./tests/oop/simple5.php", array("28"));
+$framework->add_output("./tests/oop/simple5.php", array("29"));
 $framework->add_output("./tests/oop/simple5.php", "xss");
 
 $framework->add_testbasis("./tests/oop/simple6.php");
 $framework->add_output("./tests/oop/simple6.php", array("\$instance->boum1"));
-$framework->add_output("./tests/oop/simple6.php", array("26"));
+$framework->add_output("./tests/oop/simple6.php", array("27"));
 $framework->add_output("./tests/oop/simple6.php", "xss");
 
 $framework->add_testbasis("./tests/oop/simple7.php");

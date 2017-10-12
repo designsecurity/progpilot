@@ -29,24 +29,31 @@ class ArrayExpr
     {
         $building_arr = false;
 
-        if (isset($op->ops[0]->values)) {
+        if (isset($op->ops[0]->values))
+        {
             $nb_arrayexpr = 0;
-            foreach ($op->ops[0]->values as $value) {
+            foreach ($op->ops[0]->values as $value)
+            {
                 $name = Common::get_name_definition($value);
                 $type = Common::get_type_definition($value);
                 $type_array = Common::get_type_is_array($value);
 
                 // we create an element for each value of array expr
                 // name_arr = [expr1, expr2] => name_arr[0] = expr1, name_arr[1] = expr2
-                if (isset($op->ops[0]->keys[$nb_arrayexpr]->value)) {
+                if (isset($op->ops[0]->keys[$nb_arrayexpr]->value))
+                {
                     $index_value = $op->ops[0]->keys[$nb_arrayexpr]->value;
                     $building_arr = array($index_value => $arr);
-                } else
+                }
+                else
                     $building_arr = array($nb_arrayexpr => $arr);
 
-                if ($type_array == MyOp::TYPE_ARRAY_EXPR) {
+                if ($type_array == MyOp::TYPE_ARRAY_EXPR)
+                {
                     $building_arr = ArrayExpr::instruction($value, $context, $building_arr, $def_name, $is_returndef);
-                } else {
+                }
+                else
+                {
                     $assign_id = rand();
                     $mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name);
                     $mydef->set_assign_id($assign_id);

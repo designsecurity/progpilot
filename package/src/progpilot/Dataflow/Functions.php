@@ -19,13 +19,16 @@ class Functions
 
     public function get_function($funcname, $class_name = null)
     {
-        if (isset($this->functions[$funcname])) {
+        if (isset($this->functions[$funcname]))
+        {
             $list_funcs = $this->functions[$funcname];
-            foreach ($list_funcs as $myfunc) {
+            foreach ($list_funcs as $myfunc)
+            {
                 if (!$myfunc->get_is_method() && is_null($class_name))
                     return $myfunc;
 
-                if ($myfunc->get_is_method()) {
+                if ($myfunc->get_is_method())
+                {
                     $myclass = $myfunc->get_myclass();
                     if ($class_name === $myclass->get_name())
                         return $myfunc;

@@ -9,7 +9,8 @@ require_once './foldertest.php';
 try
 {
 
-    foreach ($framework->get_testbasis() as $folder) {
+    foreach ($framework->get_testbasis() as $folder)
+    {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
@@ -19,9 +20,12 @@ try
         $context->inputs->set_validators("./data/validators.json");
         $context->inputs->set_folder($folder);
 
-        try {
+        try
+        {
             $analyzer->run($context);
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             echo 'Exception : ',  $e->getMessage(), "\n";
         }
 
@@ -31,31 +35,38 @@ try
 
         $result_test = false;
 
-        if (is_array($parsed_json) && count($parsed_json) > 0) {
-            foreach ($parsed_json as $vuln) {
+        if (is_array($parsed_json) && count($parsed_json) > 0)
+        {
+            foreach ($parsed_json as $vuln)
+            {
                 $result_test = true;
                 $basis_outputs = [
                                      $vuln['source_name'],
                                      $vuln['source_line'],
                                      $vuln['vuln_name']];
 
-                if (!$framework->check_outputs($folder, $basis_outputs)) {
+                if (!$framework->check_outputs($folder, $basis_outputs))
+                {
                     $result_test = false;
                     break;
                 }
             }
-        } else {
+        }
+        else
+        {
             if (count($framework->get_output($folder)) == 0)
                 $result_test = true;
         }
 
-        if (!$result_test) {
+        if (!$result_test)
+        {
             echo "[$folder] test result ko\n";
             var_dump($parsed_json);
         }
     }
 
-} catch (\RuntimeException $e)
+}
+catch (\RuntimeException $e)
 {
     $result = $e->getMessage();
 }

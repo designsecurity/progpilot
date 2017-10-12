@@ -15,7 +15,8 @@ $instance1 = new testc1;
 if (rand() % 2)
 {
     $instance1->boum1 = $_GET["p"];
-} else
+}
+else
 {
     $instance1->boum1 = "eee";
 }

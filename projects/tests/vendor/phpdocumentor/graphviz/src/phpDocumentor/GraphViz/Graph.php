@@ -72,8 +72,8 @@ class Graph
     {
         $graph = new self();
         $graph
-            ->setName($name)
-            ->setType($directional ? 'digraph' : 'graph');
+        ->setName($name)
+        ->setType($directional ? 'digraph' : 'graph');
 
         return $graph;
     }
@@ -87,7 +87,8 @@ class Graph
      */
     public function setPath($path)
     {
-        if ($path && $path = realpath($path)) {
+        if ($path && $path = realpath($path))
+        {
             $this->path = $path . DIRECTORY_SEPARATOR;
         }
         return $this;
@@ -131,7 +132,8 @@ class Graph
      */
     public function setType($type)
     {
-        if (!in_array($type, array('digraph', 'graph', 'subgraph'))) {
+        if (!in_array($type, array('digraph', 'graph', 'subgraph')))
+        {
             throw new \InvalidArgumentException(
                 'The type for a graph must be either "digraph", "graph" or '
                 . '"subgraph"'
@@ -192,12 +194,14 @@ class Graph
     function __call($name, $arguments)
     {
         $key = strtolower(substr($name, 3));
-        if (strtolower(substr($name, 0, 3)) === 'set') {
+        if (strtolower(substr($name, 0, 3)) === 'set')
+        {
             $this->attributes[$key] = new Attribute($key, $arguments[0]);
 
             return $this;
         }
-        if (strtolower(substr($name, 0, 3)) === 'get') {
+        if (strtolower(substr($name, 0, 3)) === 'get')
+        {
             return $this->attributes[$key];
         }
 
@@ -276,13 +280,16 @@ class Graph
      */
     public function findNode($name)
     {
-        if (isset($this->nodes[$name])) {
+        if (isset($this->nodes[$name]))
+        {
             return $this->nodes[$name];
         }
 
-        foreach ($this->graphs as $graph) {
+        foreach ($this->graphs as $graph)
+        {
             $node = $graph->findNode($name);
-            if ($node) {
+            if ($node)
+            {
                 return $node;
             }
         }
@@ -371,7 +378,8 @@ class Graph
         exec($this->path . "dot -T$type -o$filename < $tmpfileArg 2>&1", $output, $code);
         unlink($tmpfile);
 
-        if ($code != 0) {
+        if ($code != 0)
+        {
             throw new Exception(
                 'An error occurred while creating the graph; GraphViz returned: '
                 . implode(PHP_EOL, $output)
@@ -392,22 +400,24 @@ class Graph
     public function __toString()
     {
         $elements = array_merge(
-            $this->graphs, $this->attributes, $this->edges, $this->nodes
-        );
+                        $this->graphs, $this->attributes, $this->edges, $this->nodes
+                    );
 
         $attributes = array();
-        foreach ($elements as $value) {
+        foreach ($elements as $value)
+        {
             $attributes[] = (string)$value;
         }
         $attributes = implode(PHP_EOL, $attributes);
 
         $strict = ($this->isStrict() ? 'strict ' : '');
 
-        return <<<DOT
-{$strict}{$this->getType()} "{$this->getName()}" {
-$attributes
-}
-DOT;
+        return <<< DOT
+        {$strict} {$this->getType()} "{$this->getName()}"
+        {
+            $attributes
+        }
+        DOT;
     }
 
 }

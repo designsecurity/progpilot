@@ -24,6 +24,7 @@ class Context
     private $current_func;
     private $first_file;
     private $classes;
+    private $objects;
     private $functions;
     private $path;
     private $analyze_functions;
@@ -65,11 +66,13 @@ class Context
         $this->current_func = null;
         $this->path = null;
 
+        unset($this->objects);
         unset($this->classes);
         unset($this->functions);
         unset($this->mycode);
 
         $this->outputs = new \progpilot\Outputs\MyOutputs;
+        $this->objects = new \progpilot\Dataflow\Objects;
         $this->classes = new \progpilot\Dataflow\Classes;
         $this->functions = new \progpilot\Dataflow\Functions;
         $this->mycode = new \progpilot\Code\MyCode;
@@ -165,6 +168,11 @@ class Context
         return $this->current_func;
     }
 
+    public function get_objects()
+    {
+        return $this->objects;
+    }
+
     public function get_classes()
     {
         return $this->classes;
@@ -236,6 +244,11 @@ class Context
         $this->current_func = $current_func;
     }
 
+    public function set_objects($objects)
+    {
+        $this->objects = $objects;
+    }
+
     public function set_classes($classes)
     {
         $this->classes = $classes;
@@ -275,13 +288,17 @@ class Context
 
     public function read_configuration()
     {
-        if (!is_null($this->configuration_file)) {
-            try {
+        if (!is_null($this->configuration_file))
+        {
+            try
+            {
                 $yaml = new Parser();
                 $value = $yaml->parse(file_get_contents($this->configuration_file));
 
-                if (is_array($value)) {
-                    if (isset($value["inputs"])) {
+                if (is_array($value))
+                {
+                    if (isset($value["inputs"]))
+                    {
                         if (isset($value["inputs"]["set_sources"]))
                             $this->inputs->set_sources($value["inputs"]["set_sources"]);
 
@@ -316,7 +333,8 @@ class Context
                             $this->inputs->set_false_positives($value["inputs"]["set_false_positives"]);
                     }
 
-                    if (isset($value["outputs"])) {
+                    if (isset($value["outputs"]))
+                    {
                         if (isset($value["outputs"]["tainted_flow"]))
                             $this->outputs->tainted_flow($value["outputs"]["tainted_flow"]);
 
@@ -327,7 +345,8 @@ class Context
                             $this->outputs->resolve_includes_file($value["outputs"]["resolve_includes_file"]);
                     }
 
-                    if (isset($value["options"])) {
+                    if (isset($value["options"]))
+                    {
                         if (isset($value["options"]["set_analyze_js"]))
                             $this->set_analyze_js($value["options"]["set_analyze_js"]);
 
@@ -350,7 +369,9 @@ class Context
                             $this->set_print_warning($value["options"]["set_print_warning"]);
                     }
                 }
-            } catch (ParseException $e) {
+            }
+            catch (ParseException $e)
+            {
                 Utils::print_error($context, Lang::UNABLE_TO_PARSER_YAML);
             }
         }

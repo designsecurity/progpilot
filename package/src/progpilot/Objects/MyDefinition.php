@@ -21,6 +21,7 @@ class MyDefinition extends MyOp
     const CAST_NOT_SAFE = "cast_string";
 
     private $is_copy_array;
+    private $object_id;
     private $block_id;
     private $is_tainted;
     private $is_ref;
@@ -35,7 +36,7 @@ class MyDefinition extends MyOp
     private $is_sanitized;
     private $type_sanitized;
     private $assign_id;
-    private $myclasses;
+    //private $myclasses;
     private $value_from_def;
     private $cast;
     private $is_property;
@@ -54,6 +55,7 @@ class MyDefinition extends MyOp
         $this->is_copy_array = false;
         $this->value_from_def = null;
 
+        $this->object_id = -1;
         $this->block_id = -1;
         $this->is_tainted = false;
         $this->is_ref = false;
@@ -64,7 +66,7 @@ class MyDefinition extends MyOp
         $this->theexprs = [];
         $this->taintedbyexpr = null;
         $this->class_name = "";
-        $this->myclasses = [];
+        //$this->myclasses = [];
 
         $this->is_sanitized = false;
         $this->type_sanitized = [];
@@ -78,12 +80,7 @@ class MyDefinition extends MyOp
         $this->is_property = false;
         $this->is_instance = false;
     }
-    /*
-         public function __destruct()
-         {
-         echo "Mydefinition destruct\n";
-         }
-     */
+
     public function __clone()
     {
         $this->property = clone $this->property;
@@ -98,33 +95,29 @@ class MyDefinition extends MyOp
         echo "type_sanitized :\n";
         var_dump($this->type_sanitized);
 
-        if ($this->get_is_array()) {
+        if ($this->get_is_array())
+        {
             echo "array index value :\n";
             var_dump($this->get_array_value());
         }
 
-        if ($this->get_is_property()) {
+        if ($this->get_is_property())
+        {
             echo "property : ".Utils::print_properties($this->property->get_properties())."\n";
             echo "class_name : ".htmlentities($this->get_class_name(), ENT_QUOTES, 'UTF-8')."\n";
             echo "visibility : ".htmlentities($this->property->get_visibility(), ENT_QUOTES, 'UTF-8')."\n";
         }
 
-        if ($this->get_is_instance()) {
+        if ($this->get_is_instance())
+        {
             echo "instance : ".htmlentities($this->get_class_name(), ENT_QUOTES, 'UTF-8')."\n";
-            $myclasses = $this->get_all_myclass();
-            foreach ($myclasses as $myclass) {
-                echo "of myclass ".$myclass->get_name()."\n";
-                foreach ($myclass->get_properties() as $property)
-                    echo "property : '".$property->get_name()."'\n";
-
-                foreach ($myclass->get_methods() as $method)
-                    echo "method : '".$method->get_name()."'\n";
-            }
         }
 
-        if ($this->get_is_copy_array()) {
+        if ($this->get_is_copy_array())
+        {
             echo "copyarray start ================= count = ".count($this->get_copyarrays())."\n";
-            foreach ($this->get_copyarrays() as $copy_array) {
+            foreach ($this->get_copyarrays() as $copy_array)
+            {
                 var_dump($copy_array[0]);
             }
             echo "copyarray end =================\n";
@@ -133,11 +126,13 @@ class MyDefinition extends MyOp
 
     public function set_is_embeddedbychars($chars, $control)
     {
-        foreach($chars as $char => $value) {
+        foreach($chars as $char => $value)
+        {
             if (!isset($this->is_embeddedbychar[$char]))
                 $this->is_embeddedbychar[$char] = $value;
 
-            else {
+            else
+            {
                 if (!$value && !$control)
                     $this->is_embeddedbychar[$char] = false;
                 else if ($value)
@@ -214,37 +209,41 @@ class MyDefinition extends MyOp
         return $this->last_known_value;
     }
 
+    /*
+        public function get_myclass($myclass)
+        {
+            foreach ($this->myclasses as $one_class)
+            {
+                if ($one_class->get_name() === $myclass->get_name())
+                    return $one_class;
+            }
 
-    public function get_myclass($myclass)
-    {
-        foreach ($this->myclasses as $one_class) {
-            if ($one_class->get_name() === $myclass->get_name())
-                return $one_class;
+            return null;
         }
 
-        return null;
-    }
+        public function add_myclass($myclass)
+        {
+            $exist = false;
+            foreach ($this->myclasses as $one_class)
+            {
+                if ($one_class->get_name() === $myclass->get_name())
+                {
+                    $exist = true;
+                    break;
+                }
+            }
 
-    public function add_myclass($myclass)
-    {
-        $exist = false;
-        foreach ($this->myclasses as $one_class) {
-            if ($one_class->get_name() === $myclass->get_name()) {
-                $exist = true;
-                break;
+            if (!$exist)
+            {
+                $this->myclasses[] = $myclass;
             }
         }
 
-        if (!$exist) {
-            $this->myclasses[] = $myclass;
+        public function get_all_myclass()
+        {
+            return $this->myclasses;
         }
-    }
-
-    public function get_all_myclass()
-    {
-        return $this->myclasses;
-    }
-
+    */
     public function get_class_name()
     {
         return $this->class_name;
@@ -323,6 +322,16 @@ class MyDefinition extends MyOp
     public function set_ref_arr_value($arr)
     {
         $this->ref_arr_value = $arr;
+    }
+
+    public function get_object_id()
+    {
+        return $this->object_id;
+    }
+
+    public function set_object_id($object_id)
+    {
+        $this->object_id = $object_id;
     }
 
     public function get_block_id()

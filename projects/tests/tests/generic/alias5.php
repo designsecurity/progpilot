@@ -9,7 +9,8 @@ echo $var6;
 if (true)
 {
     $var5 = "oula";
-} else
+}
+else
 {
     $var5 = "oula";
 }
