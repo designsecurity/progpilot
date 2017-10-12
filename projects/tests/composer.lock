@@ -57,12 +57,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ircmaxell/php-cfg.git",
-                "reference": "1cc6c31fff4356b8e601335b4497f17366eb6a07"
+                "reference": "bc1da7d262ab3ca0e2cd3192772effd264d1eed8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ircmaxell/php-cfg/zipball/1cc6c31fff4356b8e601335b4497f17366eb6a07",
-                "reference": "1cc6c31fff4356b8e601335b4497f17366eb6a07",
+                "url": "https://api.github.com/repos/ircmaxell/php-cfg/zipball/bc1da7d262ab3ca0e2cd3192772effd264d1eed8",
+                "reference": "bc1da7d262ab3ca0e2cd3192772effd264d1eed8",
                 "shasum": ""
             },
             "require": {
@@ -98,7 +98,7 @@
                 }
             ],
             "description": "A Control Flow Graph implementation for PHP",
-            "time": "2017-06-03 11:21:46"
+            "time": "2017-10-03 07:27:29"
         },
         {
             "name": "nikic/php-parser",
@@ -106,12 +106,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "a1e8e1a30e1352f118feff1a8481066ddc2f234a"
+                "reference": "d418bf395113b6a3293bda1d08ddc9b0209d5dcf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/a1e8e1a30e1352f118feff1a8481066ddc2f234a",
-                "reference": "a1e8e1a30e1352f118feff1a8481066ddc2f234a",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/d418bf395113b6a3293bda1d08ddc9b0209d5dcf",
+                "reference": "d418bf395113b6a3293bda1d08ddc9b0209d5dcf",
                 "shasum": ""
             },
             "require": {
@@ -149,7 +149,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2017-09-02 17:10:46"
+            "time": "2017-10-01 14:54:43"
         },
         {
             "name": "phpdocumentor/graphviz",
