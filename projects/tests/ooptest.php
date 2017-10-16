@@ -1,5 +1,5 @@
 <?php
-
+/*
 $framework->add_testbasis("./tests/oop/simple1.php");
 $framework->add_output("./tests/oop/simple1.php", array("\$instance1->boum2"));
 $framework->add_output("./tests/oop/simple1.php", array("12"));
@@ -113,6 +113,13 @@ $framework->add_output("./tests/oop/simple21.php", "xml_injection");
 $framework->add_output("./tests/oop/simple21.php", array("\$res"));
 $framework->add_output("./tests/oop/simple21.php", array("28"));
 $framework->add_output("./tests/oop/simple21.php", "xss");
-
+*/
+$framework->add_testbasis("./tests/oop/simple22.php");
+$framework->add_output("./tests/oop/simple22.php", array("\$a->data"));
+$framework->add_output("./tests/oop/simple22.php", array("10"));
+$framework->add_output("./tests/oop/simple22.php", "xss");
+$framework->add_output("./tests/oop/simple22.php", array("\$this->data"));
+$framework->add_output("./tests/oop/simple22.php", array("5"));
+$framework->add_output("./tests/oop/simple22.php", "xss");
 
 ?>

@@ -18,6 +18,8 @@ use progpilot\Dataflow\Definitions;
 use progpilot\Code\MyCode;
 use progpilot\Code\Opcodes;
 
+use progpilot\Utils;
+
 class VisitorAnalysis
 {
 
@@ -176,7 +178,7 @@ class VisitorAnalysis
                 case Opcodes::TEMPORARY:
                 {
                     $tempdefa = $instruction->get_property("temporary");
-
+                    
                     $tainted = false;
                     if (!is_null($this->context->inputs->get_source_byname(null, $tempdefa, false, false, $tempdefa->get_array_value())))
                         $tainted = true;
@@ -202,6 +204,47 @@ class VisitorAnalysis
                                 $defassign->last_known_value($def->get_last_known_value());
                                 $def->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
                                 $defassign->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
+                                
+                                // vérifier s'il y a pas de concat
+                                if($def->get_is_instance())
+                                {
+                                  $defassign->set_is_instance(true);
+                                  $defassign->set_object_id($def->get_object_id());
+                                  
+                                  $tmp_myclasses = $this->context->get_objects()->get_all_myclasses($def->get_object_id());
+
+                                  foreach ($tmp_myclasses as $tmp_myclass)
+                                  {
+                                    foreach ($tmp_myclass->get_properties() as $property)
+                                    {            
+                                      $mydeftemp = new MyDefinition($tempdefa->getLine(), $tempdefa->getColumn(), $tempdefa->get_name());
+                                      $mydeftemp->set_is_property(true);
+                                      $mydeftemp->property->set_properties($property->property->get_properties());
+                                      $mydeftemp->set_block_id($tempdefa->get_block_id());
+                                      $mydeftemp->set_source_myfile($tempdefa->get_source_myfile());
+                                      
+                                      $defs_found = ResolveDefs::select_properties($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $mydeftemp, true);
+                                      foreach ($defs_found as $def_found)
+                                      {
+                                          if ($def_found->get_is_copy_array())
+                                          {
+                                              $property->set_copyarrays($def_found->get_copyarrays());
+                                              $property->set_is_copy_array(true);
+                                          }
+
+                                          if ($def_found->is_tainted())
+                                              $property->set_tainted(true);
+
+                                          if ($def_found->is_sanitized())
+                                          {
+                                              $property->set_sanitized(true);
+                                              foreach ($def_found->get_type_sanitized() as $type_sanitized)
+                                                  $property->add_type_sanitized($type_sanitized);
+                                          }
+                                      }
+                                    }
+                                  }
+                                }
 
                                 if ($tempdefa->get_cast() === MyDefinition::CAST_NOT_SAFE)
                                     $defassign->set_cast($def->get_cast());

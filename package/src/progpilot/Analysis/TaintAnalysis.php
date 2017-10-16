@@ -517,6 +517,14 @@ class TaintAnalysis
                             if (!is_null($property) && (ResolveDefs::get_visibility($copy_defassign, $property)))
                             {
                                 $visibility_final = true;
+                                /*
+                                if(!$def->is_tainted())
+                                {
+                                  echo "n'est pas tainté\n";
+                                  $property->set_tainted(false);
+                                  $property->print_stdout();
+                                }
+                                  */
                                 break 2;
                             }
                         }

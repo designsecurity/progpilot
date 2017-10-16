@@ -56,8 +56,6 @@ class ResolveDefs
                 {
                     if ($instance->get_is_instance())
                     {
-                        //$myclasses = $instance->get_all_myclass();
-
                         $id_object = $instance->get_object_id();
                         $myclasses = $context->get_objects()->get_all_myclasses($id_object);
 
@@ -117,8 +115,6 @@ class ResolveDefs
 
             foreach ($instances as $instance)
             {
-                //$myclasses = $instance->get_all_myclass();
-
                 $id_object = $instance->get_object_id();
                 $myclasses = $context->get_objects()->get_all_myclasses($id_object);
 
@@ -140,9 +136,6 @@ class ResolveDefs
                         $new_myclass->add_method($new_method);
                     }
 
-                    //$backdef->add_myclass($new_myclass);
-
-
                     $id_object = $backdef->get_object_id();
                     $context->get_objects()->add_myclass_to_object($id_object, $new_myclass);
                 }
@@ -159,7 +152,6 @@ class ResolveDefs
                 $mybackdef = $myfunc_call->get_back_def();
                 $myclass = $myfunc->get_myclass();
 
-                //$new_myback_myclass = $mybackdef->get_myclass($myclass);
                 $new_myback_myclass = $context->get_objects()->get_myclass($mybackdef->get_object_id(), $myclass);
 
                 if (is_null($new_myback_myclass))
@@ -168,7 +160,7 @@ class ResolveDefs
                         $myclass->getLine(),
                         $myclass->getColumn(),
                         $myclass->get_name());
-                    //$mybackdef->add_myclass($new_myback_myclass);
+                        
                     $context->get_objects()->add_myclass_to_object($mybackdef->get_object_id(), $new_myback_myclass);
                 }
 
@@ -207,7 +199,6 @@ class ResolveDefs
                     }
 
                     $new_property->set_name($mybackdef->get_name());
-                    //$new_myback_myclass->add_property($property);
 
                     ArrayAnalysis::copy_array($context, $myfunc->get_defs()->getoutminuskill($mydef->get_block_id()), $mydef, $mydef->get_array_value(), $property, $property->get_array_value());
                 }
@@ -262,12 +253,9 @@ class ResolveDefs
 
             $mythisdef = $myfunc->get_this_def();
             $mythisdef->set_class_name($copy_myclass->get_name());
-            //$mythisdef->add_myclass($copy_myclass);
-
-            /* mod */
+            
             $id_object = $mythisdef->get_object_id();
             $context->get_objects()->add_myclass_to_object($id_object, $copy_myclass);
-            /******/
         }
     }
 
@@ -379,7 +367,7 @@ class ResolveDefs
         $defsfound = [];
         if (is_null($data))
             return $defsfound;
-
+        
         foreach ($data as $def)
         {
             if ($def->get_name() === $defsearch->get_name()
@@ -513,12 +501,8 @@ class ResolveDefs
 
                                 foreach ($instances as $instance)
                                 {
-                                    /* mod */
                                     $id_object = $instance->get_object_id();
                                     $tmp_myclasses = $context->get_objects()->get_all_myclasses($id_object);
-                                    /******/
-
-                                    //$tmp_myclasses = $instance->get_all_myclass();
 
                                     foreach ($tmp_myclasses as $tmp_myclass)
                                     {
@@ -561,12 +545,8 @@ class ResolveDefs
                         {
                             if ($instance->get_is_instance())
                             {
-                                /* mod */
                                 $id_object = $instance->get_object_id();
                                 $tmp_myclasses = $context->get_objects()->get_all_myclasses($id_object);
-                                /******/
-
-                                //$tmp_myclasses = $instance->get_all_myclass();
 
                                 foreach ($tmp_myclasses as $tmp_myclass)
                                 {
