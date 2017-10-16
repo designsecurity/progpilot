@@ -10,5 +10,8 @@
     ],
     "require": {
         "progpilot/package": "dev-master"
+    },
+    "extra": {
+        "enable-patching": true
     }
 } 

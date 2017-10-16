@@ -14,7 +14,6 @@
         "symfony/yaml": "~3.3.6"
     },
 	"extra": {
-    "enable-patching": true,
 		"patches": {
 			"ircmaxell/php-cfg": {
 				"Op": "../../patchs/Op.diff",
