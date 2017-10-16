@@ -4,8 +4,10 @@ language: php
 install:
  - cd ./projects/tests/
  - rm -f composer.lock
+ - if [ -d "vendor" ]; then
  - rm -rf vendor/*
  - rmdir vendor/
+ - fi
  - composer clearcache
  - composer install
 
