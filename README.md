@@ -13,15 +13,15 @@
 ```shell
 php progpilot.phar --configuration ./configuration.yml example1.php
 ```
-- configuration option is optional (default values will be used) : 
+- *configuration* option is optional (consequently default values will be used) : 
 ```shell
 php progpilot.phar example1.php
 ```
-- you can pass an array of files to be analyzed  : 
+- you can pass in argument an array of files to be analyzed  : 
 ```shell
 php progpilot.phar example1.php example2.php
 ```
-- For specifying folders, include files or exclude files, use a specific configuration : 
+- For specifying folders, include files or exclude files, use [a specific configuration](./projects/example_config/configuration.yml) : 
 ```shell
 php progpilot.phar --configuration ./configuration.yml
 ```
