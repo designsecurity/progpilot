@@ -20,6 +20,7 @@ php progpilot.phar example1.php
 - you can pass in argument an array of files or folders to be analyzed  : 
 ```shell
 php progpilot.phar example1.php example2.php ./folder1/ ./folder2/
+```
 
 ## Library installation
 Use [getcomposer](https://getcomposer.org/) to install progpilot.  
