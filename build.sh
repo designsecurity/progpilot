@@ -6,8 +6,7 @@ newfile="progpilot_${version}${date}"
     
 cd ./projects/phar
 rm composer.lock
-rm -r ./vendor/*
-rmdir ./vendor
+rm -rf ./vendor/
 composer install
 
 echo "testing ..."
@@ -47,6 +46,5 @@ else
 fi
 
 rm composer.lock
-rm -r ./vendor/*
-rmdir ./vendor
+rm -rd ./vendor/
 
