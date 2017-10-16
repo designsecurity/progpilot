@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__.'/vendor/autoload.php';
+
+use progpilot\Lang;
+
+if($argc > 1)
+{
+    $context = new \progpilot\Context;
+    $analyzer = new \progpilot\Analyzer;
+
+    $context->set_configuration($argv[1]);
+    
+    try 
+    {
+        $analyzer->run($context);
+        var_dump($context->outputs->get_results());
+    }
+    catch (Exception $e) 
+    {
+        echo "Progpilot error : ".$e->getMessage()." file : ".$e->getFile()." line : ".$e->getLine()."\n";
+    }
+}
+else
+    echo Lang::COMMAND_LINE_ARG."\n";
+
+?>	 
