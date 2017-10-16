@@ -1,5 +1,6 @@
 #!/bin/bash
 
+composertool=/home/eric/dev/phar-composer.phar
 version="dev"
 date=`date "+%Y%m%d-%H%M%S"`
 newfile="progpilot_${version}${date}"
@@ -41,7 +42,7 @@ else
     
     echo "generating phar"
 
-    php -d phar.readonly=off ./phar-composer.phar build .
+    php -d phar.readonly=off ${composertool} build .
     mv ./rogpilot.phar ../../builds/${newfile}.phar
 fi
 

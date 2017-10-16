@@ -11,9 +11,20 @@
 - Then run progpilot with php and your JSON configuration file in command line argument :
 
 ```shell
-php progpilot_dev20170828-161722.phar ./configuration.yml
+php progpilot.phar --configuration ./configuration.yml example1.php
 ```
-
+- configuration option is optional (default values will be used) : 
+```shell
+php progpilot.phar example1.php
+```
+- you can pass an array of files to be analyzed  : 
+```shell
+php progpilot.phar example1.php example2.php
+```
+- For specifying folders, include files or exclude files, use a specific configuration : 
+```shell
+php progpilot.phar --configuration ./configuration.yml
+```
 ## Library installation
 Use [getcomposer](https://getcomposer.org/) to install progpilot.  
 Your composer.json looks like this one :
