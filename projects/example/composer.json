@@ -4,8 +4,5 @@
     "minimum-stability": "dev",
     "require": {
         "designsecurity/progpilot": "dev-master"
-    },
-	"extra": {
-		"enable-patching": true
-		}
+    }
 } 
