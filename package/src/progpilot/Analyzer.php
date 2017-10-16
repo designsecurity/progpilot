@@ -211,20 +211,25 @@ class Analyzer
         $context->inputs->read_resolved_includes();
         $context->inputs->read_validators();
         $context->inputs->read_false_positives();
-        
-        if($cmd_files !== null)
-        {
-          foreach ($cmd_files as $cmd_file)
-          {
-              if (!in_array($cmd_file, $files, true)
-                      && !$context->inputs->is_excluded_file($cmd_file))
-                  $files[] = $cmd_file;
-          }
-        }
 
         $included_files = $context->inputs->get_included_files();
         $included_folders = $context->inputs->get_included_folders();
 
+        if($cmd_files !== null)
+        {
+          foreach ($cmd_files as $cmd_file)
+          {
+            if (is_dir($cmd_file))
+              $this->get_files_ofdir($context, $cmd_file, $files);
+            else
+            {
+              if (!in_array($cmd_file, $files, true)
+                      && !$context->inputs->is_excluded_file($cmd_file))
+                  $files[] = $cmd_file;
+            }
+          }
+        }
+        
         foreach ($included_files as $included_file)
         {
             if (!in_array($included_file, $files, true)

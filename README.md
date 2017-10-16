@@ -17,14 +17,10 @@ php progpilot.phar --configuration ./configuration.yml example1.php
 ```shell
 php progpilot.phar example1.php
 ```
-- you can pass in argument an array of files to be analyzed  : 
+- you can pass in argument an array of files or folders to be analyzed  : 
 ```shell
-php progpilot.phar example1.php example2.php
-```
-- For specifying folders, include files or exclude files, use [a specific configuration](./projects/example_config/configuration.yml) : 
-```shell
-php progpilot.phar --configuration ./configuration.yml
-```
+php progpilot.phar example1.php example2.php ./folder1/ ./folder2/
+
 ## Library installation
 Use [getcomposer](https://getcomposer.org/) to install progpilot.  
 Your composer.json looks like this one :
