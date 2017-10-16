@@ -1,28 +1,16 @@
 #!/usr/bin/env php
 <?php
 
-require_once __DIR__.'/vendor/autoload.php';
+namespace progpilot;
 
-use progpilot\Lang;
+#require_once __DIR__.'/../../autoload.php';
+require_once __DIR__.'/projects/tests/vendor/autoload.php';
+use progpilot\Command\ProgpilotCommand;
+use progpilot\Console\Application;
 
-if($argc > 1)
-{
-    $context = new \progpilot\Context;
-    $analyzer = new \progpilot\Analyzer;
-
-    $context->set_configuration($argv[1]);
-    
-    try 
-    {
-        $analyzer->run($context);
-        var_dump($context->outputs->get_results());
-    }
-    catch (Exception $e) 
-    {
-        echo "Progpilot error : ".$e->getMessage()." file : ".$e->getFile()." line : ".$e->getLine()."\n";
-    }
-}
-else
-    echo Lang::COMMAND_LINE_ARG."\n";
+$application = new Application();
+$application->add(new ProgpilotCommand);
+$status = $application->run();
+exit($status);
 
 ?>	 

@@ -197,7 +197,7 @@ class Analyzer
         unset($script);
     }
 
-    public function run($context)
+    public function run($context, $cmd_files = null)
     {
         $files = [];
 
@@ -211,6 +211,16 @@ class Analyzer
         $context->inputs->read_resolved_includes();
         $context->inputs->read_validators();
         $context->inputs->read_false_positives();
+        
+        if($cmd_files !== null)
+        {
+          foreach ($cmd_files as $cmd_file)
+          {
+              if (!in_array($cmd_file, $files, true)
+                      && !$context->inputs->is_excluded_file($cmd_file))
+                  $files[] = $cmd_file;
+          }
+        }
 
         $included_files = $context->inputs->get_included_files();
         $included_folders = $context->inputs->get_included_folders();
@@ -224,15 +234,19 @@ class Analyzer
 
         foreach ($included_folders as $included_folder)
             $this->get_files_ofdir($context, $included_folder, $files);
-
+        
         if (!is_null($context->inputs->get_folder()))
             $this->get_files_ofdir($context, $context->inputs->get_folder(), $files);
+        
         else
         {
+          if($context->inputs->get_file() !== null)
+          {
             if (!in_array($context->inputs->get_file(), $files, true)
                     && !$context->inputs->is_excluded_file($context->inputs->get_file())
                     && realpath($context->inputs->get_file()))
                 $files[] = realpath($context->inputs->get_file());
+          }
         }
 
         foreach ($files as $file)

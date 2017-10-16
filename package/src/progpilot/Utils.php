@@ -25,7 +25,7 @@ class Utils
             fwrite(STDERR, "progpilot warning : $message\n");
     }
 
-    public static function print_error($context, $message)
+    public static function print_error($message)
     {
         throw new \Exception($message);
     }

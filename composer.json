@@ -12,7 +12,8 @@
     "require": {
         "cweagans/composer-patches": "~1.0",
         "ircmaxell/php-cfg": "dev-master",
-        "symfony/yaml": "~3.3.6"
+        "symfony/yaml": "~3.3.6",
+        "symfony/console": "^2.7|^3.0"
     },
     "extra": {
 		"patches": {
