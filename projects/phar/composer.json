@@ -14,5 +14,5 @@
     "extra": {
         "enable-patching": true
     },
-    "bin": ["../../progpilot"]
+    "bin": ["progpilot"]
 } 

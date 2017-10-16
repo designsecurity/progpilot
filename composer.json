@@ -24,7 +24,7 @@
             }
         }
     },
-    "bin": ["progpilot"],
+    "bin": ["projects/phar/progpilot"],
     "autoload": {
         "psr-0": {
             "progpilot": "package/src"

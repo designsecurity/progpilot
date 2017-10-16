@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.org/designsecurity/progpilot.svg?branch=master)](https://travis-ci.org/designsecurity/progpilot) [![Packagist](https://img.shields.io/packagist/v/designsecurity/progpilot.svg)]() [![Packagist](https://img.shields.io/packagist/l/designsecurity/progpilot.svg)]()
 ---
 ## Standalone example
-- Download the latest phar archive in [releases](https://github.com/designsecurity/progpilot/releases) folder.
+- Download the latest phar archive in [releases](https://github.com/designsecurity/progpilot/releases) folder (or [builds](./builds/) folder for dev versions).
 - Use the up-to-date data in [projects/uptodate_data](./projects/uptodate_data) folder.
 - Configure your analysis with [a yaml file](./projects/example_config/configuration.yml).
 - Then run progpilot with php and your JSON configuration file in command line argument :

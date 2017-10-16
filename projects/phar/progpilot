@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+
+namespace progpilot;
+
+require_once __DIR__.'/../../autoload.php';
+
+use progpilot\Command\ProgpilotCommand;
+use progpilot\Console\Application;
+
+$application = new Application();
+$application->add(new ProgpilotCommand);
+$status = $application->run();
+exit($status);
+
+?>	 
