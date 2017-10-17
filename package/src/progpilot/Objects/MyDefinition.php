@@ -24,6 +24,7 @@ class MyDefinition extends MyOp
     private $object_id;
     private $block_id;
     private $is_tainted;
+    private $is_const;
     private $is_ref;
     private $ref_name;
     private $is_ref_arr;
@@ -58,6 +59,7 @@ class MyDefinition extends MyOp
         $this->object_id = -1;
         $this->block_id = -1;
         $this->is_tainted = false;
+        $this->is_const = false;
         $this->is_ref = false;
         $this->is_ref_arr = false;
         $this->ref_arr_value = null;
@@ -88,8 +90,9 @@ class MyDefinition extends MyOp
 
     public function print_stdout()
     {
-        echo "def name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: assign_id = ".$this->get_assign_id()." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_ref()." :: is_property = ".$this->get_is_property()." :: is_instance = ".$this->get_is_instance()." :: blockid = ".$this->get_block_id()." :: cast = ".$this->get_cast()."\n";
+        echo "def name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: assign_id = ".$this->get_assign_id()." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_ref()." :: is_property = ".$this->get_is_property()." :: is_instance = ".$this->get_is_instance()." :: is_const = ".$this->get_is_const()." :: blockid = ".$this->get_block_id()." :: cast = ".$this->get_cast()."\n";
 
+        echo "last_known_value : '".$this->last_known_value."'\n";
         echo "is_embeddedbychar :\n";
         var_dump($this->is_embeddedbychar);
         echo "type_sanitized :\n";
@@ -157,6 +160,16 @@ class MyDefinition extends MyOp
             return $this->is_embeddedbychar[$char];
 
         return false;
+    }
+
+    public function set_is_const($is_const)
+    {
+        $this->is_const = $is_const;
+    }
+
+    public function get_is_const()
+    {
+        return $this->is_const;
     }
 
     public function set_is_instance($is_instance)

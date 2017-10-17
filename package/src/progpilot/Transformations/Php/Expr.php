@@ -110,6 +110,9 @@ class Expr
             $mytemp->add_expr($myexpr);
             $defs_ofexpr[] = $mytemp;
 
+            if ($type == MyOp::TYPE_CONST)
+                $mytemp->set_is_const(true);
+
             if ($type == MyOp::TYPE_PROPERTY)
             {
                 $property_name = "";
@@ -153,6 +156,8 @@ class Expr
 
                 else if ($ops instanceof Op\Expr\BinaryOp\Concat)
                 {
+                    $myexpr->set_is_concat(true);
+
                     $context->get_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_LEFT));
                     Expr::instruction_internal($defs_ofexpr, $ops->left, $context, $myexpr, $assign_id);
 
@@ -161,6 +166,8 @@ class Expr
                 }
                 else if ($ops instanceof Op\Expr\ConcatList)
                 {
+                    $myexpr->set_is_concat(true);
+
                     $context->get_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_LIST));
 
                     foreach ($ops->list as $opsbis)

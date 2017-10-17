@@ -97,6 +97,11 @@ class FuncCall
             $funccall_name = $context->get_current_op()->name->value;
         }
 
+        if ($funccall_name == "define")
+        {
+            Assign::instruction($context, false, true);
+        }
+
         $inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
         $inst_funcall_main->add_property("funcname", $funccall_name);
 

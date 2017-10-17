@@ -26,14 +26,33 @@ use progpilot\Transformations\Php\OpTr;
 class Assign
 {
 
-    public static function instruction($context, $is_returndef = false)
+    public static function instruction($context, $is_returndef = false, $is_define = false)
     {
         $assign_id = rand();
 
-        $name = Common::get_name_definition($context->get_current_op());
-        $type = Common::get_type_definition($context->get_current_op());
-        $type_array = Common::get_type_is_array($context->get_current_op());
-        $type_instance = Common::get_type_is_instance($context->get_current_op());
+        if ($is_define)
+        {
+            $name = "const_$assign_id";
+            if (isset($context->get_current_op()->args[0]->value))
+                $name = $context->get_current_op()->args[0]->value;
+
+            $type = MyOp::TYPE_CONST;
+            $type_array = null;
+            $type_instance = null;
+
+            $expr_op = $context->get_current_op();
+            if (isset($context->get_current_op()->args[1]))
+                $expr_op = $context->get_current_op()->args[1];
+        }
+        else
+        {
+            $name = Common::get_name_definition($context->get_current_op());
+            $type = Common::get_type_definition($context->get_current_op());
+            $type_array = Common::get_type_is_array($context->get_current_op());
+            $type_instance = Common::get_type_is_instance($context->get_current_op());
+
+            $expr_op = $context->get_current_op()->expr;
+        }
 
         // name of function return
         if ($is_returndef)
@@ -49,6 +68,9 @@ class Assign
             $mydef->set_is_ref(true);
         }
 
+        if ($type == MyOp::TYPE_CONST)
+            $mydef->set_is_const(true);
+
         if ($is_returndef)
             $context->get_current_func()->add_return_def($mydef);
 
@@ -61,7 +83,7 @@ class Assign
 
         $context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
-        Expr::instruction($context->get_current_op()->expr, $context, $myexpr, $assign_id);
+        Expr::instruction($expr_op, $context, $myexpr, $assign_id);
 
         $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
         $inst_end_expr->add_property("expr", $myexpr);

@@ -15,6 +15,8 @@ use progpilot\Utils;
 
 class Context
 {
+    private $array_includes;
+    private $array_requires;
 
     private $mycode;
     private $current_op;
@@ -22,7 +24,7 @@ class Context
     private $current_line;
     private $current_column;
     private $current_func;
-    private $first_file;
+    private $myfile;
     private $classes;
     private $objects;
     private $functions;
@@ -47,7 +49,6 @@ class Context
         $this->analyze_js = true;
         $this->print_file_under_analysis = false;
         $this->print_warning = false;
-        $this->first_file = "";
         $this->limit_time = 10;
         $this->limit_defs = 10000;
 
@@ -55,9 +56,13 @@ class Context
 
         $this->inputs = new \progpilot\Inputs\MyInputs;
         $this->outputs = new \progpilot\Outputs\MyOutputs;
+
+        $this->myfile = null;
+        $this->array_includes = [];
+        $this->array_requires = [];
     }
 
-    public function reset_internal_values()
+    public function reset_internal_lowvalues()
     {
         $this->current_op = null;
         $this->current_block = null;
@@ -65,17 +70,31 @@ class Context
         $this->current_column = -1;
         $this->current_func = null;
         $this->path = null;
+    }
+
+    public function reset_internal_values()
+    {
+        $this->reset_internal_lowvalues();
 
         unset($this->objects);
         unset($this->classes);
         unset($this->functions);
         unset($this->mycode);
 
-        $this->outputs = new \progpilot\Outputs\MyOutputs;
         $this->objects = new \progpilot\Dataflow\Objects;
         $this->classes = new \progpilot\Dataflow\Classes;
         $this->functions = new \progpilot\Dataflow\Functions;
         $this->mycode = new \progpilot\Code\MyCode;
+    }
+
+    public function get_array_includes()
+    {
+        return $this->array_includes;
+    }
+
+    public function get_array_requires()
+    {
+        return $this->array_requires;
     }
 
     public function set_print_warning($bool)
@@ -198,14 +217,14 @@ class Context
         return $this->path;
     }
 
-    public function get_first_file()
+    public function get_myfile()
     {
-        return $this->first_file;
+        return $this->myfile;
     }
 
-    public function set_first_file($first_file)
+    public function set_myfile($myfile)
     {
-        $this->first_file = $first_file;
+        $this->myfile = $myfile;
     }
 
     public function set_path($path)
@@ -262,6 +281,11 @@ class Context
     public function set_inputs($inputs)
     {
         $this->inputs = $inputs;
+    }
+
+    public function set_outputs($outputs)
+    {
+        $this->outputs = $outputs;
     }
 
 

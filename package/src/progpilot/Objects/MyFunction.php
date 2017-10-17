@@ -20,6 +20,7 @@ class MyFunction extends MyOp
     private $params;
     private $return_defs;
     private $defs;
+    private $blocks;
     private $start_address_func;
     private $end_address_func;
     private $visibility;
@@ -185,6 +186,16 @@ class MyFunction extends MyOp
     public function get_end_address_func()
     {
         return $this->end_address_func;
+    }
+
+    public function set_blocks($blocks)
+    {
+        $this->blocks = $blocks;
+    }
+
+    public function get_blocks()
+    {
+        return $this->blocks;
     }
 
     public function set_defs($defs)

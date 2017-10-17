@@ -40,19 +40,13 @@ class Transform implements Visitor
 {
 
     private $s_blocks;
-    private $array_includes;
-    private $array_requires;
     private $context;
     private $block_if_to_be_resolved;
-    private $current_myfile;
 
     public function __construct()
     {
         $this->s_blocks = new \SplObjectStorage;
-        $this->array_includes = [];
-        $this->array_requires = [];
         $this->block_if_to_be_resolved = [];
-        $this->current_myfile = null;
     }
 
     public function set_context($context)
@@ -63,12 +57,7 @@ class Transform implements Visitor
 
     public function enterScript(Script $script)
     {
-
         $this->context->outputs->current_includes_file = [];
-
-        $this->current_myfile = new MyFile($this->context->inputs->get_file(), 0, 0);
-
-        //var_dump($script);
     }
 
     public function leaveScript(Script $script)
@@ -103,9 +92,6 @@ class Transform implements Visitor
                 $instruction_if->add_property("myblock_else", $myblock_else);
             }
         }
-
-        if ($this->context->outputs->get_resolve_includes())
-            $this->context->outputs->write_includes_file();
     }
 
     public function enterBlock(Block $block, Block $prior = null)
@@ -304,81 +290,11 @@ class Transform implements Visitor
             $this->parse_condition($inst_start_if, $op->cond->ops);
         }
         /*
-             const TYPE_INCLUDE = 1;
-             const TYPE_INCLUDE_OPNCE = 2;
-             const TYPE_REQUIRE = 3;
-             const TYPE_REQUIRE_ONCE = 4;
-         */
-        else if ($op instanceof Op\Expr\Include_ && $this->context->get_analyze_includes())
-        {
-            if (!isset($this->context->get_current_op()->expr->value))
-            {
-                $continue_include = false;
-
-                $myinclude = $this->context->inputs->get_include_bylocation(
-                                 $this->context->get_current_line(),
-                                 $this->context->get_current_column(),
-                                 $this->context->get_first_file());
-
-                if (!is_null($myinclude))
-                {
-                    $continue_include = true;
-                    $name = $myinclude->get_value();
-                }
-            }
-            else
-            {
-                $continue_include = true;
-                $name = $this->context->get_current_op()->expr->value;
-            }
-
-            if ($continue_include)
-            {
-                $file = $this->context->get_path()."/".$name;
-
-                if ((!in_array($file, $this->array_includes, true) && $op->type == 2)
-                        || (!in_array($file, $this->array_requires, true) && $op->type == 4)
-                        || ($op->type == 1 || $op->type == 3))
-                {
-                    if ($op->type == 2)
-                        $this->array_includes[] = $file;
-
-                    if ($op->type == 4)
-                        $this->array_requires[] = $file;
-
-                    $myfile = new MyFile($file,
-                                         $this->context->get_current_line(),
-                                         $this->context->get_current_column());
-                    $myfile->set_included_from_myfile($this->current_myfile);
-
-                    $this->current_myfile = $myfile;
-
-                    $inst_start_include = new MyInstruction(Opcodes::START_INCLUDE);
-                    $inst_start_include->add_property("myfile", $myfile);
-                    $this->context->get_mycode()->add_code($inst_start_include);
-
-                    $analyzer = new \progpilot\Analyzer;
-                    $this->context->inputs->set_file($file);
-                    $scriptbis = $analyzer->parse($this->context);
-
-                    // another option is to $analyser->transform() to obtain mycode of included file
-                    // and replace all include opcode in the main mycode by sub mycode
-                    if (isset($scriptbis->main->cfg))
-                        $op->included = $scriptbis->main->cfg;
-                }
-            }
-            else
-            {
-                if ($this->context->outputs->get_resolve_includes())
-                {
-                    $myfile_temp = new MyFile($this->context->get_first_file(),
-                                              $this->context->get_current_line(),
-                                              $this->context->get_current_column());
-
-                    $this->context->outputs->current_includes_file[] = $myfile_temp;
-                }
-            }
-        }
+           const TYPE_INCLUDE = 1;
+           const TYPE_INCLUDE_OPNCE = 2;
+           const TYPE_REQUIRE = 3;
+           const TYPE_REQUIRE_ONCE = 4;
+        */
 
         if ($op instanceof Op\Expr\Include_)
         {
@@ -398,6 +314,7 @@ class Transform implements Visitor
             $inst_funcall_main->add_property("myfunc_call", $myfunction_call);
             $inst_funcall_main->add_property("expr", $myexpr);
             $inst_funcall_main->add_property("arr", false);
+            $inst_funcall_main->add_property("type_include", $op->type);
             $this->context->get_mycode()->add_code($inst_funcall_main);
 
             $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);

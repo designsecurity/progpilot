@@ -39,9 +39,10 @@ try
 
         if ($file == "./tests/includes/simple5.php")
         {
-            //$context->outputs->resolve_includes_file("./tests/includes/includes_simple5.txt");
-            //$context->outputs->resolve_includes(true);
-
+            /*
+              $context->outputs->resolve_includes_file("./tests/includes/includes_simple5.txt");
+              $context->outputs->resolve_includes(true);
+            */
             $context->inputs->set_resolved_includes("./tests/includes/resolved_includes_simple5.txt");
         }
 

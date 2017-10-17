@@ -10,6 +10,7 @@
 
 namespace progpilot\Analysis;
 
+use progpilot\Objects\MyFile;
 use progpilot\Objects\MyOp;
 use progpilot\Objects\ArrayStatic;
 use progpilot\Objects\MyDefinition;
@@ -22,25 +23,27 @@ use progpilot\Utils;
 
 class VisitorAnalysis
 {
-
     private $context;
     private $current_storagemyblocks;
     private $call_stack;
 
     private $defs;
+    private $blocks;
 
     private $current_myblock;
     private $old_myblock;
 
     public function __construct()
     {
-
         $this->current_storagemyblocks = null;
         $this->call_stack = [];
         $this->myblock_stack = [];
 
         $this->current_myblock = null;
         $this->old_myblock = null;
+
+        $this->defs = null;
+        $this->blocks = null;
     }
 
     public function in_call_stack($cur_func)
@@ -73,7 +76,6 @@ class VisitorAnalysis
 
     public function analyze($mycode)
     {
-
         $index = $mycode->get_start();
         $code = $mycode->get_codes();
 
@@ -163,6 +165,7 @@ class VisitorAnalysis
 
                     $this->current_storagemyblocks = new \SplObjectStorage;
                     $this->defs = $myfunc->get_defs();
+                    $this->blocks = $myfunc->get_blocks();
 
                     break;
                 }
@@ -178,7 +181,8 @@ class VisitorAnalysis
                 case Opcodes::TEMPORARY:
                 {
                     $tempdefa = $instruction->get_property("temporary");
-                    
+                    $tempdefa_myexpr = $tempdefa->get_exprs()[0];
+
                     $tainted = false;
                     if (!is_null($this->context->inputs->get_source_byname(null, $tempdefa, false, false, $tempdefa->get_array_value())))
                         $tainted = true;
@@ -201,49 +205,53 @@ class VisitorAnalysis
                             {
                                 $defassign = $expr->get_assign_def();
 
-                                $defassign->last_known_value($def->get_last_known_value());
+                                if (!$tempdefa_myexpr->get_is_concat())
+                                {
+                                    $defassign->last_known_value($def->get_last_known_value());
+                                }
+
                                 $def->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
                                 $defassign->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
-                                
+
                                 // vérifier s'il y a pas de concat
-                                if($def->get_is_instance())
+                                if ($def->get_is_instance())
                                 {
-                                  $defassign->set_is_instance(true);
-                                  $defassign->set_object_id($def->get_object_id());
-                                  
-                                  $tmp_myclasses = $this->context->get_objects()->get_all_myclasses($def->get_object_id());
+                                    $defassign->set_is_instance(true);
+                                    $defassign->set_object_id($def->get_object_id());
 
-                                  foreach ($tmp_myclasses as $tmp_myclass)
-                                  {
-                                    foreach ($tmp_myclass->get_properties() as $property)
-                                    {            
-                                      $mydeftemp = new MyDefinition($tempdefa->getLine(), $tempdefa->getColumn(), $tempdefa->get_name());
-                                      $mydeftemp->set_is_property(true);
-                                      $mydeftemp->property->set_properties($property->property->get_properties());
-                                      $mydeftemp->set_block_id($tempdefa->get_block_id());
-                                      $mydeftemp->set_source_myfile($tempdefa->get_source_myfile());
-                                      
-                                      $defs_found = ResolveDefs::select_properties($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $mydeftemp, true);
-                                      foreach ($defs_found as $def_found)
-                                      {
-                                          if ($def_found->get_is_copy_array())
-                                          {
-                                              $property->set_copyarrays($def_found->get_copyarrays());
-                                              $property->set_is_copy_array(true);
-                                          }
+                                    $tmp_myclasses = $this->context->get_objects()->get_all_myclasses($def->get_object_id());
 
-                                          if ($def_found->is_tainted())
-                                              $property->set_tainted(true);
+                                    foreach ($tmp_myclasses as $tmp_myclass)
+                                    {
+                                        foreach ($tmp_myclass->get_properties() as $property)
+                                        {
+                                            $mydeftemp = new MyDefinition($tempdefa->getLine(), $tempdefa->getColumn(), $tempdefa->get_name());
+                                            $mydeftemp->set_is_property(true);
+                                            $mydeftemp->property->set_properties($property->property->get_properties());
+                                            $mydeftemp->set_block_id($tempdefa->get_block_id());
+                                            $mydeftemp->set_source_myfile($tempdefa->get_source_myfile());
 
-                                          if ($def_found->is_sanitized())
-                                          {
-                                              $property->set_sanitized(true);
-                                              foreach ($def_found->get_type_sanitized() as $type_sanitized)
-                                                  $property->add_type_sanitized($type_sanitized);
-                                          }
-                                      }
+                                            $defs_found = ResolveDefs::select_properties($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $mydeftemp, true);
+                                            foreach ($defs_found as $def_found)
+                                            {
+                                                if ($def_found->get_is_copy_array())
+                                                {
+                                                    $property->set_copyarrays($def_found->get_copyarrays());
+                                                    $property->set_is_copy_array(true);
+                                                }
+
+                                                if ($def_found->is_tainted())
+                                                    $property->set_tainted(true);
+
+                                                if ($def_found->is_sanitized())
+                                                {
+                                                    $property->set_sanitized(true);
+                                                    foreach ($def_found->get_type_sanitized() as $type_sanitized)
+                                                        $property->add_type_sanitized($type_sanitized);
+                                                }
+                                            }
+                                        }
                                     }
-                                  }
                                 }
 
                                 if ($tempdefa->get_cast() === MyDefinition::CAST_NOT_SAFE)
@@ -270,6 +278,128 @@ class VisitorAnalysis
                     $myfunc_call = $instruction->get_property("myfunc_call");
 
                     $list_myfunc = [];
+
+                    // require, require_once ... already handled in transform Expr/include_
+                    if ($myfunc_call->get_name() == "include" && $this->context->get_analyze_includes())
+                    {
+                        $type_include = $instruction->get_property("type_include");
+                        $nb_params = $myfunc_call->get_nb_params();
+                        if ($nb_params > 0)
+                        {
+                            $mydef_arg = $instruction->get_property("argdef0");
+
+                            $real_file = false;
+                            if (!empty($mydef_arg->get_last_known_value()))
+                            {
+                                $file = $this->context->get_path()."/".$mydef_arg->get_last_known_value();
+                                $real_file = realpath($file);
+                            }
+
+                            if (!$real_file)
+                            {
+                                $continue_include = false;
+
+                                $myinclude = $this->context->inputs->get_include_bylocation(
+                                                 $this->context->get_current_line(),
+                                                 $this->context->get_current_column(),
+                                                 $myfunc_call->get_source_myfile()->get_name());
+
+                                if (!is_null($myinclude))
+                                {
+                                    $name_included_file = realpath($myinclude->get_value());
+                                    if ($name_included_file)
+                                        $continue_include = true;
+                                }
+                            }
+                            else
+                            {
+                                $continue_include = true;
+                                $name_included_file = $real_file;
+                            }
+
+                            if ($continue_include)
+                            {
+
+                                $array_includes = $this->context->get_array_includes();
+                                $array_requires = $this->context->get_array_requires();
+
+                                if ((!in_array($name_included_file, $array_includes, true) && $type_include == 2)
+                                        || (!in_array($name_included_file, $array_requires, true) && $type_include == 4)
+                                        || ($type_include == 1 || $type_include == 3))
+                                {
+                                    if ($type_include == 2)
+                                        $array_includes = $name_included_file;
+
+                                    if ($type_include == 4)
+                                        $array_requires = $name_included_file;
+
+                                    $context_include = clone $this->context;
+                                    $context_include->reset_internal_lowvalues();
+                                    $context_include->inputs->set_file($name_included_file);
+
+                                    $myfile = new MyFile($name_included_file, $this->context->get_current_line(), $this->context->get_current_column());
+                                    $myfile->set_included_from_myfile($myfunc_call->get_source_myfile());
+
+                                    $context_include->set_myfile($myfile);
+                                    $context_include->set_outputs(new \progpilot\Outputs\MyOutputs);
+                                    $context_include->set_mycode(new \progpilot\Code\MyCode);
+
+                                    /*
+                                    echo "FUNC_CALL include '".$mydef_arg->get_last_known_value()."'\n";
+                                    echo "FUNC_CALL include '$file'\n";
+                                    */
+
+                                    $analyzer_include = new \progpilot\Analyzer;
+                                    $analyzer_include->run_internal($context_include, $this->defs->getoutminuskill($myfunc_call->get_block_id()));
+
+                                    if (!is_null($context_include->outputs->get_results()))
+                                    {
+                                        foreach ($context_include->outputs->get_results() as $result_include)
+                                        {
+                                            $this->context->outputs->add_result($result_include);
+                                        }
+                                    }
+
+                                    $main_include = $context_include->get_functions()->get_function("{main}");
+
+                                    if (!is_null($main_include))
+                                    {
+                                        $defs_output_included = $main_include->get_defs()->getoutminuskill(0);
+
+                                        $new_defs = false;
+                                        // IL FAUT VIRER LES DEFS DU PRECEDENT INCLUDE SI PLUSIEURS INCLUDE
+                                        if (!is_null($defs_output_included))
+                                        {
+                                            foreach ($defs_output_included as $def_output_included)
+                                            {
+                                                // echo "FOREACH '".$def_output_included->get_name()."'\n";
+                                                $this->defs->adddef($def_output_included->get_name(), $def_output_included);
+                                                $this->defs->addgen($myfunc_call->get_block_id(), $def_output_included);
+
+                                                $new_defs = true;
+                                            }
+                                        }
+                                        if ($new_defs)
+                                        {
+                                            $this->defs->computekill($this->context, $myfunc_call->get_block_id());
+                                            $this->defs->reachingDefs($this->blocks);
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if ($this->context->outputs->get_resolve_includes())
+                                {
+                                    $myfile_temp = new MyFile($myfunc_call->get_source_myfile()->get_name(),
+                                                              $myfunc_call->getLine(),
+                                                              $myfunc_call->getColumn());
+
+                                    $this->context->outputs->current_includes_file[] = $myfile_temp;
+                                }
+                            }
+                        }
+                    }
 
                     if ($myfunc_call->get_is_method())
                     {
@@ -301,38 +431,6 @@ class VisitorAnalysis
 
 
                         /*
-                             echo "myfunc_call name = '".$myfunc_call->get_name()."' line = '".$myfunc_call->getLine()."' column = '".$myfunc_call->getColumn()."'\n";
-                             echo "_______________________________________1\n";
-                             var_dump($stack_class);
-                             echo "_______________________________________2\n";
-
-                             $mydef_tmp = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), $myfunc_call->get_name_instance());
-                             $mydef_tmp->set_block_id($myfunc_call->get_block_id());
-                             $mydef_tmp->set_assign_id($myfunc_call->get_back_def()->get_assign_id());
-                             $mydef_tmp->set_source_myfile($myfunc_call->get_source_myfile());
-                             $mydef_tmp->property->set_properties($myfunc_call->get_back_def()->property->get_properties());
-
-                             $instances = ResolveDefs::select_instances(
-                             $this->context,
-                             $this->defs->getoutminuskill($mydef_tmp->get_block_id()),
-                             $mydef_tmp,
-                             false);
-
-                             foreach($instances as $instance)
-                             {
-                             if($instance->get_is_instance())
-                             {
-                        // the class is defined (it's always the case (build-in php or not), see visitorflowanalysis)
-                        $myclasses = $instance->get_all_myclass();
-
-                        foreach($myclasses as $myclass)
-                        {
-                        $myfunc = $myclass->get_method($funcname);
-
-                        if(ResolveDefs::get_visibility_method($instance, $myfunc))
-                        $list_myfunc[] = [$myfunc, $myclass];
-                        else
-                        $list_myfunc[] = [null, $myclass];
 
                         // twig analysis
                         if($this->context->get_analyze_js())
@@ -345,15 +443,7 @@ class VisitorAnalysis
                         }
                         }
                         }
-                        }
-                        }
-                        }
 
-                        if(count($instances) == 0)
-                        {
-                        $list_myfunc[] = [null, null];
-
-                        }
                          */
                     }
                     else

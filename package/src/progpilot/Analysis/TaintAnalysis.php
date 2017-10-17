@@ -550,7 +550,7 @@ class TaintAnalysis
             if ($visibility_final)
             {
                 $defassign->set_is_embeddedbychars($def->get_is_embeddedbychars(), true);
-                $defassign->last_known_value($def->get_last_known_value());
+                //$defassign->last_known_value($def->get_last_known_value());
             }
         }
     }

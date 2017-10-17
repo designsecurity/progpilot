@@ -160,7 +160,7 @@ class ResolveDefs
                         $myclass->getLine(),
                         $myclass->getColumn(),
                         $myclass->get_name());
-                        
+
                     $context->get_objects()->add_myclass_to_object($mybackdef->get_object_id(), $new_myback_myclass);
                 }
 
@@ -253,7 +253,7 @@ class ResolveDefs
 
             $mythisdef = $myfunc->get_this_def();
             $mythisdef->set_class_name($copy_myclass->get_name());
-            
+
             $id_object = $mythisdef->get_object_id();
             $context->get_objects()->add_myclass_to_object($id_object, $copy_myclass);
         }
@@ -367,7 +367,7 @@ class ResolveDefs
         $defsfound = [];
         if (is_null($data))
             return $defsfound;
-        
+
         foreach ($data as $def)
         {
             if ($def->get_name() === $defsearch->get_name()

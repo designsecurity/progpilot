@@ -33,6 +33,8 @@ class Opcodes
     const END_INCLUDE = "end_include";
     const COND_START_IF = "condition_start_if";
     const COND_BOOLEAN_NOT = "condition_boolean_not";
+
+    const NEW_INCLUDE = "new_include";
 }
 
 ?>

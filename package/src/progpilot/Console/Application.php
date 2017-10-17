@@ -23,21 +23,21 @@ class Application extends BaseApplication
     {
         parent::__construct(self::NAME, self::VERSION);
     }
-    
+
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
         $this->setCatchExceptions(false);
-        
-        try 
+
+        try
         {
             $statusCode = parent::run($input, $output);
-        } 
-        catch (\Exception $e) 
+        }
+        catch (\Exception $e)
         {
-          echo "\n\n".Lang::COMMAND_LINE_ARG."\n\n";
+            echo "\n\n".Lang::COMMAND_LINE_ARG."\n\n";
         }
     }
-    
+
 
     public function getDefinition()
     {

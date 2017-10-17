@@ -8,7 +8,9 @@
  */
 
 namespace progpilot;
+
 use progpilot\Utils;
+use progpilot\Objects\MyFile;
 
 class Analyzer
 {
@@ -133,7 +135,7 @@ class Analyzer
         }
     }
 
-    public function run_internal($context)
+    public function run_internal($context, $defs_included = null)
     {
         $start_time = microtime(true);
 
@@ -164,7 +166,7 @@ class Analyzer
             $context->get_mycode()->set_end(count($context->get_mycode()->get_codes()));
 
             $visitordataflow = new \progpilot\Dataflow\VisitorDataflow();
-            $visitordataflow->analyze($context);
+            $visitordataflow->analyze($context, $defs_included);
 
             if ((microtime(true) - $start_time) > $context->get_limit_time())
             {
@@ -215,21 +217,21 @@ class Analyzer
         $included_files = $context->inputs->get_included_files();
         $included_folders = $context->inputs->get_included_folders();
 
-        if($cmd_files !== null)
+        if ($cmd_files !== null)
         {
-          foreach ($cmd_files as $cmd_file)
-          {
-            if (is_dir($cmd_file))
-              $this->get_files_ofdir($context, $cmd_file, $files);
-            else
+            foreach ($cmd_files as $cmd_file)
             {
-              if (!in_array($cmd_file, $files, true)
-                      && !$context->inputs->is_excluded_file($cmd_file))
-                  $files[] = $cmd_file;
+                if (is_dir($cmd_file))
+                    $this->get_files_ofdir($context, $cmd_file, $files);
+                else
+                {
+                    if (!in_array($cmd_file, $files, true)
+                            && !$context->inputs->is_excluded_file($cmd_file))
+                        $files[] = $cmd_file;
+                }
             }
-          }
         }
-        
+
         foreach ($included_files as $included_file)
         {
             if (!in_array($included_file, $files, true)
@@ -239,19 +241,19 @@ class Analyzer
 
         foreach ($included_folders as $included_folder)
             $this->get_files_ofdir($context, $included_folder, $files);
-        
+
         if (!is_null($context->inputs->get_folder()))
             $this->get_files_ofdir($context, $context->inputs->get_folder(), $files);
-        
+
         else
         {
-          if($context->inputs->get_file() !== null)
-          {
-            if (!in_array($context->inputs->get_file(), $files, true)
-                    && !$context->inputs->is_excluded_file($context->inputs->get_file())
-                    && realpath($context->inputs->get_file()))
-                $files[] = realpath($context->inputs->get_file());
-          }
+            if ($context->inputs->get_file() !== null)
+            {
+                if (!in_array($context->inputs->get_file(), $files, true)
+                        && !$context->inputs->is_excluded_file($context->inputs->get_file())
+                        && realpath($context->inputs->get_file()))
+                    $files[] = realpath($context->inputs->get_file());
+            }
         }
 
         foreach ($files as $file)
@@ -259,13 +261,17 @@ class Analyzer
             if ($context->get_print_file())
                 echo "progpilot analyze : ".Utils::encode_characters($file)."\n";
 
+            $myfile = new MyFile($file, 0, 0);
             $context->inputs->set_file($file);
-            $context->set_first_file($file);
+            $context->set_myfile($myfile);
             $this->run_internal($context);
         }
 
         if (count($files) == 0 && !is_null($context->inputs->get_code()))
             $this->run_internal($context);
+
+        if ($context->outputs->get_resolve_includes())
+            $context->outputs->write_includes_file();
     }
 
 }
