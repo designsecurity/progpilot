@@ -299,6 +299,9 @@ class VisitorAnalysis
                             if (!$real_file)
                             {
                                 echo "!real_file = '".$real_file."'\n";
+                                echo "name = '".$myfunc_call->get_source_myfile()->get_name()."'\n";
+                                echo "line = '".$this->context->get_current_line()."'\n";
+                                echo "column = '".$this->context->get_current_column()."'\n";
                                 $continue_include = false;
 
                                 $myinclude = $this->context->inputs->get_include_bylocation(

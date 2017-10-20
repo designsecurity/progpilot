@@ -733,6 +733,7 @@ class MyInputs
     {
         if (!is_null($this->resolved_includes_file))
         {
+      echo "===========> read_resolved_includes is null\n";
             if (!file_exists($this->resolved_includes_file))
                 Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->resolved_includes_file).")");
 
@@ -750,12 +751,15 @@ class MyInputs
                             || !isset($include-> {'value'}))
                         Utils::print_error(Lang::FORMAT_INCLUDES);
 
+      echo "===========> read_resolved_includes FOREACH\n";
                     if (realpath($include-> {'source_file'}))
                     {
                         $line = $include-> {'line'};
                         $column = $include-> {'column'};
                         $source_file = realpath($include-> {'source_file'});
                         $value = $include-> {'value'};
+                        
+      echo "===========> read_resolved_includes REALPATH\n";
                         
                         $myinclude = new MyInclude($line, $column, $source_file, $value);
                         $this->resolved_includes[] = $myinclude;
