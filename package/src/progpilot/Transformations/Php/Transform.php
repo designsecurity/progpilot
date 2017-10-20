@@ -51,7 +51,6 @@ class Transform implements Visitor
 
     public function set_context($context)
     {
-
         $this->context = $context;
     }
 
@@ -193,7 +192,7 @@ class Transform implements Visitor
             $param_name = $param->name->value;
             $byref = $param->byRef;
 
-            $mydef = new MyDefinition($param->getLine(), $param->getColumn(), $param_name);
+            $mydef = new MyDefinition($param->getLine(), $param->getAttribute("startFilePos", -1), $param_name);
             $mydef->set_is_ref($byref);
             $myfunction->add_param($mydef);
 
@@ -273,10 +272,10 @@ class Transform implements Visitor
                 ($op instanceof Op\Expr && !($op instanceof Op\Expr\Assertion)) ||
                 $op instanceof Op\Terminal)
         {
-            if ($op->getLine() != -1 && $op->getColumn() != -1)
+            if ($op->getLine() != -1 && $op->getAttribute("startFilePos", -1) != -1)
             {
                 $this->context->set_current_line($op->getLine());
-                $this->context->set_current_column($op->getColumn());
+                $this->context->set_current_column($op->getAttribute("startFilePos", -1));
             }
         }
 
@@ -340,7 +339,7 @@ class Transform implements Visitor
 
             $myfunction_call = new MyFunction("eval");
             $myfunction_call->setLine($op->getLine());
-            $myfunction_call->setColumn($op->getColumn());
+            $myfunction_call->setColumn($op->getAttribute("startFilePos", -1));
             $myfunction_call->set_nb_params(1);
 
             FuncCall::argument($this->context, rand(), $op->expr, $inst_funcall_main, "eval", 0);
@@ -364,7 +363,7 @@ class Transform implements Visitor
 
             $myfunction_call = new MyFunction("echo");
             $myfunction_call->setLine($op->getLine());
-            $myfunction_call->setColumn($op->getColumn());
+            $myfunction_call->setColumn($op->getAttribute("startFilePos", -1));
             $myfunction_call->set_nb_params(1);
 
             FuncCall::argument($this->context, rand(), $op->expr, $inst_funcall_main, "echo", 0);
@@ -388,7 +387,7 @@ class Transform implements Visitor
 
             $myfunction_call = new MyFunction("print");
             $myfunction_call->setLine($op->getLine());
-            $myfunction_call->setColumn($op->getColumn());
+            $myfunction_call->setColumn($op->getAttribute("startFilePos", -1));
             $myfunction_call->set_nb_params(1);
 
             FuncCall::argument($this->context, rand(), $op->expr, $inst_funcall_main, "print", 0);
@@ -453,7 +452,7 @@ class Transform implements Visitor
                     $property_name = Common::get_name_definition($property);
                     $visibility = Common::get_type_visibility($property->visiblity);
 
-                    $mydef = new MyDefinition($property->getLine(), $property->getColumn(), "this");
+                    $mydef = new MyDefinition($property->getLine(), $property->getAttribute("startFilePos", -1), "this");
                     $mydef->property->set_visibility($visibility);
                     $mydef->property->add_property($property_name);
                     $mydef->set_class_name($class_name);

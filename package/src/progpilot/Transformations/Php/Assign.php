@@ -53,6 +53,10 @@ class Assign
 
             $expr_op = $context->get_current_op()->expr;
         }
+          
+        $isref = false;
+        if ($context->get_current_op() instanceof Op\Expr\AssignRef)
+            $isref = true;
 
         // name of function return
         if ($is_returndef)
@@ -60,13 +64,7 @@ class Assign
 
         $mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name);
         $mydef->set_assign_id($assign_id);
-
-        $isref = false;
-        if ($context->get_current_op() instanceof Op\Expr\AssignRef)
-        {
-            $isref = true;
-            $mydef->set_is_ref(true);
-        }
+        $mydef->set_is_ref($isref);
 
         if ($type == MyOp::TYPE_CONST)
             $mydef->set_is_const(true);

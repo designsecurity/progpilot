@@ -222,41 +222,6 @@ class MyDefinition extends MyOp
         return $this->last_known_value;
     }
 
-    /*
-        public function get_myclass($myclass)
-        {
-            foreach ($this->myclasses as $one_class)
-            {
-                if ($one_class->get_name() === $myclass->get_name())
-                    return $one_class;
-            }
-
-            return null;
-        }
-
-        public function add_myclass($myclass)
-        {
-            $exist = false;
-            foreach ($this->myclasses as $one_class)
-            {
-                if ($one_class->get_name() === $myclass->get_name())
-                {
-                    $exist = true;
-                    break;
-                }
-            }
-
-            if (!$exist)
-            {
-                $this->myclasses[] = $myclass;
-            }
-        }
-
-        public function get_all_myclass()
-        {
-            return $this->myclasses;
-        }
-    */
     public function get_class_name()
     {
         return $this->class_name;

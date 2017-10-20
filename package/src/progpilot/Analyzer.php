@@ -58,12 +58,13 @@ class Analyzer
         // parser
         if (!is_null($context->inputs->get_file()) || !is_null($context->inputs->get_code()))
         {
-            /*
-                 $asttraverser = new \PhpParser\NodeTraverser;
-                 $asttraverser->addVisitor(new \PhpParser\NodeVisitor\NameResolver);
-                 $asttraverser->addVisitor($context->outputs->ast);
-             */
-            $astparser = (new \PhpParser\ParserFactory)->create(\PhpParser\ParserFactory::PREFER_PHP7);
+            $lexer = new \PhpParser\Lexer(array(
+                'usedAttributes' => array(
+                    'comments', 'startLine', 'endLine', 'startFilePos', 'endFilePos'
+                )
+            ));
+
+            $astparser = (new \PhpParser\ParserFactory)->create(\PhpParser\ParserFactory::PREFER_PHP7, $lexer);
 
             $parser = new \PHPCfg\Parser($astparser, null);
 
@@ -79,8 +80,8 @@ class Analyzer
                 {
                     if (is_null($context->inputs->get_code()))
                     {
-                        $code = file_get_contents($context->inputs->get_file());
-                        $script = $parser->parse($code, "");
+                        $context->inputs->set_code(file_get_contents($context->inputs->get_file()));
+                        $script = $parser->parse($context->inputs->get_code(), "");
                         $context->set_path(dirname($context->inputs->get_file()));
                     }
                     else
@@ -107,7 +108,8 @@ class Analyzer
             $traverser = new \PHPCfg\Traverser();
             $transformvisitor = new \progpilot\Transformations\Php\Transform();
             $traverser->addVisitor($transformvisitor);
-            $traverser->getVisitor(0)->set_context($context);
+            $transformvisitor->set_context($context);
+            //$traverser->getVisitor(0)->set_context($context);
 
             $traverser->traverse($script);
 

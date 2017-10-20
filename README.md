@@ -6,20 +6,14 @@
 ---
 ## Standalone example
 - Download the latest phar archive in [releases](https://github.com/designsecurity/progpilot/releases) folder (or [builds](./builds/) folder for dev versions).
-- Use the up-to-date data in [projects/uptodate_data](./projects/uptodate_data) folder.
-- Configure your analysis with [a yaml file](./projects/example_config/configuration.yml).
-- Then run progpilot with php and your JSON configuration file in command line argument :
+- Optional : Configure your analysis with [a yaml file](./projects/example_config/configuration.yml).
+- Optional : use the up-to-date security data in [projects/uptodate_data](./projects/uptodate_data) folder.
+- Progpilot takes two optional arguments :
+  - your JSON configuration file (if not specified default configuration is used)
+  - your files and folders that have to be analysed
 
 ```shell
-php progpilot.phar --configuration ./configuration.yml example1.php
-```
-- *configuration* option is optional (consequently default values will be used) : 
-```shell
-php progpilot.phar example1.php
-```
-- you can pass in argument an array of files or folders to be analyzed  : 
-```shell
-php progpilot.phar example1.php example2.php ./folder1/ ./folder2/
+php progpilot.phar --configuration ./configuration.yml example1.php example2.php ./folder1/ ./folder2/
 ```
 
 ## Library installation
@@ -32,13 +26,9 @@ Your composer.json looks like this one :
     "minimum-stability": "dev",
     "require": {
         "designsecurity/progpilot": "dev-master"
-    },
-    "extra": {
-        "enable-patching": true
     }
 } 
 ```
-*enable-patching* set to *true* is mandatory because progpilot will patch *ircmaxell/php-cfg* library.  
 Then run composer :
 ```shell
 composer install

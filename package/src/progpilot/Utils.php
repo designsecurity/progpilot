@@ -14,6 +14,19 @@ use progpilot\Objects\MyOp;
 
 class Utils
 {
+    public static function toColumn($code, $pos) {
+      
+        if ($pos > strlen($code)) {
+            return 1;
+        }
+        
+        $lineStartPos = strrpos($code, "\n", $pos - strlen($code));
+        if (false === $lineStartPos) {
+            $lineStartPos = -1;
+        }
+        return $pos - $lineStartPos;
+    }
+    
     public static function encode_characters($string)
     {
         return htmlentities($string, ENT_QUOTES, 'UTF-8');

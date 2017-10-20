@@ -75,6 +75,11 @@ $framework->add_output("./tests/generic/simple7.php", array("\$myvar1"));
 $framework->add_output("./tests/generic/simple7.php", array("3"));
 $framework->add_output("./tests/generic/simple7.php", "xss");
 
+$framework->add_testbasis("./tests/generic/simple8.php");
+$framework->add_output("./tests/generic/simple8.php", array("\$ret[0]"));
+$framework->add_output("./tests/generic/simple8.php", array("7"));
+$framework->add_output("./tests/generic/simple8.php", "xss");
+
 $framework->add_testbasis("./tests/generic/concat1.php");
 $framework->add_output("./tests/generic/concat1.php", array("\$myvar7"));
 $framework->add_output("./tests/generic/concat1.php", array("7"));

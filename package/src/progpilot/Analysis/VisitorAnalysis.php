@@ -336,6 +336,7 @@ class VisitorAnalysis
                                     $context_include = clone $this->context;
                                     $context_include->reset_internal_lowvalues();
                                     $context_include->inputs->set_file($name_included_file);
+                                    $context_include->inputs->set_code(null);
 
                                     $myfile = new MyFile($name_included_file, $this->context->get_current_line(), $this->context->get_current_column());
                                     $myfile->set_included_from_myfile($myfunc_call->get_source_myfile());
@@ -343,11 +344,6 @@ class VisitorAnalysis
                                     $context_include->set_myfile($myfile);
                                     $context_include->set_outputs(new \progpilot\Outputs\MyOutputs);
                                     $context_include->set_mycode(new \progpilot\Code\MyCode);
-
-                                    /*
-                                    echo "FUNC_CALL include '".$mydef_arg->get_last_known_value()."'\n";
-                                    echo "FUNC_CALL include '$file'\n";
-                                    */
 
                                     $analyzer_include = new \progpilot\Analyzer;
                                     $analyzer_include->run_internal($context_include, $this->defs->getoutminuskill($myfunc_call->get_block_id()));

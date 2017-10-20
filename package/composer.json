@@ -14,15 +14,6 @@
         "symfony/yaml": "~3.3.6",
         "symfony/console": "^2.7|^3.0"
     },
-	"extra": {
-		"patches": {
-			"ircmaxell/php-cfg": {
-				"Op": "../../patchs/Op.diff",
-				"Include": "../../patchs/Include_.diff",
-				"Traverser": "../../patchs/Traverser.diff"
-				}
-			}
-		},
     "autoload": {
         "psr-0": {
             "progpilot": "src"

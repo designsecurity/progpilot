@@ -52,10 +52,10 @@ class Context
         $this->limit_time = 10;
         $this->limit_defs = 10000;
 
-        $this->reset_internal_values();
-
         $this->inputs = new \progpilot\Inputs\MyInputs;
         $this->outputs = new \progpilot\Outputs\MyOutputs;
+        
+        $this->reset_internal_values();
 
         $this->myfile = null;
         $this->array_includes = [];
@@ -80,6 +80,8 @@ class Context
         unset($this->classes);
         unset($this->functions);
         unset($this->mycode);
+        
+        $this->inputs->set_code(null);
 
         $this->objects = new \progpilot\Dataflow\Objects;
         $this->classes = new \progpilot\Dataflow\Classes;
