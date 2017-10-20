@@ -4,8 +4,8 @@
             {
                 "line":11,
                 "column":51,
-                "source_file":"/home/eric/git/designsecurity/progpilot/projects/tests/tests/includes/simple5.php",
-                "value":"/home/eric/git/designsecurity/progpilot/projects/tests/tests/includes/simple5_include.php"
+                "source_file":"./tests/includes/simple5.php",
+                "value":"./tests/includes/simple5_include.php"
             }
         ]
 }

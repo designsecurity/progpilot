@@ -292,16 +292,11 @@ class VisitorAnalysis
                             if (!empty($mydef_arg->get_last_known_value()))
                             {
                                 $file = $this->context->get_path()."/".$mydef_arg->get_last_known_value();
-                                echo "last known value = '".$file."'\n";
                                 $real_file = realpath($file);
                             }
 
                             if (!$real_file)
                             {
-                                echo "!real_file = '".$real_file."'\n";
-                                echo "name = '".$myfunc_call->get_source_myfile()->get_name()."'\n";
-                                echo "line = '".$this->context->get_current_line()."'\n";
-                                echo "column = '".$this->context->get_current_column()."'\n";
                                 $continue_include = false;
 
                                 $myinclude = $this->context->inputs->get_include_bylocation(
@@ -311,11 +306,9 @@ class VisitorAnalysis
 
                                 if (!is_null($myinclude))
                                 {
-                                    echo "!real_file = '".$real_file."' is_null\n";
                                     $name_included_file = realpath($myinclude->get_value());
                                     if ($name_included_file)
                                     {
-                                    echo "!real_file = '".$real_file."' is_null = '".$name_included_file."'\n";
                                         $continue_include = true;
                                     }
                                 }
@@ -328,8 +321,6 @@ class VisitorAnalysis
 
                             if ($continue_include)
                             {
-                                echo "continue_include = '".$name_included_file."'\n";
-
                                 $array_includes = $this->context->get_array_includes();
                                 $array_requires = $this->context->get_array_requires();
 
@@ -342,8 +333,6 @@ class VisitorAnalysis
 
                                     if ($type_include == 4)
                                         $array_requires = $name_included_file;
-
-                                    echo "continue_include in_array = '".$name_included_file."'\n";
                                 
                                     $context_include = clone $this->context;
                                     $context_include->reset_internal_lowvalues();
@@ -362,10 +351,8 @@ class VisitorAnalysis
 
                                     if (!is_null($context_include->outputs->get_results()))
                                     {
-                                    echo "get_results\n";
                                         foreach ($context_include->outputs->get_results() as $result_include)
                                         {
-                                    echo "get_results foreach\n";
                                             $this->context->outputs->add_result($result_include);
                                         }
                                     }
@@ -374,7 +361,6 @@ class VisitorAnalysis
 
                                     if (!is_null($main_include))
                                     {
-                                    echo "!is_null(main_include)\n";
                                         $defs_output_included = $main_include->get_defs()->getoutminuskill(0);
 
                                         $new_defs = false;
@@ -400,10 +386,8 @@ class VisitorAnalysis
                             }
                             else
                             {
-                                    echo "else include\n";
                                 if ($this->context->outputs->get_resolve_includes())
                                 {
-                                    echo "else include get_resolve_includes\n";
                                     $myfile_temp = new MyFile($myfunc_call->get_source_myfile()->get_name(),
                                                               $myfunc_call->getLine(),
                                                               $myfunc_call->getColumn());
