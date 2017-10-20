@@ -755,8 +755,13 @@ class MyInputs
                         $line = $include-> {'line'};
                         $column = $include-> {'column'};
                         $source_file = realpath($include-> {'source_file'});
+                        
+                        if(!$source_file)
+                        {
+                          echo "FALSE SOURCE FILE\n";
+                        }
                         $value = $include-> {'value'};
-
+                        
                         $myinclude = new MyInclude($line, $column, $source_file, $value);
                         $this->resolved_includes[] = $myinclude;
                     }

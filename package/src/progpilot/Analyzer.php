@@ -107,9 +107,8 @@ class Analyzer
         {
             $traverser = new \PHPCfg\Traverser();
             $transformvisitor = new \progpilot\Transformations\Php\Transform();
-            $traverser->addVisitor($transformvisitor);
             $transformvisitor->set_context($context);
-            //$traverser->getVisitor(0)->set_context($context);
+            $traverser->addVisitor($transformvisitor);
 
             $traverser->traverse($script);
 
