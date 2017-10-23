@@ -54,7 +54,7 @@ class Context
 
         $this->inputs = new \progpilot\Inputs\MyInputs;
         $this->outputs = new \progpilot\Outputs\MyOutputs;
-        
+
         $this->reset_internal_values();
 
         $this->myfile = null;
@@ -80,7 +80,7 @@ class Context
         unset($this->classes);
         unset($this->functions);
         unset($this->mycode);
-        
+
         $this->inputs->set_code(null);
 
         $this->objects = new \progpilot\Dataflow\Objects;

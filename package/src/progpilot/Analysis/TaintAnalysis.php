@@ -104,7 +104,7 @@ class TaintAnalysis
                         {
                             foreach ($values as $value)
                             {
-                                if ($value->value === $thedefsargs[0]->get_last_known_value())
+                                if ($value->value === $thedefsargs[0]->get_last_known_values()[0])
                                     $condition_respected_equals = true;
                             }
                         }
@@ -219,7 +219,7 @@ class TaintAnalysis
                         {
                             foreach ($values as $value)
                             {
-                                if ($value->value === $thedefsargs[0]->get_last_known_value())
+                                if ($value->value === $thedefsargs[0]->get_last_known_values()[0])
                                 {
                                     $condition_respected = true;
 
@@ -550,7 +550,6 @@ class TaintAnalysis
             if ($visibility_final)
             {
                 $defassign->set_is_embeddedbychars($def->get_is_embeddedbychars(), true);
-                //$defassign->last_known_value($def->get_last_known_value());
             }
         }
     }

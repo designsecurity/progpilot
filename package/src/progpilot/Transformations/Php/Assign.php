@@ -53,7 +53,7 @@ class Assign
 
             $expr_op = $context->get_current_op()->expr;
         }
-          
+
         $isref = false;
         if ($context->get_current_op() instanceof Op\Expr\AssignRef)
             $isref = true;

@@ -23,6 +23,7 @@ use progpilot\Utils;
 
 class VisitorAnalysis
 {
+    private $exprs_visited;
     private $context;
     private $current_storagemyblocks;
     private $call_stack;
@@ -35,6 +36,7 @@ class VisitorAnalysis
 
     public function __construct()
     {
+        $this->exprs_visited = [];
         $this->current_storagemyblocks = null;
         $this->call_stack = [];
         $this->myblock_stack = [];
@@ -190,8 +192,31 @@ class VisitorAnalysis
 
                     $defs = ResolveDefs::temporary_simple($this->context, $this->defs, $tempdefa);
 
+                    $concat_defassign = [];
+                    $concat_values = [];
+
                     foreach ($defs as $def)
                     {
+                        if ($tempdefa_myexpr->is_assign())
+                        {
+                            $defassign_myexpr = $tempdefa_myexpr->get_assign_def();
+                            if (!$tempdefa_myexpr->get_is_concat())
+                            {
+                                $def_values = $def->get_last_known_values();
+                                foreach ($def_values as $def_value)
+                                    $defassign_myexpr->add_last_known_value($def_value);
+                            }
+                            else
+                            {
+                                if (!in_array($defassign_myexpr, $concat_defassign, true))
+                                    $concat_defassign[] = $defassign_myexpr;
+
+                                $def_values = $def->get_last_known_values();
+                                foreach ($def_values as $def_value)
+                                    $concat_values[] = $def_value;
+                            }
+                        }
+
                         if ($def->get_is_property())
                         {
                             if (!is_null($this->context->inputs->get_source_byname(null, $def, false, $def->get_class_name(), false, $def)))
@@ -204,11 +229,6 @@ class VisitorAnalysis
                             if ($expr->is_assign())
                             {
                                 $defassign = $expr->get_assign_def();
-
-                                if (!$tempdefa_myexpr->get_is_concat())
-                                {
-                                    $defassign->last_known_value($def->get_last_known_value());
-                                }
 
                                 $def->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
                                 $defassign->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
@@ -268,6 +288,29 @@ class VisitorAnalysis
                         }
                     }
 
+                    $new_def_values = [];
+                    foreach ($concat_defassign as $def_to_concat)
+                    {
+                        $def_to_concat_values = $def_to_concat->get_last_known_values();
+
+                        if (count($def_to_concat_values) == 0)
+                            $def_to_concat_values[] = "";
+
+                        foreach ($def_to_concat_values as $def_to_concat_value)
+                        {
+                            foreach ($concat_values as $concat_value)
+                                $new_def_values[] = $def_to_concat_value.$concat_value;
+                        }
+                    }
+
+                    foreach ($concat_defassign as $def_to_concat)
+                    {
+                        $def_to_concat->reset_last_known_values();
+
+                        foreach ($new_def_values as $new_def_value)
+                            $def_to_concat->add_last_known_value($new_def_value);
+                    }
+
                     break;
                 }
 
@@ -286,114 +329,117 @@ class VisitorAnalysis
                         $nb_params = $myfunc_call->get_nb_params();
                         if ($nb_params > 0)
                         {
+                            $at_least_one_include_resolved = false;
+
                             $mydef_arg = $instruction->get_property("argdef0");
 
-                            $real_file = false;
-                            if (!empty($mydef_arg->get_last_known_value()))
+                            if (count($mydef_arg->get_last_known_values()) != 0)
                             {
-                                $file = $this->context->get_path()."/".$mydef_arg->get_last_known_value();
-                                $real_file = realpath($file);
-                            }
-
-                            if (!$real_file)
-                            {
-                                $continue_include = false;
-
-                                $myinclude = $this->context->inputs->get_include_bylocation(
-                                                 $this->context->get_current_line(),
-                                                 $this->context->get_current_column(),
-                                                 $myfunc_call->get_source_myfile()->get_name());
-
-                                if (!is_null($myinclude))
+                                foreach ($mydef_arg->get_last_known_values() as $last_known_value)
                                 {
-                                    $name_included_file = realpath($myinclude->get_value());
-                                    if ($name_included_file)
+                                    $real_file = false;
+                                    $file = $this->context->get_path()."/".$last_known_value;
+                                    $real_file = realpath($file);
+
+                                    if (!$real_file)
                                     {
-                                        $continue_include = true;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                $continue_include = true;
-                                $name_included_file = $real_file;
-                            }
+                                        $continue_include = false;
 
-                            if ($continue_include)
-                            {
-                                $array_includes = $this->context->get_array_includes();
-                                $array_requires = $this->context->get_array_requires();
+                                        $myinclude = $this->context->inputs->get_include_bylocation(
+                                                         $this->context->get_current_line(),
+                                                         $this->context->get_current_column(),
+                                                         $myfunc_call->get_source_myfile()->get_name());
 
-                                if ((!in_array($name_included_file, $array_includes, true) && $type_include == 2)
-                                        || (!in_array($name_included_file, $array_requires, true) && $type_include == 4)
-                                        || ($type_include == 1 || $type_include == 3))
-                                {
-                                    if ($type_include == 2)
-                                        $array_includes = $name_included_file;
-
-                                    if ($type_include == 4)
-                                        $array_requires = $name_included_file;
-                                
-                                    $context_include = clone $this->context;
-                                    $context_include->reset_internal_lowvalues();
-                                    $context_include->inputs->set_file($name_included_file);
-                                    $context_include->inputs->set_code(null);
-
-                                    $myfile = new MyFile($name_included_file, $this->context->get_current_line(), $this->context->get_current_column());
-                                    $myfile->set_included_from_myfile($myfunc_call->get_source_myfile());
-
-                                    $context_include->set_myfile($myfile);
-                                    $context_include->set_outputs(new \progpilot\Outputs\MyOutputs);
-                                    $context_include->set_mycode(new \progpilot\Code\MyCode);
-
-                                    $analyzer_include = new \progpilot\Analyzer;
-                                    $analyzer_include->run_internal($context_include, $this->defs->getoutminuskill($myfunc_call->get_block_id()));
-
-                                    if (!is_null($context_include->outputs->get_results()))
-                                    {
-                                        foreach ($context_include->outputs->get_results() as $result_include)
+                                        if (!is_null($myinclude))
                                         {
-                                            $this->context->outputs->add_result($result_include);
-                                        }
-                                    }
-
-                                    $main_include = $context_include->get_functions()->get_function("{main}");
-
-                                    if (!is_null($main_include))
-                                    {
-                                        $defs_output_included = $main_include->get_defs()->getoutminuskill(0);
-
-                                        $new_defs = false;
-                                        // IL FAUT VIRER LES DEFS DU PRECEDENT INCLUDE SI PLUSIEURS INCLUDE
-                                        if (!is_null($defs_output_included))
-                                        {
-                                            foreach ($defs_output_included as $def_output_included)
+                                            $name_included_file = realpath($myinclude->get_value());
+                                            if ($name_included_file)
                                             {
-                                                // echo "FOREACH '".$def_output_included->get_name()."'\n";
-                                                $this->defs->adddef($def_output_included->get_name(), $def_output_included);
-                                                $this->defs->addgen($myfunc_call->get_block_id(), $def_output_included);
-
-                                                $new_defs = true;
+                                                $continue_include = true;
                                             }
                                         }
-                                        if ($new_defs)
+                                    }
+                                    else
+                                    {
+                                        $continue_include = true;
+                                        $name_included_file = $real_file;
+                                    }
+
+                                    if ($continue_include)
+                                    {
+                                        $at_least_one_include_resolved = true;
+
+                                        $array_includes = $this->context->get_array_includes();
+                                        $array_requires = $this->context->get_array_requires();
+
+                                        if ((!in_array($name_included_file, $array_includes, true) && $type_include == 2)
+                                                || (!in_array($name_included_file, $array_requires, true) && $type_include == 4)
+                                                || ($type_include == 1 || $type_include == 3))
                                         {
-                                            $this->defs->computekill($this->context, $myfunc_call->get_block_id());
-                                            $this->defs->reachingDefs($this->blocks);
+                                            if ($type_include == 2)
+                                                $array_includes = $name_included_file;
+
+                                            if ($type_include == 4)
+                                                $array_requires = $name_included_file;
+
+                                            $context_include = clone $this->context;
+                                            $context_include->reset_internal_lowvalues();
+                                            $context_include->inputs->set_file($name_included_file);
+                                            $context_include->inputs->set_code(null);
+
+                                            $myfile = new MyFile($name_included_file, $this->context->get_current_line(), $this->context->get_current_column());
+                                            $myfile->set_included_from_myfile($myfunc_call->get_source_myfile());
+
+                                            $context_include->set_myfile($myfile);
+                                            $context_include->set_outputs(new \progpilot\Outputs\MyOutputs);
+                                            $context_include->set_mycode(new \progpilot\Code\MyCode);
+
+                                            $analyzer_include = new \progpilot\Analyzer;
+                                            $analyzer_include->run_internal($context_include, $this->defs->getoutminuskill($myfunc_call->get_block_id()));
+
+                                            if (!is_null($context_include->outputs->get_results()))
+                                            {
+                                                foreach ($context_include->outputs->get_results() as $result_include)
+                                                {
+                                                    $this->context->outputs->add_result($result_include);
+                                                }
+                                            }
+
+                                            $main_include = $context_include->get_functions()->get_function("{main}");
+
+                                            if (!is_null($main_include))
+                                            {
+                                                $defs_output_included = $main_include->get_defs()->getoutminuskill(0);
+
+                                                $new_defs = false;
+                                                if (!is_null($defs_output_included))
+                                                {
+                                                    foreach ($defs_output_included as $def_output_included)
+                                                    {
+                                                        $this->defs->adddef($def_output_included->get_name(), $def_output_included);
+                                                        $this->defs->addgen($myfunc_call->get_block_id(), $def_output_included);
+
+                                                        $new_defs = true;
+                                                    }
+                                                }
+                                                if ($new_defs)
+                                                {
+                                                    $this->defs->computekill($this->context, $myfunc_call->get_block_id());
+                                                    $this->defs->reachingDefs($this->blocks);
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
-                            else
-                            {
-                                if ($this->context->outputs->get_resolve_includes())
-                                {
-                                    $myfile_temp = new MyFile($myfunc_call->get_source_myfile()->get_name(),
-                                                              $myfunc_call->getLine(),
-                                                              $myfunc_call->getColumn());
 
-                                    $this->context->outputs->current_includes_file[] = $myfile_temp;
-                                }
+                            if (!$at_least_one_include_resolved && $this->context->outputs->get_resolve_includes())
+                            {
+                                $myfile_temp = new MyFile($myfunc_call->get_source_myfile()->get_name(),
+                                                          $myfunc_call->getLine(),
+                                                          $myfunc_call->getColumn());
+
+                                $this->context->outputs->current_includes_file[] = $myfile_temp;
                             }
                         }
                     }

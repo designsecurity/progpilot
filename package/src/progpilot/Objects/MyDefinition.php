@@ -73,7 +73,7 @@ class MyDefinition extends MyOp
         $this->is_sanitized = false;
         $this->type_sanitized = [];
 
-        $this->last_known_value = "";
+        $this->last_known_value = [];
         $this->assign_id = -1;
 
         $this->property = new MyProperty;
@@ -92,7 +92,9 @@ class MyDefinition extends MyOp
     {
         echo "def name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: assign_id = ".$this->get_assign_id()." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_ref()." :: is_property = ".$this->get_is_property()." :: is_instance = ".$this->get_is_instance()." :: is_const = ".$this->get_is_const()." :: blockid = ".$this->get_block_id()." :: cast = ".$this->get_cast()."\n";
 
-        echo "last_known_value : '".$this->last_known_value."'\n";
+        echo "last_known_value :\n";
+        var_dump($this->last_known_value);
+
         echo "is_embeddedbychar :\n";
         var_dump($this->is_embeddedbychar);
         echo "type_sanitized :\n";
@@ -212,12 +214,22 @@ class MyDefinition extends MyOp
         return $this->value_from_def;
     }
 
-    public function last_known_value($value)
+    public function reset_last_known_values()
     {
-        $this->last_known_value = $value;
+        $this->last_known_value = [];
     }
 
-    public function get_last_known_value()
+    public function set_last_known_value($id, $value)
+    {
+        $this->last_known_value[$id] = $value;
+    }
+
+    public function add_last_known_value($value)
+    {
+        $this->last_known_value[] = $value;
+    }
+
+    public function get_last_known_values()
     {
         return $this->last_known_value;
     }

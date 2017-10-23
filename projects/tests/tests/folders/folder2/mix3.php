@@ -13,6 +13,6 @@ $var2 = $var1;
 
 
 
-                  echo $var2;
+echo $var2;
 
 ?>

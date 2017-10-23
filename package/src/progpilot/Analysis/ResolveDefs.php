@@ -330,28 +330,28 @@ class ResolveDefs
             // def1 is deeper in the code
             if ($def1_line > $def2_line)
                 return true;
-            
+
             // the two defs are on the same line
             if ($def1_line == $def2_line)
             {
-              // for all the expressions where def1 is a member
-              $def1_exprs = $def1->get_exprs();
-              foreach($def1_exprs as $def1_expr)
-              {
-                // is this expression an assignement ?
-                if($def1_expr->is_assign())
+                // for all the expressions where def1 is a member
+                $def1_exprs = $def1->get_exprs();
+                foreach ($def1_exprs as $def1_expr)
                 {
-                  $def1expr_assign = $def1_expr->get_assign_def();
-                  // if the assigned value is the same as the one we are looking for :
-                  // def1 is not deeper in the code (evaluated before)
-                  if($def1expr_assign->get_name() === $def2->get_name()
-                      && $def1expr_assign->get_array_value() === $def2->get_array_value())
-                    return false;
+                    // is this expression an assignement ?
+                    if ($def1_expr->is_assign())
+                    {
+                        $def1expr_assign = $def1_expr->get_assign_def();
+                        // if the assigned value is the same as the one we are looking for :
+                        // def1 is not deeper in the code (evaluated before)
+                        if ($def1expr_assign->get_name() === $def2->get_name()
+                                                              && $def1expr_assign->get_array_value() === $def2->get_array_value())
+                            return false;
+                    }
                 }
-              }
-                
-              if($def1_column >= $def2_column)
-                return true;
+
+                if ($def1_column >= $def2_column)
+                    return true;
             }
         }
         else
@@ -394,7 +394,7 @@ class ResolveDefs
 
         foreach ($data as $def)
         {
-          
+
             if ($def->get_name() === $defsearch->get_name()
                                       && $def->get_assign_id() != $defsearch->get_assign_id()
                                       && $def->property->get_properties() === $defsearch->property->get_properties()

@@ -756,7 +756,7 @@ class MyInputs
                         $column = $include-> {'column'};
                         $source_file = realpath($include-> {'source_file'});
                         $value = $include-> {'value'};
-                        
+
                         $myinclude = new MyInclude($line, $column, $source_file, $value);
                         $this->resolved_includes[] = $myinclude;
                     }

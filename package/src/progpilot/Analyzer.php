@@ -59,10 +59,10 @@ class Analyzer
         if (!is_null($context->inputs->get_file()) || !is_null($context->inputs->get_code()))
         {
             $lexer = new \PhpParser\Lexer(array(
-                'usedAttributes' => array(
-                    'comments', 'startLine', 'endLine', 'startFilePos', 'endFilePos'
-                )
-            ));
+                                              'usedAttributes' => array(
+                                                  'comments', 'startLine', 'endLine', 'startFilePos', 'endFilePos'
+                                              )
+                                          ));
 
             $astparser = (new \PhpParser\ParserFactory)->create(\PhpParser\ParserFactory::PREFER_PHP7, $lexer);
 
