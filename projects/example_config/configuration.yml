@@ -6,7 +6,7 @@ inputs:
     set_include_files: 
     set_exclude_files: 
     set_folder: 
-    set_file: example1.php
+    set_file: /home/eric/Téléchargements/DVWA-master/vulnerabilities/xss_r/index.php
     set_code:
     set_resolved_includes:
     set_false_positives:
@@ -21,6 +21,6 @@ options:
     set_analyze_includes: true
     set_analyze_functions: true
     set_print_file: true
-    set_print_warning: true
+    set_print_warning: false
     set_limit_time: 10
     set_limit_defs: 10000

@@ -32,7 +32,6 @@ class VisitorDataflow
     public function __construct()
     {
 
-
     }
 
     protected function getBlockId($myblock)
@@ -51,11 +50,18 @@ class VisitorDataflow
             $this->blocks[$myblock] = count($this->blocks);
     }
 
-    public function analyze($context, $defs_included = null)
+    public function analyze($context, $myfunc, $defs_included = null)
     {
-        $mycode = $context->get_mycode();
-        $index = $mycode->get_start();
+        /*
+          $mycode = $context->get_mycode();
+          $index = $mycode->get_start();
+          $code = $mycode->get_codes();
+        */
+        $mycode = $myfunc->get_mycode();
         $code = $mycode->get_codes();
+
+        $index = 0;
+        $myfunc->get_mycode()->set_end(count($code));
 
         $blocks_stack_id = [];
         $last_block_id = 0;
@@ -72,7 +78,7 @@ class VisitorDataflow
                 case Opcodes::START_EXPRESSION:
                 {
                     // representations start
-                    $id_cfg = $this->current_func->get_start_address_func()."-".$this->current_block_id;
+                    $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
                     $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::START_EXPRESSION."\n");
                     // representations end
                     break;
@@ -81,7 +87,7 @@ class VisitorDataflow
                 case Opcodes::END_EXPRESSION:
                 {
                     // representations start
-                    $id_cfg = $this->current_func->get_start_address_func()."-".$this->current_block_id;
+                    $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
                     $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::END_EXPRESSION."\n");
                     // representations end
                     break;
@@ -129,7 +135,7 @@ class VisitorDataflow
                     }
 
                     // representations start
-                    $id_cfg = $this->current_func->get_start_address_func()."-".$this->current_block_id;
+                    $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
                     $context->outputs->callgraph->add_node($myfunc);
                     $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::ENTER_FUNCTION." ".htmlentities($myfunc->get_name(), ENT_QUOTES, 'UTF-8')."\n");
                     // representations end
@@ -160,7 +166,7 @@ class VisitorDataflow
                     }
 
                     // representations start
-                    $id_cfg = $this->current_func->get_start_address_func()."-".$this->current_block_id;
+                    $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
                     $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::ENTER_BLOCK."\n");
                     $context->outputs->cfg->add_node($id_cfg, $myblock);
 
@@ -168,7 +174,7 @@ class VisitorDataflow
                         $context->outputs->cfg->add_edge($parent, $myblock);
                     // representations end
 
-                    if ($first_block && !is_null($defs_included))
+                    if ($first_block && !is_null($defs_included) && $this->current_func->get_name() == "{main}")
                     {
                         foreach ($defs_included as $def_included)
                         {
@@ -177,9 +183,9 @@ class VisitorDataflow
                             $this->defs->adddef($def_included->get_name(), $def_included);
                             $this->defs->addgen($blockid, $def_included);
                         }
-                    }
 
-                    $first_block = false;
+                        $first_block = false;
+                    }
 
                     break;
                 }
@@ -200,7 +206,7 @@ class VisitorDataflow
                     $last_block_id = $blockid;
 
                     // representations start
-                    $id_cfg = $this->current_func->get_start_address_func()."-".$this->current_block_id;
+                    $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
                     $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::LEAVE_BLOCK."\n");
                     // representations end
 
@@ -216,7 +222,7 @@ class VisitorDataflow
                     $myfunc->set_last_block_id($last_block_id);
 
                     // representations start
-                    $id_cfg = $this->current_func->get_start_address_func()."-".$this->current_block_id;
+                    $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
                     $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::LEAVE_FUNCTION."\n");
                     // representations end
 
@@ -274,7 +280,7 @@ class VisitorDataflow
                     }
 
                     // representations start
-                    $id_cfg = $this->current_func->get_start_address_func()."-".$this->current_block_id;
+                    $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
                     $context->outputs->callgraph->add_edge($this->current_func, $myfunc_call);
                     $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::FUNC_CALL." ".htmlentities($myfunc_call->get_name(), ENT_QUOTES, 'UTF-8')."\n");
                     // representations end
@@ -293,7 +299,7 @@ class VisitorDataflow
                     unset($mydef);
 
                     // representations start
-                    $id_cfg = $this->current_func->get_start_address_func()."-".$this->current_block_id;
+                    $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
                     $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::TEMPORARY."\n");
                     // representations end
 
@@ -331,7 +337,7 @@ class VisitorDataflow
                     }
 
                     // representations start
-                    $id_cfg = $this->current_func->get_start_address_func()."-".$this->current_block_id;
+                    $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
                     $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::DEFINITION."\n");
                     // representations end
 

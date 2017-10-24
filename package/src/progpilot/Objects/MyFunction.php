@@ -21,8 +21,6 @@ class MyFunction extends MyOp
     private $return_defs;
     private $defs;
     private $blocks;
-    private $start_address_func;
-    private $end_address_func;
     private $visibility;
     private $myclass;
     private $instance;
@@ -35,6 +33,8 @@ class MyFunction extends MyOp
     private $last_column;
     private $last_block_id;
     private $is_property;
+
+    private $mycode;
 
     public $property;
 
@@ -60,12 +60,24 @@ class MyFunction extends MyOp
 
         $this->property = new MyProperty;
 
+        $this->mycode = new \progpilot\Code\MyCode;
+
         $this->is_property = false;
     }
 
     public function __clone()
     {
         $this->property = clone $this->property;
+    }
+
+    public function set_mycode($mycode)
+    {
+        $this->mycode = $mycode;
+    }
+
+    public function get_mycode()
+    {
+        return $this->mycode;
     }
 
     public function set_is_property($is_property)
@@ -166,26 +178,6 @@ class MyFunction extends MyOp
     public function get_visibility()
     {
         return $this->visibility;
-    }
-
-    public function set_start_address_func($address)
-    {
-        $this->start_address_func = $address;
-    }
-
-    public function set_end_address_func($address)
-    {
-        $this->end_address_func = $address;
-    }
-
-    public function get_start_address_func()
-    {
-        return $this->start_address_func;
-    }
-
-    public function get_end_address_func()
-    {
-        return $this->end_address_func;
     }
 
     public function set_blocks($blocks)

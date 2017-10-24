@@ -226,7 +226,13 @@ class MyDefinition extends MyOp
 
     public function add_last_known_value($value)
     {
-        $this->last_known_value[] = $value;
+        $value = rtrim(ltrim($value));
+
+        if (strlen($value) < 200)
+        {
+            if (!in_array($value, $this->last_known_value, true))
+                $this->last_known_value[] = $value;
+        }
     }
 
     public function get_last_known_values()

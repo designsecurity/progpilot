@@ -36,7 +36,6 @@ class VisitorAnalysis
 
     public function __construct()
     {
-        $this->exprs_visited = [];
         $this->current_storagemyblocks = null;
         $this->call_stack = [];
         $this->myblock_stack = [];
@@ -167,6 +166,7 @@ class VisitorAnalysis
 
                     $this->current_storagemyblocks = new \SplObjectStorage;
                     $this->defs = $myfunc->get_defs();
+
                     $this->blocks = $myfunc->get_blocks();
 
                     break;
@@ -392,7 +392,6 @@ class VisitorAnalysis
 
                                             $context_include->set_myfile($myfile);
                                             $context_include->set_outputs(new \progpilot\Outputs\MyOutputs);
-                                            $context_include->set_mycode(new \progpilot\Code\MyCode);
 
                                             $analyzer_include = new \progpilot\Analyzer;
                                             $analyzer_include->run_internal($context_include, $this->defs->getoutminuskill($myfunc_call->get_block_id()));
@@ -409,19 +408,57 @@ class VisitorAnalysis
 
                                             if (!is_null($main_include))
                                             {
-                                                $defs_output_included = $main_include->get_defs()->getoutminuskill(0);
+                                                $defs_output_included_final = [];
+                                                $defs_main_return = $main_include->get_defs()->getdefrefbyname("{main}_return");
+                                                foreach ($defs_main_return as $def_main_return)
+                                                {
+                                                    $block_id = $def_main_return->get_block_id();
+                                                    $defs_output_included = $main_include->get_defs()->getoutminuskill($block_id);
+                                                    if (!is_null($defs_output_included))
+                                                    {
+                                                        foreach ($defs_output_included as $def_output_included)
+                                                        {
+                                                            if (!in_array($def_output_included, $defs_output_included_final, true))
+                                                                $defs_output_included_final[] = $def_output_included;
+                                                        }
+                                                    }
+                                                }
+
+
+                                                $context_functions = $context_include->get_functions()->get_functions();
+
+                                                if (!is_null($context_functions))
+                                                {
+                                                    foreach ($context_functions as $functions_name)
+                                                    {
+                                                        if (!is_null($functions_name))
+                                                        {
+                                                            foreach ($functions_name as $myfunc)
+                                                            {
+                                                                $this->context->get_functions()->add_function($myfunc->get_name(), $myfunc);
+
+
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                $myclasses_include = $context_include->get_classes();
+                                                foreach ($myclasses_include as $myclass_include)
+                                                    $this->context->get_classes()->add_myclass($myclass_include);
 
                                                 $new_defs = false;
-                                                if (!is_null($defs_output_included))
+                                                if (count($defs_output_included_final) > 0)
                                                 {
-                                                    foreach ($defs_output_included as $def_output_included)
+                                                    foreach ($defs_output_included_final as $def_output_included_final)
                                                     {
-                                                        $this->defs->adddef($def_output_included->get_name(), $def_output_included);
-                                                        $this->defs->addgen($myfunc_call->get_block_id(), $def_output_included);
+                                                        $this->defs->adddef($def_output_included_final->get_name(), $def_output_included_final);
+                                                        $this->defs->addgen($myfunc_call->get_block_id(), $def_output_included_final);
 
                                                         $new_defs = true;
                                                     }
                                                 }
+
                                                 if ($new_defs)
                                                 {
                                                     $this->defs->computekill($this->context, $myfunc_call->get_block_id());
@@ -462,14 +499,14 @@ class VisitorAnalysis
 
                             $list_myfunc[] = $method;
 
-                            TaintAnalysis::funccall_specify_analysis($method, $stack_class, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $class_of_funccall, $myfunc_call, $arr_funccall, $instruction, $index);
+                            TaintAnalysis::funccall_specify_analysis($method, $stack_class, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $class_of_funccall, $myfunc_call, $arr_funccall, $instruction, $mycode, $index);
                         }
 
                         // we didn't resolve any class so the class of method is unknown (undefined)
                         // but we authorize to specify method of unknown class during the configuration of sinks ...
                         if (count($class_of_funccall_arr) == 0)
                         {
-                            TaintAnalysis::funccall_specify_analysis(null, $stack_class, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), null, $myfunc_call, $arr_funccall, $instruction, $index);
+                            TaintAnalysis::funccall_specify_analysis(null, $stack_class, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), null, $myfunc_call, $arr_funccall, $instruction, $mycode, $index);
                         }
 
 
@@ -492,10 +529,11 @@ class VisitorAnalysis
                     else
                     {
                         $myfunc = $this->context->get_functions()->get_function($funcname);
-                        TaintAnalysis::funccall_specify_analysis($myfunc, null, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), null, $myfunc_call, $arr_funccall, $instruction, $index);
+                        TaintAnalysis::funccall_specify_analysis($myfunc, null, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), null, $myfunc_call, $arr_funccall, $instruction, $mycode, $index);
 
                         $list_myfunc[] = $myfunc;
                     }
+
 
                     foreach ($list_myfunc as $myfunc)
                     {
@@ -503,28 +541,24 @@ class VisitorAnalysis
 
                         if (!is_null($myfunc) && !$this->in_call_stack($myfunc))
                         {
-                            $addr_start = $myfunc->get_start_address_func();
-                            $addr_end = $myfunc->get_end_address_func();
-
                             // the called function is a method and this method exists in the class
                             if ($myfunc_call->get_is_method() && $myfunc->get_is_method() || (!$myfunc_call->get_is_method() && !$myfunc->get_is_method()))
                             {
-                                // the called function is defined in our project (not php build'in function)
-                                if ($addr_start >= 0)
-                                {
-                                    ArrayAnalysis::funccall_before($this->context, $this->defs, $myfunc, $myfunc_call, $instruction);
-                                    TaintAnalysis::funccall_before($this->context, $this->defs, $myfunc, $instruction, $this->context->get_classes());
+                                ArrayAnalysis::funccall_before($this->context, $this->defs, $myfunc, $myfunc_call, $instruction);
+                                TaintAnalysis::funccall_before($this->context, $this->defs, $myfunc, $instruction, $this->context->get_classes());
 
-                                    $mycodefunction = new MyCode;
-                                    $mycodefunction->set_codes($mycode->get_codes());
-                                    $mycodefunction->set_start($addr_start);
-                                    $mycodefunction->set_end($addr_end);
+                                $mycodefunction = new MyCode;
+                                $mycodefunction->set_codes($myfunc->get_mycode()->get_codes());
+                                $mycodefunction->set_start(0);
+                                $mycodefunction->set_end(count($myfunc->get_mycode()->get_codes()));
 
-                                    $this->analyze($mycodefunction);
+                                $this->analyze($mycodefunction);
 
-                                    ArrayAnalysis::funccall_after($this->context, $myfunc, $myfunc_call, $arr_funccall, $code[$index + 3]);
-                                    TaintAnalysis::funccall_after($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc, $arr_funccall, $instruction);
-                                }
+                                ArrayAnalysis::funccall_after($this->context, $myfunc, $myfunc_call, $arr_funccall, $code[$index + 3]);
+                                TaintAnalysis::funccall_after($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc, $arr_funccall, $instruction);
+
+                                // il faut cleaner les variables (myexpr of temporary par exemple a chaque appel de function)
+
                             }
                         }
 
@@ -532,8 +566,8 @@ class VisitorAnalysis
                             ResolveDefs::copy_instance($this->context, $this->defs, $myfunc_call);
 
                         ResolveDefs::instance_build_back($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc, $myfunc_call);
-                    }
 
+                    }
                     break;
                 }
                 }

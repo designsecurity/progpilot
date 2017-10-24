@@ -28,7 +28,8 @@ class Classes
 
     public function add_myclass($myclass)
     {
-        $this->list_classes[] = $myclass;
+        if (!in_array($myclass, $this->list_classes, true))
+            $this->list_classes[] = $myclass;
     }
 
     public function get_myclass($name)

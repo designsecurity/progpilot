@@ -6,7 +6,7 @@
 ---
 ## Standalone example
 - Download the latest phar archive in [releases](https://github.com/designsecurity/progpilot/releases) folder (or [builds](./builds/) folder for dev versions).
-- Optional : Configure your analysis with [a yaml file](./projects/example_config/configuration.yml).
+- Optional : configure your analysis with [a yaml file](./projects/example_config/configuration.yml).
 - Optional : use the up-to-date security data in [projects/uptodate_data](./projects/uptodate_data) folder.
 - Progpilot takes two optional arguments :
   - your YAML configuration file (if not specified default configuration is used)

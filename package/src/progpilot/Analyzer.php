@@ -121,12 +121,17 @@ class Analyzer
     {
         if (!is_null($myfunc))
         {
-            $context->get_mycode()->set_start($myfunc->get_start_address_func());
-            $context->get_mycode()->set_end($myfunc->get_end_address_func());
+            /*
+              $context->get_mycode()->set_start($myfunc->get_start_address_func());
+              $context->get_mycode()->set_end($myfunc->get_end_address_func());
+              */
+
+            $myfunc->get_mycode()->set_start(0);
+            $myfunc->get_mycode()->set_end(count($myfunc->get_mycode()->get_codes()));
 
             $visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
             $visitoranalyzer->set_context($context);
-            $visitoranalyzer->analyze($context->get_mycode());
+            $visitoranalyzer->analyze($myfunc->get_mycode());
 
             unset($visitoranalyzer);
         }
@@ -163,11 +168,24 @@ class Analyzer
         // analyze
         if (!is_null($context))
         {
-            $context->get_mycode()->set_start(0);
-            $context->get_mycode()->set_end(count($context->get_mycode()->get_codes()));
-
+            /*
+              $context->get_mycode()->set_start(0);
+              $context->get_mycode()->set_end(count($context->get_mycode()->get_codes()));
+              */
+            $context_functions = $context->get_functions()->get_functions();
             $visitordataflow = new \progpilot\Dataflow\VisitorDataflow();
-            $visitordataflow->analyze($context, $defs_included);
+
+            if (!is_null($context_functions))
+            {
+                foreach ($context_functions as $functions_name)
+                {
+                    if (!is_null($functions_name))
+                    {
+                        foreach ($functions_name as $myfunc)
+                            $visitordataflow->analyze($context, $myfunc, $defs_included);
+                    }
+                }
+            }
 
             if ((microtime(true) - $start_time) > $context->get_limit_time())
             {

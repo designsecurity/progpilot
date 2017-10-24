@@ -100,14 +100,14 @@ class Transform implements Visitor
         if (!($this->context->get_current_op() instanceof Op\Expr\Include_))
         {
             $myblock = new MyBlock;
-            $myblock->set_start_address_block(count($this->context->get_mycode()->get_codes()));
+            $myblock->set_start_address_block(count($this->context->get_current_mycode()->get_codes()));
             $this->context->set_current_block($block);
 
             $this->s_blocks[$block] = $myblock;
 
             $inst_block = new MyInstruction(Opcodes::ENTER_BLOCK);
             $inst_block->add_property("myblock", $myblock);
-            $this->context->get_mycode()->add_code($inst_block);
+            $this->context->get_current_mycode()->add_code($inst_block);
 
             // block is for himself a parent block (handle dataflow for first block)
             $block->addParent($block);
@@ -129,7 +129,7 @@ class Transform implements Visitor
         if ($op instanceof Op\Expr\Include_)
         {
             $inst_end_include = new MyInstruction(Opcodes::END_INCLUDE);
-            $this->context->get_mycode()->add_code($inst_end_include);
+            $this->context->get_current_mycode()->add_code($inst_end_include);
         }
     }
 
@@ -142,12 +142,12 @@ class Transform implements Visitor
             {
                 $myblock = $this->s_blocks[$block];
 
-                $address_end_block = count($this->context->get_mycode()->get_codes());
+                $address_end_block = count($this->context->get_current_mycode()->get_codes());
                 $myblock->set_end_address_block($address_end_block);
 
                 $inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
                 $inst_block->add_property("myblock", $myblock);
-                $this->context->get_mycode()->add_code($inst_block);
+                $this->context->get_current_mycode()->add_code($inst_block);
             }
         }
     }
@@ -159,11 +159,11 @@ class Transform implements Visitor
         $this->context->set_current_block(null);
 
         $myfunction = new MyFunction($func->name);
-        $myfunction->set_start_address_func(count($this->context->get_mycode()->get_codes()));
+        $this->context->set_current_mycode($myfunction->get_mycode());
 
         $inst_func = new MyInstruction(Opcodes::ENTER_FUNCTION);
         $inst_func->add_property("myfunc", $myfunction);
-        $this->context->get_mycode()->add_code($inst_func);
+        $this->context->get_current_mycode()->add_code($inst_func);
 
         if (!is_null($func->class))
         {
@@ -198,7 +198,7 @@ class Transform implements Visitor
 
             $inst_def = new MyInstruction(Opcodes::DEFINITION);
             $inst_def->add_property("def", $mydef);
-            $this->context->get_mycode()->add_code($inst_def);
+            $this->context->get_current_mycode()->add_code($inst_def);
 
             unset($mydef);
         }
@@ -210,8 +210,8 @@ class Transform implements Visitor
 
     public function leaveFunc(Func $func)
     {
+        $mycode_codes = $this->context->get_current_mycode()->get_codes();
 
-        $mycode_codes = $this->context->get_mycode()->get_codes();
         $inst = $mycode_codes[count($mycode_codes) - 1];
 
         // we can have a block opened and we need to leave it
@@ -220,11 +220,11 @@ class Transform implements Visitor
             if (!is_null($this->context->get_current_block()))
             {
                 $myblock = $this->s_blocks[$this->context->get_current_block()];
-                $myblock->set_end_address_block(count($this->context->get_mycode()->get_codes()));
+                $myblock->set_end_address_block(count($this->context->get_current_mycode()->get_codes()));
 
                 $inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
                 $inst_block->add_property("myblock", $myblock);
-                $this->context->get_mycode()->add_code($inst_block);
+                $this->context->get_current_mycode()->add_code($inst_block);
             }
         }
 
@@ -240,12 +240,9 @@ class Transform implements Visitor
             $myfunction->set_last_column($this->context->get_current_column());
             $myfunction->set_last_block_id(-1);
 
-            $address_func = count($this->context->get_mycode()->get_codes());
-            $myfunction->set_end_address_func($address_func);
-
             $inst_func = new MyInstruction(Opcodes::LEAVE_FUNCTION);
             $inst_func->add_property("myfunc", $myfunction);
-            $this->context->get_mycode()->add_code($inst_func);
+            $this->context->get_current_mycode()->add_code($inst_func);
         }
     }
 
@@ -282,7 +279,7 @@ class Transform implements Visitor
         if ($op instanceof Op\Stmt\JumpIf)
         {
             $inst_start_if = new MyInstruction(Opcodes::COND_START_IF);
-            $this->context->get_mycode()->add_code($inst_start_if);
+            $this->context->get_current_mycode()->add_code($inst_start_if);
 
             $this->block_if_to_be_resolved[] = [$inst_start_if, $op->if, $op->else];
 
@@ -298,7 +295,7 @@ class Transform implements Visitor
         if ($op instanceof Op\Expr\Include_)
         {
             $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
-            $this->context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+            $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
             $inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
             $inst_funcall_main->add_property("funcname", "include");
@@ -314,11 +311,11 @@ class Transform implements Visitor
             $inst_funcall_main->add_property("expr", $myexpr);
             $inst_funcall_main->add_property("arr", false);
             $inst_funcall_main->add_property("type_include", $op->type);
-            $this->context->get_mycode()->add_code($inst_funcall_main);
+            $this->context->get_current_mycode()->add_code($inst_funcall_main);
 
             $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
             $inst_end_expr->add_property("expr", $myexpr);
-            $this->context->get_mycode()->add_code($inst_end_expr);
+            $this->context->get_current_mycode()->add_code($inst_end_expr);
         }
 
         else if ($op instanceof Op\Terminal\Return_)
@@ -327,12 +324,12 @@ class Transform implements Visitor
 
             $inst = new MyInstruction(Opcodes::RETURN_FUNCTION);
             $inst->add_property("return_defs", $this->context->get_current_func()->get_return_defs());
-            $this->context->get_mycode()->add_code($inst);
+            $this->context->get_current_mycode()->add_code($inst);
         }
         else if ($op instanceof Op\Expr\Eval_)
         {
             $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
-            $this->context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+            $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
             $inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
             $inst_funcall_main->add_property("funcname", "eval");
@@ -347,16 +344,16 @@ class Transform implements Visitor
             $inst_funcall_main->add_property("myfunc_call", $myfunction_call);
             $inst_funcall_main->add_property("expr", $myexpr);
             $inst_funcall_main->add_property("arr", false);
-            $this->context->get_mycode()->add_code($inst_funcall_main);
+            $this->context->get_current_mycode()->add_code($inst_funcall_main);
 
             $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
             $inst_end_expr->add_property("expr", $myexpr);
-            $this->context->get_mycode()->add_code($inst_end_expr);
+            $this->context->get_current_mycode()->add_code($inst_end_expr);
         }
         else if ($op instanceof Op\Terminal\Echo_)
         {
             $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
-            $this->context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+            $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
             $inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
             $inst_funcall_main->add_property("funcname", "echo");
@@ -371,16 +368,16 @@ class Transform implements Visitor
             $inst_funcall_main->add_property("myfunc_call", $myfunction_call);
             $inst_funcall_main->add_property("expr", $myexpr);
             $inst_funcall_main->add_property("arr", false);
-            $this->context->get_mycode()->add_code($inst_funcall_main);
+            $this->context->get_current_mycode()->add_code($inst_funcall_main);
 
             $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
             $inst_end_expr->add_property("expr", $myexpr);
-            $this->context->get_mycode()->add_code($inst_end_expr);
+            $this->context->get_current_mycode()->add_code($inst_end_expr);
         }
         else if ($op instanceof Op\Expr\Print_)
         {
             $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
-            $this->context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+            $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
             $inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
             $inst_funcall_main->add_property("funcname", "print");
@@ -395,11 +392,11 @@ class Transform implements Visitor
             $inst_funcall_main->add_property("myfunc_call", $myfunction_call);
             $inst_funcall_main->add_property("expr", $myexpr);
             $inst_funcall_main->add_property("arr", false);
-            $this->context->get_mycode()->add_code($inst_funcall_main);
+            $this->context->get_current_mycode()->add_code($inst_funcall_main);
 
             $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
             $inst_end_expr->add_property("expr", $myexpr);
-            $this->context->get_mycode()->add_code($inst_end_expr);
+            $this->context->get_current_mycode()->add_code($inst_end_expr);
         }
         else if ($op instanceof Op\Expr\FuncCall)
         {
@@ -407,13 +404,13 @@ class Transform implements Visitor
             {
                 // expr of type "assign" to have a defined return
                 $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
-                $this->context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+                $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
                 FuncCall::instruction($this->context, $myexpr, rand(), false);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
                 $inst_end_expr->add_property("expr", $myexpr);
-                $this->context->get_mycode()->add_code($inst_end_expr);
+                $this->context->get_current_mycode()->add_code($inst_end_expr);
             }
         }
         else if ($op instanceof Op\Expr\MethodCall)
@@ -424,13 +421,13 @@ class Transform implements Visitor
 
                 $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
 
-                $this->context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+                $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
                 FuncCall::instruction($this->context, $myexpr, rand(), false, true);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
                 $inst_end_expr->add_property("expr", $myexpr);
-                $this->context->get_mycode()->add_code($inst_end_expr);
+                $this->context->get_current_mycode()->add_code($inst_end_expr);
             }
         }
         else if ($op instanceof Op\Expr\Assign || $op instanceof Op\Expr\AssignRef)
@@ -467,7 +464,7 @@ class Transform implements Visitor
 
             $inst_class = new MyInstruction(Opcodes::CLASSE);
             $inst_class->add_property("myclass", $myclass);
-            $this->context->get_mycode()->add_code($inst_class);
+            $this->context->get_current_mycode()->add_code($inst_class);
         }
     }
 }

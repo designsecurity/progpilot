@@ -129,7 +129,7 @@ class Expr
 
             $inst_temporary_simple = new MyInstruction(Opcodes::TEMPORARY);
             $inst_temporary_simple->add_property("temporary", $mytemp);
-            $context->get_mycode()->add_code($inst_temporary_simple);
+            $context->get_current_mycode()->add_code($inst_temporary_simple);
 
             return $mytemp;
         }
@@ -162,17 +162,17 @@ class Expr
                 {
                     $myexpr->set_is_concat(true);
 
-                    $context->get_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_LEFT));
+                    $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_LEFT));
                     Expr::instruction_internal($defs_ofexpr, $ops->left, $context, $myexpr, $assign_id);
 
-                    $context->get_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_RIGHT));
+                    $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_RIGHT));
                     Expr::instruction_internal($defs_ofexpr, $ops->right, $context, $myexpr, $assign_id);
                 }
                 else if ($ops instanceof Op\Expr\ConcatList)
                 {
                     $myexpr->set_is_concat(true);
 
-                    $context->get_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_LIST));
+                    $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_LIST));
 
                     foreach ($ops->list as $opsbis)
                     {

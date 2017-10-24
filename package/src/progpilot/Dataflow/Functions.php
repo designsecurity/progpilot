@@ -47,7 +47,16 @@ class Functions
     public function add_function($funcname, $func)
     {
         // we can have many functions/methods with the same name
-        $this->functions[$funcname][] = $func;
+        $continue = true;
+        if (isset($this->functions[$funcname]))
+        {
+            $continue = false;
+            if (!in_array($func, $this->functions[$funcname], true))
+                $continue = true;
+        }
+
+        if ($continue)
+            $this->functions[$funcname][] = $func;
     }
 }
 

@@ -26,16 +26,16 @@ use progpilot\Inputs\MySource;
 class TaintAnalysis
 {
 
-    public static function funccall_specify_analysis($myfunc, $stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index)
+    public static function funccall_specify_analysis($myfunc, $stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $mycode, $index)
     {
-        TaintAnalysis::funccall_validator($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index);
-        TaintAnalysis::funccall_sanitizer($myfunc, $stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index);
+        TaintAnalysis::funccall_validator($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $mycode, $index);
+        TaintAnalysis::funccall_sanitizer($myfunc, $stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $mycode, $index);
         TaintAnalysis::funccall_source($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction);
 
         SecurityAnalysis::funccall($stack_class, $context, $myfunc_call, $instruction, $myclass);
     }
 
-    public static function funccall_validator($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index)
+    public static function funccall_validator($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $mycode, $index)
     {
         $nbparams = 0;
         $defs_valid = [];
@@ -104,8 +104,11 @@ class TaintAnalysis
                         {
                             foreach ($values as $value)
                             {
-                                if ($value->value === $thedefsargs[0]->get_last_known_values()[0])
-                                    $condition_respected_equals = true;
+                                foreach ($thedefsargs[0]->get_last_known_values() as $last_known_value)
+                                {
+                                    if ($value->value === $last_known_value)
+                                        $condition_respected_equals = true;
+                                }
                             }
                         }
                     }
@@ -122,31 +125,35 @@ class TaintAnalysis
         {
             if ($condition_respected)
             {
-                $codes = $context->get_mycode()->get_codes();
-                $instruction_if = $codes[$index + 2];
-                if ($instruction_if->get_opcode() == Opcodes::COND_START_IF)
+                $codes = $mycode->get_codes();
+
+                if (isset($codes[$index + 2]))
                 {
-                    $myblock_if = $instruction_if->get_property("myblock_if");
-                    $myblock_else = $instruction_if->get_property("myblock_else");
-
-                    foreach ($defs_valid as $def_valid)
+                    $instruction_if = $codes[$index + 2];
+                    if ($instruction_if->get_opcode() == Opcodes::COND_START_IF)
                     {
-                        $type = "valid";
-                        $myassertion = new MyAssertion($def_valid, $type);
+                        $myblock_if = $instruction_if->get_property("myblock_if");
+                        $myblock_else = $instruction_if->get_property("myblock_else");
 
-                        if ($instruction_if->is_property_exist("not_boolean"))
-                            $myblock_else->add_assertion($myassertion);
+                        foreach ($defs_valid as $def_valid)
+                        {
+                            $type = "valid";
+                            $myassertion = new MyAssertion($def_valid, $type);
 
-                        else
-                            $myblock_if->add_assertion($myassertion);
+                            if ($instruction_if->is_property_exist("not_boolean"))
+                                $myblock_else->add_assertion($myassertion);
 
+                            else
+                                $myblock_if->add_assertion($myassertion);
+
+                        }
                     }
                 }
             }
         }
     }
 
-    public static function funccall_sanitizer($myfunc, $stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $index)
+    public static function funccall_sanitizer($myfunc, $stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $mycode, $index)
     {
         $condition_sanitize = false;
         $condition_taint = false;
@@ -219,12 +226,15 @@ class TaintAnalysis
                         {
                             foreach ($values as $value)
                             {
-                                if ($value->value === $thedefsargs[0]->get_last_known_values()[0])
+                                foreach ($thedefsargs[0]->get_last_known_values() as $last_known_value)
                                 {
-                                    $condition_respected = true;
+                                    if ($value->value === $last_known_value)
+                                    {
+                                        $condition_respected = true;
 
-                                    if (isset($value->prevent))
-                                        $prevent_final = array_merge($prevent_final, $value->prevent);
+                                        if (isset($value->prevent))
+                                            $prevent_final = array_merge($prevent_final, $value->prevent);
+                                    }
                                 }
                             }
                         }
@@ -253,13 +263,17 @@ class TaintAnalysis
         }
 
         $return_sanitizer = false;
-        $codes = $context->get_mycode()->get_codes();
-        if ($codes[$index + 2]->get_opcode() == Opcodes::END_ASSIGN)
+
+        $codes = $mycode->get_codes();
+        if (isset($codes[$index + 2]) && $codes[$index + 2]->get_opcode() == Opcodes::END_ASSIGN)
         {
             $instruction_def = $codes[$index + 3];
             $mydef_return = $instruction_def->get_property("def");
             $return_sanitizer = true;
         }
+
+        if (!isset($codes[$index + 2]))
+            echo "$index SOME PROBLEM HERE func name = '".$myfunc_call->get_name()."'\n";
 
         // the return of func will be tainted if one of arg is tainted
         if ($return_sanitizer)
@@ -321,6 +335,7 @@ class TaintAnalysis
         {
             TaintAnalysis::set_tainted($context, $data, $mytemp_return, $mydef_return, $myexpr_return1, false);
         }
+
     }
 
     public static function funccall_source($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction)
@@ -430,19 +445,6 @@ class TaintAnalysis
                     if ($expr->is_assign())
                     {
                         $defassign = $expr->get_assign_def();
-
-                        /*
-                             if(!$copydefreturn->is_tainted() && $defassign->)
-                             {
-                             $defassign->set_tainted(false);
-                             $defassign->set_taintedbyexpr(null);
-                             $defassign->set_sanitized(false);
-                             $defassign->set_type_sanitized(null);
-                             $defassign->set_is_embeddedbychar("'", false);
-                             $defassign->set_is_embeddedbychar(">", false);
-                             $defassign->set_is_embeddedbychar("<", false);
-                             }
-                         */
                         TaintAnalysis::set_tainted($context, $data, $copydefreturn, $defassign, $expr, false);
                     }
                 }
@@ -505,8 +507,6 @@ class TaintAnalysis
                 {
                     if ($instance->get_is_instance())
                     {
-                        //$tmp_myclasses = $instance->get_all_myclass();
-
                         $id_object = $instance->get_object_id();
                         $tmp_myclasses = $context->get_objects()->get_all_myclasses($id_object);
 
@@ -517,14 +517,6 @@ class TaintAnalysis
                             if (!is_null($property) && (ResolveDefs::get_visibility($copy_defassign, $property)))
                             {
                                 $visibility_final = true;
-                                /*
-                                if(!$def->is_tainted())
-                                {
-                                  echo "n'est pas tainté\n";
-                                  $property->set_tainted(false);
-                                  $property->print_stdout();
-                                }
-                                  */
                                 break 2;
                             }
                         }

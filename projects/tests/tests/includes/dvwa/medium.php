@@ -1,5 +1,5 @@
 <?php
 
-echo $_GET["b"];
+$html = $_GET["b"];
 
 ?>

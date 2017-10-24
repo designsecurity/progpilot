@@ -33,8 +33,8 @@ class FuncCall
         $mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name);
         $mydef->set_assign_id($assign_id);
 
-        $context->get_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
-        $context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+        $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
+        $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
         $myexprparam = new MyExpr($context->get_current_line(), $context->get_current_column());
         $myexprparam->set_assign(true);
@@ -50,13 +50,13 @@ class FuncCall
 
         $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
         $inst_end_expr->add_property("expr", $myexprparam);
-        $context->get_mycode()->add_code($inst_end_expr);
+        $context->get_current_mycode()->add_code($inst_end_expr);
 
-        $context->get_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
+        $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
 
         $inst_def = new MyInstruction(Opcodes::DEFINITION);
         $inst_def->add_property("def", $mydef);
-        $context->get_mycode()->add_code($inst_def);
+        $context->get_current_mycode()->add_code($inst_def);
 
         unset($myexprparam);
         unset($mydef);
@@ -138,7 +138,7 @@ class FuncCall
         $inst_funcall_main->add_property("myfunc_call", $myfunction_call);
         $inst_funcall_main->add_property("expr", $myexpr);
         $inst_funcall_main->add_property("arr", $funccall_arr);
-        $context->get_mycode()->add_code($inst_funcall_main);
+        $context->get_current_mycode()->add_code($inst_funcall_main);
     }
 }
 

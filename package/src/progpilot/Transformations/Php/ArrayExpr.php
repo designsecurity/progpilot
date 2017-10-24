@@ -61,8 +61,8 @@ class ArrayExpr
                     if ($is_returndef)
                         $context->get_current_func()->add_return_def($mydef);
 
-                    $context->get_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
-                    $context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+                    $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
+                    $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
                     $myexpr = new MyExpr($context->get_current_line(), $context->get_current_column());
                     $myexpr->set_assign(true);
@@ -72,9 +72,9 @@ class ArrayExpr
 
                     $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
                     $inst_end_expr->add_property("expr", $myexpr);
-                    $context->get_mycode()->add_code($inst_end_expr);
+                    $context->get_current_mycode()->add_code($inst_end_expr);
 
-                    $context->get_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
+                    $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
 
                     // we reverse the arr
                     $arrtrans = BuildArrays::build_array_from_arr($building_arr, false);
@@ -83,7 +83,7 @@ class ArrayExpr
 
                     $inst_def = new MyInstruction(Opcodes::DEFINITION);
                     $inst_def->add_property("def", $mydef);
-                    $context->get_mycode()->add_code($inst_def);
+                    $context->get_current_mycode()->add_code($inst_def);
 
                     unset($myexpr);
                     unset($mydef);

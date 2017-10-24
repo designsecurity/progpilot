@@ -18,6 +18,7 @@ class Context
     private $array_includes;
     private $array_requires;
 
+    private $current_mycode;
     private $mycode;
     private $current_op;
     private $current_block;
@@ -69,6 +70,7 @@ class Context
         $this->current_line = -1;
         $this->current_column = -1;
         $this->current_func = null;
+        $this->current_mycode = null;
         $this->path = null;
     }
 
@@ -159,9 +161,9 @@ class Context
         return $this->analyze_functions;
     }
 
-    public function get_mycode()
+    public function get_current_mycode()
     {
-        return $this->mycode;
+        return $this->current_mycode;
     }
 
     public function get_current_op()
@@ -234,10 +236,9 @@ class Context
         $this->path = $path;
     }
 
-
-    public function set_mycode($mycode)
+    public function set_current_mycode($mycode)
     {
-        $this->mycode = $mycode;
+        $this->current_mycode = $mycode;
     }
 
     public function set_current_op($current_op)

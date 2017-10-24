@@ -94,7 +94,16 @@ class Definitions
     /* getters and setters */
     public function adddef($name, $def)
     {
-        $this->defs[$name][] = $def;
+        $continue = true;
+        if (isset($this->defs[$name]))
+        {
+            $continue = false;
+            if (!in_array($def, $this->defs[$name], true))
+                $continue = true;
+        }
+
+        if ($continue)
+            $this->defs[$name][] = $def;
 
         return true;
     }

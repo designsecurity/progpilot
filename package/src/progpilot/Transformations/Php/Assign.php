@@ -72,26 +72,26 @@ class Assign
         if ($is_returndef)
             $context->get_current_func()->add_return_def($mydef);
 
-        $context->get_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
+        $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
 
         // it's an expression which will define a definition
         $myexpr = new MyExpr($context->get_current_line(), $context->get_current_column());
         $myexpr->set_assign(true);
         $myexpr->set_assign_def($mydef);
 
-        $context->get_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+        $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
         Expr::instruction($expr_op, $context, $myexpr, $assign_id);
 
         $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
         $inst_end_expr->add_property("expr", $myexpr);
-        $context->get_mycode()->add_code($inst_end_expr);
+        $context->get_current_mycode()->add_code($inst_end_expr);
 
-        $context->get_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
+        $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
 
         $inst_def = new MyInstruction(Opcodes::DEFINITION);
         $inst_def->add_property("def", $mydef);
-        $context->get_mycode()->add_code($inst_def);
+        $context->get_current_mycode()->add_code($inst_def);
 
         // $array[09][098] = expr;
         if ($type_array == MyOp::TYPE_ARRAY)
