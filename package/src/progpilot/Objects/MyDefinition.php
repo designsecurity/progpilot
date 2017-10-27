@@ -92,6 +92,9 @@ class MyDefinition extends MyOp
     {
         echo "def name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: assign_id = ".$this->get_assign_id()." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_ref()." :: is_property = ".$this->get_is_property()." :: is_instance = ".$this->get_is_instance()." :: is_const = ".$this->get_is_const()." :: blockid = ".$this->get_block_id()." :: cast = ".$this->get_cast()."\n";
 
+        echo "my_source_file :\n";
+        var_dump($this->get_source_myfile()->get_name());
+
         echo "last_known_value :\n";
         var_dump($this->last_known_value);
 
@@ -127,6 +130,7 @@ class MyDefinition extends MyOp
             }
             echo "copyarray end =================\n";
         }
+
     }
 
     public function set_is_embeddedbychars($chars, $control)

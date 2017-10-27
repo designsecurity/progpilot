@@ -1,5 +1,5 @@
 <?php
-/*
+
 $framework->add_testbasis("./tests/includes/simple1.php");
 $framework->add_output("./tests/includes/simple1.php", array("\$var1"));
 $framework->add_output("./tests/includes/simple1.php", array("3"));
@@ -39,19 +39,13 @@ $framework->add_testbasis("./tests/includes/simple8.php");
 $framework->add_output("./tests/includes/simple8.php", array("\$_GET[\"p\"]"));
 $framework->add_output("./tests/includes/simple8.php", array("3"));
 $framework->add_output("./tests/includes/simple8.php", "xss");
-*/
+
 $framework->add_testbasis("./tests/includes/simple9.php");
-$framework->add_output("./tests/includes/simple9.php", array("\$_GET[\"a\"]"));
-$framework->add_output("./tests/includes/simple9.php", array("3"));
-$framework->add_output("./tests/includes/simple9.php", "xss");
-$framework->add_output("./tests/includes/simple9.php", array("\$_GET[\"b\"]"));
-$framework->add_output("./tests/includes/simple9.php", array("3"));
-$framework->add_output("./tests/includes/simple9.php", "xss");
-$framework->add_output("./tests/includes/simple9.php", array("\$_GET[\"c\"]"));
-$framework->add_output("./tests/includes/simple9.php", array("3"));
-$framework->add_output("./tests/includes/simple9.php", "xss");
-$framework->add_output("./tests/includes/simple9.php", array("\$_GET[\"d\"]"));
-$framework->add_output("./tests/includes/simple9.php", array("3"));
+$framework->add_output("./tests/includes/simple9.php", array("\$pLocation"));
+$framework->add_output("./tests/includes/simple9.php", array("492"));
+$framework->add_output("./tests/includes/simple9.php", "header_injection");
+$framework->add_output("./tests/includes/simple9.php", array("\$page[\"body\"]"));
+$framework->add_output("./tests/includes/simple9.php", array("52"));
 $framework->add_output("./tests/includes/simple9.php", "xss");
 
 

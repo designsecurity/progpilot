@@ -1,5 +1,18 @@
 <?php
 
-$html = $_GET["a"];
+// Is there any input?
+if( array_key_exists( "a", $_GET ) && $_GET[ 'a' ] != NULL ) {
+	// Feedback for end user
+	$html .= '<pre>Hello ' . $_GET[ 'a' ] . '</pre>';
+}
+
+if(true)
+{
+  $html = $_GET["p"];
+}
+else
+{
+  $html = "eee";
+}
 
 ?>

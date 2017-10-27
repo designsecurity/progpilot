@@ -57,6 +57,7 @@ class ArrayAnalysis
     {
         $nbparams = 0;
         $params = $myfunc->get_params();
+
         foreach ($params as $param)
         {
             if ($instruction->is_property_exist("argdef$nbparams"))
@@ -67,13 +68,7 @@ class ArrayAnalysis
                 $defarg = $instruction->get_property("argdef$nbparams");
                 $exprarg = $instruction->get_property("argexpr$nbparams");
 
-                $thedefsargs = $exprarg->get_defs();
-
-                foreach ($thedefsargs as $thedefsarg)
-                {
-                    // original et copie (source et cible)
-                    ArrayAnalysis::copy_array($context, $data->getoutminuskill($thedefsarg->get_block_id()), $thedefsarg, $thedefsarg->get_array_value(), $newparam, false);
-                }
+                ArrayAnalysis::copy_array_from_def($defarg, $defarg->get_array_value(), $newparam, false);
 
                 $nbparams ++;
             }
@@ -161,7 +156,6 @@ class ArrayAnalysis
 
     public static function copy_array($context, $data, $originaltab, $originalarr, $copytab, $copyarr)
     {
-
         if (!is_null($originaltab) && !is_null($copytab))
         {
             if ($originaltab->get_is_property())
@@ -178,52 +172,50 @@ class ArrayAnalysis
                             $originaltab,
                             true);
 
-            if (count($defs) > 0)
+            foreach ($defs as $defa)
+                ArrayAnalysis::copy_array_from_def($defa, $originalarr, $copytab, $copyarr);
+        }
+    }
+
+    public static function copy_array_from_def($defa, $originalarr, $copytab, $copyarr)
+    {
+        if ($defa->get_is_copy_array())
+        {
+            $copyarrays = $defa->get_copyarrays();
+
+            foreach ($copyarrays as $value)
             {
-                foreach ($defs as $defa)
+                $arrvalue = $value[0];
+                $defarr = $value[1];
+
+                $extract = BuildArrays::extract_array_from_arr($arrvalue, $originalarr);
+                if ($extract !== false)
                 {
-                    if ($defa->get_is_copy_array())
-                    {
-                        $copyarrays = $defa->get_copyarrays();
+                    $extractbis = BuildArrays::build_array_from_arr($copyarr, $extract);
 
-                        foreach ($copyarrays as $value)
-                        {
-                            $arrvalue = $value[0];
-                            $defarr = $value[1];
+                    $copytab->add_copyarray($extractbis, $defarr);
+                    $copytab->set_is_copy_array(true);
 
-                            $extract = BuildArrays::extract_array_from_arr($arrvalue, $originalarr);
-                            $extractbis = BuildArrays::build_array_from_arr($copyarr, $extract);
-
-                            $copytab->add_copyarray($extractbis, $defarr);
-                            $copytab->set_is_copy_array(true);
-
-                            unset($defarr);
-                        }
-                    }
-                    else
-                    {
-
-                        $extract = BuildArrays::extract_array_from_arr($defa->get_array_value(), $originalarr);
-
-                        // si on cherchait $copy = $array[11] ici il y a des arrays de type $array[11][quelquechose]
-                        // ou deuxieme cas
-                        // si on cherchait $copy = $arrays ici il y a des arrays de type $arrays[quelquechose]
-                        if ($extract !== false)
-                        {
-                            // si on a $copy[11] = $array[12] on veut $copy[11][12]
-                            if ($copyarr !== false)
-                                $extract = BuildArrays::build_array_from_arr($copyarr, $extract);
-
-                            $copytab->add_copyarray($extract, $defa);
-                            $copytab->set_is_copy_array(true);
-                        }
-                    }
-
-                    unset($defa);
+                    unset($defarr);
                 }
             }
+        }
+        else
+        {
+            $extract = BuildArrays::extract_array_from_arr($defa->get_array_value(), $originalarr);
 
-            unset($defs);
+            // si on cherchait $copy = $array[11] ici il y a des arrays de type $array[11][quelquechose]
+            // ou deuxieme cas
+            // si on cherchait $copy = $arrays ici il y a des arrays de type $arrays[quelquechose]
+            if ($extract !== false)
+            {
+                // si on a $copy[11] = $array[12] on veut $copy[11][12]
+                if ($copyarr !== false)
+                    $extract = BuildArrays::build_array_from_arr($copyarr, $extract);
+
+                $copytab->add_copyarray($extract, $defa);
+                $copytab->set_is_copy_array(true);
+            }
         }
     }
 }

@@ -295,6 +295,33 @@ class ResolveDefs
             }
         }
 
+        // the two defs are defined in different included file
+        if (!$def1_includedby_def2 && !$def2_includedby_def1)
+        {
+            $myfile_def1 = $def1->get_source_myfile();
+            while (!is_null($myfile_def1))
+            {
+                $myfile_def2 = $def2->get_source_myfile();
+                while (!is_null($myfile_def2))
+                {
+                    // we found the file from where the include chain start
+                    if ($myfile_def1->get_name() === $myfile_def2->get_name())
+                    {
+                        // if the file of def1 is included later so def1 is deeper
+                        if (($myfile_def1->getLine() > $myfile_def2->getLine())
+                                || ($myfile_def1->getLine() == $myfile_def2->getLine() &&  $myfile_def1->getColumn() >= $myfile_def2->getColumn()))
+                            return true;
+                        else
+                            return false;
+                    }
+
+                    $myfile_def2 = $myfile_def2->get_included_from_myfile();
+                }
+
+                $myfile_def1 = $myfile_def1->get_included_from_myfile();
+            }
+        }
+
         // def1 is included by file from def2
         // but def2 defined before or after the include ?
         if ($def1_includedby_def2)
@@ -445,9 +472,7 @@ class ResolveDefs
                     if (ResolveDefs::is_nearest($context, $defsearch, $defsearch->getLine(), $defsearch->getColumn(), $deflast, $deflast->getLine(), $deflast->getColumn()))
                     {
                         if (is_null($nearestdef) || ResolveDefs::is_nearest($context, $deflast, $deflast->getLine(), $deflast->getColumn(), $nearestdef, $nearestdef->getLine(), $nearestdef->getColumn()))
-                        {
                             $nearestdef = $deflast;
-                        }
                     }
                 }
                 else

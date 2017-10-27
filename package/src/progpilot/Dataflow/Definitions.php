@@ -74,9 +74,13 @@ class Definitions
             foreach($defsparam as $blockid => $defs)
             {
                 echo "blockid $blockid\n";
-                foreach ($defs as $def)
+
+                if (!is_null($defs))
                 {
-                    $def->print_stdout();
+                    foreach ($defs as $def)
+                    {
+                        $def->print_stdout();
+                    }
                 }
             }
         }
@@ -105,7 +109,7 @@ class Definitions
         if ($continue)
             $this->defs[$name][] = $def;
 
-        return true;
+        return $continue;
     }
 
     public function addin($block, $def)
@@ -291,12 +295,13 @@ class Definitions
         }
     }
 
-    public function reachingDefs(&$myblocks)
+    public function reachingDefs($myblocks)
     {
-        foreach($myblocks as $id => $block)
+        foreach ($myblocks as $block)
         {
-            $this->setoutminuskill($id, $this->getgen($id));
-            $this->setout($id, $this->getgen($id));
+            $block_id = $block->get_id();
+            $this->setoutminuskill($block_id, $this->getgen($block_id));
+            $this->setout($block_id, $this->getgen($block_id));
         }
 
         $change = true;

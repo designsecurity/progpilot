@@ -45,7 +45,7 @@ MODIFICATIONS.*/
 
 $tainted = $_GET['UserData'];
 
-$tainted = $tainted  == 'safe1' ? 'safe1' : 'safe2';
+$tainted = ($tainted  == 'safe1') ? 'safe1' : 'safe2';
 
 
 $var = fopen($tainted, "r");

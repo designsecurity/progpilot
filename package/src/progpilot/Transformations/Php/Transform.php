@@ -126,11 +126,6 @@ class Transform implements Visitor
     public function leaveOp(Op $op, Block $block)
     {
 
-        if ($op instanceof Op\Expr\Include_)
-        {
-            $inst_end_include = new MyInstruction(Opcodes::END_INCLUDE);
-            $this->context->get_current_mycode()->add_code($inst_end_include);
-        }
     }
 
     public function leaveBlock(Block $block, Block $prior = null)

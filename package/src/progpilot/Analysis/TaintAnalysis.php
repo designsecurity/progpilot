@@ -272,9 +272,6 @@ class TaintAnalysis
             $return_sanitizer = true;
         }
 
-        if (!isset($codes[$index + 2]))
-            echo "$index SOME PROBLEM HERE func name = '".$myfunc_call->get_name()."'\n";
-
         // the return of func will be tainted if one of arg is tainted
         if ($return_sanitizer)
         {

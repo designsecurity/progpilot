@@ -486,18 +486,6 @@ class MyCode
                     break;
                 }
 
-                case Opcodes::START_INCLUDE:
-                {
-                    echo Opcodes::START_INCLUDE."\n";
-                    break;
-                }
-
-                case Opcodes::END_INCLUDE:
-                {
-                    echo Opcodes::END_INCLUDE."\n";
-                    break;
-                }
-
                 case Opcodes::COND_BOOLEAN_NOT:
                 {
                     echo Opcodes::COND_BOOLEAN_NOT."\n";

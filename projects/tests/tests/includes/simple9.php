@@ -1,6 +1,18 @@
 <?php
 
 define( 'DVWA_WEB_PAGE_TO_ROOT', './' );
+require_once DVWA_WEB_PAGE_TO_ROOT . 'dvwa/dvwaPage.inc.php';
+
+dvwaPageStartup( array( 'authenticated', 'phpids' ) );
+
+$page = dvwaPageNewGrab();
+
+$page[ 'title' ]   = 'Vulnerability: Reflected Cross Site Scripting (XSS)' . $page[ 'title_separator' ].$page[ 'title' ];
+$page[ 'page_id' ] = 'xss_r';
+$page[ 'help_button' ]   = 'xss_r';
+$page[ 'source_button' ] = 'xss_r';
+
+dvwaDatabaseConnect();
 
 $vulnerabilityFile = '';
 switch ( $_COOKIE[ 'security' ] )
@@ -17,10 +29,11 @@ case 'high':
 default:
     $vulnerabilityFile = 'impossible.php';
     break;
+    
 }
 
 require_once DVWA_WEB_PAGE_TO_ROOT . "dvwa/{$vulnerabilityFile}";
-/*
+
 $page[ 'body' ] .= "
 <div class=\"body_padded\">
 	<h1>Vulnerability: Reflected Cross Site Scripting (XSS)</h1>
@@ -35,8 +48,8 @@ $page[ 'body' ] .= "
 
 if( $vulnerabilityFile == 'impossible.php' )
 	$page[ 'body' ] .= "			" . tokenField();
-*/
-$page[ 'body' ] = "
+
+$page[ 'body' ] .= "
 		</form>
 		{$html}
 	</div>
@@ -51,6 +64,6 @@ $page[ 'body' ] = "
 	</ul>
 </div>\n";
 
-    echo $page[ 'body' ];
+dvwaHtmlEcho($page);
 
 ?>

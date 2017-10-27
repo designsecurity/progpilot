@@ -151,8 +151,9 @@ class VisitorAnalysis
 
                     $val = array_pop($this->call_stack);
 
-                    $this->current_storagemyblocks = $val[2];
-                    $this->defs = $val[1];
+                    $this->current_storagemyblocks = $val[3];
+                    $this->defs = $val[2];
+                    $this->blocks = $val[1];
 
                     break;
                 }
@@ -161,7 +162,7 @@ class VisitorAnalysis
                 {
                     $myfunc = $instruction->get_property("myfunc");
 
-                    $val = [$myfunc, $this->defs, $this->current_storagemyblocks];
+                    $val = [$myfunc, $this->blocks, $this->defs, $this->current_storagemyblocks];
                     array_push($this->call_stack, $val);
 
                     $this->current_storagemyblocks = new \SplObjectStorage;
@@ -383,11 +384,11 @@ class VisitorAnalysis
                                                 $array_requires = $name_included_file;
 
                                             $context_include = clone $this->context;
-                                            $context_include->reset_internal_lowvalues();
+                                            $context_include->reset_internal_values();
                                             $context_include->inputs->set_file($name_included_file);
                                             $context_include->inputs->set_code(null);
 
-                                            $myfile = new MyFile($name_included_file, $this->context->get_current_line(), $this->context->get_current_column());
+                                            $myfile = new MyFile($name_included_file, $myfunc_call->getLine(), $myfunc_call->getColumn());
                                             $myfile->set_included_from_myfile($myfunc_call->get_source_myfile());
 
                                             $context_include->set_myfile($myfile);
@@ -406,65 +407,66 @@ class VisitorAnalysis
 
                                             $main_include = $context_include->get_functions()->get_function("{main}");
 
+                                            $defs_output_included_final = [];
                                             if (!is_null($main_include))
                                             {
-                                                $defs_output_included_final = [];
                                                 $defs_main_return = $main_include->get_defs()->getdefrefbyname("{main}_return");
                                                 foreach ($defs_main_return as $def_main_return)
                                                 {
-                                                    $block_id = $def_main_return->get_block_id();
-                                                    $defs_output_included = $main_include->get_defs()->getoutminuskill($block_id);
+                                                    $defs_output_included = $main_include->get_defs()->getoutminuskill($def_main_return->get_block_id());
                                                     if (!is_null($defs_output_included))
                                                     {
                                                         foreach ($defs_output_included as $def_output_included)
                                                         {
                                                             if (!in_array($def_output_included, $defs_output_included_final, true))
-                                                                $defs_output_included_final[] = $def_output_included;
-                                                        }
-                                                    }
-                                                }
-
-
-                                                $context_functions = $context_include->get_functions()->get_functions();
-
-                                                if (!is_null($context_functions))
-                                                {
-                                                    foreach ($context_functions as $functions_name)
-                                                    {
-                                                        if (!is_null($functions_name))
-                                                        {
-                                                            foreach ($functions_name as $myfunc)
                                                             {
-                                                                $this->context->get_functions()->add_function($myfunc->get_name(), $myfunc);
-
-
+                                                                $defs_output_included_final[] = $def_output_included;
                                                             }
                                                         }
                                                     }
                                                 }
+                                            }
 
-                                                $myclasses_include = $context_include->get_classes();
-                                                foreach ($myclasses_include as $myclass_include)
-                                                    $this->context->get_classes()->add_myclass($myclass_include);
+                                            $context_functions = $context_include->get_functions()->get_functions();
 
-                                                $new_defs = false;
-                                                if (count($defs_output_included_final) > 0)
+                                            if (!is_null($context_functions))
+                                            {
+                                                foreach ($context_functions as $functions_name)
                                                 {
-                                                    foreach ($defs_output_included_final as $def_output_included_final)
+                                                    if (!is_null($functions_name))
                                                     {
-                                                        $this->defs->adddef($def_output_included_final->get_name(), $def_output_included_final);
-                                                        $this->defs->addgen($myfunc_call->get_block_id(), $def_output_included_final);
-
-                                                        $new_defs = true;
+                                                        foreach ($functions_name as $myfunc)
+                                                        {
+                                                            $this->context->get_functions()->add_function($myfunc->get_name(), $myfunc);
+                                                        }
                                                     }
                                                 }
+                                            }
 
-                                                if ($new_defs)
+                                            $myclasses_include = $context_include->get_classes();
+                                            foreach ($myclasses_include as $myclass_include)
+                                                $this->context->get_classes()->add_myclass($myclass_include);
+
+                                            $new_defs = false;
+                                            if (count($defs_output_included_final) > 0)
+                                            {
+                                                foreach ($defs_output_included_final as $def_output_included_final)
                                                 {
-                                                    $this->defs->computekill($this->context, $myfunc_call->get_block_id());
-                                                    $this->defs->reachingDefs($this->blocks);
+                                                    //$def_output_included_final->set_block_id($myfunc_call->get_block_id());
+                                                    $ret1 = $this->defs->adddef($def_output_included_final->get_name(), $def_output_included_final);
+                                                    $ret2 = $this->defs->addgen($myfunc_call->get_block_id(), $def_output_included_final);
+
+                                                    $new_defs = true;
                                                 }
                                             }
+
+                                            if ($new_defs)
+                                            {
+                                                $this->defs->computekill($this->context, $myfunc_call->get_block_id());
+                                                $this->defs->reachingDefs($this->blocks);
+                                            }
+
+
                                         }
                                     }
                                 }

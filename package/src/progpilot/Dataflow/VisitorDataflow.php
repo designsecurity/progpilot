@@ -31,7 +31,6 @@ class VisitorDataflow
 
     public function __construct()
     {
-
     }
 
     protected function getBlockId($myblock)
@@ -107,11 +106,13 @@ class VisitorDataflow
 
                 case Opcodes::ENTER_FUNCTION:
                 {
+                    $block_id_zero = hash("sha256", "0-".$context->get_myfile()->get_name());
+
                     $myfunc = $instruction->get_property("myfunc");
 
                     $blocks = new \SplObjectStorage;
                     $defs = new Definitions();
-                    $defs->create_block(0);
+                    $defs->create_block($block_id_zero);
 
                     $myfunc->set_defs($defs);
                     $myfunc->set_blocks($blocks);
@@ -119,7 +120,7 @@ class VisitorDataflow
                     $this->defs = $defs;
                     $this->blocks = $blocks;
 
-                    $this->current_block_id = 0;
+                    $this->current_block_id = $block_id_zero;
                     $this->current_func = $myfunc;
 
                     if ($myfunc->get_is_method())
@@ -129,6 +130,7 @@ class VisitorDataflow
 
                         $id_object = $context->get_objects()->add_object();
                         $thisdef->set_object_id($id_object);
+                        $thisdef->set_block_id($block_id_zero);
 
                         $this->defs->adddef($thisdef->get_name(), $thisdef);
                         $this->defs->addgen($thisdef->get_block_id(), $thisdef);
@@ -148,21 +150,22 @@ class VisitorDataflow
                     $myblock = $instruction->get_property("myblock");
 
                     $this->setBlockId($myblock);
-                    $myblock->set_id($this->getBlockId($myblock));
+                    $block_id_tmp = $this->getBlockId($myblock);
+                    $block_id = hash("sha256", "$block_id_tmp-".$context->get_myfile()->get_name());
+                    $myblock->set_id($block_id);
 
-                    $blockid = $myblock->get_id();
 
-                    array_push($blocks_stack_id, $blockid);
-                    $this->current_block_id = $blockid;
+                    array_push($blocks_stack_id, $block_id);
+                    $this->current_block_id = $block_id;
 
-                    if ($blockid != 0)
-                        $this->defs->create_block($blockid);
+                    if ($block_id != hash("sha256", "0-".$context->get_myfile()->get_name()))
+                        $this->defs->create_block($block_id);
 
                     $assertions = $myblock->get_assertions();
                     foreach ($assertions as $assertion)
                     {
                         $mydef = $assertion->get_def();
-                        $mydef->set_block_id($blockid);
+                        $mydef->set_block_id($block_id);
                     }
 
                     // representations start
@@ -178,10 +181,10 @@ class VisitorDataflow
                     {
                         foreach ($defs_included as $def_included)
                         {
-                            $def_included->set_block_id($blockid);
+                            //$def_included->set_block_id($block_id);
 
                             $this->defs->adddef($def_included->get_name(), $def_included);
-                            $this->defs->addgen($blockid, $def_included);
+                            $this->defs->addgen($block_id, $def_included);
                         }
 
                         $first_block = false;

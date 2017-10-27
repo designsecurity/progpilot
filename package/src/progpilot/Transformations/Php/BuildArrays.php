@@ -50,8 +50,8 @@ class BuildArrays
 
     public static function extract_array_from_arr($originalarr, $indarr)
     {
-        if ($originalarr == $indarr)
-            return $originalarr;
+        if ($originalarr === $indarr)
+            return false;
 
         $arr = $originalarr;
 
@@ -61,9 +61,13 @@ class BuildArrays
             {
                 if (isset($originalarr[$ind]))
                 {
-                    $arr = $originalarr[$ind];
+                    if ($originalarr[$ind] === $indarr[$ind])
+                        return $originalarr[$ind];
+
                     $arr = BuildArrays::extract_array_from_arr($originalarr[$ind], $indarr[$ind]);
                 }
+                else
+                    $arr = false;
             }
         }
 
