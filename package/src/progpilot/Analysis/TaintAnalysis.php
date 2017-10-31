@@ -168,7 +168,7 @@ class TaintAnalysis
 
         $mytemp_return = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), "return_".$myfunc_call->get_name());
         $mytemp_return->set_source_myfile($context->get_myfile());
-        
+
         $myexpr_return1 = new MyExpr($myfunc_call->getLine(), $myfunc_call->getColumn());
         $myexpr_return1->set_assign(true);
         $myexpr_return1->set_assign_def($mytemp_return);
@@ -344,7 +344,7 @@ class TaintAnalysis
         $class_name = false;
         if ($myfunc_call->get_is_method() && !is_null($myclass))
             $class_name = $myclass->get_name();
-        
+
         $mysource = $context->inputs->get_source_byname($stack_class, $myfunc_call, true, $class_name, false);
         if (!is_null($mysource))
         {

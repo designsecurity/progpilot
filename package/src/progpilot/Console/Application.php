@@ -34,7 +34,7 @@ class Application extends BaseApplication
         }
         catch (\Exception $e)
         {
-            echo "\n\n".Lang::COMMAND_LINE_ARG."\n\n";
+            echo "\n\n".$e->getMessage()."\n\n";
         }
     }
 

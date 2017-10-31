@@ -309,7 +309,7 @@ class VisitorDataflow
 
                     if (is_null($mydef->get_source_myfile()))
                         $mydef->set_source_myfile($context->get_myfile());
-                    
+
                     $this->defs->adddef($mydef->get_name(), $mydef);
                     $this->defs->addgen($mydef->get_block_id(), $mydef);
 

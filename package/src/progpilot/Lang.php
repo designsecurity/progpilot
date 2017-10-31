@@ -23,7 +23,7 @@ class Lang
     const FORMAT_INCLUDE_FILES = "Format of json include_file's file is incorrect";
     const FORMAT_EXCLUDE_FILES = "Format of json exclude file's file is incorrect";
     const UNABLE_TO_PARSER_YAML = "Unable to parse the YAML file configuration";
-    const COMMAND_LINE_ARG = "Usage of progpilot : php progpilot.phar [--configuration path_to_config_file.json] [files (file1.php file2.php ...)]";
+    const COMMAND_LINE_ARG = "Usage of progpilot : php progpilot.phar [--configuration path_to_config_file.yml] [files and folders (file1.php file2.php ...)]";
     const PROGPILOT_ARG_DESC = "Progpilot a static analysis tool for security purposes";
     const FILES_ARG_DESC = "Files to be analyzed";
     const CONFIG_ARG_DESC = "Read configuration from config file";

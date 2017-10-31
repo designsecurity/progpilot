@@ -317,81 +317,84 @@ class Context
         {
             try
             {
-                $yaml = new Parser();
-                $value = $yaml->parse(file_get_contents($this->configuration_file));
-
-                if (is_array($value))
+                if (file_exists($this->configuration_file))
                 {
-                    if (isset($value["inputs"]))
+                    $yaml = new Parser();
+                    $value = $yaml->parse(file_get_contents($this->configuration_file));
+
+                    if (is_array($value))
                     {
-                        if (isset($value["inputs"]["set_sources"]))
-                            $this->inputs->set_sources($value["inputs"]["set_sources"]);
+                        if (isset($value["inputs"]))
+                        {
+                            if (isset($value["inputs"]["set_sources"]))
+                                $this->inputs->set_sources($value["inputs"]["set_sources"]);
 
-                        if (isset($value["inputs"]["set_sinks"]))
-                            $this->inputs->set_sinks($value["inputs"]["set_sinks"]);
+                            if (isset($value["inputs"]["set_sinks"]))
+                                $this->inputs->set_sinks($value["inputs"]["set_sinks"]);
 
-                        if (isset($value["inputs"]["set_validators"]))
-                            $this->inputs->set_validators($value["inputs"]["set_validators"]);
+                            if (isset($value["inputs"]["set_validators"]))
+                                $this->inputs->set_validators($value["inputs"]["set_validators"]);
 
-                        if (isset($value["inputs"]["set_sanitizers"]))
-                            $this->inputs->set_sanitizers($value["inputs"]["set_sanitizers"]);
+                            if (isset($value["inputs"]["set_sanitizers"]))
+                                $this->inputs->set_sanitizers($value["inputs"]["set_sanitizers"]);
 
-                        if (isset($value["inputs"]["set_include_files"]))
-                            $this->inputs->set_include_files($value["inputs"]["set_include_files"]);
+                            if (isset($value["inputs"]["set_include_files"]))
+                                $this->inputs->set_include_files($value["inputs"]["set_include_files"]);
 
-                        if (isset($value["inputs"]["set_exclude_files"]))
-                            $this->inputs->set_exclude_files($value["inputs"]["set_exclude_files"]);
+                            if (isset($value["inputs"]["set_exclude_files"]))
+                                $this->inputs->set_exclude_files($value["inputs"]["set_exclude_files"]);
 
-                        if (isset($value["inputs"]["set_folder"]))
-                            $this->inputs->set_folder($value["inputs"]["set_folder"]);
+                            if (isset($value["inputs"]["set_folder"]))
+                                $this->inputs->set_folder($value["inputs"]["set_folder"]);
 
-                        if (isset($value["inputs"]["set_file"]))
-                            $this->inputs->set_file($value["inputs"]["set_file"]);
+                            if (isset($value["inputs"]["set_file"]))
+                                $this->inputs->set_file($value["inputs"]["set_file"]);
 
-                        if (isset($value["inputs"]["set_code"]))
-                            $this->inputs->set_code($value["inputs"]["set_code"]);
+                            if (isset($value["inputs"]["set_code"]))
+                                $this->inputs->set_code($value["inputs"]["set_code"]);
 
-                        if (isset($value["inputs"]["set_resolved_includes"]))
-                            $this->inputs->set_resolved_includes($value["inputs"]["set_resolved_includes"]);
+                            if (isset($value["inputs"]["set_resolved_includes"]))
+                                $this->inputs->set_resolved_includes($value["inputs"]["set_resolved_includes"]);
 
-                        if (isset($value["inputs"]["set_false_positives"]))
-                            $this->inputs->set_false_positives($value["inputs"]["set_false_positives"]);
-                    }
+                            if (isset($value["inputs"]["set_false_positives"]))
+                                $this->inputs->set_false_positives($value["inputs"]["set_false_positives"]);
+                        }
 
-                    if (isset($value["outputs"]))
-                    {
-                        if (isset($value["outputs"]["tainted_flow"]))
-                            $this->outputs->tainted_flow($value["outputs"]["tainted_flow"]);
+                        if (isset($value["outputs"]))
+                        {
+                            if (isset($value["outputs"]["tainted_flow"]))
+                                $this->outputs->tainted_flow($value["outputs"]["tainted_flow"]);
 
-                        if (isset($value["outputs"]["resolve_includes"]))
-                            $this->outputs->resolve_includes($value["outputs"]["resolve_includes"]);
+                            if (isset($value["outputs"]["resolve_includes"]))
+                                $this->outputs->resolve_includes($value["outputs"]["resolve_includes"]);
 
-                        if (isset($value["outputs"]["resolve_includes_file"]))
-                            $this->outputs->resolve_includes_file($value["outputs"]["resolve_includes_file"]);
-                    }
+                            if (isset($value["outputs"]["resolve_includes_file"]))
+                                $this->outputs->resolve_includes_file($value["outputs"]["resolve_includes_file"]);
+                        }
 
-                    if (isset($value["options"]))
-                    {
-                        if (isset($value["options"]["set_analyze_js"]))
-                            $this->set_analyze_js($value["options"]["set_analyze_js"]);
+                        if (isset($value["options"]))
+                        {
+                            if (isset($value["options"]["set_analyze_js"]))
+                                $this->set_analyze_js($value["options"]["set_analyze_js"]);
 
-                        if (isset($value["options"]["set_analyze_includes"]))
-                            $this->set_analyze_includes($value["options"]["set_analyze_includes"]);
+                            if (isset($value["options"]["set_analyze_includes"]))
+                                $this->set_analyze_includes($value["options"]["set_analyze_includes"]);
 
-                        if (isset($value["options"]["set_analyze_functions"]))
-                            $this->set_analyze_functions($value["options"]["set_analyze_functions"]);
+                            if (isset($value["options"]["set_analyze_functions"]))
+                                $this->set_analyze_functions($value["options"]["set_analyze_functions"]);
 
-                        if (isset($value["options"]["set_print_file"]))
-                            $this->set_print_file($value["options"]["set_print_file"]);
+                            if (isset($value["options"]["set_print_file"]))
+                                $this->set_print_file($value["options"]["set_print_file"]);
 
-                        if (isset($value["options"]["set_limit_time"]))
-                            $this->set_limit_time($value["options"]["set_limit_time"]);
+                            if (isset($value["options"]["set_limit_time"]))
+                                $this->set_limit_time($value["options"]["set_limit_time"]);
 
-                        if (isset($value["options"]["set_limit_defs"]))
-                            $this->set_limit_defs($value["options"]["set_limit_defs"]);
+                            if (isset($value["options"]["set_limit_defs"]))
+                                $this->set_limit_defs($value["options"]["set_limit_defs"]);
 
-                        if (isset($value["options"]["set_print_warning"]))
-                            $this->set_print_warning($value["options"]["set_print_warning"]);
+                            if (isset($value["options"]["set_print_warning"]))
+                                $this->set_print_warning($value["options"]["set_print_warning"]);
+                        }
                     }
                 }
             }

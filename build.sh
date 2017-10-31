@@ -10,6 +10,11 @@ rm composer.lock
 rm -rf ./vendor/
 composer install
 
+rm -rf ./vendor/progpilot/
+mkdir ./vendor/progpilot/
+mkdir ./vendor/progpilot/package
+cp -R ../../package/* ./vendor/progpilot/package
+
 echo "testing ..."
 output_runall=""
 output_runallfolders=""

@@ -47,10 +47,10 @@ $file = "example1.php";
 $context = new \progpilot\Context;
 $analyzer = new \progpilot\Analyzer;
 
-$context->inputs->set_sources("../uptodate_data/sources.json");
-$context->inputs->set_sinks("../uptodate_data/sinks.json");
-$context->inputs->set_sanitizers("../uptodate_data/sanitizers.json");
-$context->inputs->set_validators("../uptodate_data/validators.json");
+$context->inputs->set_sources("../../package/src/uptodate_data/sources.json");
+$context->inputs->set_sinks("../../package/src/uptodate_data/sinks.json");
+$context->inputs->set_sanitizers("../../package/src/uptodate_data/sanitizers.json");
+$context->inputs->set_validators("../../package/src/uptodate_data/validators.json");
 $context->inputs->set_file($file);
 
 $analyzer->run($context);
@@ -94,7 +94,7 @@ array(1) {
   }
 }
 ```
-All files (composer.json, ../uptodate_data/*.json) used in this example are in the [projects/example](./projects/example) and [projects/uptodate_data](./projects/uptodate_data) folders.
+All files (composer.json, /uptodate_data/*.json) used in this example are in the [projects/example](./projects/example) and [package/src/uptodate_data](./package/src/uptodate_data) folders.
 
 ## Specify an analysis
 You can configure an analysis (the definitions of sinks, sources, sanitizers and validators) according to your own context.  
