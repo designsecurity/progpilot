@@ -69,6 +69,26 @@ class MyInputs
         $this->folder = null;
     }
 
+    public function get_sinks_file()
+    {
+        return $this->sinks_file;
+    }
+
+    public function get_sources_file()
+    {
+        return $this->sources_file;
+    }
+
+    public function get_validators_file()
+    {
+        return $this->validators_file;
+    }
+
+    public function get_sanitizers_file()
+    {
+        return $this->sanitizers_file;
+    }
+
     public function get_included_files()
     {
         return $this->includes_files_analysis;

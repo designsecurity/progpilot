@@ -19,7 +19,6 @@ class Context
     private $array_requires;
 
     private $current_mycode;
-    private $mycode;
     private $current_op;
     private $current_block;
     private $current_line;
@@ -88,7 +87,6 @@ class Context
         $this->objects = new \progpilot\Dataflow\Objects;
         $this->classes = new \progpilot\Dataflow\Classes;
         $this->functions = new \progpilot\Dataflow\Functions;
-        $this->mycode = new \progpilot\Code\MyCode;
     }
 
     public function get_array_includes()

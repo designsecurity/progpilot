@@ -4,8 +4,8 @@
 
 This project would not have been possible without these dependencies :
 
-- ircmaxell/php-cfg
-- nikic/php-parser
+- [ircmaxell/php-cfg](https://github.com/ircmaxell/php-cfg/)
+- [nikic/php-parser](https://github.com/nikic/php-parser/)
 
 ## Tests
 

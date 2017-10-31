@@ -21,6 +21,19 @@ use progpilot\Objects\MyOp;
 
 class SecurityAnalysis
 {
+    public static function in_array_source($temp, $name, $line, $column, $file)
+    {
+      for($i = 0; $i < count($temp["source_name"]); $i ++)
+      {
+        if($temp["source_name"][$i] === $name 
+          && $temp["source_line"][$i] === $line 
+            && $temp["source_column"][$i] === $column
+              && $temp["source_file"][$i] === $file)
+            return true;
+      }
+      
+      return false;
+    }
 
     public static function is_safe($index_parameter, $mydef, $mysink)
     {
@@ -179,20 +192,28 @@ class SecurityAnalysis
             {
                 if (!SecurityAnalysis::is_safe($index_parameter, $def_expr, $mysink))
                 {
-                    $results_flow = SecurityAnalysis::tainted_flow($context, $def_expr, $mysink);
-                    $result_tainted_flow = $results_flow[0];
-                    $hash_id_vuln .= $results_flow[1];
+                    $source_name = \progpilot\Utils::print_definition($def_expr);
+                    $source_line = $def_expr->getLine();
+                    $source_column = $def_expr->getColumn();
+                    $source_file = \progpilot\Utils::encode_characters($def_expr->get_source_myfile()->get_name());
+                    
+                    if(!SecurityAnalysis::in_array_source($temp, $source_name, $source_line, $source_column, $source_file))
+                    {
+                      $results_flow = SecurityAnalysis::tainted_flow($context, $def_expr, $mysink);
+                      $result_tainted_flow = $results_flow[0];
+                      $hash_id_vuln .= $results_flow[1];
+                      
+                      $temp["source_name"][] = $source_name;
 
-                    $temp["source_name"][] = \progpilot\Utils::print_definition($def_expr);
+                      if ($context->outputs->get_tainted_flow())
+                          $temp["tainted_flow"][] = $result_tainted_flow;
 
-                    if ($context->outputs->get_tainted_flow())
-                        $temp["tainted_flow"][] = $result_tainted_flow;
+                      $temp["source_line"][] = $source_line;
+                      $temp["source_column"][] = $source_column;
+                      $temp["source_file"][] = $source_file;
 
-                    $temp["source_line"][] = $def_expr->getLine();
-                    $temp["source_column"][] = $def_expr->getColumn();
-                    $temp["source_file"][] = \progpilot\Utils::encode_characters($def_expr->get_source_myfile()->get_name());
-
-                    $nbtainted ++;
+                      $nbtainted ++;
+                    }
                 }
             }
         }

@@ -79,7 +79,7 @@ class VisitorAnalysis
     {
         $index = $mycode->get_start();
         $code = $mycode->get_codes();
-
+        
         do
         {
             if (isset($code[$index]))
@@ -320,7 +320,7 @@ class VisitorAnalysis
                     $funcname = $instruction->get_property("funcname");
                     $arr_funccall = $instruction->get_property("arr");
                     $myfunc_call = $instruction->get_property("myfunc_call");
-
+                    
                     $list_myfunc = [];
 
                     // require, require_once ... already handled in transform Expr/include_
@@ -393,7 +393,9 @@ class VisitorAnalysis
 
                                             $context_include->set_myfile($myfile);
                                             $context_include->set_outputs(new \progpilot\Outputs\MyOutputs);
-
+                                            
+                                            $defs_a_include = $this->defs->getoutminuskill($myfunc_call->get_block_id());
+                                           
                                             $analyzer_include = new \progpilot\Analyzer;
                                             $analyzer_include->run_internal($context_include, $this->defs->getoutminuskill($myfunc_call->get_block_id()));
 
@@ -406,7 +408,7 @@ class VisitorAnalysis
                                             }
 
                                             $main_include = $context_include->get_functions()->get_function("{main}");
-
+                                            
                                             $defs_output_included_final = [];
                                             if (!is_null($main_include))
                                             {

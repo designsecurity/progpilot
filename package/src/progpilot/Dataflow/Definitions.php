@@ -66,7 +66,7 @@ class Definitions
             }
         }
     }
-
+    
     public static function print_stdout($defsparam)
     {
         if (!is_null($defsparam))

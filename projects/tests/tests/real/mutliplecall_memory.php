@@ -1,15 +1,11 @@
 <?php
 
-function blabla($var)
-{
-  
-  echo $var;
-}
+//$var = "eee";
+//include("mutliplecall_memory_include.php");
 
-$var1 = "lkdfldk";
-blabla($var1);
-blabla("effefe");
-blabla("dmlfskmlfsdl");
-blabla("kldsfklsdjkl");
+$var = $_GET["p"];
+include("mutliplecall_memory_include.php");
+
+include("mutliplecall_memory_include.php");
 
 ?>

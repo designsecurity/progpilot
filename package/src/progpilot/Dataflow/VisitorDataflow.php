@@ -51,11 +51,6 @@ class VisitorDataflow
 
     public function analyze($context, $myfunc, $defs_included = null)
     {
-        /*
-          $mycode = $context->get_mycode();
-          $index = $mycode->get_start();
-          $code = $mycode->get_codes();
-        */
         $mycode = $myfunc->get_mycode();
         $code = $mycode->get_codes();
 
@@ -299,8 +294,6 @@ class VisitorDataflow
                     if (is_null($mydef->get_source_myfile()))
                         $mydef->set_source_myfile($context->get_myfile());
 
-                    unset($mydef);
-
                     // representations start
                     $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
                     $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::TEMPORARY."\n");
@@ -316,7 +309,7 @@ class VisitorDataflow
 
                     if (is_null($mydef->get_source_myfile()))
                         $mydef->set_source_myfile($context->get_myfile());
-
+                    
                     $this->defs->adddef($mydef->get_name(), $mydef);
                     $this->defs->addgen($mydef->get_block_id(), $mydef);
 
