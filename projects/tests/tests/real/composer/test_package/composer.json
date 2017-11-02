@@ -1,0 +1,10 @@
+{    
+    "name": "progpilot/tests/test_package",
+    "description": "test vuln composer package",
+    "autoload": {
+        "files" : ["init.php"],
+        "psr-0": {
+            "test_package": "./"
+        }
+    }
+} 

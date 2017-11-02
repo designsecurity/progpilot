@@ -191,7 +191,7 @@ class VisitorAnalysis
                         $tainted = true;
                     $tempdefa->set_tainted($tainted);
 
-                    $defs = ResolveDefs::temporary_simple($this->context, $this->defs, $tempdefa);
+                    $defs = ResolveDefs::temporary_simple($this->context, $this->defs, $tempdefa, $tempdefa_myexpr->is_assign_iterator());
 
                     $concat_defassign = [];
                     $concat_values = [];
@@ -339,8 +339,15 @@ class VisitorAnalysis
                                 foreach ($mydef_arg->get_last_known_values() as $last_known_value)
                                 {
                                     $real_file = false;
+
+                                    // else it's maybe a relative path
                                     $file = $this->context->get_path()."/".$last_known_value;
                                     $real_file = realpath($file);
+
+                                    // if $last_known_value is a absolute path to the file :
+                                    // /home/dev/file.php
+                                    if (!$real_file)
+                                        $real_file = realpath($last_known_value);
 
                                     if (!$real_file)
                                     {
@@ -412,6 +419,10 @@ class VisitorAnalysis
                                             $defs_output_included_final = [];
                                             if (!is_null($main_include))
                                             {
+
+                                                ArrayAnalysis::funccall_after($context_include, $main_include, $myfunc_call, $arr_funccall, $code[$index + 3]);
+                                                TaintAnalysis::funccall_after($context_include, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $main_include, $arr_funccall, $instruction);
+
                                                 $defs_main_return = $main_include->get_defs()->getdefrefbyname("{main}_return");
                                                 foreach ($defs_main_return as $def_main_return)
                                                 {
@@ -438,14 +449,12 @@ class VisitorAnalysis
                                                     if (!is_null($functions_name))
                                                     {
                                                         foreach ($functions_name as $myfunc)
-                                                        {
                                                             $this->context->get_functions()->add_function($myfunc->get_name(), $myfunc);
-                                                        }
                                                     }
                                                 }
                                             }
 
-                                            $myclasses_include = $context_include->get_classes();
+                                            $myclasses_include = $context_include->get_classes()->get_list_classes();
                                             foreach ($myclasses_include as $myclass_include)
                                                 $this->context->get_classes()->add_myclass($myclass_include);
 
@@ -530,6 +539,24 @@ class VisitorAnalysis
 
                          */
                     }
+                    else if ($myfunc_call->get_is_static())
+                    {
+                        $myclass_static = $this->context->get_classes()->get_myclass($myfunc_call->get_name_instance());
+
+                        if (!is_null($myclass_static))
+                        {
+                            $method = $myclass_static->get_method($funcname);
+
+                            if (!ResolveDefs::get_visibility_method($myfunc_call->get_name_instance(), $method))
+                                $method = null;
+
+                            $list_myfunc[] = $method;
+
+                            $stack_class[0][0] = $myclass_static;
+
+                            TaintAnalysis::funccall_specify_analysis($method, $stack_class, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myclass_static, $myfunc_call, $arr_funccall, $instruction, $mycode, $index);
+                        }
+                    }
                     else
                     {
                         $myfunc = $this->context->get_functions()->get_function($funcname);
@@ -546,7 +573,7 @@ class VisitorAnalysis
                         if (!is_null($myfunc) && !$this->in_call_stack($myfunc))
                         {
                             // the called function is a method and this method exists in the class
-                            if ($myfunc_call->get_is_method() && $myfunc->get_is_method() || (!$myfunc_call->get_is_method() && !$myfunc->get_is_method()))
+                            if (($myfunc_call->get_is_method() || $myfunc_call->get_is_static()) && $myfunc->get_is_method() || ((!$myfunc_call->get_is_method() && !$myfunc_call->get_is_static()) && !$myfunc->get_is_method()))
                             {
                                 ArrayAnalysis::funccall_before($this->context, $this->defs, $myfunc, $myfunc_call, $instruction);
                                 TaintAnalysis::funccall_before($this->context, $this->defs, $myfunc, $instruction, $this->context->get_classes());

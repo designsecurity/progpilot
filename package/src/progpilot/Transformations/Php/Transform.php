@@ -174,6 +174,9 @@ class Transform implements Visitor
                 $myfunction->set_is_method(true);
                 $myfunction->set_myclass($myclass);
 
+                if (($func->flags & Func::FLAG_STATIC) === Func::FLAG_STATIC)
+                    $myfunction->set_is_static(true);
+
                 $mythisdef = new MyDefinition(0, 0, "this");
                 $mythisdef->set_block_id(0);
                 $mythisdef->set_is_instance(true);
@@ -289,28 +292,44 @@ class Transform implements Visitor
 
         if ($op instanceof Op\Expr\Include_)
         {
-            $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
-            $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+            if (Common::is_funccall_withoutreturn($op))
+            {
+                // expr of type "assign" to have a defined return
+                $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
+                $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
-            $inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
-            $inst_funcall_main->add_property("funcname", "include");
+                FuncCall::instruction($this->context, $myexpr, rand(), false);
 
-            $myfunction_call = new MyFunction("include");
-            $myfunction_call->setLine($this->context->get_current_line());
-            $myfunction_call->setColumn($this->context->get_current_column());
-            $myfunction_call->set_nb_params(1);
+                $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
+                $inst_end_expr->add_property("expr", $myexpr);
+                $this->context->get_current_mycode()->add_code($inst_end_expr);
+            }
 
-            FuncCall::argument($this->context, rand(), $this->context->get_current_op()->expr, $inst_funcall_main, "include", 0);
+            /*
+              $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
+              $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
-            $inst_funcall_main->add_property("myfunc_call", $myfunction_call);
-            $inst_funcall_main->add_property("expr", $myexpr);
-            $inst_funcall_main->add_property("arr", false);
-            $inst_funcall_main->add_property("type_include", $op->type);
-            $this->context->get_current_mycode()->add_code($inst_funcall_main);
+              $inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
+              $inst_funcall_main->add_property("funcname", "include");
 
-            $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-            $inst_end_expr->add_property("expr", $myexpr);
-            $this->context->get_current_mycode()->add_code($inst_end_expr);
+              $myfunction_call = new MyFunction("include");
+              $myfunction_call->setLine($this->context->get_current_line());
+              $myfunction_call->setColumn($this->context->get_current_column());
+              $myfunction_call->set_nb_params(1);
+
+              FuncCall::argument($this->context, rand(), $this->context->get_current_op()->expr, $inst_funcall_main, "include", 0);
+
+              $inst_funcall_main->add_property("myfunc_call", $myfunction_call);
+              $inst_funcall_main->add_property("expr", $myexpr);
+              $inst_funcall_main->add_property("arr", false);
+              $inst_funcall_main->add_property("type_include", $op->type);
+              $this->context->get_current_mycode()->add_code($inst_funcall_main);
+
+              $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
+              $inst_end_expr->add_property("expr", $myexpr);
+              $this->context->get_current_mycode()->add_code($inst_end_expr);
+
+              */
         }
 
         else if ($op instanceof Op\Terminal\Return_)
@@ -392,6 +411,21 @@ class Transform implements Visitor
             $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
             $inst_end_expr->add_property("expr", $myexpr);
             $this->context->get_current_mycode()->add_code($inst_end_expr);
+        }
+        else if ($op instanceof Op\Expr\StaticCall)
+        {
+            if (Common::is_funccall_withoutreturn($op))
+            {
+                // expr of type "assign" to have a defined return
+                $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
+                $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+
+                FuncCall::instruction($this->context, $myexpr, rand(), false, false, true);
+
+                $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
+                $inst_end_expr->add_property("expr", $myexpr);
+                $this->context->get_current_mycode()->add_code($inst_end_expr);
+            }
         }
         else if ($op instanceof Op\Expr\FuncCall)
         {

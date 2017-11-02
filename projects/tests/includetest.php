@@ -48,5 +48,24 @@ $framework->add_output("./tests/includes/simple9.php", array("\$page[\"body\"]")
 $framework->add_output("./tests/includes/simple9.php", array("52"));
 $framework->add_output("./tests/includes/simple9.php", "xss");
 
+$framework->add_testbasis("./tests/includes/simple10.php");
+$framework->add_output("./tests/includes/simple10.php", array("\$var1"));
+$framework->add_output("./tests/includes/simple10.php", array("3"));
+$framework->add_output("./tests/includes/simple10.php", "xss");
+
+$framework->add_testbasis("./tests/includes/simple11.php");
+$framework->add_output("./tests/includes/simple11.php", array("\$var1"));
+$framework->add_output("./tests/includes/simple11.php", array("4"));
+$framework->add_output("./tests/includes/simple11.php", "xss");
+
+$framework->add_testbasis("./tests/includes/simple12.php");
+$framework->add_output("./tests/includes/simple12.php", array("\${main}_return[\"cb36d7468e442c354c5037bbb4d59b1c\"]"));
+$framework->add_output("./tests/includes/simple12.php", array("7"));
+$framework->add_output("./tests/includes/simple12.php", "xss");
+
+$framework->add_testbasis("./tests/includes/simple13.php");
+$framework->add_output("./tests/includes/simple13.php", array("\$var1"));
+$framework->add_output("./tests/includes/simple13.php", array("4"));
+$framework->add_output("./tests/includes/simple13.php", "xss");
 
 ?>

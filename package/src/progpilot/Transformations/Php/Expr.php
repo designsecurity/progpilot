@@ -179,11 +179,18 @@ class Expr
                         Expr::instruction_internal($defs_ofexpr, $opsbis, $context, $myexpr, $assign_id);
                     }
                 }
+                else if ($ops instanceof Op\Expr\Include_)
+                {
+                    $old_op = $context->get_current_op();
+                    $context->set_current_op($ops);
+                    FuncCall::instruction($context, $myexpr, $assign_id, $arr_funccall, false);
+                    $context->set_current_op($old_op);
+                }
                 else if ($ops instanceof Op\Expr\FuncCall)
                 {
                     $old_op = $context->get_current_op();
                     $context->set_current_op($ops);
-                    FuncCall::instruction($context, $myexpr, $assign_id, $arr_funccall);
+                    FuncCall::instruction($context, $myexpr, $assign_id, $arr_funccall, false);
                     $context->set_current_op($old_op);
                 }
                 else if ($ops instanceof Op\Expr\MethodCall)
@@ -191,6 +198,13 @@ class Expr
                     $old_op = $context->get_current_op();
                     $context->set_current_op($ops);
                     FuncCall::instruction($context, $myexpr, $assign_id, $arr_funccall, true);
+                    $context->set_current_op($old_op);
+                }
+                else if ($ops instanceof Op\Expr\StaticCall)
+                {
+                    $old_op = $context->get_current_op();
+                    $context->set_current_op($ops);
+                    FuncCall::instruction($context, $myexpr, $assign_id, $arr_funccall, false, true);
                     $context->set_current_op($old_op);
                 }
 

@@ -1,0 +1,41 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "d3b53f38f9dc22cd76beaab5f58c36a3",
+    "content-hash": "5129750d80828cc3f60660cbfe16abd6",
+    "packages": [
+        {
+            "name": "progpilot/tests/test_package",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "./test_package",
+                "reference": "3c62e8db3c147370b4f470c285f95794f4c6c5b3",
+                "shasum": null
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "init.php"
+                ],
+                "psr-0": {
+                    "test_package": "./"
+                }
+            },
+            "description": "test vuln composer package"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "progpilot/tests/test_package": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

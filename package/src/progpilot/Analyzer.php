@@ -81,8 +81,8 @@ class Analyzer
                     if (is_null($context->inputs->get_code()))
                     {
                         $context->inputs->set_code(file_get_contents($context->inputs->get_file()));
-                        $script = $parser->parse($context->inputs->get_code(), "");
                         $context->set_path(dirname($context->inputs->get_file()));
+                        $script = $parser->parse($context->inputs->get_code(), $context->inputs->get_file());
                     }
                     else
                         $script = $parser->parse($context->inputs->get_code(), "");

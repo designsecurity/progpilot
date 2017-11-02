@@ -66,7 +66,7 @@ class FuncCall
     arg2 : expr for the return
     arg3 : arr for the return : function_call()[0] (arr = [0])
      */
-    public static function instruction($context, $myexpr, $assign_id, $funccall_arr, $is_method = false)
+    public static function instruction($context, $myexpr, $assign_id, $funccall_arr, $is_method = false, $is_static = false)
     {
         $nbparams = 0;
         $property_name = "";
@@ -102,12 +102,27 @@ class FuncCall
             Assign::instruction($context, false, true);
         }
 
+        if ($context->get_current_op() instanceof Op\Expr\Include_)
+        {
+            $funccall_name = "include";
+        }
+
+
+
         $inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
         $inst_funcall_main->add_property("funcname", $funccall_name);
 
         $myfunction_call = new MyFunction($funccall_name);
         $myfunction_call->setLine($context->get_current_line());
         $myfunction_call->setColumn($context->get_current_column());
+
+
+        if ($is_static)
+        {
+            $name_class = $context->get_current_op()->class->value;
+            $myfunction_call->set_is_static(true);
+            $myfunction_call->set_name_instance($name_class);
+        }
 
         if ($is_method)
         {
@@ -128,7 +143,17 @@ class FuncCall
             $myfunction_call->set_back_def($mybackdef);
         }
 
-        foreach ($context->get_current_op()->args as $arg)
+        $list_args = [];
+
+        if ($context->get_current_op() instanceof Op\Expr\Include_)
+        {
+            $list_args[] = $context->get_current_op()->expr;
+            $inst_funcall_main->add_property("type_include", $context->get_current_op()->type);
+        }
+        else
+            $list_args = $context->get_current_op()->args;
+
+        foreach ($list_args as $arg)
         {
             FuncCall::argument($context, $assign_id, $arg, $inst_funcall_main, $funccall_name, $nbparams);
             $nbparams ++;

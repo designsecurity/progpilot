@@ -79,6 +79,11 @@ class Assign
         $myexpr->set_assign(true);
         $myexpr->set_assign_def($mydef);
 
+
+        if (isset($context->get_current_op()->expr->ops[0])
+                && $context->get_current_op()->expr->ops[0] instanceof Op\Iterator\Value)
+            $myexpr->set_assign_iterator(true);
+
         $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
         Expr::instruction($expr_op, $context, $myexpr, $assign_id);

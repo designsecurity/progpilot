@@ -425,7 +425,7 @@ class TaintAnalysis
 
         foreach ($defsreturn as $defreturn)
         {
-            if (($arr_funccall != false && $defreturn->get_is_array() && $defreturn->get_array_value() === $arr_funccall) || $arr_funccall == false)
+            if (($arr_funccall != false && $defreturn->get_is_array() && $defreturn->get_array_value() === $arr_funccall) || ($arr_funccall == false && !$defreturn->get_is_array()))
             {
                 $copydefreturn = $defreturn;
 

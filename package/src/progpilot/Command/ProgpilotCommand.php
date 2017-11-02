@@ -47,59 +47,13 @@ class ProgpilotCommand extends Command
         $this->output = $output;
     }
 
-    public function set_default_source($context)
-    {
-        $context->inputs->set_sources(__DIR__."/../../uptodate_data/sources.json");
-    }
-
-    public function set_default_sinks($context)
-    {
-        $context->inputs->set_sinks(__DIR__."/../../uptodate_data/sinks.json");
-    }
-
-    public function set_default_sanitizers($context)
-    {
-        $context->inputs->set_sanitizers(__DIR__."/../../uptodate_data/sanitizers.json");
-    }
-
-    public function set_default_validators($context)
-    {
-        $context->inputs->set_validators(__DIR__."/../../uptodate_data/validators.json");
-    }
-
-    public function set_default_configuration($context)
-    {
-        $this->set_default_source($context);
-        $this->set_default_sinks($context);
-        $this->set_default_sanitizers($context);
-        $this->set_default_validators($context);
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
-        if (is_null($input->getOption('configuration')))
-            $this->set_default_configuration($context);
-
-        else
-        {
+        if (!is_null($input->getOption('configuration')))
             $context->set_configuration($input->getOption('configuration'));
-
-            if (is_null($context->inputs->get_sources_file()))
-                $this->set_default_source($context);
-
-            if (is_null($context->inputs->get_sinks_file()))
-                $this->set_default_sinks($context);
-
-            if (is_null($context->inputs->get_sanitizers_file()))
-                $this->set_default_sanitizers($context);
-
-            if (is_null($context->inputs->get_validators_file()))
-                $this->set_default_validators($context);
-        }
-
 
         $cmd_files = $this->input->getArgument('files');
         try
@@ -109,7 +63,7 @@ class ProgpilotCommand extends Command
         }
         catch (Exception $e)
         {
-            echo "Progpilot error : ".$e->getMessage()." file : ".$e->getFile()." line : ".$e->getLine()."\n";
+            echo Lang::GLOBAL_ERROR.$e->getMessage()." file : ".$e->getFile()." line : ".$e->getLine()."\n";
         }
 
     }

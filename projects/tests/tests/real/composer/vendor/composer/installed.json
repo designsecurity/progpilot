@@ -1,0 +1,24 @@
+[
+    {
+        "name": "progpilot/tests/test_package",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "dist": {
+            "type": "path",
+            "url": "./test_package",
+            "reference": "3c62e8db3c147370b4f470c285f95794f4c6c5b3",
+            "shasum": null
+        },
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "init.php"
+            ],
+            "psr-0": {
+                "test_package": "./"
+            }
+        },
+        "description": "test vuln composer package"
+    }
+]

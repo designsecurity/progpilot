@@ -7,4 +7,6 @@ $framework->add_output("./tests/real/mutliplecall_memory.php", array("\$var"));
 $framework->add_output("./tests/real/mutliplecall_memory.php", array("6"));
 $framework->add_output("./tests/real/mutliplecall_memory.php", "xss");
 
+$framework->add_testbasis("./tests/real/composer/index.php");
+
 ?>

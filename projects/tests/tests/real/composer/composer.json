@@ -1,0 +1,13 @@
+{
+    "name": "test vuln composer package",
+    "description": "test vuln composer package",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "./test_package"
+        }
+    ],
+    "require": {
+        "progpilot/tests/test_package": "dev-master"
+    }
+}  

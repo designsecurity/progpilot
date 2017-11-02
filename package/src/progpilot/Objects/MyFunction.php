@@ -33,6 +33,8 @@ class MyFunction extends MyOp
     private $last_column;
     private $last_block_id;
     private $is_property;
+    private $is_static;
+    private $is_method;
 
     private $mycode;
 
@@ -48,6 +50,7 @@ class MyFunction extends MyOp
         $this->visibility = "public";
         $this->myclass = null;
         $this->is_method = false;
+        $this->is_static = false;
         $this->name_instance = null;
         $this->this_def = null;
         $this->back_def = null;
@@ -78,6 +81,16 @@ class MyFunction extends MyOp
     public function get_mycode()
     {
         return $this->mycode;
+    }
+
+    public function set_is_static($is_static)
+    {
+        $this->is_static = $is_static;
+    }
+
+    public function get_is_static()
+    {
+        return $this->is_static;
     }
 
     public function set_is_property($is_property)

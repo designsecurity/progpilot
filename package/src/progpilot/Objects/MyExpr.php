@@ -15,6 +15,7 @@ class MyExpr extends MyOp
 
     private $tainted;
     private $assign;
+    private $assign_iterator;
     private $assign_def;
     private $thedefs;
     private $is_concat;
@@ -29,6 +30,7 @@ class MyExpr extends MyOp
         $this->is_concat = false;
         $this->tainted = false;
         $this->assign = false;
+        $this->assign_iterator = false;
         $this->assign_def = null;
         $this->thedefs = [];
     }
@@ -82,6 +84,11 @@ class MyExpr extends MyOp
         return $this->assign_def;
     }
 
+    public function set_assign_iterator($assign_iterator)
+    {
+        $this->assign_iterator = $assign_iterator;
+    }
+
     public function set_assign($assign)
     {
         $this->assign = $assign;
@@ -90,6 +97,11 @@ class MyExpr extends MyOp
     public function is_assign()
     {
         return $this->assign;
+    }
+
+    public function is_assign_iterator()
+    {
+        return $this->assign_iterator;
     }
 
     public function set_defs($defs)

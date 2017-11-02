@@ -279,6 +279,11 @@ $framework->add_output("./tests/generic/functions17.php", array("\$param2"));
 $framework->add_output("./tests/generic/functions17.php", array("3"));
 $framework->add_output("./tests/generic/functions17.php", "xss");
 
+$framework->add_testbasis("./tests/generic/functions18.php");
+$framework->add_output("./tests/generic/functions18.php", array("\$param2"));
+$framework->add_output("./tests/generic/functions18.php", array("5"));
+$framework->add_output("./tests/generic/functions18.php", "xss");
+
 $framework->add_testbasis("./tests/generic/functionsrec1.php");
 $framework->add_output("./tests/generic/functionsrec1.php", array("\$var"));
 $framework->add_output("./tests/generic/functionsrec1.php", array("10"));
@@ -327,5 +332,10 @@ $framework->add_output("./tests/generic/strings1.php", "xss");
 $framework->add_output("./tests/generic/strings1.php", array("\$tainted32"));
 $framework->add_output("./tests/generic/strings1.php", array("73"));
 $framework->add_output("./tests/generic/strings1.php", "xss");
+
+$framework->add_testbasis("./tests/generic/foreach1.php");
+$framework->add_output("./tests/generic/foreach1.php", array("\$array_value"));
+$framework->add_output("./tests/generic/foreach1.php", array("6"));
+$framework->add_output("./tests/generic/foreach1.php", "xss");
 
 ?>

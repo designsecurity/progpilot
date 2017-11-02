@@ -32,18 +32,18 @@ class ArrayAnalysis
 
     }
 
-    public static function temporary_simple($context, $def1, $def2)
+    public static function temporary_simple($context, $def1, $def2, $is_iterator = false)
     {
         $good_defs = [];
 
-        if ($def2->get_is_copy_array() && $def1->get_is_array())
+        if (($def2->get_is_copy_array() && $def1->get_is_array()) || ($def2->get_is_copy_array() && $is_iterator))
         {
             foreach ($def2->get_copyarrays() as $def_copyarray)
             {
                 $mydef_arr = $def_copyarray[0];
                 $mydef_tmp = $def_copyarray[1];
 
-                if ($mydef_arr === $def1->get_array_value())
+                if (($mydef_arr === $def1->get_array_value()) || $is_iterator)
                     $good_defs[] = $mydef_tmp;
             }
         }

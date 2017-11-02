@@ -629,7 +629,7 @@ class ResolveDefs
         return $properties_defs;
     }
 
-    public static function temporary_simple($context, $data, $tempdefa)
+    public static function temporary_simple($context, $data, $tempdefa, $is_iterator = false)
     {
         if ($tempdefa->get_is_property())
             $defs = ResolveDefs::select_properties(
@@ -641,7 +641,7 @@ class ResolveDefs
             $defs = ResolveDefs::select_definitions(
                         $context,
                         $data->getoutminuskill($tempdefa->get_block_id()),
-                        $tempdefa);
+                        $tempdefa, $is_iterator);
 
         $myexpr = $tempdefa->get_exprs()[0];
 
@@ -650,7 +650,7 @@ class ResolveDefs
         {
             foreach ($defs as $defz)
             {
-                $defaa = ArrayAnalysis::temporary_simple($context, $tempdefa, $defz);
+                $defaa = ArrayAnalysis::temporary_simple($context, $tempdefa, $defz, $is_iterator);
 
                 foreach ($defaa as $defa)
                 {

@@ -470,6 +470,9 @@ class MyInputs
 
     public function read_sanitizers()
     {
+        if (is_null($this->sanitizers_file))
+            $this->sanitizers_file = __DIR__."/../../uptodate_data/sanitizers.json";
+
         if (!is_null($this->sanitizers_file))
         {
             if (!file_exists($this->sanitizers_file))
@@ -541,6 +544,9 @@ class MyInputs
 
     public function read_sinks()
     {
+        if (is_null($this->sinks_file))
+            $this->sinks_file = __DIR__."/../../uptodate_data/sinks.json";
+
         if (!is_null($this->sinks_file))
         {
             if (!file_exists($this->sinks_file))
@@ -603,6 +609,9 @@ class MyInputs
 
     public function read_sources()
     {
+        if (is_null($this->sources_file))
+            $this->sources_file = __DIR__."/../../uptodate_data/sources.json";
+
         if (!is_null($this->sources_file))
         {
             if (!file_exists($this->sources_file))
@@ -684,6 +693,9 @@ class MyInputs
 
     public function read_validators()
     {
+        if (is_null($this->validators_file))
+            $this->validators_file = __DIR__."/../../uptodate_data/validators.json";
+
         if (!is_null($this->validators_file))
         {
             if (!file_exists($this->validators_file))

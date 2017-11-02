@@ -80,13 +80,15 @@ class Context
         unset($this->objects);
         unset($this->classes);
         unset($this->functions);
-        unset($this->mycode);
+        unset($this->current_mycode);
 
         $this->inputs->set_code(null);
 
         $this->objects = new \progpilot\Dataflow\Objects;
         $this->classes = new \progpilot\Dataflow\Classes;
         $this->functions = new \progpilot\Dataflow\Functions;
+        // representations (cfg, ast ...) are deleted to avoid memory grown
+        $this->outputs = new \progpilot\Outputs\MyOutputs;
     }
 
     public function get_array_includes()
