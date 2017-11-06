@@ -11,12 +11,12 @@
 namespace progpilot;
 
 use progpilot\Objects\MyOp;
+use progpilot\Objects\MyDefinition;
 
 class Utils
 {
     public static function toColumn($code, $pos)
     {
-
         if ($pos > strlen($code))
         {
             return 1;
@@ -61,13 +61,13 @@ class Utils
 
     public static function print_definition($def)
     {
-        if ($def->get_is_property())
+        if ($def->is_type(MyDefinition::TYPE_PROPERTY))
             $def_name = "\$".Utils::encode_characters($def->get_name()).Utils::print_properties($def->property->get_properties());
         else
             $def_name = "\$".Utils::encode_characters($def->get_name());
 
         $name_array = "";
-        if ($def->get_is_array())
+        if ($def->is_type(MyDefinition::TYPE_ARRAY))
             Utils::print_array($def->get_array_value(), $name_array);
 
         return $def_name.$name_array;
@@ -76,7 +76,7 @@ class Utils
     public static function print_function($function)
     {
         $function_name = "\$";
-        if ($function->get_is_method())
+        if ($function->is_type(MyFunction::TYPE_FUNC_METHOD))
             $function_name = Utils::encode_characters($function->get_myclass()->get_name())."->";
 
         $function_name .= Utils::encode_characters($function->get_name());

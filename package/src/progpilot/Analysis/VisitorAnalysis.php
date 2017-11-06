@@ -15,6 +15,8 @@ use progpilot\Objects\MyOp;
 use progpilot\Objects\ArrayStatic;
 use progpilot\Objects\MyDefinition;
 use progpilot\Dataflow\Definitions;
+use progpilot\Objects\MyClass;
+use progpilot\Objects\MyFunction;
 
 use progpilot\Code\MyCode;
 use progpilot\Code\Opcodes;
@@ -53,10 +55,10 @@ class VisitorAnalysis
         {
             $call_func = $call[0];
 
-            if ($call_func->get_name() === $cur_func->get_name() && !$call_func->get_is_method() && !$cur_func->get_is_method())
+            if ($call_func->get_name() === $cur_func->get_name() && !$call_func->is_type(MyFunction::TYPE_FUNC_METHOD) && !$cur_func->is_type(MyFunction::TYPE_FUNC_METHOD))
                 return true;
 
-            if ($call_func->get_name() === $cur_func->get_name() && $call_func->get_is_method() && $cur_func->get_is_method())
+            if ($call_func->get_name() === $cur_func->get_name() && $call_func->is_type(MyFunction::TYPE_FUNC_METHOD) && $cur_func->is_type(MyFunction::TYPE_FUNC_METHOD))
             {
                 $cur_class = $cur_func->get_myclass();
                 $call_class = $call_func->get_myclass();
@@ -218,7 +220,7 @@ class VisitorAnalysis
                             }
                         }
 
-                        if ($def->get_is_property())
+                        if ($def->is_type(MyDefinition::TYPE_PROPERTY))
                         {
                             if (!is_null($this->context->inputs->get_source_byname(null, $def, false, $def->get_class_name(), false, $def)))
                                 $def->set_tainted(true);
@@ -235,9 +237,9 @@ class VisitorAnalysis
                                 $defassign->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
 
                                 // vérifier s'il y a pas de concat
-                                if ($def->get_is_instance())
+                                if ($def->is_type(MyDefinition::TYPE_INSTANCE))
                                 {
-                                    $defassign->set_is_instance(true);
+                                    $defassign->add_type(MyDefinition::TYPE_INSTANCE);
                                     $defassign->set_object_id($def->get_object_id());
 
                                     $tmp_myclasses = $this->context->get_objects()->get_all_myclasses($def->get_object_id());
@@ -247,7 +249,7 @@ class VisitorAnalysis
                                         foreach ($tmp_myclass->get_properties() as $property)
                                         {
                                             $mydeftemp = new MyDefinition($tempdefa->getLine(), $tempdefa->getColumn(), $tempdefa->get_name());
-                                            $mydeftemp->set_is_property(true);
+                                            $mydeftemp->add_type(MyDefinition::TYPE_PROPERTY);
                                             $mydeftemp->property->set_properties($property->property->get_properties());
                                             $mydeftemp->set_block_id($tempdefa->get_block_id());
                                             $mydeftemp->set_source_myfile($tempdefa->get_source_myfile());
@@ -255,10 +257,10 @@ class VisitorAnalysis
                                             $defs_found = ResolveDefs::select_properties($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $mydeftemp, true);
                                             foreach ($defs_found as $def_found)
                                             {
-                                                if ($def_found->get_is_copy_array())
+                                                if ($def_found->is_type(MyDefinition::TYPE_COPY_ARRAY))
                                                 {
                                                     $property->set_copyarrays($def_found->get_copyarrays());
-                                                    $property->set_is_copy_array(true);
+                                                    $property->add_type(MyDefinition::TYPE_COPY_ARRAY);
                                                 }
 
                                                 if ($def_found->is_tainted())
@@ -285,6 +287,8 @@ class VisitorAnalysis
                                 $safe = AssertionAnalysis::temporary_simple($this->context, $this->defs, $this->current_myblock, $def, $tempdefa);
 
                                 TaintAnalysis::set_tainted($this->context, $this->defs->getoutminuskill($def->get_block_id()), $def, $defassign, $expr, $safe);
+
+
                             }
                         }
                     }
@@ -419,7 +423,6 @@ class VisitorAnalysis
                                             $defs_output_included_final = [];
                                             if (!is_null($main_include))
                                             {
-
                                                 ArrayAnalysis::funccall_after($context_include, $main_include, $myfunc_call, $arr_funccall, $code[$index + 3]);
                                                 TaintAnalysis::funccall_after($context_include, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $main_include, $arr_funccall, $instruction);
 
@@ -432,9 +435,7 @@ class VisitorAnalysis
                                                         foreach ($defs_output_included as $def_output_included)
                                                         {
                                                             if (!in_array($def_output_included, $defs_output_included_final, true))
-                                                            {
                                                                 $defs_output_included_final[] = $def_output_included;
-                                                            }
                                                         }
                                                     }
                                                 }
@@ -450,13 +451,26 @@ class VisitorAnalysis
                                                     {
                                                         foreach ($functions_name as $myfunc)
                                                             $this->context->get_functions()->add_function($myfunc->get_name(), $myfunc);
+
                                                     }
                                                 }
                                             }
 
                                             $myclasses_include = $context_include->get_classes()->get_list_classes();
                                             foreach ($myclasses_include as $myclass_include)
+                                            {
                                                 $this->context->get_classes()->add_myclass($myclass_include);
+
+                                                // we have to resolves definition
+                                                foreach ($this->defs->getoutminuskill($myfunc_call->get_block_id()) as $the_def)
+                                                {
+                                                    if ($the_def->get_class_name() === $myclass_include->get_name())
+                                                    {
+                                                        $id_object = $the_def->get_object_id();
+                                                        $this->context->get_objects()->replace_myclass_to_object($id_object, $myclass_include);
+                                                    }
+                                                }
+                                            }
 
                                             $new_defs = false;
                                             if (count($defs_output_included_final) > 0)
@@ -494,7 +508,7 @@ class VisitorAnalysis
                         }
                     }
 
-                    if ($myfunc_call->get_is_method())
+                    if ($myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD))
                     {
                         $stack_class = ResolveDefs::funccall_class(
                                            $this->context,
@@ -539,7 +553,7 @@ class VisitorAnalysis
 
                          */
                     }
-                    else if ($myfunc_call->get_is_static())
+                    else if ($myfunc_call->is_type(MyFunction::TYPE_FUNC_STATIC))
                     {
                         $myclass_static = $this->context->get_classes()->get_myclass($myfunc_call->get_name_instance());
 
@@ -573,7 +587,7 @@ class VisitorAnalysis
                         if (!is_null($myfunc) && !$this->in_call_stack($myfunc))
                         {
                             // the called function is a method and this method exists in the class
-                            if (($myfunc_call->get_is_method() || $myfunc_call->get_is_static()) && $myfunc->get_is_method() || ((!$myfunc_call->get_is_method() && !$myfunc_call->get_is_static()) && !$myfunc->get_is_method()))
+                            if (($myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD) || $myfunc_call->is_type(MyFunction::TYPE_FUNC_STATIC)) && $myfunc->is_type(MyFunction::TYPE_FUNC_METHOD) || ((!$myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD) && !$myfunc_call->is_type(MyFunction::TYPE_FUNC_STATIC)) && !$myfunc->is_type(MyFunction::TYPE_FUNC_METHOD)))
                             {
                                 ArrayAnalysis::funccall_before($this->context, $this->defs, $myfunc, $myfunc_call, $instruction);
                                 TaintAnalysis::funccall_before($this->context, $this->defs, $myfunc, $instruction, $this->context->get_classes());
@@ -594,7 +608,10 @@ class VisitorAnalysis
                         }
 
                         if (is_null($myfunc))
+                        {
                             ResolveDefs::copy_instance($this->context, $this->defs, $myfunc_call);
+                            ResolveDefs::funccall_return_values($this->context, $myfunc_call, $instruction, $mycode, $index);
+                        }
 
                         ResolveDefs::instance_build_back($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc, $myfunc_call);
 

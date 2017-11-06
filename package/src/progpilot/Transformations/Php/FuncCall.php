@@ -120,23 +120,23 @@ class FuncCall
         if ($is_static)
         {
             $name_class = $context->get_current_op()->class->value;
-            $myfunction_call->set_is_static(true);
+            $myfunction_call->add_type(MyFunction::TYPE_FUNC_STATIC);
             $myfunction_call->set_name_instance($name_class);
         }
 
         if ($is_method)
         {
             // when we define a method in a class (TYPE_METHOD) but when we use a method (TYPE_INSTANCE)
-            $myfunction_call->set_is_method(true);
+            $myfunction_call->add_type(MyFunction::TYPE_FUNC_METHOD);
             $myfunction_call->set_name_instance($instance_name);
 
             $mybackdef = new MyDefinition($context->get_current_line(), $context->get_current_column() + 1, $instance_name);
-            $mybackdef->set_is_instance(true);
+            $mybackdef->add_type(MyDefinition::TYPE_INSTANCE);
             $mybackdef->set_assign_id(rand());
 
             if (count($property_name) > 0)
             {
-                $mybackdef->set_is_property(true);
+                $mybackdef->add_type(MyDefinition::TYPE_PROPERTY);
                 $mybackdef->property->set_properties($property_name);
             }
 

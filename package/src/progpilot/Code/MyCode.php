@@ -198,11 +198,11 @@ class MyCode
 
                     if ($func_is_instance == "true")
                     {
-                        $myfunction_call->set_type(MyOp::TYPE_INSTANCE);
+                        $myfunction_call->add_type(MyOp::TYPE_INSTANCE);
                         $myfunction_call->set_name_instance($func_name_instance);
 
                         $mybackdef = new MyDefinition($func_line, $func_column + 1, $func_name_instance);
-                        $mybackdef->set_type(MyOp::TYPE_INSTANCE);
+                        $mybackdef->add_type(MyDefinition::TYPE_INSTANCE);
                         $mybackdef->set_assign_id(rand());
                         $mybackdef->set_source_myfile($myjavascript_file);
                         $myfunction_call->set_back_def($mybackdef);

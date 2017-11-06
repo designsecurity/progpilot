@@ -64,10 +64,12 @@ class Assign
 
         $mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name);
         $mydef->set_assign_id($assign_id);
-        $mydef->set_is_ref($isref);
+
+        if ($isref)
+            $mydef->add_type(MyDefinition::TYPE_REFERENCE);
 
         if ($type == MyOp::TYPE_CONST)
-            $mydef->set_is_const(true);
+            $mydef->add_type(MyDefinition::TYPE_CONSTANTE);
 
         if ($is_returndef)
             $context->get_current_func()->add_return_def($mydef);
@@ -102,7 +104,7 @@ class Assign
         if ($type_array == MyOp::TYPE_ARRAY)
         {
             $arr = BuildArrays::build_array_from_ops($context->get_current_op()->var, false);
-            $mydef->set_is_array(true);
+            $mydef->add_type(MyDefinition::TYPE_ARRAY);
             $mydef->set_array_value($arr);
         }
 
@@ -119,7 +121,7 @@ class Assign
         if ($type == MyOp::TYPE_PROPERTY)
         {
             $property_name = Common::get_name_definition($context->get_current_op(), true);
-            $mydef->set_is_property(true);
+            $mydef->add_type(MyDefinition::TYPE_PROPERTY);
             $mydef->property->add_property($property_name);
 
             $property_name = Common::get_name_property($context->get_current_op()->var->ops[0]);
@@ -133,7 +135,7 @@ class Assign
             if (isset($context->get_current_op()->expr->ops[0]->class->value))
             {
                 $name_class = $context->get_current_op()->expr->ops[0]->class->value;
-                $mydef->set_is_instance(true);
+                $mydef->add_type(MyDefinition::TYPE_INSTANCE);
                 $mydef->set_class_name($name_class);
             }
         }
@@ -148,7 +150,7 @@ class Assign
             if ($ref_type_array == MyOp::TYPE_ARRAY)
             {
                 $arr = BuildArrays::build_array_from_ops($context->get_current_op()->expr, false);
-                $mydef->set_ref_arr(true);
+                $mydef->add_type(MyDefinition::TYPE_ARRAY_REFERENCE);
                 $mydef->set_ref_arr_value($arr);
             }
         }

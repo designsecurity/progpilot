@@ -78,7 +78,7 @@ class ArrayExpr
 
                     // we reverse the arr
                     $arrtrans = BuildArrays::build_array_from_arr($building_arr, false);
-                    $mydef->set_is_array(true);
+                    $mydef->add_type(MyDefinition::TYPE_ARRAY);
                     $mydef->set_array_value($arrtrans);
 
                     $inst_def = new MyInstruction(Opcodes::DEFINITION);

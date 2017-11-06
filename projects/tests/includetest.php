@@ -68,4 +68,9 @@ $framework->add_output("./tests/includes/simple13.php", array("\$var1"));
 $framework->add_output("./tests/includes/simple13.php", array("4"));
 $framework->add_output("./tests/includes/simple13.php", "xss");
 
+$framework->add_testbasis("./tests/includes/simple14.php");
+$framework->add_output("./tests/includes/simple14.php", array("\$var1"));
+$framework->add_output("./tests/includes/simple14.php", array("4"));
+$framework->add_output("./tests/includes/simple14.php", "xss");
+
 ?>

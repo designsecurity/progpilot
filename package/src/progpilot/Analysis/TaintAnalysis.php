@@ -17,6 +17,7 @@ use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyInstance;
 use progpilot\Objects\MyAssertion;
 use progpilot\Objects\MyExpr;
+use progpilot\Objects\MyFunction;
 
 use progpilot\Dataflow\Definitions;
 use progpilot\Code\Opcodes;
@@ -65,12 +66,12 @@ class TaintAnalysis
 
                 else if ($condition === "array_not_tainted")
                 {
-                    if ($defarg->get_is_array() && $defarg->is_tainted())
+                    if ($defarg->is_type(MyDefinition::TYPE_ARRAY) && $defarg->is_tainted())
                     {
                         $condition_respected = false;
                     }
 
-                    else if ($defarg->get_is_copy_array())
+                    else if ($defarg->is_type(MyDefinition::TYPE_COPY_ARRAY))
                     {
                         $copyarrays = $defarg->get_copyarrays();
                         foreach ($copyarrays as $copyarray)
@@ -342,7 +343,7 @@ class TaintAnalysis
         $exprreturn = $instruction->get_property("expr");
 
         $class_name = false;
-        if ($myfunc_call->get_is_method() && !is_null($myclass))
+        if ($myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD) && !is_null($myclass))
             $class_name = $myclass->get_name();
 
         $mysource = $context->inputs->get_source_byname($stack_class, $myfunc_call, true, $class_name, false);
@@ -365,7 +366,7 @@ class TaintAnalysis
                         if (!is_null($array_index))
                         {
                             $true_array_index = array($array_index => false);
-                            $deffrom->set_is_array(true);
+                            $deffrom->add_type(MyDefinition::TYPE_ARRAY);
                             $deffrom->set_array_value($true_array_index);
                         }
 
@@ -390,7 +391,7 @@ class TaintAnalysis
                     $value_array = array($mysource->get_return_array_value() => false);
 
                     $defassign->add_copyarray($value_array, $mydef);
-                    $defassign->set_is_copy_array(true);
+                    $defassign->add_type(MyDefinition::TYPE_COPY_ARRAY);
 
                     $exprreturn->add_def($mydef);
                     $mydef->add_expr($exprreturn);
@@ -425,7 +426,7 @@ class TaintAnalysis
 
         foreach ($defsreturn as $defreturn)
         {
-            if (($arr_funccall != false && $defreturn->get_is_array() && $defreturn->get_array_value() === $arr_funccall) || ($arr_funccall == false && !$defreturn->get_is_array()))
+            if (($arr_funccall != false && $defreturn->is_type(MyDefinition::TYPE_ARRAY) && $defreturn->get_array_value() === $arr_funccall) || ($arr_funccall == false && !$defreturn->is_type(MyDefinition::TYPE_ARRAY)))
             {
                 $copydefreturn = $defreturn;
 
@@ -477,6 +478,7 @@ class TaintAnalysis
                     }
                 }
 
+
                 $nbparams ++;
                 unset($defarg);
             }
@@ -492,7 +494,7 @@ class TaintAnalysis
         {
             $visibility_final = true;
 
-            if ($defassign->get_is_property())
+            if ($defassign->is_type(MyDefinition::TYPE_PROPERTY))
             {
                 $copy_defassign = clone $defassign;
                 $copy_defassign->set_assign_id(-1);
@@ -503,7 +505,7 @@ class TaintAnalysis
 
                 foreach ($instances as $instance)
                 {
-                    if ($instance->get_is_instance())
+                    if ($instance->is_type(MyDefinition::TYPE_INSTANCE))
                     {
                         $id_object = $instance->get_object_id();
                         $tmp_myclasses = $context->get_objects()->get_all_myclasses($id_object);

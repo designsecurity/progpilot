@@ -121,11 +121,6 @@ class Analyzer
     {
         if (!is_null($myfunc))
         {
-            /*
-              $context->get_mycode()->set_start($myfunc->get_start_address_func());
-              $context->get_mycode()->set_end($myfunc->get_end_address_func());
-              */
-
             $myfunc->get_mycode()->set_start(0);
             $myfunc->get_mycode()->set_end(count($myfunc->get_mycode()->get_codes()));
 

@@ -111,8 +111,6 @@ class MyExpr extends MyOp
 
     public function add_def($mydef)
     {
-        //var_dump($this->thedefs);
-
         if (!in_array($mydef, $this->thedefs, true))
             $this->thedefs[] = $mydef;
     }

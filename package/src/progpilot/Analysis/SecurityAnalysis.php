@@ -18,6 +18,7 @@ use PHPCfg\Visitor;
 use PHPCfg\Operand;
 
 use progpilot\Objects\MyOp;
+use progpilot\Objects\MyFunction;
 
 class SecurityAnalysis
 {
@@ -83,7 +84,7 @@ class SecurityAnalysis
     public static function funccall($stack_class, $context, $myfunc_call, $instruction, $myclass = null)
     {
         $name_instance = null;
-        if ($myfunc_call->get_is_method())
+        if ($myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD))
             $name_instance = $myfunc_call->get_name_instance();
 
         $mysink = $context->inputs->get_sink_byname($stack_class, $myfunc_call, $myclass);

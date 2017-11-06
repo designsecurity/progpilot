@@ -1,21 +1,18 @@
 <?php
 
-#$tainted_source_inside_package = $_GET["p"];
-$tainted_source_inside_package = "salut";
+$tainted_source_inside_package = $_GET["p"];
 
 function blabla()
 {
-  return "blabla";
+  echo $_GET["p"];
 }
 
 class test_tainted
 {
-  
-public static function return_tainted_source()
-{
-  return "salut";
-}
-
+  public static function return_tainted_source()
+  {
+    echo $_GET["p"];
+  }
 }
 
 ?>

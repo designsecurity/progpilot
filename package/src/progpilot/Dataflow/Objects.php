@@ -58,6 +58,24 @@ class Objects
         return $id_object;
     }
 
+    public function replace_myclass_to_object($id, $myclass)
+    {
+        $exist = false;
+        $myclasses = [];
+
+        if (isset($this->objects[$id]))
+            $myclasses = $this->objects[$id];
+
+        foreach ($myclasses as $key => $one_class)
+        {
+            if ($one_class->get_name() === $myclass->get_name())
+            {
+                $this->objects[$id][$key] = $myclass;
+                break;
+            }
+        }
+    }
+
     public function add_myclass_to_object($id, $myclass)
     {
         $exist = false;

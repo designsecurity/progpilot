@@ -36,7 +36,7 @@ class ArrayAnalysis
     {
         $good_defs = [];
 
-        if (($def2->get_is_copy_array() && $def1->get_is_array()) || ($def2->get_is_copy_array() && $is_iterator))
+        if (($def2->is_type(MyDefinition::TYPE_COPY_ARRAY) && $def1->is_type(MyDefinition::TYPE_ARRAY)) || ($def2->is_type(MyDefinition::TYPE_COPY_ARRAY) && $is_iterator))
         {
             foreach ($def2->get_copyarrays() as $def_copyarray)
             {
@@ -67,6 +67,7 @@ class ArrayAnalysis
 
                 $defarg = $instruction->get_property("argdef$nbparams");
                 $exprarg = $instruction->get_property("argexpr$nbparams");
+                $newparam->set_last_known_values($defarg->get_last_known_values());
 
                 ArrayAnalysis::copy_array_from_def($defarg, $defarg->get_array_value(), $newparam, false);
 
@@ -81,20 +82,17 @@ class ArrayAnalysis
 
             if (!is_null($func_param))
             {
-                $oldcopyiscopyarray = $param->get_is_copy_array();
-                $oldcopyisarray = $param->get_is_array();
-                $oldcopyarray = $param->get_type();
                 $oldcopyarrays = $param->get_copyarrays();
+                $old_flags = $param->get_type();
+                $oldlastknownvalues = $param->get_last_known_values();
 
-                $param->set_is_copy_array($func_param->get_is_copy_array());
-                $param->set_is_array($func_param->get_is_array());
-                $param->set_type($func_param->get_type());
                 $param->set_copyarrays($func_param->get_copyarrays());
+                $param->set_last_known_values($func_param->get_last_known_values());
+                $param->set_type($func_param->get_type());
 
-                $func_param->set_is_copy_array($oldcopyiscopyarray);
-                $func_param->set_is_array($oldcopyisarray);
-                $func_param->set_type($oldcopyarray);
                 $func_param->set_copyarrays($oldcopyarrays);
+                $func_param->set_last_known_values($oldlastknownvalues);
+                $func_param->set_type($old_flags);
             }
 
             $nbparams ++;
@@ -111,9 +109,9 @@ class ArrayAnalysis
             $originaltabs = $myfunc->get_return_defs();
             $originaltab = $originaltabs[0];
 
-            if ($originaltab->get_is_copy_array())
+            if ($originaltab->is_type(MyDefinition::TYPE_COPY_ARRAY))
             {
-                $copytab->set_is_copy_array(true);
+                $copytab->add_type(MyDefinition::TYPE_COPY_ARRAY);
                 $copytab->set_copyarrays($originaltab->get_copyarrays());
             }
             else
@@ -134,20 +132,18 @@ class ArrayAnalysis
 
             if (!is_null($func_param))
             {
-                $oldcopyiscopyarray = $func_param->get_is_copy_array();
-                $oldcopyisarray = $func_param->get_is_array();
-                $oldcopyarray = $func_param->get_type();
                 $oldcopyarrays = $func_param->get_copyarrays();
+                $oldlastknownvalues = $func_param->get_last_known_values();
+                $old_flags = $func_param->get_type();
 
-                $func_param->set_is_copy_array($param->get_is_copy_array());
-                $func_param->set_is_array($param->get_is_array());
-                $func_param->set_type($param->get_type());
                 $func_param->set_copyarrays($param->get_copyarrays());
+                $func_param->set_last_known_values($param->get_last_known_values());
+                $func_param->set_type($param->get_type());
 
-                $param->set_is_copy_array($oldcopyiscopyarray);
-                $param->set_is_array($oldcopyisarray);
-                $param->set_type($oldcopyarray);
                 $param->set_copyarrays($oldcopyarrays);
+                $param->set_last_known_values($oldlastknownvalues);
+                $param->set_type($old_flags);
+
                 $nbparams ++;
             }
         }
@@ -158,7 +154,7 @@ class ArrayAnalysis
     {
         if (!is_null($originaltab) && !is_null($copytab))
         {
-            if ($originaltab->get_is_property())
+            if ($originaltab->is_type(MyDefinition::TYPE_PROPERTY))
                 $defs = ResolveDefs::select_properties(
                             $context,
                             $data,
@@ -179,7 +175,7 @@ class ArrayAnalysis
 
     public static function copy_array_from_def($defa, $originalarr, $copytab, $copyarr)
     {
-        if ($defa->get_is_copy_array())
+        if ($defa->is_type(MyDefinition::TYPE_COPY_ARRAY))
         {
             $copyarrays = $defa->get_copyarrays();
 
@@ -194,7 +190,7 @@ class ArrayAnalysis
                     $extractbis = BuildArrays::build_array_from_arr($copyarr, $extract);
 
                     $copytab->add_copyarray($extractbis, $defarr);
-                    $copytab->set_is_copy_array(true);
+                    $copytab->add_type(MyDefinition::TYPE_COPY_ARRAY);
 
                     unset($defarr);
                 }
@@ -214,7 +210,7 @@ class ArrayAnalysis
                     $extract = BuildArrays::build_array_from_arr($copyarr, $extract);
 
                 $copytab->add_copyarray($extract, $defa);
-                $copytab->set_is_copy_array(true);
+                $copytab->add_type(MyDefinition::TYPE_COPY_ARRAY);
             }
         }
     }

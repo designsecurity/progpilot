@@ -17,8 +17,9 @@ class MyOp
     private $var_line;
     private $var_column;
     private $source_myfile;
-    private $is_arr;
     private $array_value;
+
+    private $flags;
 
     const TYPE_LITERAL = "type_literal";
     const TYPE_ARRAY = "type_array";
@@ -33,24 +34,37 @@ class MyOp
 
     public function __construct($var_name, $var_line, $var_column)
     {
-
+        $this->flags = 0;
         $this->var_name = $var_name;
         $this->var_line = $var_line;
         $this->var_column = $var_column;
         $this->source_myfile = null;
-        $this->type = MyOp::TYPE_LITERAL;
-        $this->is_arr = false;
         $this->array_value = false;
     }
 
-    public function get_is_array()
+    public function set_type($flags)
     {
-        return $this->is_arr;
+        $this->flags = $flags;
     }
 
-    public function set_is_array($is_array)
+    public function get_type()
     {
-        $this->is_arr = $is_array;
+        return $this->flags;
+    }
+
+    public function is_type($type)
+    {
+        return (bool) ($this->flags & $type);
+    }
+
+    public function add_type($type)
+    {
+        $this->flags |= $type;
+    }
+
+    public function remove_type($type)
+    {
+        $this->flags ^= $type;
     }
 
     public function set_array_value($array_value)
@@ -61,16 +75,6 @@ class MyOp
     public function get_array_value()
     {
         return $this->array_value;
-    }
-
-    public function get_type()
-    {
-        return $this->type;
-    }
-
-    public function set_type($type)
-    {
-        $this->type = $type;
     }
 
     public function getLine()

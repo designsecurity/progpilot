@@ -15,6 +15,8 @@ use progpilot\Objects\MyCode;
 use progpilot\Objects\ArrayStatic;
 use progpilot\Objects\MyClass;
 use progpilot\Objects\MyOp;
+use progpilot\Objects\MyDefinition;
+use progpilot\Objects\MyFunction;
 
 use progpilot\Dataflow\Definitions;
 use progpilot\Code\Opcodes;
@@ -118,7 +120,7 @@ class VisitorDataflow
                     $this->current_block_id = $block_id_zero;
                     $this->current_func = $myfunc;
 
-                    if ($myfunc->get_is_method())
+                    if ($myfunc->is_type(MyFunction::TYPE_FUNC_METHOD))
                     {
                         $thisdef = $myfunc->get_this_def();
                         $thisdef->set_source_myfile($context->get_myfile());
@@ -176,8 +178,6 @@ class VisitorDataflow
                     {
                         foreach ($defs_included as $def_included)
                         {
-                            //$def_included->set_block_id($block_id);
-
                             $this->defs->adddef($def_included->get_name(), $def_included);
                             $this->defs->addgen($block_id, $def_included);
                         }
@@ -235,11 +235,11 @@ class VisitorDataflow
                     if (is_null($myfunc_call->get_source_myfile()))
                         $myfunc_call->set_source_myfile($context->get_myfile());
 
-                    if ($myfunc_call->get_is_method())
+                    if ($myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD))
                     {
                         $mybackdef = $myfunc_call->get_back_def();
                         $mybackdef->set_block_id($this->current_block_id);
-                        $mybackdef->set_is_instance(true);
+                        $mybackdef->add_type(MyDefinition::TYPE_INSTANCE);
                         $mybackdef->set_source_myfile($context->get_myfile());
 
                         $id_object = $context->get_objects()->add_object();
@@ -313,17 +313,14 @@ class VisitorDataflow
                     $this->defs->adddef($mydef->get_name(), $mydef);
                     $this->defs->addgen($mydef->get_block_id(), $mydef);
 
-                    if ($mydef->get_is_instance())
+                    if ($mydef->is_type(MyDefinition::TYPE_INSTANCE))
                     {
                         $myclass = $context->get_classes()->get_myclass($mydef->get_class_name());
                         if (is_null($myclass))
-                            //$mydef->add_myclass($myclass);
-
                         {
                             $myclass = new MyClass($mydef->getLine(),
                                                    $mydef->getColumn(),
                                                    $mydef->get_class_name());
-                            //$mydef->add_myclass($myclass);
                         }
 
                         /* mod */

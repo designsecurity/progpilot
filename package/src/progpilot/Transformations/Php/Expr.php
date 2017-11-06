@@ -107,7 +107,7 @@ class Expr
 
             if ($arr != false)
             {
-                $mytemp->set_is_array(true);
+                $mytemp->add_type(MyDefinition::TYPE_ARRAY);
                 $mytemp->set_array_value($arr);
             }
 
@@ -115,7 +115,7 @@ class Expr
             $defs_ofexpr[] = $mytemp;
 
             if ($type == MyOp::TYPE_CONST)
-                $mytemp->set_is_const(true);
+                $mytemp->add_type(MyDefinition::TYPE_CONSTANTE);
 
             if ($type == MyOp::TYPE_PROPERTY)
             {
@@ -123,7 +123,7 @@ class Expr
                 if (isset($op->ops[0]))
                     $property_name = Common::get_name_property($op->ops[0]);
 
-                $mytemp->set_is_property(true);
+                $mytemp->add_type(MyDefinition::TYPE_PROPERTY);
                 $mytemp->property->set_properties($property_name);
             }
 

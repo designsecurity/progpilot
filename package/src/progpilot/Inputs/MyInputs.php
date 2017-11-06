@@ -12,6 +12,7 @@ namespace progpilot\Inputs;
 
 use progpilot\Lang;
 use progpilot\Utils;
+use progpilot\Objects\MyFunction;
 
 class MyInputs
 {
@@ -196,10 +197,10 @@ class MyInputs
         {
             if ($myvalidator->get_name() === $myfunc->get_name())
             {
-                if (!$myvalidator->is_instance() && !$myfunc->get_is_method())
+                if (!$myvalidator->is_instance() && !$myfunc->is_type(MyFunction::TYPE_FUNC_METHOD))
                     return $myvalidator;
 
-                if ($myvalidator->is_instance() && $myfunc->get_is_method())
+                if ($myvalidator->is_instance() && $myfunc->is_type(MyFunction::TYPE_FUNC_METHOD))
                 {
                     if (!is_null($myclass) && $myvalidator->get_instanceof_name() === $myclass->get_name())
                         return $myvalidator;
@@ -237,10 +238,10 @@ class MyInputs
         {
             if ($mysanitizer->get_name() === $myfunc->get_name())
             {
-                if (!$mysanitizer->is_instance() && !$myfunc->get_is_method())
+                if (!$mysanitizer->is_instance() && !$myfunc->is_type(MyFunction::TYPE_FUNC_METHOD))
                     return $mysanitizer;
 
-                if ($mysanitizer->is_instance() && $myfunc->get_is_method())
+                if ($mysanitizer->is_instance() && $myfunc->is_type(MyFunction::TYPE_FUNC_METHOD))
                 {
                     if (!is_null($myclass) && $mysanitizer->get_instanceof_name() === $myclass->get_name())
                         return $mysanitizer;
@@ -278,10 +279,10 @@ class MyInputs
         {
             if ($mysink->get_name() === $myfunc->get_name())
             {
-                if (!$mysink->is_instance() && !$myfunc->get_is_method())
+                if (!$mysink->is_instance() && !$myfunc->is_type(MyFunction::TYPE_FUNC_METHOD))
                     return $mysink;
 
-                if ($mysink->is_instance() && $myfunc->get_is_method())
+                if ($mysink->is_instance() && $myfunc->is_type(MyFunction::TYPE_FUNC_METHOD))
                 {
                     if (!is_null($myclass) && $mysink->get_instanceof_name() === $myclass->get_name())
                         return $mysink;

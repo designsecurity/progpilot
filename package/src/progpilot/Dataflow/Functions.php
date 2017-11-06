@@ -10,6 +10,7 @@
 
 namespace progpilot\Dataflow;
 
+use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyOp;
 
 class Functions
@@ -24,10 +25,10 @@ class Functions
             $list_funcs = $this->functions[$funcname];
             foreach ($list_funcs as $myfunc)
             {
-                if (!$myfunc->get_is_method() && is_null($class_name))
+                if (!$myfunc->is_type(MyFunction::TYPE_FUNC_METHOD) && is_null($class_name))
                     return $myfunc;
 
-                if ($myfunc->get_is_method())
+                if ($myfunc->is_type(MyFunction::TYPE_FUNC_METHOD))
                 {
                     $myclass = $myfunc->get_myclass();
                     if ($class_name === $myclass->get_name())

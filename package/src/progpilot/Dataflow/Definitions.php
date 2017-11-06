@@ -250,18 +250,8 @@ class Definitions
             if ($def1->get_array_value() !== $def2->get_array_value())
                 return false;
 
-            if ($def1->get_is_property() != $def2->get_is_property())
+            if ($def1->get_type() !== $def2->get_type())
                 return false;
-
-            if ($def1->get_is_instance() != $def2->get_is_instance())
-                return false;
-
-            if ($def1->get_is_array() != $def2->get_is_array())
-                return false;
-
-            if ($def1->get_is_copy_array() != $def2->get_is_copy_array())
-                return false;
-
 
             return true;
         }
