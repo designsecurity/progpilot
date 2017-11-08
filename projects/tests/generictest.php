@@ -76,9 +76,11 @@ $framework->add_output("./tests/generic/simple7.php", array("3"));
 $framework->add_output("./tests/generic/simple7.php", "xss");
 
 $framework->add_testbasis("./tests/generic/simple8.php");
-$framework->add_output("./tests/generic/simple8.php", array("\$ret[0]"));
-$framework->add_output("./tests/generic/simple8.php", array("7"));
-$framework->add_output("./tests/generic/simple8.php", "xss");
+
+//$framework->add_output("./tests/generic/simple8.php", array("\$ret[0]"));
+//$framework->add_output("./tests/generic/simple8.php", array("7"));
+//$framework->add_output("./tests/generic/simple8.php", "xss");
+
 $framework->add_output("./tests/generic/simple8.php", array("\$var_gauche[0]"));
 $framework->add_output("./tests/generic/simple8.php", array("3"));
 $framework->add_output("./tests/generic/simple8.php", "xss");
@@ -163,6 +165,11 @@ $framework->add_output("./tests/generic/arrays15.php", array("\$var"));
 $framework->add_output("./tests/generic/arrays15.php", array("8"));
 $framework->add_output("./tests/generic/arrays15.php", "xss");
 
+$framework->add_testbasis("./tests/generic/arrays16.php");
+$framework->add_output("./tests/generic/arrays16.php", array("\$var[\"t\"]"));
+$framework->add_output("./tests/generic/arrays16.php", array("3"));
+$framework->add_output("./tests/generic/arrays16.php", "xss");
+
 $framework->add_testbasis("./tests/generic/arraysrec1.php");
 $framework->add_output("./tests/generic/arraysrec1.php", array("\$var1[1]"));
 $framework->add_output("./tests/generic/arraysrec1.php", array("8"));
@@ -216,12 +223,6 @@ $framework->add_output("./tests/generic/functions5.php", "xss");
 $framework->add_testbasis("./tests/generic/functions6.php");
 $framework->add_output("./tests/generic/functions6.php", array("\$_GET[\"p\"]"));
 $framework->add_output("./tests/generic/functions6.php", array("15"));
-$framework->add_output("./tests/generic/functions6.php", "xss");
-$framework->add_output("./tests/generic/functions6.php", array("\$_GET[\"p\"]"));
-$framework->add_output("./tests/generic/functions6.php", array("10"));
-$framework->add_output("./tests/generic/functions6.php", "xss");
-$framework->add_output("./tests/generic/functions6.php", array("\$_GET[\"p\"]"));
-$framework->add_output("./tests/generic/functions6.php", array("5"));
 $framework->add_output("./tests/generic/functions6.php", "xss");
 
 $framework->add_testbasis("./tests/generic/functions7.php");

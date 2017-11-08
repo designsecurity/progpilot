@@ -27,7 +27,6 @@ There is a lot of tasks to do :
 - Global variables
 - Object heritage
 - Better analysis of conditions
-- Circular includes
 - Passing by reference
 - Pushing elements into array (like array[] = ele; or push_array())
 - Property of an object is an object

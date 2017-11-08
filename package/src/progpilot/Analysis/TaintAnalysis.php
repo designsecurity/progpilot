@@ -29,15 +29,19 @@ class TaintAnalysis
 
     public static function funccall_specify_analysis($myfunc, $stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $mycode, $index)
     {
-        TaintAnalysis::funccall_validator($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $mycode, $index);
-        TaintAnalysis::funccall_sanitizer($myfunc, $stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $mycode, $index);
-        TaintAnalysis::funccall_source($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction);
+        TaintAnalysis::funccall_validator($stack_class, $context, $data, $myclass, $instruction, $mycode, $index);
+        TaintAnalysis::funccall_sanitizer($myfunc, $stack_class, $context, $data, $myclass, $instruction, $mycode, $index);
+        TaintAnalysis::funccall_source($stack_class, $context, $data, $myclass, $instruction);
 
-        SecurityAnalysis::funccall($stack_class, $context, $myfunc_call, $instruction, $myclass);
+        SecurityAnalysis::funccall($stack_class, $context, $instruction, $myclass);
     }
 
-    public static function funccall_validator($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $mycode, $index)
+    public static function funccall_validator($stack_class, $context, $data, $myclass, $instruction, $mycode, $index)
     {
+        $funcname = $instruction->get_property("funcname");
+        $arr_funccall = $instruction->get_property("arr");
+        $myfunc_call = $instruction->get_property("myfunc_call");
+        
         $nbparams = 0;
         $defs_valid = [];
         $condition_respected = true;
@@ -154,8 +158,12 @@ class TaintAnalysis
         }
     }
 
-    public static function funccall_sanitizer($myfunc, $stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $mycode, $index)
+    public static function funccall_sanitizer($myfunc, $stack_class, $context, $data, $myclass, $instruction, $mycode, $index)
     {
+        $funcname = $instruction->get_property("funcname");
+        $arr_funccall = $instruction->get_property("arr");
+        $myfunc_call = $instruction->get_property("myfunc_call");
+        
         $condition_sanitize = false;
         $condition_taint = false;
         $params_tainted_condition_taint = false;
@@ -168,7 +176,7 @@ class TaintAnalysis
         $condition_respected_final = true;
 
         $mytemp_return = new MyDefinition($myfunc_call->getLine(), $myfunc_call->getColumn(), "return_".$myfunc_call->get_name());
-        $mytemp_return->set_source_myfile($context->get_myfile());
+        $mytemp_return->set_source_myfile($context->get_current_myfile());
 
         $myexpr_return1 = new MyExpr($myfunc_call->getLine(), $myfunc_call->getColumn());
         $myexpr_return1->set_assign(true);
@@ -338,9 +346,11 @@ class TaintAnalysis
 
     }
 
-    public static function funccall_source($stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction)
+    public static function funccall_source($stack_class, $context, $data, $myclass, $instruction)
     {
-        $exprreturn = $instruction->get_property("expr");
+        $funcname = $instruction->get_property("funcname");
+        $arr_funccall = $instruction->get_property("arr");
+        $myfunc_call = $instruction->get_property("myfunc_call");
 
         $class_name = false;
         if ($myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD) && !is_null($myclass))
@@ -376,6 +386,8 @@ class TaintAnalysis
                     $nbparams ++;
                 }
             }
+        
+            $exprreturn = $instruction->get_property("expr");
 
             if ($exprreturn->is_assign())
             {

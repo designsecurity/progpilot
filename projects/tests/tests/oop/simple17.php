@@ -7,8 +7,6 @@ class testc1
     public function set_boum1($boum1)
     {
         $this->boum1[0] = $boum1;
-
-        echo $this->boum1[0];
     }
 };
 

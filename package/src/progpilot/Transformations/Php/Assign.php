@@ -53,15 +53,46 @@ class Assign
 
             $expr_op = $context->get_current_op()->expr;
         }
-
-        $isref = false;
-        if ($context->get_current_op() instanceof Op\Expr\AssignRef)
-            $isref = true;
-
+        
         // name of function return
         if ($is_returndef)
             $name = $context->get_current_func()->get_name()."_return";
+        
+        // $array = [expr, expr, expr]
+        if ($type_array == MyOp::TYPE_ARRAY_EXPR)
+        {
+            $arr = false;
+            if (isset($context->get_current_op()->var))
+                $arr = BuildArrays::build_array_from_ops($context->get_current_op()->var, false);
 
+            ArrayExpr::instruction($context->get_current_op()->expr, $context, $arr, $name, $is_returndef);
+        }
+        else
+        {
+        $isref = false;
+        if ($context->get_current_op() instanceof Op\Expr\AssignRef)
+            $isref = true;
+        
+        $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
+
+        // it's an expression which will define a definition
+        $myexpr = new MyExpr($context->get_current_line(), $context->get_current_column());
+        $myexpr->set_assign(true);
+
+        if (isset($context->get_current_op()->expr->ops[0])
+                && $context->get_current_op()->expr->ops[0] instanceof Op\Iterator\Value)
+            $myexpr->set_assign_iterator(true);
+
+        $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+
+        $backdef = Expr::instruction($expr_op, $context, $myexpr, $assign_id);
+
+        $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
+        $inst_end_expr->add_property("expr", $myexpr);
+        $context->get_current_mycode()->add_code($inst_end_expr);
+
+        $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
+        
         $mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name);
         $mydef->set_assign_id($assign_id);
 
@@ -73,28 +104,8 @@ class Assign
 
         if ($is_returndef)
             $context->get_current_func()->add_return_def($mydef);
-
-        $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
-
-        // it's an expression which will define a definition
-        $myexpr = new MyExpr($context->get_current_line(), $context->get_current_column());
-        $myexpr->set_assign(true);
+        
         $myexpr->set_assign_def($mydef);
-
-
-        if (isset($context->get_current_op()->expr->ops[0])
-                && $context->get_current_op()->expr->ops[0] instanceof Op\Iterator\Value)
-            $myexpr->set_assign_iterator(true);
-
-        $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
-
-        Expr::instruction($expr_op, $context, $myexpr, $assign_id);
-
-        $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-        $inst_end_expr->add_property("expr", $myexpr);
-        $context->get_current_mycode()->add_code($inst_end_expr);
-
-        $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
 
         $inst_def = new MyInstruction(Opcodes::DEFINITION);
         $inst_def->add_property("def", $mydef);
@@ -108,15 +119,6 @@ class Assign
             $mydef->set_array_value($arr);
         }
 
-        // $array = [expr, expr, expr]
-        if ($type_array == MyOp::TYPE_ARRAY_EXPR)
-        {
-            $arr = false;
-            if (isset($context->get_current_op()->var))
-                $arr = BuildArrays::build_array_from_ops($context->get_current_op()->var, false);
-
-            ArrayExpr::instruction($context->get_current_op()->expr, $context, $arr, $name, $is_returndef);
-        }
         // a variable, property
         if ($type == MyOp::TYPE_PROPERTY)
         {
@@ -153,6 +155,8 @@ class Assign
                 $mydef->add_type(MyDefinition::TYPE_ARRAY_REFERENCE);
                 $mydef->set_ref_arr_value($arr);
             }
+        }
+        
         }
     }
 }

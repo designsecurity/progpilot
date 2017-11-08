@@ -1,5 +1,6 @@
 <?php
 
+
 class Testc1
 {
     public $data;
@@ -12,6 +13,7 @@ $a->data = $_GET["p"];
 $b = $a;
 
 echo $a->data;
+
 
 echo $b->data;
 /*

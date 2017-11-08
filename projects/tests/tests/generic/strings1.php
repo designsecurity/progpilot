@@ -51,7 +51,7 @@ echo "'$tainted1'"; // vuln
 $tainted2 = $_GET["p"];
 echo "<a href='$tainted2'>click</a>"; // vuln
 
-$tainted.= $_GET["p"];
+$tainted3 = $_GET["p"];
 echo "<a href=$tainted3>click</a>"; // vuln
 
 

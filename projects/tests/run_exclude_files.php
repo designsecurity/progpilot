@@ -46,7 +46,7 @@ try
                                      $vuln['source_line'],
                                      $vuln['vuln_name']];
 
-                if (!$framework->check_outputs($folder, $basis_outputs))
+                if (!$framework->check_outputs($folder, $basis_outputs, $parsed_json))
                 {
                     $result_test = false;
                     break;

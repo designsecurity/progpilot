@@ -187,13 +187,19 @@ class VisitorAnalysis
                 {
                     $tempdefa = $instruction->get_property("temporary");
                     $tempdefa_myexpr = $tempdefa->get_exprs()[0];
+                    
+                    if ($tempdefa_myexpr->is_assign() && !$tempdefa_myexpr->is_assign_iterator())
+                    {
+                      $defassign_myexpr = $tempdefa_myexpr->get_assign_def();
+                      ArrayAnalysis::copy_array($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $tempdefa, $tempdefa->get_array_value(), $defassign_myexpr, $defassign_myexpr->get_array_value());
+                    }
 
                     $tainted = false;
                     if (!is_null($this->context->inputs->get_source_byname(null, $tempdefa, false, false, $tempdefa->get_array_value())))
                         $tainted = true;
                     $tempdefa->set_tainted($tainted);
-
-                    $defs = ResolveDefs::temporary_simple($this->context, $this->defs, $tempdefa, $tempdefa_myexpr->is_assign_iterator());
+                    
+                    $defs = ResolveDefs::temporary_simple($this->context, $this->defs, $tempdefa, $tempdefa_myexpr->is_assign_iterator(), $tempdefa_myexpr->is_assign());
 
                     $concat_defassign = [];
                     $concat_values = [];
@@ -225,22 +231,29 @@ class VisitorAnalysis
                             if (!is_null($this->context->inputs->get_source_byname(null, $def, false, $def->get_class_name(), false, $def)))
                                 $def->set_tainted(true);
                         }
-
+/*
                         $exprs = $def->get_exprs();
                         foreach ($exprs as $expr)
                         {
                             if ($expr->is_assign())
                             {
+                            
                                 $defassign = $expr->get_assign_def();
-
+*/
                                 $def->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
-                                $defassign->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
+                                $defassign_myexpr->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
 
+                                if ($def->is_type(MyDefinition::TYPE_INSTANCE))
+                                {
+                                    $defassign_myexpr->add_type(MyDefinition::TYPE_INSTANCE);
+                                    $defassign_myexpr->set_object_id($def->get_object_id());
+                                }
+                                /*
                                 // vérifier s'il y a pas de concat
                                 if ($def->is_type(MyDefinition::TYPE_INSTANCE))
                                 {
-                                    $defassign->add_type(MyDefinition::TYPE_INSTANCE);
-                                    $defassign->set_object_id($def->get_object_id());
+                                    //$defassign->add_type(MyDefinition::TYPE_INSTANCE);
+                                    //$defassign->set_object_id($def->get_object_id());
 
                                     $tmp_myclasses = $this->context->get_objects()->get_all_myclasses($def->get_object_id());
 
@@ -276,23 +289,24 @@ class VisitorAnalysis
                                         }
                                     }
                                 }
-
+*/
                                 if ($tempdefa->get_cast() === MyDefinition::CAST_NOT_SAFE)
-                                    $defassign->set_cast($def->get_cast());
+                                    $defassign_myexpr->set_cast($def->get_cast());
                                 else
-                                    $defassign->set_cast($tempdefa->get_cast());
+                                    $defassign_myexpr->set_cast($tempdefa->get_cast());
 
-                                ArrayAnalysis::copy_array($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $tempdefa, $tempdefa->get_array_value(), $defassign, $defassign->get_array_value());
+                                //ArrayAnalysis::copy_array($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $tempdefa, $tempdefa->get_array_value(), $defassign, $defassign->get_array_value());
 
                                 $safe = AssertionAnalysis::temporary_simple($this->context, $this->defs, $this->current_myblock, $def, $tempdefa);
 
-                                TaintAnalysis::set_tainted($this->context, $this->defs->getoutminuskill($def->get_block_id()), $def, $defassign, $expr, $safe);
-
-
-                            }
+                                TaintAnalysis::set_tainted($this->context, $this->defs->getoutminuskill($def->get_block_id()), $def, $defassign_myexpr, $tempdefa_myexpr, $safe);
+                            
+                      
+                    }
+                            /*
                         }
                     }
-
+*/
                     $new_def_values = [];
                     foreach ($concat_defassign as $def_to_concat)
                     {
@@ -327,186 +341,7 @@ class VisitorAnalysis
 
                     $list_myfunc = [];
 
-                    // require, require_once ... already handled in transform Expr/include_
-                    if ($myfunc_call->get_name() == "include" && $this->context->get_analyze_includes())
-                    {
-                        $type_include = $instruction->get_property("type_include");
-                        $nb_params = $myfunc_call->get_nb_params();
-                        if ($nb_params > 0)
-                        {
-                            $at_least_one_include_resolved = false;
-
-                            $mydef_arg = $instruction->get_property("argdef0");
-
-                            if (count($mydef_arg->get_last_known_values()) != 0)
-                            {
-                                foreach ($mydef_arg->get_last_known_values() as $last_known_value)
-                                {
-                                    $real_file = false;
-
-                                    // else it's maybe a relative path
-                                    $file = $this->context->get_path()."/".$last_known_value;
-                                    $real_file = realpath($file);
-
-                                    // if $last_known_value is a absolute path to the file :
-                                    // /home/dev/file.php
-                                    if (!$real_file)
-                                        $real_file = realpath($last_known_value);
-
-                                    if (!$real_file)
-                                    {
-                                        $continue_include = false;
-
-                                        $myinclude = $this->context->inputs->get_include_bylocation(
-                                                         $this->context->get_current_line(),
-                                                         $this->context->get_current_column(),
-                                                         $myfunc_call->get_source_myfile()->get_name());
-
-                                        if (!is_null($myinclude))
-                                        {
-                                            $name_included_file = realpath($myinclude->get_value());
-                                            if ($name_included_file)
-                                            {
-                                                $continue_include = true;
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        $continue_include = true;
-                                        $name_included_file = $real_file;
-                                    }
-
-                                    if ($continue_include)
-                                    {
-                                        $at_least_one_include_resolved = true;
-
-                                        $array_includes = $this->context->get_array_includes();
-                                        $array_requires = $this->context->get_array_requires();
-
-                                        if ((!in_array($name_included_file, $array_includes, true) && $type_include == 2)
-                                                || (!in_array($name_included_file, $array_requires, true) && $type_include == 4)
-                                                || ($type_include == 1 || $type_include == 3))
-                                        {
-                                            if ($type_include == 2)
-                                                $array_includes = $name_included_file;
-
-                                            if ($type_include == 4)
-                                                $array_requires = $name_included_file;
-
-                                            $context_include = clone $this->context;
-                                            $context_include->reset_internal_values();
-                                            $context_include->inputs->set_file($name_included_file);
-                                            $context_include->inputs->set_code(null);
-
-                                            $myfile = new MyFile($name_included_file, $myfunc_call->getLine(), $myfunc_call->getColumn());
-                                            $myfile->set_included_from_myfile($myfunc_call->get_source_myfile());
-
-                                            $context_include->set_myfile($myfile);
-                                            $context_include->set_outputs(new \progpilot\Outputs\MyOutputs);
-
-                                            $defs_a_include = $this->defs->getoutminuskill($myfunc_call->get_block_id());
-
-                                            $analyzer_include = new \progpilot\Analyzer;
-                                            $analyzer_include->run_internal($context_include, $this->defs->getoutminuskill($myfunc_call->get_block_id()));
-
-                                            if (!is_null($context_include->outputs->get_results()))
-                                            {
-                                                foreach ($context_include->outputs->get_results() as $result_include)
-                                                {
-                                                    $this->context->outputs->add_result($result_include);
-                                                }
-                                            }
-
-                                            $main_include = $context_include->get_functions()->get_function("{main}");
-
-                                            $defs_output_included_final = [];
-                                            if (!is_null($main_include))
-                                            {
-                                                ArrayAnalysis::funccall_after($context_include, $main_include, $myfunc_call, $arr_funccall, $code[$index + 3]);
-                                                TaintAnalysis::funccall_after($context_include, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $main_include, $arr_funccall, $instruction);
-
-                                                $defs_main_return = $main_include->get_defs()->getdefrefbyname("{main}_return");
-                                                foreach ($defs_main_return as $def_main_return)
-                                                {
-                                                    $defs_output_included = $main_include->get_defs()->getoutminuskill($def_main_return->get_block_id());
-                                                    if (!is_null($defs_output_included))
-                                                    {
-                                                        foreach ($defs_output_included as $def_output_included)
-                                                        {
-                                                            if (!in_array($def_output_included, $defs_output_included_final, true))
-                                                                $defs_output_included_final[] = $def_output_included;
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            $context_functions = $context_include->get_functions()->get_functions();
-
-                                            if (!is_null($context_functions))
-                                            {
-                                                foreach ($context_functions as $functions_name)
-                                                {
-                                                    if (!is_null($functions_name))
-                                                    {
-                                                        foreach ($functions_name as $myfunc)
-                                                            $this->context->get_functions()->add_function($myfunc->get_name(), $myfunc);
-
-                                                    }
-                                                }
-                                            }
-
-                                            $myclasses_include = $context_include->get_classes()->get_list_classes();
-                                            foreach ($myclasses_include as $myclass_include)
-                                            {
-                                                $this->context->get_classes()->add_myclass($myclass_include);
-
-                                                // we have to resolves definition
-                                                foreach ($this->defs->getoutminuskill($myfunc_call->get_block_id()) as $the_def)
-                                                {
-                                                    if ($the_def->get_class_name() === $myclass_include->get_name())
-                                                    {
-                                                        $id_object = $the_def->get_object_id();
-                                                        $this->context->get_objects()->replace_myclass_to_object($id_object, $myclass_include);
-                                                    }
-                                                }
-                                            }
-
-                                            $new_defs = false;
-                                            if (count($defs_output_included_final) > 0)
-                                            {
-                                                foreach ($defs_output_included_final as $def_output_included_final)
-                                                {
-                                                    //$def_output_included_final->set_block_id($myfunc_call->get_block_id());
-                                                    $ret1 = $this->defs->adddef($def_output_included_final->get_name(), $def_output_included_final);
-                                                    $ret2 = $this->defs->addgen($myfunc_call->get_block_id(), $def_output_included_final);
-
-                                                    $new_defs = true;
-                                                }
-                                            }
-
-                                            if ($new_defs)
-                                            {
-                                                $this->defs->computekill($this->context, $myfunc_call->get_block_id());
-                                                $this->defs->reachingDefs($this->blocks);
-                                            }
-
-
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (!$at_least_one_include_resolved && $this->context->outputs->get_resolve_includes())
-                            {
-                                $myfile_temp = new MyFile($myfunc_call->get_source_myfile()->get_name(),
-                                                          $myfunc_call->getLine(),
-                                                          $myfunc_call->getColumn());
-
-                                $this->context->outputs->current_includes_file[] = $myfile_temp;
-                            }
-                        }
-                    }
+                    IncludeAnalysis::funccall($this->context, $this->defs, $this->blocks, $instruction, $code, $index);
 
                     if ($myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD))
                     {
@@ -523,7 +358,7 @@ class VisitorAnalysis
 
                             if (!ResolveDefs::get_visibility_method($myfunc_call->get_name_instance(), $method))
                                 $method = null;
-
+                            
                             $list_myfunc[] = $method;
 
                             TaintAnalysis::funccall_specify_analysis($method, $stack_class, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $class_of_funccall, $myfunc_call, $arr_funccall, $instruction, $mycode, $index);

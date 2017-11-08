@@ -277,7 +277,7 @@ class Analyzer
 
             $myfile = new MyFile($file, 0, 0);
             $context->inputs->set_file($file);
-            $context->set_myfile($myfile);
+            $context->set_current_myfile($myfile);
             $this->run_internal($context);
         }
 

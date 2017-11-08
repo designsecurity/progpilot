@@ -95,7 +95,7 @@ class VisitorDataflow
                     foreach ($myclass->get_properties() as $property)
                     {
                         if (is_null($property->get_source_myfile()))
-                            $property->set_source_myfile($context->get_myfile());
+                            $property->set_source_myfile($context->get_current_myfile());
                     }
 
                     break;
@@ -103,7 +103,7 @@ class VisitorDataflow
 
                 case Opcodes::ENTER_FUNCTION:
                 {
-                    $block_id_zero = hash("sha256", "0-".$context->get_myfile()->get_name());
+                    $block_id_zero = hash("sha256", "0-".$context->get_current_myfile()->get_name());
 
                     $myfunc = $instruction->get_property("myfunc");
 
@@ -123,7 +123,7 @@ class VisitorDataflow
                     if ($myfunc->is_type(MyFunction::TYPE_FUNC_METHOD))
                     {
                         $thisdef = $myfunc->get_this_def();
-                        $thisdef->set_source_myfile($context->get_myfile());
+                        $thisdef->set_source_myfile($context->get_current_myfile());
 
                         $id_object = $context->get_objects()->add_object();
                         $thisdef->set_object_id($id_object);
@@ -148,14 +148,14 @@ class VisitorDataflow
 
                     $this->setBlockId($myblock);
                     $block_id_tmp = $this->getBlockId($myblock);
-                    $block_id = hash("sha256", "$block_id_tmp-".$context->get_myfile()->get_name());
+                    $block_id = hash("sha256", "$block_id_tmp-".$context->get_current_myfile()->get_name());
                     $myblock->set_id($block_id);
 
 
                     array_push($blocks_stack_id, $block_id);
                     $this->current_block_id = $block_id;
 
-                    if ($block_id != hash("sha256", "0-".$context->get_myfile()->get_name()))
+                    if ($block_id != hash("sha256", "0-".$context->get_current_myfile()->get_name()))
                         $this->defs->create_block($block_id);
 
                     $assertions = $myblock->get_assertions();
@@ -233,14 +233,14 @@ class VisitorDataflow
                     $myfunc_call->set_block_id($this->current_block_id);
 
                     if (is_null($myfunc_call->get_source_myfile()))
-                        $myfunc_call->set_source_myfile($context->get_myfile());
+                        $myfunc_call->set_source_myfile($context->get_current_myfile());
 
                     if ($myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD))
                     {
                         $mybackdef = $myfunc_call->get_back_def();
                         $mybackdef->set_block_id($this->current_block_id);
                         $mybackdef->add_type(MyDefinition::TYPE_INSTANCE);
-                        $mybackdef->set_source_myfile($context->get_myfile());
+                        $mybackdef->set_source_myfile($context->get_current_myfile());
 
                         $id_object = $context->get_objects()->add_object();
                         $mybackdef->set_object_id($id_object);
@@ -292,7 +292,7 @@ class VisitorDataflow
                     $mydef->set_block_id($this->current_block_id);
 
                     if (is_null($mydef->get_source_myfile()))
-                        $mydef->set_source_myfile($context->get_myfile());
+                        $mydef->set_source_myfile($context->get_current_myfile());
 
                     // representations start
                     $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
@@ -308,7 +308,7 @@ class VisitorDataflow
                     $mydef->set_block_id($this->current_block_id);
 
                     if (is_null($mydef->get_source_myfile()))
-                        $mydef->set_source_myfile($context->get_myfile());
+                        $mydef->set_source_myfile($context->get_current_myfile());
 
                     $this->defs->adddef($mydef->get_name(), $mydef);
                     $this->defs->addgen($mydef->get_block_id(), $mydef);

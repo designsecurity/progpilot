@@ -12,7 +12,6 @@ namespace progpilot\Objects;
 
 class MyOp
 {
-
     private $var_name;
     private $var_line;
     private $var_column;

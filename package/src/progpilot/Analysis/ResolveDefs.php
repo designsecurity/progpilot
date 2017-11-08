@@ -126,13 +126,13 @@ class ResolveDefs
                 $myfunc_call->get_name_instance());
 
             $mydef->set_block_id($myfunc_call->get_block_id());
-            $mydef->set_source_myfile($myfunc_call->get_source_myfile());
+            $mydef->set_source_myfile($backdef->get_source_myfile());
 
             if ($backdef->is_type(MyDefinition::TYPE_PROPERTY))
                 $mydef->add_type(MyDefinition::TYPE_PROPERTY);
 
             $mydef->property->set_properties($backdef->property->get_properties());
-
+          
             $instances = ResolveDefs::select_instances(
                              $context,
                              $data->getoutminuskill($mydef->get_block_id()),
@@ -256,6 +256,7 @@ class ResolveDefs
 
                 $defs_found = ResolveDefs::select_properties($context, $data, $mydef, true);
 
+          
                 foreach ($defs_found as $def_found)
                 {
                     if ($def_found->is_type(MyDefinition::TYPE_COPY_ARRAY))
@@ -335,7 +336,7 @@ class ResolveDefs
                     if ($myfile_def1->get_name() === $myfile_def2->get_name())
                     {
                         // if the file of def1 is included later so def1 is deeper
-                        if (($myfile_def1->getLine() > $myfile_def2->getLine())
+                      if (($myfile_def1->getLine() > $myfile_def2->getLine())
                                 || ($myfile_def1->getLine() == $myfile_def2->getLine() &&  $myfile_def1->getColumn() >= $myfile_def2->getColumn()))
                             return true;
                         else
@@ -366,6 +367,7 @@ class ResolveDefs
         if ($def2_includedby_def1)
         {
             // def1 defined after the include so def1 is deeper
+        
             if (($def1->getLine() > $myfile->getLine())
                     || ($def1->getLine() == $myfile->getLine() &&  $def1->getColumn() >= $myfile->getColumn()))
                 return true;
@@ -382,6 +384,7 @@ class ResolveDefs
         if ($def1->get_source_myfile()->get_name() === $def2->get_source_myfile()->get_name())
         {
             // def1 is deeper in the code
+          
             if ($def1_line > $def2_line)
                 return true;
 
@@ -399,13 +402,14 @@ class ResolveDefs
                         // if the assigned value is the same as the one we are looking for :
                         // def1 is not deeper in the code (evaluated before)
                         if ($def1expr_assign->get_name() === $def2->get_name()
-                                                              && $def1expr_assign->get_array_value() === $def2->get_array_value())
+                                                              && $def1expr_assign->get_array_value() === $def2->get_array_value()) 
                             return false;
                     }
                 }
 
                 if ($def1_column >= $def2_column)
                     return true;
+              
             }
         }
         else
@@ -448,11 +452,17 @@ class ResolveDefs
 
         foreach ($data as $def)
         {
+          /*
             if ($def->get_name() === $defsearch->get_name()
                                       && $def->get_assign_id() != $defsearch->get_assign_id()
                                       && $def->property->get_properties() === $defsearch->property->get_properties()
                                               && ResolveDefs::is_nearest($context, $defsearch, $defsearch->getLine(), $defsearch->getColumn(), $def, $def->getLine(), $def->getColumn())
-                                              && (($def->get_array_value() === $defsearch->get_array_value()) || ($def->is_type(MyDefinition::TYPE_COPY_ARRAY) && $defsearch->is_type(MyDefinition::TYPE_ARRAY)) || $bypass_isnearest))
+                                              && (($def->get_array_value() !== false && $defsearch->is_type(MyDefinition::TYPE_ARRAY)) || ($def->get_array_value() === $defsearch->get_array_value()) || ($def->is_type(MyDefinition::TYPE_COPY_ARRAY) && $defsearch->is_type(MyDefinition::TYPE_ARRAY)) || $bypass_isnearest))
+                                              //  first case : we are looking for an array but the nearest def could not be an array  
+            */
+            if(Definitions::def_equality($def, $defsearch, $bypass_isnearest) 
+              && $def->get_assign_id() !== $defsearch->get_assign_id()
+                && ResolveDefs::is_nearest($context, $defsearch, $defsearch->getLine(), $defsearch->getColumn(), $def, $def->getLine(), $def->getColumn()))
             {
                 // CA SERT A QUOI ICI REDONDANT AVEC LE DERNIER ?
                 if ($def->is_type(MyDefinition::TYPE_INSTANCE) && $defsearch->is_type(MyDefinition::TYPE_INSTANCE))
@@ -524,7 +534,10 @@ class ResolveDefs
             $copy_tempdefa->remove_type(MyDefinition::TYPE_PROPERTY);
 
         $copy_tempdefa->add_type(MyDefinition::TYPE_INSTANCE);
-        $copy_tempdefa->add_type(MyDefinition::TYPE_ARRAY);
+        
+        if($copy_tempdefa->is_type(MyDefinition::TYPE_ARRAY))
+          $copy_tempdefa->remove_type(MyDefinition::TYPE_ARRAY);
+        
         $copy_tempdefa->set_array_value(false);
 
         $instances_defs = ResolveDefs::select_definitions(
@@ -655,8 +668,10 @@ class ResolveDefs
         return $properties_defs;
     }
 
-    public static function temporary_simple($context, $data, $tempdefa, $is_iterator = false)
+    public static function temporary_simple($context, $data, $tempdefa, $is_iterator = false, $is_assign = false)
     {
+        $myexpr = $tempdefa->get_exprs()[0];
+        
         if ($tempdefa->is_type(MyDefinition::TYPE_PROPERTY))
             $defs = ResolveDefs::select_properties(
                         $context,
@@ -669,14 +684,13 @@ class ResolveDefs
                         $data->getoutminuskill($tempdefa->get_block_id()),
                         $tempdefa, $is_iterator);
 
-        $myexpr = $tempdefa->get_exprs()[0];
 
         $gooddefs = [];
         if (count($defs) > 0)
         {
             foreach ($defs as $defz)
             {
-                $defaa = ArrayAnalysis::temporary_simple($context, $tempdefa, $defz, $is_iterator);
+                $defaa = ArrayAnalysis::temporary_simple($context, $data->getoutminuskill($tempdefa->get_block_id()), $tempdefa, $defz, $is_iterator, $is_assign);
 
                 foreach ($defaa as $defa)
                 {
@@ -691,14 +705,16 @@ class ResolveDefs
                             $refdef->add_type(MyDefinition::TYPE_ARRAY);
                             $refdef->set_array_value($defa->get_ref_arr_value());
                         }
-
+                            
                         $truerefs = ResolveDefs::select_definitions($context,
                                     $data->getoutminuskill($refdef->get_block_id()),
                                     $refdef);
 
                         foreach ($truerefs as $ref)
                         {
+                          /*
                             $ref->add_expr($myexpr);
+                            */
                             $myexpr->add_def($ref);
 
                             $gooddefs[] = $ref;
@@ -708,8 +724,11 @@ class ResolveDefs
                     }
                     else
                     {
+                      /*
                         $defa->add_expr($myexpr);
+                        */
                         $myexpr->add_def($defa);
+                        
                         $gooddefs[] = $defa;
                     }
                 }

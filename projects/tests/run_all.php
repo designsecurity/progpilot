@@ -4,10 +4,11 @@ require_once './vendor/autoload.php';
 require_once './framework_test.php';
 $framework = new framework_test;
 
+
 require_once './generictest.php';
-require_once './realtest.php';
-require_once './includetest.php';
 require_once './ooptest.php';
+require_once './includetest.php';
+require_once './realtest.php';
 require_once './datatest.php';
 require_once './conditionstest.php';
 //require_once './negativetest.php'; !!!! ERREUR SYNTAX = RESTE NON EXECUTE ?
@@ -71,7 +72,7 @@ try
                                      $vuln['source_line'],
                                      $vuln['vuln_name']];
 
-                if (!$framework->check_outputs($file, $basis_outputs))
+                if (!$framework->check_outputs($file, $basis_outputs, $parsed_json))
                 {
                     $result_test = false;
                     break;

@@ -24,7 +24,8 @@ class Context
     private $current_line;
     private $current_column;
     private $current_func;
-    private $myfile;
+    private $current_myfile;
+    private $myfiles;
     private $classes;
     private $objects;
     private $functions;
@@ -57,7 +58,8 @@ class Context
 
         $this->reset_internal_values();
 
-        $this->myfile = null;
+        $this->current_myfile = null;
+        $this->myfiles = [];
         $this->array_includes = [];
         $this->array_requires = [];
     }
@@ -89,6 +91,16 @@ class Context
         $this->functions = new \progpilot\Dataflow\Functions;
         // representations (cfg, ast ...) are deleted to avoid memory grown
         $this->outputs = new \progpilot\Outputs\MyOutputs;
+    }
+
+    public function set_array_includes($array_includes)
+    {
+        $this->array_includes = $array_includes;
+    }
+
+    public function set_array_requires($array_requires)
+    {
+        $this->array_requires = $array_requires;
     }
 
     public function get_array_includes()
@@ -220,15 +232,15 @@ class Context
     {
         return $this->path;
     }
-
-    public function get_myfile()
+    
+    public function get_current_myfile()
     {
-        return $this->myfile;
+        return $this->current_myfile;
     }
 
-    public function set_myfile($myfile)
+    public function set_current_myfile($myfile)
     {
-        $this->myfile = $myfile;
+        $this->current_myfile = $myfile;
     }
 
     public function set_path($path)

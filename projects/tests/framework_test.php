@@ -29,7 +29,7 @@ class framework_test
         return $this->outputs["$testbasis"];
     }
 
-    public function check_outputs($testbasis, $basis_outputs)
+    public function check_outputs($testbasis, $basis_outputs, $basis_vulns)
     {
         if (count($this->outputs["$testbasis"]) == 0 && count($basis_outputs) == 0)
             return true;
@@ -50,6 +50,12 @@ class framework_test
             if (!$return_check)
                 return false;
         }
+        
+        $nb_vuln_from_framework = count($this->outputs["$testbasis"]) / 3;
+        $nb_vuln_from_outputs = count($basis_vulns);
+        
+        if($nb_vuln_from_framework != $nb_vuln_from_outputs)
+          return false;
 
         return true;
     }

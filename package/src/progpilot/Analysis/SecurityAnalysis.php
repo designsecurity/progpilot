@@ -81,8 +81,10 @@ class SecurityAnalysis
         return true;
     }
 
-    public static function funccall($stack_class, $context, $myfunc_call, $instruction, $myclass = null)
+    public static function funccall($stack_class, $context, $instruction, $myclass = null)
     {
+        $myfunc_call = $instruction->get_property("myfunc_call");
+        
         $name_instance = null;
         if ($myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD))
             $name_instance = $myfunc_call->get_name_instance();
@@ -183,7 +185,7 @@ class SecurityAnalysis
             $temp["tainted_flow"] = [];
 
         $nbtainted = 0;
-
+                    
         $tainted_expr = $mydef->get_taintedbyexpr();
         if (!is_null($tainted_expr))
         {
