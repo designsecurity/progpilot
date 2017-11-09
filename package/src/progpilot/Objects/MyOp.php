@@ -12,6 +12,10 @@ namespace progpilot\Objects;
 
 class MyOp
 {
+    static private $nb_objects = 0;
+
+    protected $var_id;
+
     private $var_name;
     private $var_line;
     private $var_column;
@@ -34,11 +38,22 @@ class MyOp
     public function __construct($var_name, $var_line, $var_column)
     {
         $this->flags = 0;
+        $this->var_id = MyOp::$nb_objects ++;
         $this->var_name = $var_name;
         $this->var_line = $var_line;
         $this->var_column = $var_column;
         $this->source_myfile = null;
         $this->array_value = false;
+    }
+
+    public function set_id($var_id)
+    {
+        $this->var_id = $var_id;
+    }
+
+    public function get_id()
+    {
+        return $this->var_id;
     }
 
     public function set_type($flags)
@@ -63,7 +78,8 @@ class MyOp
 
     public function remove_type($type)
     {
-        $this->flags ^= $type;
+        if ($this->is_type($type))
+            $this->flags ^= $type;
     }
 
     public function set_array_value($array_value)

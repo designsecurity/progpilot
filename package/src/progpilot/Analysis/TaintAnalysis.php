@@ -41,7 +41,7 @@ class TaintAnalysis
         $funcname = $instruction->get_property("funcname");
         $arr_funccall = $instruction->get_property("arr");
         $myfunc_call = $instruction->get_property("myfunc_call");
-        
+
         $nbparams = 0;
         $defs_valid = [];
         $condition_respected = true;
@@ -163,7 +163,7 @@ class TaintAnalysis
         $funcname = $instruction->get_property("funcname");
         $arr_funccall = $instruction->get_property("arr");
         $myfunc_call = $instruction->get_property("myfunc_call");
-        
+
         $condition_sanitize = false;
         $condition_taint = false;
         $params_tainted_condition_taint = false;
@@ -386,7 +386,7 @@ class TaintAnalysis
                     $nbparams ++;
                 }
             }
-        
+
             $exprreturn = $instruction->get_property("expr");
 
             if ($exprreturn->is_assign())
@@ -406,7 +406,7 @@ class TaintAnalysis
                     $defassign->add_type(MyDefinition::TYPE_COPY_ARRAY);
 
                     $exprreturn->add_def($mydef);
-                    $mydef->add_expr($exprreturn);
+                    $mydef->set_expr($exprreturn);
                 }
                 else if ($mysource->get_is_return_array())
                 {
@@ -415,7 +415,7 @@ class TaintAnalysis
                     if ($arr_funccall === $value_array)
                     {
                         $exprreturn->add_def($mydef);
-                        $mydef->add_expr($exprreturn);
+                        $mydef->set_expr($exprreturn);
 
                         if ($exprreturn->is_assign())
                             TaintAnalysis::set_tainted($context, $data, $mydef, $defassign, $exprreturn, false);
@@ -443,21 +443,21 @@ class TaintAnalysis
                 $copydefreturn = $defreturn;
 
                 // copydefreturn = return $defreturn;
-                $copydefreturn->add_expr($exprreturn);
+                $copydefreturn->set_expr($exprreturn);
                 // exprreturn = $def = exprreturn(funccall());
                 $exprreturn->add_def($copydefreturn);
 
 
-                $exprs = $copydefreturn->get_exprs();
+                $expr = $copydefreturn->get_expr();
 
-                foreach ($exprs as $expr)
+                //foreach ($exprs as $expr)
+                //{
+                // blabla =
+                if ($expr->is_assign())
                 {
-                    // blabla =
-                    if ($expr->is_assign())
-                    {
-                        $defassign = $expr->get_assign_def();
-                        TaintAnalysis::set_tainted($context, $data, $copydefreturn, $defassign, $expr, false);
-                    }
+                    $defassign = $expr->get_assign_def();
+                    TaintAnalysis::set_tainted($context, $data, $copydefreturn, $defassign, $expr, false);
+                    //    }
                 }
             }
         }
@@ -478,16 +478,16 @@ class TaintAnalysis
                 {
                     // useful just for inside the function
                     $param->set_tainted(true);
-                    $exprs = $param->get_exprs();
+                    $expr = $param->get_expr();
 
-                    foreach ($exprs as $expr)
+                    //foreach ($exprs as $expr)
+                    //{
+                    if (!is_null($expr) && $expr->is_assign())
                     {
-                        if ($expr->is_assign())
-                        {
-                            $defassign = $expr->get_assign_def();
-                            TaintAnalysis::set_tainted($context, $data, $defarg, $defassign, $expr, false);
-                        }
+                        $defassign = $expr->get_assign_def();
+                        TaintAnalysis::set_tainted($context, $data, $defarg, $defassign, $expr, false);
                     }
+                    //}
                 }
 
 
@@ -509,7 +509,6 @@ class TaintAnalysis
             if ($defassign->is_type(MyDefinition::TYPE_PROPERTY))
             {
                 $copy_defassign = clone $defassign;
-                $copy_defassign->set_assign_id(-1);
                 $prop = $copy_defassign->property->pop_property();
                 $visibility_final = false;
 

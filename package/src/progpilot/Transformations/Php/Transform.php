@@ -180,7 +180,6 @@ class Transform implements Visitor
                 $mythisdef = new MyDefinition(0, 0, "this");
                 $mythisdef->set_block_id(0);
                 $mythisdef->add_type(MyDefinition::TYPE_INSTANCE);
-                $mythisdef->set_assign_id(rand());
                 $myfunction->set_this_def($mythisdef);
             }
         }
@@ -301,7 +300,7 @@ class Transform implements Visitor
                 $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
                 $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
-                FuncCall::instruction($this->context, $myexpr, rand(), false);
+                FuncCall::instruction($this->context, $myexpr, false);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
                 $inst_end_expr->add_property("expr", $myexpr);
@@ -330,7 +329,7 @@ class Transform implements Visitor
             $myfunction_call->setColumn($op->getAttribute("startFilePos", -1));
             $myfunction_call->set_nb_params(1);
 
-            FuncCall::argument($this->context, rand(), $op->expr, $inst_funcall_main, "eval", 0);
+            FuncCall::argument($this->context, $op->expr, $inst_funcall_main, "eval", 0);
 
             $inst_funcall_main->add_property("myfunc_call", $myfunction_call);
             $inst_funcall_main->add_property("expr", $myexpr);
@@ -354,7 +353,7 @@ class Transform implements Visitor
             $myfunction_call->setColumn($op->getAttribute("startFilePos", -1));
             $myfunction_call->set_nb_params(1);
 
-            FuncCall::argument($this->context, rand(), $op->expr, $inst_funcall_main, "echo", 0);
+            FuncCall::argument($this->context, $op->expr, $inst_funcall_main, "echo", 0);
 
             $inst_funcall_main->add_property("myfunc_call", $myfunction_call);
             $inst_funcall_main->add_property("expr", $myexpr);
@@ -378,7 +377,7 @@ class Transform implements Visitor
             $myfunction_call->setColumn($op->getAttribute("startFilePos", -1));
             $myfunction_call->set_nb_params(1);
 
-            FuncCall::argument($this->context, rand(), $op->expr, $inst_funcall_main, "print", 0);
+            FuncCall::argument($this->context, $op->expr, $inst_funcall_main, "print", 0);
 
             $inst_funcall_main->add_property("myfunc_call", $myfunction_call);
             $inst_funcall_main->add_property("expr", $myexpr);
@@ -397,7 +396,7 @@ class Transform implements Visitor
                 $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
                 $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
-                FuncCall::instruction($this->context, $myexpr, rand(), false, false, true);
+                FuncCall::instruction($this->context, $myexpr, false, false, true);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
                 $inst_end_expr->add_property("expr", $myexpr);
@@ -412,7 +411,7 @@ class Transform implements Visitor
                 $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
                 $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
-                FuncCall::instruction($this->context, $myexpr, rand(), false);
+                FuncCall::instruction($this->context, $myexpr, false);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
                 $inst_end_expr->add_property("expr", $myexpr);
@@ -429,7 +428,7 @@ class Transform implements Visitor
 
                 $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
-                FuncCall::instruction($this->context, $myexpr, rand(), false, true);
+                FuncCall::instruction($this->context, $myexpr, false, true);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
                 $inst_end_expr->add_property("expr", $myexpr);

@@ -26,12 +26,11 @@ use progpilot\Transformations\Php\Expr;
 class FuncCall
 {
 
-    public static function argument($context, $assign_id, $arg, $inst_funcall_main, $funccall_name, $num_param)
+    public static function argument($context, $arg, $inst_funcall_main, $funccall_name, $num_param)
     {
         // each argument will be a definition defined by an expression
         $def_name = $funccall_name."_param".$num_param."_".mt_rand();
         $mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name);
-        $mydef->set_assign_id($assign_id);
 
         $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
         $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
@@ -43,7 +42,7 @@ class FuncCall
         $inst_funcall_main->add_property("argdef$num_param", $mydef);
         $inst_funcall_main->add_property("argexpr$num_param", $myexprparam);
 
-        $mytemp = Expr::instruction($arg, $context, $myexprparam, $assign_id);
+        $mytemp = Expr::instruction($arg, $context, $myexprparam);
 
         if (!is_null($mytemp))
             $mydef->set_value_from_def($mytemp);
@@ -66,8 +65,9 @@ class FuncCall
     arg2 : expr for the return
     arg3 : arr for the return : function_call()[0] (arr = [0])
      */
-    public static function instruction($context, $myexpr, $assign_id, $funccall_arr, $is_method = false, $is_static = false)
+    public static function instruction($context, $myexpr, $funccall_arr, $is_method = false, $is_static = false)
     {
+        $mybackdef = null;
         $nbparams = 0;
         $property_name = "";
 
@@ -130,9 +130,8 @@ class FuncCall
             $myfunction_call->add_type(MyFunction::TYPE_FUNC_METHOD);
             $myfunction_call->set_name_instance($instance_name);
 
-            $mybackdef = new MyDefinition($context->get_current_line(), $context->get_current_column() + 1, $instance_name);
+            $mybackdef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $instance_name);
             $mybackdef->add_type(MyDefinition::TYPE_INSTANCE);
-            $mybackdef->set_assign_id(rand());
 
             if (count($property_name) > 0)
             {
@@ -155,7 +154,7 @@ class FuncCall
 
         foreach ($list_args as $arg)
         {
-            FuncCall::argument($context, $assign_id, $arg, $inst_funcall_main, $funccall_name, $nbparams);
+            FuncCall::argument($context, $arg, $inst_funcall_main, $funccall_name, $nbparams);
             $nbparams ++;
         }
 
@@ -164,6 +163,8 @@ class FuncCall
         $inst_funcall_main->add_property("expr", $myexpr);
         $inst_funcall_main->add_property("arr", $funccall_arr);
         $context->get_current_mycode()->add_code($inst_funcall_main);
+
+        return $mybackdef;
     }
 }
 

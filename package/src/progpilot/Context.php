@@ -232,7 +232,7 @@ class Context
     {
         return $this->path;
     }
-    
+
     public function get_current_myfile()
     {
         return $this->current_myfile;

@@ -28,11 +28,9 @@ class Assign
 
     public static function instruction($context, $is_returndef = false, $is_define = false)
     {
-        $assign_id = rand();
-
         if ($is_define)
         {
-            $name = "const_$assign_id";
+            $name = "const_".rand();
             if (isset($context->get_current_op()->args[0]->value))
                 $name = $context->get_current_op()->args[0]->value;
 
@@ -53,11 +51,11 @@ class Assign
 
             $expr_op = $context->get_current_op()->expr;
         }
-        
+
         // name of function return
         if ($is_returndef)
             $name = $context->get_current_func()->get_name()."_return";
-        
+
         // $array = [expr, expr, expr]
         if ($type_array == MyOp::TYPE_ARRAY_EXPR)
         {
@@ -69,94 +67,97 @@ class Assign
         }
         else
         {
-        $isref = false;
-        if ($context->get_current_op() instanceof Op\Expr\AssignRef)
-            $isref = true;
-        
-        $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
+            $isref = false;
+            if ($context->get_current_op() instanceof Op\Expr\AssignRef)
+                $isref = true;
 
-        // it's an expression which will define a definition
-        $myexpr = new MyExpr($context->get_current_line(), $context->get_current_column());
-        $myexpr->set_assign(true);
+            $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
 
-        if (isset($context->get_current_op()->expr->ops[0])
-                && $context->get_current_op()->expr->ops[0] instanceof Op\Iterator\Value)
-            $myexpr->set_assign_iterator(true);
+            // it's an expression which will define a definition
+            $myexpr = new MyExpr($context->get_current_line(), $context->get_current_column());
+            $myexpr->set_assign(true);
 
-        $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+            if (isset($context->get_current_op()->expr->ops[0])
+                    && $context->get_current_op()->expr->ops[0] instanceof Op\Iterator\Value)
+                $myexpr->set_assign_iterator(true);
 
-        $backdef = Expr::instruction($expr_op, $context, $myexpr, $assign_id);
+            $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
-        $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-        $inst_end_expr->add_property("expr", $myexpr);
-        $context->get_current_mycode()->add_code($inst_end_expr);
+            $backdef = Expr::instruction($expr_op, $context, $myexpr);
 
-        $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
-        
-        $mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name);
-        $mydef->set_assign_id($assign_id);
+            $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
+            $inst_end_expr->add_property("expr", $myexpr);
+            $context->get_current_mycode()->add_code($inst_end_expr);
 
-        if ($isref)
-            $mydef->add_type(MyDefinition::TYPE_REFERENCE);
+            $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
 
-        if ($type == MyOp::TYPE_CONST)
-            $mydef->add_type(MyDefinition::TYPE_CONSTANTE);
+            $mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $name);
 
-        if ($is_returndef)
-            $context->get_current_func()->add_return_def($mydef);
-        
-        $myexpr->set_assign_def($mydef);
+            if ($isref)
+                $mydef->add_type(MyDefinition::TYPE_REFERENCE);
 
-        $inst_def = new MyInstruction(Opcodes::DEFINITION);
-        $inst_def->add_property("def", $mydef);
-        $context->get_current_mycode()->add_code($inst_def);
+            if ($type == MyOp::TYPE_CONST)
+                $mydef->add_type(MyDefinition::TYPE_CONSTANTE);
 
-        // $array[09][098] = expr;
-        if ($type_array == MyOp::TYPE_ARRAY)
-        {
-            $arr = BuildArrays::build_array_from_ops($context->get_current_op()->var, false);
-            $mydef->add_type(MyDefinition::TYPE_ARRAY);
-            $mydef->set_array_value($arr);
-        }
+            if ($is_returndef)
+                $context->get_current_func()->add_return_def($mydef);
 
-        // a variable, property
-        if ($type == MyOp::TYPE_PROPERTY)
-        {
-            $property_name = Common::get_name_definition($context->get_current_op(), true);
-            $mydef->add_type(MyDefinition::TYPE_PROPERTY);
-            $mydef->property->add_property($property_name);
+            $myexpr->set_assign_def($mydef);
 
-            $property_name = Common::get_name_property($context->get_current_op()->var->ops[0]);
-            $mydef->property->set_properties($property_name);
-        }
+            $inst_def = new MyInstruction(Opcodes::DEFINITION);
+            $inst_def->add_property("def", $mydef);
+            $context->get_current_mycode()->add_code($inst_def);
 
-        // an object (created by new)
-        if ($type_instance == MyOp::TYPE_INSTANCE)
-        {
-            // it's the class name not instance name
-            if (isset($context->get_current_op()->expr->ops[0]->class->value))
+            // $array[09][098] = expr;
+            if ($type_array == MyOp::TYPE_ARRAY)
             {
-                $name_class = $context->get_current_op()->expr->ops[0]->class->value;
-                $mydef->add_type(MyDefinition::TYPE_INSTANCE);
-                $mydef->set_class_name($name_class);
+                $arr = BuildArrays::build_array_from_ops($context->get_current_op()->var, false);
+                $mydef->add_type(MyDefinition::TYPE_ARRAY);
+                $mydef->set_array_value($arr);
             }
-        }
 
-        if ($isref)
-        {
-            $ref_name = Common::get_name_definition($context->get_current_op()->expr);
-            $ref_type = Common::get_type_definition($context->get_current_op()->expr);
-            $ref_type_array = Common::get_type_is_array($context->get_current_op()->expr);
-            $mydef->set_ref_name($ref_name);
-
-            if ($ref_type_array == MyOp::TYPE_ARRAY)
+            // a variable, property
+            if ($type == MyOp::TYPE_PROPERTY)
             {
-                $arr = BuildArrays::build_array_from_ops($context->get_current_op()->expr, false);
-                $mydef->add_type(MyDefinition::TYPE_ARRAY_REFERENCE);
-                $mydef->set_ref_arr_value($arr);
+                $property_name = Common::get_name_definition($context->get_current_op(), true);
+                $mydef->add_type(MyDefinition::TYPE_PROPERTY);
+                $mydef->property->add_property($property_name);
+
+                $property_name = Common::get_name_property($context->get_current_op()->var->ops[0]);
+                $mydef->property->set_properties($property_name);
             }
-        }
-        
+
+            // an object (created by new)
+            if ($type_instance == MyOp::TYPE_INSTANCE)
+            {
+                // it's the class name not instance name
+                if (isset($context->get_current_op()->expr->ops[0]->class->value))
+                {
+                    $name_class = $context->get_current_op()->expr->ops[0]->class->value;
+                    $mydef->add_type(MyDefinition::TYPE_INSTANCE);
+                    $mydef->set_class_name($name_class);
+
+                    // ou bien créer backdef ici
+                    if (!is_null($backdef))
+                        $backdef->set_id($mydef->get_id() + 1);
+                }
+            }
+
+            if ($isref)
+            {
+                $ref_name = Common::get_name_definition($context->get_current_op()->expr);
+                $ref_type = Common::get_type_definition($context->get_current_op()->expr);
+                $ref_type_array = Common::get_type_is_array($context->get_current_op()->expr);
+                $mydef->set_ref_name($ref_name);
+
+                if ($ref_type_array == MyOp::TYPE_ARRAY)
+                {
+                    $arr = BuildArrays::build_array_from_ops($context->get_current_op()->expr, false);
+                    $mydef->add_type(MyDefinition::TYPE_ARRAY_REFERENCE);
+                    $mydef->set_ref_arr_value($arr);
+                }
+            }
+
         }
     }
 }

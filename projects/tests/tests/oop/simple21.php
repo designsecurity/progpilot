@@ -2,7 +2,7 @@
 
 class Sanitize
 {
-    private $data;
+    public $data;
     public function __construct($input)
     {
         $this->data = $input ;

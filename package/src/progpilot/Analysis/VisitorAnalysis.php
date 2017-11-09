@@ -186,19 +186,19 @@ class VisitorAnalysis
                 case Opcodes::TEMPORARY:
                 {
                     $tempdefa = $instruction->get_property("temporary");
-                    $tempdefa_myexpr = $tempdefa->get_exprs()[0];
-                    
+                    $tempdefa_myexpr = $tempdefa->get_expr();
+
                     if ($tempdefa_myexpr->is_assign() && !$tempdefa_myexpr->is_assign_iterator())
                     {
-                      $defassign_myexpr = $tempdefa_myexpr->get_assign_def();
-                      ArrayAnalysis::copy_array($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $tempdefa, $tempdefa->get_array_value(), $defassign_myexpr, $defassign_myexpr->get_array_value());
+                        $defassign_myexpr = $tempdefa_myexpr->get_assign_def();
+                        ArrayAnalysis::copy_array($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $tempdefa, $tempdefa->get_array_value(), $defassign_myexpr, $defassign_myexpr->get_array_value());
                     }
 
                     $tainted = false;
                     if (!is_null($this->context->inputs->get_source_byname(null, $tempdefa, false, false, $tempdefa->get_array_value())))
                         $tainted = true;
                     $tempdefa->set_tainted($tainted);
-                    
+
                     $defs = ResolveDefs::temporary_simple($this->context, $this->defs, $tempdefa, $tempdefa_myexpr->is_assign_iterator(), $tempdefa_myexpr->is_assign());
 
                     $concat_defassign = [];
@@ -231,82 +231,65 @@ class VisitorAnalysis
                             if (!is_null($this->context->inputs->get_source_byname(null, $def, false, $def->get_class_name(), false, $def)))
                                 $def->set_tainted(true);
                         }
-/*
-                        $exprs = $def->get_exprs();
-                        foreach ($exprs as $expr)
+
+                        $def->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
+                        $defassign_myexpr->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
+
+                        // vérifier s'il y a pas de concat
+                        // mis a jour de l'object
+                        if ($def->is_type(MyDefinition::TYPE_INSTANCE))
                         {
-                            if ($expr->is_assign())
+                            $defassign_myexpr->add_type(MyDefinition::TYPE_INSTANCE);
+                            $defassign_myexpr->set_object_id($def->get_object_id());
+
+                            $tmp_myclasses = $this->context->get_objects()->get_all_myclasses($def->get_object_id());
+
+                            foreach ($tmp_myclasses as $tmp_myclass)
                             {
-                            
-                                $defassign = $expr->get_assign_def();
-*/
-                                $def->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
-                                $defassign_myexpr->set_is_embeddedbychars($tempdefa->get_is_embeddedbychars(), true);
-
-                                if ($def->is_type(MyDefinition::TYPE_INSTANCE))
+                                foreach ($tmp_myclass->get_properties() as $property)
                                 {
-                                    $defassign_myexpr->add_type(MyDefinition::TYPE_INSTANCE);
-                                    $defassign_myexpr->set_object_id($def->get_object_id());
-                                }
-                                /*
-                                // vérifier s'il y a pas de concat
-                                if ($def->is_type(MyDefinition::TYPE_INSTANCE))
-                                {
-                                    //$defassign->add_type(MyDefinition::TYPE_INSTANCE);
-                                    //$defassign->set_object_id($def->get_object_id());
+                                    $mydeftemp = new MyDefinition($tempdefa->getLine(), $tempdefa->getColumn(), $tempdefa->get_name());
+                                    $mydeftemp->add_type(MyDefinition::TYPE_PROPERTY);
+                                    $mydeftemp->property->set_properties($property->property->get_properties());
+                                    $mydeftemp->set_block_id($tempdefa->get_block_id());
+                                    $mydeftemp->set_source_myfile($tempdefa->get_source_myfile());
+                                    $mydeftemp->set_id($tempdefa->get_id());
 
-                                    $tmp_myclasses = $this->context->get_objects()->get_all_myclasses($def->get_object_id());
-
-                                    foreach ($tmp_myclasses as $tmp_myclass)
+                                    $defs_found = ResolveDefs::select_properties($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $mydeftemp, true);
+                                    foreach ($defs_found as $def_found)
                                     {
-                                        foreach ($tmp_myclass->get_properties() as $property)
+                                        if ($def_found->is_type(MyDefinition::TYPE_COPY_ARRAY))
                                         {
-                                            $mydeftemp = new MyDefinition($tempdefa->getLine(), $tempdefa->getColumn(), $tempdefa->get_name());
-                                            $mydeftemp->add_type(MyDefinition::TYPE_PROPERTY);
-                                            $mydeftemp->property->set_properties($property->property->get_properties());
-                                            $mydeftemp->set_block_id($tempdefa->get_block_id());
-                                            $mydeftemp->set_source_myfile($tempdefa->get_source_myfile());
+                                            $property->set_copyarrays($def_found->get_copyarrays());
+                                            $property->add_type(MyDefinition::TYPE_COPY_ARRAY);
+                                        }
 
-                                            $defs_found = ResolveDefs::select_properties($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $mydeftemp, true);
-                                            foreach ($defs_found as $def_found)
-                                            {
-                                                if ($def_found->is_type(MyDefinition::TYPE_COPY_ARRAY))
-                                                {
-                                                    $property->set_copyarrays($def_found->get_copyarrays());
-                                                    $property->add_type(MyDefinition::TYPE_COPY_ARRAY);
-                                                }
+                                        if ($def_found->is_tainted())
+                                            $property->set_tainted(true);
 
-                                                if ($def_found->is_tainted())
-                                                    $property->set_tainted(true);
-
-                                                if ($def_found->is_sanitized())
-                                                {
-                                                    $property->set_sanitized(true);
-                                                    foreach ($def_found->get_type_sanitized() as $type_sanitized)
-                                                        $property->add_type_sanitized($type_sanitized);
-                                                }
-                                            }
+                                        if ($def_found->is_sanitized())
+                                        {
+                                            $property->set_sanitized(true);
+                                            foreach ($def_found->get_type_sanitized() as $type_sanitized)
+                                                $property->add_type_sanitized($type_sanitized);
                                         }
                                     }
                                 }
-*/
-                                if ($tempdefa->get_cast() === MyDefinition::CAST_NOT_SAFE)
-                                    $defassign_myexpr->set_cast($def->get_cast());
-                                else
-                                    $defassign_myexpr->set_cast($tempdefa->get_cast());
-
-                                //ArrayAnalysis::copy_array($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $tempdefa, $tempdefa->get_array_value(), $defassign, $defassign->get_array_value());
-
-                                $safe = AssertionAnalysis::temporary_simple($this->context, $this->defs, $this->current_myblock, $def, $tempdefa);
-
-                                TaintAnalysis::set_tainted($this->context, $this->defs->getoutminuskill($def->get_block_id()), $def, $defassign_myexpr, $tempdefa_myexpr, $safe);
-                            
-                      
-                    }
-                            /*
+                            }
                         }
+
+                        if ($tempdefa->get_cast() === MyDefinition::CAST_NOT_SAFE)
+                            $defassign_myexpr->set_cast($def->get_cast());
+                        else
+                            $defassign_myexpr->set_cast($tempdefa->get_cast());
+
+                        $safe = AssertionAnalysis::temporary_simple($this->context, $this->defs, $this->current_myblock, $def, $tempdefa);
+
+                        TaintAnalysis::set_tainted($this->context, $this->defs->getoutminuskill($def->get_block_id()), $def, $defassign_myexpr, $tempdefa_myexpr, $safe);
+
+
                     }
-*/
+
                     $new_def_values = [];
                     foreach ($concat_defassign as $def_to_concat)
                     {
@@ -358,7 +341,7 @@ class VisitorAnalysis
 
                             if (!ResolveDefs::get_visibility_method($myfunc_call->get_name_instance(), $method))
                                 $method = null;
-                            
+
                             $list_myfunc[] = $method;
 
                             TaintAnalysis::funccall_specify_analysis($method, $stack_class, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $class_of_funccall, $myfunc_call, $arr_funccall, $instruction, $mycode, $index);

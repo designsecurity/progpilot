@@ -31,19 +31,19 @@ class IncludeAnalysis
     {
 
     }
-    
+
     public static function is_circular_include($myfile)
     {
-      $myfile_included = $myfile->get_included_from_myfile();
-      while (!is_null($myfile_included))
-      {
-          if ($myfile_included->get_name() === $myfile->get_name())
-              return true;
-            
-          $myfile_included = $myfile_included->get_included_from_myfile();
-      }
+        $myfile_included = $myfile->get_included_from_myfile();
+        while (!is_null($myfile_included))
+        {
+            if ($myfile_included->get_name() === $myfile->get_name())
+                return true;
 
-      return false;
+            $myfile_included = $myfile_included->get_included_from_myfile();
+        }
+
+        return false;
     }
 
     public static function funccall($context, $defs, $blocks, $instruction, $code, $index)
@@ -113,115 +113,115 @@ class IncludeAnalysis
                                     || (!in_array($name_included_file, $array_requires, true) && $type_include == 4)
                                     || ($type_include == 1 || $type_include == 3))
                             {
-                              
+
                                 $myfile = new MyFile($name_included_file, $myfunc_call->getLine(), $myfunc_call->getColumn());
                                 $myfile->set_included_from_myfile($myfunc_call->get_source_myfile());
-                                
-                                if(!IncludeAnalysis::is_circular_include($myfile))
+
+                                if (!IncludeAnalysis::is_circular_include($myfile))
                                 {
-                                  if ($type_include == 2)
-                                      $array_includes[] = $name_included_file;
+                                    if ($type_include == 2)
+                                        $array_includes[] = $name_included_file;
 
-                                  if ($type_include == 4)
-                                      $array_requires[] = $name_included_file;
+                                    if ($type_include == 4)
+                                        $array_requires[] = $name_included_file;
 
-                                  $context_include = clone $context;
-                                  $context_include->reset_internal_values();
-                                  
-                                  // not need to propagate files already included to the current analyzed file
-                                  // because of clone context and reset values that don't 
-                                  // ie : $context_include->set_array_includes($array_includes); ect
-                                  
-                                  $context_include->inputs->set_file($name_included_file);
-                                  $context_include->inputs->set_code(null);
-                                  $context_include->set_current_myfile($myfile);
-                                  $context_include->set_outputs(new \progpilot\Outputs\MyOutputs);
+                                    $context_include = clone $context;
+                                    $context_include->reset_internal_values();
 
-                                  $defs_a_include = $defs->getoutminuskill($myfunc_call->get_block_id());
+                                    // not need to propagate files already included to the current analyzed file
+                                    // because of clone context and reset values that don't
+                                    // ie : $context_include->set_array_includes($array_includes); ect
 
-                                  $analyzer_include = new \progpilot\Analyzer;
-                                  $analyzer_include->run_internal($context_include, $defs->getoutminuskill($myfunc_call->get_block_id()));
+                                    $context_include->inputs->set_file($name_included_file);
+                                    $context_include->inputs->set_code(null);
+                                    $context_include->set_current_myfile($myfile);
+                                    $context_include->set_outputs(new \progpilot\Outputs\MyOutputs);
 
-                                  if (!is_null($context_include->outputs->get_results()))
-                                  {
-                                      foreach ($context_include->outputs->get_results() as $result_include)
-                                      {
-                                          $context->outputs->add_result($result_include);
-                                      }
-                                  }
+                                    $defs_a_include = $defs->getoutminuskill($myfunc_call->get_block_id());
 
-                                  $main_include = $context_include->get_functions()->get_function("{main}");
+                                    $analyzer_include = new \progpilot\Analyzer;
+                                    $analyzer_include->run_internal($context_include, $defs->getoutminuskill($myfunc_call->get_block_id()));
 
-                                  $defs_output_included_final = [];
-                                  if (!is_null($main_include))
-                                  {
-                                      ArrayAnalysis::funccall_after($context_include, $main_include, $myfunc_call, $arr_funccall, $code[$index + 3]);
-                                      TaintAnalysis::funccall_after($context_include, $defs->getoutminuskill($myfunc_call->get_block_id()), $main_include, $arr_funccall, $instruction);
+                                    if (!is_null($context_include->outputs->get_results()))
+                                    {
+                                        foreach ($context_include->outputs->get_results() as $result_include)
+                                        {
+                                            $context->outputs->add_result($result_include);
+                                        }
+                                    }
 
-                                      $defs_main_return = $main_include->get_defs()->getdefrefbyname("{main}_return");
-                                      foreach ($defs_main_return as $def_main_return)
-                                      {
-                                          $defs_output_included = $main_include->get_defs()->getoutminuskill($def_main_return->get_block_id());
-                                          if (!is_null($defs_output_included))
-                                          {
-                                              foreach ($defs_output_included as $def_output_included)
-                                              {
-                                                  if (!in_array($def_output_included, $defs_output_included_final, true))
-                                                      $defs_output_included_final[] = $def_output_included;
-                                              }
-                                          }
-                                      }
-                                  }
+                                    $main_include = $context_include->get_functions()->get_function("{main}");
 
-                                  $context_functions = $context_include->get_functions()->get_functions();
+                                    $defs_output_included_final = [];
+                                    if (!is_null($main_include))
+                                    {
+                                        ArrayAnalysis::funccall_after($context_include, $main_include, $myfunc_call, $arr_funccall, $code[$index + 3]);
+                                        TaintAnalysis::funccall_after($context_include, $defs->getoutminuskill($myfunc_call->get_block_id()), $main_include, $arr_funccall, $instruction);
 
-                                  if (!is_null($context_functions))
-                                  {
-                                      foreach ($context_functions as $functions_name)
-                                      {
-                                          if (!is_null($functions_name))
-                                          {
-                                              foreach ($functions_name as $myfunc)
-                                                  $context->get_functions()->add_function($myfunc->get_name(), $myfunc);
+                                        $defs_main_return = $main_include->get_defs()->getdefrefbyname("{main}_return");
+                                        foreach ($defs_main_return as $def_main_return)
+                                        {
+                                            $defs_output_included = $main_include->get_defs()->getoutminuskill($def_main_return->get_block_id());
+                                            if (!is_null($defs_output_included))
+                                            {
+                                                foreach ($defs_output_included as $def_output_included)
+                                                {
+                                                    if (!in_array($def_output_included, $defs_output_included_final, true))
+                                                        $defs_output_included_final[] = $def_output_included;
+                                                }
+                                            }
+                                        }
+                                    }
 
-                                          }
-                                      }
-                                  }
+                                    $context_functions = $context_include->get_functions()->get_functions();
 
-                                  $myclasses_include = $context_include->get_classes()->get_list_classes();
-                                  foreach ($myclasses_include as $myclass_include)
-                                  {
-                                      $context->get_classes()->add_myclass($myclass_include);
+                                    if (!is_null($context_functions))
+                                    {
+                                        foreach ($context_functions as $functions_name)
+                                        {
+                                            if (!is_null($functions_name))
+                                            {
+                                                foreach ($functions_name as $myfunc)
+                                                    $context->get_functions()->add_function($myfunc->get_name(), $myfunc);
 
-                                      // we have to resolve definitions
-                                      foreach ($defs->getoutminuskill($myfunc_call->get_block_id()) as $the_def)
-                                      {
-                                          if ($the_def->get_class_name() === $myclass_include->get_name())
-                                          {
-                                              $id_object = $the_def->get_object_id();
-                                              $context->get_objects()->replace_myclass_to_object($id_object, $myclass_include);
-                                          }
-                                      }
-                                  }
+                                            }
+                                        }
+                                    }
 
-                                  $new_defs = false;
-                                  if (count($defs_output_included_final) > 0)
-                                  {
-                                      foreach ($defs_output_included_final as $def_output_included_final)
-                                      {
-                                          //$def_output_included_final->set_block_id($myfunc_call->get_block_id());
-                                          $ret1 = $defs->adddef($def_output_included_final->get_name(), $def_output_included_final);
-                                          $ret2 = $defs->addgen($myfunc_call->get_block_id(), $def_output_included_final);
+                                    $myclasses_include = $context_include->get_classes()->get_list_classes();
+                                    foreach ($myclasses_include as $myclass_include)
+                                    {
+                                        $context->get_classes()->add_myclass($myclass_include);
 
-                                          $new_defs = true;
-                                      }
-                                  }
+                                        // we have to resolve definitions
+                                        foreach ($defs->getoutminuskill($myfunc_call->get_block_id()) as $the_def)
+                                        {
+                                            if ($the_def->get_class_name() === $myclass_include->get_name())
+                                            {
+                                                $id_object = $the_def->get_object_id();
+                                                $context->get_objects()->replace_myclass_to_object($id_object, $myclass_include);
+                                            }
+                                        }
+                                    }
 
-                                  if ($new_defs)
-                                  {
-                                      $defs->computekill($context, $myfunc_call->get_block_id());
-                                      $defs->reachingDefs($blocks);
-                                  }
+                                    $new_defs = false;
+                                    if (count($defs_output_included_final) > 0)
+                                    {
+                                        foreach ($defs_output_included_final as $def_output_included_final)
+                                        {
+                                            //$def_output_included_final->set_block_id($myfunc_call->get_block_id());
+                                            $ret1 = $defs->adddef($def_output_included_final->get_name(), $def_output_included_final);
+                                            $ret2 = $defs->addgen($myfunc_call->get_block_id(), $def_output_included_final);
+
+                                            $new_defs = true;
+                                        }
+                                    }
+
+                                    if ($new_defs)
+                                    {
+                                        $defs->computekill($context, $myfunc_call->get_block_id());
+                                        $defs->reachingDefs($blocks);
+                                    }
 
                                 }
                             }

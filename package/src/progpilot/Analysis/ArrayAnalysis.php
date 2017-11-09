@@ -35,7 +35,7 @@ class ArrayAnalysis
     public static function temporary_simple($context, $data, $defsearch, $def, $is_iterator = false, $is_assign = false)
     {
         $good_defs = [];
-        
+
         if (($def->is_type(MyDefinition::TYPE_COPY_ARRAY) && ($defsearch->is_type(MyDefinition::TYPE_ARRAY) || $is_iterator)))
         {
             foreach ($def->get_copyarrays() as $def_copyarray)
@@ -47,20 +47,20 @@ class ArrayAnalysis
                     $good_defs[] = $mydef_tmp;
             }
         }
-        
+
         // I'm looking for def[arr], I want to find def[arr], but I can have def (must be eliminated)
-        else if($defsearch->is_type(MyDefinition::TYPE_ARRAY))
+        else if ($defsearch->is_type(MyDefinition::TYPE_ARRAY))
         {
-          if($def->is_type(MyDefinition::TYPE_ARRAY)
-            && $defsearch->get_array_value() === $def->get_array_value() || $is_iterator)
-            $good_defs[] = $def;
+            if ($def->is_type(MyDefinition::TYPE_ARRAY)
+                    && $defsearch->get_array_value() === $def->get_array_value() || $is_iterator)
+                $good_defs[] = $def;
         }
-        
+
         // I'm looking for def, I want to find def, but I can have def[arr] (must be eliminated)
-        else if(!$defsearch->is_type(MyDefinition::TYPE_ARRAY))
+        else if (!$defsearch->is_type(MyDefinition::TYPE_ARRAY))
         {
-          if(!$def->is_type(MyDefinition::TYPE_ARRAY) || $is_iterator)
-            $good_defs[] = $def;
+            if (!$def->is_type(MyDefinition::TYPE_ARRAY) || $is_iterator)
+                $good_defs[] = $def;
         }
 
         return $good_defs;
@@ -120,31 +120,31 @@ class ArrayAnalysis
             $copytab = $op_apr->get_property("def");
 
             $originaltabs = $myfunc->get_return_defs();
-            
-            foreach($originaltabs as $originaltab)
+
+            foreach ($originaltabs as $originaltab)
             {
-            //$originaltab = $originaltabs[0];
-            
-            //$originaltab->print_stdout();
-/*
-            if ($originaltab->is_type(MyDefinition::TYPE_COPY_ARRAY))
-            {
-      echo "funccall_after <================= DEFINITION TYPE_COPY_ARRAY\n";
-                $copytab->add_type(MyDefinition::TYPE_COPY_ARRAY);
-                $copytab->set_copyarrays($originaltab->get_copyarrays());
-            }
-            else
-            {
-      echo "funccall_after <================= DEFINITION TYPE_COPY_ARRAY COPYARRAY 0\n";
-                if (count($originaltabs) >= 1)
-                {
-                */
-                    //ArrayAnalysis::copy_array($context, $myfunc->get_defs()->getoutminuskill($originaltab->get_block_id()), $originaltab, $arr_funccall, $copytab, $copytab->get_array_value());
+                //$originaltab = $originaltabs[0];
+
+                //$originaltab->print_stdout();
+                /*
+                            if ($originaltab->is_type(MyDefinition::TYPE_COPY_ARRAY))
+                            {
+                      echo "funccall_after <================= DEFINITION TYPE_COPY_ARRAY\n";
+                                $copytab->add_type(MyDefinition::TYPE_COPY_ARRAY);
+                                $copytab->set_copyarrays($originaltab->get_copyarrays());
+                            }
+                            else
+                            {
+                      echo "funccall_after <================= DEFINITION TYPE_COPY_ARRAY COPYARRAY 0\n";
+                                if (count($originaltabs) >= 1)
+                                {
+                                */
+                //ArrayAnalysis::copy_array($context, $myfunc->get_defs()->getoutminuskill($originaltab->get_block_id()), $originaltab, $arr_funccall, $copytab, $copytab->get_array_value());
                 ArrayAnalysis::copy_array_from_def($originaltab, $arr_funccall, $copytab, $copytab->get_array_value());
 
-                  
+
                 //}
-            //}
+                //}
             }
         }
 
@@ -216,8 +216,8 @@ class ArrayAnalysis
 
                     $copytab->add_copyarray($extractbis, $defarr);
                     $copytab->add_type(MyDefinition::TYPE_COPY_ARRAY);
-                    if($copytab->is_type(MyDefinition::TYPE_ARRAY))
-                      $copytab->remove_type(MyDefinition::TYPE_ARRAY);
+                    if ($copytab->is_type(MyDefinition::TYPE_ARRAY))
+                        $copytab->remove_type(MyDefinition::TYPE_ARRAY);
                     $copytab->set_array_value(false);
 
                     unset($defarr);
@@ -239,10 +239,10 @@ class ArrayAnalysis
 
                 $copytab->add_copyarray($extract, $defa);
                 $copytab->add_type(MyDefinition::TYPE_COPY_ARRAY);
-                
-                if($copytab->is_type(MyDefinition::TYPE_ARRAY))
-                  $copytab->remove_type(MyDefinition::TYPE_ARRAY);
-                
+
+                if ($copytab->is_type(MyDefinition::TYPE_ARRAY))
+                    $copytab->remove_type(MyDefinition::TYPE_ARRAY);
+
                 $copytab->set_array_value(false);
             }
         }

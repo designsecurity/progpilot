@@ -5,8 +5,8 @@ require_once './framework_test.php';
 $framework = new framework_test;
 
 
-require_once './generictest.php';
 require_once './ooptest.php';
+require_once './generictest.php';
 require_once './includetest.php';
 require_once './realtest.php';
 require_once './datatest.php';

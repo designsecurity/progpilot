@@ -38,13 +38,12 @@ class MyDefinition extends MyOp
     private $is_ref_arr;
     private $ref_arr_value;
     private $thearrays;
-    private $theexprs;
+    private $theexpr;
     private $taintedbyexpr;
     private $instance;
     private $class_name;
     private $is_sanitized;
     private $type_sanitized;
-    private $assign_id;
     private $value_from_def;
     private $cast;
     private $is_property;
@@ -72,7 +71,7 @@ class MyDefinition extends MyOp
         $this->ref_arr_value = null;
         $this->instance = false;
         $this->thearrays = [];
-        $this->theexprs = [];
+        $this->theexpr = null;
         $this->taintedbyexpr = null;
         $this->class_name = "";
 
@@ -80,7 +79,6 @@ class MyDefinition extends MyOp
         $this->type_sanitized = [];
 
         $this->last_known_value = [];
-        $this->assign_id = -1;
 
         $this->property = new MyProperty;
         $this->cast = MyDefinition::CAST_NOT_SAFE;
@@ -96,7 +94,7 @@ class MyDefinition extends MyOp
 
     public function print_stdout()
     {
-        echo "def name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: assign_id = ".$this->get_assign_id()." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_type(MyDefinition::TYPE_REFERENCE)." :: is_property = ".$this->is_type(MyDefinition::TYPE_PROPERTY)." :: is_instance = ".$this->is_type(MyDefinition::TYPE_INSTANCE)." :: is_const = ".$this->is_type(MyDefinition::TYPE_CONSTANTE)." :: blockid = ".$this->get_block_id()." :: cast = ".$this->get_cast()."\n";
+        echo "def id ".$this->var_id." ::  name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_type(MyDefinition::TYPE_REFERENCE)." :: is_property = ".$this->is_type(MyDefinition::TYPE_PROPERTY)." :: is_instance = ".$this->is_type(MyDefinition::TYPE_INSTANCE)." :: is_const = ".$this->is_type(MyDefinition::TYPE_CONSTANTE)." :: blockid = ".$this->get_block_id()." :: cast = ".$this->get_cast()."\n";
 
         echo "my_source_file :\n";
         var_dump($this->get_source_myfile()->get_name());
@@ -312,30 +310,19 @@ class MyDefinition extends MyOp
         return $this->thearrays;
     }
 
-    public function get_assign_id()
-    {
-        return $this->assign_id;
-    }
-
-    public function set_assign_id($assign_id)
-    {
-        $this->assign_id = $assign_id;
-    }
-
     public function set_exprs($exprs)
     {
         $this->theexprs = $exprs;
     }
 
-    public function add_expr($myexpr)
+    public function set_expr($myexpr)
     {
-        if (!in_array($myexpr, $this->theexprs, true))
-            $this->theexprs[] = $myexpr;
+        $this->theexpr = $myexpr;
     }
 
-    public function get_exprs()
+    public function get_expr()
     {
-        return $this->theexprs;
+        return $this->theexpr;
     }
 
     public function set_sanitized($is_sanitized)

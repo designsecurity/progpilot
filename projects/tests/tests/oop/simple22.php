@@ -16,11 +16,11 @@ echo $a->data;
 
 
 echo $b->data;
-/*
+
 $b->data = "eee";
 
 echo $a->data;
 
 echo $b->data;
-*/
+
 ?>

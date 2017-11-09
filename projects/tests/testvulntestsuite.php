@@ -1655,9 +1655,6 @@ $framework->add_output("./tests/vulntestsuite/CWE_78__unserialize__func_FILTER-C
 $framework->add_output("./tests/vulntestsuite/CWE_78__unserialize__func_FILTER-CLEANING-full_special_chars_filter__cat-sprintf_%s_simple_quote.php", "code_injection");
 
 $framework->add_testbasis("./tests/vulntestsuite/CWE_78__unserialize__func_FILTER-CLEANING-special_chars_filter__cat-interpretation_simple_quote.php");
-$framework->add_output("./tests/vulntestsuite/CWE_78__unserialize__func_FILTER-CLEANING-special_chars_filter__cat-interpretation_simple_quote.php", array("\$query"));
-$framework->add_output("./tests/vulntestsuite/CWE_78__unserialize__func_FILTER-CLEANING-special_chars_filter__cat-interpretation_simple_quote.php", array("53"));
-$framework->add_output("./tests/vulntestsuite/CWE_78__unserialize__func_FILTER-CLEANING-special_chars_filter__cat-interpretation_simple_quote.php", "command_injection");
 $framework->add_output("./tests/vulntestsuite/CWE_78__unserialize__func_FILTER-CLEANING-special_chars_filter__cat-interpretation_simple_quote.php", array("\$string"));
 $framework->add_output("./tests/vulntestsuite/CWE_78__unserialize__func_FILTER-CLEANING-special_chars_filter__cat-interpretation_simple_quote.php", array("45"));
 $framework->add_output("./tests/vulntestsuite/CWE_78__unserialize__func_FILTER-CLEANING-special_chars_filter__cat-interpretation_simple_quote.php", "code_injection");

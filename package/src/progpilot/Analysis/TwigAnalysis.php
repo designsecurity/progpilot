@@ -52,7 +52,6 @@ class TwigAnalysis
                     $arr_index = "{{".key($arr)."}}";
 
                     $mydef = new MyDefinition($def->getLine(), $def->getColumn(), $arr_index);
-                    $mydef->set_assign_id(rand());
                     $mydef->set_source_myfile($myjavascript_file->get_source_myfile());
 
                     if ($def->is_tainted())

@@ -54,29 +54,26 @@ class ArrayExpr
                 }
                 else
                 {
-                    $assign_id = rand();
-
                     $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
                     $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
                     $myexpr = new MyExpr($context->get_current_line(), $context->get_current_column());
                     $myexpr->set_assign(true);
 
-                    Expr::instruction($value, $context, $myexpr, null, $assign_id);
+                    Expr::instruction($value, $context, $myexpr, null);
 
                     $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
                     $inst_end_expr->add_property("expr", $myexpr);
                     $context->get_current_mycode()->add_code($inst_end_expr);
 
                     $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
-                    
+
                     // mydef after expr because expr is executed before (and his id lower than mydef id)
                     $mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name);
-                    $mydef->set_assign_id($assign_id);
 
                     if ($is_returndef)
                         $context->get_current_func()->add_return_def($mydef);
-                    
+
                     $myexpr->set_assign_def($mydef);
 
                     // we reverse the arr

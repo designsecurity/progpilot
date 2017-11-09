@@ -76,11 +76,9 @@ $framework->add_output("./tests/generic/simple7.php", array("3"));
 $framework->add_output("./tests/generic/simple7.php", "xss");
 
 $framework->add_testbasis("./tests/generic/simple8.php");
-
-//$framework->add_output("./tests/generic/simple8.php", array("\$ret[0]"));
-//$framework->add_output("./tests/generic/simple8.php", array("7"));
-//$framework->add_output("./tests/generic/simple8.php", "xss");
-
+$framework->add_output("./tests/generic/simple8.php", array("\$ret[0]"));
+$framework->add_output("./tests/generic/simple8.php", array("8"));
+$framework->add_output("./tests/generic/simple8.php", "xss");
 $framework->add_output("./tests/generic/simple8.php", array("\$var_gauche[0]"));
 $framework->add_output("./tests/generic/simple8.php", array("3"));
 $framework->add_output("./tests/generic/simple8.php", "xss");

@@ -240,7 +240,7 @@ class Definitions
 
         return null;
     }
-    
+
     /* def equality for killing */
     // def1 = def, def2 = defsearch inside resolvedefs function
     public function def_equality($def1, $def2, $bypass_array = false)
@@ -252,28 +252,28 @@ class Definitions
 
             if (($def1->get_array_value() !== $def2->get_array_value()) && !$bypass_array)
             {
-              if(($def1->is_type(MyDefinition::TYPE_ARRAY) && $def2->is_type(MyDefinition::TYPE_ARRAY)))
-              {
-                $extract = BuildArrays::extract_array_from_arr($def1->get_array_value(), $def2->get_array_value());
-                
-                if($extract === false)
-                  return false;
-              }
+                if (($def1->is_type(MyDefinition::TYPE_ARRAY) && $def2->is_type(MyDefinition::TYPE_ARRAY)))
+                {
+                    $extract = BuildArrays::extract_array_from_arr($def1->get_array_value(), $def2->get_array_value());
+
+                    if ($extract === false)
+                        return false;
+                }
             }
             /*
             if($def1->is_type(MyDefinition::TYPE_PROPERTY) != $def2->is_type(MyDefinition::TYPE_PROPERTY))
               return false;
-            
+
             if($def1->is_type(MyDefinition::TYPE_INSTANCE) != $def2->is_type(MyDefinition::TYPE_INSTANCE))
               return false;
-            
+
             if($def1->is_type(MyDefinition::TYPE_ARRAY) != $def2->is_type(MyDefinition::TYPE_ARRAY))
               return false;
-            
+
             if($def1->is_type(MyDefinition::TYPE_COPY_ARRAY) != $def2->is_type(MyDefinition::TYPE_COPY_ARRAY))
               return false;
             */
-            
+
             return true;
         }
 

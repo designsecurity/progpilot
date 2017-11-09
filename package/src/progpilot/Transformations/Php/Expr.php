@@ -68,16 +68,16 @@ class Expr
         }
     }
 
-    public static function instruction($op, $context, $myexpr, $assign_id, $cast = MyDefinition::CAST_NOT_SAFE)
+    public static function instruction($op, $context, $myexpr, $cast = MyDefinition::CAST_NOT_SAFE)
     {
         $defs_ofexpr = [];
-        $ret = Expr::instruction_internal($defs_ofexpr, $op, $context, $myexpr, $assign_id, $cast);
+        $ret = Expr::instruction_internal($defs_ofexpr, $op, $context, $myexpr, $cast);
         Expr::set_chars_defsofmyexpr($defs_ofexpr, $myexpr, ["'", "<", ">"]);
 
         return $ret;
     }
 
-    public static function instruction_internal(&$defs_ofexpr, $op, $context, $myexpr, $assign_id, $cast = MyDefinition::CAST_NOT_SAFE)
+    public static function instruction_internal(&$defs_ofexpr, $op, $context, $myexpr, $cast = MyDefinition::CAST_NOT_SAFE)
     {
         $mytemp_def = null;
         $arr_funccall = false;
@@ -99,7 +99,6 @@ class Expr
 
             $mytemp = new MyDefinition($context->get_current_line(), $column, $name);
             $mytemp->add_last_known_value($name);
-            $mytemp->set_assign_id($assign_id);
             $mytemp->set_cast($cast);
             $mytemp->set_type($type);
 
@@ -111,7 +110,7 @@ class Expr
                 $mytemp->set_array_value($arr);
             }
 
-            $mytemp->add_expr($myexpr);
+            $mytemp->set_expr($myexpr);
             $defs_ofexpr[] = $mytemp;
 
             if ($type == MyOp::TYPE_CONST)
@@ -153,20 +152,20 @@ class Expr
                         || $ops instanceof Op\Expr\Cast\Object_
                         || $ops instanceof Op\Expr\Cast\Array_)
 
-                    Expr::instruction_internal($defs_ofexpr, $ops->expr, $context, $myexpr, $assign_id, MyDefinition::CAST_SAFE);
+                    Expr::instruction_internal($defs_ofexpr, $ops->expr, $context, $myexpr, MyDefinition::CAST_SAFE);
 
                 else if ($ops instanceof Op\Expr\Cast\String_)
-                    Expr::instruction_internal($defs_ofexpr, $ops->expr, $context, $myexpr, $assign_id, MyDefinition::CAST_NOT_SAFE);
+                    Expr::instruction_internal($defs_ofexpr, $ops->expr, $context, $myexpr, MyDefinition::CAST_NOT_SAFE);
 
                 else if ($ops instanceof Op\Expr\BinaryOp\Concat)
                 {
                     $myexpr->set_is_concat(true);
 
                     $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_LEFT));
-                    Expr::instruction_internal($defs_ofexpr, $ops->left, $context, $myexpr, $assign_id);
+                    Expr::instruction_internal($defs_ofexpr, $ops->left, $context, $myexpr);
 
                     $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::CONCAT_RIGHT));
-                    Expr::instruction_internal($defs_ofexpr, $ops->right, $context, $myexpr, $assign_id);
+                    Expr::instruction_internal($defs_ofexpr, $ops->right, $context, $myexpr);
                 }
                 else if ($ops instanceof Op\Expr\ConcatList)
                 {
@@ -176,35 +175,35 @@ class Expr
 
                     foreach ($ops->list as $opsbis)
                     {
-                        Expr::instruction_internal($defs_ofexpr, $opsbis, $context, $myexpr, $assign_id);
+                        Expr::instruction_internal($defs_ofexpr, $opsbis, $context, $myexpr);
                     }
                 }
                 else if ($ops instanceof Op\Expr\Include_)
                 {
                     $old_op = $context->get_current_op();
                     $context->set_current_op($ops);
-                    FuncCall::instruction($context, $myexpr, $assign_id, $arr_funccall, false);
+                    FuncCall::instruction($context, $myexpr, $arr_funccall, false);
                     $context->set_current_op($old_op);
                 }
                 else if ($ops instanceof Op\Expr\FuncCall)
                 {
                     $old_op = $context->get_current_op();
                     $context->set_current_op($ops);
-                    FuncCall::instruction($context, $myexpr, $assign_id, $arr_funccall, false);
+                    $mytemp_def = FuncCall::instruction($context, $myexpr, $arr_funccall, false);
                     $context->set_current_op($old_op);
                 }
                 else if ($ops instanceof Op\Expr\MethodCall)
                 {
                     $old_op = $context->get_current_op();
                     $context->set_current_op($ops);
-                    FuncCall::instruction($context, $myexpr, $assign_id, $arr_funccall, true);
+                    $mytemp_def = FuncCall::instruction($context, $myexpr, $arr_funccall, true);
                     $context->set_current_op($old_op);
                 }
                 else if ($ops instanceof Op\Expr\StaticCall)
                 {
                     $old_op = $context->get_current_op();
                     $context->set_current_op($ops);
-                    FuncCall::instruction($context, $myexpr, $assign_id, $arr_funccall, false, true);
+                    $mytemp_def = FuncCall::instruction($context, $myexpr, $arr_funccall, false, true);
                     $context->set_current_op($old_op);
                 }
 
@@ -213,12 +212,12 @@ class Expr
                     // funccall for the constructor
                     $old_op = $context->get_current_op();
                     $context->set_current_op($ops);
-                    FuncCall::instruction($context, $myexpr, $assign_id, $arr_funccall);
+                    $mytemp_def = FuncCall::instruction($context, $myexpr, $arr_funccall);
                     $context->set_current_op($old_op);
                 }
                 else
                 {
-                    $mytemp_def = Expr::instruction_internal($defs_ofexpr, $ops, $context, $myexpr, $assign_id);
+                    $mytemp_def = Expr::instruction_internal($defs_ofexpr, $ops, $context, $myexpr);
                 }
             }
         }
