@@ -243,7 +243,7 @@ class Definitions
 
     /* def equality for killing */
     // def1 = def, def2 = defsearch inside resolvedefs function
-    public function def_equality($def1, $def2, $bypass_array = false)
+    public static function def_equality($def1, $def2, $bypass_array = false)
     {
         if ($def1->get_name() === $def2->get_name())
         {
@@ -260,19 +260,6 @@ class Definitions
                         return false;
                 }
             }
-            /*
-            if($def1->is_type(MyDefinition::TYPE_PROPERTY) != $def2->is_type(MyDefinition::TYPE_PROPERTY))
-              return false;
-
-            if($def1->is_type(MyDefinition::TYPE_INSTANCE) != $def2->is_type(MyDefinition::TYPE_INSTANCE))
-              return false;
-
-            if($def1->is_type(MyDefinition::TYPE_ARRAY) != $def2->is_type(MyDefinition::TYPE_ARRAY))
-              return false;
-
-            if($def1->is_type(MyDefinition::TYPE_COPY_ARRAY) != $def2->is_type(MyDefinition::TYPE_COPY_ARRAY))
-              return false;
-            */
 
             return true;
         }

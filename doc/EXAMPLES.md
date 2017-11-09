@@ -23,5 +23,5 @@ var_dump($results);
 
 ?>
 ```
-You can find the updated configuration of Progpilot in [package/src/uptodate_data](../package/src/uptodate_data) folder.__
+You can find the updated configuration of Progpilot in [package/src/uptodate_data](../package/src/uptodate_data) folder.
 
