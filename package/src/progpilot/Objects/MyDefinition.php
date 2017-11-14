@@ -27,6 +27,7 @@ class MyDefinition extends MyOp
     const TYPE_ARRAY_REFERENCE = 0x0010;
     const TYPE_COPY_ARRAY = 0x0020;
     const TYPE_INSTANCE = 0x0040;
+    const TYPE_GLOBAL = 0x0080;
 
     private $is_copy_array;
     private $object_id;

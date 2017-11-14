@@ -337,4 +337,19 @@ $framework->add_output("./tests/generic/foreach1.php", array("\$array_value"));
 $framework->add_output("./tests/generic/foreach1.php", array("6"));
 $framework->add_output("./tests/generic/foreach1.php", "xss");
 
+$framework->add_testbasis("./tests/generic/global1.php");
+$framework->add_output("./tests/generic/global1.php", array("\$myvar1"));
+$framework->add_output("./tests/generic/global1.php", array("4"));
+$framework->add_output("./tests/generic/global1.php", "xss");
+
+$framework->add_testbasis("./tests/generic/global2.php");
+$framework->add_output("./tests/generic/global2.php", array("\$myvar1"));
+$framework->add_output("./tests/generic/global2.php", array("4"));
+$framework->add_output("./tests/generic/global2.php", "xss");
+
+$framework->add_testbasis("./tests/generic/global3.php");
+$framework->add_output("./tests/generic/global3.php", array("\$myvar1"));
+$framework->add_output("./tests/generic/global3.php", array("3"));
+$framework->add_output("./tests/generic/global3.php", "xss");
+
 ?>

@@ -32,18 +32,7 @@ then
     echo $output_runallfolders
     echo $output_runexcludefiles
 else
-    # purge, we keep only the last ten builds
-    i=0
-    files=$(ls -1cd ../../builds/*)
-
-    for file in "${files}"
-    do
-        echo $file
-        i=$(($i + 1))
-        if [ $i -gt 9 ]
-        then rm $file
-        fi
-    done
+    rm -rf ../../builds/*
     
     echo "generating phar"
 

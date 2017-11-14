@@ -307,6 +307,17 @@ class Transform implements Visitor
                 $this->context->get_current_mycode()->add_code($inst_end_expr);
             }
         }
+        else if($op instanceof Op\Terminal\GlobalVar)
+        {
+            $name_global = Common::get_name_definition($this->context->get_current_op()->var);
+            
+            $mydef_global = new MyDefinition($this->context->get_current_line(), $this->context->get_current_column(), $name_global);
+            $mydef_global->set_type(MyDefinition::TYPE_GLOBAL);
+
+            $inst_def = new MyInstruction(Opcodes::DEFINITION);
+            $inst_def->add_property("def", $mydef_global);
+            $this->context->get_current_mycode()->add_code($inst_def);
+        }
 
         else if ($op instanceof Op\Terminal\Return_)
         {

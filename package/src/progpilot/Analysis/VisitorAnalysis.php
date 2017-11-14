@@ -33,6 +33,8 @@ class VisitorAnalysis
     private $defs;
     private $blocks;
 
+    private $current_myfunc;
+    private $current_context_call;
     private $current_myblock;
     private $old_myblock;
 
@@ -42,6 +44,8 @@ class VisitorAnalysis
         $this->call_stack = [];
         $this->myblock_stack = [];
 
+        $this->current_myfunc = null;
+        $this->current_context_call = null;
         $this->current_myblock = null;
         $this->old_myblock = null;
 
@@ -77,7 +81,7 @@ class VisitorAnalysis
         $this->context = $context;
     }
 
-    public function analyze($mycode)
+    public function analyze($mycode, $myfunc_called = null)
     {
         $index = $mycode->get_start();
         $code = $mycode->get_codes();
@@ -153,6 +157,7 @@ class VisitorAnalysis
 
                     $val = array_pop($this->call_stack);
 
+                    $this->current_context_call = $val[4];
                     $this->current_storagemyblocks = $val[3];
                     $this->defs = $val[2];
                     $this->blocks = $val[1];
@@ -162,15 +167,18 @@ class VisitorAnalysis
 
                 case Opcodes::ENTER_FUNCTION:
                 {
-                    $myfunc = $instruction->get_property("myfunc");
-
-                    $val = [$myfunc, $this->blocks, $this->defs, $this->current_storagemyblocks];
+                    $this->current_context_call = new \stdClass;
+                    $this->current_context_call->func_called = $myfunc_called;
+                    $this->current_context_call->func_callee = $this->current_myfunc;
+                    
+                    $this->current_myfunc = $instruction->get_property("myfunc");
+                                
+                    $val = [$this->current_myfunc, $this->blocks, $this->defs, $this->current_storagemyblocks, $this->current_context_call];
                     array_push($this->call_stack, $val);
 
                     $this->current_storagemyblocks = new \SplObjectStorage;
-                    $this->defs = $myfunc->get_defs();
-
-                    $this->blocks = $myfunc->get_blocks();
+                    $this->defs = $this->current_myfunc->get_defs();
+                    $this->blocks = $this->current_myfunc->get_blocks();
 
                     break;
                 }
@@ -199,7 +207,7 @@ class VisitorAnalysis
                         $tainted = true;
                     $tempdefa->set_tainted($tainted);
 
-                    $defs = ResolveDefs::temporary_simple($this->context, $this->defs, $tempdefa, $tempdefa_myexpr->is_assign_iterator(), $tempdefa_myexpr->is_assign());
+                    $defs = ResolveDefs::temporary_simple($this->context, $this->defs, $tempdefa, $tempdefa_myexpr->is_assign_iterator(), $tempdefa_myexpr->is_assign(), $this->call_stack);
 
                     $concat_defassign = [];
                     $concat_values = [];
@@ -415,7 +423,7 @@ class VisitorAnalysis
                                 $mycodefunction->set_start(0);
                                 $mycodefunction->set_end(count($myfunc->get_mycode()->get_codes()));
 
-                                $this->analyze($mycodefunction);
+                                $this->analyze($mycodefunction, $myfunc_call);
 
                                 ArrayAnalysis::funccall_after($this->context, $myfunc, $myfunc_call, $arr_funccall, $code[$index + 3]);
                                 TaintAnalysis::funccall_after($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc, $arr_funccall, $instruction);

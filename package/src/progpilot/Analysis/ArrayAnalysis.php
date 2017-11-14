@@ -51,9 +51,17 @@ class ArrayAnalysis
         // I'm looking for def[arr], I want to find def[arr], but I can have def (must be eliminated)
         else if ($defsearch->is_type(MyDefinition::TYPE_ARRAY))
         {
-            if ($def->is_type(MyDefinition::TYPE_ARRAY)
-                    && $defsearch->get_array_value() === $def->get_array_value() || $is_iterator)
-                $good_defs[] = $def;
+            if (($def->is_type(MyDefinition::TYPE_ARRAY)
+                    && ($defsearch->get_array_value() === $def->get_array_value()) || $is_iterator) || $def->get_array_value() === "PROGPILOT_ALL_INDEX_TAINTED")
+            {
+              if($def->get_array_value() === "PROGPILOT_ALL_INDEX_TAINTED")
+              {
+                $defsearch->set_tainted(true);
+                TaintAnalysis::set_tainted($context, $data, $defsearch, $def, $def->get_expr(), false);
+              }
+                      
+              $good_defs[] = $def;
+            }
         }
 
         // I'm looking for def, I want to find def, but I can have def[arr] (must be eliminated)

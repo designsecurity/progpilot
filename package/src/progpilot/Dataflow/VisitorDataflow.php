@@ -23,7 +23,6 @@ use progpilot\Code\Opcodes;
 
 class VisitorDataflow
 {
-
     private $defs;
     private $blocks;
     private $current_block_id;

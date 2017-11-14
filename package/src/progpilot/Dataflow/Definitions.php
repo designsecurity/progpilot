@@ -241,7 +241,6 @@ class Definitions
         return null;
     }
 
-    /* def equality for killing */
     // def1 = def, def2 = defsearch inside resolvedefs function
     public static function def_equality($def1, $def2, $bypass_array = false)
     {

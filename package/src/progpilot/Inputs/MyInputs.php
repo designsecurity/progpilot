@@ -358,12 +358,21 @@ class MyInputs
                 if ($mysource->is_function() == $is_function)
                     $check_function = true;
 
+                // if we request an array the source must be an array and array nots equals (like $_GET["p"])
                 if (($arr_value != false
                         && $mysource->get_is_array()
                         && is_null($mysource->get_array_value()))
-                        || (!$arr_value && !$mysource->get_is_array()))
+                        // or we don't request an array and the source is not an array (echo $hardcoded_tainted)
+                        || (!$arr_value && !$mysource->get_is_array())
+                        // or we don't request an array
+                        // if mysource is a function and a array like that :
+                        // $row = mysqli_fetch_assoc()
+                        // echo $row[0]
+                        // we don't want an array ie : $row = mysqli_fetch_assoc()[0]
+                        || (!$arr_value && $mysource->is_function() && $mysource->get_is_array()))
                     $check_array = true;
 
+                // if we request an array the source must be an array and array value equals
                 if (($arr_value != false
                         && $mysource->get_is_array()
                         && !is_null($mysource->get_array_value())

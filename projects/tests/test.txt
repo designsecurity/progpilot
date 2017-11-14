@@ -1,0 +1,3 @@
+[./tests/generic/global3.php] test result ko
+array(0) {
+}

@@ -398,7 +398,21 @@ class TaintAnalysis
                 $mydef->set_tainted(true);
                 // no need to taintedbyexpr because it's source like _GET
 
-                if ($mysource->get_is_return_array() && $arr_funccall == false)
+                if ($mysource->get_is_array())
+                {
+                    $defassign->set_array_value("PROGPILOT_ALL_INDEX_TAINTED");
+                    // we don't add type of TYPE_ARRAY because is a virtual array
+                    // $row = mysqli_fetch_row
+                    // echo $row[0]
+                    // we don't want row as an array because it's value is constance PROGPILOT_ALL_INDEX_TAINTED
+                    // which doesn't mean anything for the user
+                    //$defassign->add_type(MyDefinition::TYPE_ARRAY);
+
+                    $exprreturn->add_def($mydef);
+                    $mydef->set_expr($exprreturn);
+                }
+                
+                else if ($mysource->get_is_return_array() && $arr_funccall == false)
                 {
                     $value_array = array($mysource->get_return_array_value() => false);
 
