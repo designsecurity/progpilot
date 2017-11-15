@@ -1,4 +1,4 @@
-# Specify an analyze
+# Specify an analysis
 
 You can specify the way of vulnerabilities are detected by playing with sources, sinks, sanitizers and validators :
 

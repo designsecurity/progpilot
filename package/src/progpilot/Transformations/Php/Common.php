@@ -152,6 +152,7 @@ class Common
                     !(isset($op->result->usages[0])
                       && (
                           $op->result->usages[0] instanceof Op\Terminal\Echo_
+                          || $op->result->usages[0] instanceof Op\Expr\Print_
                           || $op->result->usages[0] instanceof Op\Expr\StaticCall
                           || $op->result->usages[0] instanceof Op\Expr\MethodCall
                           || $op->result->usages[0] instanceof Op\Expr\FuncCall

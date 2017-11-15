@@ -5,14 +5,15 @@ inputs:
     set_sanitizers: ../../package/src/uptodate_data/sanitizers.json
     set_include_files: 
     set_exclude_files: 
+    #set_folder: /home/eric/Téléchargements/DVWA-master/
     set_folder: 
-    set_file: /home/eric/Téléchargements/DVWA-master/vulnerabilities/xss_s/index.php
+    set_file: /home/eric/Téléchargements/DVWA-master/vulnerabilities/brute/source/low.php
     set_code:
     set_resolved_includes:
     set_false_positives:
     
 outputs:
-    tainted_flow: false
+    tainted_flow: true
     resolve_includes: false
     resolve_includes_file:
     

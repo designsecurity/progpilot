@@ -185,6 +185,27 @@ class Expr
                     FuncCall::instruction($context, $myexpr, $arr_funccall, false);
                     $context->set_current_op($old_op);
                 }
+                else if ($ops instanceof Op\Expr\Print_)
+                {
+                    $old_op = $context->get_current_op();
+                    $context->set_current_op($ops);
+                    FuncCall::instruction($context, $myexpr, $arr_funccall, false);
+                    $context->set_current_op($old_op);
+                }
+                else if ($ops instanceof Op\Terminal\Echo_)
+                {
+                    $old_op = $context->get_current_op();
+                    $context->set_current_op($ops);
+                    FuncCall::instruction($context, $myexpr, $arr_funccall, false);
+                    $context->set_current_op($old_op);
+                }
+                else if ($ops instanceof Op\Expr\Eval_)
+                {
+                    $old_op = $context->get_current_op();
+                    $context->set_current_op($ops);
+                    FuncCall::instruction($context, $myexpr, $arr_funccall, false);
+                    $context->set_current_op($old_op);
+                }
                 else if ($ops instanceof Op\Expr\FuncCall)
                 {
                     $old_op = $context->get_current_op();

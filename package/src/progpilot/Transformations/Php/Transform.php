@@ -15,10 +15,7 @@ use PHPCfg\Func;
 use PHPCfg\Op;
 use PHPCfg\Script;
 use PHPCfg\Visitor;
-use PHPCfg\Assertion;
-use PHPCfg\Operand;
 
-use progpilot\Objects\MyAssertion;
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyBlock;
 use progpilot\Objects\MyDefinition;
@@ -307,10 +304,10 @@ class Transform implements Visitor
                 $this->context->get_current_mycode()->add_code($inst_end_expr);
             }
         }
-        else if($op instanceof Op\Terminal\GlobalVar)
+        else if ($op instanceof Op\Terminal\GlobalVar)
         {
             $name_global = Common::get_name_definition($this->context->get_current_op()->var);
-            
+
             $mydef_global = new MyDefinition($this->context->get_current_line(), $this->context->get_current_column(), $name_global);
             $mydef_global->set_type(MyDefinition::TYPE_GLOBAL);
 
@@ -329,75 +326,48 @@ class Transform implements Visitor
         }
         else if ($op instanceof Op\Expr\Eval_)
         {
-            $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
-            $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+            if (Common::is_funccall_withoutreturn($op))
+            {
+                // expr of type "assign" to have a defined return
+                $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
+                $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
-            $inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
-            $inst_funcall_main->add_property("funcname", "eval");
+                FuncCall::instruction($this->context, $myexpr, false);
 
-            $myfunction_call = new MyFunction("eval");
-            $myfunction_call->setLine($op->getLine());
-            $myfunction_call->setColumn($op->getAttribute("startFilePos", -1));
-            $myfunction_call->set_nb_params(1);
-
-            FuncCall::argument($this->context, $op->expr, $inst_funcall_main, "eval", 0);
-
-            $inst_funcall_main->add_property("myfunc_call", $myfunction_call);
-            $inst_funcall_main->add_property("expr", $myexpr);
-            $inst_funcall_main->add_property("arr", false);
-            $this->context->get_current_mycode()->add_code($inst_funcall_main);
-
-            $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-            $inst_end_expr->add_property("expr", $myexpr);
-            $this->context->get_current_mycode()->add_code($inst_end_expr);
+                $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
+                $inst_end_expr->add_property("expr", $myexpr);
+                $this->context->get_current_mycode()->add_code($inst_end_expr);
+            }
         }
         else if ($op instanceof Op\Terminal\Echo_)
         {
-            $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
-            $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+            if (Common::is_funccall_withoutreturn($op))
+            {
+                // expr of type "assign" to have a defined return
+                $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
+                $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
-            $inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
-            $inst_funcall_main->add_property("funcname", "echo");
+                FuncCall::instruction($this->context, $myexpr, false);
 
-            $myfunction_call = new MyFunction("echo");
-            $myfunction_call->setLine($op->getLine());
-            $myfunction_call->setColumn($op->getAttribute("startFilePos", -1));
-            $myfunction_call->set_nb_params(1);
-
-            FuncCall::argument($this->context, $op->expr, $inst_funcall_main, "echo", 0);
-
-            $inst_funcall_main->add_property("myfunc_call", $myfunction_call);
-            $inst_funcall_main->add_property("expr", $myexpr);
-            $inst_funcall_main->add_property("arr", false);
-            $this->context->get_current_mycode()->add_code($inst_funcall_main);
-
-            $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-            $inst_end_expr->add_property("expr", $myexpr);
-            $this->context->get_current_mycode()->add_code($inst_end_expr);
+                $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
+                $inst_end_expr->add_property("expr", $myexpr);
+                $this->context->get_current_mycode()->add_code($inst_end_expr);
+            }
         }
         else if ($op instanceof Op\Expr\Print_)
         {
-            $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
-            $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+            if (Common::is_funccall_withoutreturn($op))
+            {
+                // expr of type "assign" to have a defined return
+                $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
+                $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
 
-            $inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
-            $inst_funcall_main->add_property("funcname", "print");
+                FuncCall::instruction($this->context, $myexpr, false);
 
-            $myfunction_call = new MyFunction("print");
-            $myfunction_call->setLine($op->getLine());
-            $myfunction_call->setColumn($op->getAttribute("startFilePos", -1));
-            $myfunction_call->set_nb_params(1);
-
-            FuncCall::argument($this->context, $op->expr, $inst_funcall_main, "print", 0);
-
-            $inst_funcall_main->add_property("myfunc_call", $myfunction_call);
-            $inst_funcall_main->add_property("expr", $myexpr);
-            $inst_funcall_main->add_property("arr", false);
-            $this->context->get_current_mycode()->add_code($inst_funcall_main);
-
-            $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-            $inst_end_expr->add_property("expr", $myexpr);
-            $this->context->get_current_mycode()->add_code($inst_end_expr);
+                $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
+                $inst_end_expr->add_property("expr", $myexpr);
+                $this->context->get_current_mycode()->add_code($inst_end_expr);
+            }
         }
         else if ($op instanceof Op\Expr\StaticCall)
         {

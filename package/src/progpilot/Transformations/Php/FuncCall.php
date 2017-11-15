@@ -103,11 +103,16 @@ class FuncCall
         }
 
         if ($context->get_current_op() instanceof Op\Expr\Include_)
-        {
             $funccall_name = "include";
-        }
 
+        else if ($context->get_current_op() instanceof Op\Expr\Print_)
+            $funccall_name = "print";
 
+        else if ($context->get_current_op() instanceof Op\Terminal\Echo_)
+            $funccall_name = "echo";
+
+        else if ($context->get_current_op() instanceof Op\Expr\Eval_)
+            $funccall_name = "eval";
 
         $inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
         $inst_funcall_main->add_property("funcname", $funccall_name);
@@ -144,10 +149,15 @@ class FuncCall
 
         $list_args = [];
 
-        if ($context->get_current_op() instanceof Op\Expr\Include_)
+        if ($context->get_current_op() instanceof Op\Expr\Include_
+                || $context->get_current_op() instanceof Op\Expr\Print_
+                || $context->get_current_op() instanceof Op\Terminal\Echo_
+                || $context->get_current_op() instanceof Op\Expr\Eval_)
         {
             $list_args[] = $context->get_current_op()->expr;
-            $inst_funcall_main->add_property("type_include", $context->get_current_op()->type);
+
+            if ($context->get_current_op() instanceof Op\Expr\Include_)
+                $inst_funcall_main->add_property("type_include", $context->get_current_op()->type);
         }
         else
             $list_args = $context->get_current_op()->args;

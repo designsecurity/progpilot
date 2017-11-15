@@ -90,7 +90,8 @@ class Context
         $this->classes = new \progpilot\Dataflow\Classes;
         $this->functions = new \progpilot\Dataflow\Functions;
         // representations (cfg, ast ...) are deleted to avoid memory grown
-        $this->outputs = new \progpilot\Outputs\MyOutputs;
+        //$this->outputs = new \progpilot\Outputs\MyOutputs;
+        $this->outputs->reset_representations();
     }
 
     public function set_array_includes($array_includes)

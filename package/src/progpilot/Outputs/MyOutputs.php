@@ -32,13 +32,17 @@ class MyOutputs
 
     public function __construct()
     {
-
         $this->resolve_includes = false;
         $this->resolve_includes_file = null;
         $this->current_includes_file = [];
         $this->results = [];
         $this->tainted_flow = false;
 
+        $this->reset_representations();
+    }
+
+    public function reset_representations()
+    {
         $this->cfg = new ControlFlowGraph;
         $this->callgraph = new Callgraph;
         $this->ast = new AbstractSyntaxTree;

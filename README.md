@@ -105,7 +105,7 @@ You can define traditional variables like *_GET*, *_POST* or *_COOKIE* as untrus
 		]
 }
 ```
-See more available options in the [corresponding chapter about specifying an analyze](./doc/SPECIFY_ANALYZE.md)
+See more available options in the [corresponding chapter about specifying an analysis](./doc/SPECIFY_ANALYSIS.md)
 
 ## Development
 [Learn more](./doc/DEV.md) about the development of Progpilot

@@ -135,12 +135,21 @@ class IncludeAnalysis
                                     $context_include->inputs->set_file($name_included_file);
                                     $context_include->inputs->set_code(null);
                                     $context_include->set_current_myfile($myfile);
-                                    $context_include->set_outputs(new \progpilot\Outputs\MyOutputs);
+                                    //$context_include->set_outputs(new \progpilot\Outputs\MyOutputs);
+                                    $context_include->outputs->reset_representations();
 
                                     $defs_a_include = $defs->getoutminuskill($myfunc_call->get_block_id());
 
                                     $analyzer_include = new \progpilot\Analyzer;
                                     $analyzer_include->run_internal($context_include, $defs->getoutminuskill($myfunc_call->get_block_id()));
+
+                                    if (count($context_include->outputs->current_includes_file) > 0)
+                                    {
+                                        foreach ($context_include->outputs->current_includes_file as $include_file)
+                                        {
+                                            $context->current_includes_file[] = $include_file;
+                                        }
+                                    }
 
                                     if (!is_null($context_include->outputs->get_results()))
                                     {

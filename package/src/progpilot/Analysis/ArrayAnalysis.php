@@ -54,13 +54,19 @@ class ArrayAnalysis
             if (($def->is_type(MyDefinition::TYPE_ARRAY)
                     && ($defsearch->get_array_value() === $def->get_array_value()) || $is_iterator) || $def->get_array_value() === "PROGPILOT_ALL_INDEX_TAINTED")
             {
-              if($def->get_array_value() === "PROGPILOT_ALL_INDEX_TAINTED")
-              {
-                $defsearch->set_tainted(true);
-                TaintAnalysis::set_tainted($context, $data, $defsearch, $def, $def->get_expr(), false);
-              }
-                      
-              $good_defs[] = $def;
+                if ($def->get_array_value() === "PROGPILOT_ALL_INDEX_TAINTED")
+                {
+                    $defsearch->set_tainted(true);
+                    //TaintAnalysis::set_tainted($context, $data, $defsearch, $def, $def->get_expr(), false);
+
+                    if (ResolveDefs::get_visibility_from_instances($context, $data, $def))
+                    {
+                        ValueAnalysis::copy_values($defsearch, $def);
+                        TaintAnalysis::set_tainted($defsearch, $def, $def->get_expr());
+                    }
+                }
+
+                $good_defs[] = $def;
             }
         }
 

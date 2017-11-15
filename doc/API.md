@@ -26,7 +26,7 @@ To retrieve the value of $file, $code and $folder use these methods :
 - $obj_context->inputs->get_sinks();
 - $obj_context->inputs->get_sanitizers();
 - $obj_context->inputs->get_validators();  
-These methods are mainly explained in the chapter [**specify an analyze**](./SPECIFY_ANALYZE.md)  
+These methods are mainly explained in the chapter [**specify an analyze**](./SPECIFY_ANALYSIS.md)  
 If one file (sources, sinks, sanitizers, validators) is null (not specified) [the default file](../package/src/uptodate_data) will be used.
 ***
 

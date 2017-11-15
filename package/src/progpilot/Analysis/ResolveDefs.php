@@ -428,6 +428,45 @@ class ResolveDefs
         return false;
     }
 
+    public static function get_visibility_from_instances($context, $data, $defassign)
+    {
+        $visibility_final = true;
+
+        if ($defassign->is_type(MyDefinition::TYPE_PROPERTY))
+        {
+            $copy_defassign = clone $defassign;
+            $prop = $copy_defassign->property->pop_property();
+            $visibility_final = false;
+
+            $instances = ResolveDefs::select_instances($context, $data, $copy_defassign);
+
+            foreach ($instances as $instance)
+            {
+                if ($instance->is_type(MyDefinition::TYPE_INSTANCE))
+                {
+                    $id_object = $instance->get_object_id();
+                    $tmp_myclasses = $context->get_objects()->get_all_myclasses($id_object);
+
+                    foreach ($tmp_myclasses as $tmp_myclass)
+                    {
+                        $property = $tmp_myclass->get_property($prop);
+
+                        if (!is_null($property) && (ResolveDefs::get_visibility($copy_defassign, $property)))
+                        {
+                            $visibility_final = true;
+                            break 2;
+                        }
+                    }
+                }
+            }
+
+            if (count($instances) == 0)
+                $visibility_final = true;
+        }
+
+        return $visibility_final;
+    }
+
     public static function select_definitions($context, $data, $defsearch, $bypass_isnearest = false)
     {
         $defsfound = [];
@@ -637,110 +676,110 @@ class ResolveDefs
 
         return $properties_defs;
     }
-    
+
     public static function select_globals($name_global, $context, $data, $tempdefa, $is_iterator, $is_assign, $call_stack)
     {
-      for($call_number = count($call_stack) - 1; $call_number != 0; $call_number --)
-      {
-        $current_context_call = $call_stack[$call_number][4];
-                      
-        // ca peut arriver si on est dans le main() est qu'on appelle une globale
-        if(!is_null($current_context_call->func_called) && !is_null($current_context_call->func_callee))
+        for ($call_number = count($call_stack) - 1; $call_number != 0; $call_number --)
         {
-          // we can't looking for an element of a global array in PHP
-          $tempdefa->remove_type(MyDefinition::TYPE_ARRAY);
-          $tempdefa->set_array_value(false);
-          
-          $tempdefa->set_name($name_global);
-          $tempdefa->setLine($current_context_call->func_called->getLine());
-          $tempdefa->setColumn($current_context_call->func_called->getColumn());
-          $tempdefa->set_block_id($current_context_call->func_callee->get_last_block_id());
-                        
-          $res_global = ResolveDefs::temporary_simple($context, $current_context_call->func_callee->get_defs(), $tempdefa, $is_iterator, $is_assign, $current_context_call);
-          if(!(count($res_global) == 1 && $res_global[0] === $tempdefa))
-            return $res_global;
+            $current_context_call = $call_stack[$call_number][4];
+
+            // ca peut arriver si on est dans le main() est qu'on appelle une globale
+            if (!is_null($current_context_call->func_called) && !is_null($current_context_call->func_callee))
+            {
+                // we can't looking for an element of a global array in PHP
+                $tempdefa->remove_type(MyDefinition::TYPE_ARRAY);
+                $tempdefa->set_array_value(false);
+
+                $tempdefa->set_name($name_global);
+                $tempdefa->setLine($current_context_call->func_called->getLine());
+                $tempdefa->setColumn($current_context_call->func_called->getColumn());
+                $tempdefa->set_block_id($current_context_call->func_callee->get_last_block_id());
+
+                $res_global = ResolveDefs::temporary_simple($context, $current_context_call->func_callee->get_defs(), $tempdefa, $is_iterator, $is_assign, $current_context_call);
+                if (!(count($res_global) == 1 && $res_global[0] === $tempdefa))
+                    return $res_global;
+            }
         }
-      }
-      
-      return array();
+
+        return array();
     }
 
     public static function temporary_simple($context, $data, $tempdefa, $is_iterator, $is_assign, $call_stack)
     {
-        if($tempdefa->is_type(MyDefinition::TYPE_ARRAY) && $tempdefa->get_name() === "GLOBALS")
-          return ResolveDefs::select_globals(key($tempdefa->get_array_value()), $context, $data, $tempdefa, $is_iterator, $is_assign, $call_stack);
-        
+        if ($tempdefa->is_type(MyDefinition::TYPE_ARRAY) && $tempdefa->get_name() === "GLOBALS")
+            return ResolveDefs::select_globals(key($tempdefa->get_array_value()), $context, $data, $tempdefa, $is_iterator, $is_assign, $call_stack);
+
         else
         {
-          $myexpr = $tempdefa->get_expr();
+            $myexpr = $tempdefa->get_expr();
 
-          if ($tempdefa->is_type(MyDefinition::TYPE_PROPERTY))
-              $defs = ResolveDefs::select_properties(
-                          $context,
-                          $data->getoutminuskill($tempdefa->get_block_id()),
-                          $tempdefa);
+            if ($tempdefa->is_type(MyDefinition::TYPE_PROPERTY))
+                $defs = ResolveDefs::select_properties(
+                            $context,
+                            $data->getoutminuskill($tempdefa->get_block_id()),
+                            $tempdefa);
 
-          else
-              $defs = ResolveDefs::select_definitions(
-                          $context,
-                          $data->getoutminuskill($tempdefa->get_block_id()),
-                          $tempdefa, $is_iterator);
+            else
+                $defs = ResolveDefs::select_definitions(
+                            $context,
+                            $data->getoutminuskill($tempdefa->get_block_id()),
+                            $tempdefa, $is_iterator);
 
 
-          $gooddefs = [];
-          if (count($defs) > 0)
-          {
-              foreach ($defs as $defz)
-              {
-                  if($defz->is_type(MyDefinition::TYPE_GLOBAL))
-                    return ResolveDefs::select_globals($defz->get_name(), $context, $data, $tempdefa, $is_iterator, $is_assign, $call_stack);
-                  
-                  else
-                  {
-                    $defaa = ArrayAnalysis::temporary_simple($context, $data->getoutminuskill($tempdefa->get_block_id()), $tempdefa, $defz, $is_iterator, $is_assign);
+            $gooddefs = [];
+            if (count($defs) > 0)
+            {
+                foreach ($defs as $defz)
+                {
+                    if ($defz->is_type(MyDefinition::TYPE_GLOBAL))
+                        return ResolveDefs::select_globals($defz->get_name(), $context, $data, $tempdefa, $is_iterator, $is_assign, $call_stack);
 
-                    foreach ($defaa as $defa)
+                    else
                     {
-                        if ($defa->is_type(MyDefinition::TYPE_REFERENCE))
+                        $defaa = ArrayAnalysis::temporary_simple($context, $data->getoutminuskill($tempdefa->get_block_id()), $tempdefa, $defz, $is_iterator, $is_assign);
+
+                        foreach ($defaa as $defa)
                         {
-                            $refdef = new MyDefinition($tempdefa->getLine(), $tempdefa->getColumn(), $defa->get_ref_name());
-                            $refdef->set_block_id($tempdefa->get_block_id());
-                            $refdef->set_source_myfile($tempdefa->get_source_myfile());
-
-                            if ($defa->is_type(MyDefinition::TYPE_ARRAY_REFERENCE))
+                            if ($defa->is_type(MyDefinition::TYPE_REFERENCE))
                             {
-                                $refdef->add_type(MyDefinition::TYPE_ARRAY);
-                                $refdef->set_array_value($defa->get_ref_arr_value());
+                                $refdef = new MyDefinition($tempdefa->getLine(), $tempdefa->getColumn(), $defa->get_ref_name());
+                                $refdef->set_block_id($tempdefa->get_block_id());
+                                $refdef->set_source_myfile($tempdefa->get_source_myfile());
+
+                                if ($defa->is_type(MyDefinition::TYPE_ARRAY_REFERENCE))
+                                {
+                                    $refdef->add_type(MyDefinition::TYPE_ARRAY);
+                                    $refdef->set_array_value($defa->get_ref_arr_value());
+                                }
+
+                                $truerefs = ResolveDefs::select_definitions($context,
+                                            $data->getoutminuskill($refdef->get_block_id()),
+                                            $refdef);
+
+                                foreach ($truerefs as $ref)
+                                {
+                                    $myexpr->add_def($ref);
+                                    $gooddefs[] = $ref;
+                                }
+
+                                unset($truerefs);
                             }
-
-                            $truerefs = ResolveDefs::select_definitions($context,
-                                        $data->getoutminuskill($refdef->get_block_id()),
-                                        $refdef);
-
-                            foreach ($truerefs as $ref)
+                            else
                             {
-                                $myexpr->add_def($ref);
-                                $gooddefs[] = $ref;
+                                $myexpr->add_def($defa);
+                                $gooddefs[] = $defa;
                             }
-
-                            unset($truerefs);
-                        }
-                        else
-                        {
-                            $myexpr->add_def($defa);
-                            $gooddefs[] = $defa;
                         }
                     }
-                  }
-              }
-          }
-          else
-          {
-              $myexpr->add_def($tempdefa);
-              $gooddefs[] = $tempdefa;
-          }
+                }
+            }
+            else
+            {
+                $myexpr->add_def($tempdefa);
+                $gooddefs[] = $tempdefa;
+            }
 
-          return $gooddefs;
+            return $gooddefs;
         }
     }
 }

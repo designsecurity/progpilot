@@ -137,21 +137,20 @@ class SecurityAnalysis
         }
     }
 
-    public static function tainted_flow($context, $def_expr_flow, $mysink)
+    public static function tainted_flow($index_parameter, $context, $def_expr_flow, $mysink)
     {
         $result_tainted_flow = [];
 
         $id_flow = \progpilot\Utils::print_definition($def_expr_flow);
 
-        $tainted_flow_expr = $def_expr_flow->get_taintedbyexpr();
-        while ($def_expr_flow->get_taintedbyexpr() !== null && $def_expr_flow->get_taintedbyexpr() !== $tainted_flow_expr)
+        while ($def_expr_flow->get_taintedbyexpr() !== null)
         {
             $tainted_flow_expr = $def_expr_flow->get_taintedbyexpr();
             $defs_expr_tainted = $tainted_flow_expr->get_defs();
 
             foreach ($defs_expr_tainted as $def_expr_flow_from)
             {
-                if (!SecurityAnalysis::is_safe($def_expr_flow_from, $mysink))
+                if (!SecurityAnalysis::is_safe($index_parameter, $def_expr_flow_from, $mysink))
                 {
                     $one_tainted["flow_name"] = \progpilot\Utils::print_definition($def_expr_flow_from);
                     $one_tainted["flow_line"] = $def_expr_flow_from->getLine();
@@ -165,6 +164,9 @@ class SecurityAnalysis
                     break;
                 }
             }
+
+            if ($def_expr_flow->get_taintedbyexpr() === $tainted_flow_expr)
+                break;
         }
 
         return [$result_tainted_flow, $id_flow];
@@ -202,7 +204,7 @@ class SecurityAnalysis
 
                     if (!SecurityAnalysis::in_array_source($temp, $source_name, $source_line, $source_column, $source_file))
                     {
-                        $results_flow = SecurityAnalysis::tainted_flow($context, $def_expr, $mysink);
+                        $results_flow = SecurityAnalysis::tainted_flow($index_parameter, $context, $def_expr, $mysink);
                         $result_tainted_flow = $results_flow[0];
                         $hash_id_vuln .= $results_flow[1];
 

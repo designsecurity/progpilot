@@ -88,6 +88,11 @@ $framework->add_output("./tests/generic/concat1.php", array("\$myvar7"));
 $framework->add_output("./tests/generic/concat1.php", array("7"));
 $framework->add_output("./tests/generic/concat1.php", "xss");
 
+$framework->add_testbasis("./tests/generic/concat2.php");
+$framework->add_output("./tests/generic/concat2.php", array("\$query"));
+$framework->add_output("./tests/generic/concat2.php", array("12"));
+$framework->add_output("./tests/generic/concat2.php", "sql_injection");
+
 $framework->add_testbasis("./tests/generic/arrays1.php");
 $framework->add_output("./tests/generic/arrays1.php", array("\$newmyarr[11][9865]"));
 $framework->add_output("./tests/generic/arrays1.php", array("4"));

@@ -341,7 +341,14 @@ class TaintAnalysis
 
         if ($return_sanitizer)
         {
-            TaintAnalysis::set_tainted($context, $data, $mytemp_return, $mydef_return, $myexpr_return1, false);
+            //TaintAnalysis::set_tainted($context, $data, $mytemp_return, $mydef_return, $myexpr_return1, false);
+
+            if (ResolveDefs::get_visibility_from_instances($context, $data, $mydef_return))
+            {
+                ValueAnalysis::copy_values($mytemp_return, $mydef_return);
+                TaintAnalysis::set_tainted($mytemp_return, $mydef_return, $myexpr_return1);
+            }
+            //TaintAnalysis::set_tainted($mytemp_return, $mydef_return, $myexpr_return1);
         }
 
     }
@@ -411,7 +418,7 @@ class TaintAnalysis
                     $exprreturn->add_def($mydef);
                     $mydef->set_expr($exprreturn);
                 }
-                
+
                 else if ($mysource->get_is_return_array() && $arr_funccall == false)
                 {
                     $value_array = array($mysource->get_return_array_value() => false);
@@ -432,14 +439,26 @@ class TaintAnalysis
                         $mydef->set_expr($exprreturn);
 
                         if ($exprreturn->is_assign())
-                            TaintAnalysis::set_tainted($context, $data, $mydef, $defassign, $exprreturn, false);
+                        {
+                            if (ResolveDefs::get_visibility_from_instances($context, $data, $defassign))
+                            {
+                                ValueAnalysis::copy_values($mydef, $defassign);
+                                TaintAnalysis::set_tainted($mydef, $defassign, $exprreturn);
+                            }
+                        }
                     }
                 }
                 else if (!$mysource->get_is_return_array())
                 {
                     $exprreturn->add_def($mydef);
                     if ($exprreturn->is_assign())
-                        TaintAnalysis::set_tainted($context, $data, $mydef, $defassign, $exprreturn, false);
+                    {
+                        if (ResolveDefs::get_visibility_from_instances($context, $data, $defassign))
+                        {
+                            ValueAnalysis::copy_values($mydef, $defassign);
+                            TaintAnalysis::set_tainted($mydef, $defassign, $exprreturn);
+                        }
+                    }
                 }
             }
         }
@@ -463,15 +482,16 @@ class TaintAnalysis
 
 
                 $expr = $copydefreturn->get_expr();
-
-                //foreach ($exprs as $expr)
-                //{
-                // blabla =
                 if ($expr->is_assign())
                 {
                     $defassign = $expr->get_assign_def();
-                    TaintAnalysis::set_tainted($context, $data, $copydefreturn, $defassign, $expr, false);
-                    //    }
+                    //TaintAnalysis::set_tainted($copydefreturn, $defassign, $expr);
+
+                    if (ResolveDefs::get_visibility_from_instances($context, $data, $defassign))
+                    {
+                        ValueAnalysis::copy_values($copydefreturn, $defassign);
+                        TaintAnalysis::set_tainted($copydefreturn, $defassign, $expr);
+                    }
                 }
             }
         }
@@ -494,14 +514,16 @@ class TaintAnalysis
                     $param->set_tainted(true);
                     $expr = $param->get_expr();
 
-                    //foreach ($exprs as $expr)
-                    //{
                     if (!is_null($expr) && $expr->is_assign())
                     {
                         $defassign = $expr->get_assign_def();
-                        TaintAnalysis::set_tainted($context, $data, $defarg, $defassign, $expr, false);
+
+                        if (ResolveDefs::get_visibility_from_instances($context, $data, $defassign))
+                        {
+                            ValueAnalysis::copy_values($defarg, $defassign);
+                            TaintAnalysis::set_tainted($defarg, $defassign, $expr);
+                        }
                     }
-                    //}
                 }
 
 
@@ -513,61 +535,12 @@ class TaintAnalysis
         unset($params);
     }
 
-    public static function set_tainted($context, $data, $def, $defassign, $expr, $safe)
+    public static function set_tainted($def, $defassign, $expr)
     {
-        // assertions
-        if (!$safe)
+        if ($def->is_tainted())
         {
-            $visibility_final = true;
-
-            if ($defassign->is_type(MyDefinition::TYPE_PROPERTY))
-            {
-                $copy_defassign = clone $defassign;
-                $prop = $copy_defassign->property->pop_property();
-                $visibility_final = false;
-
-                $instances = ResolveDefs::select_instances($context, $data, $copy_defassign);
-
-                foreach ($instances as $instance)
-                {
-                    if ($instance->is_type(MyDefinition::TYPE_INSTANCE))
-                    {
-                        $id_object = $instance->get_object_id();
-                        $tmp_myclasses = $context->get_objects()->get_all_myclasses($id_object);
-
-                        foreach ($tmp_myclasses as $tmp_myclass)
-                        {
-                            $property = $tmp_myclass->get_property($prop);
-
-                            if (!is_null($property) && (ResolveDefs::get_visibility($copy_defassign, $property)))
-                            {
-                                $visibility_final = true;
-                                break 2;
-                            }
-                        }
-                    }
-                }
-
-                if (count($instances) == 0)
-                    $visibility_final = true;
-            }
-
-            if ($def->is_tainted() && $visibility_final)
-            {
-                $defassign->set_tainted(true);
-                $defassign->set_taintedbyexpr($expr);
-            }
-
-            if ($def->is_sanitized() && $visibility_final)
-            {
-                $defassign->set_type_sanitized($def->get_type_sanitized());
-                $defassign->set_sanitized(true);
-            }
-
-            if ($visibility_final)
-            {
-                $defassign->set_is_embeddedbychars($def->get_is_embeddedbychars(), true);
-            }
+            $defassign->set_tainted(true);
+            $defassign->set_taintedbyexpr($expr);
         }
     }
 }
