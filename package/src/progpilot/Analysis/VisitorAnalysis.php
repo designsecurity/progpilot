@@ -25,7 +25,6 @@ use progpilot\Utils;
 
 class VisitorAnalysis
 {
-    private $exprs_visited;
     private $context;
     private $current_storagemyblocks;
     private $call_stack;
@@ -39,7 +38,9 @@ class VisitorAnalysis
     private $old_myblock;
 
     public function __construct()
-    {
+    {   
+        ValueAnalysis::build_storage();
+        
         $this->current_storagemyblocks = null;
         $this->call_stack = [];
         $this->myblock_stack = [];
@@ -199,88 +200,17 @@ class VisitorAnalysis
                     {
                         $defassign = $expr->get_assign_def();
 
-                        // TYPE SANITIZED
-                        // we retrieve all sanitize types
-                        $concat_types_sanitize = [];
-                        foreach ($expr->get_defs() as $def)
-                        {
-                            if ($def->is_sanitized())
-                            {
-                                foreach ($def->get_type_sanitized() as $type_sanitized)
-                                    $concat_types_sanitize["$type_sanitized"] = true;
-                            }
-                        }
-
-                        // foreach sanitize types
-                        foreach($concat_types_sanitize as $type_sanitized => $boolean_true)
-                        {
-                            $type_ok = true;
-                            foreach ($expr->get_defs() as $def)
-                            {
-                                // if we find a tainted value that is not sanitized the defassign is not sanitized
-                                if (!$def->is_type_sanitized($type_sanitized) && $def->is_tainted())
-                                    $type_ok = false;
-                            }
-
-                            if ($type_ok)
-                            {
-                                $defassign->set_sanitized(true);
-                                $defassign->add_type_sanitized($type_sanitized);
-                            }
-                        }
-
-
-                        // EMBEDDED CHARS
-                        // we retrieve all embedded chars types
-                        $concat_embedded_chars = [];
-                        foreach ($expr->get_defs() as $def)
-                        {
-                            foreach($def->get_is_embeddedbychars() as $embedded_char => $boolean)
-                            $concat_embedded_chars[] = $embedded_char;
-                        }
-
-                        foreach ($concat_embedded_chars as $embedded_char)
-                        {
-                            $embedded_value = false;
-
-                            foreach ($expr->get_defs() as $def)
-                            {
-                                $boolean = $def->get_is_embeddedbychar($embedded_char);
-
-                                if ($boolean && $embedded_value)
-                                    $embedded_value = false;
-
-                                if ($boolean && !$embedded_value)
-                                    $embedded_value = true;
-
-                                if (!$boolean && $embedded_value)
-                                    $embedded_value = true;
-
-                                if (!$boolean && !$embedded_value)
-                                    $embedded_value = false;
-                            }
-
-                            $defassign->set_is_embeddedbychar($embedded_char, $embedded_value);
-                        }
-                        /*
-                        echo "CASSSST ======================\n";
-                        // CAST
-                        $nb_cast_safe = 0;
-                        foreach($expr->get_defs() as $def)
-                        {
-                          $def->print_stdout();
-                          if($def->get_cast() === MyDefinition::CAST_SAFE)
-                            $nb_cast_safe ++;
-                        }
-
-                        if($nb_cast_safe == count($expr->get_defs()))
-                          $defassign->set_cast(MyDefinition::CAST_SAFE);
-                        else
-                          $defassign->set_cast(MyDefinition::CAST_NOT_SAFE);
-
-                        echo "========> '$nb_cast_safe' '".count($expr->get_defs())."'\n";
-                        $defassign->print_stdout();
-                        */
+                        /* 
+                         * we have all the resolved defs so maybe when we have two def for one tempdef
+                         * that could lead to abuse the compute of embedded chars for example
+                         * but it's not because all def have the same name (they have been resolved)  
+                         * and so same embedded char of tempdef 
+                         */
+                        
+                        ValueAnalysis::compute_sanitized_values($defassign, $expr);
+                        ValueAnalysis::compute_embedded_chars($defassign, $expr);
+                        ValueAnalysis::compute_cast_values($defassign, $expr);
+                        ValueAnalysis::compute_known_values($defassign, $expr);
                     }
 
                     break;
@@ -302,11 +232,11 @@ class VisitorAnalysis
                     $tempdefa->set_tainted($tainted);
 
                     $defs = ResolveDefs::temporary_simple($this->context, $this->defs, $tempdefa, $tempdefa_myexpr->is_assign_iterator(), $tempdefa_myexpr->is_assign(), $this->call_stack);
-
-                    $concat_tables = new \stdClass;
-                    $concat_tables->defs_assign = [];
-                    $concat_tables->values = [];
-
+                    
+                    ValueAnalysis::update_storage_to_expr($tempdefa_myexpr);
+                    $storage_cast = ValueAnalysis::$exprs_cast[$tempdefa_myexpr];
+                    $storage_knownvalues = ValueAnalysis::$exprs_knownvalues[$tempdefa_myexpr];
+                    
                     foreach ($defs as $def)
                     {
                         $safe = AssertionAnalysis::temporary_simple($this->context, $this->defs, $this->current_myblock, $def, $tempdefa);
@@ -320,15 +250,10 @@ class VisitorAnalysis
 
                         if ($visibility)
                         {
-                            $defassign_myexpr->set_cast($tempdefa->get_cast());
-                            /*
-                            if ($tempdefa->get_cast() === MyDefinition::CAST_NOT_SAFE)
-                            $defassign_myexpr->set_cast($def->get_cast());
-                            else
-                            $defassign_myexpr->set_cast($tempdefa->get_cast());
-                            */
+                            $storage_cast[] = $tempdefa->get_cast();
+                            $storage_knownvalues["".$tempdefa->get_id().""][] = $def->get_last_known_values();
+                            
                             ValueAnalysis::copy_values($tempdefa, $def);
-                            ValueAnalysis::calculate_values($tempdefa, $defassign_myexpr, $tempdefa_myexpr, $def, $concat_tables);
                         }
 
                         if ($visibility && !$safe)
@@ -377,9 +302,10 @@ class VisitorAnalysis
                             }
                         }
                     }
-
-                    ValueAnalysis::update_for_concat_values($concat_tables);
-
+                    
+                    ValueAnalysis::$exprs_cast[$tempdefa_myexpr] = $storage_cast;
+                    ValueAnalysis::$exprs_knownvalues[$tempdefa_myexpr] = $storage_knownvalues;
+                    
                     break;
                 }
 

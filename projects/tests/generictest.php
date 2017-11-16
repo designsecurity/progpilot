@@ -93,6 +93,14 @@ $framework->add_output("./tests/generic/concat2.php", array("\$query"));
 $framework->add_output("./tests/generic/concat2.php", array("12"));
 $framework->add_output("./tests/generic/concat2.php", "sql_injection");
 
+$framework->add_testbasis("./tests/generic/concat3.php");
+$framework->add_output("./tests/generic/concat3.php", array("\$aaa"));
+$framework->add_output("./tests/generic/concat3.php", array("3"));
+$framework->add_output("./tests/generic/concat3.php", "xss");
+$framework->add_output("./tests/generic/concat3.php", array("\$bbb"));
+$framework->add_output("./tests/generic/concat3.php", array("5"));
+$framework->add_output("./tests/generic/concat3.php", "xss");
+
 $framework->add_testbasis("./tests/generic/arrays1.php");
 $framework->add_output("./tests/generic/arrays1.php", array("\$newmyarr[11][9865]"));
 $framework->add_output("./tests/generic/arrays1.php", array("4"));
