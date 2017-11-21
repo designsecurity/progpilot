@@ -90,7 +90,7 @@ array(1) {
 }
 ```
 All files (composer.json, example1.php) used in this example are in the [projects/example](./projects/example) folder.  
-For more examples look at [this page](./doc/EXAMPLES.md).
+For more examples look at this [page](./doc/EXAMPLES.md).
 
 ## Specify an analysis
 You can configure an analysis (the definitions of sinks, sources, sanitizers and validators) according to your own context.  
