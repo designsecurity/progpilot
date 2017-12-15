@@ -16,6 +16,6 @@
         }
     ],
     "require": {
-        "progpilot/package": "dev-master"
+        "progpilot/package": "@dev"
     }
 } 
