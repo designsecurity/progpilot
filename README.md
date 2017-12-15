@@ -33,7 +33,7 @@ Then run composer :
 ```shell
 composer install
 ```
-If no errors occuring you could try the following example.
+Then you could try the following example.
 
 ## Library example
 - For more informations : look at the [chapter about API explaination](./doc/API.md)
