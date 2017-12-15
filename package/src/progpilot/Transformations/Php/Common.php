@@ -157,6 +157,7 @@ class Common
                           || $op->result->usages[0] instanceof Op\Expr\MethodCall
                           || $op->result->usages[0] instanceof Op\Expr\FuncCall
                           || $op->result->usages[0] instanceof Op\Expr\Assign
+                          || $op->result->usages[0] instanceof Op\Expr\BinaryOp\Concat
                           || $op->result->usages[0] instanceof Op\Expr\Array_
                           || $op->result->usages[0] instanceof Op\Expr\Include_
                           || $op->result->usages[0] instanceof Op\Expr\Eval_))))

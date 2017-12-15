@@ -124,6 +124,8 @@ class Analyzer
             $myfunc->get_mycode()->set_start(0);
             $myfunc->get_mycode()->set_end(count($myfunc->get_mycode()->get_codes()));
 
+            \progpilot\Analysis\ValueAnalysis::build_storage();
+
             $visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
             $visitoranalyzer->set_context($context);
             $visitoranalyzer->analyze($myfunc->get_mycode());

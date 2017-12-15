@@ -66,7 +66,10 @@ class ValueAnalysis
                     // def->get_last_known_values()
                     // "def_id_temp1"
                     foreach ($def_known_values as $def_known_value)
-                        $def_values[] = $def_known_value;
+                    {
+                        if (!in_array($def_known_value, $def_values, true))
+                            $def_values[] = $def_known_value;
+                    }
                 }
 
                 if (count($final_def_values) == 0)
@@ -78,7 +81,11 @@ class ValueAnalysis
                     foreach ($final_def_values as $final_def_value)
                     {
                         foreach ($def_values as $def_value)
-                            $new_final_def_values[] = $final_def_value.$def_value;
+                        {
+                            $new_value = $final_def_value.$def_value;
+                            if (!in_array($new_value, $new_final_def_values, true))
+                                $new_final_def_values[] = $new_value;
+                        }
                     }
 
                     $final_def_values = $new_final_def_values;

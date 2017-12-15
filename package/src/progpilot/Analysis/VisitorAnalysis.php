@@ -38,9 +38,7 @@ class VisitorAnalysis
     private $old_myblock;
 
     public function __construct()
-    {   
-        ValueAnalysis::build_storage();
-        
+    {
         $this->current_storagemyblocks = null;
         $this->call_stack = [];
         $this->myblock_stack = [];
@@ -200,13 +198,13 @@ class VisitorAnalysis
                     {
                         $defassign = $expr->get_assign_def();
 
-                        /* 
+                        /*
                          * we have all the resolved defs so maybe when we have two def for one tempdef
                          * that could lead to abuse the compute of embedded chars for example
-                         * but it's not because all def have the same name (they have been resolved)  
-                         * and so same embedded char of tempdef 
+                         * but it's not because all def have the same name (they have been resolved)
+                         * and so same embedded char of tempdef
                          */
-                        
+
                         ValueAnalysis::compute_sanitized_values($defassign, $expr);
                         ValueAnalysis::compute_embedded_chars($defassign, $expr);
                         ValueAnalysis::compute_cast_values($defassign, $expr);
@@ -232,11 +230,11 @@ class VisitorAnalysis
                     $tempdefa->set_tainted($tainted);
 
                     $defs = ResolveDefs::temporary_simple($this->context, $this->defs, $tempdefa, $tempdefa_myexpr->is_assign_iterator(), $tempdefa_myexpr->is_assign(), $this->call_stack);
-                    
+
                     ValueAnalysis::update_storage_to_expr($tempdefa_myexpr);
                     $storage_cast = ValueAnalysis::$exprs_cast[$tempdefa_myexpr];
                     $storage_knownvalues = ValueAnalysis::$exprs_knownvalues[$tempdefa_myexpr];
-                    
+
                     foreach ($defs as $def)
                     {
                         $safe = AssertionAnalysis::temporary_simple($this->context, $this->defs, $this->current_myblock, $def, $tempdefa);
@@ -252,7 +250,7 @@ class VisitorAnalysis
                         {
                             $storage_cast[] = $tempdefa->get_cast();
                             $storage_knownvalues["".$tempdefa->get_id().""][] = $def->get_last_known_values();
-                            
+
                             ValueAnalysis::copy_values($tempdefa, $def);
                         }
 
@@ -302,10 +300,10 @@ class VisitorAnalysis
                             }
                         }
                     }
-                    
+
                     ValueAnalysis::$exprs_cast[$tempdefa_myexpr] = $storage_cast;
                     ValueAnalysis::$exprs_knownvalues[$tempdefa_myexpr] = $storage_knownvalues;
-                    
+
                     break;
                 }
 

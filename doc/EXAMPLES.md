@@ -1,6 +1,6 @@
 # Examples
 
-#### How can I use my own security data files ?
+#### How can I use my own security files configuration ?
 ```php
 <?php
 
@@ -23,5 +23,5 @@ var_dump($results);
 
 ?>
 ```
-You can find the updated configuration of Progpilot in [package/src/uptodate_data](../package/src/uptodate_data) folder.
+You can find the updated security files configuration of Progpilot in [package/src/uptodate_data](../package/src/uptodate_data) folder.
 

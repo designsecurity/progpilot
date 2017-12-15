@@ -122,7 +122,7 @@ class FuncCall
         $myfunction_call->setColumn($context->get_current_column());
 
 
-        if ($is_static)
+        if ($is_static && isset($context->get_current_op()->class->value))
         {
             $name_class = $context->get_current_op()->class->value;
             $myfunction_call->add_type(MyFunction::TYPE_FUNC_STATIC);
