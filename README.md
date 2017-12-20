@@ -37,7 +37,7 @@ Then you could try the following example.
 
 ## Library example
 - For more informations : look at the [chapter about API explaination](./doc/API.md)
-- Use this code to analyze *example1.php* :
+- Use this code to analyze *source_code1.php* :
 ```php
 <?php
 
@@ -46,7 +46,7 @@ require_once './vendor/autoload.php';
 $context = new \progpilot\Context;
 $analyzer = new \progpilot\Analyzer;
 
-$context->inputs->set_file("example1.php");
+$context->inputs->set_file("source_code1.php");
 
 $analyzer->run($context);
 $results = $context->outputs->get_results();
@@ -55,7 +55,7 @@ var_dump($results);
 
 ?>
 ```
-- When example1.php contains this code :
+- When source_code1.php contains this code :
 ```php
 <?php
 
@@ -89,7 +89,7 @@ array(1) {
   }
 }
 ```
-All files (composer.json, example.php, example1.php) used in this example are in the [projects/example](./projects/example) folder.  
+All files (composer.json, example1.php, source_code1.php) used in this example are in the [projects/example](./projects/example) folder.  
 For more examples look at this [page](./doc/EXAMPLES.md).
 
 ## Specify an analysis

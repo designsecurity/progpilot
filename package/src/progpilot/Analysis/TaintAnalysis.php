@@ -507,11 +507,13 @@ class TaintAnalysis
             if ($instruction->is_property_exist("argdef$nbparams"))
             {
                 $defarg = $instruction->get_property("argdef$nbparams");
+                $exprarg = $instruction->get_property("argexpr$nbparams");
 
                 if ($defarg->is_tainted())
                 {
                     // useful just for inside the function
                     $param->set_tainted(true);
+                    $param->set_taintedbyexpr($exprarg);
                     $expr = $param->get_expr();
 
                     if (!is_null($expr) && $expr->is_assign())
