@@ -255,7 +255,7 @@ class VisitorAnalysis
                         }
 
                         if ($visibility && !$safe)
-                            TaintAnalysis::set_tainted($def, $defassign_myexpr, $tempdefa_myexpr);
+                            TaintAnalysis::set_tainted($def->is_tainted(), $defassign_myexpr, $tempdefa_myexpr);
 
                         // vérifier s'il y a pas de concat
                         // mis a jour de l'object
@@ -286,8 +286,7 @@ class VisitorAnalysis
                                             $property->add_type(MyDefinition::TYPE_COPY_ARRAY);
                                         }
 
-                                        if ($def_found->is_tainted())
-                                            $property->set_tainted(true);
+                                        TaintAnalysis::set_tainted($def_found->is_tainted(), $property, $def_found->get_taintedbyexpr());
 
                                         if ($def_found->is_sanitized())
                                         {

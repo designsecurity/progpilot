@@ -1,4 +1,5 @@
 language: php
+ - 5.5.9
  - 7.0.7
 
 install:
@@ -13,9 +14,10 @@ script:
  output_runall=`php ./run_all.php`
  output_runallfolders=`php ./run_all_folders.php`
  output_runexcludefiles=`php ./run_exclude_files.php`
+ output_runflows=`php ./run_flows.php`
  
- if [ "$output_runall" != "" ] || [ "$output_runallfolders" != ""  ] || [ "$output_runexcludefiles" != "" ]; then
-  echo "$output_runall,$output_runallfolders,$output_runexcludefiles";
+ if [ "$output_runall" != "" ] || [ "$output_runallfolders" != ""  ] || [ "$output_runexcludefiles" != "" ] || [ "$output_runflows" != "" ]; then
+  echo "$output_runall,$output_runallfolders,$output_runexcludefiles,$output_runflows";
   exit 1;
  else
   exit 0;

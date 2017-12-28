@@ -23,14 +23,16 @@ output_runexcludefiles=""
 output_runall=`cd ../tests; php ./run_all.php`
 output_runallfolders=`cd ../tests; php ./run_all_folders.php`
 output_runexcludefiles=`cd ../tests; php ./run_exclude_files.php`
+output_runflows=`cd ../tests; php ./run_flows.php`
 
-if [ "$output_runall" != "" ] || [ "$output_runallfolders" != ""  ] || [ "$output_runexcludefiles" != "" ] 
+if [ "$output_runall" != "" ] || [ "$output_runallfolders" != ""  ] || [ "$output_runexcludefiles" != "" ] || [ "$output_runflows" != "" ] 
 then
     echo "progpilot tests failed"
     
     echo $output_runall
     echo $output_runallfolders
     echo $output_runexcludefiles
+    echo $output_runflows
 else
     rm -rf ../../builds/*
     

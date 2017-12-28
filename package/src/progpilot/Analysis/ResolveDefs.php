@@ -215,8 +215,7 @@ class ResolveDefs
 
                     foreach ($defs as $def_found)
                     {
-                        if ($def_found->is_tainted())
-                            $new_property->set_tainted(true);
+                        TaintAnalysis::set_tainted($def_found->is_tainted(), $new_property, $def_found->get_taintedbyexpr());
 
                         if ($def_found->is_sanitized())
                         {
@@ -266,8 +265,7 @@ class ResolveDefs
                         $property->add_type(MyDefinition::TYPE_COPY_ARRAY);
                     }
 
-                    if ($def_found->is_tainted())
-                        $property->set_tainted(true);
+                    TaintAnalysis::set_tainted($def_found->is_tainted(), $property, $def_found->get_taintedbyexpr());
 
                     if ($def_found->is_sanitized())
                     {

@@ -40,3 +40,4 @@ There is a lot of tasks to do :
 - Namespace (phpparser example : NsFunccall)
 - mysqli_fetch_object (all the properties are tainted : is_object like is_array in the definition of source)
 - mysqli style object (will be handled by custom rules : $mysqli = new mysqli; $result = $mysqli->query(); (return of query method of instance mysqli is an object of type ect) $result->fetch_array();)
+- Handle all tainted flows when severals definitions taint the same expression
