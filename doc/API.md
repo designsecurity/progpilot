@@ -63,6 +63,10 @@ max definitions by file during the data flow analysis, which could prevent a ver
 max execution time by file for the first steps of the analysis, the analysis may take much longer in the last steps, so it's recommanded to specify a low value (default is *10 seconds*)
 - $obj_context->set_print_file($bool);  
 *true* if you want to print the name of files analyzed by progpilot, default is *false*
+- $obj_context->set_print_warning($bool);  
+*true* if you want to print warnings during the analysis, default is *false*
+- $obj_context->set_pretty_print($bool);  
+*true* if you want to pretty print the JSON output of standalone progpilot application, default is *true*
 - $obj_context->set_analyze_functions($bool);  
 *true* if you want to analyze all functions (*false* only *main function* is analyzed), default is *true*
 - $obj_context->set_analyze_js($bool);  

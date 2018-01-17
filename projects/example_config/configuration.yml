@@ -20,7 +20,8 @@ options:
     set_analyze_js: false
     set_analyze_includes: true
     set_analyze_functions: true
-    set_print_file: true
+    set_print_file: false
     set_print_warning: false
+    set_pretty_print: true
     set_limit_time: 10
     set_limit_defs: 10000

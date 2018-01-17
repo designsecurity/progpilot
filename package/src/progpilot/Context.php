@@ -36,6 +36,7 @@ class Context
     private $print_file_under_analysis;
     private $configuration_file;
     private $print_warning;
+    private $pretty_print;
     private $limit_time;
     private $limit_defs;
 
@@ -50,6 +51,7 @@ class Context
         $this->analyze_js = true;
         $this->print_file_under_analysis = false;
         $this->print_warning = false;
+        $this->pretty_print = true;
         $this->limit_time = 10;
         $this->limit_defs = 10000;
 
@@ -112,6 +114,16 @@ class Context
     public function get_array_requires()
     {
         return $this->array_requires;
+    }
+
+    public function set_pretty_print($bool)
+    {
+        $this->pretty_print = $bool;
+    }
+
+    public function get_pretty_print()
+    {
+        return $this->pretty_print;
     }
 
     public function set_print_warning($bool)
@@ -409,6 +421,9 @@ class Context
 
                             if (isset($value["options"]["set_print_warning"]))
                                 $this->set_print_warning($value["options"]["set_print_warning"]);
+
+                            if (isset($value["options"]["set_pretty_print"]))
+                                $this->set_pretty_print($value["options"]["set_pretty_print"]);
                         }
                     }
                 }
