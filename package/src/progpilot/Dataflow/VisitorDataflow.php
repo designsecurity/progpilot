@@ -19,13 +19,17 @@ use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyFunction;
 
 use progpilot\Dataflow\Definitions;
+use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
+use progpilot\Utils;
+use progpilot\Lang;
 
 class VisitorDataflow
 {
     private $defs;
     private $blocks;
     private $current_block_id;
+    private $current_class;
 
     /* representations */
     private $current_func;
@@ -90,12 +94,17 @@ class VisitorDataflow
 
                 case Opcodes::CLASSE:
                 {
-                    $myclass = $instruction->get_property("myclass");
+                    $myclass = $instruction->get_property(MyInstruction::MYCLASS);
                     foreach ($myclass->get_properties() as $property)
                     {
                         if (is_null($property->get_source_myfile()))
                             $property->set_source_myfile($context->get_current_myfile());
                     }
+					
+                    $object_id = $context->get_objects()->add_object();
+                    $myclass->set_object_id_this($object_id);
+					
+					$this->current_class = $myclass;
 
                     break;
                 }
@@ -104,7 +113,7 @@ class VisitorDataflow
                 {
                     $block_id_zero = hash("sha256", "0-".$context->get_current_myfile()->get_name());
 
-                    $myfunc = $instruction->get_property("myfunc");
+                    $myfunc = $instruction->get_property(MyInstruction::MYFUNC);
 
                     $blocks = new \SplObjectStorage;
                     $defs = new Definitions();
@@ -124,10 +133,9 @@ class VisitorDataflow
                         $thisdef = $myfunc->get_this_def();
                         $thisdef->set_source_myfile($context->get_current_myfile());
 
-                        $id_object = $context->get_objects()->add_object();
-                        $thisdef->set_object_id($id_object);
+                        $thisdef->set_object_id($this->current_class->get_object_id_this());
                         $thisdef->set_block_id($block_id_zero);
-
+						
                         $this->defs->adddef($thisdef->get_name(), $thisdef);
                         $this->defs->addgen($thisdef->get_block_id(), $thisdef);
                     }
@@ -143,7 +151,7 @@ class VisitorDataflow
 
                 case Opcodes::ENTER_BLOCK:
                 {
-                    $myblock = $instruction->get_property("myblock");
+                    $myblock = $instruction->get_property(MyInstruction::MYBLOCK);
 
                     $this->setBlockId($myblock);
                     $block_id_tmp = $this->getBlockId($myblock);
@@ -189,7 +197,7 @@ class VisitorDataflow
 
                 case Opcodes::LEAVE_BLOCK:
                 {
-                    $myblock = $instruction->get_property("myblock");
+                    $myblock = $instruction->get_property(MyInstruction::MYBLOCK);
 
                     $blockid = $myblock->get_id();
 
@@ -213,9 +221,12 @@ class VisitorDataflow
 
                 case Opcodes::LEAVE_FUNCTION:
                 {
+                    $myfunc = $instruction->get_property(MyInstruction::MYFUNC);
+                    
+                    $context->set_current_nb_defs($context->get_current_nb_defs() + $myfunc->get_defs()->get_nb_defs());
+                    
                     $this->defs->reachingDefs($this->blocks);
 
-                    $myfunc = $instruction->get_property("myfunc");
                     $myfunc->set_last_block_id($last_block_id);
 
                     // representations start
@@ -228,7 +239,7 @@ class VisitorDataflow
 
                 case Opcodes::FUNC_CALL:
                 {
-                    $myfunc_call = $instruction->get_property("myfunc_call");
+                    $myfunc_call = $instruction->get_property(MyInstruction::MYFUNC_CALL);
                     $myfunc_call->set_block_id($this->current_block_id);
 
                     if (is_null($myfunc_call->get_source_myfile()))
@@ -240,10 +251,23 @@ class VisitorDataflow
                         $mybackdef->set_block_id($this->current_block_id);
                         $mybackdef->add_type(MyDefinition::TYPE_INSTANCE);
                         $mybackdef->set_source_myfile($context->get_current_myfile());
-
+						
                         $id_object = $context->get_objects()->add_object();
                         $mybackdef->set_object_id($id_object);
+						
+						if(!empty($mybackdef->get_class_name()))
+						{
+							$myclass = $context->get_classes()->get_myclass($mybackdef->get_class_name());
+							if (is_null($myclass))
+							{
+								$myclass = new MyClass($mybackdef->getLine(),
+													   $mybackdef->getColumn(),
+													   $mybackdef->get_class_name());
+							}
 
+							$context->get_objects()->add_myclass_to_object($id_object, $myclass);
+						}
+						
                         $this->defs->adddef($mybackdef->get_name(), $mybackdef);
                         $this->defs->addgen($mybackdef->get_block_id(), $mybackdef);
                     }
@@ -287,7 +311,7 @@ class VisitorDataflow
 
                 case Opcodes::TEMPORARY:
                 {
-                    $mydef = $instruction->get_property("temporary");
+                    $mydef = $instruction->get_property(MyInstruction::TEMPORARY);
                     $mydef->set_block_id($this->current_block_id);
 
                     if (is_null($mydef->get_source_myfile()))
@@ -303,31 +327,15 @@ class VisitorDataflow
 
                 case Opcodes::DEFINITION:
                 {
-                    $mydef = $instruction->get_property("def");
+                    $mydef = $instruction->get_property(MyInstruction::DEF);
                     $mydef->set_block_id($this->current_block_id);
-
+                   
                     if (is_null($mydef->get_source_myfile()))
                         $mydef->set_source_myfile($context->get_current_myfile());
 
                     $this->defs->adddef($mydef->get_name(), $mydef);
                     $this->defs->addgen($mydef->get_block_id(), $mydef);
-
-                    if ($mydef->is_type(MyDefinition::TYPE_INSTANCE))
-                    {
-                        $myclass = $context->get_classes()->get_myclass($mydef->get_class_name());
-                        if (is_null($myclass))
-                        {
-                            $myclass = new MyClass($mydef->getLine(),
-                                                   $mydef->getColumn(),
-                                                   $mydef->get_class_name());
-                        }
-
-                        /* mod */
-                        $id_object = $context->get_objects()->add_object();
-                        $mydef->set_object_id($id_object);
-                        $context->get_objects()->add_myclass_to_object($id_object, $myclass);
-                    }
-
+                    
                     // representations start
                     $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
                     $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::DEFINITION."\n");

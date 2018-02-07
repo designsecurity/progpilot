@@ -21,30 +21,6 @@ class Objects
         $this->objects = [];
     }
 
-    public function get_all_myclasses($id)
-    {
-        if (isset($this->objects[$id]))
-            return $this->objects[$id];
-
-        return [];
-    }
-
-    public function get_myclass($id, $myclass)
-    {
-        if (isset($this->objects[$id]))
-        {
-            $myclasses = $this->objects[$id];
-
-            foreach ($myclasses as $one_class)
-            {
-                if ($one_class->get_name() === $myclass->get_name())
-                    return $one_class;
-            }
-        }
-
-        return null;
-    }
-
     public function get_objects()
     {
         return $this->objects;
@@ -53,49 +29,23 @@ class Objects
     public function add_object()
     {
         $id_object = count($this->objects);
-        $this->objects[$id_object] = [];
+        $this->objects[$id_object] = null;
 
         return $id_object;
     }
 
-    public function replace_myclass_to_object($id, $myclass)
+    public function add_myclass_to_object($id_object, $myclass)
     {
-        $exist = false;
-        $myclasses = [];
-
-        if (isset($this->objects[$id]))
-            $myclasses = $this->objects[$id];
-
-        foreach ($myclasses as $key => $one_class)
-        {
-            if ($one_class->get_name() === $myclass->get_name())
-            {
-                $this->objects[$id][$key] = $myclass;
-                break;
-            }
-        }
-    }
-
-    public function add_myclass_to_object($id, $myclass)
+        $this->objects[$id_object] = $myclass;
+	}
+	
+    public function get_myclass_from_object($id_object)
     {
-        $exist = false;
-        $myclasses = [];
-
-        if (isset($this->objects[$id]))
-            $myclasses = $this->objects[$id];
-
-        foreach ($myclasses as $one_class)
-        {
-            if ($one_class->get_name() === $myclass->get_name())
-            {
-                $exist = true;
-                break;
-            }
-        }
-
-        if (!$exist)
-            $this->objects[$id][] = $myclass;
-    }
+		if (isset($this->objects[$id_object]))
+			return $this->objects[$id_object];
+		
+		return null;
+	}
 }
 
 ?>

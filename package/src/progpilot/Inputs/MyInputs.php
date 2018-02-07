@@ -273,7 +273,7 @@ class MyInputs
         return null;
     }
 
-    public function get_sink_byname($stack_class, $myfunc, $myclass)
+    public function get_sink_byname($context, $stack_class, $myfunc, $myclass)
     {
         foreach ($this->sinks as $mysink)
         {
@@ -302,7 +302,10 @@ class MyInputs
 
                             foreach ($known_properties as $prop_class)
                             {
-                                if ($prop_class->get_name() == $mysink_instance_name)
+								$object_id = $prop_class->get_object_id();
+								$myclass = $context->get_objects()->get_myclass_from_object($object_id);
+							
+                                if ($myclass->get_name() == $mysink_instance_name)
                                     return $mysink;
                             }
                         }

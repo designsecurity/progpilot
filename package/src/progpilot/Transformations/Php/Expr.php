@@ -100,7 +100,7 @@ class Expr
             $mytemp = new MyDefinition($context->get_current_line(), $column, $name);
             $mytemp->add_last_known_value($name);
             $mytemp->set_cast($cast);
-            $mytemp->set_type($type);
+            //$mytemp->set_type($type);
 
             Expr::set_chars($myexpr, $mytemp, $name, ["'", "<", ">"]);
 
@@ -127,7 +127,7 @@ class Expr
             }
 
             $inst_temporary_simple = new MyInstruction(Opcodes::TEMPORARY);
-            $inst_temporary_simple->add_property("temporary", $mytemp);
+            $inst_temporary_simple->add_property(MyInstruction::TEMPORARY, $mytemp);
             $context->get_current_mycode()->add_code($inst_temporary_simple);
 
             return $mytemp;

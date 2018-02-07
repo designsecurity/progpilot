@@ -86,7 +86,7 @@ class Assign
             $backdef = Expr::instruction($expr_op, $context, $myexpr);
 
             $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-            $inst_end_expr->add_property("expr", $myexpr);
+            $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
             $context->get_current_mycode()->add_code($inst_end_expr);
 
             $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
@@ -105,7 +105,7 @@ class Assign
             $myexpr->set_assign_def($mydef);
 
             $inst_def = new MyInstruction(Opcodes::DEFINITION);
-            $inst_def->add_property("def", $mydef);
+            $inst_def->add_property(MyInstruction::DEF, $mydef);
             $context->get_current_mycode()->add_code($inst_def);
 
             // $array[09][098] = expr;
@@ -136,7 +136,7 @@ class Assign
                     $name_class = $context->get_current_op()->expr->ops[0]->class->value;
                     $mydef->add_type(MyDefinition::TYPE_INSTANCE);
                     $mydef->set_class_name($name_class);
-
+                    
                     // ou bien créer backdef ici
                     if (!is_null($backdef))
                         $backdef->set_id($mydef->get_id() + 1);

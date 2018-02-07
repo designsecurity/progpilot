@@ -14,11 +14,11 @@ use progpilot\Objects\MyFile;
 
 class Analyzer
 {
-
+    
     public function __construct()
     {
     }
-
+    
     function get_files_ofdir($context, $dir, &$files)
     {
         if (is_dir($dir) && !$context->inputs->is_excluded_folder($dir))
@@ -140,12 +140,18 @@ class Analyzer
 
     public function run_internal($context, $defs_included = null)
     {
+        if ($context->get_current_nb_defs() > $context->get_limit_defs())
+        {
+            Utils::print_warning($context, Lang::MAX_DEFS_EXCEEDED);
+            return;
+        }
+            
         $start_time = microtime(true);
-
+        
         $past_results = &$context->outputs->get_results();
         $context->reset_internal_values();
         $context->outputs->set_results($past_results);
-
+        
         $script = $this->parse($context);
 
         if ((microtime(true) - $start_time) > $context->get_limit_time())
@@ -165,10 +171,6 @@ class Analyzer
         // analyze
         if (!is_null($context))
         {
-            /*
-              $context->get_mycode()->set_start(0);
-              $context->get_mycode()->set_end(count($context->get_mycode()->get_codes()));
-              */
             $context_functions = $context->get_functions()->get_functions();
             $visitordataflow = new \progpilot\Dataflow\VisitorDataflow();
 
@@ -182,6 +184,12 @@ class Analyzer
                             $visitordataflow->analyze($context, $myfunc, $defs_included);
                     }
                 }
+            }
+            
+            if ($context->get_current_nb_defs() > $context->get_limit_defs())
+            {
+                Utils::print_warning($context, Lang::MAX_DEFS_EXCEEDED);
+                return;
             }
 
             if ((microtime(true) - $start_time) > $context->get_limit_time())
@@ -274,6 +282,8 @@ class Analyzer
 
         foreach ($files as $file)
         {
+            $context->set_current_nb_defs(0);
+            
             if ($context->get_print_file())
                 echo "progpilot analyze : ".Utils::encode_characters($file)."\n";
 

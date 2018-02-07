@@ -19,6 +19,7 @@ use PHPCfg\Operand;
 
 use progpilot\Objects\MyOp;
 use progpilot\Objects\MyFunction;
+use progpilot\Code\MyInstruction;
 
 class SecurityAnalysis
 {
@@ -82,15 +83,15 @@ class SecurityAnalysis
     }
 
     public static function funccall($stack_class, $context, $instruction, $myclass = null)
-    {
-        $myfunc_call = $instruction->get_property("myfunc_call");
+    {                                           
+        $myfunc_call = $instruction->get_property(MyInstruction::MYFUNC_CALL);
 
         $name_instance = null;
         if ($myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD))
             $name_instance = $myfunc_call->get_name_instance();
 
-        $mysink = $context->inputs->get_sink_byname($stack_class, $myfunc_call, $myclass);
-
+        $mysink = $context->inputs->get_sink_byname($context, $stack_class, $myfunc_call, $myclass);
+        
         if (!is_null($mysink))
         {
             $nb_params = $myfunc_call->get_nb_params();

@@ -25,15 +25,11 @@ class Common
     public static function get_name_property($op)
     {
         $property_name_array = [];
-        /*
-             if($op instanceof Op\Expr\PropertyFetch && isset($op->var->ops[0]))
-             $property_name_array = Common::get_name_property($op->var->ops[0]);
-         */
 
         if (isset($op->ops[0]))
         {
             if ($op->ops[0] instanceof Op\Expr\ArrayDimFetch)
-                $property_name_array =  Common::get_name_property($op->ops[0]);
+                $property_name_array = Common::get_name_property($op->ops[0]);
 
             if ($op instanceof Op\Expr\PropertyFetch)
                 $property_name_array = Common::get_name_property($op->ops[0]);

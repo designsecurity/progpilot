@@ -15,6 +15,7 @@ class MyClass extends MyOp
 
     private $properties;
     private $methods;
+    private $object_id_this;
 
     public function __construct($var_line, $var_column, $var_name)
     {
@@ -23,6 +24,7 @@ class MyClass extends MyOp
 
         $this->properties = [];
         $this->methods = [];
+		$this->object_id_this = null;
     }
 
     public function __clone()
@@ -97,6 +99,16 @@ class MyClass extends MyOp
 
         return null;
     }
+	
+	public function set_object_id_this($object_id)
+	{
+		$this->object_id_this = $object_id;
+	}
+	
+	public function get_object_id_this()
+	{
+		return $this->object_id_this;
+	}
 }
 
 ?>

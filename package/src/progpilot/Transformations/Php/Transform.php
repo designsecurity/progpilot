@@ -58,7 +58,6 @@ class Transform implements Visitor
 
     public function leaveScript(Script $script)
     {
-
         // creating edges for myblocks structure as block structure
         foreach ($this->s_blocks as $block)
         {
@@ -84,8 +83,8 @@ class Transform implements Visitor
                 $myblock_if = $this->s_blocks[$block_if];
                 $myblock_else = $this->s_blocks[$block_else];
 
-                $instruction_if->add_property("myblock_if", $myblock_if);
-                $instruction_if->add_property("myblock_else", $myblock_else);
+                $instruction_if->add_property(MyInstruction::MYBLOCK_IF, $myblock_if);
+                $instruction_if->add_property(MyInstruction::MYBLOCK_ELSE, $myblock_else);
             }
         }
     }
@@ -103,7 +102,7 @@ class Transform implements Visitor
             $this->s_blocks[$block] = $myblock;
 
             $inst_block = new MyInstruction(Opcodes::ENTER_BLOCK);
-            $inst_block->add_property("myblock", $myblock);
+            $inst_block->add_property(MyInstruction::MYBLOCK, $myblock);
             $this->context->get_current_mycode()->add_code($inst_block);
 
             // block is for himself a parent block (handle dataflow for first block)
@@ -138,7 +137,7 @@ class Transform implements Visitor
                 $myblock->set_end_address_block($address_end_block);
 
                 $inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
-                $inst_block->add_property("myblock", $myblock);
+                $inst_block->add_property(MyInstruction::MYBLOCK, $myblock);
                 $this->context->get_current_mycode()->add_code($inst_block);
             }
         }
@@ -154,7 +153,7 @@ class Transform implements Visitor
         $this->context->set_current_mycode($myfunction->get_mycode());
 
         $inst_func = new MyInstruction(Opcodes::ENTER_FUNCTION);
-        $inst_func->add_property("myfunc", $myfunction);
+        $inst_func->add_property(MyInstruction::MYFUNC, $myfunction);
         $this->context->get_current_mycode()->add_code($inst_func);
 
         if (!is_null($func->class))
@@ -194,7 +193,7 @@ class Transform implements Visitor
             $myfunction->add_param($mydef);
 
             $inst_def = new MyInstruction(Opcodes::DEFINITION);
-            $inst_def->add_property("def", $mydef);
+            $inst_def->add_property(MyInstruction::DEF, $mydef);
             $this->context->get_current_mycode()->add_code($inst_def);
 
             unset($mydef);
@@ -220,7 +219,7 @@ class Transform implements Visitor
                 $myblock->set_end_address_block(count($this->context->get_current_mycode()->get_codes()));
 
                 $inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
-                $inst_block->add_property("myblock", $myblock);
+                $inst_block->add_property(MyInstruction::MYBLOCK, $myblock);
                 $this->context->get_current_mycode()->add_code($inst_block);
             }
         }
@@ -238,7 +237,7 @@ class Transform implements Visitor
             $myfunction->set_last_block_id(-1);
 
             $inst_func = new MyInstruction(Opcodes::LEAVE_FUNCTION);
-            $inst_func->add_property("myfunc", $myfunction);
+            $inst_func->add_property(MyInstruction::MYFUNC, $myfunction);
             $this->context->get_current_mycode()->add_code($inst_func);
         }
     }
@@ -249,7 +248,7 @@ class Transform implements Visitor
         {
             if ($ops instanceof Op\Expr\BooleanNot)
             {
-                $inst_start_if->add_property("not_boolean", true);
+                $inst_start_if->add_property(MyInstruction::NOT_BOOLEAN, true);
                 $this->parse_condition($inst_start_if, $ops->expr->ops);
             }
         }
@@ -300,7 +299,7 @@ class Transform implements Visitor
                 FuncCall::instruction($this->context, $myexpr, false);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                $inst_end_expr->add_property("expr", $myexpr);
+                $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
                 $this->context->get_current_mycode()->add_code($inst_end_expr);
             }
         }
@@ -312,7 +311,7 @@ class Transform implements Visitor
             $mydef_global->set_type(MyDefinition::TYPE_GLOBAL);
 
             $inst_def = new MyInstruction(Opcodes::DEFINITION);
-            $inst_def->add_property("def", $mydef_global);
+            $inst_def->add_property(MyInstruction::DEF, $mydef_global);
             $this->context->get_current_mycode()->add_code($inst_def);
         }
 
@@ -321,7 +320,7 @@ class Transform implements Visitor
             Assign::instruction($this->context, true);
 
             $inst = new MyInstruction(Opcodes::RETURN_FUNCTION);
-            $inst->add_property("return_defs", $this->context->get_current_func()->get_return_defs());
+            $inst->add_property(MyInstruction::RETURN_DEFS, $this->context->get_current_func()->get_return_defs());
             $this->context->get_current_mycode()->add_code($inst);
         }
         else if ($op instanceof Op\Expr\Eval_)
@@ -335,7 +334,7 @@ class Transform implements Visitor
                 FuncCall::instruction($this->context, $myexpr, false);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                $inst_end_expr->add_property("expr", $myexpr);
+                $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
                 $this->context->get_current_mycode()->add_code($inst_end_expr);
             }
         }
@@ -350,7 +349,7 @@ class Transform implements Visitor
                 FuncCall::instruction($this->context, $myexpr, false);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                $inst_end_expr->add_property("expr", $myexpr);
+                $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
                 $this->context->get_current_mycode()->add_code($inst_end_expr);
             }
         }
@@ -365,7 +364,7 @@ class Transform implements Visitor
                 FuncCall::instruction($this->context, $myexpr, false);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                $inst_end_expr->add_property("expr", $myexpr);
+                $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
                 $this->context->get_current_mycode()->add_code($inst_end_expr);
             }
         }
@@ -380,7 +379,7 @@ class Transform implements Visitor
                 FuncCall::instruction($this->context, $myexpr, false, false, true);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                $inst_end_expr->add_property("expr", $myexpr);
+                $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
                 $this->context->get_current_mycode()->add_code($inst_end_expr);
             }
         }
@@ -395,7 +394,7 @@ class Transform implements Visitor
                 FuncCall::instruction($this->context, $myexpr, false);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                $inst_end_expr->add_property("expr", $myexpr);
+                $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
                 $this->context->get_current_mycode()->add_code($inst_end_expr);
             }
         }
@@ -412,7 +411,7 @@ class Transform implements Visitor
                 FuncCall::instruction($this->context, $myexpr, false, true);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                $inst_end_expr->add_property("expr", $myexpr);
+                $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
                 $this->context->get_current_mycode()->add_code($inst_end_expr);
             }
         }
@@ -447,7 +446,7 @@ class Transform implements Visitor
             }
 
             $inst_class = new MyInstruction(Opcodes::CLASSE);
-            $inst_class->add_property("myclass", $myclass);
+            $inst_class->add_property(MyInstruction::MYCLASS, $myclass);
             $this->context->get_current_mycode()->add_code($inst_class);
         }
     }

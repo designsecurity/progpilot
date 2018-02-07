@@ -21,6 +21,7 @@ use progpilot\Objects\MyFunction;
 
 use progpilot\Dataflow\Definitions;
 use progpilot\Code\Opcodes;
+use progpilot\Code\MyInstruction;
 use progpilot\Inputs\MySource;
 
 
@@ -29,18 +30,21 @@ class TaintAnalysis
 
     public static function funccall_specify_analysis($myfunc, $stack_class, $context, $data, $myclass, $myfunc_call, $arr_funccall, $instruction, $mycode, $index)
     {
+        $stack_class = ResolveDefs::funccall_class($context, $data, $myfunc_call);
+                                           
         TaintAnalysis::funccall_validator($stack_class, $context, $data, $myclass, $instruction, $mycode, $index);
         TaintAnalysis::funccall_sanitizer($myfunc, $stack_class, $context, $data, $myclass, $instruction, $mycode, $index);
         TaintAnalysis::funccall_source($stack_class, $context, $data, $myclass, $instruction);
 
+        
         SecurityAnalysis::funccall($stack_class, $context, $instruction, $myclass);
     }
 
     public static function funccall_validator($stack_class, $context, $data, $myclass, $instruction, $mycode, $index)
     {
-        $funcname = $instruction->get_property("funcname");
-        $arr_funccall = $instruction->get_property("arr");
-        $myfunc_call = $instruction->get_property("myfunc_call");
+        $funcname = $instruction->get_property(MyInstruction::FUNCNAME);
+        $arr_funccall = $instruction->get_property(MyInstruction::ARR);
+        $myfunc_call = $instruction->get_property(MyInstruction::MYFUNC_CALL);
 
         $nbparams = 0;
         $defs_valid = [];
@@ -137,15 +141,15 @@ class TaintAnalysis
                     $instruction_if = $codes[$index + 2];
                     if ($instruction_if->get_opcode() == Opcodes::COND_START_IF)
                     {
-                        $myblock_if = $instruction_if->get_property("myblock_if");
-                        $myblock_else = $instruction_if->get_property("myblock_else");
+                        $myblock_if = $instruction_if->get_property(MyInstruction::MYBLOCK_IF);
+                        $myblock_else = $instruction_if->get_property(MyInstruction::MYBLOCK_ELSE);
 
                         foreach ($defs_valid as $def_valid)
                         {
                             $type = "valid";
                             $myassertion = new MyAssertion($def_valid, $type);
 
-                            if ($instruction_if->is_property_exist("not_boolean"))
+                            if ($instruction_if->is_property_exist(MyInstruction::NOT_BOOLEAN))
                                 $myblock_else->add_assertion($myassertion);
 
                             else
@@ -160,9 +164,9 @@ class TaintAnalysis
 
     public static function funccall_sanitizer($myfunc, $stack_class, $context, $data, $myclass, $instruction, $mycode, $index)
     {
-        $funcname = $instruction->get_property("funcname");
-        $arr_funccall = $instruction->get_property("arr");
-        $myfunc_call = $instruction->get_property("myfunc_call");
+        $funcname = $instruction->get_property(MyInstruction::FUNCNAME);
+        $arr_funccall = $instruction->get_property(MyInstruction::ARR);
+        $myfunc_call = $instruction->get_property(MyInstruction::MYFUNC_CALL);
 
         $condition_sanitize = false;
         $condition_taint = false;
@@ -279,7 +283,7 @@ class TaintAnalysis
         if (isset($codes[$index + 2]) && $codes[$index + 2]->get_opcode() == Opcodes::END_ASSIGN)
         {
             $instruction_def = $codes[$index + 3];
-            $mydef_return = $instruction_def->get_property("def");
+            $mydef_return = $instruction_def->get_property(MyInstruction::DEF);
             $return_sanitizer = true;
         }
 
@@ -335,23 +339,20 @@ class TaintAnalysis
 
         if ($return_sanitizer)
         {
-            //TaintAnalysis::set_tainted($context, $data, $mytemp_return, $mydef_return, $myexpr_return1, false);
-
             if (ResolveDefs::get_visibility_from_instances($context, $data, $mydef_return))
             {
                 ValueAnalysis::copy_values($mytemp_return, $mydef_return);
                 TaintAnalysis::set_tainted($mytemp_return->is_tainted(), $mydef_return, $myexpr_return1);
             }
-            //TaintAnalysis::set_tainted($mytemp_return, $mydef_return, $myexpr_return1);
         }
 
     }
 
     public static function funccall_source($stack_class, $context, $data, $myclass, $instruction)
     {
-        $funcname = $instruction->get_property("funcname");
-        $arr_funccall = $instruction->get_property("arr");
-        $myfunc_call = $instruction->get_property("myfunc_call");
+        $funcname = $instruction->get_property(MyInstruction::FUNCNAME);
+        $arr_funccall = $instruction->get_property(MyInstruction::ARR);
+        $myfunc_call = $instruction->get_property(MyInstruction::MYFUNC_CALL);
 
         $class_name = false;
         if ($myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD) && !is_null($myclass))
@@ -389,7 +390,7 @@ class TaintAnalysis
                 }
             }
 
-            $exprreturn = $instruction->get_property("expr");
+            $exprreturn = $instruction->get_property(MyInstruction::EXPR);
 
             if ($exprreturn->is_assign())
             {
@@ -457,81 +458,6 @@ class TaintAnalysis
                 }
             }
         }
-    }
-
-    public static function funccall_after($context, $data, $myfunc, $arr_funccall, $instruction)
-    {
-        $defsreturn = $myfunc->get_return_defs();
-        $exprreturn = $instruction->get_property("expr");
-
-        foreach ($defsreturn as $defreturn)
-        {
-            if (($arr_funccall != false && $defreturn->is_type(MyDefinition::TYPE_ARRAY) && $defreturn->get_array_value() === $arr_funccall) || ($arr_funccall == false && !$defreturn->is_type(MyDefinition::TYPE_ARRAY)))
-            {
-                $copydefreturn = $defreturn;
-
-                // copydefreturn = return $defreturn;
-                $copydefreturn->set_expr($exprreturn);
-                // exprreturn = $def = exprreturn(funccall());
-                $exprreturn->add_def($copydefreturn);
-
-
-                $expr = $copydefreturn->get_expr();
-                if ($expr->is_assign())
-                {
-                    $defassign = $expr->get_assign_def();
-                    //TaintAnalysis::set_tainted($copydefreturn, $defassign, $expr);
-
-                    if (ResolveDefs::get_visibility_from_instances($context, $data, $defassign))
-                    {
-                        ValueAnalysis::copy_values($copydefreturn, $defassign);
-                        TaintAnalysis::set_tainted($copydefreturn->is_tainted(), $defassign, $expr);
-                    }
-                }
-            }
-        }
-    }
-
-    public static function funccall_before($context, $data, $myfunc, $instruction)
-    {
-        $nbparams = 0;
-        $params = $myfunc->get_params();
-
-        foreach ($params as $param)
-        {
-            if ($instruction->is_property_exist("argdef$nbparams"))
-            {
-                $defarg = $instruction->get_property("argdef$nbparams");
-                $exprarg = $instruction->get_property("argexpr$nbparams");
-
-                if ($defarg->is_tainted())
-                {
-                    // useful just for inside the function
-                    //$param->set_tainted(true);
-                    //$param->set_taintedbyexpr($exprarg);
-                    TaintAnalysis::set_tainted($defarg->is_tainted(), $param, $exprarg);
-
-                    $expr = $param->get_expr();
-
-                    if (!is_null($expr) && $expr->is_assign())
-                    {
-                        $defassign = $expr->get_assign_def();
-
-                        if (ResolveDefs::get_visibility_from_instances($context, $data, $defassign))
-                        {
-                            ValueAnalysis::copy_values($defarg, $defassign);
-                            TaintAnalysis::set_tainted($defarg->is_tainted(), $defassign, $expr);
-                        }
-                    }
-                }
-
-
-                $nbparams ++;
-                unset($defarg);
-            }
-        }
-
-        unset($params);
     }
 
     public static function set_tainted($tainted, $defassign, $expr)

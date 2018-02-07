@@ -15,7 +15,7 @@ class MyProperty extends MyOp
 
     private $visibility;
     private $properties;
-
+    
     public function __construct()
     {
 

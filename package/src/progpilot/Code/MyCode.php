@@ -80,7 +80,7 @@ class MyCode
         $context->get_functions()->add_function($myfunction->get_name(), $myfunction);
 
         $inst_func = new MyInstruction(Opcodes::ENTER_FUNCTION);
-        $inst_func->add_property("myfunc", $myfunction);
+        $inst_func->add_property(MyInstruction::MYFUNC, $myfunction);
         $context->get_mycode()->add_code($inst_func);
 
         if ($handle)
@@ -120,7 +120,7 @@ class MyCode
                     }
 
                     $inst_block = new MyInstruction(Opcodes::ENTER_BLOCK);
-                    $inst_block->add_property("myblock", $myblock);
+                    $inst_block->add_property(MyInstruction::MYBLOCK, $myblock);
                     $context->get_mycode()->add_code($inst_block);
 
                     if ($first_block)
@@ -130,7 +130,7 @@ class MyCode
                         foreach ($defs as $mydef)
                         {
                             $inst_def = new MyInstruction(Opcodes::DEFINITION);
-                            $inst_def->add_property("def", $mydef);
+                            $inst_def->add_property(MyInstruction::DEF, $mydef);
                             $context->get_mycode()->add_code($inst_def);
                         }
                     }
@@ -149,7 +149,7 @@ class MyCode
                         $myblock->set_end_address_block(count($context->get_mycode()->get_codes()));
 
                         $inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
-                        $inst_block->add_property("myblock", $myblock);
+                        $inst_block->add_property(MyInstruction::MYBLOCK, $myblock);
                         $context->get_mycode()->add_code($inst_block);
                     }
 
@@ -171,7 +171,7 @@ class MyCode
                     $array_definitions[] = $mydef;
 
                     $inst_def = new MyInstruction(Opcodes::DEFINITION);
-                    $inst_def->add_property("def", $mydef);
+                    $inst_def->add_property(MyInstruction::DEF, $mydef);
                     $context->get_mycode()->add_code($inst_def);
 
                     break;
@@ -188,7 +188,7 @@ class MyCode
                     $func_nb_params = (int) fgets($handle);
 
                     $inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
-                    $inst_funcall_main->add_property("funcname", $func_name);
+                    $inst_funcall_main->add_property(MyInstruction::FUNCNAME, $func_name);
 
                     $myfunction_call = new MyFunction($func_name);
                     $myfunction_call->setLine($func_line);
@@ -221,9 +221,9 @@ class MyCode
                     //$myexpr = $array_exprs[$func_expr_id];
                     $myexpr = null;
 
-                    $inst_funcall_main->add_property("myfunc_call", $myfunction_call);
-                    $inst_funcall_main->add_property("expr", $myexpr);
-                    $inst_funcall_main->add_property("arr", null);
+                    $inst_funcall_main->add_property(MyInstruction::MYFUNC_CALL, $myfunction_call);
+                    $inst_funcall_main->add_property(MyInstruction::EXPR, $myexpr);
+                    $inst_funcall_main->add_property(MyInstruction::ARR, null);
                     $context->get_mycode()->add_code($inst_funcall_main);
 
                     break;
@@ -248,7 +248,7 @@ class MyCode
                     }
 
                     $inst_temporary_simple = new MyInstruction(Opcodes::TEMPORARY);
-                    $inst_temporary_simple->add_property("temporary", $mytemp);
+                    $inst_temporary_simple->add_property(MyInstruction::TEMPORARY, $mytemp);
                     $context->get_mycode()->add_code($inst_temporary_simple);
 
                     break;
@@ -303,7 +303,7 @@ class MyCode
                     }
 
                     $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                    $inst_end_expr->add_property("expr", $myexpr);
+                    $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
                     $context->get_mycode()->add_code($inst_end_expr);
 
                     break;
@@ -360,7 +360,7 @@ class MyCode
             $myfunction->set_end_address_func(count($context->get_mycode()->get_codes()));
 
             $inst_func = new MyInstruction(Opcodes::LEAVE_FUNCTION);
-            $inst_func->add_property("myfunc", $myfunction);
+            $inst_func->add_property(MyInstruction::MYFUNC, $myfunction);
             $context->get_mycode()->add_code($inst_func);
 
             $context->get_mycode()->set_start(0);
@@ -385,7 +385,7 @@ class MyCode
                 {
                     echo Opcodes::ENTER_FUNCTION."\n";
 
-                    $myfunc = $instruction->get_property("myfunc");
+                    $myfunc = $instruction->get_property(MyInstruction::MYFUNC);
                     echo "name = ".htmlentities($myfunc->get_name(), ENT_QUOTES, 'UTF-8')."\n";
                     break;
                 }
@@ -394,7 +394,7 @@ class MyCode
                 {
                     echo Opcodes::CLASSE."\n";
 
-                    $myclass = $instruction->get_property("myclass");
+                    $myclass = $instruction->get_property(MyInstruction::MYCLASS);
                     echo "name = ".htmlentities($myclass->get_name(), ENT_QUOTES, 'UTF-8')."\n";
                     break;
                 }
@@ -403,7 +403,7 @@ class MyCode
                 {
                     echo Opcodes::ENTER_BLOCK."\n";
 
-                    $myblock = $instruction->get_property("myblock");
+                    $myblock = $instruction->get_property(MyInstruction::MYBLOCK);
                     echo "id = ".$myblock->get_id()."\n";
 
                     break;
@@ -413,7 +413,7 @@ class MyCode
                 {
                     echo Opcodes::LEAVE_BLOCK."\n";
 
-                    $myblock = $instruction->get_property("myblock");
+                    $myblock = $instruction->get_property(MyInstruction::MYBLOCK);
                     echo "id = ".$myblock->get_id()."\n";
 
                     break;
@@ -430,7 +430,7 @@ class MyCode
                 {
                     echo Opcodes::FUNC_CALL."\n";
 
-                    $funcname = htmlentities($instruction->get_property("funcname"), ENT_QUOTES, 'UTF-8');
+                    $funcname = htmlentities($instruction->get_property(MyInstruction::FUNCNAME), ENT_QUOTES, 'UTF-8');
                     echo "name = $funcname\n";
                     break;
                 }
@@ -444,7 +444,7 @@ class MyCode
                 case Opcodes::END_EXPRESSION:
                 {
                     echo Opcodes::END_EXPRESSION."\n";
-                    $myexpr = $instruction->get_property("expr");
+                    $myexpr = $instruction->get_property(MyInstruction::EXPR);
                     echo "expression et tainted = ".$myexpr->is_tainted()."\n";
                     break;
                 }
@@ -500,7 +500,7 @@ class MyCode
                 case Opcodes::TEMPORARY:
                 {
                     echo Opcodes::TEMPORARY."\n";
-                    $def = $instruction->get_property("temporary");
+                    $def = $instruction->get_property(MyInstruction::TEMPORARY);
                     $def->print_stdout();
 
                     break;
@@ -509,7 +509,7 @@ class MyCode
                 case Opcodes::DEFINITION:
                 {
                     echo Opcodes::DEFINITION."\n";
-                    $def = $instruction->get_property("def");
+                    $def = $instruction->get_property(MyInstruction::DEF);
                     $def->print_stdout();
 
                     break;

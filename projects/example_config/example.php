@@ -10,6 +10,6 @@ $context->set_configuration("./configuration.yml");
 $analyzer->run($context);
 $results = $context->outputs->get_results();
 
-echo json_encode($results);
+var_dump($results);
 
 ?>

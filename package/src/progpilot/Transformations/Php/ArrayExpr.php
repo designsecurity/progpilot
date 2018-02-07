@@ -63,7 +63,7 @@ class ArrayExpr
                     Expr::instruction($value, $context, $myexpr, null);
 
                     $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                    $inst_end_expr->add_property("expr", $myexpr);
+                    $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
                     $context->get_current_mycode()->add_code($inst_end_expr);
 
                     $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
@@ -82,7 +82,7 @@ class ArrayExpr
                     $mydef->set_array_value($arrtrans);
 
                     $inst_def = new MyInstruction(Opcodes::DEFINITION);
-                    $inst_def->add_property("def", $mydef);
+                    $inst_def->add_property(MyInstruction::DEF, $mydef);
                     $context->get_current_mycode()->add_code($inst_def);
 
                     unset($myexpr);

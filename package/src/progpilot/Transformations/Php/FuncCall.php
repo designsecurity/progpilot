@@ -48,13 +48,13 @@ class FuncCall
             $mydef->set_value_from_def($mytemp);
 
         $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-        $inst_end_expr->add_property("expr", $myexprparam);
+        $inst_end_expr->add_property(MyInstruction::EXPR, $myexprparam);
         $context->get_current_mycode()->add_code($inst_end_expr);
 
         $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
 
         $inst_def = new MyInstruction(Opcodes::DEFINITION);
-        $inst_def->add_property("def", $mydef);
+        $inst_def->add_property(MyInstruction::DEF, $mydef);
         $context->get_current_mycode()->add_code($inst_def);
 
         unset($myexprparam);
@@ -70,6 +70,7 @@ class FuncCall
         $mybackdef = null;
         $nbparams = 0;
         $property_name = "";
+        $class_name = "";
 
         // instance_name = new obj; instance_name->method_name()
         if ($is_method)
@@ -84,7 +85,10 @@ class FuncCall
         {
             $funccall_name = "__construct";
             // we have the class name
-            //$class_name = $context->get_current_op()->class->value;
+            
+            if(isset($context->get_current_op()->class->value))
+                $class_name = $context->get_current_op()->class->value;
+                
             $is_method = true;
 
             $instance_name = Common::get_name_definition($context->get_current_op()->result->usages[0]);
@@ -115,7 +119,7 @@ class FuncCall
             $funccall_name = "eval";
 
         $inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
-        $inst_funcall_main->add_property("funcname", $funccall_name);
+        $inst_funcall_main->add_property(MyInstruction::FUNCNAME, $funccall_name);
 
         $myfunction_call = new MyFunction($funccall_name);
         $myfunction_call->setLine($context->get_current_line());
@@ -137,14 +141,17 @@ class FuncCall
 
             $mybackdef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $instance_name);
             $mybackdef->add_type(MyDefinition::TYPE_INSTANCE);
+			$mybackdef->set_class_name($class_name);
 
-            if (count($property_name) > 0)
+            if ($property_name !== "" && count($property_name) > 0)
             {
                 $mybackdef->add_type(MyDefinition::TYPE_PROPERTY);
                 $mybackdef->property->set_properties($property_name);
             }
 
             $myfunction_call->set_back_def($mybackdef);
+			
+			
         }
 
         $list_args = [];
@@ -157,7 +164,7 @@ class FuncCall
             $list_args[] = $context->get_current_op()->expr;
 
             if ($context->get_current_op() instanceof Op\Expr\Include_)
-                $inst_funcall_main->add_property("type_include", $context->get_current_op()->type);
+                $inst_funcall_main->add_property(MyInstruction::TYPE_INCLUDE, $context->get_current_op()->type);
         }
         else
             $list_args = $context->get_current_op()->args;
@@ -169,9 +176,9 @@ class FuncCall
         }
 
         $myfunction_call->set_nb_params($nbparams);
-        $inst_funcall_main->add_property("myfunc_call", $myfunction_call);
-        $inst_funcall_main->add_property("expr", $myexpr);
-        $inst_funcall_main->add_property("arr", $funccall_arr);
+        $inst_funcall_main->add_property(MyInstruction::MYFUNC_CALL, $myfunction_call);
+        $inst_funcall_main->add_property(MyInstruction::EXPR, $myexpr);
+        $inst_funcall_main->add_property(MyInstruction::ARR, $funccall_arr);
         $context->get_current_mycode()->add_code($inst_funcall_main);
 
         return $mybackdef;

@@ -25,6 +25,7 @@ class Context
     private $current_column;
     private $current_func;
     private $current_myfile;
+    private $current_nb_defs;
     private $myfiles;
     private $classes;
     private $objects;
@@ -54,6 +55,7 @@ class Context
         $this->pretty_print = true;
         $this->limit_time = 10;
         $this->limit_defs = 10000;
+        $this->current_nb_defs = 0;
 
         $this->inputs = new \progpilot\Inputs\MyInputs;
         $this->outputs = new \progpilot\Outputs\MyOutputs;
@@ -64,6 +66,16 @@ class Context
         $this->myfiles = [];
         $this->array_includes = [];
         $this->array_requires = [];
+    }
+
+    function get_current_nb_defs()
+    {
+        return $this->current_nb_defs;
+    }
+
+    function set_current_nb_defs($current_nb_defs)
+    {
+        $this->current_nb_defs = $current_nb_defs;
     }
 
     public function reset_internal_lowvalues()
@@ -95,7 +107,7 @@ class Context
         //$this->outputs = new \progpilot\Outputs\MyOutputs;
         $this->outputs->reset_representations();
     }
-
+    
     public function set_array_includes($array_includes)
     {
         $this->array_includes = $array_includes;

@@ -29,10 +29,22 @@ class Definitions
 
     private $defs;
     private $current_func;
+    private $nb_defs;
 
     public function __construct()
     {
         $this->current_func = null;
+        $this->nb_defs = 0;
+    }
+
+    public function set_nb_defs($nb_defs)
+    {
+        $this->nb_defs = $nb_defs;
+    }
+
+    public function get_nb_defs()
+    {
+        return $this->nb_defs;
     }
 
     public function printall()
@@ -98,8 +110,13 @@ class Definitions
     }
 
     /* getters and setters */
-    public function adddef($name, $def)
+    public function get_defs()
     {
+        return $this->defs;
+    }
+    
+    public function adddef($name, $def)
+    {  
         $continue = true;
         if (isset($this->defs[$name]))
         {
@@ -109,7 +126,10 @@ class Definitions
         }
 
         if ($continue)
+        {
+            $this->nb_defs ++;
             $this->defs[$name][] = $def;
+        }
 
         return $continue;
     }
@@ -269,12 +289,6 @@ class Definitions
     // $this->data["gen"][$blockid]
     public function computekill($context, $blockid)
     {
-        if (count($this->gen[$blockid]) > $context->get_limit_defs())
-        {
-            Utils::print_warning($context, Lang::MAX_DEFS_EXCEEDED);
-            return;
-        }
-
         foreach ($this->gen[$blockid] as $gen)
         {
             $tmpdefs = $this->getdefrefbyname($gen->get_name());

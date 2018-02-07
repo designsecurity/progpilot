@@ -20,6 +20,7 @@ use progpilot\Objects\MyFunction;
 
 use progpilot\Code\MyCode;
 use progpilot\Code\Opcodes;
+use progpilot\Code\MyInstruction;
 
 use progpilot\Utils;
 
@@ -48,14 +49,14 @@ class IncludeAnalysis
 
     public static function funccall($context, $defs, $blocks, $instruction, $code, $index)
     {
-        $funcname = $instruction->get_property("funcname");
-        $arr_funccall = $instruction->get_property("arr");
-        $myfunc_call = $instruction->get_property("myfunc_call");
+        $funcname = $instruction->get_property(MyInstruction::FUNCNAME);
+        $arr_funccall = $instruction->get_property(MyInstruction::ARR);
+        $myfunc_call = $instruction->get_property(MyInstruction::MYFUNC_CALL);
 
         // require, require_once ... already handled in transform Expr/include_
         if ($myfunc_call->get_name() == "include" && $context->get_analyze_includes())
         {
-            $type_include = $instruction->get_property("type_include");
+            $type_include = $instruction->get_property(MyInstruction::TYPE_INCLUDE);
             $nb_params = $myfunc_call->get_nb_params();
             if ($nb_params > 0)
             {
@@ -113,7 +114,6 @@ class IncludeAnalysis
                                     || (!in_array($name_included_file, $array_requires, true) && $type_include == 4)
                                     || ($type_include == 1 || $type_include == 3))
                             {
-
                                 $myfile = new MyFile($name_included_file, $myfunc_call->getLine(), $myfunc_call->getColumn());
                                 $myfile->set_included_from_myfile($myfunc_call->get_source_myfile());
 
@@ -131,7 +131,7 @@ class IncludeAnalysis
                                     // not need to propagate files already included to the current analyzed file
                                     // because of clone context and reset values that don't
                                     // ie : $context_include->set_array_includes($array_includes); ect
-
+                                    
                                     $context_include->inputs->set_file($name_included_file);
                                     $context_include->inputs->set_code(null);
                                     $context_include->set_current_myfile($myfile);
@@ -158,14 +158,15 @@ class IncludeAnalysis
                                             $context->outputs->add_result($result_include);
                                         }
                                     }
+                                    
+                                    $context->set_current_nb_defs($context_include->get_current_nb_defs());
 
                                     $main_include = $context_include->get_functions()->get_function("{main}");
 
                                     $defs_output_included_final = [];
                                     if (!is_null($main_include))
                                     {
-                                        ArrayAnalysis::funccall_after($context_include, $main_include, $myfunc_call, $arr_funccall, $code[$index + 3]);
-                                        TaintAnalysis::funccall_after($context_include, $defs->getoutminuskill($myfunc_call->get_block_id()), $main_include, $arr_funccall, $instruction);
+                                        FuncAnalysis::funccall_after($context_include, $defs->getoutminuskill($myfunc_call->get_block_id()), $main_include, $main_include, $arr_funccall, $instruction, $code[$index + 3]);
 
                                         $defs_main_return = $main_include->get_defs()->getdefrefbyname("{main}_return");
                                         foreach ($defs_main_return as $def_main_return)
@@ -201,14 +202,22 @@ class IncludeAnalysis
                                     foreach ($myclasses_include as $myclass_include)
                                     {
                                         $context->get_classes()->add_myclass($myclass_include);
-
-                                        // we have to resolve definitions
-                                        foreach ($defs->getoutminuskill($myfunc_call->get_block_id()) as $the_def)
+                                        
+                                        foreach($context->get_functions()->get_functions() as $functions_blocks)
                                         {
-                                            if ($the_def->get_class_name() === $myclass_include->get_name())
+                                            foreach($functions_blocks as $function_block)
                                             {
-                                                $id_object = $the_def->get_object_id();
-                                                $context->get_objects()->replace_myclass_to_object($id_object, $myclass_include);
+                                                foreach($function_block->get_defs()->get_defs() as $defs_blocks)
+                                                {
+                                                    foreach($defs_blocks as $def_block)
+                                                    {
+                                                        if ($def_block->get_class_name() === $myclass_include->get_name())
+                                                        {
+                                                            $id_object = $def_block->get_object_id();
+                                                            $context->get_objects()->add_myclass_to_object($id_object, $myclass_include);
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -218,7 +227,6 @@ class IncludeAnalysis
                                     {
                                         foreach ($defs_output_included_final as $def_output_included_final)
                                         {
-                                            //$def_output_included_final->set_block_id($myfunc_call->get_block_id());
                                             $ret1 = $defs->adddef($def_output_included_final->get_name(), $def_output_included_final);
                                             $ret2 = $defs->addgen($myfunc_call->get_block_id(), $def_output_included_final);
 
