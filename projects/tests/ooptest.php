@@ -125,9 +125,9 @@ $framework->add_output("./tests/oop/simple22.php", array("\$a->data"));
 $framework->add_output("./tests/oop/simple22.php", array("11"));
 $framework->add_output("./tests/oop/simple22.php", "xss");
 
-$framework->add_testbasis("./tests/oop/simple23/b.php");
-$framework->add_output("./tests/oop/simple23/b.php", array("\$sql"));
-$framework->add_output("./tests/oop/simple23/b.php", array("12"));
-$framework->add_output("./tests/oop/simple23/b.php", "sql_injection");
+$framework->add_testbasis("./tests/oop/simple23/a.php");
+$framework->add_output("./tests/oop/simple23/a.php", array("\$sql"));
+$framework->add_output("./tests/oop/simple23/a.php", array("9"));
+$framework->add_output("./tests/oop/simple23/a.php", "sql_injection");
 
 ?>

@@ -13,95 +13,95 @@ namespace progpilot\Inputs;
 class MySink extends MySpecify
 {
 
-    private $attack;
-    private $cwe;
-    private $parameters;
-    private $has_parameters;
+        private $attack;
+        private $cwe;
+        private $parameters;
+        private $has_parameters;
 
-    public function __construct($name, $language, $attack, $cwe)
-    {
-
-        parent::__construct($name, $language);
-
-        $this->attack = $attack;
-        $this->cwe = $cwe;
-        $this->has_parameters = false;
-        $this->parameters = [];
-        $this->global_conditions = [];
-    }
-
-    public function add_global_condition($condition)
-    {
-        $this->global_conditions[] = $condition;
-    }
-
-    public function is_global_condition($condition)
-    {
-        foreach ($this->global_conditions as $condition_global)
+        public function __construct($name, $language, $attack, $cwe)
         {
-            if ($condition == $condition_global)
-                return true;
+
+            parent::__construct($name, $language);
+
+            $this->attack = $attack;
+            $this->cwe = $cwe;
+            $this->has_parameters = false;
+            $this->parameters = [];
+            $this->global_conditions = [];
         }
 
-        return false;
-    }
-
-    public function add_parameter($id, $condition = null)
-    {
-        $parameter = [$id, $condition];
-        $this->parameters[] = $parameter;
-    }
-
-    public function get_parameters()
-    {
-        return $this->parameters;
-    }
-
-    public function get_parameter_condition($i)
-    {
-        foreach ($this->parameters as $parameter)
+        public function add_global_condition($condition)
         {
-            $index = $parameter[0];
-            $condition = $parameter[1];
-
-            if ($index == $i)
-                return $condition;
+            $this->global_conditions[] = $condition;
         }
 
-        return null;
-    }
-
-    public function is_parameter($i)
-    {
-        foreach ($this->parameters as $parameter)
+        public function is_global_condition($condition)
         {
-            $index = $parameter[0];
-            if ($index == $i)
-                return true;
+            foreach ($this->global_conditions as $condition_global)
+            {
+                if ($condition == $condition_global)
+                    return true;
+            }
+
+            return false;
         }
 
-        return false;
-    }
+        public function add_parameter($id, $condition = null)
+        {
+            $parameter = [$id, $condition];
+            $this->parameters[] = $parameter;
+        }
 
-    public function has_parameters()
-    {
-        return $this->has_parameters;
-    }
+        public function get_parameters()
+        {
+            return $this->parameters;
+        }
 
-    public function set_has_parameters($has_parameters)
-    {
-        $this->has_parameters = $has_parameters;
-    }
+        public function get_parameter_condition($i)
+        {
+            foreach ($this->parameters as $parameter)
+            {
+                $index = $parameter[0];
+                $condition = $parameter[1];
 
-    public function get_attack()
-    {
-        return $this->attack;
-    }
+                if ($index == $i)
+                    return $condition;
+            }
 
-    public function get_cwe()
-    {
-        return $this->cwe;
-    }
+            return null;
+        }
+
+        public function is_parameter($i)
+        {
+            foreach ($this->parameters as $parameter)
+            {
+                $index = $parameter[0];
+                if ($index == $i)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public function has_parameters()
+        {
+            return $this->has_parameters;
+        }
+
+        public function set_has_parameters($has_parameters)
+        {
+            $this->has_parameters = $has_parameters;
+        }
+
+        public function get_attack()
+        {
+            return $this->attack;
+        }
+
+        public function get_cwe()
+        {
+            return $this->cwe;
+        }
 }
 
 ?>

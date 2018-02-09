@@ -1,1 +1,2 @@
-/home/eric/T&eacute;l&eacute;chargements/DVWA-master/external/phpids/0.6/lib/IDS/vendors/htmlpurifier/HTMLPurifier.includes.php 
+/home/eric/T&eacute;l&eacute;chargements/DVWA-master/external/phpids/0.6/lib/IDS/vendors/htmlpurifier/HTMLPurifier.includes.php
+/srv/www/htdocs/phpMyAdmin/prefs_manage.php

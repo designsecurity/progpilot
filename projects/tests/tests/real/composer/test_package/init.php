@@ -9,7 +9,7 @@ function blabla()
 
 class test_tainted
 {
-  public static function return_tainted_source()
+  public function return_tainted_source()
   {
     echo $_GET["p"];
   }

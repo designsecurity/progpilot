@@ -15,53 +15,53 @@ use progpilot\Code\Opcodes;
 class ControlFlowGraph
 {
 
-    private $nodes;
-    private $edges;
-    private $myblock_text;
+        private $nodes;
+        private $edges;
+        private $myblock_text;
 
-    public function __construct()
-    {
+        public function __construct()
+        {
 
-        $this->nodes = [];
-        $this->edges = [];
-        $this->myblock_text = [];
-    }
+            $this->nodes = [];
+            $this->edges = [];
+            $this->myblock_text = [];
+        }
 
-    public function get_textofmyblock($id)
-    {
-        if (isset($this->myblock_text["$id"]))
-            return $this->myblock_text["$id"];
+        public function get_textofmyblock($id)
+        {
+            if (isset($this->myblock_text["$id"]))
+                return $this->myblock_text["$id"];
 
-        return "";
-    }
+            return "";
+        }
 
-    public function add_textofmyblock($id, $text)
-    {
-        if (isset($this->myblock_text["$id"]))
-            $this->myblock_text["$id"] = $this->myblock_text["$id"]."$text";
-        else
-            $this->myblock_text["$id"] = "$text";
-    }
+        public function add_textofmyblock($id, $text)
+        {
+            if (isset($this->myblock_text["$id"]))
+                $this->myblock_text["$id"] = $this->myblock_text["$id"]."$text";
+            else
+                $this->myblock_text["$id"] = "$text";
+        }
 
-    public function get_nodes()
-    {
-        return $this->nodes;
-    }
+        public function get_nodes()
+        {
+            return $this->nodes;
+        }
 
-    public function get_edges()
-    {
-        return $this->edges;
-    }
+        public function get_edges()
+        {
+            return $this->edges;
+        }
 
-    public function add_node($id, $block)
-    {
-        $this->nodes["$id"] = $block;
-    }
+        public function add_node($id, $block)
+        {
+            $this->nodes["$id"] = $block;
+        }
 
-    public function add_edge($caller, $callee)
-    {
-        $this->edges[] = [$caller, $callee];
-    }
+        public function add_edge($caller, $callee)
+        {
+            $this->edges[] = [$caller, $callee];
+        }
 }
 
 ?>

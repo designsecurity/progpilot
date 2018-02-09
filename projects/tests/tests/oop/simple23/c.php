@@ -7,9 +7,8 @@
 		}
 
 		public function query($sql) {
-	mysql_query($sql);
-			print $sql."\n";
-			return $this->mysqli_obj->Query($sql);
+			
+			return $this->mysqli_obj->query($sql);
 		}
 
 	}

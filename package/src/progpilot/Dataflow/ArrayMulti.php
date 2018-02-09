@@ -13,55 +13,55 @@ namespace progpilot\Dataflow;
 class ArrayMulti
 {
 
-    public static function array_merge_multi($ar1, $ar2)
-    {
-        $newar1 = $ar1;
-
-        foreach($ar2 as $key2 => $value2)
+        public static function array_merge_multi($ar1, $ar2)
         {
-            $present = false;
-
-            foreach($ar1 as $key1 => $value1)
-            {
-                if ($value1 === $value2)
-                {
-                    $present = true;
-                    break;
-                }
-            }
-
-            if (!$present)
-                $newar1[] = $value2;
-
-        }
-
-        return $newar1;
-    }
-
-    public static function array_minus_multi($ar1, $ar2)
-    {
-        $newar1 = [];
-
-        foreach($ar1 as $key1 => $value1)
-        {
-            $present = false;
+            $newar1 = $ar1;
 
             foreach($ar2 as $key2 => $value2)
             {
-                if ($value1 === $value2)
+                $present = false;
+
+                foreach($ar1 as $key1 => $value1)
                 {
-                    $present = true;
-                    break;
+                    if ($value1 === $value2)
+                    {
+                        $present = true;
+                        break;
+                    }
                 }
+
+                if (!$present)
+                    $newar1[] = $value2;
+
             }
 
-            if (!$present)
-                $newar1[] = $value1;
-
+            return $newar1;
         }
 
-        return $newar1;
-    }
+        public static function array_minus_multi($ar1, $ar2)
+        {
+            $newar1 = [];
+
+            foreach($ar1 as $key1 => $value1)
+            {
+                $present = false;
+
+                foreach($ar2 as $key2 => $value2)
+                {
+                    if ($value1 === $value2)
+                    {
+                        $present = true;
+                        break;
+                    }
+                }
+
+                if (!$present)
+                    $newar1[] = $value1;
+
+            }
+
+            return $newar1;
+        }
 }
 
 ?>

@@ -78,4 +78,14 @@ $framework->add_output("./tests/includes/simple15_circular.php", array("\$_GET[\
 $framework->add_output("./tests/includes/simple15_circular.php", array("5"));
 $framework->add_output("./tests/includes/simple15_circular.php", "xss");
 
+$framework->add_testbasis("./tests/includes/simple16.php");
+$framework->add_output("./tests/includes/simple16.php", array("\$var"));
+$framework->add_output("./tests/includes/simple16.php", array("3"));
+$framework->add_output("./tests/includes/simple16.php", "xss");
+
+$framework->add_testbasis("./tests/includes/simple17.php");
+$framework->add_output("./tests/includes/simple17.php", array("\$var"));
+$framework->add_output("./tests/includes/simple17.php", array("3"));
+$framework->add_output("./tests/includes/simple17.php", "xss");
+
 ?>
