@@ -41,10 +41,19 @@ try
             foreach ($parsed_json as $vuln)
             {
                 $result_test = true;
-                $basis_outputs = [
-                                     $vuln['source_name'],
-                                     $vuln['source_line'],
-                                     $vuln['vuln_name']];
+                
+                if(isset($vuln['source_name']) && isset($vuln['source_line']))
+                {
+                    $basis_outputs = [
+                        $vuln['source_name'],
+                        $vuln['source_line'],
+                        $vuln['vuln_name']];
+                }
+                else
+                {
+                    $basis_outputs = [
+                        $vuln['vuln_name']];
+                }
 
                 if (!$framework->check_outputs($folder, $basis_outputs, $parsed_json))
                 {

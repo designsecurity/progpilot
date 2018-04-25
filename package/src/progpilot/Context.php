@@ -31,6 +31,7 @@ class Context
         private $objects;
         private $functions;
         private $path;
+        private $analyze_hardrules;
         private $analyze_functions;
         private $analyze_includes;
         private $analyze_js;
@@ -47,6 +48,7 @@ class Context
         public function __construct()
         {
             $this->configuration_file = null;
+            $this->analyze_hardrules = false;
             $this->analyze_functions = true;
             $this->analyze_includes = true;
             $this->analyze_js = true;
@@ -190,9 +192,19 @@ class Context
             return $this->analyze_js;
         }
 
+        public function get_analyze_hardrules()
+        {
+            return $this->analyze_hardrules;
+        }
+
         public function get_analyze_includes()
         {
             return $this->analyze_includes;
+        }
+
+        public function set_analyze_hardrules($analyze_hardrules)
+        {
+            $this->analyze_hardrules = $analyze_hardrules;
         }
 
         public function set_analyze_js($analyze_js)
@@ -345,7 +357,6 @@ class Context
             $this->outputs = $outputs;
         }
 
-
         public function set_configuration($file)
         {
             $this->configuration_file = $file;
@@ -355,7 +366,6 @@ class Context
         {
             return $this->configuration_file;
         }
-
 
         public function set_print_file($bool)
         {
@@ -382,6 +392,9 @@ class Context
                         {
                             if (isset($value["inputs"]))
                             {
+                                if (isset($value["inputs"]["set_custom_rules"]))
+                                    $this->inputs->set_custom_rules($value["inputs"]["set_custom_rules"]);
+
                                 if (isset($value["inputs"]["set_sources"]))
                                     $this->inputs->set_sources($value["inputs"]["set_sources"]);
 
@@ -432,6 +445,9 @@ class Context
                             {
                                 if (isset($value["options"]["set_analyze_js"]))
                                     $this->set_analyze_js($value["options"]["set_analyze_js"]);
+
+                                if (isset($value["options"]["set_analyze_hardrules"]))
+                                    $this->set_analyze_hardrules($value["options"]["set_analyze_hardrules"]);
 
                                 if (isset($value["options"]["set_analyze_includes"]))
                                     $this->set_analyze_includes($value["options"]["set_analyze_includes"]);

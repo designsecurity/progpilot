@@ -12,6 +12,7 @@ namespace progpilot;
 
 use progpilot\Objects\MyOp;
 use progpilot\Objects\MyDefinition;
+use progpilot\Objects\MyFunction;
 
 class Utils
 {

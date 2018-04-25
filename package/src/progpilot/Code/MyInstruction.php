@@ -12,22 +12,23 @@ namespace progpilot\Code;
 
 class MyInstruction
 {
-        const MYBLOCK = 1;
-        const MYBLOCK_IF = 2;
-        const MYBLOCK_ELSE = 3;
-        const MYFUNC = 4;
-        const NOT_BOOLEAN = 5;
-        const EXPR = 6;
-        const MYCLASS = 7;
-        const DEF = 8;
-        const RETURN_DEFS = 9;
-        const FUNCNAME = 10;
-        const TYPE_INCLUDE = 11;
-        const MYFUNC_CALL = 12;
-        const ARR = 13;
-        const TEMPORARY = 14;
-
         /*
+                const MYBLOCK = 1;
+                const MYBLOCK_IF = 2;
+                const MYBLOCK_ELSE = 3;
+                const MYFUNC = 4;
+                const NOT_BOOLEAN = 5;
+                const EXPR = 6;
+                const MYCLASS = 7;
+                const DEF = 8;
+                const RETURN_DEFS = 9;
+                const FUNCNAME = 10;
+                const TYPE_INCLUDE = 11;
+                const MYFUNC_CALL = 12;
+                const ARR = 13;
+                const TEMPORARY = 14;
+        */
+
         const MYBLOCK = "myblock";
         const MYBLOCK_IF = "myblock_if";
         const MYBLOCK_ELSE = "myblock_else";
@@ -42,7 +43,6 @@ class MyInstruction
         const MYFUNC_CALL = "myfunc_call";
         const ARR = "arr";
         const TEMPORARY = "temporary";
-        */
 
         private $properties;
         private $opcode;

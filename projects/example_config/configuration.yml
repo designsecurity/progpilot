@@ -3,10 +3,11 @@ inputs:
     set_sinks: ../../package/src/uptodate_data/sinks.json
     set_validators: ../../package/src/uptodate_data/validators.json
     set_sanitizers: ../../package/src/uptodate_data/sanitizers.json
+    set_custom_rules: ../../package/src/uptodate_data/custom.json
     set_include_files: 
     set_exclude_files: 
-    set_folder: 
-    set_file: /srv/www/htdocs/phpMyAdmin/prefs_manage.php
+    set_folder: /srv/www/htdocs/phpMyAdmin/
+    set_file: 
     set_code:
     set_resolved_includes:
     set_false_positives:
@@ -20,6 +21,7 @@ options:
     set_analyze_js: false
     set_analyze_includes: true
     set_analyze_functions: true
+    set_analyze_hardrules: true
     set_print_file: true
     set_print_warning: false
     set_pretty_print: true

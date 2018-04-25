@@ -1,2 +1,16 @@
 /home/eric/T&eacute;l&eacute;chargements/DVWA-master/external/phpids/0.6/lib/IDS/vendors/htmlpurifier/HTMLPurifier.includes.php
 /srv/www/htdocs/phpMyAdmin/prefs_manage.php
+/srv/www/htdocs/phpMyAdmin/db_central_columns.php
+
+Time & defs (computekill):
+/srv/www/htdocs/phpMyAdmin/vendor/tecnickcom/tcpdf/fonts/dejavusans.php
+
+/srv/www/htdocs/phpMyAdmin/ (without hardrules) :
+real    11m55,636s
+user    10m30,884s
+sys     0m1,153s
+
+/srv/www/htdocs/phpMyAdmin/ (with hardrules) :
+real    13m1,293s
+user    11m12,556s
+sys     0m1,254s

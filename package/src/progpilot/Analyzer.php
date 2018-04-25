@@ -95,7 +95,7 @@ class Analyzer
 
             unset($astparser);
             unset($parser);
-            unset($code);
+            unset($lexer);
 
             return $script;
         }
@@ -142,12 +142,6 @@ class Analyzer
 
         public function run_internal($context, $defs_included = null)
         {
-            if ($context->get_current_nb_defs() > $context->get_limit_defs())
-            {
-                Utils::print_warning($context, Lang::MAX_DEFS_EXCEEDED);
-                return;
-            }
-
             $start_time = microtime(true);
 
             $past_results = &$context->outputs->get_results();
@@ -225,6 +219,12 @@ class Analyzer
                     }
                 }
 
+                // free memory
+                gc_mem_caches();
+
+                $context->outputs->callgraph->compute_callgraph();
+                \progpilot\Analysis\CustomAnalysis::must_verify_call_flow($context);
+
                 unset($visitordataflow);
             }
 
@@ -245,6 +245,7 @@ class Analyzer
             $context->inputs->read_resolved_includes();
             $context->inputs->read_validators();
             $context->inputs->read_false_positives();
+            $context->inputs->read_custom_file();
 
             $included_files = $context->inputs->get_included_files();
             $included_folders = $context->inputs->get_included_folders();

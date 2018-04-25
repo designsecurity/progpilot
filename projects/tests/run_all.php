@@ -13,6 +13,7 @@ require_once './conditionstest.php';
 //require_once './negativetest.php'; !!!! ERREUR SYNTAX = RESTE NON EXECUTE ?
 //require_once './twigtest.php';
 require_once './testvulntestsuite.php';
+require_once './customtest.php';
 
 try
 {
@@ -26,10 +27,14 @@ try
         $context->inputs->set_sinks("../../package/src/uptodate_data/sinks.json");
         $context->inputs->set_sanitizers("../../package/src/uptodate_data/sanitizers.json");
         $context->inputs->set_validators("../../package/src/uptodate_data/validators.json");
+        $context->inputs->set_custom_rules("../../package/src/uptodate_data/custom.json");
         $context->inputs->set_file($file);
 
+        $context->set_analyze_hardrules(true);
         $context->set_analyze_functions(false);
         $context->outputs->tainted_flow(true);
+        
+        //$context->set_print_file(true);
 
         //$context->set_analyze_includes(false);
 
@@ -62,10 +67,19 @@ try
             foreach ($parsed_json as $vuln)
             {
                 $result_test = true;
-                $basis_outputs = [
-                                     $vuln['source_name'],
-                                     $vuln['source_line'],
-                                     $vuln['vuln_name']];
+                
+                if(isset($vuln['source_name']) && isset($vuln['source_line']))
+                {
+                    $basis_outputs = [
+                        $vuln['source_name'],
+                        $vuln['source_line'],
+                        $vuln['vuln_name']];
+                }
+                else
+                {
+                    $basis_outputs = [
+                        $vuln['vuln_name']];
+                }
 
                 if (!$framework->check_outputs($file, $basis_outputs, $parsed_json))
                 {

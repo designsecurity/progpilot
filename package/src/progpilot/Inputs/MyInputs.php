@@ -16,7 +16,7 @@ use progpilot\Objects\MyFunction;
 
 class MyInputs
 {
-
+        private $custom_rules;
         private $resolved_includes;
 
         private $sanitizers;
@@ -29,6 +29,7 @@ class MyInputs
         private $excludes_folders_analysis;
         private $includes_folders_analysis;
 
+        private $custom_file;
         private $resolved_includes_file;
         private $false_positives_file;
         private $sources_file;
@@ -44,7 +45,7 @@ class MyInputs
 
         public function __construct()
         {
-
+            $this->custom_rules = [];
             $this->resolved_includes = [];
             $this->sanitizers = [];
             $this->sinks = [];
@@ -56,6 +57,7 @@ class MyInputs
             $this->excludes_folders_analysis = [];
             $this->includes_folders_analysis = [];
 
+            $this->custom_file = null;
             $this->false_positives_file = null;
             $this->resolved_includes_file = null;
             $this->sanitizers_file = null;
@@ -439,6 +441,16 @@ class MyInputs
         public function get_include_files()
         {
             return $this->includes_files;
+        }
+
+        public function get_custom_rules()
+        {
+            return $this->custom_rules;
+        }
+
+        public function set_custom_rules($file)
+        {
+            $this->custom_file = $file;
         }
 
         public function set_include_files($file)
@@ -900,6 +912,50 @@ class MyInputs
                     {
                         if (realpath($include_folder))
                             $this->includes_folders_analysis[] = realpath($include_folder);
+                    }
+                }
+            }
+        }
+
+        public function read_custom_file()
+        {
+            if (is_null($this->custom_file))
+                $this->custom_file = __DIR__."/../../uptodate_data/custom.json";
+
+            if (!is_null($this->custom_file))
+            {
+                if (!file_exists($this->custom_file))
+                    Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->custom_file).")");
+
+                $output_json = file_get_contents($this->custom_file);
+                $parsed_json = json_decode($output_json);
+
+                if (isset($parsed_json-> {'custom_rules'}))
+                {
+                    $custom_rules = $parsed_json-> {'custom_rules'};
+                    foreach ($custom_rules as $custom_rule)
+                    {
+                        $mycustom = new MyCustomRule($custom_rule-> {'name'});
+
+                        foreach ($custom_rule-> {'sequence'} as $seq)
+                        {
+                            if (!isset($seq-> {'action'}))
+                                $mycustom->add_to_sequence($seq-> {'function_name'}, $seq-> {'language'});
+                            else
+                            {
+                                switch ($seq-> {'action'})
+                                {
+                                    case 'MUST_VERIFY_CALL_FLOW':
+                                        $mycustom->add_to_sequence_with_action($seq-> {'function_name'}, $seq-> {'language'}, $seq-> {'action'});
+                                        break;
+                                    default:
+                                        $mycustom->add_to_sequence($seq-> {'function_name'}, $seq-> {'language'});
+                                        break;
+                                }
+                            }
+                        }
+
+                        $this->custom_rules[] = $mycustom;
                     }
                 }
             }

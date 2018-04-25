@@ -22,12 +22,14 @@ To retrieve the value of $file, $code and $folder use these methods :
 - $obj_context->inputs->set_sinks($file_sinks);
 - $obj_context->inputs->set_sanitizers($file_sanitizers);
 - $obj_context->inputs->set_validators($file_validators);
+- $obj_context->inputs->set_custom_rules($file_custom);
+- $obj_context->inputs->get_custom_rules();
 - $obj_context->inputs->get_sources();
 - $obj_context->inputs->get_sinks();
 - $obj_context->inputs->get_sanitizers();
 - $obj_context->inputs->get_validators();  
-These methods are mainly explained in the chapter [**specify an analyze**](./SPECIFY_ANALYSIS.md)  
-If a file (sources, sinks, sanitizers, validators) is not specified [the default file](../package/src/uptodate_data) will be used.
+These methods are mainly explained in the chapter [**specify an analyze**](./SPECIFY_ANALYSIS.md) and  [**customize an analyze**](./CUSTOM_ANALYSIS.md)   
+If a file (sources, sinks, sanitizers, validators, custom rules) is not specified [the default file](../package/src/uptodate_data) will be used.
 ***
 
 ***
@@ -75,4 +77,7 @@ max execution time by file for the first steps of the analysis, the analysis may
 *true* or *false* if you want to analyze included files, default is *true*
 - $obj_context->set_configuration($config);  
 you can use an yaml file to specify the configuration of analysis, see an [**example here**](./../projects/example_config/configuration.yml).
+- $obj_context->set_analyze_hardrules($bool);  
+If you want to check custom rules that can take a lot a time (default is false)  
+These rules are explained in the chapter [**customize an analyze**](./CUSTOM_ANALYSIS.md)
 ***

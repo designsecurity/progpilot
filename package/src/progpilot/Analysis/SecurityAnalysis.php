@@ -175,7 +175,7 @@ class SecurityAnalysis
 
         public static function call($index_parameter, $myfunc_call, $context, $mysink, $mydef, $myexpr)
         {
-            $results = &$context->outputs->get_results();
+            //$results = &$context->outputs->get_results();
 
             $hash_id_vuln = "";
 
@@ -237,8 +237,8 @@ class SecurityAnalysis
                 $temp["vuln_id"] = $hash_id_vuln;
 
                 $context->outputs->add_result($temp);
-                if (!in_array($temp, $results, true))
-                    $results[] = $temp;
+                //if (!in_array($temp, $results, true))
+                // $results[] = $temp;
             }
         }
 }

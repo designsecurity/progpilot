@@ -46,12 +46,12 @@ class framework_test
                     break;
                 }
             }
-
+            
             if (!$return_check)
                 return false;
         }
         
-        $nb_vuln_from_framework = count($this->outputs["$testbasis"]) / 3;
+        $nb_vuln_from_framework = count($this->outputs["$testbasis"]) / count($basis_outputs);
         $nb_vuln_from_outputs = count($basis_vulns);
         
         if($nb_vuln_from_framework != $nb_vuln_from_outputs)

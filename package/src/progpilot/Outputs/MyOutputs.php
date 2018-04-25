@@ -118,32 +118,25 @@ class MyOutputs
             $linksjson = [];
             $real_nodes = [];
 
-            foreach ($this->callgraph->get_nodes() as $node)
+            $nodes = $this->callgraph->get_nodes();
+
+            foreach ($nodes as $node_caller)
             {
-                $function_name = \progpilot\Utils::print_function($node);
-                $hash = hash("sha256", $function_name);
-
-                $real_nodes[] = $function_name;
-
-                $nodesjson[] = array('name' => $node->get_name(), 'id' => $hash);
+                $real_nodes[] = $node_caller->get_id();
+                $nodesjson[] = array('name' => $node_caller->get_name(), 'id' => $node_caller->get_id());
             }
 
-            foreach ($this->callgraph->get_edges() as $edge)
+            foreach ($nodes as $key => $node_caller)
             {
-                $caller = $edge[0];
-                $callee = $edge[1];
-
-                $hashcaller = hash("sha256", \progpilot\Utils::print_function($caller));
-                $hashcallee = hash("sha256", \progpilot\Utils::print_function($callee));
-
-                $function_name1 = \progpilot\Utils::print_function($caller);
-                $function_name2 = \progpilot\Utils::print_function($callee);
-
-                if ($hashcaller != $hashcallee
-                        && in_array($function_name1, $real_nodes, true)
-                        && in_array($function_name2, $real_nodes, true))
+                foreach ($node_caller->get_children() as $key => $node_callee_id)
                 {
-                    $linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
+                    $node_callee = $nodes[$node_callee_id];
+                    if ($node_caller->get_id() !== $node_callee->get_id()
+                                                    && in_array($node_caller->get_id(), $real_nodes, true)
+                                                    && in_array($node_callee->get_id(), $real_nodes, true))
+                    {
+                        $linksjson[] = array('source' => $node_caller->get_id(), 'target' => $node_callee->get_id());
+                    }
                 }
             }
 

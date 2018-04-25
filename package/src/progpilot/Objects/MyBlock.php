@@ -12,7 +12,6 @@ namespace progpilot\Objects;
 
 class MyBlock extends MyOp
 {
-
         private $start_address_block;
         private $end_address_block;
         private $id;

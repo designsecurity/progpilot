@@ -36,7 +36,6 @@ class VisitorAnalysis
         private $current_myfunc;
         private $current_context_call;
         private $current_myblock;
-        private $old_myblock;
 
         public function __construct()
         {
@@ -47,7 +46,6 @@ class VisitorAnalysis
             $this->current_myfunc = null;
             $this->current_context_call = null;
             $this->current_myblock = null;
-            $this->old_myblock = null;
 
             $this->defs = null;
             $this->blocks = null;
@@ -73,6 +71,12 @@ class VisitorAnalysis
             }
 
             return false;
+        }
+
+        public function get_myblock($context)
+        {
+
+            $this->context = $context;
         }
 
         public function set_context($context)
@@ -426,10 +430,27 @@ class VisitorAnalysis
 
                                 $class_of_funccall = null;
                                 if (is_null($myfunc))
+                                {
                                     ResolveDefs::funccall_return_values($this->context, $myfunc_call, $instruction, $mycode, $index);
 
+                                    // representations start
+                                    $this->context->outputs->callgraph->add_funccall($this->current_myblock, $myfunc_call);
+                                    // representations end
+                                }
                                 else
+                                {
                                     $class_of_funccall = $myfunc->get_myclass();
+
+                                    // representations start
+                                    foreach ($myfunc->get_blocks() as $myblock)
+                                    {
+                                        $this->context->outputs->callgraph->add_child($this->current_myblock, $myblock);
+                                        break;
+                                    }
+
+                                    $this->context->outputs->callgraph->add_funccall($this->current_myblock, $myfunc_call);
+                                    // representations end
+                                }
 
                                 ResolveDefs::instance_build_back($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc, $myfunc_call);
 

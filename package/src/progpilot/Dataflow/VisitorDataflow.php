@@ -31,7 +31,6 @@ class VisitorDataflow
         private $current_block_id;
         private $current_class;
 
-        /* representations */
         private $current_func;
 
         public function __construct()
@@ -142,7 +141,7 @@ class VisitorDataflow
 
                             // representations start
                             $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
-                            $context->outputs->callgraph->add_node($myfunc);
+                            //$context->outputs->callgraph->add_node($myfunc);
                             $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::ENTER_FUNCTION." ".htmlentities($myfunc->get_name(), ENT_QUOTES, 'UTF-8')."\n");
                             // representations end
 
@@ -157,7 +156,6 @@ class VisitorDataflow
                             $block_id_tmp = $this->getBlockId($myblock);
                             $block_id = hash("sha256", "$block_id_tmp-".$context->get_current_myfile()->get_name());
                             $myblock->set_id($block_id);
-
 
                             array_push($blocks_stack_id, $block_id);
                             $this->current_block_id = $block_id;
@@ -206,8 +204,13 @@ class VisitorDataflow
                             if (count($blocks_stack_id) > 0)
                                 $this->current_block_id = $blocks_stack_id[count($blocks_stack_id) - 1];
 
-                            $this->defs->computekill($context, $blockid);
+                            if ($this->current_func->get_defs()->get_nb_defs() > $context->get_limit_defs())
+                            {
+                                Utils::print_warning($context, Lang::MAX_DEFS_EXCEEDED);
+                                return;
+                            }
 
+                            $this->defs->computekill($context, $blockid);
                             $last_block_id = $blockid;
 
                             // representations start
@@ -224,6 +227,12 @@ class VisitorDataflow
                             $myfunc = $instruction->get_property(MyInstruction::MYFUNC);
 
                             $context->set_current_nb_defs($context->get_current_nb_defs() + $myfunc->get_defs()->get_nb_defs());
+
+                            if ($context->get_current_nb_defs() > $context->get_limit_defs())
+                            {
+                                Utils::print_warning($context, Lang::MAX_DEFS_EXCEEDED);
+                                return;
+                            }
 
                             $this->defs->reachingDefs($this->blocks);
 
@@ -302,7 +311,6 @@ class VisitorDataflow
 
                             // representations start
                             $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
-                            $context->outputs->callgraph->add_edge($this->current_func, $myfunc_call);
                             $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::FUNC_CALL." ".htmlentities($myfunc_call->get_name(), ENT_QUOTES, 'UTF-8')."\n");
                             // representations end
 

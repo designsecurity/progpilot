@@ -96,10 +96,10 @@ class MyDefinition extends MyOp
         public function print_stdout()
         {
             echo "def id ".$this->var_id." ::  name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_type(MyDefinition::TYPE_REFERENCE)." :: is_property = ".$this->is_type(MyDefinition::TYPE_PROPERTY)." :: is_instance = ".$this->is_type(MyDefinition::TYPE_INSTANCE)." :: is_const = ".$this->is_type(MyDefinition::TYPE_CONSTANTE)." :: blockid = ".$this->get_block_id()." :: cast = ".$this->get_cast()."\n";
-
-            echo "my_source_file :\n";
-            var_dump($this->get_source_myfile()->get_name());
-
+            /*
+                        echo "my_source_file :\n";
+                        var_dump($this->get_source_myfile()->get_name());
+            */
             echo "last_known_value :\n";
             var_dump($this->last_known_value);
 
