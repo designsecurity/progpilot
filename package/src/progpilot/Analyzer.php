@@ -220,7 +220,8 @@ class Analyzer
                 }
 
                 // free memory
-                gc_mem_caches();
+                if(function_exists('gc_mem_caches'))
+                    gc_mem_caches();
 
                 $context->outputs->callgraph->compute_callgraph();
                 \progpilot\Analysis\CustomAnalysis::must_verify_call_flow($context);
