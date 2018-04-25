@@ -4,8 +4,7 @@ In addition to [**specify an analysis**](./SPECIFY_ANALYSIS.md) you can customiz
 
 ## Model checking
 
-You could check that your code verify some logic or specifications of your program.  
-For example this rule will traverse the call graph of a program to verify if a user is authenticated and has rights before retrieving secret.
+You could check that your program meets a given specification. For example this rule will traverse the call graph (only from the main function) of a program to verify if a user is authenticated and has rights before retrieving a secret.
 
 ```javascript
 {
@@ -20,6 +19,33 @@ For example this rule will traverse the call graph of a program to verify if a u
 }
 ```
 
-If the call graph of a program is like that, you could see there is one path that does not verify the rule #1 :  
-![ScreenShot](customcallgraph1.png)
+For example in the call graph of the code below :
+```php
+<?php
+
+function secret()
+{
+    dev_iam_authenticated();
+    
+    if(1 == rand())
+    {
+        dev_iam_rights();
+    }
+    else
+    {
+        nada();
+    }
+    
+    var_dump(dev_retrieve_secret());
+}
+
+secret();
+
+?>
+```
+
+There is one path that does not verify the rule #1 :  
+<p align=center>
+<img src="customcallgraph1.png" width=20%>
+</p>
 
