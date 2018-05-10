@@ -935,13 +935,18 @@ class MyInputs
                     $custom_rules = $parsed_json-> {'custom_rules'};
                     foreach ($custom_rules as $custom_rule)
                     {
-                        if (isset($custom_rule-> {'name'}) && isset($custom_rule-> {'description'}))
+                        if (isset($custom_rule-> {'name'})
+                                && isset($custom_rule-> {'description'})
+                                && isset($custom_rule-> {'cwe'})
+                                && isset($custom_rule-> {'attack'}))
                         {
                             $mycustom = new MyCustomRule($custom_rule-> {'name'}, $custom_rule-> {'description'});
+                            $mycustom->set_cwe($custom_rule-> {'cwe'});
+                            $mycustom->set_attack($custom_rule-> {'attack'});
 
                             if (isset($custom_rule-> {'sequence'}) && isset($custom_rule-> {'action'}))
                             {
-                                $mycustom->set_type(MyCustomRule::SEQUENCE);
+                                $mycustom->set_type(MyCustomRule::TYPE_SEQUENCE);
                                 $mycustom->set_action($custom_rule-> {'action'});
 
                                 foreach ($custom_rule-> {'sequence'} as $seq)
@@ -979,6 +984,12 @@ class MyInputs
 
                                             $mycustomfunction->set_has_parameters(true);
                                         }
+
+                                        if (isset($seq-> {'instanceof'}))
+                                        {
+                                            $mycustomfunction->set_is_instance(true);
+                                            $mycustomfunction->set_instanceof_name($seq-> {'instanceof'});
+                                        }
                                     }
                                 }
                             }
@@ -986,7 +997,7 @@ class MyInputs
                                      && isset($custom_rule-> {'language'})
                                      && isset($custom_rule-> {'action'}))
                             {
-                                $mycustom->set_type(MyCustomRule::FUNCTION);
+                                $mycustom->set_type(MyCustomRule::TYPE_FUNCTION);
                                 $mycustom->set_action($custom_rule-> {'action'});
                                 $mycustomfunction = $mycustom->add_function_definition($custom_rule-> {'function_name'}, $custom_rule-> {'language'});
 
@@ -1004,6 +1015,12 @@ class MyInputs
                                     }
 
                                     $mycustomfunction->set_has_parameters(true);
+                                }
+
+                                if (isset($custom_rule-> {'instanceof'}))
+                                {
+                                    $mycustomfunction->set_is_instance(true);
+                                    $mycustomfunction->set_instanceof_name($custom_rule-> {'instanceof'});
                                 }
                             }
 

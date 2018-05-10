@@ -37,18 +37,18 @@ class Callgraph
             $this->blocks[$myblock] = $obj;
         }
 
-        public function add_node($myfunc)
+        public function add_node($myfunc, $myclass)
         {
-            $NodeCG = new NodeCG($myfunc->get_name(), $myfunc->getLine(), $myfunc->getColumn(), $myfunc->get_source_myfile()->get_name());
+            $NodeCG = new NodeCG($myfunc->get_name(), $myfunc->getLine(), $myfunc->getColumn(), $myfunc->get_source_myfile()->get_name(), $myclass);
 
             if (!array_key_exists($NodeCG->get_id(), $this->nodes))
                 $this->nodes[$NodeCG->get_id()] = $NodeCG;
         }
 
-        public function add_edge($myfunc_caller, $myfunc_callee)
+        public function add_edge($myfunc_caller, $myclass_caller,  $myfunc_callee, $myclass_callee)
         {
-            $NodeCG_caller = new NodeCG($myfunc_caller->get_name(), $myfunc_caller->getLine(), $myfunc_caller->getColumn(), $myfunc_caller->get_source_myfile()->get_name());
-            $NodeCG_callee = new NodeCG($myfunc_callee->get_name(), $myfunc_callee->getLine(), $myfunc_callee->getColumn(), $myfunc_callee->get_source_myfile()->get_name());
+            $NodeCG_caller = new NodeCG($myfunc_caller->get_name(), $myfunc_caller->getLine(), $myfunc_caller->getColumn(), $myfunc_caller->get_source_myfile()->get_name(), $myclass_caller);
+            $NodeCG_callee = new NodeCG($myfunc_callee->get_name(), $myfunc_callee->getLine(), $myfunc_callee->getColumn(), $myfunc_callee->get_source_myfile()->get_name(), $myclass_callee);
 
             if (array_key_exists($NodeCG_caller->get_id(), $this->nodes)
                     && array_key_exists($NodeCG_callee->get_id(), $this->nodes)
@@ -66,7 +66,7 @@ class Callgraph
             }
         }
 
-        public function add_funccall($myblock, $myfunc)
+        public function add_funccall($myblock, $myfunc, $myclass)
         {
             if (!$this->blocks->contains($myblock))
                 $this->new_block($myblock);
@@ -74,7 +74,7 @@ class Callgraph
             if (!in_array($myfunc, $this->blocks[$myblock]->calls, true))
             {
                 $storage = $this->blocks[$myblock]->calls;
-                $storage[] = $myfunc;
+                $storage[] = [$myfunc, $myclass];
                 $this->blocks[$myblock]->calls = $storage;
             }
         }
@@ -159,8 +159,8 @@ class Callgraph
 
             //calculate nodes
             foreach ($this->blocks as $myblock)
-                foreach ($this->blocks[$myblock]->calls as $func_call)
-                    $this->add_node($func_call);
+                foreach ($this->blocks[$myblock]->calls as $call)
+                    $this->add_node($call[0], $call[1]);
 
             // calculate edges
             foreach ($this->blocks as $myblock)
@@ -171,20 +171,22 @@ class Callgraph
                 if (count($calls) > 1)
                 {
                     for ($i = 0; $i < count($calls) - 1; $i ++)
-                        $this->add_edge($calls[$i], $calls[$i + 1]);
+                        $this->add_edge($calls[$i][0], $calls[$i][1], $calls[$i + 1][0], $calls[$i + 1][1]);
                 }
 
                 // calculate edges second case : calls from parents
                 if (count($calls) > 0)
                 {
-                    $last_call_parent = $calls[count($calls) - 1];
+                    $last_call_parent = $calls[count($calls) - 1][0];
+                    $last_myclass_parent = $calls[count($calls) - 1][1];
                     foreach ($this->blocks[$myblock]->children as $child)
                     {
                         $calls = $this->get_calls($child);
                         if (!is_null($calls) && count($calls) > 0)
                         {
-                            $first_call_child = $calls[0];
-                            $this->add_edge($last_call_parent, $first_call_child);
+                            $first_call_child = $calls[0][0];
+                            $first_myclass_child = $calls[0][1];
+                            $this->add_edge($last_call_parent, $last_myclass_parent, $first_call_child, $first_myclass_child);
                         }
                     }
                 }

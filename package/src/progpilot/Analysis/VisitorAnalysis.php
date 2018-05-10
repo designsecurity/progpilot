@@ -409,8 +409,6 @@ class VisitorAnalysis
                                 $myclass = $list[1];
                                 $myfunc = $list[2];
 
-                                \progpilot\Analysis\CustomAnalysis::must_verify_definition($this->context, $instruction, $myfunc_call, $myclass);
-
                                 ResolveDefs::instance_build_this($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $object_id, $myclass, $myfunc, $myfunc_call);
 
                                 if (!is_null($myfunc) && !$this->in_call_stack($myfunc))
@@ -429,6 +427,8 @@ class VisitorAnalysis
                                     }
                                 }
 
+                                \progpilot\Analysis\CustomAnalysis::must_verify_definition($this->context, $instruction, $myfunc_call, $myclass);
+
                                 FuncAnalysis::funccall_after($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc_call, $myfunc, $arr_funccall, $instruction, $code[$index + 3]);
 
                                 $class_of_funccall = null;
@@ -437,7 +437,7 @@ class VisitorAnalysis
                                     ResolveDefs::funccall_return_values($this->context, $myfunc_call, $instruction, $mycode, $index);
 
                                     // representations start
-                                    $this->context->outputs->callgraph->add_funccall($this->current_myblock, $myfunc_call);
+                                    $this->context->outputs->callgraph->add_funccall($this->current_myblock, $myfunc_call, $myclass);
                                     // representations end
                                 }
                                 else
@@ -451,7 +451,7 @@ class VisitorAnalysis
                                         break;
                                     }
 
-                                    $this->context->outputs->callgraph->add_funccall($this->current_myblock, $myfunc_call);
+                                    $this->context->outputs->callgraph->add_funccall($this->current_myblock, $myfunc_call, $myclass);
                                     // representations end
                                 }
 

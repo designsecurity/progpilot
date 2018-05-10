@@ -47,10 +47,10 @@ $framework->add_output("./tests/includes/simple9.php", "header_injection");
 $framework->add_output("./tests/includes/simple9.php", array("\$page[\"body\"]"));
 $framework->add_output("./tests/includes/simple9.php", array("52"));
 $framework->add_output("./tests/includes/simple9.php", "xss");
-$framework->add_output("./tests/includes/simple9.php", "rules_#3");
+$framework->add_output("./tests/includes/simple9.php", "security misconfiguration");
 $framework->add_output("./tests/includes/simple9.php", "148");
 $framework->add_output("./tests/includes/simple9.php", "3388");
-$framework->add_output("./tests/includes/simple9.php", "rules_#3");
+$framework->add_output("./tests/includes/simple9.php", "security misconfiguration");
 $framework->add_output("./tests/includes/simple9.php", "149");
 $framework->add_output("./tests/includes/simple9.php", "3467");
 

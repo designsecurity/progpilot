@@ -35,7 +35,8 @@ class DFSVisitor
             {
                 foreach ($rule->get_sequence() as $sequence)
                 {
-                    if ($node->get_name() === $sequence->get_name())
+                    if ($node->get_name() === $sequence->get_name()
+                                               && ((!$sequence->is_instance() && is_null($node->get_myclass())) || (!is_null($node->get_myclass()) && $sequence->is_instance() && $sequence->get_instanceof_name() === $node->get_myclass()->get_name())))
                     {
                         $mod = count($rule->get_sequence());
                         $rule->set_current_order_number($rule->get_current_order_number() + 1);
@@ -43,11 +44,18 @@ class DFSVisitor
                         if (($rule->get_current_order_number() % $mod)
                                 !== ($sequence->get_order_number_expected() % $mod))
                         {
-                            $temp["vuln_name"] = \progpilot\Utils::encode_characters($rule->get_name());
+                            $hash_id_vuln = hash("sha256", $rule->get_name()."-".$node->get_file());
+
+                            $temp["vuln_rule"] = \progpilot\Utils::encode_characters($rule->get_name());
                             $temp["vuln_line"] = $node->get_line();
                             $temp["vuln_column"] = $node->get_column();
                             $temp["vuln_file"] = \progpilot\Utils::encode_characters($node->get_file());
                             $temp["vuln_description"] = \progpilot\Utils::encode_characters($rule->get_name());
+                            $temp["vuln_name"] = \progpilot\Utils::encode_characters($rule->get_attack());
+                            $temp["vuln_cwe"] = \progpilot\Utils::encode_characters($rule->get_cwe());
+                            $temp["vuln_id"] = $hash_id_vuln;
+                            $temp["vuln_type"] = "custom";
+
 
                             $this->context->outputs->add_result($temp);
                         }

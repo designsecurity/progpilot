@@ -12,13 +12,15 @@ namespace progpilot\Inputs;
 
 class MyCustomRule
 {
-        const FUNCTION = "function";
-        const SEQUENCE = "sequence";
+        const TYPE_FUNCTION = "function";
+        const TYPE_SEQUENCE = "sequence";
 
         private $action;
         private $type;
         private $function_definition;
         private $name_rule;
+        private $attack;
+        private $cwe;
         private $description_rule;
         private $sequence_rule;
         private $current_order_number;
@@ -26,12 +28,34 @@ class MyCustomRule
         public function __construct($name_rule, $description_rule)
         {
             $this->action = null;
-            $this->type = MyCustomRule::FUNCTION;
+            $this->type = MyCustomRule::TYPE_FUNCTION;
             $this->name_rule = $name_rule;
             $this->description_rule = $description_rule;
             $this->sequence_rule = [];
             $this->current_order_number = 0;
             $this->function_definition = null;
+            $this->attack = null;
+            $this->cwe = null;
+        }
+
+        public function get_attack()
+        {
+            return $this->attack;
+        }
+
+        public function set_attack($attack)
+        {
+            $this->attack = $attack;
+        }
+
+        public function get_cwe()
+        {
+            return $this->cwe;
+        }
+
+        public function set_cwe($cwe)
+        {
+            $this->cwe = $cwe;
         }
 
         public function get_type()

@@ -1,0 +1,3 @@
+[./tests/custom/custom4.php] test result ko
+array(0) {
+}

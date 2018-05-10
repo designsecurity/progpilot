@@ -12,6 +12,7 @@ namespace progpilot\Representations;
 
 class NodeCG
 {
+        private $myclass;
         private $name;
         private $line;
         private $column;
@@ -21,8 +22,9 @@ class NodeCG
         private $children;
         private $color;
 
-        public function __construct($name, $line, $column, $file)
+        public function __construct($name, $line, $column, $file, $myclass)
         {
+            $this->myclass = $myclass;
             $this->name = $name;
             $this->line = $line;
             $this->column = $column;
@@ -32,6 +34,16 @@ class NodeCG
             $this->nb_views = 0;
             $this->children = [];
             $this->color = "white";
+        }
+
+        function get_myclass()
+        {
+            return $this->myclass;
+        }
+
+        function set_myclass($myclass)
+        {
+            $this->myclass = $myclass;
         }
 
         function get_name()
