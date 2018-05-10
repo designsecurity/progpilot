@@ -130,7 +130,7 @@ class Callgraph
                         if ($myblock !== $child)
                         {
                             $calls_child = $this->get_calls($child);
-                            if (is_null($calls_child) || count($calls_child) == 0)
+                            if (is_null($calls_child) || count($calls_child) === 0)
                             {
                                 if (!in_array($child, $null_nodes, true))
                                 {

@@ -32,10 +32,10 @@ class ResolveDefs
 {
         public static function funccall_return_values($context, $myfunc_call, $instruction, $mycode, $index)
         {
-            if ($myfunc_call->get_name() == "dirname")
+            if ($myfunc_call->get_name() === "dirname")
             {
                 $codes = $mycode->get_codes();
-                if (isset($codes[$index + 2]) && $codes[$index + 2]->get_opcode() == Opcodes::END_ASSIGN)
+                if (isset($codes[$index + 2]) && $codes[$index + 2]->get_opcode() === Opcodes::END_ASSIGN)
                 {
                     $instruction_def = $codes[$index + 3];
                     $mydef_return = $instruction_def->get_property(MyInstruction::DEF);
@@ -56,7 +56,7 @@ class ResolveDefs
             $i = 0;
             $class_stack_name = [];
 
-            if ($myfunc_call->get_name() == "__construct")
+            if ($myfunc_call->get_name() === "__construct")
             {
                 $class_stack_name[$i][] = $myfunc_call->get_back_def();
             }
@@ -79,7 +79,7 @@ class ResolveDefs
                     // we don't want the backdef but the original instance
 
                     $class_stack_name[$i] = [];
-                    if ($i == 0)
+                    if ($i === 0)
                     {
                         $instances = ResolveDefs::select_instances(
                                          $context,
@@ -290,7 +290,7 @@ class ResolveDefs
                         {
                             // if the file of def1 is included later so def1 is deeper
                             if (($myfile_def1->getLine() > $myfile_def2->getLine())
-                                    || ($myfile_def1->getLine() == $myfile_def2->getLine() &&  $myfile_def1->getColumn() >= $myfile_def2->getColumn()))
+                                    || ($myfile_def1->getLine() === $myfile_def2->getLine() &&  $myfile_def1->getColumn() >= $myfile_def2->getColumn()))
                                 return true;
                             else
                                 return false;
@@ -309,7 +309,7 @@ class ResolveDefs
             {
                 // def2 defined after the include so def2 is deeper
                 if (($def2->getLine() > $myfile->getLine())
-                        || ($def2->getLine() == $myfile->getLine() &&  $def2->getColumn() >= $myfile->getColumn()))
+                        || ($def2->getLine() === $myfile->getLine() &&  $def2->getColumn() >= $myfile->getColumn()))
                     return false;
 
                 return true;
@@ -322,7 +322,7 @@ class ResolveDefs
                 // def1 defined after the include so def1 is deeper
 
                 if (($def1->getLine() > $myfile->getLine())
-                        || ($def1->getLine() == $myfile->getLine() &&  $def1->getColumn() >= $myfile->getColumn()))
+                        || ($def1->getLine() === $myfile->getLine() &&  $def1->getColumn() >= $myfile->getColumn()))
                     return true;
 
                 return false;
@@ -342,7 +342,7 @@ class ResolveDefs
                     return true;
 
                 // the two defs are on the same line
-                if ($def1->getLine() == $def2->getLine())
+                if ($def1->getLine() === $def2->getLine())
                 {
                     if ($def1->get_id() >= $def2->get_id())
                         return true;
@@ -412,7 +412,7 @@ class ResolveDefs
                     }
                 }
 
-                if (count($instances) == 0)
+                if (count($instances) === 0)
                     $visibility_final = true;
             }
 
@@ -436,8 +436,8 @@ class ResolveDefs
                         $defsfound[$def->get_block_id()][] = $def;
                     }
 
-                    else if (($def->is_type(MyDefinition::TYPE_PROPERTY) == $defsearch->is_type(MyDefinition::TYPE_PROPERTY))
-                             || ($def->is_type(MyDefinition::TYPE_INSTANCE) == $defsearch->is_type(MyDefinition::TYPE_INSTANCE)))
+                    else if (($def->is_type(MyDefinition::TYPE_PROPERTY) === $defsearch->is_type(MyDefinition::TYPE_PROPERTY))
+                             || ($def->is_type(MyDefinition::TYPE_INSTANCE) === $defsearch->is_type(MyDefinition::TYPE_INSTANCE)))
                     {
                         if ($def->is_type(MyDefinition::TYPE_PROPERTY) && $defsearch->is_type(MyDefinition::TYPE_PROPERTY))
                             $defsfound[$def->get_block_id()][] = $def;
@@ -530,7 +530,7 @@ class ResolveDefs
                 if (is_array($tempdefa->property->get_properties()))
                 {
                     $myproperties = $tempdefa->property->get_properties();
-                    for ($index_property = count($myproperties) - 1;  $index_property != -1; $index_property --)
+                    for ($index_property = count($myproperties) - 1;  $index_property !== -1; $index_property --)
                     {
                         $tempdefa_prop->setLine($prop_line);
                         $tempdefa_prop->setColumn($prop_column);
@@ -584,7 +584,7 @@ class ResolveDefs
                                         }
                                     }
 
-                                    if (count($instances) == 0 && $first_properties)
+                                    if (count($instances) === 0 && $first_properties)
                                     {
                                         $property_exist = true;
                                         $first_properties[] = $defa;
@@ -618,7 +618,7 @@ class ResolveDefs
                                                 if ($property->is_type(MyDefinition::TYPE_INSTANCE) && $i < (count($myproperties) - 1))
                                                     $instance = $property;
 
-                                                else if ($i == (count($myproperties) - 1))
+                                                else if ($i === (count($myproperties) - 1))
                                                     $properties_defs[] = $property;
 
                                             }
@@ -647,7 +647,7 @@ class ResolveDefs
         {
             if (is_array($call_stack))
             {
-                for ($call_number = count($call_stack) - 1; $call_number != 0; $call_number --)
+                for ($call_number = count($call_stack) - 1; $call_number !== 0; $call_number --)
                 {
                     $current_context_call = $call_stack[$call_number][4];
 
@@ -664,7 +664,7 @@ class ResolveDefs
                         $tempdefa->set_block_id($current_context_call->func_callee->get_last_block_id());
 
                         $res_global = ResolveDefs::temporary_simple($context, $current_context_call->func_callee->get_defs(), $tempdefa, $is_iterator, $is_assign, $current_context_call);
-                        if (!(count($res_global) == 1 && $res_global[0] === $tempdefa))
+                        if (!(count($res_global) === 1 && $res_global[0] === $tempdefa))
                             return $res_global;
                     }
                 }

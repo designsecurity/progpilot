@@ -26,7 +26,7 @@ class FuncAnalysis
                 $defsreturn = $myfunc->get_return_defs();
                 foreach ($defsreturn as $defreturn)
                 {
-                    if (($arr_funccall != false && $defreturn->is_type(MyDefinition::TYPE_ARRAY) && $defreturn->get_array_value() === $arr_funccall) || ($arr_funccall == false && !$defreturn->is_type(MyDefinition::TYPE_ARRAY)))
+                    if (($arr_funccall !== false && $defreturn->is_type(MyDefinition::TYPE_ARRAY) && $defreturn->get_array_value() === $arr_funccall) || ($arr_funccall === false && !$defreturn->is_type(MyDefinition::TYPE_ARRAY)))
                     {
                         $copydefreturn = $defreturn;
 
@@ -53,7 +53,7 @@ class FuncAnalysis
                     }
                 }
 
-                if ($op_apr->get_opcode() == Opcodes::DEFINITION)
+                if ($op_apr->get_opcode() === Opcodes::DEFINITION)
                 {
                     $copytab = $op_apr->get_property(MyInstruction::DEF);
 

@@ -355,7 +355,7 @@ class VisitorAnalysis
 
                                 // we didn't resolve any class so the class of method is unknown (undefined)
                                 // but we authorize to specify method of unknown class during the configuration of sinks ...
-                                if (count($class_of_funccall_arr) == 0)
+                                if (count($class_of_funccall_arr) === 0)
                                 {
                                     TaintAnalysis::funccall_specify_analysis(null, $stack_class, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), null, $myfunc_call, $arr_funccall, $instruction, $mycode, $index);
                                 }

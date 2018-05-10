@@ -1,0 +1,549 @@
+progpilot analyze : /home/eric/dev/scripts/oft-app/.editorconfig
+progpilot analyze : /home/eric/dev/scripts/oft-app/.gitignore
+progpilot analyze : /home/eric/dev/scripts/oft-app/.gitlab-ci.yml.dist
+progpilot analyze : /home/eric/dev/scripts/oft-app/CHANGELOG
+progpilot analyze : /home/eric/dev/scripts/oft-app/README.md
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/behat.yml
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/config/config.db.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/config/config.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/lang/en.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/lang/fr.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/phpunit.xml
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/sql/.gitignore
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/src/Controller/IndexController.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/src/Module.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/tests/bootstrap.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/tests/features/01_homepage.feature
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/tests/features/05_login.feature
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/tests/features/10_redirect.feature
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/tests/features/bootstrap/FeatureContext.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/tests/mock/ApplicationMock.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/tests/src/Controller/IndexControllerTest.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/tests/src/ModuleTest.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/views/_layout/default.phtml
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/views/_layout/error.phtml
+progpilot analyze : /home/eric/dev/scripts/oft-app/application/views/index/index.phtml
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/behat
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/behat.bat
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/doctrine-dbal
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/doctrine-dbal.bat
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/doctrine-migrations
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/doctrine-migrations.bat
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/oft
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/oft-diagnose
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/oft-diagnose.bat
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/oft.bat
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/pdepend
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/pdepend.bat
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/php-cs-fixer
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/php-cs-fixer.bat
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/php-parse
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/php-parse.bat
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/phpcbf
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/phpcbf.bat
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/phpcpd
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/phpcpd.bat
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/phpcs
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/phpcs.bat
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/phpdox
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/phpdox.bat
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/phploc
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/phploc.bat
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/phpmd
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/phpmd.bat
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/phpunit
+progpilot analyze : /home/eric/dev/scripts/oft-app/bin/phpunit.bat
+progpilot analyze : /home/eric/dev/scripts/oft-app/build.xml.dist
+progpilot analyze : /home/eric/dev/scripts/oft-app/composer.json
+progpilot analyze : /home/eric/dev/scripts/oft-app/config/app.dev.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/config/app.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/config/bootstrap.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/data/INSTALL
+progpilot analyze : /home/eric/dev/scripts/oft-app/data/cache/.gitignore
+progpilot analyze : /home/eric/dev/scripts/oft-app/data/logs/.gitignore
+progpilot analyze : /home/eric/dev/scripts/oft-app/data/tmp/.gitignore
+progpilot analyze : /home/eric/dev/scripts/oft-app/data/upload/.gitignore
+progpilot analyze : /home/eric/dev/scripts/oft-app/docker-compose.yml.dist
+progpilot analyze : /home/eric/dev/scripts/oft-app/public/.htaccess
+progpilot analyze : /home/eric/dev/scripts/oft-app/public/css/.gitignore
+progpilot analyze : /home/eric/dev/scripts/oft-app/public/dev.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/public/img/.gitignore
+progpilot analyze : /home/eric/dev/scripts/oft-app/public/index.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/public/install.php
+progpilot analyze : /home/eric/dev/scripts/oft-app/public/js/.gitignore
+progpilot analyze : /home/eric/dev/scripts/oft-app/sonar-project.properties.dist
+array(11) {
+  [0]=>
+  array(12) {
+    ["source_name"]=>
+    array(1) {
+      [0]=>
+      string(12) "$file_return"
+    }
+    ["source_line"]=>
+    array(1) {
+      [0]=>
+      int(22)
+    }
+    ["source_column"]=>
+    array(1) {
+      [0]=>
+      int(499)
+    }
+    ["source_file"]=>
+    array(1) {
+      [0]=>
+      string(70) "/home/eric/dev/scripts/oft-app/application/views/_layout/default.phtml"
+    }
+    ["tainted_flow"]=>
+    array(1) {
+      [0]=>
+      array(0) {
+      }
+    }
+    ["sink_name"]=>
+    string(4) "echo"
+    ["sink_line"]=>
+    int(22)
+    ["sink_column"]=>
+    int(499)
+    ["sink_file"]=>
+    string(70) "/home/eric/dev/scripts/oft-app/application/views/_layout/default.phtml"
+    ["vuln_name"]=>
+    string(3) "xss"
+    ["vuln_cwe"]=>
+    string(6) "CWE_79"
+    ["vuln_id"]=>
+    string(64) "e6f51f60bb8b37db5a9c786c0c5f7aa343e160c0ee483a4a32471a5bca53a809"
+  }
+  [1]=>
+  array(12) {
+    ["source_name"]=>
+    array(1) {
+      [0]=>
+      string(12) "$file_return"
+    }
+    ["source_line"]=>
+    array(1) {
+      [0]=>
+      int(17)
+    }
+    ["source_column"]=>
+    array(1) {
+      [0]=>
+      int(414)
+    }
+    ["source_file"]=>
+    array(1) {
+      [0]=>
+      string(68) "/home/eric/dev/scripts/oft-app/application/views/_layout/error.phtml"
+    }
+    ["tainted_flow"]=>
+    array(1) {
+      [0]=>
+      array(0) {
+      }
+    }
+    ["sink_name"]=>
+    string(4) "echo"
+    ["sink_line"]=>
+    int(17)
+    ["sink_column"]=>
+    int(414)
+    ["sink_file"]=>
+    string(68) "/home/eric/dev/scripts/oft-app/application/views/_layout/error.phtml"
+    ["vuln_name"]=>
+    string(3) "xss"
+    ["vuln_cwe"]=>
+    string(6) "CWE_79"
+    ["vuln_id"]=>
+    string(64) "f9036f91ac10b2961b66c5d316454b22cdf1bb1d703e34cd227365fedcdb7ca3"
+  }
+  [2]=>
+  array(12) {
+    ["source_name"]=>
+    array(1) {
+      [0]=>
+      string(14) "$getenv_return"
+    }
+    ["source_line"]=>
+    array(1) {
+      [0]=>
+      int(19)
+    }
+    ["source_column"]=>
+    array(1) {
+      [0]=>
+      int(628)
+    }
+    ["source_file"]=>
+    array(1) {
+      [0]=>
+      string(51) "/home/eric/dev/scripts/oft-app/config/bootstrap.php"
+    }
+    ["tainted_flow"]=>
+    array(1) {
+      [0]=>
+      array(0) {
+      }
+    }
+    ["sink_name"]=>
+    string(7) "include"
+    ["sink_line"]=>
+    int(19)
+    ["sink_column"]=>
+    int(628)
+    ["sink_file"]=>
+    string(51) "/home/eric/dev/scripts/oft-app/config/bootstrap.php"
+    ["vuln_name"]=>
+    string(14) "file_inclusion"
+    ["vuln_cwe"]=>
+    string(6) "CWE_98"
+    ["vuln_id"]=>
+    string(64) "40c62da3fd6d071939b4f73c77c7baa450d5f72e5f59c7b9e60735507a64e933"
+  }
+  [3]=>
+  array(12) {
+    ["source_name"]=>
+    array(1) {
+      [0]=>
+      string(23) "$_SERVER["SCRIPT_NAME"]"
+    }
+    ["source_line"]=>
+    array(1) {
+      [0]=>
+      int(1302)
+    }
+    ["source_column"]=>
+    array(1) {
+      [0]=>
+      int(52480)
+    }
+    ["source_file"]=>
+    array(1) {
+      [0]=>
+      string(49) "/home/eric/dev/scripts/oft-app/public/install.php"
+    }
+    ["tainted_flow"]=>
+    array(1) {
+      [0]=>
+      array(0) {
+      }
+    }
+    ["sink_name"]=>
+    string(6) "header"
+    ["sink_line"]=>
+    int(1302)
+    ["sink_column"]=>
+    int(52480)
+    ["sink_file"]=>
+    string(49) "/home/eric/dev/scripts/oft-app/public/install.php"
+    ["vuln_name"]=>
+    string(16) "header_injection"
+    ["vuln_cwe"]=>
+    string(7) "CWE_601"
+    ["vuln_id"]=>
+    string(64) "ad474bece1c3ad10fca1513b814b1b809352e0a063770949d5c27a4bcff0e2a1"
+  }
+  [4]=>
+  array(12) {
+    ["source_name"]=>
+    array(1) {
+      [0]=>
+      string(23) "$_SERVER["SCRIPT_NAME"]"
+    }
+    ["source_line"]=>
+    array(1) {
+      [0]=>
+      int(1320)
+    }
+    ["source_column"]=>
+    array(1) {
+      [0]=>
+      int(52962)
+    }
+    ["source_file"]=>
+    array(1) {
+      [0]=>
+      string(49) "/home/eric/dev/scripts/oft-app/public/install.php"
+    }
+    ["tainted_flow"]=>
+    array(1) {
+      [0]=>
+      array(0) {
+      }
+    }
+    ["sink_name"]=>
+    string(4) "echo"
+    ["sink_line"]=>
+    int(1320)
+    ["sink_column"]=>
+    int(52962)
+    ["sink_file"]=>
+    string(49) "/home/eric/dev/scripts/oft-app/public/install.php"
+    ["vuln_name"]=>
+    string(3) "xss"
+    ["vuln_cwe"]=>
+    string(6) "CWE_79"
+    ["vuln_id"]=>
+    string(64) "9121d1b09b9bc6d5650cbd1d56bd05bef8cbbc251291f5c53961abd30cb45fb1"
+  }
+  [5]=>
+  array(12) {
+    ["source_name"]=>
+    array(1) {
+      [0]=>
+      string(23) "$_SERVER["SCRIPT_NAME"]"
+    }
+    ["source_line"]=>
+    array(1) {
+      [0]=>
+      int(774)
+    }
+    ["source_column"]=>
+    array(1) {
+      [0]=>
+      int(27315)
+    }
+    ["source_file"]=>
+    array(1) {
+      [0]=>
+      string(49) "/home/eric/dev/scripts/oft-app/public/install.php"
+    }
+    ["tainted_flow"]=>
+    array(1) {
+      [0]=>
+      array(0) {
+      }
+    }
+    ["sink_name"]=>
+    string(4) "echo"
+    ["sink_line"]=>
+    int(774)
+    ["sink_column"]=>
+    int(27315)
+    ["sink_file"]=>
+    string(49) "/home/eric/dev/scripts/oft-app/public/install.php"
+    ["vuln_name"]=>
+    string(3) "xss"
+    ["vuln_cwe"]=>
+    string(6) "CWE_79"
+    ["vuln_id"]=>
+    string(64) "9121d1b09b9bc6d5650cbd1d56bd05bef8cbbc251291f5c53961abd30cb45fb1"
+  }
+  [6]=>
+  array(12) {
+    ["source_name"]=>
+    array(1) {
+      [0]=>
+      string(23) "$_SERVER["SCRIPT_NAME"]"
+    }
+    ["source_line"]=>
+    array(1) {
+      [0]=>
+      int(782)
+    }
+    ["source_column"]=>
+    array(1) {
+      [0]=>
+      int(27620)
+    }
+    ["source_file"]=>
+    array(1) {
+      [0]=>
+      string(49) "/home/eric/dev/scripts/oft-app/public/install.php"
+    }
+    ["tainted_flow"]=>
+    array(1) {
+      [0]=>
+      array(0) {
+      }
+    }
+    ["sink_name"]=>
+    string(4) "echo"
+    ["sink_line"]=>
+    int(782)
+    ["sink_column"]=>
+    int(27620)
+    ["sink_file"]=>
+    string(49) "/home/eric/dev/scripts/oft-app/public/install.php"
+    ["vuln_name"]=>
+    string(3) "xss"
+    ["vuln_cwe"]=>
+    string(6) "CWE_79"
+    ["vuln_id"]=>
+    string(64) "9121d1b09b9bc6d5650cbd1d56bd05bef8cbbc251291f5c53961abd30cb45fb1"
+  }
+  [7]=>
+  array(12) {
+    ["source_name"]=>
+    array(1) {
+      [0]=>
+      string(23) "$_SERVER["SCRIPT_NAME"]"
+    }
+    ["source_line"]=>
+    array(1) {
+      [0]=>
+      int(791)
+    }
+    ["source_column"]=>
+    array(1) {
+      [0]=>
+      int(28026)
+    }
+    ["source_file"]=>
+    array(1) {
+      [0]=>
+      string(49) "/home/eric/dev/scripts/oft-app/public/install.php"
+    }
+    ["tainted_flow"]=>
+    array(1) {
+      [0]=>
+      array(0) {
+      }
+    }
+    ["sink_name"]=>
+    string(4) "echo"
+    ["sink_line"]=>
+    int(791)
+    ["sink_column"]=>
+    int(28026)
+    ["sink_file"]=>
+    string(49) "/home/eric/dev/scripts/oft-app/public/install.php"
+    ["vuln_name"]=>
+    string(3) "xss"
+    ["vuln_cwe"]=>
+    string(6) "CWE_79"
+    ["vuln_id"]=>
+    string(64) "9121d1b09b9bc6d5650cbd1d56bd05bef8cbbc251291f5c53961abd30cb45fb1"
+  }
+  [8]=>
+  array(12) {
+    ["source_name"]=>
+    array(1) {
+      [0]=>
+      string(23) "$_SERVER["SCRIPT_NAME"]"
+    }
+    ["source_line"]=>
+    array(1) {
+      [0]=>
+      int(993)
+    }
+    ["source_column"]=>
+    array(1) {
+      [0]=>
+      int(39430)
+    }
+    ["source_file"]=>
+    array(1) {
+      [0]=>
+      string(49) "/home/eric/dev/scripts/oft-app/public/install.php"
+    }
+    ["tainted_flow"]=>
+    array(1) {
+      [0]=>
+      array(0) {
+      }
+    }
+    ["sink_name"]=>
+    string(4) "echo"
+    ["sink_line"]=>
+    int(993)
+    ["sink_column"]=>
+    int(39430)
+    ["sink_file"]=>
+    string(49) "/home/eric/dev/scripts/oft-app/public/install.php"
+    ["vuln_name"]=>
+    string(3) "xss"
+    ["vuln_cwe"]=>
+    string(6) "CWE_79"
+    ["vuln_id"]=>
+    string(64) "9121d1b09b9bc6d5650cbd1d56bd05bef8cbbc251291f5c53961abd30cb45fb1"
+  }
+  [9]=>
+  array(12) {
+    ["source_name"]=>
+    array(1) {
+      [0]=>
+      string(23) "$_SERVER["SCRIPT_NAME"]"
+    }
+    ["source_line"]=>
+    array(1) {
+      [0]=>
+      int(1100)
+    }
+    ["source_column"]=>
+    array(1) {
+      [0]=>
+      int(44990)
+    }
+    ["source_file"]=>
+    array(1) {
+      [0]=>
+      string(49) "/home/eric/dev/scripts/oft-app/public/install.php"
+    }
+    ["tainted_flow"]=>
+    array(1) {
+      [0]=>
+      array(0) {
+      }
+    }
+    ["sink_name"]=>
+    string(4) "echo"
+    ["sink_line"]=>
+    int(1100)
+    ["sink_column"]=>
+    int(44990)
+    ["sink_file"]=>
+    string(49) "/home/eric/dev/scripts/oft-app/public/install.php"
+    ["vuln_name"]=>
+    string(3) "xss"
+    ["vuln_cwe"]=>
+    string(6) "CWE_79"
+    ["vuln_id"]=>
+    string(64) "9121d1b09b9bc6d5650cbd1d56bd05bef8cbbc251291f5c53961abd30cb45fb1"
+  }
+  [10]=>
+  array(12) {
+    ["source_name"]=>
+    array(1) {
+      [0]=>
+      string(23) "$_SERVER["SCRIPT_NAME"]"
+    }
+    ["source_line"]=>
+    array(1) {
+      [0]=>
+      int(1102)
+    }
+    ["source_column"]=>
+    array(1) {
+      [0]=>
+      int(45207)
+    }
+    ["source_file"]=>
+    array(1) {
+      [0]=>
+      string(49) "/home/eric/dev/scripts/oft-app/public/install.php"
+    }
+    ["tainted_flow"]=>
+    array(1) {
+      [0]=>
+      array(0) {
+      }
+    }
+    ["sink_name"]=>
+    string(4) "echo"
+    ["sink_line"]=>
+    int(1102)
+    ["sink_column"]=>
+    int(45207)
+    ["sink_file"]=>
+    string(49) "/home/eric/dev/scripts/oft-app/public/install.php"
+    ["vuln_name"]=>
+    string(3) "xss"
+    ["vuln_cwe"]=>
+    string(6) "CWE_79"
+    ["vuln_id"]=>
+    string(64) "9121d1b09b9bc6d5650cbd1d56bd05bef8cbbc251291f5c53961abd30cb45fb1"
+  }
+}

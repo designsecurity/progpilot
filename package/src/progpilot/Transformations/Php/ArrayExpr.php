@@ -48,7 +48,7 @@ class ArrayExpr
                     else
                         $building_arr = array($nb_arrayexpr => $arr);
 
-                    if ($type_array == MyOp::TYPE_ARRAY_EXPR)
+                    if ($type_array === MyOp::TYPE_ARRAY_EXPR)
                     {
                         $building_arr = ArrayExpr::instruction($value, $context, $building_arr, $def_name, $is_returndef);
                     }

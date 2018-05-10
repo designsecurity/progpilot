@@ -39,7 +39,7 @@ class MySink extends MySpecify
         {
             foreach ($this->global_conditions as $condition_global)
             {
-                if ($condition == $condition_global)
+                if ($condition === $condition_global)
                     return true;
             }
 
@@ -64,7 +64,7 @@ class MySink extends MySpecify
                 $index = $parameter[0];
                 $condition = $parameter[1];
 
-                if ($index == $i)
+                if ($index === $i)
                     return $condition;
             }
 
@@ -76,7 +76,7 @@ class MySink extends MySpecify
             foreach ($this->parameters as $parameter)
             {
                 $index = $parameter[0];
-                if ($index == $i)
+                if ($index === $i)
                     return true;
             }
 

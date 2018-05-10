@@ -161,7 +161,7 @@ class MyInputs
             $name = realpath($name);
             foreach ($this->excludes_files_analysis as $exclude_name)
             {
-                if (realpath($exclude_name) == $name)
+                if (realpath($exclude_name) === $name)
                     return true;
             }
 
@@ -173,7 +173,7 @@ class MyInputs
             $name = realpath($name);
             foreach ($this->includes_files_analysis as $include_name)
             {
-                if (realpath($include_name) == $name)
+                if (realpath($include_name) === $name)
                     return true;
             }
 
@@ -184,9 +184,9 @@ class MyInputs
         {
             foreach ($this->resolved_includes as $myinclude)
             {
-                if ($myinclude->get_line() == $line
-                        && $myinclude->get_column() == $column
-                        && $myinclude->get_source_file() == $source_file)
+                if ($myinclude->get_line() === $line
+                        && $myinclude->get_column() === $column
+                        && $myinclude->get_source_file() === $source_file)
                     return $myinclude;
             }
 
@@ -222,7 +222,7 @@ class MyInputs
 
                                 foreach ($known_properties as $prop_class)
                                 {
-                                    if ($prop_class->get_name() == $myvalidator_instance_name)
+                                    if ($prop_class->get_name() === $myvalidator_instance_name)
                                         return $myvalidator;
                                 }
                             }
@@ -263,7 +263,7 @@ class MyInputs
 
                                 foreach ($known_properties as $prop_class)
                                 {
-                                    if ($prop_class->get_name() == $mysanitizer_instance_name)
+                                    if ($prop_class->get_name() === $mysanitizer_instance_name)
                                         return $mysanitizer;
                                 }
                             }
@@ -307,7 +307,7 @@ class MyInputs
                                     $object_id = $prop_class->get_object_id();
                                     $myclass = $context->get_objects()->get_myclass_from_object($object_id);
 
-                                    if ($myclass->get_name() == $mysink_instance_name)
+                                    if ($myclass->get_name() === $mysink_instance_name)
                                         return $mysink;
                                 }
                             }
@@ -353,18 +353,18 @@ class MyInputs
 
                                 foreach ($known_properties as $prop_class)
                                 {
-                                    if ($prop_class->get_name() == $mysource_instance_name)
+                                    if ($prop_class->get_name() === $mysource_instance_name)
                                         $check_instance = true;
                                 }
                             }
                         }
                     }
 
-                    if ($mysource->is_function() == $is_function)
+                    if ($mysource->is_function() === $is_function)
                         $check_function = true;
 
                     // if we request an array the source must be an array and array nots equals (like $_GET["p"])
-                    if (($arr_value != false
+                    if (($arr_value !== false
                             && $mysource->get_is_array()
                             && is_null($mysource->get_array_value()))
                             // or we don't request an array and the source is not an array (echo $hardcoded_tainted)
@@ -378,10 +378,10 @@ class MyInputs
                         $check_array = true;
 
                     // if we request an array the source must be an array and array value equals
-                    if (($arr_value != false
+                    if (($arr_value !== false
                             && $mysource->get_is_array()
                             && !is_null($mysource->get_array_value())
-                            && $mysource->get_array_value() == $arr_value))
+                            && $mysource->get_array_value() === $arr_value))
                         $check_array = true;
 
                     if ($check_array && $check_instance && $check_function)
@@ -396,7 +396,7 @@ class MyInputs
         {
             foreach ($this->false_positives as $false_positive)
             {
-                if ($false_positive->get_id() == $id)
+                if ($false_positive->get_id() === $id)
                     return $false_positive;
             }
 
@@ -539,11 +539,11 @@ class MyInputs
                                 if (isset($parameter-> {'id'}) && isset($parameter-> {'condition'}))
                                 {
                                     if (is_int($parameter-> {'id'})
-                                            && ($parameter-> {'condition'} == "equals"
-                                                || $parameter-> {'condition'} == "taint"
-                                                || $parameter-> {'condition'} == "sanitize"))
+                                            && ($parameter-> {'condition'} === "equals"
+                                                || $parameter-> {'condition'} === "taint"
+                                                || $parameter-> {'condition'} === "sanitize"))
                                     {
-                                        if ($parameter-> {'condition'} == "equals")
+                                        if ($parameter-> {'condition'} === "equals")
                                         {
                                             if (isset($parameter-> {'values'}))
                                             {
@@ -751,12 +751,12 @@ class MyInputs
                                 if (isset($parameter-> {'id'}) && isset($parameter-> {'condition'}))
                                 {
                                     if (is_int($parameter-> {'id'})
-                                            && ($parameter-> {'condition'} == "not_tainted"
-                                                || $parameter-> {'condition'} == "array_not_tainted"
-                                                || $parameter-> {'condition'} == "valid"
-                                                || $parameter-> {'condition'} == "equals"))
+                                            && ($parameter-> {'condition'} === "not_tainted"
+                                                || $parameter-> {'condition'} === "array_not_tainted"
+                                                || $parameter-> {'condition'} === "valid"
+                                                || $parameter-> {'condition'} === "equals"))
                                     {
-                                        if ($parameter-> {'condition'} == "equals")
+                                        if ($parameter-> {'condition'} === "equals")
                                         {
                                             if (isset($parameter-> {'values'}))
                                             {

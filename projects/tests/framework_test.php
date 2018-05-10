@@ -31,7 +31,7 @@ class framework_test
 
     public function check_outputs($testbasis, $basis_outputs, $basis_vulns)
     {
-        if (count($this->outputs["$testbasis"]) == 0 && count($basis_outputs) == 0)
+        if (count($this->outputs["$testbasis"]) === 0 && count($basis_outputs) === 0)
             return true;
 
         foreach ($basis_outputs as $basis_output)
@@ -54,7 +54,7 @@ class framework_test
         $nb_vuln_from_framework = count($this->outputs["$testbasis"]) / count($basis_outputs);
         $nb_vuln_from_outputs = count($basis_vulns);
         
-        if($nb_vuln_from_framework != $nb_vuln_from_outputs)
+        if($nb_vuln_from_framework !== $nb_vuln_from_outputs)
           return false;
 
         return true;

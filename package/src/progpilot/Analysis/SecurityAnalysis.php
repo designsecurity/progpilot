@@ -49,7 +49,7 @@ class SecurityAnalysis
                             || $mydef->is_type_sanitized("ALL"))
                     {
                         // 1° the argument of sink must be quoted
-                        if ($condition == "QUOTES" && !$mydef->is_type_sanitized("ALL"))
+                        if ($condition === "QUOTES" && !$mydef->is_type_sanitized("ALL"))
                         {
                             // the def is embedded into quotes but quotes are not sanitized
                             if (!$mydef->is_type_sanitized("QUOTES") && $mydef->get_is_embeddedbychar("'"))

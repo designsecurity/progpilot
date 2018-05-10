@@ -160,7 +160,7 @@ class VisitorDataflow
                             array_push($blocks_stack_id, $block_id);
                             $this->current_block_id = $block_id;
 
-                            if ($block_id != hash("sha256", "0-".$context->get_current_myfile()->get_name()))
+                            if ($block_id !== hash("sha256", "0-".$context->get_current_myfile()->get_name()))
                                 $this->defs->create_block($block_id);
 
                             $assertions = $myblock->get_assertions();
@@ -179,7 +179,7 @@ class VisitorDataflow
                                 $context->outputs->cfg->add_edge($parent, $myblock);
                             // representations end
 
-                            if ($first_block && !is_null($defs_included) && $this->current_func->get_name() == "{main}")
+                            if ($first_block && !is_null($defs_included) && $this->current_func->get_name() === "{main}")
                             {
                                 foreach ($defs_included as $def_included)
                                 {

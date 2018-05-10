@@ -68,7 +68,7 @@ class MyOutputs
                 $hashcaller = spl_object_hash($caller);
                 $hashcallee = spl_object_hash($callee);
 
-                if ($hashcaller != $hashcallee)
+                if ($hashcaller !== $hashcallee)
                 {
                     $linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
                 }
@@ -101,7 +101,7 @@ class MyOutputs
                 $hashcaller = spl_object_hash($caller);
                 $hashcallee = spl_object_hash($callee);
 
-                if ($hashcaller != $hashcallee)
+                if ($hashcaller !== $hashcallee)
                 {
                     $linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
                 }

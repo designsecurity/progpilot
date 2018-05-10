@@ -139,7 +139,7 @@ class TaintAnalysis
                     if (isset($codes[$index + 2]))
                     {
                         $instruction_if = $codes[$index + 2];
-                        if ($instruction_if->get_opcode() == Opcodes::COND_START_IF)
+                        if ($instruction_if->get_opcode() === Opcodes::COND_START_IF)
                         {
                             $myblock_if = $instruction_if->get_property(MyInstruction::MYBLOCK_IF);
                             $myblock_else = $instruction_if->get_property(MyInstruction::MYBLOCK_ELSE);
@@ -280,7 +280,7 @@ class TaintAnalysis
             $return_sanitizer = false;
 
             $codes = $mycode->get_codes();
-            if (isset($codes[$index + 2]) && $codes[$index + 2]->get_opcode() == Opcodes::END_ASSIGN)
+            if (isset($codes[$index + 2]) && $codes[$index + 2]->get_opcode() === Opcodes::END_ASSIGN)
             {
                 $instruction_def = $codes[$index + 3];
                 $mydef_return = $instruction_def->get_property(MyInstruction::DEF);
@@ -415,7 +415,7 @@ class TaintAnalysis
                         $mydef->set_expr($exprreturn);
                     }
 
-                    else if ($mysource->get_is_return_array() && $arr_funccall == false)
+                    else if ($mysource->get_is_return_array() && $arr_funccall === false)
                     {
                         $value_array = array($mysource->get_return_array_value() => false);
 

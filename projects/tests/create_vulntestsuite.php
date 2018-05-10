@@ -21,7 +21,7 @@ try
         {
             if (is_array($output))
             {
-                if ($output[0][0] == '$')
+                if ($output[0][0] === '$')
                     $output = "array(\"\\".$output[0]."\")";
                 else
                     $output = "array(\"".$output[0]."\")";

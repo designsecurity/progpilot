@@ -35,7 +35,7 @@ class Expr
             {
                 foreach ($array_chars as $char)
                 {
-                    if ($string[$i] == $char)
+                    if ($string[$i] === $char)
                         $nb_chars[$char] ++;
                 }
             }
@@ -60,7 +60,7 @@ class Expr
                 else
                     $one_def->set_is_embeddedbychar("<", false);
 
-                if ((($one_def->get_is_embeddedbychar("'") % 2) == 1)
+                if ((($one_def->get_is_embeddedbychar("'") % 2) === 1)
                         && $myexpr->get_nb_chars("'") > $one_def->get_is_embeddedbychar("'"))
                     $one_def->set_is_embeddedbychar("'", true);
                 else
@@ -86,7 +86,7 @@ class Expr
             $type_array = Common::get_type_is_array($op);
 
             // end of expression
-            if (!is_null($type) && $type != MyOp::TYPE_FUNCCALL_ARRAY)
+            if (!is_null($type) && $type !== MyOp::TYPE_FUNCCALL_ARRAY)
             {
                 if (is_null($name))
                     $name = mt_rand();
@@ -113,10 +113,10 @@ class Expr
                 $mytemp->set_expr($myexpr);
                 $defs_ofexpr[] = $mytemp;
 
-                if ($type == MyOp::TYPE_CONST)
+                if ($type === MyOp::TYPE_CONST)
                     $mytemp->add_type(MyDefinition::TYPE_CONSTANTE);
 
-                if ($type == MyOp::TYPE_PROPERTY)
+                if ($type === MyOp::TYPE_PROPERTY)
                 {
                     $property_name = "";
                     if (isset($op->ops[0]))
@@ -134,7 +134,7 @@ class Expr
             }
 
             // func()[0][1]
-            else if ($type == MyOp::TYPE_FUNCCALL_ARRAY)
+            else if ($type === MyOp::TYPE_FUNCCALL_ARRAY)
             {
                 $arr_funccall = BuildArrays::build_array_from_ops($op, false);
                 $start_ops = BuildArrays::function_start_ops($op);

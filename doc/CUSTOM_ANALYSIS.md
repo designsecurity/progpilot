@@ -19,7 +19,7 @@ You could check that your program meets a given specification. For example this 
 }
 ```
 
-For example in the call graph of the code below :
+In the call graph of the code below :
 ```php
 <?php
 
@@ -46,6 +46,6 @@ secret();
 
 There is one path that does not verify the rule #1 :  
 <p align=center>
-<img src="customcallgraph1.png" width=20%>
+<img src="customcallgraph1.png" width=30%>
 </p>
 

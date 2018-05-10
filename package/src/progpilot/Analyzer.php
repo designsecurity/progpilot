@@ -25,11 +25,11 @@ class Analyzer
             {
                 $filesanddirs = scandir($dir);
 
-                if ($filesanddirs != false)
+                if ($filesanddirs !== false)
                 {
                     foreach ($filesanddirs as $filedir)
                     {
-                        if ($filedir != '.' && $filedir != "..")
+                        if ($filedir !== '.' && $filedir !== "..")
                         {
                             $folderorfile = $dir."/".$filedir;
                             if (is_dir($folderorfile))
@@ -304,7 +304,7 @@ class Analyzer
                 $this->run_internal($context);
             }
 
-            if (count($files) == 0 && !is_null($context->inputs->get_code()))
+            if (count($files) === 0 && !is_null($context->inputs->get_code()))
                 $this->run_internal($context);
 
             if ($context->outputs->get_resolve_includes())

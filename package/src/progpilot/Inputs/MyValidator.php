@@ -42,7 +42,7 @@ class MyValidator extends MySpecify
                 $index = $parameter[0];
                 $condition = $parameter[1];
 
-                if ($index == $i)
+                if ($index === $i)
                     return $condition;
             }
 
@@ -57,7 +57,7 @@ class MyValidator extends MySpecify
                 $condition = $parameter[1];
                 $values = $parameter[2];
 
-                if ($index == $i)
+                if ($index === $i)
                     return $values;
             }
 
@@ -71,7 +71,7 @@ class MyValidator extends MySpecify
                 $index = $parameter[0];
                 $condition = $parameter[1];
 
-                if ($index == $i)
+                if ($index === $i)
                     return true;
             }
 

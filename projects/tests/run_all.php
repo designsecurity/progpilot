@@ -38,7 +38,7 @@ try
 
         //$context->set_analyze_includes(false);
 
-        if ($file == "./tests/includes/simple5.php")
+        if ($file === "./tests/includes/simple5.php")
         {
             /*
               $context->outputs->resolve_includes_file("./tests/includes/includes_simple5.txt");

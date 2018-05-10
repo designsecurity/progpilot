@@ -72,7 +72,7 @@ class ValueAnalysis
                         }
                     }
 
-                    if (count($final_def_values) == 0)
+                    if (count($final_def_values) === 0)
                         $final_def_values = $def_values;
                     else
                     {
@@ -110,7 +110,7 @@ class ValueAnalysis
                         $nb_cast_safe ++;
                 }
 
-                if ($nb_cast_safe == count($cast_values))
+                if ($nb_cast_safe === count($cast_values))
                     $defassign->set_cast(MyDefinition::CAST_SAFE);
                 else
                     $defassign->set_cast(MyDefinition::CAST_NOT_SAFE);

@@ -179,7 +179,7 @@ class Common
                 {
                     $ret = Common::get_type_definition($ops->ops[0]);
 
-                    if ($ret == MyOp::TYPE_FUNCCALL_ARRAY)
+                    if ($ret === MyOp::TYPE_FUNCCALL_ARRAY)
                         return MyOp::TYPE_FUNCCALL_ARRAY;
 
                     return MyOp::TYPE_ARRAY;

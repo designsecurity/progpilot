@@ -55,7 +55,7 @@ class IncludeAnalysis
             $myfunc_call = $instruction->get_property(MyInstruction::MYFUNC_CALL);
 
             // require, require_once ... already handled in transform Expr/include_
-            if ($myfunc_call->get_name() == "include" && $context->get_analyze_includes())
+            if ($myfunc_call->get_name() === "include" && $context->get_analyze_includes())
             {
                 $type_include = $instruction->get_property(MyInstruction::TYPE_INCLUDE);
                 $nb_params = $myfunc_call->get_nb_params();
@@ -65,7 +65,7 @@ class IncludeAnalysis
 
                     $mydef_arg = $instruction->get_property("argdef0");
 
-                    if (count($mydef_arg->get_last_known_values()) != 0)
+                    if (count($mydef_arg->get_last_known_values()) !== 0)
                     {
                         foreach ($mydef_arg->get_last_known_values() as $last_known_value)
                         {
@@ -111,19 +111,19 @@ class IncludeAnalysis
                                 $array_includes = $context->get_array_includes();
                                 $array_requires = $context->get_array_requires();
 
-                                if ((!in_array($name_included_file, $array_includes, true) && $type_include == 2)
-                                        || (!in_array($name_included_file, $array_requires, true) && $type_include == 4)
-                                        || ($type_include == 1 || $type_include == 3))
+                                if ((!in_array($name_included_file, $array_includes, true) && $type_include === 2)
+                                        || (!in_array($name_included_file, $array_requires, true) && $type_include === 4)
+                                        || ($type_include === 1 || $type_include === 3))
                                 {
                                     $myfile = new MyFile($name_included_file, $myfunc_call->getLine(), $myfunc_call->getColumn());
                                     $myfile->set_included_from_myfile($myfunc_call->get_source_myfile());
 
                                     if (!IncludeAnalysis::is_circular_include($myfile))
                                     {
-                                        if ($type_include == 2)
+                                        if ($type_include === 2)
                                             $array_includes[] = $name_included_file;
 
-                                        if ($type_include == 4)
+                                        if ($type_include === 4)
                                             $array_requires[] = $name_included_file;
 
                                         $context_include = clone $context;

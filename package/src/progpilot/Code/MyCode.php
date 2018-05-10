@@ -196,7 +196,7 @@ class MyCode
                             $myfunction_call->set_nb_params($func_nb_params);
                             $myfunction_call->set_source_myfile($myjavascript_file);
 
-                            if ($func_is_instance == "true")
+                            if ($func_is_instance === "true")
                             {
                                 $myfunction_call->add_type(MyOp::TYPE_INSTANCE);
                                 $myfunction_call->set_name_instance($func_name_instance);
@@ -285,7 +285,7 @@ class MyCode
 
                             $expr_is_assign = rtrim(fgets($handle));
 
-                            if ($expr_is_assign == "true")
+                            if ($expr_is_assign === "true")
                             {
                                 $expr_def_assign_id = (int) fgets($handle);
                                 $myexpr->set_assign(true);

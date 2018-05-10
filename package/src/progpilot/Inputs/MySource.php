@@ -119,7 +119,7 @@ class MySource extends MySpecify
         {
             foreach ($this->parameters as $parameter)
             {
-                if ($parameter == $i)
+                if ($parameter === $i)
                     return true;
             }
 

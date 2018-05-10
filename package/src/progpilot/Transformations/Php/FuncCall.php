@@ -101,7 +101,7 @@ class FuncCall
                 $funccall_name = $context->get_current_op()->name->value;
             }
 
-            if ($funccall_name == "define")
+            if ($funccall_name === "define")
             {
                 Assign::instruction($context, false, true);
             }

@@ -211,7 +211,7 @@ class Transform implements Visitor
             $inst = $mycode_codes[count($mycode_codes) - 1];
 
             // we can have a block opened and we need to leave it
-            if ($inst->get_opcode() != Opcodes::LEAVE_BLOCK)
+            if ($inst->get_opcode() !== Opcodes::LEAVE_BLOCK)
             {
                 if (!is_null($this->context->get_current_block()))
                 {
@@ -265,7 +265,7 @@ class Transform implements Visitor
                     ($op instanceof Op\Expr && !($op instanceof Op\Expr\Assertion)) ||
                     $op instanceof Op\Terminal)
             {
-                if ($op->getLine() != -1 && $op->getAttribute("startFilePos", -1) != -1)
+                if ($op->getLine() !== -1 && $op->getAttribute("startFilePos", -1) !== -1)
                 {
                     $this->context->set_current_line($op->getLine());
                     $this->context->set_current_column($op->getAttribute("startFilePos", -1));

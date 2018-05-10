@@ -6,11 +6,11 @@ function scandir_rec($dir, &$files)
     {
         $filesanddirs = scandir($dir);
 
-        if ($filesanddirs != false)
+        if ($filesanddirs !== false)
         {
             foreach ($filesanddirs as $filedir)
             {
-                if ($filedir != '.' && $filedir != "..")
+                if ($filedir !== '.' && $filedir !== "..")
                 {
                     if (is_dir($dir."/".$filedir))
                         scandir_rec($dir."/".$filedir, $files);
@@ -99,67 +99,67 @@ foreach ($files as $file)
     switch ($dir)
     {
     case './Injection/CWE_78/safe': // 1871 => 180
-        if (rand() % 10 == 1)
+        if (rand() % 10 === 1)
             $ok = true;
         break;
     case './Injection/CWE_78/unsafe': // 623 => 62
-        if (rand() % 10 == 1)
+        if (rand() % 10 === 1)
             $ok = true;
         break;
     case './Injection/CWE_89/safe': // 8639 => 170
-        if (rand() % 50 == 1)
+        if (rand() % 50 === 1)
             $ok = true;
         break;
     case './Injection/CWE_89/unsafe': // 911 => 30
-        if (rand() % 30 == 1)
+        if (rand() % 30 === 1)
             $ok = true;
         break;
     case './Injection/CWE_90/safe': // 1728 => 170
-        if (rand() % 10 == 1)
+        if (rand() % 10 === 1)
             $ok = true;
         break;
     case './Injection/CWE_90/unsafe': // 2111 => 211
-        if (rand() % 10 == 1)
+        if (rand() % 10 === 1)
             $ok = true;
         break;
     case './Injection/CWE_91/safe': // 4783 => 119
-        if (rand() % 40 == 1)
+        if (rand() % 40 === 1)
             $ok = true;
         break;
     case './Injection/CWE_91/unsafe': // 1263 => 50
-        if (rand() % 20 == 1)
+        if (rand() % 20 === 1)
             $ok = true;
         break;
     case './Injection/CWE_95/safe': // 1295 => 50
-        if (rand() % 20 == 1)
+        if (rand() % 20 === 1)
             $ok = true;
         break;
     case './Injection/CWE_95/unsafe': // 335 => 30
-        if (rand() % 10 == 1)
+        if (rand() % 10 === 1)
             $ok = true;
         break;
     case './Injection/CWE_98/safe': // 2591 => 129
-        if (rand() % 20 == 1)
+        if (rand() % 20 === 1)
             $ok = true;
         break;
     case './Injection/CWE_98/unsafe': // 671 => 67
-        if (rand() % 10 == 1)
+        if (rand() % 10 === 1)
             $ok = true;
         break;
     case './URF/CWE_601/safe': // 2207 => 100
-        if (rand() % 20 == 1)
+        if (rand() % 20 === 1)
             $ok = true;
         break;
     case './URF/CWE_601/unsafe': // 2591 => 100
-        if (rand() % 20 == 1)
+        if (rand() % 20 === 1)
             $ok = true;
         break;
     case './XSS/CWE_79/safe': // 5727 => 190
-        if (rand() % 30 == 1)
+        if (rand() % 30 === 1)
             $ok = true;
         break;
     case './XSS/CWE_79/unsafe': // 4351 => 145
-        if (rand() % 30 == 1)
+        if (rand() % 30 === 1)
             $ok = true;
         break;
     default:

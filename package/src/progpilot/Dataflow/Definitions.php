@@ -328,7 +328,7 @@ class Definitions
                         $idcurrent = $block->get_id();
                         $idparent = $parent->get_id();
 
-                        if ($idcurrent != $idparent)
+                        if ($idcurrent !== $idparent)
                         {
                             $temp = ArrayMulti::array_merge_multi($this->getin($idcurrent), $this->getout($idparent));
                             $this->setin($idcurrent, $temp);
@@ -340,7 +340,7 @@ class Definitions
 
                             $this->setoutminuskill($idcurrent, ArrayMulti::array_merge_multi($this->getgen($idcurrent), $this->getin($idcurrent)));
 
-                            if ($this->getout($idcurrent) != $oldout)
+                            if ($this->getout($idcurrent) !== $oldout)
                                 $change = true;
                         }
                     }

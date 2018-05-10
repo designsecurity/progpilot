@@ -31,7 +31,7 @@ class TwigAnalysis
             $path = $context->get_path();
 
             // !!! Ca peut être 1 aussi quand on passe pas de variables
-            if ($nb_params == 2)
+            if ($nb_params === 2)
             {
                 $template = $instruction->get_property("argdef0");
                 $variable = $instruction->get_property("argdef1");

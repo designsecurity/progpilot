@@ -29,7 +29,7 @@ class AssertionAnalysis
                 $type_assertion = $assertion->get_type();
 
                 // there was not resolution so we simply check name (or better equality values)
-                if ($resolve_temporary == $tempdefa)
+                if ($resolve_temporary === $tempdefa)
                 {
                     if ($mydef_assertion->get_name() === $tempdefa->get_name())
                         $tempdefa->set_tainted(false);
@@ -37,7 +37,7 @@ class AssertionAnalysis
                     $equality = true;
                 }
 
-                if ($mydef_assertion == $resolve_temporary)
+                if ($mydef_assertion === $resolve_temporary)
                 {
                     if ($mydef_assertion->get_name() === $tempdefa->get_name())
                         $tempdefa->set_tainted(false);
