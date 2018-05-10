@@ -13,9 +13,11 @@ You could check that your program meets a given specification. For example this 
             [
                 {"function_name": "dev_iam_authenticated", "language": "php"},
                 {"function_name": "dev_iam_rights", "language": "php"},
-                {"function_name": "dev_retrieve_secret", "language": "php", "action": "MUST_VERIFY_CALL_FLOW"}
-            ]
-        }
+                {"function_name": "dev_retrieve_secret", "language": "php"}
+            ],
+            "description": "rule #1 not verified",
+            "action": "MUST_VERIFY_CALL_FLOW"
+        }]
 }
 ```
 

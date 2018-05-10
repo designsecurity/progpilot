@@ -52,7 +52,9 @@ try
                 else
                 {
                     $basis_outputs = [
-                        $vuln['vuln_name']];
+                        $vuln['vuln_name'],
+                        $vuln['vuln_line'],
+                        $vuln['vuln_column']];
                 }
 
                 if (!$framework->check_outputs($folder, $basis_outputs, $parsed_json))

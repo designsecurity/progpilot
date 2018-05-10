@@ -206,7 +206,7 @@ class Expr
                         FuncCall::instruction($context, $myexpr, $arr_funccall, false);
                         $context->set_current_op($old_op);
                     }
-                    else if ($ops instanceof Op\Expr\FuncCall)
+                    else if ($ops instanceof Op\Expr\FuncCall || $ops instanceof Op\Expr\NsFuncCall)
                     {
                         $old_op = $context->get_current_op();
                         $context->set_current_op($ops);

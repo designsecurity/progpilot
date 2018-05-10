@@ -408,6 +408,9 @@ class VisitorAnalysis
                                 $object_id = $list[0];
                                 $myclass = $list[1];
                                 $myfunc = $list[2];
+
+                                \progpilot\Analysis\CustomAnalysis::must_verify_definition($this->context, $instruction, $myfunc_call, $myclass);
+
                                 ResolveDefs::instance_build_this($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $object_id, $myclass, $myfunc, $myfunc_call);
 
                                 if (!is_null($myfunc) && !$this->in_call_stack($myfunc))

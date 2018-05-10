@@ -4,10 +4,10 @@ require_once './vendor/autoload.php';
 require_once './framework_test.php';
 $framework = new framework_test;
 
+require_once './generictest.php';
 require_once './realtest.php';
 require_once './includetest.php';
 require_once './ooptest.php';
-require_once './generictest.php';
 require_once './datatest.php';
 require_once './conditionstest.php';
 //require_once './negativetest.php'; !!!! ERREUR SYNTAX = RESTE NON EXECUTE ?
@@ -27,7 +27,7 @@ try
         $context->inputs->set_sinks("../../package/src/uptodate_data/sinks.json");
         $context->inputs->set_sanitizers("../../package/src/uptodate_data/sanitizers.json");
         $context->inputs->set_validators("../../package/src/uptodate_data/validators.json");
-        $context->inputs->set_custom_rules("../../package/src/uptodate_data/custom.json");
+        $context->inputs->set_custom_rules("../../package/src/uptodate_data/rules.json");
         $context->inputs->set_file($file);
 
         $context->set_analyze_hardrules(true);
@@ -78,7 +78,9 @@ try
                 else
                 {
                     $basis_outputs = [
-                        $vuln['vuln_name']];
+                        $vuln['vuln_name'],
+                        $vuln['vuln_line'],
+                        $vuln['vuln_column']];
                 }
 
                 if (!$framework->check_outputs($file, $basis_outputs, $parsed_json))

@@ -39,7 +39,7 @@ class Callgraph
 
         public function add_node($myfunc)
         {
-            $NodeCG = new NodeCG($myfunc->get_name(), $myfunc->getLine(), $myfunc->getColumn());
+            $NodeCG = new NodeCG($myfunc->get_name(), $myfunc->getLine(), $myfunc->getColumn(), $myfunc->get_source_myfile()->get_name());
 
             if (!array_key_exists($NodeCG->get_id(), $this->nodes))
                 $this->nodes[$NodeCG->get_id()] = $NodeCG;
@@ -47,8 +47,8 @@ class Callgraph
 
         public function add_edge($myfunc_caller, $myfunc_callee)
         {
-            $NodeCG_caller = new NodeCG($myfunc_caller->get_name(), $myfunc_caller->getLine(), $myfunc_caller->getColumn());
-            $NodeCG_callee = new NodeCG($myfunc_callee->get_name(), $myfunc_callee->getLine(), $myfunc_callee->getColumn());
+            $NodeCG_caller = new NodeCG($myfunc_caller->get_name(), $myfunc_caller->getLine(), $myfunc_caller->getColumn(), $myfunc_caller->get_source_myfile()->get_name());
+            $NodeCG_callee = new NodeCG($myfunc_callee->get_name(), $myfunc_callee->getLine(), $myfunc_callee->getColumn(), $myfunc_callee->get_source_myfile()->get_name());
 
             if (array_key_exists($NodeCG_caller->get_id(), $this->nodes)
                     && array_key_exists($NodeCG_callee->get_id(), $this->nodes)

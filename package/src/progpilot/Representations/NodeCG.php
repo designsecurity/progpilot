@@ -15,16 +15,18 @@ class NodeCG
         private $name;
         private $line;
         private $column;
+        private $file;
         private $nb_parents;
         private $nb_views;
         private $children;
         private $color;
 
-        public function __construct($name, $line, $column)
+        public function __construct($name, $line, $column, $file)
         {
             $this->name = $name;
             $this->line = $line;
             $this->column = $column;
+            $this->file = $file;
 
             $this->nb_parents = 0;
             $this->nb_views = 0;
@@ -45,6 +47,11 @@ class NodeCG
         function get_column()
         {
             return $this->column;
+        }
+
+        function get_file()
+        {
+            return $this->file;
         }
 
         function get_nb_parents()
@@ -100,6 +107,11 @@ class NodeCG
         function set_column($column)
         {
             $this->column = $column;
+        }
+
+        function set_file($file)
+        {
+            $this->file = $file;
         }
 
         function get_id()

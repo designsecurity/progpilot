@@ -44,6 +44,10 @@ class DFSVisitor
                                 !== ($sequence->get_order_number_expected() % $mod))
                         {
                             $temp["vuln_name"] = \progpilot\Utils::encode_characters($rule->get_name());
+                            $temp["vuln_line"] = $node->get_line();
+                            $temp["vuln_column"] = $node->get_column();
+                            $temp["vuln_file"] = \progpilot\Utils::encode_characters($node->get_file());
+                            $temp["vuln_description"] = \progpilot\Utils::encode_characters($rule->get_name());
 
                             $this->context->outputs->add_result($temp);
                         }

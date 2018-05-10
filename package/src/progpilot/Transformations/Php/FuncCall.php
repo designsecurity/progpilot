@@ -96,6 +96,10 @@ class FuncCall
                     $property_name = Common::get_name_property($context->get_current_op()->result->usages[0]->var->ops[0]);
 
             }
+            else if (isset($context->get_current_op()->nsName->value))
+            {
+                $funccall_name = $context->get_current_op()->nsName->value;
+            }
             else if (isset($context->get_current_op()->name->value))
             {
                 $funccall_name = $context->get_current_op()->name->value;

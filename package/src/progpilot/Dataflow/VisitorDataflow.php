@@ -113,6 +113,7 @@ class VisitorDataflow
                             $block_id_zero = hash("sha256", "0-".$context->get_current_myfile()->get_name());
 
                             $myfunc = $instruction->get_property(MyInstruction::MYFUNC);
+                            $myfunc->set_source_myfile($context->get_current_myfile());
 
                             $blocks = new \SplObjectStorage;
                             $defs = new Definitions();

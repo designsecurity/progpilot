@@ -365,4 +365,14 @@ $framework->add_output("./tests/generic/global3.php", array("\$myvar1"));
 $framework->add_output("./tests/generic/global3.php", array("3"));
 $framework->add_output("./tests/generic/global3.php", "xss");
 
+$framework->add_testbasis("./tests/generic/namespace1.php");
+$framework->add_output("./tests/generic/namespace1.php", array("\$_GET[\"p\"]"));
+$framework->add_output("./tests/generic/namespace1.php", array("9"));
+$framework->add_output("./tests/generic/namespace1.php", "xss");
+
+$framework->add_testbasis("./tests/generic/namespace2.php");
+$framework->add_output("./tests/generic/namespace2.php", array("\$_GET[\"p\"]"));
+$framework->add_output("./tests/generic/namespace2.php", array("7"));
+$framework->add_output("./tests/generic/namespace2.php", "xss");
+
 ?>

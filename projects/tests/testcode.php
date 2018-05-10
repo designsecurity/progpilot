@@ -13,8 +13,6 @@ $context->inputs->set_sanitizers("../../package/src/uptodate_data/sanitizers.jso
 $context->inputs->set_validators("../../package/src/uptodate_data/validators.json");
 $context->inputs->set_code($code);
 
-echo "AAA\n";
-
 try
 {
     $analyzer->run($context);

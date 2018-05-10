@@ -155,6 +155,7 @@ class Common
                               || $op->result->usages[0] instanceof Op\Expr\Print_
                               || $op->result->usages[0] instanceof Op\Expr\StaticCall
                               || $op->result->usages[0] instanceof Op\Expr\MethodCall
+                              || $op->result->usages[0] instanceof Op\Expr\NsFuncCall
                               || $op->result->usages[0] instanceof Op\Expr\FuncCall
                               || $op->result->usages[0] instanceof Op\Expr\Assign
                               || $op->result->usages[0] instanceof Op\Expr\BinaryOp\Concat
@@ -170,7 +171,7 @@ class Common
         {
             if (isset($ops->ops[0]))
             {
-                if ($ops->ops[0] instanceof Op\Expr\FuncCall)
+                if ($ops->ops[0] instanceof Op\Expr\FuncCall || $ops->ops[0] instanceof Op\Expr\NsFuncCall)
                 {
                     return MyOp::TYPE_FUNCCALL_ARRAY;
                 }
@@ -209,7 +210,7 @@ class Common
                     return MyOp::TYPE_ARRAY;
                 }
 
-                if ($ops->var->ops[0] instanceof Op\Expr\FuncCall)
+                if ($ops->var->ops[0] instanceof Op\Expr\FuncCall || $ops->var->ops[0] instanceof Op\Expr\NsFuncCall)
                     return MyOp::TYPE_FUNCCALL_ARRAY;
             }
 
@@ -261,7 +262,7 @@ class Common
                     return MyOp::TYPE_CONST;
                 }
 
-                if ($ops->ops[0] instanceof Op\Expr\FuncCall)
+                if ($ops->ops[0] instanceof Op\Expr\FuncCall || $ops->ops[0] instanceof Op\Expr\NsFuncCall)
                 {
                     return MyOp::TYPE_FUNCCALL_ARRAY;
                 }
@@ -289,7 +290,7 @@ class Common
                     return MyOp::TYPE_PROPERTY;
                 }
 
-                if ($ops->var->ops[0] instanceof Op\Expr\FuncCall)
+                if ($ops->var->ops[0] instanceof Op\Expr\FuncCall || $ops->var->ops[0] instanceof Op\Expr\NsFuncCall)
                     return MyOp::TYPE_FUNCCALL_ARRAY;
             }
 

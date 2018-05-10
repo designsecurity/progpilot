@@ -47,6 +47,12 @@ $framework->add_output("./tests/includes/simple9.php", "header_injection");
 $framework->add_output("./tests/includes/simple9.php", array("\$page[\"body\"]"));
 $framework->add_output("./tests/includes/simple9.php", array("52"));
 $framework->add_output("./tests/includes/simple9.php", "xss");
+$framework->add_output("./tests/includes/simple9.php", "rules_#3");
+$framework->add_output("./tests/includes/simple9.php", "148");
+$framework->add_output("./tests/includes/simple9.php", "3388");
+$framework->add_output("./tests/includes/simple9.php", "rules_#3");
+$framework->add_output("./tests/includes/simple9.php", "149");
+$framework->add_output("./tests/includes/simple9.php", "3467");
 
 $framework->add_testbasis("./tests/includes/simple10.php");
 $framework->add_output("./tests/includes/simple10.php", array("\$var1"));

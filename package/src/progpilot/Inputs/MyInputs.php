@@ -185,8 +185,8 @@ class MyInputs
             foreach ($this->resolved_includes as $myinclude)
             {
                 if ($myinclude->get_line() === $line
-                        && $myinclude->get_column() === $column
-                        && $myinclude->get_source_file() === $source_file)
+                                                && $myinclude->get_column() === $column
+                                                        && $myinclude->get_source_file() === $source_file)
                     return $myinclude;
             }
 
@@ -365,8 +365,8 @@ class MyInputs
 
                     // if we request an array the source must be an array and array nots equals (like $_GET["p"])
                     if (($arr_value !== false
-                            && $mysource->get_is_array()
-                            && is_null($mysource->get_array_value()))
+                                         && $mysource->get_is_array()
+                                         && is_null($mysource->get_array_value()))
                             // or we don't request an array and the source is not an array (echo $hardcoded_tainted)
                             || (!$arr_value && !$mysource->get_is_array())
                             // or we don't request an array
@@ -379,9 +379,9 @@ class MyInputs
 
                     // if we request an array the source must be an array and array value equals
                     if (($arr_value !== false
-                            && $mysource->get_is_array()
-                            && !is_null($mysource->get_array_value())
-                            && $mysource->get_array_value() === $arr_value))
+                                         && $mysource->get_is_array()
+                                         && !is_null($mysource->get_array_value())
+                                         && $mysource->get_array_value() === $arr_value))
                         $check_array = true;
 
                     if ($check_array && $check_instance && $check_function)
@@ -540,8 +540,8 @@ class MyInputs
                                 {
                                     if (is_int($parameter-> {'id'})
                                             && ($parameter-> {'condition'} === "equals"
-                                                || $parameter-> {'condition'} === "taint"
-                                                || $parameter-> {'condition'} === "sanitize"))
+                                                    || $parameter-> {'condition'} === "taint"
+                                                            || $parameter-> {'condition'} === "sanitize"))
                                     {
                                         if ($parameter-> {'condition'} === "equals")
                                         {
@@ -752,9 +752,9 @@ class MyInputs
                                 {
                                     if (is_int($parameter-> {'id'})
                                             && ($parameter-> {'condition'} === "not_tainted"
-                                                || $parameter-> {'condition'} === "array_not_tainted"
-                                                || $parameter-> {'condition'} === "valid"
-                                                || $parameter-> {'condition'} === "equals"))
+                                                    || $parameter-> {'condition'} === "array_not_tainted"
+                                                            || $parameter-> {'condition'} === "valid"
+                                                                    || $parameter-> {'condition'} === "equals"))
                                     {
                                         if ($parameter-> {'condition'} === "equals")
                                         {
@@ -920,7 +920,7 @@ class MyInputs
         public function read_custom_file()
         {
             if (is_null($this->custom_file))
-                $this->custom_file = __DIR__."/../../uptodate_data/custom.json";
+                $this->custom_file = __DIR__."/../../uptodate_data/rules.json";
 
             if (!is_null($this->custom_file))
             {
@@ -935,27 +935,80 @@ class MyInputs
                     $custom_rules = $parsed_json-> {'custom_rules'};
                     foreach ($custom_rules as $custom_rule)
                     {
-                        $mycustom = new MyCustomRule($custom_rule-> {'name'});
-
-                        foreach ($custom_rule-> {'sequence'} as $seq)
+                        if (isset($custom_rule-> {'name'}) && isset($custom_rule-> {'description'}))
                         {
-                            if (!isset($seq-> {'action'}))
-                                $mycustom->add_to_sequence($seq-> {'function_name'}, $seq-> {'language'});
-                            else
+                            $mycustom = new MyCustomRule($custom_rule-> {'name'}, $custom_rule-> {'description'});
+
+                            if (isset($custom_rule-> {'sequence'}) && isset($custom_rule-> {'action'}))
                             {
-                                switch ($seq-> {'action'})
+                                $mycustom->set_type(MyCustomRule::SEQUENCE);
+                                $mycustom->set_action($custom_rule-> {'action'});
+
+                                foreach ($custom_rule-> {'sequence'} as $seq)
                                 {
-                                    case 'MUST_VERIFY_CALL_FLOW':
-                                        $mycustom->add_to_sequence_with_action($seq-> {'function_name'}, $seq-> {'language'}, $seq-> {'action'});
-                                        break;
-                                    default:
-                                        $mycustom->add_to_sequence($seq-> {'function_name'}, $seq-> {'language'});
-                                        break;
+                                    if (isset($seq-> {'function_name'}) && isset($seq-> {'language'}))
+                                    {
+                                        $mycustomfunction = null;
+
+                                        if (!isset($seq-> {'action'}))
+                                            $mycustomfunction = $mycustom->add_to_sequence($seq-> {'function_name'}, $seq-> {'language'});
+                                        else
+                                        {
+                                            switch ($seq-> {'action'})
+                                            {
+                                                case 'MUST_VERIFY_DEFINITION':
+                                                    $mycustomfunction = $mycustom->add_to_sequence_with_action($seq-> {'function_name'}, $seq-> {'language'}, $seq-> {'action'});
+                                                    break;
+                                                default:
+                                                    $mycustomfunction = $mycustom->add_to_sequence($seq-> {'function_name'}, $seq-> {'language'});
+                                                    break;
+                                            }
+                                        }
+
+                                        if (isset($seq-> {'parameters'}) && !is_null($mycustomfunction))
+                                        {
+                                            $parameters = $seq-> {'parameters'};
+                                            foreach ($parameters as $parameter)
+                                            {
+                                                if (isset($parameter-> {'id'}) && isset($parameter-> {'values'}))
+                                                {
+                                                    if (is_int($parameter-> {'id'}))
+                                                        $mycustomfunction->add_parameter($parameter-> {'id'}, $parameter-> {'values'});
+                                                }
+                                            }
+
+                                            $mycustomfunction->set_has_parameters(true);
+                                        }
+                                    }
                                 }
                             }
-                        }
+                            else if (isset($custom_rule-> {'function_name'})
+                                     && isset($custom_rule-> {'language'})
+                                     && isset($custom_rule-> {'action'}))
+                            {
+                                $mycustom->set_type(MyCustomRule::FUNCTION);
+                                $mycustom->set_action($custom_rule-> {'action'});
+                                $mycustomfunction = $mycustom->add_function_definition($custom_rule-> {'function_name'}, $custom_rule-> {'language'});
 
-                        $this->custom_rules[] = $mycustom;
+                                if (isset($custom_rule-> {'parameters'}))
+                                {
+                                    $parameters = $custom_rule-> {'parameters'};
+                                    foreach ($parameters as $parameter)
+                                    {
+                                        if (isset($parameter-> {'id'}) && isset($parameter-> {'values'}))
+                                        {
+                                            if (is_int($parameter-> {'id'}))
+                                                $mycustomfunction->add_parameter($parameter-> {'id'}, $parameter-> {'values'});
+
+                                        }
+                                    }
+
+                                    $mycustomfunction->set_has_parameters(true);
+                                }
+                            }
+
+                            $this->custom_rules[] = $mycustom;
+                        }
                     }
                 }
             }

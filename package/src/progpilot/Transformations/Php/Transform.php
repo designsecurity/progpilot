@@ -145,7 +145,6 @@ class Transform implements Visitor
 
         public function enterFunc(Func $func)
         {
-
             // blocks are set back to zero when entering new function
             $this->context->set_current_block(null);
 
@@ -383,7 +382,7 @@ class Transform implements Visitor
                     $this->context->get_current_mycode()->add_code($inst_end_expr);
                 }
             }
-            else if ($op instanceof Op\Expr\FuncCall)
+            else if ($op instanceof Op\Expr\FuncCall || $op instanceof Op\Expr\NsFuncCall)
             {
                 if (Common::is_funccall_withoutreturn($op))
                 {
