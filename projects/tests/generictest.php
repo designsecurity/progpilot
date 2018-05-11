@@ -296,6 +296,11 @@ $framework->add_output("./tests/generic/functions18.php", array("\$param2"));
 $framework->add_output("./tests/generic/functions18.php", array("5"));
 $framework->add_output("./tests/generic/functions18.php", "xss");
 
+$framework->add_testbasis("./tests/generic/functions19.php");
+$framework->add_output("./tests/generic/functions19.php", array("\$testf1_param0_line10_column74_progpilot[\"test\"]"));
+$framework->add_output("./tests/generic/functions19.php", array("10"));
+$framework->add_output("./tests/generic/functions19.php", "xss");
+
 $framework->add_testbasis("./tests/generic/functionsrec1.php");
 $framework->add_output("./tests/generic/functionsrec1.php", array("\$var"));
 $framework->add_output("./tests/generic/functionsrec1.php", array("10"));

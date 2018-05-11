@@ -51,11 +51,11 @@
             [
                 {"id": 2, "values": 
                     [ 
-                        {"value" : "true", "is_array": true, "array_index": "autoescape"} 
+                        {"value" : "false", "is_array": true, "array_index": "autoescape"} 
                     ]}
             ], 
-            "description": "test instanceof",
-            "language": "php", "action": "MUST_VERIFY_DEFINITION",
+            "description": "Twig_Environment autoescaping should be set to true",
+            "language": "php", "action": "MUST_NOT_VERIFY_DEFINITION",
             "attack": "security misconfiguration", "cwe": "CWE_1004"
         }
 		]

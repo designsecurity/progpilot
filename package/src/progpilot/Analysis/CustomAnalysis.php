@@ -25,7 +25,7 @@ class CustomAnalysis
             foreach ($custom_rules as $custom_rule)
             {
                 if ($custom_rule->get_type() === MyCustomRule::TYPE_FUNCTION
-                                                  && $custom_rule->get_action() === "MUST_VERIFY_DEFINITION")
+                                                  && ($custom_rule->get_action() === "MUST_VERIFY_DEFINITION" || $custom_rule->get_action() === "MUST_NOT_VERIFY_DEFINITION"))
                 {
                     $function_definition = $custom_rule->get_function_definition();
 
@@ -60,7 +60,6 @@ class CustomAnalysis
                                         {
                                             if ($defarg->is_type(MyDefinition::TYPE_COPY_ARRAY))
                                             {
-                                                echo "TYPE_COPY_ARRAY\n";
                                                 $copy_arrays = $defarg->get_copyarrays();
                                                 foreach ($copy_arrays as $copy_array)
                                                 {
@@ -83,7 +82,8 @@ class CustomAnalysis
 
                                         foreach ($def_last_known_values as $last_known_value)
                                         {
-                                            if ($value_parameter->value !== $last_known_value)
+                                            if (($value_parameter->value !== $last_known_value && $custom_rule->get_action() === "MUST_VERIFY_DEFINITION")
+                                                    || ($value_parameter->value === $last_known_value && $custom_rule->get_action() === "MUST_NOT_VERIFY_DEFINITION"))
                                             {
                                                 $is_valid = false;
                                                 break;

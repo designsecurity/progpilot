@@ -65,7 +65,7 @@ echo "$var4";
 
 ?>	
 ```
-- The simplified output will be :
+- The simplified [output](./doc/OUTPUT.md) will be :
 ```javascript
 array(1) {
   [0]=>

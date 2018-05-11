@@ -24,10 +24,9 @@ $framework->add_output("./tests/custom/custom3.php", "security misconfiguration"
 $framework->add_output("./tests/custom/custom3.php", "11");
 $framework->add_output("./tests/custom/custom3.php", "95");
 
-/*
 $framework->add_testbasis("./tests/custom/custom4.php");
 $framework->add_output("./tests/custom/custom4.php", "security misconfiguration");
-$framework->add_output("./tests/custom/custom4.php", "4");
-$framework->add_output("./tests/custom/custom4.php", "44");
-*/
+$framework->add_output("./tests/custom/custom4.php", "3");
+$framework->add_output("./tests/custom/custom4.php", "7");
+
 ?>

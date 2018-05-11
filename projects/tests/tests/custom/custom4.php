@@ -1,15 +1,11 @@
 <?php
 
-$a = new Twig_Environment($loader, array("autoescape" => false));
+$a = new Twig_Environment($loader, array("autoescape" => false, "test" => "toto"));
 
-function test($a)
-{
-    echo $a["bla"];
-}
+$a = new Twig_Environment($loader, array("autoescape" => true, "test" => "toto"));
 
-test(array("bla" => $_GET["p"]));
+$a = new Twig_Environment($loader, array("autoescape" => "html", "test" => "toto"));
 
-$a = array("bla" => $_GET["p"]);
-test($a);
+$a = new Twig_Environment($loader);
 
 ?>

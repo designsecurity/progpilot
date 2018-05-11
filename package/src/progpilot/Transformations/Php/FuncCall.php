@@ -29,7 +29,9 @@ class FuncCall
         public static function argument($context, $arg, $inst_funcall_main, $funccall_name, $num_param)
         {
             // each argument will be a definition defined by an expression
-            $def_name = $funccall_name."_param".$num_param."_".mt_rand();
+            $def_name = $funccall_name."_param".$num_param."_line".$context->get_current_line()."_column".$context->get_current_column()."_progpilot";
+            $type_array = Common::get_type_is_array($arg);
+
             $mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name);
 
             $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
@@ -42,10 +44,26 @@ class FuncCall
             $inst_funcall_main->add_property("argdef$num_param", $mydef);
             $inst_funcall_main->add_property("argexpr$num_param", $myexprparam);
 
-            $mytemp = Expr::instruction($arg, $context, $myexprparam);
+            // if we have funccall($arg, array("test"=>false)); for example
+            if ($type_array === MyOp::TYPE_ARRAY_EXPR)
+            {
+                ArrayExpr::instruction($arg, $context, false, $def_name, false);
 
-            if (!is_null($mytemp))
-                $mydef->set_value_from_def($mytemp);
+                $mytemp = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name);
+                $mytemp->add_last_known_value($def_name);
+                $mytemp->set_expr($myexprparam);
+
+                $inst_temporary_simple = new MyInstruction(Opcodes::TEMPORARY);
+                $inst_temporary_simple->add_property(MyInstruction::TEMPORARY, $mytemp);
+                $context->get_current_mycode()->add_code($inst_temporary_simple);
+            }
+            else
+            {
+                $mytemp = Expr::instruction($arg, $context, $myexprparam);
+
+                if (!is_null($mytemp))
+                    $mydef->set_value_from_def($mytemp);
+            }
 
             $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
             $inst_end_expr->add_property(MyInstruction::EXPR, $myexprparam);
