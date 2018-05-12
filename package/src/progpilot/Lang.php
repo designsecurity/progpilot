@@ -35,6 +35,7 @@ class Lang
         const CONFIG_ARG_DESC = "Read configuration from config file";
         const MAX_TIME_EXCEEDED = "Max time execution exceeded (you can increase the value with \$context->set_limit_time())";
         const MAX_DEFS_EXCEEDED = "Max definitions exceeded (you can increase the value with \$context->set_limit_defs())";
+        const MAX_SIZE_EXCEEDED = "Max size of file exceeded (you can increase the value with \$context->set_limit_size())";
 }
 
 ?>

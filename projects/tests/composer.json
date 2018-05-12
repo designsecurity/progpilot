@@ -8,7 +8,6 @@
             "email": "eric.therond.fr@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
     "repositories": [
         {
             "type": "path",
@@ -16,6 +15,7 @@
         }
     ],
     "require": {
-        "progpilot/package": "@dev"
+        "progpilot/package": "@dev",
+        "ircmaxell/php-cfg": "@dev"
     }
 } 

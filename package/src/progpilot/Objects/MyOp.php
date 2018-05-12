@@ -24,6 +24,7 @@ class MyOp
 
         private $flags;
 
+        const TYPE_VARIABLE = "type_variable";
         const TYPE_LITERAL = "type_literal";
         const TYPE_ARRAY = "type_array";
         const TYPE_ARRAY_EXPR = "type_array_expr";

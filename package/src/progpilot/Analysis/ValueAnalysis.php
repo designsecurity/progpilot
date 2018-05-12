@@ -20,6 +20,7 @@ use progpilot\Objects\MyFunction;
 
 use progpilot\Code\MyCode;
 use progpilot\Code\Opcodes;
+use progpilot\Transformations\Php\Common;
 
 use progpilot\Utils;
 
@@ -54,46 +55,52 @@ class ValueAnalysis
                 $known_values = ValueAnalysis::$exprs_knownvalues[$expr];
                 $final_def_values = [];
 
-                // storage[id_temp][] = def->get_last_known_values()
-                // value = "id_temp1"."id_temp2"."id_temp3";
-                foreach($known_values as $id_temp => $defs_known_values) // 1
+                // we dont want to compute values with more than 3 concat : $def = $val1.$val2.$val3; (too much possibilities)
+                if (count($known_values) < 4)
                 {
-                    // def
-                    // "id_temp1"
-                    $def_values = [];
-                    foreach ($defs_known_values as $def_known_values) // 2
+                    // storage[id_temp][] = def->get_last_known_values()
+                    // value = "id_temp1"."id_temp2"."id_temp3";
+                    foreach($known_values as $id_temp => $defs_known_values) // 1
                     {
-                        // def->get_last_known_values()
-                        // "def_id_temp1"
-                        foreach ($def_known_values as $def_known_value)
+                        // def
+                        // "id_temp1"
+                        $def_values = [];
+                        foreach ($defs_known_values as $def_known_values) // 2
                         {
-                            if (!in_array($def_known_value, $def_values, true))
-                                $def_values[] = $def_known_value;
-                        }
-                    }
-
-                    if (count($final_def_values) === 0)
-                        $final_def_values = $def_values;
-                    else
-                    {
-                        $new_final_def_values = [];
-
-                        foreach ($final_def_values as $final_def_value)
-                        {
-                            foreach ($def_values as $def_value)
+                            // def->get_last_known_values()
+                            // "def_id_temp1"
+                            foreach ($def_known_values as $def_known_value)
                             {
-                                $new_value = $final_def_value.$def_value;
-                                if (!in_array($new_value, $new_final_def_values, true))
-                                    $new_final_def_values[] = $new_value;
+                                if (Common::valid_last_known_value($def_known_value)
+                                        && !in_array($def_known_value, $def_values, true))
+                                    $def_values[] = $def_known_value;
                             }
                         }
 
-                        $final_def_values = $new_final_def_values;
-                    }
-                }
+                        if (count($final_def_values) === 0)
+                            $final_def_values = $def_values;
+                        else
+                        {
+                            $new_final_def_values = [];
 
-                foreach ($final_def_values as $final_def_value)
-                    $defassign->add_last_known_value($final_def_value);
+                            foreach ($final_def_values as $final_def_value)
+                            {
+                                foreach ($def_values as $def_value)
+                                {
+                                    $new_value = $final_def_value.$def_value;
+                                    if (Common::valid_last_known_value($def_known_value)
+                                            && !in_array($new_value, $new_final_def_values, true))
+                                        $new_final_def_values[] = $new_value;
+                                }
+                            }
+
+                            $final_def_values = $new_final_def_values;
+                        }
+                    }
+
+                    foreach ($final_def_values as $final_def_value)
+                        $defassign->add_last_known_value($final_def_value);
+                }
             }
         }
 

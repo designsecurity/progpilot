@@ -133,7 +133,6 @@ class IncludeAnalysis
                                         // not need to propagate files already included to the current analyzed file
                                         // because of clone context and reset values that don't
                                         // ie : $context_include->set_array_includes($array_includes); ect
-
                                         $context_include->inputs->set_file($name_included_file);
                                         $context_include->inputs->set_code(null);
                                         $context_include->set_current_myfile($myfile);
@@ -171,16 +170,19 @@ class IncludeAnalysis
                                         {
                                             FuncAnalysis::funccall_after($context_include, $defs->getoutminuskill($myfunc_call->get_block_id()), $main_include, $main_include, $arr_funccall, $instruction, $code[$index + 3]);
 
-                                            $defs_main_return = $main_include->get_defs()->getdefrefbyname("{main}_return");
-                                            foreach ($defs_main_return as $def_main_return)
+                                            if (!is_null($main_include->get_defs()))
                                             {
-                                                $defs_output_included = $main_include->get_defs()->getoutminuskill($def_main_return->get_block_id());
-                                                if (!is_null($defs_output_included))
+                                                $defs_main_return = $main_include->get_defs()->getdefrefbyname("{main}_return");
+                                                foreach ($defs_main_return as $def_main_return)
                                                 {
-                                                    foreach ($defs_output_included as $def_output_included)
+                                                    $defs_output_included = $main_include->get_defs()->getoutminuskill($def_main_return->get_block_id());
+                                                    if (!is_null($defs_output_included))
                                                     {
-                                                        if (!in_array($def_output_included, $defs_output_included_final, true))
-                                                            $defs_output_included_final[] = $def_output_included;
+                                                        foreach ($defs_output_included as $def_output_included)
+                                                        {
+                                                            if (!in_array($def_output_included, $defs_output_included_final, true))
+                                                                $defs_output_included_final[] = $def_output_included;
+                                                        }
                                                     }
                                                 }
                                             }

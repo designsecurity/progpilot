@@ -1,7 +1,6 @@
 {
     "name": "Progpilot",
     "description": "Progpilot bin",
-    "minimum-stability": "dev",
     
     "repositories": [
         {
@@ -10,7 +9,8 @@
         }
     ],
     "require": {
-        "progpilot/package": "dev-master"
+        "progpilot/package": "@dev",
+        "ircmaxell/php-cfg": "@dev"
     },
     "bin": ["progpilot"]
 } 

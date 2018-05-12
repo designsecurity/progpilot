@@ -41,6 +41,8 @@ class Context
         private $pretty_print;
         private $limit_time;
         private $limit_defs;
+        private $limit_size;
+        private $limit_values;
 
         public $inputs;
         public $outputs;
@@ -57,6 +59,7 @@ class Context
             $this->pretty_print = true;
             $this->limit_time = 10;
             $this->limit_defs = 10000;
+            $this->limit_size = 1000000;
             $this->current_nb_defs = 0;
 
             $this->inputs = new \progpilot\Inputs\MyInputs;
@@ -185,6 +188,16 @@ class Context
         public function get_limit_time()
         {
             return $this->limit_time;
+        }
+
+        public function set_limit_size($limit_size)
+        {
+            $this->limit_size = $limit_size;
+        }
+
+        public function get_limit_size()
+        {
+            return $this->limit_size;
         }
 
         public function get_analyze_js()
@@ -463,6 +476,9 @@ class Context
 
                                 if (isset($value["options"]["set_limit_defs"]))
                                     $this->set_limit_defs($value["options"]["set_limit_defs"]);
+
+                                if (isset($value["options"]["set_limit_size"]))
+                                    $this->set_limit_time($value["options"]["set_limit_size"]);
 
                                 if (isset($value["options"]["set_print_warning"]))
                                     $this->set_print_warning($value["options"]["set_print_warning"]);

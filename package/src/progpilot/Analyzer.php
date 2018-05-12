@@ -80,9 +80,15 @@ class Analyzer
                     {
                         if (is_null($context->inputs->get_code()))
                         {
-                            $context->inputs->set_code(file_get_contents($context->inputs->get_file()));
-                            $context->set_path(dirname($context->inputs->get_file()));
-                            $script = $parser->parse($context->inputs->get_code(), $context->inputs->get_file());
+                            if (filesize($context->inputs->get_file()) > $context->get_limit_size())
+                                Utils::print_warning($context, Lang::MAX_SIZE_EXCEEDED." (".Utils::encode_characters($context->inputs->get_file()).")");
+
+                            else
+                            {
+                                $context->inputs->set_code(file_get_contents($context->inputs->get_file()));
+                                $context->set_path(dirname($context->inputs->get_file()));
+                                $script = $parser->parse($context->inputs->get_code(), $context->inputs->get_file());
+                            }
                         }
                         else
                             $script = $parser->parse($context->inputs->get_code(), "");
@@ -142,6 +148,12 @@ class Analyzer
 
         public function run_internal($context, $defs_included = null)
         {
+            if ($context->get_current_nb_defs() > $context->get_limit_defs())
+            {
+                Utils::print_warning($context, Lang::MAX_DEFS_EXCEEDED);
+                return;
+            }
+
             $start_time = microtime(true);
 
             $past_results = &$context->outputs->get_results();
@@ -181,6 +193,8 @@ class Analyzer
                                 if (!is_null($myfunc) && !$myfunc->is_data_analyzed())
                                 {
                                     $myfunc->set_is_data_analyzed(true);
+
+                                    //if ($context->get_current_nb_defs() < $context->get_limit_defs())
                                     $visitordataflow->analyze($context, $myfunc, $defs_included);
                                 }
                             }

@@ -22,6 +22,16 @@ use progpilot\Transformations\Php\Transform;
 class Common
 {
 
+        public static function valid_last_known_value($value)
+        {
+            if (strpos($value, '\n') === false && strpos($value, '\r') === false && strlen($value) < 200)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public static function get_name_property($op)
         {
             $property_name_array = [];
@@ -297,7 +307,7 @@ class Common
             if (isset($ops->var->original->name))
             {
                 if ($ops->var->original->name instanceof Operand\Literal)
-                    return MyOp::TYPE_LITERAL;
+                    return MyOp::TYPE_VARIABLE;
             }
 
             if (isset($ops->expr->original->name))   // return
@@ -308,6 +318,9 @@ class Common
 
             if (isset($ops->original->name))
             {
+                if ($ops->original instanceof Operand\Variable)
+                    return MyOp::TYPE_VARIABLE;
+
                 if ($ops->original->name instanceof Operand\Literal)
                     return MyOp::TYPE_LITERAL;
             }

@@ -50,7 +50,7 @@ class FuncCall
                 ArrayExpr::instruction($arg, $context, false, $def_name, false);
 
                 $mytemp = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name);
-                $mytemp->add_last_known_value($def_name);
+                //$mytemp->add_last_known_value($def_name);
                 $mytemp->set_expr($myexprparam);
 
                 $inst_temporary_simple = new MyInstruction(Opcodes::TEMPORARY);

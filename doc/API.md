@@ -63,6 +63,8 @@ These functions are explained in the chapter about [**included files**](./INCLUD
 to prevent memory exhaustion you could limit the number of definitions by file during the data flow analysis (default is *10000*)
 - $obj_context->set_limit_time($time_sec);  
 max execution time by file for the first steps of the analysis, the analysis may take much longer in the last steps, so it's recommanded to specify a low value (default is *10 seconds*)
+- $obj_context->set_limit_size($size_bytes);  
+do not analyze file that are larger than this defined size (default is 1 000 000 bytes ~= 1 mbytes)
 - $obj_context->set_print_file($bool);  
 *true* if you want to print the name of files analyzed by progpilot, default is *false*
 - $obj_context->set_print_warning($bool);  

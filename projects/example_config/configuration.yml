@@ -6,7 +6,7 @@ inputs:
     set_custom_rules: ../../package/src/uptodate_data/rules.json
     set_include_files: 
     set_exclude_files: 
-    set_folder: /srv/www/htdocs/phpMyAdmin/
+    set_folder: /home/eric/dev/scripts/drupal/
     set_file: 
     set_code:
     set_resolved_includes:
@@ -27,3 +27,4 @@ options:
     set_pretty_print: true
     set_limit_time: 10
     set_limit_defs: 10000
+    set_limit_size: 1000000

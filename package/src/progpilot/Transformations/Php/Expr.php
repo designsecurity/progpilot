@@ -98,9 +98,9 @@ class Expr
                     $column = $op->getAttribute("startFilePos", -1);
 
                 $mytemp = new MyDefinition($context->get_current_line(), $column, $name);
-                $mytemp->add_last_known_value($name);
+                if ($type === MyOp::TYPE_CONST || $type === MyOp::TYPE_LITERAL)
+                    $mytemp->add_last_known_value($name);
                 $mytemp->set_cast($cast);
-                //$mytemp->set_type($type);
 
                 Expr::set_chars($myexpr, $mytemp, $name, ["'", "<", ">"]);
 

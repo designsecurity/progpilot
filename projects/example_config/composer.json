@@ -1,7 +1,6 @@
 {
     "name": "Example",
     "description": "Example of use of Progpilot",
-    "minimum-stability": "dev",
     "repositories": [
         {
             "type": "path",
@@ -9,6 +8,7 @@
         }
     ],
     "require": {
-        "progpilot/package": "dev-master"
+        "progpilot/package": "@dev",
+        "ircmaxell/php-cfg": "@dev"
     }
 } 

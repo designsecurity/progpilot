@@ -13,6 +13,7 @@ namespace progpilot\Objects;
 use PHPCfg\Op;
 use progpilot\Objects\MyOp;
 use progpilot\Utils;
+use progpilot\Transformations\Php\Common;
 
 class MyDefinition extends MyOp
 {
@@ -213,11 +214,8 @@ class MyDefinition extends MyOp
         {
             $value = rtrim(ltrim($value));
 
-            if (strlen($value) < 200)
-            {
-                if (!in_array($value, $this->last_known_value, true))
-                    $this->last_known_value[] = $value;
-            }
+            if (Common::valid_last_known_value($value) && !in_array($value, $this->last_known_value, true))
+                $this->last_known_value[] = $value;
         }
 
         public function get_last_known_values()
