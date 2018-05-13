@@ -2,7 +2,7 @@
 
 In addition to [**specify an analysis**](./SPECIFY_ANALYSIS.md) you can customize in depth an analysis.
 
-## Model checking
+## Call graph checking
 
 You could check that your program meets a given specification. For example this rule will traverse the call graph (only from the main function) of a program to verify if a user is authenticated and has rights before retrieving a secret.
 
