@@ -14,3 +14,6 @@ sys     0m1,153s
 real    13m1,293s
 user    11m12,556s
 sys     0m1,254s
+
+good test, a lot of defs and includes :
+/home/eric/dev/scripts/drupal/core/includes/install.core.inc

@@ -64,8 +64,8 @@ class ProgpilotCommand extends Command
                     echo json_encode($context->outputs->get_results(), JSON_PRETTY_PRINT);
                 else
                     echo json_encode($context->outputs->get_results());
-                    
-                if(count($context->outputs->get_results()) > 0)
+
+                if (count($context->outputs->get_results()) > 0)
                     return 1;
 
             }

@@ -62,9 +62,9 @@ array(1) {
 }
 ```
 
-*source_name*, *source_line*, *source_column* are arrays because we could have more than one tainted source for the same sink.  
-*tainted_flow* is also an array : each element of it is the tainted flow from the corresponding source.  
-*sink_name*, *vuln_name*, *vuln_cwe* are defined in [**sinks.json**](./SPECIFY_ANALYSIS.md) data file  
+- *source_name*, *source_line*, *source_column* are arrays because we could have more than one tainted source for the same sink.  
+- *tainted_flow* is also an array : each element of it is the tainted flow from the corresponding source.  
+- *sink_name*, *vuln_name*, *vuln_cwe* are defined in [**sinks.json**](./SPECIFY_ANALYSIS.md) data file  
 
 For a custom vulnerability we have this kind of output :
 ```javascript
@@ -92,6 +92,6 @@ array(1) {
   }
 }
 ```
-*vuln_rule*, *vuln_description*, *vuln_name*, *vuln_cwe* are defined in [**rules.json**](./CUSTOM_ANALYSIS.md) data file  
+- *vuln_rule*, *vuln_description*, *vuln_name*, *vuln_cwe* are defined in [**rules.json**](./CUSTOM_ANALYSIS.md) data file  
 
 To make the distinction between these two kinds of vulnerabilities and ouputs you could use  *vuln_type* element which takes the value *custom*  or *taint-style*.

@@ -83,32 +83,28 @@ class MyOutputs
         {
             $nodesjson = [];
             $linksjson = [];
+            $real_nodes = [];
 
             foreach($this->cfg->get_nodes() as $id => $node)
             {
-                $hash = spl_object_hash($node);
-
-                $text = $this->cfg->get_textofmyblock($id);
-
-                $nodesjson[] = array('name' => $text, 'id' => $hash);
+                $real_nodes[] = $id;
+                $nodesjson[] = array('name' => $this->cfg->get_textofmyblock($id), 'id' => $id);
             }
 
             foreach ($this->cfg->get_edges() as $edge)
             {
-                $caller = $edge[0];
-                $callee = $edge[1];
+                $caller_id = $this->cfg->get_id_of_node($edge[0]);
+                $callee_id = $this->cfg->get_id_of_node($edge[1]);
 
-                $hashcaller = spl_object_hash($caller);
-                $hashcallee = spl_object_hash($callee);
-
-                if ($hashcaller !== $hashcallee)
+                if ($caller_id !== $callee_id
+                                    && in_array($caller_id, $real_nodes, true)
+                                    && in_array($callee_id, $real_nodes, true))
                 {
-                    $linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
+                    $linksjson[] = array('source' => $caller_id, 'target' => $callee_id);
                 }
             }
 
             $outputjson = array('nodes' => $nodesjson, 'links' => $linksjson);
-
             return $outputjson;
         }
 

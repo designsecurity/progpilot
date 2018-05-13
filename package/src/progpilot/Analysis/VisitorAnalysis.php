@@ -448,6 +448,7 @@ class VisitorAnalysis
                                     foreach ($myfunc->get_blocks() as $myblock)
                                     {
                                         $this->context->outputs->callgraph->add_child($this->current_myblock, $myblock);
+                                        $this->context->outputs->cfg->add_edge($this->current_myblock, $myblock);
                                         break;
                                     }
 

@@ -39,7 +39,6 @@ class VisitorDataflow
 
         protected function getBlockId($myblock)
         {
-
             if (isset($this->blocks[$myblock]))
                 return $this->blocks[$myblock];
 
@@ -48,7 +47,6 @@ class VisitorDataflow
 
         protected function setBlockId($myblock)
         {
-
             if (!isset($this->blocks[$myblock]))
                 $this->blocks[$myblock] = count($this->blocks);
         }
@@ -70,13 +68,12 @@ class VisitorDataflow
                 if (isset($code[$index]))
                 {
                     $instruction = $code[$index];
-
                     switch ($instruction->get_opcode())
                     {
                         case Opcodes::START_EXPRESSION:
                         {
                             // representations start
-                            $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
+                            $id_cfg = hash("sha256", $this->current_func->get_name()."-".$this->current_block_id);
                             $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::START_EXPRESSION."\n");
                             // representations end
                             break;
@@ -85,7 +82,7 @@ class VisitorDataflow
                         case Opcodes::END_EXPRESSION:
                         {
                             // representations start
-                            $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
+                            $id_cfg = hash("sha256", $this->current_func->get_name()."-".$this->current_block_id);
                             $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::END_EXPRESSION."\n");
                             // representations end
                             break;
@@ -141,8 +138,7 @@ class VisitorDataflow
                             }
 
                             // representations start
-                            $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
-                            //$context->outputs->callgraph->add_node($myfunc);
+                            $id_cfg = hash("sha256", $this->current_func->get_name()."-".$this->current_block_id);
                             $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::ENTER_FUNCTION." ".htmlentities($myfunc->get_name(), ENT_QUOTES, 'UTF-8')."\n");
                             // representations end
 
@@ -155,6 +151,7 @@ class VisitorDataflow
 
                             $this->setBlockId($myblock);
                             $block_id_tmp = $this->getBlockId($myblock);
+
                             $block_id = hash("sha256", "$block_id_tmp-".$context->get_current_myfile()->get_name());
                             $myblock->set_id($block_id);
 
@@ -172,7 +169,7 @@ class VisitorDataflow
                             }
 
                             // representations start
-                            $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
+                            $id_cfg = hash("sha256", $this->current_func->get_name()."-".$this->current_block_id);
                             $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::ENTER_BLOCK."\n");
                             $context->outputs->cfg->add_node($id_cfg, $myblock);
 
@@ -215,7 +212,7 @@ class VisitorDataflow
                             $last_block_id = $blockid;
 
                             // representations start
-                            $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
+                            $id_cfg = hash("sha256", $this->current_func->get_name()."-".$this->current_block_id);
                             $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::LEAVE_BLOCK."\n");
                             // representations end
 
@@ -240,7 +237,7 @@ class VisitorDataflow
                             $myfunc->set_last_block_id($last_block_id);
 
                             // representations start
-                            $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
+                            $id_cfg = hash("sha256", $this->current_func->get_name()."-".$this->current_block_id);
                             $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::LEAVE_FUNCTION."\n");
                             // representations end
 
@@ -311,7 +308,7 @@ class VisitorDataflow
                             }
 
                             // representations start
-                            $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
+                            $id_cfg = hash("sha256", $this->current_func->get_name()."-".$this->current_block_id);
                             $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::FUNC_CALL." ".htmlentities($myfunc_call->get_name(), ENT_QUOTES, 'UTF-8')."\n");
                             // representations end
 
@@ -327,7 +324,7 @@ class VisitorDataflow
                                 $mydef->set_source_myfile($context->get_current_myfile());
 
                             // representations start
-                            $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
+                            $id_cfg = hash("sha256", $this->current_func->get_name()."-".$this->current_block_id);
                             $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::TEMPORARY."\n");
                             // representations end
 
@@ -346,7 +343,7 @@ class VisitorDataflow
                             $this->defs->addgen($mydef->get_block_id(), $mydef);
 
                             // representations start
-                            $id_cfg = $this->current_func->getLine()."-".$this->current_func->getColumn()."-".$this->current_block_id;
+                            $id_cfg = hash("sha256", $this->current_func->get_name()."-".$this->current_block_id);
                             $context->outputs->cfg->add_textofmyblock($id_cfg, Opcodes::DEFINITION."\n");
                             // representations end
 

@@ -58,6 +58,17 @@ class ControlFlowGraph
             $this->nodes["$id"] = $block;
         }
 
+        public function get_id_of_node($block)
+        {
+            foreach($this->nodes as $id => $block_tmp)
+            {
+                if ($block === $block_tmp)
+                    return $id;
+            }
+
+            return -1;
+        }
+
         public function add_edge($caller, $callee)
         {
             $this->edges[] = [$caller, $callee];
