@@ -7,7 +7,7 @@ The minimum version of PHP needed to run Progpilot is 5.5.9
 You can find the updated security files configuration of Progpilot in [package/src/uptodate_data](../package/src/uptodate_data) folder.
 
 #### How can I use the various representations of programs ?
-Example of control flow graph and call graph of source code transformed to dot format could be found [here](../package/src/projects/tests/graphtest.php).
+Example of control flow graph and call graph of source code transformed to dot format could be found [here](../../package/src/projects/tests/graphtest.php).
 
 #### When I use progpilot I often run out of memory ?
 Static analyzers use a lot of memory but you could try to handle this with [these functions](./API.md) :
