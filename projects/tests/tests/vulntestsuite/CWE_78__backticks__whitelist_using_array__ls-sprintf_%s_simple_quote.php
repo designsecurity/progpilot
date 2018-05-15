@@ -45,18 +45,12 @@ MODIFICATIONS.*/
 $tainted = `cat / tmp / tainted.txt`;
 
 $legal_table = array("safe1", "safe2");
-if (in_array($tainted, $legal_table, true))
-{
+if (in_array($tainted, $legal_table, true)) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = $legal_table[0];
 }
 
 $query = sprintf("ls '%s'", $tainted);
 
 $ret = system($query);
-
-
-?>

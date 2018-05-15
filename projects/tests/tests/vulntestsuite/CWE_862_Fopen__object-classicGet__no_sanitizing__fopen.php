@@ -52,7 +52,7 @@ class Input
         return $this->input;
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = $_GET['UserData'] ;
     }
@@ -65,6 +65,3 @@ $tainted =  $temp->getInput();
 //flaw
 
 $var = fopen($tainted, "r");
-
-
-?>

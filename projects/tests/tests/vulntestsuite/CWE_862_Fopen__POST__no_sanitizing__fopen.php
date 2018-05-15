@@ -50,6 +50,3 @@ $tainted = $_POST['UserData'];
 //flaw
 
 $var = fopen($tainted, "r");
-
-
-?>

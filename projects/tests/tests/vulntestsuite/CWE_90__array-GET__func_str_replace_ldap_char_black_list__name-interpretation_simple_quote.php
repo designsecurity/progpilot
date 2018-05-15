@@ -61,5 +61,3 @@ $ds = ldap_connect("localhost");
 $r = ldap_bind($ds);
 $sr = ldap_search($ds, "o=My Company, c=US", $query);
 ldap_close($ds);
-
-?>

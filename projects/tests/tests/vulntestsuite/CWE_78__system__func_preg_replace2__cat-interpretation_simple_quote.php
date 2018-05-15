@@ -49,6 +49,3 @@ $tainted = preg_replace('/\W/si', '', $tainted);
 $query = "cat ' $tainted '";
 
 $ret = system($query);
-
-
-?>

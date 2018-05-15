@@ -45,10 +45,11 @@ MODIFICATIONS.*/
 $tainted = shell_exec('cat /tmp/tainted.txt');
 
 $sanitized = filter_var($tainted, FILTER_SANITIZE_NUMBER_INT);
-if (filter_var($sanitized, FILTER_VALIDATE_INT))
+if (filter_var($sanitized, FILTER_VALIDATE_INT)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = sprintf("//User[@id=%u]", $tainted);
 
@@ -58,5 +59,3 @@ echo "query : ". $query ."<br /><br />" ;
 $res = $xml->xpath($query); //execution
 print_r($res);
 echo "<br />" ;
-
-?>

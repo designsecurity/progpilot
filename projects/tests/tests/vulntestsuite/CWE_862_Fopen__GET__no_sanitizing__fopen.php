@@ -50,6 +50,3 @@ $tainted = $_GET['UserData'];
 //flaw
 
 $var = fopen($tainted, "r");
-
-
-?>

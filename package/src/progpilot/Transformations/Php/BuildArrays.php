@@ -17,84 +17,72 @@ use PHPCfg\Operand;
 
 class BuildArrays
 {
+    public static function function_start_ops($initops)
+    {
+        if (isset($initops->ops)) {
+            foreach ($initops->ops as $op) {
+                if ($op instanceof Op\Expr\ArrayDimFetch) {
+                    return BuildArrays::function_start_ops($op->var);
+                }
+            }
+        }
 
-        public static function function_start_ops($initops)
-        {
-            if (isset($initops->ops))
-            {
-                foreach ($initops->ops as $op)
-                {
-                    if ($op instanceof Op\Expr\ArrayDimFetch)
-                    {
-                        return BuildArrays::function_start_ops($op->var);
+        return $initops;
+    }
+
+    public static function build_array_from_arr($start, $end)
+    {
+        if (is_array($start)) {
+            foreach ($start as $ind => $value) {
+                $end = array($ind => $end);
+                $end = BuildArrays::build_array_from_arr($value, $end);
+            }
+        }
+
+        return $end;
+    }
+
+    public static function extract_array_from_arr($originalarr, $indarr)
+    {
+        if ($originalarr === $indarr) {
+            return false;
+        }
+
+        $arr = $originalarr;
+
+        if (is_array($indarr)) {
+            foreach ($indarr as $ind => $value) {
+                if (isset($originalarr[$ind])) {
+                    if ($originalarr[$ind] === $indarr[$ind]) {
+                        return $originalarr[$ind];
                     }
+
+                    $arr = BuildArrays::extract_array_from_arr($originalarr[$ind], $indarr[$ind]);
+                } else {
+                    $arr = false;
                 }
             }
-
-            return $initops;
         }
 
-        public static function build_array_from_arr($start, $end)
-        {
-            if (is_array($start))
-            {
-                foreach($start as $ind => $value)
-                {
-                    $end = array($ind => $end);
-                    $end = BuildArrays::build_array_from_arr($value, $end);
-                }
-            }
+        return $arr;
+    }
 
-            return $end;
-        }
-
-        public static function extract_array_from_arr($originalarr, $indarr)
-        {
-            if ($originalarr === $indarr)
-                return false;
-
-            $arr = $originalarr;
-
-            if (is_array($indarr))
-            {
-                foreach($indarr as $ind => $value)
-                {
-                    if (isset($originalarr[$ind]))
-                    {
-                        if ($originalarr[$ind] === $indarr[$ind])
-                            return $originalarr[$ind];
-
-                        $arr = BuildArrays::extract_array_from_arr($originalarr[$ind], $indarr[$ind]);
+    public static function build_array_from_ops($initops, $arr)
+    {
+        if (isset($initops->ops)) {
+            foreach ($initops->ops as $op) {
+                if ($op instanceof Op\Expr\ArrayDimFetch) {
+                    $ind = 0;
+                    if (isset($op->dim->value)) {
+                        $ind = $op->dim->value;
                     }
-                    else
-                        $arr = false;
+
+                    $arr = array($ind => $arr);
+                    $arr = BuildArrays::build_array_from_ops($op->var, $arr);
                 }
             }
-
-            return $arr;
         }
 
-        public static function build_array_from_ops($initops, $arr)
-        {
-            if (isset($initops->ops))
-            {
-                foreach ($initops->ops as $op)
-                {
-                    if ($op instanceof Op\Expr\ArrayDimFetch)
-                    {
-                        $ind = 0;
-                        if (isset($op->dim->value))
-                            $ind = $op->dim->value;
-
-                        $arr = array($ind => $arr);
-                        $arr = BuildArrays::build_array_from_ops($op->var, $arr);
-                    }
-                }
-            }
-
-            return $arr;
-        }
+        return $arr;
+    }
 }
-
-
-?>

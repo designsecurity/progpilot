@@ -21,5 +21,3 @@ $instance = "dkdkdk";
 $instance->boum1 = $_GET["p"];
 
 echo $instance->boum1;
-
-?>

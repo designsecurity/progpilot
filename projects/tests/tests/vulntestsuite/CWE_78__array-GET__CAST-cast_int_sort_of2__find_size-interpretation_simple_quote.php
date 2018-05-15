@@ -53,6 +53,3 @@ $tainted = $tainted + 0;
 $query = "find / size ' $tainted '";
 
 $ret = system($query);
-
-
-?>

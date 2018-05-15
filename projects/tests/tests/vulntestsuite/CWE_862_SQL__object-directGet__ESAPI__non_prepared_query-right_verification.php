@@ -58,12 +58,9 @@ $ESAPI = new ESAPI();
 ESAPI::setEncoder(new DefaultEncoder());
 ESAPI::setValidator(new DefaultValidator());
 //verifying the data with ESAPI
-if ($ESAPI->validator->isValidNumber("Course ID", $tainted, 18, 25, false))
-{
+if ($ESAPI->validator->isValidNumber("Course ID", $tainted, 18, 25, false)) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = 0; //default value
 }
 
@@ -75,5 +72,3 @@ $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $checked_data);
 $stmt->execute();
 mysql_close($conn);
-
-?>

@@ -51,7 +51,7 @@ class Input
         return $this->input[1];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input[0] = 'safe' ;
@@ -72,11 +72,8 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while ($data = mysql_fetch_array($res))
-{
+while ($data = mysql_fetch_array($res)) {
     print_r($data) ;
     echo "<br />" ;
 }
 mysql_close($conn);
-
-?>

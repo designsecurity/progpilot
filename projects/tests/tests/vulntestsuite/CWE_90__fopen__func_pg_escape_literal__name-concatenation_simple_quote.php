@@ -44,16 +44,12 @@ MODIFICATIONS.*/
 
 $handle = @fopen("/tmp/tainted.txt", "r");
 
-if ($handle)
-{
-    if (($tainted = fgets($handle, 4096)) == false)
-    {
+if ($handle) {
+    if (($tainted = fgets($handle, 4096)) == false) {
         $tainted = "";
     }
     fclose($handle);
-}
-else
-{
+} else {
     $tainted = "";
 }
 
@@ -65,5 +61,3 @@ $ds = ldap_connect("localhost");
 $r = ldap_bind($ds);
 $sr = ldap_search($ds, "o=My Company, c=US", $query);
 ldap_close($ds);
-
-?>

@@ -51,6 +51,3 @@ $tainted = floatval($tainted);
 $query = "find / size '". $tainted . "'";
 
 $ret = system($query);
-
-
-?>

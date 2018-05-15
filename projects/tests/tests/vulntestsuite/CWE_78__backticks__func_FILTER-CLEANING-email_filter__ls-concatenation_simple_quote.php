@@ -45,15 +45,13 @@ MODIFICATIONS.*/
 $tainted = `cat / tmp / tainted.txt`;
 
 $sanitized = filter_var($tainted, FILTER_SANITIZE_EMAIL);
-if (filter_var($sanitized, FILTER_VALIDATE_EMAIL))
+if (filter_var($sanitized, FILTER_VALIDATE_EMAIL)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = "ls '". $tainted . "'";
 
 //flaw
 $ret = system($query);
-
-
-?>

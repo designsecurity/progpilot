@@ -44,14 +44,12 @@ MODIFICATIONS.*/
 
 $tainted = shell_exec('cat /tmp/tainted.txt');
 
-if (filter_var($sanitized, FILTER_VALIDATE_FLOAT))
+if (filter_var($sanitized, FILTER_VALIDATE_FLOAT)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = "find / size '". $tainted . "'";
 
 $ret = system($query);
-
-
-?>

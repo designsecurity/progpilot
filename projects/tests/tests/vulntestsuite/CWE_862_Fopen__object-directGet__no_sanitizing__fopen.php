@@ -59,6 +59,3 @@ $tainted =  $temp->getInput();
 //flaw
 
 $var = fopen($tainted, "r");
-
-
-?>

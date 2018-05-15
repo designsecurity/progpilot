@@ -12,6 +12,3 @@ function testf($parama, $boum, $tchka)
 }
 
 testf($_GET["p"], "argument2", "argument3");
-
-
-?>

@@ -53,6 +53,3 @@ $tainted = mysql_real_escape_string($tainted);
 $query = sprintf("find / size '%d'", $tainted);
 
 $ret = system($query);
-
-
-?>

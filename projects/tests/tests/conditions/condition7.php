@@ -7,5 +7,3 @@ $safe = (int) $tainted;
 echo $safe;
 
 echo $tainted;
-
-?>

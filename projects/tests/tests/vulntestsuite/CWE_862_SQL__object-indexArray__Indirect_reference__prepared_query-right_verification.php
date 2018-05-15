@@ -52,7 +52,7 @@ class Input
         return $this->input['realOne'];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input['test'] = 'safe' ;
@@ -70,23 +70,18 @@ $user_id = intval($_SESSION[‘user_id’]);
 //creation of the references with only data allowed to the user
 $result = mysql_query("SELECT * FROM COURSE where course.allowed = {$user_id}");
 
-while ($row = mysql_fetch_array($result))
-{
+while ($row = mysql_fetch_array($result)) {
     $course_array[] = $result[‘id’];
 }
 
 $_SESSION[‘course_array’] = $course_array;
-if (isset($_SESSION[‘course_array’]))
-{
+if (isset($_SESSION[‘course_array’])) {
     $course_array = $_SESSION[‘course_array’];
-    if (isset($course_array[$taintedId]))
-    {
+    if (isset($course_array[$taintedId])) {
         //indirect reference > get the right id
         $tainted = $course_array[$tainted];
     }
-}
-else
-{
+} else {
     $tainted = 0; //default value
 }
 
@@ -98,5 +93,3 @@ $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $checked_data);
 $stmt->execute();
 mysql_close($conn);
-
-?>

@@ -21,127 +21,127 @@ use progpilot\Transformations\Php\Transform;
 
 class Common
 {
-
-        public static function valid_last_known_value($value)
-        {
-            if (strpos($value, '\n') === false && strpos($value, '\r') === false && strlen($value) < 200)
-            {
-                return true;
-            }
-
-            return false;
+    public static function valid_last_known_value($value)
+    {
+        if (strpos($value, '\n') === false && strpos($value, '\r') === false && strlen($value) < 200) {
+            return true;
         }
 
-        public static function get_name_property($op)
-        {
-            $property_name_array = [];
+        return false;
+    }
 
-            if (isset($op->ops[0]))
-            {
-                if ($op->ops[0] instanceof Op\Expr\ArrayDimFetch)
-                    $property_name_array = Common::get_name_property($op->ops[0]);
+    public static function get_name_property($op)
+    {
+        $property_name_array = [];
 
-                if ($op instanceof Op\Expr\PropertyFetch)
-                    $property_name_array = Common::get_name_property($op->ops[0]);
+        if (isset($op->ops[0])) {
+            if ($op->ops[0] instanceof Op\Expr\ArrayDimFetch) {
+                $property_name_array = Common::get_name_property($op->ops[0]);
             }
 
-            if (isset($op->var->ops))
-            {
-                foreach ($op->var->ops as $opeach)
-                {
-                    if ($opeach instanceof Op\Expr\ArrayDimFetch)
-                        $property_name_array =  Common::get_name_property($opeach);
+            if ($op instanceof Op\Expr\PropertyFetch) {
+                $property_name_array = Common::get_name_property($op->ops[0]);
+            }
+        }
 
-                    if ($opeach instanceof Op\Expr\PropertyFetch)
-                        $property_name_array = Common::get_name_property($opeach);
+        if (isset($op->var->ops)) {
+            foreach ($op->var->ops as $opeach) {
+                if ($opeach instanceof Op\Expr\ArrayDimFetch) {
+                    $property_name_array =  Common::get_name_property($opeach);
+                }
+
+                if ($opeach instanceof Op\Expr\PropertyFetch) {
+                    $property_name_array = Common::get_name_property($opeach);
                 }
             }
-
-            if (isset($op->name->value))
-                $property_name_array[] = $op->name->value;
-
-            return $property_name_array;
         }
 
-        public static function get_name_definition($ops, $looking_for_property = false)
-        {
-            //  $this->property = property
-            if ($looking_for_property && $ops instanceof Op\Expr\PropertyFetch && isset($ops->name->value))
-                return $ops->name->value;
+        if (isset($op->name->value)) {
+            $property_name_array[] = $op->name->value;
+        }
 
-            //  $this->property = this
-            if (isset($ops->var) && $ops->var instanceof Operand\BoundVariable && isset($ops->var->name->value))
-                return $ops->var->name->value;
+        return $property_name_array;
+    }
 
-            if (isset($ops->ops[0]))
-            {
-                if ($ops->ops[0] instanceof Op\Expr\ConstFetch)
-                    return Common::get_name_definition($ops->ops[0], $looking_for_property);
+    public static function get_name_definition($ops, $looking_for_property = false)
+    {
+        //  $this->property = property
+        if ($looking_for_property && $ops instanceof Op\Expr\PropertyFetch && isset($ops->name->value)) {
+            return $ops->name->value;
+        }
 
-                if ($ops->ops[0] instanceof Op\Expr\ArrayDimFetch)
-                    return Common::get_name_definition($ops->ops[0], $looking_for_property);
+        //  $this->property = this
+        if (isset($ops->var) && $ops->var instanceof Operand\BoundVariable && isset($ops->var->name->value)) {
+            return $ops->var->name->value;
+        }
 
-                if ($ops->ops[0] instanceof Op\Expr\PropertyFetch)
-                    return Common::get_name_definition($ops->ops[0], $looking_for_property);
+        if (isset($ops->ops[0])) {
+            if ($ops->ops[0] instanceof Op\Expr\ConstFetch) {
+                return Common::get_name_definition($ops->ops[0], $looking_for_property);
             }
 
-            if (isset($ops->var->ops))
-            {
-                foreach ($ops->var->ops as $op)
-                {
-                    if ($op instanceof Op\Expr\ConstFetch)
-                        return Common::get_name_definition($op, $looking_for_property);
+            if ($ops->ops[0] instanceof Op\Expr\ArrayDimFetch) {
+                return Common::get_name_definition($ops->ops[0], $looking_for_property);
+            }
 
-                    if ($op instanceof Op\Expr\ArrayDimFetch)
-                        return Common::get_name_definition($op, $looking_for_property);
+            if ($ops->ops[0] instanceof Op\Expr\PropertyFetch) {
+                return Common::get_name_definition($ops->ops[0], $looking_for_property);
+            }
+        }
 
-                    if ($op instanceof Op\Expr\PropertyFetch)
-                        return Common::get_name_definition($op, $looking_for_property);
+        if (isset($ops->var->ops)) {
+            foreach ($ops->var->ops as $op) {
+                if ($op instanceof Op\Expr\ConstFetch) {
+                    return Common::get_name_definition($op, $looking_for_property);
+                }
+
+                if ($op instanceof Op\Expr\ArrayDimFetch) {
+                    return Common::get_name_definition($op, $looking_for_property);
+                }
+
+                if ($op instanceof Op\Expr\PropertyFetch) {
+                    return Common::get_name_definition($op, $looking_for_property);
                 }
             }
-
-            // use variable
-            if (isset($ops->original->name->value))
-            {
-                return $ops->original->name->value;
-            }
-
-            // def variable
-            if (isset($ops->var->original->name->value))
-            {
-                return $ops->var->original->name->value;
-            }
-
-            // class name
-            if (isset($ops->name->value))
-            {
-                return $ops->name->value;
-            }
-
-            // arrayexpr
-            if (isset($ops->value))
-            {
-                return $ops->value;
-            }
-
-            return "";
         }
 
-        /*
-             const FLAG_PUBLIC      = 0x01;
-             const FLAG_PROTECTED   = 0x02;
-             const FLAG_PRIVATE     = 0x04;
-             const FLAG_STATIC      = 0x08;
-             const FLAG_ABSTRACT    = 0x10;
-             const FLAG_FINAL       = 0x20;
-             const FLAG_RETURNS_REF = 0x40;
-             const FLAG_CLOSURE     = 0x80;
-         */
+        // use variable
+        if (isset($ops->original->name->value)) {
+            return $ops->original->name->value;
+        }
 
-        public static function get_type_visibility($visibility)
-        {
-            switch ($visibility)
-            {
+        // def variable
+        if (isset($ops->var->original->name->value)) {
+            return $ops->var->original->name->value;
+        }
+
+        // class name
+        if (isset($ops->name->value)) {
+            return $ops->name->value;
+        }
+
+        // arrayexpr
+        if (isset($ops->value)) {
+            return $ops->value;
+        }
+
+        return "";
+    }
+
+    /*
+         const FLAG_PUBLIC      = 0x01;
+         const FLAG_PROTECTED   = 0x02;
+         const FLAG_PRIVATE     = 0x04;
+         const FLAG_STATIC      = 0x08;
+         const FLAG_ABSTRACT    = 0x10;
+         const FLAG_FINAL       = 0x20;
+         const FLAG_RETURNS_REF = 0x40;
+         const FLAG_CLOSURE     = 0x80;
+     */
+
+    public static function get_type_visibility($visibility)
+    {
+        switch ($visibility) {
                 case 1:
                     return "public";
                 case 2:
@@ -151,11 +151,11 @@ class Common
                 default:
                     return "public";
             }
-        }
+    }
 
-        public static function is_funccall_withoutreturn($op)
-        {
-            if (!(isset($op->result->usages[0])) || (
+    public static function is_funccall_withoutreturn($op)
+    {
+        if (!(isset($op->result->usages[0])) || (
                         // funccall()[0]
                         !(isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\ArrayDimFetch) &&
                         // test = funccall() // funcccall(funccall())
@@ -171,168 +171,164 @@ class Common
                               || $op->result->usages[0] instanceof Op\Expr\BinaryOp\Concat
                               || $op->result->usages[0] instanceof Op\Expr\Array_
                               || $op->result->usages[0] instanceof Op\Expr\Include_
-                              || $op->result->usages[0] instanceof Op\Expr\Eval_))))
-                return true;
-
-            return false;
+                              || $op->result->usages[0] instanceof Op\Expr\Eval_
+                          ))
+            )) {
+            return true;
         }
 
-        public static function get_type_is_array($ops)
-        {
-            if (isset($ops->ops[0]))
-            {
-                if ($ops->ops[0] instanceof Op\Expr\FuncCall || $ops->ops[0] instanceof Op\Expr\NsFuncCall)
-                {
+        return false;
+    }
+
+    public static function get_type_is_array($ops)
+    {
+        if (isset($ops->ops[0])) {
+            if ($ops->ops[0] instanceof Op\Expr\FuncCall || $ops->ops[0] instanceof Op\Expr\NsFuncCall) {
+                return MyOp::TYPE_FUNCCALL_ARRAY;
+            }
+
+            if ($ops->ops[0] instanceof Op\Expr\ArrayDimFetch) {
+                $ret = Common::get_type_definition($ops->ops[0]);
+
+                if ($ret === MyOp::TYPE_FUNCCALL_ARRAY) {
                     return MyOp::TYPE_FUNCCALL_ARRAY;
                 }
 
-                if ($ops->ops[0] instanceof Op\Expr\ArrayDimFetch)
-                {
-                    $ret = Common::get_type_definition($ops->ops[0]);
-
-                    if ($ret === MyOp::TYPE_FUNCCALL_ARRAY)
-                        return MyOp::TYPE_FUNCCALL_ARRAY;
-
-                    return MyOp::TYPE_ARRAY;
-                }
-
-                if ($ops->ops[0] instanceof Op\Expr\Array_)
-                {
-                    return MyOp::TYPE_ARRAY_EXPR;
-                }
-            }
-
-            if (isset($ops->expr->ops[0]))
-            {
-                if ($ops->expr->ops[0] instanceof Op\Expr\Array_)
-                    return MyOp::TYPE_ARRAY_EXPR;
-            }
-
-            if (isset($ops->var->ops[0]))
-            {
-                if ($ops->var->ops[0] instanceof Op\Expr\ArrayDimFetch)
-                {
-                    $ret = Common::get_type_definition($ops->var->ops[0]);
-
-                    if ($ret == MyOp::TYPE_FUNCCALL_ARRAY)
-                        return MyOp::TYPE_FUNCCALL_ARRAY;
-
-                    return MyOp::TYPE_ARRAY;
-                }
-
-                if ($ops->var->ops[0] instanceof Op\Expr\FuncCall || $ops->var->ops[0] instanceof Op\Expr\NsFuncCall)
-                    return MyOp::TYPE_FUNCCALL_ARRAY;
-            }
-
-            if (isset($ops->var->original->name))
-            {
-                if ($ops->var->original->name instanceof Operand\Literal)
-                    return MyOp::TYPE_LITERAL;
-            }
-
-            if (isset($ops->expr->original->name))   // return
-            {
-                if ($ops->expr->original->name instanceof Operand\Literal)
-                    return MyOp::TYPE_LITERAL;
-            }
-
-            if (isset($ops->original->name))
-            {
-                if ($ops->original->name instanceof Operand\Literal)
-                    return MyOp::TYPE_LITERAL;
-            }
-
-            if ($ops instanceof Op\Expr\ArrayDimFetch)
                 return MyOp::TYPE_ARRAY;
-
-            if ($ops instanceof Operand\Literal)
-                return MyOp::TYPE_LITERAL;
-
-            return null;
-        }
-
-
-        public static function get_type_is_instance($ops)
-        {
-            if (isset($ops->expr->ops[0]))
-            {
-                if ($ops->expr->ops[0] instanceof Op\Expr\New_)
-                    return MyOp::TYPE_INSTANCE;
             }
 
-            return null;
+            if ($ops->ops[0] instanceof Op\Expr\Array_) {
+                return MyOp::TYPE_ARRAY_EXPR;
+            }
         }
 
-        public static function get_type_definition($ops)
-        {
-            if (isset($ops->ops[0]))
-            {
-                if ($ops->ops[0] instanceof Op\Expr\ConstFetch)
-                {
-                    return MyOp::TYPE_CONST;
-                }
+        if (isset($ops->expr->ops[0])) {
+            if ($ops->expr->ops[0] instanceof Op\Expr\Array_) {
+                return MyOp::TYPE_ARRAY_EXPR;
+            }
+        }
 
-                if ($ops->ops[0] instanceof Op\Expr\FuncCall || $ops->ops[0] instanceof Op\Expr\NsFuncCall)
-                {
+        if (isset($ops->var->ops[0])) {
+            if ($ops->var->ops[0] instanceof Op\Expr\ArrayDimFetch) {
+                $ret = Common::get_type_definition($ops->var->ops[0]);
+
+                if ($ret == MyOp::TYPE_FUNCCALL_ARRAY) {
                     return MyOp::TYPE_FUNCCALL_ARRAY;
                 }
 
-                if ($ops->ops[0] instanceof Op\Expr\PropertyFetch)
-                {
-                    return MyOp::TYPE_PROPERTY;
-                }
-
-                if ($ops->ops[0] instanceof Op\Expr\ArrayDimFetch)
-                {
-                    return Common::get_type_definition($ops->ops[0]);
-                }
+                return MyOp::TYPE_ARRAY;
             }
 
-            if (isset($ops->var->ops[0]))
-            {
-                if ($ops->var->ops[0] instanceof Op\Expr\ArrayDimFetch)
-                {
-                    return Common::get_type_definition($ops->var->ops[0]);
-                }
-
-                if ($ops->var->ops[0] instanceof Op\Expr\PropertyFetch)
-                {
-                    return MyOp::TYPE_PROPERTY;
-                }
-
-                if ($ops->var->ops[0] instanceof Op\Expr\FuncCall || $ops->var->ops[0] instanceof Op\Expr\NsFuncCall)
-                    return MyOp::TYPE_FUNCCALL_ARRAY;
+            if ($ops->var->ops[0] instanceof Op\Expr\FuncCall || $ops->var->ops[0] instanceof Op\Expr\NsFuncCall) {
+                return MyOp::TYPE_FUNCCALL_ARRAY;
             }
+        }
 
-            if (isset($ops->var->original->name))
-            {
-                if ($ops->var->original->name instanceof Operand\Literal)
-                    return MyOp::TYPE_VARIABLE;
-            }
-
-            if (isset($ops->expr->original->name))   // return
-            {
-                if ($ops->expr->original->name instanceof Operand\Literal)
-                    return MyOp::TYPE_LITERAL;
-            }
-
-            if (isset($ops->original->name))
-            {
-                if ($ops->original instanceof Operand\Variable)
-                    return MyOp::TYPE_VARIABLE;
-
-                if ($ops->original->name instanceof Operand\Literal)
-                    return MyOp::TYPE_LITERAL;
-            }
-
-            if ($ops instanceof Operand\Literal)
+        if (isset($ops->var->original->name)) {
+            if ($ops->var->original->name instanceof Operand\Literal) {
                 return MyOp::TYPE_LITERAL;
+            }
+        }
 
-            if ($ops instanceof Op\Expr\PropertyFetch)
+        if (isset($ops->expr->original->name)) {   // return
+            if ($ops->expr->original->name instanceof Operand\Literal) {
+                return MyOp::TYPE_LITERAL;
+            }
+        }
+
+        if (isset($ops->original->name)) {
+            if ($ops->original->name instanceof Operand\Literal) {
+                return MyOp::TYPE_LITERAL;
+            }
+        }
+
+        if ($ops instanceof Op\Expr\ArrayDimFetch) {
+            return MyOp::TYPE_ARRAY;
+        }
+
+        if ($ops instanceof Operand\Literal) {
+            return MyOp::TYPE_LITERAL;
+        }
+
+        return null;
+    }
+
+
+    public static function get_type_is_instance($ops)
+    {
+        if (isset($ops->expr->ops[0])) {
+            if ($ops->expr->ops[0] instanceof Op\Expr\New_) {
+                return MyOp::TYPE_INSTANCE;
+            }
+        }
+
+        return null;
+    }
+
+    public static function get_type_definition($ops)
+    {
+        if (isset($ops->ops[0])) {
+            if ($ops->ops[0] instanceof Op\Expr\ConstFetch) {
+                return MyOp::TYPE_CONST;
+            }
+
+            if ($ops->ops[0] instanceof Op\Expr\FuncCall || $ops->ops[0] instanceof Op\Expr\NsFuncCall) {
+                return MyOp::TYPE_FUNCCALL_ARRAY;
+            }
+
+            if ($ops->ops[0] instanceof Op\Expr\PropertyFetch) {
                 return MyOp::TYPE_PROPERTY;
+            }
 
-            return null;
+            if ($ops->ops[0] instanceof Op\Expr\ArrayDimFetch) {
+                return Common::get_type_definition($ops->ops[0]);
+            }
         }
-}
 
-?>
+        if (isset($ops->var->ops[0])) {
+            if ($ops->var->ops[0] instanceof Op\Expr\ArrayDimFetch) {
+                return Common::get_type_definition($ops->var->ops[0]);
+            }
+
+            if ($ops->var->ops[0] instanceof Op\Expr\PropertyFetch) {
+                return MyOp::TYPE_PROPERTY;
+            }
+
+            if ($ops->var->ops[0] instanceof Op\Expr\FuncCall || $ops->var->ops[0] instanceof Op\Expr\NsFuncCall) {
+                return MyOp::TYPE_FUNCCALL_ARRAY;
+            }
+        }
+
+        if (isset($ops->var->original->name)) {
+            if ($ops->var->original->name instanceof Operand\Literal) {
+                return MyOp::TYPE_VARIABLE;
+            }
+        }
+
+        if (isset($ops->expr->original->name)) {   // return
+            if ($ops->expr->original->name instanceof Operand\Literal) {
+                return MyOp::TYPE_LITERAL;
+            }
+        }
+
+        if (isset($ops->original->name)) {
+            if ($ops->original instanceof Operand\Variable) {
+                return MyOp::TYPE_VARIABLE;
+            }
+
+            if ($ops->original->name instanceof Operand\Literal) {
+                return MyOp::TYPE_LITERAL;
+            }
+        }
+
+        if ($ops instanceof Operand\Literal) {
+            return MyOp::TYPE_LITERAL;
+        }
+
+        if ($ops instanceof Op\Expr\PropertyFetch) {
+            return MyOp::TYPE_PROPERTY;
+        }
+
+        return null;
+    }
+}

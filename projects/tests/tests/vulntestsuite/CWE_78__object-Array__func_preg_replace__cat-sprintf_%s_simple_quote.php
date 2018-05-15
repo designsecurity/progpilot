@@ -51,7 +51,7 @@ class Input
         return $this->input[1];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input[0] = 'safe' ;
@@ -67,6 +67,3 @@ $tainted = preg_replace('/\'/', '', $tainted);
 $query = sprintf("cat '%s'", $tainted);
 
 $ret = system($query);
-
-
-?>

@@ -46,14 +46,12 @@ $handle = popen('/bin/cat /tmp/tainted.txt', 'r');
 $tainted = fread($handle, 4096);
 pclose($handle);
 
-if (filter_var($sanitized, FILTER_VALIDATE_FLOAT))
+if (filter_var($sanitized, FILTER_VALIDATE_FLOAT)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = "find / size ' $tainted '";
 
 $ret = system($query);
-
-
-?>

@@ -4,12 +4,9 @@ function secret()
 {
     dev_iam_authenticated();
     
-    if(1 == rand())
-    {
+    if (1 == rand()) {
         dev_iam_rights();
-    }
-    else
-    {
+    } else {
         nada();
     }
     
@@ -19,5 +16,3 @@ function secret()
 }
 
 secret();
-
-?>

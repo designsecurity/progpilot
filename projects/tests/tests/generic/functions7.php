@@ -7,5 +7,3 @@ function testf1($param)
 }
 
 testf1("test");
-
-?>

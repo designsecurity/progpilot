@@ -51,7 +51,7 @@ class Input
         return $this->input[1];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input[0] = 'safe' ;
@@ -62,10 +62,11 @@ class Input
 $temp = new Input();
 $tainted =  $temp->getInput();
 
-if (settype($tainted, "float"))
+if (settype($tainted, "float")) {
     $tainted = $tainted ;
-else
+} else {
     $tainted = 0.0 ;
+}
 
 $query = sprintf("SELECT Trim(a.FirstName) & ' ' & Trim(a.LastName) AS employee_name, a.city, a.street & (' ' +a.housenum) AS address FROM Employees AS a  WHERE a.supervisor=%u", $tainted);
 
@@ -75,11 +76,8 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while ($data = mysql_fetch_array($res))
-{
+while ($data = mysql_fetch_array($res)) {
     print_r($data) ;
     echo "<br />" ;
 }
 mysql_close($conn);
-
-?>

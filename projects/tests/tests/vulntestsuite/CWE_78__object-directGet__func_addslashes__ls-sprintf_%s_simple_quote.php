@@ -58,6 +58,3 @@ $tainted = addslashes($tainted);
 $query = sprintf("ls '%s'", $tainted);
 
 $ret = system($query);
-
-
-?>

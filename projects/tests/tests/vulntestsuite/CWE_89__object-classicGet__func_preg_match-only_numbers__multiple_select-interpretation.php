@@ -51,7 +51,7 @@ class Input
         return $this->input;
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = $_GET['UserData'] ;
     }
@@ -60,12 +60,9 @@ $temp = new Input();
 $tainted =  $temp->getInput();
 
 $re = "/^[0-9]*$/";
-if (preg_match($re, $tainted) == 1)
-{
+if (preg_match($re, $tainted) == 1) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = "";
 }
 
@@ -77,11 +74,8 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while ($data = mysql_fetch_array($res))
-{
+while ($data = mysql_fetch_array($res)) {
     print_r($data) ;
     echo "<br />" ;
 }
 mysql_close($conn);
-
-?>

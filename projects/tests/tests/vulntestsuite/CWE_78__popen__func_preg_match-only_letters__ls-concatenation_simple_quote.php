@@ -47,18 +47,12 @@ $tainted = fread($handle, 4096);
 pclose($handle);
 
 $re = "/^[a-zA-Z]*$/";
-if (preg_match($re, $tainted) == 1)
-{
+if (preg_match($re, $tainted) == 1) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = "";
 }
 
 $query = "ls '". $tainted . "'";
 
 $ret = system($query);
-
-
-?>

@@ -11,5 +11,3 @@ $ret = testf1($_GET["p"]);
 
 echo $ret[0][1][989];
 echo $ret[0][2][989];
-
-?>

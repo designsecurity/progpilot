@@ -44,10 +44,11 @@ MODIFICATIONS.*/
 
 $tainted = $_GET['UserData'];
 
-if (filter_var($sanitized, FILTER_VALIDATE_INT))
+if (filter_var($sanitized, FILTER_VALIDATE_INT)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = sprintf("SELECT Trim(a.FirstName) & ' ' & Trim(a.LastName) AS employee_name, a.city, a.street & (' ' +a.housenum) AS address FROM Employees AS a  WHERE a.supervisor=%u", $tainted);
 
@@ -57,11 +58,8 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while ($data = mysql_fetch_array($res))
-{
+while ($data = mysql_fetch_array($res)) {
     print_r($data) ;
     echo "<br />" ;
 }
 mysql_close($conn);
-
-?>

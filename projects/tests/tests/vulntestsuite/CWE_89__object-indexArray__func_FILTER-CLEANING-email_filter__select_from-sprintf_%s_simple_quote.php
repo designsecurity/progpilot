@@ -51,7 +51,7 @@ class Input
         return $this->input['realOne'];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input['test'] = 'safe' ;
@@ -63,10 +63,11 @@ $temp = new Input();
 $tainted =  $temp->getInput();
 
 $sanitized = filter_var($tainted, FILTER_SANITIZE_EMAIL);
-if (filter_var($sanitized, FILTER_VALIDATE_EMAIL))
+if (filter_var($sanitized, FILTER_VALIDATE_EMAIL)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = sprintf("SELECT * FROM '%s'", $tainted);
 
@@ -77,11 +78,8 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while ($data = mysql_fetch_array($res))
-{
+while ($data = mysql_fetch_array($res)) {
     print_r($data) ;
     echo "<br />" ;
 }
 mysql_close($conn);
-
-?>

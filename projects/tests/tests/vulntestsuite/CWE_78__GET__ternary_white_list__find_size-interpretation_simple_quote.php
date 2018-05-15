@@ -49,6 +49,3 @@ $tainted = $tainted  == 'safe1' ? 'safe1' : 'safe2';
 $query = "find / size ' $tainted '";
 
 $ret = system($query);
-
-
-?>

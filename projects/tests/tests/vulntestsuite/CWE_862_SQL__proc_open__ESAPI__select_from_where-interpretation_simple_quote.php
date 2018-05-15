@@ -49,9 +49,8 @@ $descriptorspec = array(
                       2 => array("file", "/tmp/error-output.txt", "a")
                   );
 $cwd = '/tmp';
-$process = proc_open('more /tmp/tainted.txt', $descriptorspec, $pipes, $cwd, NULL);
-if (is_resource($process))
-{
+$process = proc_open('more /tmp/tainted.txt', $descriptorspec, $pipes, $cwd, null);
+if (is_resource($process)) {
     fclose($pipes[0]);
     $tainted = stream_get_contents($pipes[1]);
     fclose($pipes[1]);
@@ -62,12 +61,9 @@ $ESAPI = new ESAPI();
 ESAPI::setEncoder(new DefaultEncoder());
 ESAPI::setValidator(new DefaultValidator());
 //verifying the data with ESAPI
-if ($ESAPI->validator->isValidNumber("Course ID", $tainted, 18, 25, false))
-{
+if ($ESAPI->validator->isValidNumber("Course ID", $tainted, 18, 25, false)) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = 0; //default value
 }
 
@@ -78,5 +74,3 @@ $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $checked_data);
 $stmt->execute();
 mysql_close($conn);
-
-?>

@@ -48,9 +48,8 @@ $descriptorspec = array(
                       2 => array("file", "/tmp/error-output.txt", "a")
                   );
 $cwd = '/tmp';
-$process = proc_open('more /tmp/tainted.txt', $descriptorspec, $pipes, $cwd, NULL);
-if (is_resource($process))
-{
+$process = proc_open('more /tmp/tainted.txt', $descriptorspec, $pipes, $cwd, null);
+if (is_resource($process)) {
     fclose($pipes[0]);
     $tainted = stream_get_contents($pipes[1]);
     fclose($pipes[1]);
@@ -67,11 +66,8 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while ($data = mysql_fetch_array($res))
-{
+while ($data = mysql_fetch_array($res)) {
     print_r($data) ;
     echo "<br />" ;
 }
 mysql_close($conn);
-
-?>

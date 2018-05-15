@@ -51,6 +51,3 @@ $tainted = $sanitized ;
 $query = "ls '". $tainted . "'";
 
 $ret = system($query);
-
-
-?>

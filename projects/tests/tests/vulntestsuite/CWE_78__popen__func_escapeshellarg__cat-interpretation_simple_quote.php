@@ -53,6 +53,3 @@ $tainted = escapeshellarg($tainted);
 $query = "cat ' $tainted '";
 
 $ret = system($query);
-
-
-?>

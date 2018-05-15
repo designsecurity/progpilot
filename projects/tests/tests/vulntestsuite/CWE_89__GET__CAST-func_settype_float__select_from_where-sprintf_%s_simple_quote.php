@@ -44,10 +44,11 @@ MODIFICATIONS.*/
 
 $tainted = $_GET['UserData'];
 
-if (settype($tainted, "float"))
+if (settype($tainted, "float")) {
     $tainted = $tainted ;
-else
+} else {
     $tainted = 0.0 ;
+}
 
 $query = sprintf("SELECT * FROM student where id='%s'", $tainted);
 
@@ -57,11 +58,8 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while ($data = mysql_fetch_array($res))
-{
+while ($data = mysql_fetch_array($res)) {
     print_r($data) ;
     echo "<br />" ;
 }
 mysql_close($conn);
-
-?>

@@ -44,26 +44,19 @@ MODIFICATIONS.*/
 
 $handle = @fopen("/tmp/tainted.txt", "r");
 
-if ($handle)
-{
-    if (($tainted = fgets($handle, 4096)) == false)
-    {
+if ($handle) {
+    if (($tainted = fgets($handle, 4096)) == false) {
         $tainted = "";
     }
     fclose($handle);
-}
-else
-{
+} else {
     $tainted = "";
 }
 
 $re = "/^.*$/";
-if (preg_match($re, $tainted) == 1)
-{
+if (preg_match($re, $tainted) == 1) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = "";
 }
 
@@ -71,6 +64,3 @@ $query = "ls ' $tainted '";
 
 //flaw
 $ret = system($query);
-
-
-?>

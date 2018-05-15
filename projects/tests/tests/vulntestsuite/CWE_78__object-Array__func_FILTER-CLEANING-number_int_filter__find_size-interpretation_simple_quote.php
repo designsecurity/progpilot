@@ -51,7 +51,7 @@ class Input
         return $this->input[1];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input[0] = 'safe' ;
@@ -63,14 +63,12 @@ $temp = new Input();
 $tainted =  $temp->getInput();
 
 $sanitized = filter_var($tainted, FILTER_SANITIZE_NUMBER_INT);
-if (filter_var($sanitized, FILTER_VALIDATE_INT))
+if (filter_var($sanitized, FILTER_VALIDATE_INT)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = "find / size ' $tainted '";
 
 $ret = system($query);
-
-
-?>

@@ -17,4 +17,3 @@ echo $instance1->boum2;
 
    echo $instance1->boum2;
  */
-?>

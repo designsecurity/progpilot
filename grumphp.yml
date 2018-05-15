@@ -1,0 +1,9 @@
+parameters:
+  bin_dir: "../../vendor/bin"
+  git_dir: "."
+  process_timeout: 120
+  tasks:
+      phpcs:
+        standard: PSR2
+        metadata:
+          priority: 300

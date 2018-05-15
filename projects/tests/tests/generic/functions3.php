@@ -13,6 +13,3 @@ $arraysafe = testf($a);
 
 echo $arraysafe[0];
 echo $arraysafe[1];
-
-
-?>

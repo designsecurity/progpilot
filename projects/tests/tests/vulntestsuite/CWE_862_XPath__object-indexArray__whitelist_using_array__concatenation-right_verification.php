@@ -52,7 +52,7 @@ class Input
         return $this->input['realOne'];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input['test'] = 'safe' ;
@@ -64,12 +64,9 @@ $temp = new Input();
 $tainted =  $temp->getInput();
 
 $legal_table = array("safe1", "safe2");
-if (in_array($tainted, $legal_table, true))
-{
+if (in_array($tainted, $legal_table, true)) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = $legal_table[0];
 }
 
@@ -81,4 +78,3 @@ echo "query : ". $query ."<br /><br />" ;
 $res = $xml->xpath($query); //execution
 print_r($res);
 echo "<br />" ;
-?>

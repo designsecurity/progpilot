@@ -45,14 +45,12 @@ MODIFICATIONS.*/
 $tainted = $_SESSION['UserData'];
 
 $sanitized = filter_var($tainted, FILTER_SANITIZE_NUMBER_FLOAT);
-if (filter_var($sanitized, FILTER_VALIDATE_FLOAT))
+if (filter_var($sanitized, FILTER_VALIDATE_FLOAT)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = "find / size ' $tainted '";
 
 $ret = system($query);
-
-
-?>

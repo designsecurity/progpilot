@@ -44,14 +44,12 @@ MODIFICATIONS.*/
 
 $tainted = $_GET['UserData'];
 
-if (settype($tainted, "integer"))
+if (settype($tainted, "integer")) {
     $tainted = $tainted ;
-else
+} else {
     $tainted = 0 ;
+}
 
 $query = "find / size '". $tainted . "'";
 
 $ret = system($query);
-
-
-?>

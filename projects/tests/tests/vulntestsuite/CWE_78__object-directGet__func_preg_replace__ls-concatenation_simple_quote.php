@@ -58,6 +58,3 @@ $tainted = preg_replace('/\'/', '', $tainted);
 $query = "ls '". $tainted . "'";
 
 $ret = system($query);
-
-
-?>

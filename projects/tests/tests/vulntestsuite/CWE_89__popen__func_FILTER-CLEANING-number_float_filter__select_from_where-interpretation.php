@@ -47,10 +47,11 @@ $tainted = fread($handle, 4096);
 pclose($handle);
 
 $sanitized = filter_var($tainted, FILTER_SANITIZE_NUMBER_FLOAT);
-if (filter_var($sanitized, FILTER_VALIDATE_FLOAT))
+if (filter_var($sanitized, FILTER_VALIDATE_FLOAT)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = "SELECT * FROM student where id= $tainted ";
 
@@ -60,11 +61,8 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while ($data = mysql_fetch_array($res))
-{
+while ($data = mysql_fetch_array($res)) {
     print_r($data) ;
     echo "<br />" ;
 }
 mysql_close($conn);
-
-?>

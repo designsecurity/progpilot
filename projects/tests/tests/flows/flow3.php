@@ -7,6 +7,3 @@ $var2 = $_GET["p2"];
 $var3 = $var1." and ".$var2;
 
 echo $var3;
-
-
-?>

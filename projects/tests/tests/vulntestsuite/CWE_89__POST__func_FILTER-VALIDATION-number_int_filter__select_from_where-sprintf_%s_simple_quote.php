@@ -44,10 +44,11 @@ MODIFICATIONS.*/
 
 $tainted = $_POST['UserData'];
 
-if (filter_var($sanitized, FILTER_VALIDATE_INT))
+if (filter_var($sanitized, FILTER_VALIDATE_INT)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = sprintf("SELECT * FROM student where id='%s'", $tainted);
 
@@ -57,11 +58,8 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while ($data = mysql_fetch_array($res))
-{
+while ($data = mysql_fetch_array($res)) {
     print_r($data) ;
     echo "<br />" ;
 }
 mysql_close($conn);
-
-?>

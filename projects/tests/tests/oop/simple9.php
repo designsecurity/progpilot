@@ -20,16 +20,10 @@ class testc2
     }
 };
 
-if (true)
-{
+if (true) {
     $instance = new testc1;
-}
-else
-{
+} else {
     $instance = new testc2;
 }
 
 $instance->boum1($_GET["p"]);
-
-
-?>

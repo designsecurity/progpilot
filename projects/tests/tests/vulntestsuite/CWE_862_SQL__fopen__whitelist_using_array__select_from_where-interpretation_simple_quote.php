@@ -45,26 +45,19 @@ MODIFICATIONS.*/
 
 $handle = @fopen("/tmp/tainted.txt", "r");
 
-if ($handle)
-{
-    if (($tainted = fgets($handle, 4096)) == false)
-    {
+if ($handle) {
+    if (($tainted = fgets($handle, 4096)) == false) {
         $tainted = "";
     }
     fclose($handle);
-}
-else
-{
+} else {
     $tainted = "";
 }
 
 $legal_table = array("safe1", "safe2");
-if (in_array($tainted, $legal_table, true))
-{
+if (in_array($tainted, $legal_table, true)) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = $legal_table[0];
 }
 
@@ -75,5 +68,3 @@ $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $checked_data);
 $stmt->execute();
 mysql_close($conn);
-
-?>

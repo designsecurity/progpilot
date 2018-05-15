@@ -6,6 +6,3 @@ function func1arr()
 }
 
 echo func1arr()["tainted"];
-
-
-?>

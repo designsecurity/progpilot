@@ -8,5 +8,3 @@ function testf1($param2)
 
 
 testf1(array("test" => $_GET["p"]));
-
-?>

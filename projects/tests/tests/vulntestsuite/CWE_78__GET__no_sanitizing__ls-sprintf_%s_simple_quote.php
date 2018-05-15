@@ -50,6 +50,3 @@ $query = sprintf("ls '%s'", $tainted);
 
 //flaw
 $ret = system($query);
-
-
-?>

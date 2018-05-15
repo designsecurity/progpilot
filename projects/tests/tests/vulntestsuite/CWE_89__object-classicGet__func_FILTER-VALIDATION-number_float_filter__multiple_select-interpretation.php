@@ -51,7 +51,7 @@ class Input
         return $this->input;
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = $_GET['UserData'] ;
     }
@@ -59,10 +59,11 @@ class Input
 $temp = new Input();
 $tainted =  $temp->getInput();
 
-if (filter_var($sanitized, FILTER_VALIDATE_FLOAT))
+if (filter_var($sanitized, FILTER_VALIDATE_FLOAT)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = "SELECT * FROM COURSE c WHERE c.id IN (SELECT idcourse FROM REGISTRATION WHERE idstudent= $tainted )";
 
@@ -72,11 +73,8 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while ($data = mysql_fetch_array($res))
-{
+while ($data = mysql_fetch_array($res)) {
     print_r($data) ;
     echo "<br />" ;
 }
 mysql_close($conn);
-
-?>

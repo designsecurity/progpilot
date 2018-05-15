@@ -11,5 +11,3 @@ function testf2($param1)
 }
 
 testf1(testf2($_GET["p"]));
-
-?>

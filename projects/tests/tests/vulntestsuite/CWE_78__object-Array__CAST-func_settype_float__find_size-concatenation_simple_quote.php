@@ -51,7 +51,7 @@ class Input
         return $this->input[1];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input[0] = 'safe' ;
@@ -62,14 +62,12 @@ class Input
 $temp = new Input();
 $tainted =  $temp->getInput();
 
-if (settype($tainted, "float"))
+if (settype($tainted, "float")) {
     $tainted = $tainted ;
-else
+} else {
     $tainted = 0.0 ;
+}
 
 $query = "find / size '". $tainted . "'";
 
 $ret = system($query);
-
-
-?>

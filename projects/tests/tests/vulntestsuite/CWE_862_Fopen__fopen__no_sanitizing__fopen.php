@@ -45,16 +45,12 @@ MODIFICATIONS.*/
 
 $handle = @fopen("/tmp/tainted.txt", "r");
 
-if ($handle)
-{
-    if (($tainted = fgets($handle, 4096)) == false)
-    {
+if ($handle) {
+    if (($tainted = fgets($handle, 4096)) == false) {
         $tainted = "";
     }
     fclose($handle);
-}
-else
-{
+} else {
     $tainted = "";
 }
 
@@ -63,6 +59,3 @@ else
 //flaw
 
 $var = fopen($tainted, "r");
-
-
-?>

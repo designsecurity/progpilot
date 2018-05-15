@@ -14,7 +14,6 @@ class known_middle_class2
 {
     public function mysink()
     {
-
     }
 }
 
@@ -22,7 +21,6 @@ class unknown_middle_class2
 {
     public function mysink()
     {
-
     }
 };
 
@@ -72,6 +70,3 @@ $instance3 = new known_class1_undefined;
 $instance3->middle_object = new unknown_middle_class2;
 
 $instance3->middle_object->mysink($_GET["p"]);
-
-
-?>

@@ -51,7 +51,7 @@ class Input
         return $this->input;
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = $_GET['UserData'] ;
     }
@@ -59,14 +59,12 @@ class Input
 $temp = new Input();
 $tainted =  $temp->getInput();
 
-if (filter_var($sanitized, FILTER_VALIDATE_INT))
+if (filter_var($sanitized, FILTER_VALIDATE_INT)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = sprintf("find / size '%d'", $tainted);
 
 $ret = system($query);
-
-
-?>

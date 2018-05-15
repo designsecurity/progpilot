@@ -48,10 +48,11 @@ exec($script, $result, $return);
 $tainted = $result[0];
 
 $sanitized = filter_var($tainted, FILTER_SANITIZE_EMAIL);
-if (filter_var($sanitized, FILTER_VALIDATE_EMAIL))
+if (filter_var($sanitized, FILTER_VALIDATE_EMAIL)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = "SELECT * FROM '". $tainted . "'";
 
@@ -62,11 +63,8 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while ($data = mysql_fetch_array($res))
-{
+while ($data = mysql_fetch_array($res)) {
     print_r($data) ;
     echo "<br />" ;
 }
 mysql_close($conn);
-
-?>

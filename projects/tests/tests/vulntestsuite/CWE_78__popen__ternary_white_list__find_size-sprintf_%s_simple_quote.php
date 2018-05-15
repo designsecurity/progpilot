@@ -51,6 +51,3 @@ $tainted = $tainted  == 'safe1' ? 'safe1' : 'safe2';
 $query = sprintf("find / size '%d'", $tainted);
 
 $ret = system($query);
-
-
-?>

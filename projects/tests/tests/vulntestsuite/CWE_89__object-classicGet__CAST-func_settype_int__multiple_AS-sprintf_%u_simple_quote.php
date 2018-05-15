@@ -51,7 +51,7 @@ class Input
         return $this->input;
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = $_GET['UserData'] ;
     }
@@ -59,10 +59,11 @@ class Input
 $temp = new Input();
 $tainted =  $temp->getInput();
 
-if (settype($tainted, "integer"))
+if (settype($tainted, "integer")) {
     $tainted = $tainted ;
-else
+} else {
     $tainted = 0 ;
+}
 
 $query = sprintf("SELECT Trim(a.FirstName) & ' ' & Trim(a.LastName) AS employee_name, a.city, a.street & (' ' +a.housenum) AS address FROM Employees AS a  WHERE a.supervisor='%u'", $tainted);
 
@@ -72,11 +73,8 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while ($data = mysql_fetch_array($res))
-{
+while ($data = mysql_fetch_array($res)) {
     print_r($data) ;
     echo "<br />" ;
 }
 mysql_close($conn);
-
-?>

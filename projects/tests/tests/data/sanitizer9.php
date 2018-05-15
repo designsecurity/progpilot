@@ -6,12 +6,9 @@ $bool = settype($tainted, "float");
 
 echo $tainted;
 
-if (true)
-{
+if (true) {
     $tainted2 = "eee";
-}
-else
-{
+} else {
     $tainted2 = $_GET["p"];
 }
 
@@ -24,5 +21,3 @@ $tainted3 = $_GET["p"];
 $bool = settype($tainted3, "flddoat");
 
 echo $tainted3;
-
-?>

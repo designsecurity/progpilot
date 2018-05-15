@@ -52,7 +52,7 @@ class Input
         return $this->input['realOne'];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input['test'] = 'safe' ;
@@ -72,5 +72,3 @@ $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $checked_data);
 $stmt->execute();
 mysql_close($conn);
-
-?>

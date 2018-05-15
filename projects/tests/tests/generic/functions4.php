@@ -6,5 +6,3 @@ function testf($param)
 }
 
 echo testf($_GET["p"])."olalal";
-
-?>

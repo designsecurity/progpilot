@@ -46,6 +46,3 @@ $sanitized = filter_var($_GET['UserData'], FILTER_SANITIZE_MAGIC_QUOTES);
 $query = "cat ' $sanitized '";
 
 $ret = system($query);
-
-
-?>

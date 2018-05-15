@@ -42,17 +42,17 @@ $framework->add_output("./tests/includes/simple8.php", "xss");
 
 $framework->add_testbasis("./tests/includes/simple9.php");
 $framework->add_output("./tests/includes/simple9.php", array("\$pLocation"));
-$framework->add_output("./tests/includes/simple9.php", array("492"));
+$framework->add_output("./tests/includes/simple9.php", array("505"));
 $framework->add_output("./tests/includes/simple9.php", "header_injection");
 $framework->add_output("./tests/includes/simple9.php", array("\$page[\"body\"]"));
 $framework->add_output("./tests/includes/simple9.php", array("52"));
 $framework->add_output("./tests/includes/simple9.php", "xss");
 $framework->add_output("./tests/includes/simple9.php", "security misconfiguration");
-$framework->add_output("./tests/includes/simple9.php", "148");
-$framework->add_output("./tests/includes/simple9.php", "3388");
+$framework->add_output("./tests/includes/simple9.php", "158");
+$framework->add_output("./tests/includes/simple9.php", "3442");
 $framework->add_output("./tests/includes/simple9.php", "security misconfiguration");
-$framework->add_output("./tests/includes/simple9.php", "149");
-$framework->add_output("./tests/includes/simple9.php", "3467");
+$framework->add_output("./tests/includes/simple9.php", "159");
+$framework->add_output("./tests/includes/simple9.php", "3521");
 
 $framework->add_testbasis("./tests/includes/simple10.php");
 $framework->add_output("./tests/includes/simple10.php", array("\$var1"));
@@ -93,5 +93,3 @@ $framework->add_testbasis("./tests/includes/simple17.php");
 $framework->add_output("./tests/includes/simple17.php", array("\$var"));
 $framework->add_output("./tests/includes/simple17.php", array("3"));
 $framework->add_output("./tests/includes/simple17.php", "xss");
-
-?>

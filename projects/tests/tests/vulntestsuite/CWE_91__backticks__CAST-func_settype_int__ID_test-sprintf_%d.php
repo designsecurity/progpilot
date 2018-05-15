@@ -44,10 +44,11 @@ MODIFICATIONS.*/
 
 $tainted = `cat / tmp / tainted.txt`;
 
-if (settype($tainted, "integer"))
+if (settype($tainted, "integer")) {
     $tainted = $tainted ;
-else
+} else {
     $tainted = 0 ;
+}
 
 $query = sprintf("//User[@id=%d]", $tainted);
 
@@ -57,5 +58,3 @@ echo "query : ". $query ."<br /><br />" ;
 $res = $xml->xpath($query); //execution
 print_r($res);
 echo "<br />" ;
-
-?>

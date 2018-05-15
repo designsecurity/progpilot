@@ -50,6 +50,3 @@ $tainted = shell_exec('cat /tmp/tainted.txt');
 //flaw
 
 $var = fopen($tainted, "r");
-
-
-?>

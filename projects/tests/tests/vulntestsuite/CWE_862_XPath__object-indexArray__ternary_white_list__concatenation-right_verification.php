@@ -52,7 +52,7 @@ class Input
         return $this->input['realOne'];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input['test'] = 'safe' ;
@@ -73,4 +73,3 @@ echo "query : ". $query ."<br /><br />" ;
 $res = $xml->xpath($query); //execution
 print_r($res);
 echo "<br />" ;
-?>

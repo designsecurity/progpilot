@@ -49,6 +49,3 @@ $tainted = addslashes($tainted);
 $query = "ls '". $tainted . "'";
 
 $ret = system($query);
-
-
-?>

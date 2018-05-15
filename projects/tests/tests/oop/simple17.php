@@ -20,12 +20,9 @@ class testc2
     }
 };
 
-if (rand() % 2)
-{
+if (rand() % 2) {
     $instance1 = new testc1;
-}
-else
-{
+} else {
     $instance1 = new testc2;
 }
 
@@ -35,6 +32,3 @@ $copy = $instance1->boum1;
 
 echo $copy[0];
 echo $copy[1];
-
-
-?>

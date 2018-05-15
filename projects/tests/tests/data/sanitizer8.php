@@ -53,5 +53,3 @@ $tainted = $_GET["p"];
 $safe = filter_var($tainted, nexiste_pas);
 
 echo $safe;
-
-?>

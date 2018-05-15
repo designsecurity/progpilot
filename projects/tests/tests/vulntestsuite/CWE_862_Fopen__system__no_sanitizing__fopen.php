@@ -50,6 +50,3 @@ $tainted = system('ls', $retval);
 //flaw
 
 $var = fopen($tainted, "r");
-
-
-?>

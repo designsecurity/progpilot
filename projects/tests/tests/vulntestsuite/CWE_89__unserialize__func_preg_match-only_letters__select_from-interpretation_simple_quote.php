@@ -48,12 +48,9 @@ $tainted = $string;
 
 
 $re = "/^[a-zA-Z]*$/";
-if (preg_match($re, $tainted) == 1)
-{
+if (preg_match($re, $tainted) == 1) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = "";
 }
 
@@ -65,11 +62,8 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while ($data = mysql_fetch_array($res))
-{
+while ($data = mysql_fetch_array($res)) {
     print_r($data) ;
     echo "<br />" ;
 }
 mysql_close($conn);
-
-?>

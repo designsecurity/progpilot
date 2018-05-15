@@ -45,12 +45,9 @@ MODIFICATIONS.*/
 $tainted = $_POST['UserData'];
 
 $re = "/^.*$/";
-if (preg_match($re, $tainted) == 1)
-{
+if (preg_match($re, $tainted) == 1) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = "";
 }
 
@@ -58,6 +55,3 @@ $query = sprintf("ls '%s'", $tainted);
 
 //flaw
 $ret = system($query);
-
-
-?>

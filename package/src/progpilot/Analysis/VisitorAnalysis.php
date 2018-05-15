@@ -26,88 +26,83 @@ use progpilot\Utils;
 
 class VisitorAnalysis
 {
-        private $context;
-        private $current_storagemyblocks;
-        private $call_stack;
+    private $context;
+    private $current_storagemyblocks;
+    private $call_stack;
 
-        private $defs;
-        private $blocks;
+    private $defs;
+    private $blocks;
 
-        private $current_myfunc;
-        private $current_context_call;
-        private $current_myblock;
+    private $current_myfunc;
+    private $current_context_call;
+    private $current_myblock;
 
-        public function __construct()
-        {
-            $this->current_storagemyblocks = null;
-            $this->call_stack = [];
-            $this->myblock_stack = [];
+    public function __construct()
+    {
+        $this->current_storagemyblocks = null;
+        $this->call_stack = [];
+        $this->myblock_stack = [];
 
-            $this->current_myfunc = null;
-            $this->current_context_call = null;
-            $this->current_myblock = null;
+        $this->current_myfunc = null;
+        $this->current_context_call = null;
+        $this->current_myblock = null;
 
-            $this->defs = null;
-            $this->blocks = null;
-        }
+        $this->defs = null;
+        $this->blocks = null;
+    }
 
-        public function in_call_stack($cur_func)
-        {
-            foreach ($this->call_stack as $call)
-            {
-                $call_func = $call[0];
+    public function in_call_stack($cur_func)
+    {
+        foreach ($this->call_stack as $call) {
+            $call_func = $call[0];
 
-                if ($call_func->get_name() === $cur_func->get_name() && !$call_func->is_type(MyFunction::TYPE_FUNC_METHOD) && !$cur_func->is_type(MyFunction::TYPE_FUNC_METHOD))
-                    return true;
-
-                if ($call_func->get_name() === $cur_func->get_name() && $call_func->is_type(MyFunction::TYPE_FUNC_METHOD) && $cur_func->is_type(MyFunction::TYPE_FUNC_METHOD))
-                {
-                    $cur_class = $cur_func->get_myclass();
-                    $call_class = $call_func->get_myclass();
-
-                    if ($cur_class->get_name() === $call_class->get_name())
-                        return true;
-                }
+            if ($call_func->get_name() === $cur_func->get_name() && !$call_func->is_type(MyFunction::TYPE_FUNC_METHOD) && !$cur_func->is_type(MyFunction::TYPE_FUNC_METHOD)) {
+                return true;
             }
 
-            return false;
+            if ($call_func->get_name() === $cur_func->get_name() && $call_func->is_type(MyFunction::TYPE_FUNC_METHOD) && $cur_func->is_type(MyFunction::TYPE_FUNC_METHOD)) {
+                $cur_class = $cur_func->get_myclass();
+                $call_class = $call_func->get_myclass();
+
+                if ($cur_class->get_name() === $call_class->get_name()) {
+                    return true;
+                }
+            }
         }
 
-        public function get_myblock($context)
-        {
+        return false;
+    }
 
-            $this->context = $context;
-        }
+    public function get_myblock($context)
+    {
+        $this->context = $context;
+    }
 
-        public function set_context($context)
-        {
+    public function set_context($context)
+    {
+        $this->context = $context;
+    }
 
-            $this->context = $context;
-        }
+    public function analyze($mycode, $myfunc_called = null)
+    {
+        $index = $mycode->get_start();
+        $code = $mycode->get_codes();
 
-        public function analyze($mycode, $myfunc_called = null)
-        {
-            $index = $mycode->get_start();
-            $code = $mycode->get_codes();
+        do {
+            if (isset($code[$index])) {
+                $instruction = $code[$index];
 
-            do
-            {
-                if (isset($code[$index]))
-                {
-                    $instruction = $code[$index];
-
-                    switch ($instruction->get_opcode())
-                    {
+                switch ($instruction->get_opcode()) {
                         case Opcodes::ENTER_BLOCK:
                         {
                             $myblock = $instruction->get_property(MyInstruction::MYBLOCK);
 
-                            if ($this->current_storagemyblocks->contains($myblock))
-                            {
+                            if ($this->current_storagemyblocks->contains($myblock)) {
                                 array_pop($this->myblock_stack);
 
-                                if (count($this->myblock_stack) > 0)
+                                if (count($this->myblock_stack) > 0) {
                                     $this->current_myblock = $this->myblock_stack[count($this->myblock_stack) - 1];
+                                }
 
                                 $index = $myblock->get_end_address_block();
                                 break;
@@ -119,13 +114,11 @@ class VisitorAnalysis
 
                             $this->current_storagemyblocks->attach($myblock);
 
-                            foreach ($myblock->parents as $blockparent)
-                            {
+                            foreach ($myblock->parents as $blockparent) {
                                 $addr_start = $blockparent->get_start_address_block();
                                 $addr_end = $blockparent->get_end_address_block();
 
-                                if (!$this->current_storagemyblocks->contains($blockparent))
-                                {
+                                if (!$this->current_storagemyblocks->contains($blockparent)) {
                                     $oldindex_start = $mycode->get_start();
                                     $oldindex_end = $mycode->get_end();
 
@@ -146,8 +139,9 @@ class VisitorAnalysis
                         {
                             array_pop($this->myblock_stack);
 
-                            if (count($this->myblock_stack) > 0)
+                            if (count($this->myblock_stack) > 0) {
                                 $this->current_myblock = $this->myblock_stack[count($this->myblock_stack) - 1];
+                            }
 
                             break;
                         }
@@ -156,8 +150,9 @@ class VisitorAnalysis
                         {
                             $myfunc = $instruction->get_property(MyInstruction::MYFUNC);
 
-                            if ($myfunc->get_name() === "{main}")
+                            if ($myfunc->get_name() === "{main}") {
                                 return;
+                            }
 
                             $val = array_pop($this->call_stack);
 
@@ -198,8 +193,7 @@ class VisitorAnalysis
                         {
                             $expr = $instruction->get_property(MyInstruction::EXPR);
 
-                            if ($expr->is_assign())
-                            {
+                            if ($expr->is_assign()) {
                                 $defassign = $expr->get_assign_def();
 
                                 /*
@@ -225,12 +219,14 @@ class VisitorAnalysis
                             $tempdefa_myexpr = $tempdefa->get_expr();
                             $defassign_myexpr = $tempdefa_myexpr->get_assign_def();
 
-                            if ($tempdefa_myexpr->is_assign() && !$tempdefa_myexpr->is_assign_iterator())
+                            if ($tempdefa_myexpr->is_assign() && !$tempdefa_myexpr->is_assign_iterator()) {
                                 ArrayAnalysis::copy_array($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $tempdefa, $tempdefa->get_array_value(), $defassign_myexpr, $defassign_myexpr->get_array_value());
+                            }
 
                             $tainted = false;
-                            if (!is_null($this->context->inputs->get_source_byname(null, $tempdefa, false, false, $tempdefa->get_array_value())))
+                            if (!is_null($this->context->inputs->get_source_byname(null, $tempdefa, false, false, $tempdefa->get_array_value()))) {
                                 $tainted = true;
+                            }
                             $tempdefa->set_tainted($tainted);
 
                             $defs = ResolveDefs::temporary_simple($this->context, $this->defs, $tempdefa, $tempdefa_myexpr->is_assign_iterator(), $tempdefa_myexpr->is_assign(), $this->call_stack);
@@ -241,41 +237,36 @@ class VisitorAnalysis
 
                             $new_defsassign[] = $defassign_myexpr;
 
-                            foreach ($defs as $def)
-                            {
-
+                            foreach ($defs as $def) {
                                 $safe = AssertionAnalysis::temporary_simple($this->context, $this->defs, $this->current_myblock, $def, $tempdefa);
                                 $visibility = ResolveDefs::get_visibility_from_instances($this->context, $this->defs->getoutminuskill($def->get_block_id()), $defassign_myexpr);
 
-                                if ($def->is_type(MyDefinition::TYPE_PROPERTY))
-                                {
-                                    if (!is_null($this->context->inputs->get_source_byname(null, $def, false, $def->get_class_name(), false, $def)))
+                                if ($def->is_type(MyDefinition::TYPE_PROPERTY)) {
+                                    if (!is_null($this->context->inputs->get_source_byname(null, $def, false, $def->get_class_name(), false, $def))) {
                                         $def->set_tainted(true);
+                                    }
                                 }
 
-                                if ($visibility)
-                                {
+                                if ($visibility) {
                                     $storage_cast[] = $tempdefa->get_cast();
                                     $storage_knownvalues["".$tempdefa->get_id().""][] = $def->get_last_known_values();
 
                                     ValueAnalysis::copy_values($tempdefa, $def);
                                 }
 
-                                if ($visibility && !$safe)
+                                if ($visibility && !$safe) {
                                     TaintAnalysis::set_tainted($def->is_tainted(), $defassign_myexpr, $tempdefa_myexpr);
+                                }
 
                                 // vérifier s'il y a pas de concat
                                 // mis a jour de l'object
-                                if ($def->is_type(MyDefinition::TYPE_INSTANCE))
-                                {
+                                if ($def->is_type(MyDefinition::TYPE_INSTANCE)) {
                                     $defassign_myexpr->add_type(MyDefinition::TYPE_INSTANCE);
                                     $defassign_myexpr->set_object_id($def->get_object_id());
 
                                     $tmp_myclass = $this->context->get_objects()->get_myclass_from_object($def->get_object_id());
-                                    if (!is_null($tmp_myclass))
-                                    {
-                                        foreach ($tmp_myclass->get_properties() as $property)
-                                        {
+                                    if (!is_null($tmp_myclass)) {
+                                        foreach ($tmp_myclass->get_properties() as $property) {
                                             $mydeftemp = new MyDefinition($tempdefa->getLine(), $tempdefa->getColumn(), $tempdefa->get_name());
                                             $mydeftemp->add_type(MyDefinition::TYPE_PROPERTY);
                                             $mydeftemp->property->set_properties($property->property->get_properties());
@@ -284,21 +275,19 @@ class VisitorAnalysis
                                             $mydeftemp->set_id($tempdefa->get_id());
 
                                             $defs_found = ResolveDefs::select_properties($this->context, $this->defs->getoutminuskill($tempdefa->get_block_id()), $mydeftemp, true);
-                                            foreach ($defs_found as $def_found)
-                                            {
-                                                if ($def_found->is_type(MyDefinition::TYPE_COPY_ARRAY))
-                                                {
+                                            foreach ($defs_found as $def_found) {
+                                                if ($def_found->is_type(MyDefinition::TYPE_COPY_ARRAY)) {
                                                     $property->set_copyarrays($def_found->get_copyarrays());
                                                     $property->add_type(MyDefinition::TYPE_COPY_ARRAY);
                                                 }
 
                                                 TaintAnalysis::set_tainted($def_found->is_tainted(), $property, $def_found->get_taintedbyexpr());
 
-                                                if ($def_found->is_sanitized())
-                                                {
+                                                if ($def_found->is_sanitized()) {
                                                     $property->set_sanitized(true);
-                                                    foreach ($def_found->get_type_sanitized() as $type_sanitized)
+                                                    foreach ($def_found->get_type_sanitized() as $type_sanitized) {
                                                         $property->add_type_sanitized($type_sanitized);
+                                                    }
                                                 }
                                             }
                                         }
@@ -322,28 +311,28 @@ class VisitorAnalysis
                             IncludeAnalysis::funccall($this->context, $this->defs, $this->blocks, $instruction, $code, $index);
 
                             $stack_class = null;
-                            if ($myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD))
-                            {
+                            if ($myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD)) {
                                 $stack_class = ResolveDefs::funccall_class(
                                                    $this->context,
                                                    $this->defs->getoutminuskill($myfunc_call->get_block_id()),
-                                                   $myfunc_call);
+                                                   $myfunc_call
+                                );
 
                                 $class_of_funccall_arr = $stack_class[count($stack_class) - 1];
-                                foreach ($class_of_funccall_arr as $class_of_funccall)
-                                {
+                                foreach ($class_of_funccall_arr as $class_of_funccall) {
                                     $object_id = $class_of_funccall->get_object_id();
 
                                     $myclass = $this->context->get_objects()->get_myclass_from_object($object_id);
-                                    if (!is_null($myclass))
-                                    {
+                                    if (!is_null($myclass)) {
                                         $method = $myclass->get_method($funcname);
 
-                                        if (!ResolveDefs::get_visibility_method($myfunc_call->get_name_instance(), $method))
+                                        if (!ResolveDefs::get_visibility_method($myfunc_call->get_name_instance(), $method)) {
                                             $method = null;
+                                        }
 
-                                        if (!is_null($method))
+                                        if (!is_null($method)) {
                                             $method->get_this_def()->set_object_id($object_id);
+                                        }
 
                                         $list_myfunc[] = [$object_id, $myclass, $method];
 
@@ -355,8 +344,7 @@ class VisitorAnalysis
 
                                 // we didn't resolve any class so the class of method is unknown (undefined)
                                 // but we authorize to specify method of unknown class during the configuration of sinks ...
-                                if (count($class_of_funccall_arr) === 0)
-                                {
+                                if (count($class_of_funccall_arr) === 0) {
                                     TaintAnalysis::funccall_specify_analysis(null, $stack_class, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), null, $myfunc_call, $arr_funccall, $instruction, $mycode, $index);
                                 }
 
@@ -376,17 +364,15 @@ class VisitorAnalysis
                                 }
 
                                  */
-                            }
-                            else if ($myfunc_call->is_type(MyFunction::TYPE_FUNC_STATIC))
-                            {
+                            } elseif ($myfunc_call->is_type(MyFunction::TYPE_FUNC_STATIC)) {
                                 $myclass_static = $this->context->get_classes()->get_myclass($myfunc_call->get_name_instance());
 
-                                if (!is_null($myclass_static))
-                                {
+                                if (!is_null($myclass_static)) {
                                     $method = $myclass_static->get_method($funcname);
 
-                                    if (!ResolveDefs::get_visibility_method($myfunc_call->get_name_instance(), $method))
+                                    if (!ResolveDefs::get_visibility_method($myfunc_call->get_name_instance(), $method)) {
                                         $method = null;
+                                    }
 
                                     $list_myfunc[] = [0, $myclass_static, $method];
 
@@ -394,28 +380,23 @@ class VisitorAnalysis
 
                                     TaintAnalysis::funccall_specify_analysis($method, $stack_class, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myclass_static, $myfunc_call, $arr_funccall, $instruction, $mycode, $index);
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 $myfunc = $this->context->get_functions()->get_function($funcname);
                                 TaintAnalysis::funccall_specify_analysis($myfunc, null, $this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), null, $myfunc_call, $arr_funccall, $instruction, $mycode, $index);
 
                                 $list_myfunc[] = [0, null, $myfunc];
                             }
 
-                            foreach ($list_myfunc as $list)
-                            {
+                            foreach ($list_myfunc as $list) {
                                 $object_id = $list[0];
                                 $myclass = $list[1];
                                 $myfunc = $list[2];
 
                                 ResolveDefs::instance_build_this($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $object_id, $myclass, $myfunc, $myfunc_call);
 
-                                if (!is_null($myfunc) && !$this->in_call_stack($myfunc))
-                                {
+                                if (!is_null($myfunc) && !$this->in_call_stack($myfunc)) {
                                     // the called function is a method and this method exists in the class
-                                    if (($myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD) || $myfunc_call->is_type(MyFunction::TYPE_FUNC_STATIC)) && $myfunc->is_type(MyFunction::TYPE_FUNC_METHOD) || ((!$myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD) && !$myfunc_call->is_type(MyFunction::TYPE_FUNC_STATIC)) && !$myfunc->is_type(MyFunction::TYPE_FUNC_METHOD)))
-                                    {
+                                    if (($myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD) || $myfunc_call->is_type(MyFunction::TYPE_FUNC_STATIC)) && $myfunc->is_type(MyFunction::TYPE_FUNC_METHOD) || ((!$myfunc_call->is_type(MyFunction::TYPE_FUNC_METHOD) && !$myfunc_call->is_type(MyFunction::TYPE_FUNC_STATIC)) && !$myfunc->is_type(MyFunction::TYPE_FUNC_METHOD))) {
                                         FuncAnalysis::funccall_before($this->context, $this->defs, $myfunc, $myfunc_call, $instruction, $this->context->get_classes());
 
                                         $mycodefunction = new MyCode;
@@ -432,21 +413,17 @@ class VisitorAnalysis
                                 FuncAnalysis::funccall_after($this->context, $this->defs->getoutminuskill($myfunc_call->get_block_id()), $myfunc_call, $myfunc, $arr_funccall, $instruction, $code[$index + 3]);
 
                                 $class_of_funccall = null;
-                                if (is_null($myfunc))
-                                {
+                                if (is_null($myfunc)) {
                                     ResolveDefs::funccall_return_values($this->context, $myfunc_call, $instruction, $mycode, $index);
 
                                     // representations start
                                     $this->context->outputs->callgraph->add_funccall($this->current_myblock, $myfunc_call, $myclass);
-                                    // representations end
-                                }
-                                else
-                                {
+                                // representations end
+                                } else {
                                     $class_of_funccall = $myfunc->get_myclass();
 
                                     // representations start
-                                    foreach ($myfunc->get_blocks() as $myblock)
-                                    {
+                                    foreach ($myfunc->get_blocks() as $myblock) {
                                         $this->context->outputs->callgraph->add_child($this->current_myblock, $myblock);
                                         $this->context->outputs->cfg->add_edge($this->current_myblock, $myblock);
                                         break;
@@ -465,12 +442,8 @@ class VisitorAnalysis
                         }
                     }
 
-                    $index = $index + 1;
-                }
+                $index = $index + 1;
             }
-            while (isset($code[$index]) && $index <= $mycode->get_end());
-        }
+        } while (isset($code[$index]) && $index <= $mycode->get_end());
+    }
 }
-
-
-?>

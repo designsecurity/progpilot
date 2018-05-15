@@ -12,38 +12,34 @@ namespace progpilot\Objects;
 
 class MyAssertion
 {
+    private $arr;
+    private $type_assertion;
 
-        private $arr;
-        private $type_assertion;
+    private $mydef;
 
-        private $mydef;
+    public function __construct($mydef, $type_assertion)
+    {
+        $this->type_assertion = $type_assertion;
+        $this->mydef = $mydef;
+    }
 
-        public function __construct($mydef, $type_assertion)
-        {
+    public function add_def($mydef)
+    {
+        $this->mydef = $mydef;
+    }
 
-            $this->type_assertion = $type_assertion;
-            $this->mydef = $mydef;
-        }
+    public function get_def()
+    {
+        return $this->mydef;
+    }
 
-        public function add_def($mydef)
-        {
-            $this->mydef = $mydef;
-        }
+    public function add_type($type_assertion)
+    {
+        $this->type_assertion = $type_assertion;
+    }
 
-        public function get_def()
-        {
-            return $this->mydef;
-        }
-
-        public function add_type($type_assertion)
-        {
-            $this->type_assertion = $type_assertion;
-        }
-
-        public function get_type()
-        {
-            return $this->type_assertion;
-        }
+    public function get_type()
+    {
+        return $this->type_assertion;
+    }
 }
-
-?>

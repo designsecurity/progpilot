@@ -12,5 +12,3 @@ echo "$myvar4";
 
 $myvar2 = "olala";
 echo $myvar2;
-
-?>

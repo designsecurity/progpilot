@@ -15,11 +15,8 @@ require_once './conditionstest.php';
 require_once './testvulntestsuite.php';
 require_once './customtest.php';
 
-try
-{
-
-    foreach ($framework->get_testbasis() as $file)
-    {
+try {
+    foreach ($framework->get_testbasis() as $file) {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
@@ -38,8 +35,7 @@ try
 
         //$context->set_analyze_includes(false);
 
-        if ($file === "./tests/includes/simple5.php")
-        {
+        if ($file === "./tests/includes/simple5.php") {
             /*
               $context->outputs->resolve_includes_file("./tests/includes/includes_simple5.txt");
               $context->outputs->resolve_includes(true);
@@ -47,12 +43,9 @@ try
             $context->inputs->set_resolved_includes("./tests/includes/resolved_includes_simple5.txt");
         }
 
-        try
-        {
+        try {
             $analyzer->run($context);
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             echo 'Exception : ',  $e->getMessage(), "\n";
         }
 
@@ -62,51 +55,38 @@ try
 
         $result_test = false;
 
-        if (is_array($parsed_json) && count($parsed_json) > 0)
-        {
-            foreach ($parsed_json as $vuln)
-            {
+        if (is_array($parsed_json) && count($parsed_json) > 0) {
+            foreach ($parsed_json as $vuln) {
                 $result_test = true;
                 
-                if(isset($vuln['source_name']) && isset($vuln['source_line']))
-                {
+                if (isset($vuln['source_name']) && isset($vuln['source_line'])) {
                     $basis_outputs = [
                         $vuln['source_name'],
                         $vuln['source_line'],
                         $vuln['vuln_name']];
-                }
-                else
-                {
+                } else {
                     $basis_outputs = [
                         $vuln['vuln_name'],
                         $vuln['vuln_line'],
                         $vuln['vuln_column']];
                 }
 
-                if (!$framework->check_outputs($file, $basis_outputs, $parsed_json))
-                {
+                if (!$framework->check_outputs($file, $basis_outputs, $parsed_json)) {
                     $result_test = false;
                     break;
                 }
             }
-        }
-        else
-        {
-            if (count($framework->get_output($file)) == 0)
+        } else {
+            if (count($framework->get_output($file)) == 0) {
                 $result_test = true;
+            }
         }
 
-        if (!$result_test)
-        {
+        if (!$result_test) {
             echo "[$file] test result ko\n";
             var_dump($parsed_json);
         }
     }
-
-}
-catch (\RuntimeException $e)
-{
+} catch (\RuntimeException $e) {
     $result = $e->getMessage();
 }
-
-?>

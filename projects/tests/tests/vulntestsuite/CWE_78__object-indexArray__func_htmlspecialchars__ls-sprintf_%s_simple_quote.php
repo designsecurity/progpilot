@@ -51,7 +51,7 @@ class Input
         return $this->input['realOne'];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input['test'] = 'safe' ;
@@ -67,6 +67,3 @@ $tainted = htmlspecialchars($tainted, ENT_QUOTES);
 $query = sprintf("ls '%s'", $tainted);
 
 $ret = system($query);
-
-
-?>

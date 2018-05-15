@@ -9,5 +9,3 @@ $var_main = array(
 
 echo $var_main["TEST1"];
 echo $var_main["TEST3"];
-
-?>

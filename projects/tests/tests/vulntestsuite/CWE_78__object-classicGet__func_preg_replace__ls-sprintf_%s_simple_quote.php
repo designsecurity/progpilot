@@ -51,7 +51,7 @@ class Input
         return $this->input;
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = $_GET['UserData'] ;
     }
@@ -64,6 +64,3 @@ $tainted = preg_replace('/\'/', '', $tainted);
 $query = sprintf("ls '%s'", $tainted);
 
 $ret = system($query);
-
-
-?>

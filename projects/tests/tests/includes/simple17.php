@@ -6,5 +6,3 @@ function test_function($var)
 }
 
 include "simple17_include.php";
-
-?>

@@ -54,12 +54,9 @@ $temp = new Input();
 $tainted =  $temp->getInput();
 
 $re = "/^[a-zA-Z]*$/";
-if (preg_match($re, $tainted) == 1)
-{
+if (preg_match($re, $tainted) == 1) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = "";
 }
 
@@ -71,5 +68,3 @@ echo "query : ". $query ."<br /><br />" ;
 $res = $xml->xpath($query); //execution
 print_r($res);
 echo "<br />" ;
-
-?>

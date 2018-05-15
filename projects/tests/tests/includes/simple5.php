@@ -10,5 +10,3 @@ $var = "simple5";
 
 include($var."_include.php");
 //include("simple5_include.php");
-
-?>

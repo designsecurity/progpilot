@@ -16,43 +16,37 @@ use progpilot\Lang;
 
 class Application extends BaseApplication
 {
-        const NAME = 'progpilot';
-        const VERSION = '0.1.0';
+    const NAME = 'progpilot';
+    const VERSION = '0.1.0';
 
-        public function __construct()
-        {
-            parent::__construct(self::NAME, self::VERSION);
+    public function __construct()
+    {
+        parent::__construct(self::NAME, self::VERSION);
+    }
+
+    public function run(InputInterface $input = null, OutputInterface $output = null)
+    {
+        $this->setCatchExceptions(false);
+
+        try {
+            $statusCode = parent::run($input, $output);
+        } catch (\Exception $e) {
+            echo "\n\n".$e->getMessage()."\n\n";
         }
-
-        public function run(InputInterface $input = null, OutputInterface $output = null)
-        {
-            $this->setCatchExceptions(false);
-
-            try
-            {
-                $statusCode = parent::run($input, $output);
-            }
-            catch (\Exception $e)
-            {
-                echo "\n\n".$e->getMessage()."\n\n";
-            }
-        }
+    }
 
 
-        public function getDefinition()
-        {
-            $inputDefinition = parent::getDefinition();
-            // clear out the normal first argument, which is the command name
-            $inputDefinition->setArguments();
+    public function getDefinition()
+    {
+        $inputDefinition = parent::getDefinition();
+        // clear out the normal first argument, which is the command name
+        $inputDefinition->setArguments();
 
-            return $inputDefinition;
-        }
+        return $inputDefinition;
+    }
 
-        protected function getCommandName(InputInterface $input)
-        {
-            return 'progpilot';
-        }
+    protected function getCommandName(InputInterface $input)
+    {
+        return 'progpilot';
+    }
 }
-
-
-?>

@@ -52,6 +52,3 @@ $tainted = unserialize($string);
 //flaw
 
 $var = fopen($tainted, "r");
-
-
-?>

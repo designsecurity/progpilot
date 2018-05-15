@@ -51,7 +51,7 @@ class Input
         return $this->input;
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = $_GET['UserData'] ;
     }
@@ -64,6 +64,3 @@ $tainted = htmlentities($tainted, ENT_QUOTES);
 $query = sprintf("ls '%s'", $tainted);
 
 $ret = system($query);
-
-
-?>

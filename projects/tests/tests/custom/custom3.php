@@ -9,6 +9,3 @@ class testc
 }
 
 $a = new testc("not_vuln");
-
-
-?>

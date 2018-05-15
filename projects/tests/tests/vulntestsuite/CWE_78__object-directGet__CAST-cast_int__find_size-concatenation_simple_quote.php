@@ -58,6 +58,3 @@ $tainted = (int) $tainted ;
 $query = "find / size '". $tainted . "'";
 
 $ret = system($query);
-
-
-?>

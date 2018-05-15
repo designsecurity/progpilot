@@ -51,7 +51,7 @@ class Input
         return $this->input['realOne'];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input['test'] = 'safe' ;
@@ -63,15 +63,13 @@ $temp = new Input();
 $tainted =  $temp->getInput();
 
 $sanitized = filter_var($tainted, FILTER_SANITIZE_EMAIL);
-if (filter_var($sanitized, FILTER_VALIDATE_EMAIL))
+if (filter_var($sanitized, FILTER_VALIDATE_EMAIL)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = sprintf("cat '%s'", $tainted);
 
 //flaw
 $ret = system($query);
-
-
-?>

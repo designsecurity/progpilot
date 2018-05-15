@@ -51,7 +51,7 @@ class Input
         return $this->input[1];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input[0] = 'safe' ;
@@ -63,10 +63,11 @@ $temp = new Input();
 $tainted =  $temp->getInput();
 
 $sanitized = filter_var($tainted, FILTER_SANITIZE_EMAIL);
-if (filter_var($sanitized, FILTER_VALIDATE_EMAIL))
+if (filter_var($sanitized, FILTER_VALIDATE_EMAIL)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = sprintf("!name='%s'", $tainted);
 
@@ -75,5 +76,3 @@ $ds = ldap_connect("localhost");
 $r = ldap_bind($ds);
 $sr = ldap_search($ds, "o=My Company, c=US", $query);
 ldap_close($ds);
-
-?>

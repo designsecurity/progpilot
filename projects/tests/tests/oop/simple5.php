@@ -15,26 +15,17 @@ class testc2
     public $boum1;
 };
 
-if (true)
-{
+if (true) {
     $instance = new testc1;
-}
-else
-{
+} else {
     $instance = new testc2;
 }
 
-if (true)
-{
+if (true) {
     $instance->boum1 = $_GET["p"];
-    //$instance->boum1 = "eee";
-}
-else
-{
+//$instance->boum1 = "eee";
+} else {
     $instance->set_boum1($_GET["p"]);
 }
 
 echo $instance->boum1;
-
-
-?>

@@ -18,6 +18,3 @@ echo $instance1->boum1;
 $instance1->boum1 = $_GET["p"];
 
 echo $instance1->boum1;
-
-
-?>

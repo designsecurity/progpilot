@@ -48,9 +48,8 @@ $descriptorspec = array(
                       2 => array("file", "/tmp/error-output.txt", "a")
                   );
 $cwd = '/tmp';
-$process = proc_open('more /tmp/tainted.txt', $descriptorspec, $pipes, $cwd, NULL);
-if (is_resource($process))
-{
+$process = proc_open('more /tmp/tainted.txt', $descriptorspec, $pipes, $cwd, null);
+if (is_resource($process)) {
     fclose($pipes[0]);
     $tainted = stream_get_contents($pipes[1]);
     fclose($pipes[1]);
@@ -58,12 +57,9 @@ if (is_resource($process))
 }
 
 $re = "/^[a-zA-Z]*$/";
-if (preg_match($re, $tainted) == 1)
-{
+if (preg_match($re, $tainted) == 1) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = "";
 }
 
@@ -75,5 +71,3 @@ echo "query : ". $query ."<br /><br />" ;
 $res = $xml->xpath($query); //execution
 print_r($res);
 echo "<br />" ;
-
-?>

@@ -4,7 +4,6 @@ class testccc1
 {
     public function mysanitizer()
     {
-
     }
 }
 
@@ -15,5 +14,3 @@ $ret = $instance->mysanitizer($_GET["p"]);
 echo "$ret";
 
 mysql_query($ret);
-
-?>

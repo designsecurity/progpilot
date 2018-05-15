@@ -26,5 +26,3 @@ $framework->add_output("./tests/flows/flow3.php", "\$var1");
 $framework->add_output("./tests/flows/flow3.php", 3);
 $framework->add_output("./tests/flows/flow3.php", "\$_GET[\"p1\"]");
 $framework->add_output("./tests/flows/flow3.php", 3);
-
-?>

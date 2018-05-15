@@ -16,5 +16,3 @@ function testf3($param)
 }
 
 testf3("test");
-
-?>

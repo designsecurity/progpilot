@@ -52,6 +52,3 @@ $query = sprintf("find / size '%d'", $tainted);
 
 //flaw
 $ret = system($query);
-
-
-?>

@@ -50,6 +50,3 @@ $query = "find / size '". $tainted . "'";
 
 //flaw
 $ret = system($query);
-
-
-?>

@@ -46,15 +46,13 @@ $string = $_POST['UserData'] ;
 $tainted = unserialize($string);
 
 
-if (filter_var($tainted, FILTER_VALIDATE_EMAIL))
+if (filter_var($tainted, FILTER_VALIDATE_EMAIL)) {
     $tainted = $tainted ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = "cat '". $tainted . "'";
 
 //flaw
 $ret = system($query);
-
-
-?>

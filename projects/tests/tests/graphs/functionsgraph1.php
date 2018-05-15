@@ -38,6 +38,3 @@ function testf6()
 testf1();
 testf2();
 testf3();
-
-
-?>

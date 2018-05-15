@@ -7640,6 +7640,3 @@ $framework->add_output("./tests/PHP-Vulnerability-test-suite/XSS/CWE_79/unsafe/C
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/XSS/CWE_79/unsafe/CWE_79__unserialize__whitelist_using_array__Use_untrusted_data_script-side_DoubleQuoted_Expr.php", array("49"));
 $framework->add_output("./tests/PHP-Vulnerability-test-suite/XSS/CWE_79/unsafe/CWE_79__unserialize__whitelist_using_array__Use_untrusted_data_script-side_DoubleQuoted_Expr.php", "file_inclusion");
  */
-
-
-?>

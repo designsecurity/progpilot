@@ -51,7 +51,7 @@ class Input
         return $this->input;
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = $_GET['UserData'] ;
     }
@@ -60,18 +60,12 @@ $temp = new Input();
 $tainted =  $temp->getInput();
 
 $re = "/^[a-zA-Z]*$/";
-if (preg_match($re, $tainted) == 1)
-{
+if (preg_match($re, $tainted) == 1) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = "";
 }
 
 $query = "ls '". $tainted . "'";
 
 $ret = system($query);
-
-
-?>

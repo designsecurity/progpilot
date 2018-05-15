@@ -44,29 +44,23 @@ MODIFICATIONS.*/
 
 $handle = @fopen("/tmp/tainted.txt", "r");
 
-if ($handle)
-{
-    if (($tainted = fgets($handle, 4096)) == false)
-    {
+if ($handle) {
+    if (($tainted = fgets($handle, 4096)) == false) {
         $tainted = "";
     }
     fclose($handle);
-}
-else
-{
+} else {
     $tainted = "";
 }
 
 $sanitized = filter_var($tainted, FILTER_SANITIZE_EMAIL);
-if (filter_var($sanitized, FILTER_VALIDATE_EMAIL))
+if (filter_var($sanitized, FILTER_VALIDATE_EMAIL)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = sprintf("ls '%s'", $tainted);
 
 //flaw
 $ret = system($query);
-
-
-?>

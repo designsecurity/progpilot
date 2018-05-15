@@ -12,5 +12,3 @@ echo $inst->member1;
 echo $inst;
 
 echo $inst->member2;
-
-?>

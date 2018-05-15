@@ -52,7 +52,7 @@ class Input
         return $this->input['realOne'];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input['test'] = 'safe' ;
@@ -68,6 +68,3 @@ $tainted = preg_replace('/\'/', '', $tainted);
 //flaw
 
 $var = fopen($tainted, "r");
-
-
-?>

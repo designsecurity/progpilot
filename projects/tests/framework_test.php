@@ -8,7 +8,6 @@ class framework_test
 
     public function __construct()
     {
-
         $this->basis = [];
         $this->inputs = [];
         $this->outputs = [];
@@ -31,38 +30,37 @@ class framework_test
 
     public function check_outputs($testbasis, $basis_outputs, $basis_vulns)
     {
-        if (count($this->outputs["$testbasis"]) === 0 && count($basis_outputs) === 0)
+        if (count($this->outputs["$testbasis"]) === 0 && count($basis_outputs) === 0) {
             return true;
+        }
 
-        foreach ($basis_outputs as $basis_output)
-        {
+        foreach ($basis_outputs as $basis_output) {
             $return_check = false;
 
-            foreach ($this->outputs["$testbasis"] as $output)
-            {
-                if ($output == $basis_output)
-                {
+            foreach ($this->outputs["$testbasis"] as $output) {
+                if ($output == $basis_output) {
                     $return_check = true;
                     break;
                 }
             }
             
-            if (!$return_check)
+            if (!$return_check) {
                 return false;
+            }
         }
         
         $nb_vuln_from_framework = count($this->outputs["$testbasis"]) / count($basis_outputs);
         $nb_vuln_from_outputs = count($basis_vulns);
         
-        if($nb_vuln_from_framework !== $nb_vuln_from_outputs)
-          return false;
+        if ($nb_vuln_from_framework !== $nb_vuln_from_outputs) {
+            return false;
+        }
 
         return true;
     }
 
     public function add_testbasis($testbasis)
     {
-
         $this->basis[] = $testbasis;
         $this->inputs["$testbasis"] = [];
         $this->outputs["$testbasis"] = [];
@@ -70,13 +68,11 @@ class framework_test
 
     public function add_input($testbasis, $input)
     {
-
         $this->inputs["$testbasis"][] = $input;
     }
 
     public function add_output($testbasis, $output)
     {
-
         $this->outputs["$testbasis"][] = $output;
     }
 }

@@ -52,7 +52,7 @@ class Input
         return $this->input['realOne'];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input['test'] = 'safe' ;
@@ -67,6 +67,3 @@ $tainted = $tainted  == 'safe1' ? 'safe1' : 'safe2';
 
 
 $var = fopen($tainted, "r");
-
-
-?>

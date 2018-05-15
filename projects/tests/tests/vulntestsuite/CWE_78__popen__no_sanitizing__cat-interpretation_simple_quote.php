@@ -52,6 +52,3 @@ $query = "cat ' $tainted '";
 
 //flaw
 $ret = system($query);
-
-
-?>

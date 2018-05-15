@@ -7,5 +7,3 @@ echo $var["t"];
 $var = "ecrase";
 
 echo $var["t"];
-
-?>

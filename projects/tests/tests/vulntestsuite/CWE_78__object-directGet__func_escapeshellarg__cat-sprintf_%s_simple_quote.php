@@ -60,6 +60,3 @@ $tainted = escapeshellarg($taitned);
 $query = sprintf("cat '%s'", $tainted);
 
 $ret = system($query);
-
-
-?>

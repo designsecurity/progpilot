@@ -6,11 +6,8 @@ $framework = new framework_test;
 
 require_once './foldertest.php';
 
-try
-{
-
-    foreach ($framework->get_testbasis() as $folder)
-    {
+try {
+    foreach ($framework->get_testbasis() as $folder) {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
@@ -20,12 +17,9 @@ try
         $context->inputs->set_validators("../../package/src/uptodate_data/validators.json");
         $context->inputs->set_folder($folder);
 
-        try
-        {
+        try {
             $analyzer->run($context);
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             echo 'Exception : ',  $e->getMessage(), "\n";
         }
 
@@ -35,51 +29,38 @@ try
 
         $result_test = false;
 
-        if (is_array($parsed_json) && count($parsed_json) > 0)
-        {
-            foreach ($parsed_json as $vuln)
-            {
+        if (is_array($parsed_json) && count($parsed_json) > 0) {
+            foreach ($parsed_json as $vuln) {
                 $result_test = true;
                 
-                if(isset($vuln['source_name']) && isset($vuln['source_line']))
-                {
+                if (isset($vuln['source_name']) && isset($vuln['source_line'])) {
                     $basis_outputs = [
                         $vuln['source_name'],
                         $vuln['source_line'],
                         $vuln['vuln_name']];
-                }
-                else
-                {
+                } else {
                     $basis_outputs = [
                         $vuln['vuln_name'],
                         $vuln['vuln_line'],
                         $vuln['vuln_column']];
                 }
 
-                if (!$framework->check_outputs($folder, $basis_outputs, $parsed_json))
-                {
+                if (!$framework->check_outputs($folder, $basis_outputs, $parsed_json)) {
                     $result_test = false;
                     break;
                 }
             }
-        }
-        else
-        {
-            if (count($framework->get_output($folder)) == 0)
+        } else {
+            if (count($framework->get_output($folder)) == 0) {
                 $result_test = true;
+            }
         }
 
-        if (!$result_test)
-        {
+        if (!$result_test) {
             echo "[$folder] test result ko\n";
             var_dump($parsed_json);
         }
     }
-
-}
-catch (\RuntimeException $e)
-{
+} catch (\RuntimeException $e) {
     $result = $e->getMessage();
 }
-
-?>

@@ -24,5 +24,3 @@ $context->outputs->resolve_includes(true);
 //$context->inputs->set_includes("./tests/includes/resolved_includes_simple5.txt");
 
 $analyzer->run($context);
-
-?>

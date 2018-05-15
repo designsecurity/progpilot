@@ -12,96 +12,92 @@ namespace progpilot\Inputs;
 
 class MySink extends MySpecify
 {
+    private $attack;
+    private $cwe;
+    private $parameters;
+    private $has_parameters;
 
-        private $attack;
-        private $cwe;
-        private $parameters;
-        private $has_parameters;
+    public function __construct($name, $language, $attack, $cwe)
+    {
+        parent::__construct($name, $language);
 
-        public function __construct($name, $language, $attack, $cwe)
-        {
+        $this->attack = $attack;
+        $this->cwe = $cwe;
+        $this->has_parameters = false;
+        $this->parameters = [];
+        $this->global_conditions = [];
+    }
 
-            parent::__construct($name, $language);
+    public function add_global_condition($condition)
+    {
+        $this->global_conditions[] = $condition;
+    }
 
-            $this->attack = $attack;
-            $this->cwe = $cwe;
-            $this->has_parameters = false;
-            $this->parameters = [];
-            $this->global_conditions = [];
-        }
-
-        public function add_global_condition($condition)
-        {
-            $this->global_conditions[] = $condition;
-        }
-
-        public function is_global_condition($condition)
-        {
-            foreach ($this->global_conditions as $condition_global)
-            {
-                if ($condition === $condition_global)
-                    return true;
+    public function is_global_condition($condition)
+    {
+        foreach ($this->global_conditions as $condition_global) {
+            if ($condition === $condition_global) {
+                return true;
             }
-
-            return false;
         }
 
-        public function add_parameter($id, $condition = null)
-        {
-            $parameter = [$id, $condition];
-            $this->parameters[] = $parameter;
-        }
+        return false;
+    }
 
-        public function get_parameters()
-        {
-            return $this->parameters;
-        }
+    public function add_parameter($id, $condition = null)
+    {
+        $parameter = [$id, $condition];
+        $this->parameters[] = $parameter;
+    }
 
-        public function get_parameter_condition($i)
-        {
-            foreach ($this->parameters as $parameter)
-            {
-                $index = $parameter[0];
-                $condition = $parameter[1];
+    public function get_parameters()
+    {
+        return $this->parameters;
+    }
 
-                if ($index === $i)
-                    return $condition;
+    public function get_parameter_condition($i)
+    {
+        foreach ($this->parameters as $parameter) {
+            $index = $parameter[0];
+            $condition = $parameter[1];
+
+            if ($index === $i) {
+                return $condition;
             }
-
-            return null;
         }
 
-        public function is_parameter($i)
-        {
-            foreach ($this->parameters as $parameter)
-            {
-                $index = $parameter[0];
-                if ($index === $i)
-                    return true;
+        return null;
+    }
+
+    public function is_parameter($i)
+    {
+        foreach ($this->parameters as $parameter) {
+            $index = $parameter[0];
+            if ($index === $i) {
+                return true;
             }
-
-            return false;
         }
 
-        public function has_parameters()
-        {
-            return $this->has_parameters;
-        }
+        return false;
+    }
 
-        public function set_has_parameters($has_parameters)
-        {
-            $this->has_parameters = $has_parameters;
-        }
+    public function has_parameters()
+    {
+        return $this->has_parameters;
+    }
 
-        public function get_attack()
-        {
-            return $this->attack;
-        }
+    public function set_has_parameters($has_parameters)
+    {
+        $this->has_parameters = $has_parameters;
+    }
 
-        public function get_cwe()
-        {
-            return $this->cwe;
-        }
+    public function get_attack()
+    {
+        return $this->attack;
+    }
+
+    public function get_cwe()
+    {
+        return $this->cwe;
+    }
 }
-
-?>

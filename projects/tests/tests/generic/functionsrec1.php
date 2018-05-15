@@ -9,5 +9,3 @@ function testf1($var)
 
 $var = testf1($_GET["p"]);
 echo $var;
-
-?>

@@ -50,6 +50,3 @@ $tainted = `cat / tmp / tainted.txt`;
 //flaw
 
 $var = fopen($tainted, "r");
-
-
-?>

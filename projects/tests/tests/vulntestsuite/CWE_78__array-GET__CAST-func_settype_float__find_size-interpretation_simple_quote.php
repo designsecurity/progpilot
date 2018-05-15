@@ -48,14 +48,12 @@ $array[] = $_GET['userData'] ;
 $array[] = 'safe' ;
 $tainted = $array[1] ;
 
-if (settype($tainted, "float"))
+if (settype($tainted, "float")) {
     $tainted = $tainted ;
-else
+} else {
     $tainted = 0.0 ;
+}
 
 $query = "find / size ' $tainted '";
 
 $ret = system($query);
-
-
-?>

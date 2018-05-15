@@ -8,6 +8,3 @@ function testf($param)
 $var = testf($_GET["p"])[0];
 
 echo $var;
-
-
-?>

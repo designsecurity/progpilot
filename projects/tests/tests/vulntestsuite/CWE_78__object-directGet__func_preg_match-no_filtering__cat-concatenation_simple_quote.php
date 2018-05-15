@@ -54,12 +54,9 @@ $temp = new Input();
 $tainted =  $temp->getInput();
 
 $re = "/^.*$/";
-if (preg_match($re, $tainted) == 1)
-{
+if (preg_match($re, $tainted) == 1) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = "";
 }
 
@@ -67,6 +64,3 @@ $query = "cat '". $tainted . "'";
 
 //flaw
 $ret = system($query);
-
-
-?>

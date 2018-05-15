@@ -52,7 +52,7 @@ class Input
         return $this->input;
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = $_GET['UserData'] ;
     }
@@ -64,6 +64,3 @@ $tainted = $tainted  == 'safe1' ? 'safe1' : 'safe2';
 
 
 $var = fopen($tainted, "r");
-
-
-?>

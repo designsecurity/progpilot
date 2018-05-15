@@ -47,10 +47,11 @@ exec($script, $result, $return);
 
 $tainted = $result[0];
 
-if (settype($tainted, "integer"))
+if (settype($tainted, "integer")) {
     $tainted = $tainted ;
-else
+} else {
     $tainted = 0 ;
+}
 
 $query = sprintf("SELECT * FROM COURSE c WHERE c.id IN (SELECT idcourse FROM REGISTRATION WHERE idstudent='%u')", $tainted);
 
@@ -60,11 +61,8 @@ echo "query : ". $query ."<br /><br />" ;
 
 $res = mysql_query($query); //execution
 
-while ($data = mysql_fetch_array($res))
-{
+while ($data = mysql_fetch_array($res)) {
     print_r($data) ;
     echo "<br />" ;
 }
 mysql_close($conn);
-
-?>

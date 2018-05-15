@@ -18,85 +18,80 @@ use progpilot\objects\MyFunction;
 
 class MyCode
 {
+    private $code;
+    private $start;
+    private $end;
 
-        private $code;
-        private $start;
-        private $end;
+    public function __construct()
+    {
+        $this->code = [];
+    }
 
-        public function __construct()
-        {
+    public function get_start()
+    {
+        return $this->start;
+    }
 
-            $this->code = [];
-        }
+    public function get_end()
+    {
+        return $this->end;
+    }
 
-        public function get_start()
-        {
-            return $this->start;
-        }
+    public function set_start($start)
+    {
+        $this->start = $start;
+    }
 
-        public function get_end()
-        {
-            return $this->end;
-        }
+    public function set_end($end)
+    {
+        $this->end = $end;
+    }
 
-        public function set_start($start)
-        {
-            $this->start = $start;
-        }
+    public function set_codes($codes)
+    {
+        $this->code = $codes;
+    }
 
-        public function set_end($end)
-        {
-            $this->end = $end;
-        }
+    public function get_codes()
+    {
+        return $this->code;
+    }
 
-        public function set_codes($codes)
-        {
-            $this->code = $codes;
-        }
+    public function add_code($code)
+    {
+        $this->code[] = $code;
+    }
 
-        public function get_codes()
-        {
-            return $this->code;
-        }
+    public function get_last_code()
+    {
+        $last_index = count($this->code);
+        return $this->code[$last_index - 1];
+    }
 
-        public function add_code($code)
-        {
-            $this->code[] = $code;
-        }
+    public static function read_code($context, $file, $defs, $myjavascript_file)
+    {
+        $first_block = true;
+        $handle = fopen($file, "r");
 
-        public function get_last_code()
-        {
-            $last_index = count($this->code);
-            return $this->code[$last_index - 1];
-        }
+        $myfunction = new MyFunction("{main}");
+        $myfunction->set_start_address_func(0);
+        $context->get_functions()->add_function($myfunction->get_name(), $myfunction);
 
-        public static function read_code($context, $file, $defs, $myjavascript_file)
-        {
-            $first_block = true;
-            $handle = fopen($file, "r");
+        $inst_func = new MyInstruction(Opcodes::ENTER_FUNCTION);
+        $inst_func->add_property(MyInstruction::MYFUNC, $myfunction);
+        $context->get_mycode()->add_code($inst_func);
 
-            $myfunction = new MyFunction("{main}");
-            $myfunction->set_start_address_func(0);
-            $context->get_functions()->add_function($myfunction->get_name(), $myfunction);
+        if ($handle) {
+            $array_myblocks = [];
+            $array_myblocks_childs = [];
 
-            $inst_func = new MyInstruction(Opcodes::ENTER_FUNCTION);
-            $inst_func->add_property(MyInstruction::MYFUNC, $myfunction);
-            $context->get_mycode()->add_code($inst_func);
+            $array_exprs = [];
+            $array_definitions = [];
 
-            if ($handle)
-            {
-                $array_myblocks = [];
-                $array_myblocks_childs = [];
+            while (!feof($handle)) {
+                $buffer = rtrim(fgets($handle));
 
-                $array_exprs = [];
-                $array_definitions = [];
-
-                while (!feof($handle))
-                {
-                    $buffer = rtrim(fgets($handle));
-
-                    switch ($buffer)
-                    {
+                switch ($buffer) {
                         case 'EnterBlock':
                         {
                             $myblock_string = fgets($handle);
@@ -113,8 +108,7 @@ class MyCode
                             $array_myblocks[$myblock_id] = $myblock;
                             $array_myblocks_childs[$myblock_id] = [];
 
-                            for ($i = 0; $i < $nb_edges; $i ++)
-                            {
+                            for ($i = 0; $i < $nb_edges; $i ++) {
                                 $id_child = (int) fgets($handle);
                                 $array_myblocks_childs[$myblock_id][] = $id_child;
                             }
@@ -123,12 +117,10 @@ class MyCode
                             $inst_block->add_property(MyInstruction::MYBLOCK, $myblock);
                             $context->get_mycode()->add_code($inst_block);
 
-                            if ($first_block)
-                            {
+                            if ($first_block) {
                                 $first_block = false;
 
-                                foreach ($defs as $mydef)
-                                {
+                                foreach ($defs as $mydef) {
                                     $inst_def = new MyInstruction(Opcodes::DEFINITION);
                                     $inst_def->add_property(MyInstruction::DEF, $mydef);
                                     $context->get_mycode()->add_code($inst_def);
@@ -143,8 +135,7 @@ class MyCode
                             $myblock_string = fgets($handle);
                             $myblock_id = (int) fgets($handle);
 
-                            if (isset($array_myblocks[$myblock_id]))
-                            {
+                            if (isset($array_myblocks[$myblock_id])) {
                                 $myblock = $array_myblocks[$myblock_id];
                                 $myblock->set_end_address_block(count($context->get_mycode()->get_codes()));
 
@@ -196,8 +187,7 @@ class MyCode
                             $myfunction_call->set_nb_params($func_nb_params);
                             $myfunction_call->set_source_myfile($myjavascript_file);
 
-                            if ($func_is_instance === "true")
-                            {
+                            if ($func_is_instance === "true") {
                                 $myfunction_call->add_type(MyOp::TYPE_INSTANCE);
                                 $myfunction_call->set_name_instance($func_name_instance);
 
@@ -207,8 +197,7 @@ class MyCode
                                 $myfunction_call->set_back_def($mybackdef);
                             }
 
-                            for ($j = 0; $j < $func_nb_params; $j ++)
-                            {
+                            for ($j = 0; $j < $func_nb_params; $j ++) {
                                 $func_def_id_param = (int) fgets($handle);
                                 $func_def_param = $array_definitions[$func_def_id_param];
                                 $inst_funcall_main->add_property("argdef$j", $func_def_param);
@@ -241,8 +230,7 @@ class MyCode
                             $array_definitions[] = $mytemp;
 
                             $nb_exprs = (int) fgets($handle);
-                            for ($i = 0; $i < $nb_exprs; $i ++)
-                            {
+                            for ($i = 0; $i < $nb_exprs; $i ++) {
                                 $id_expr = (int) fgets($handle);
                                 $mytemp->add_expr($id_expr);
                             }
@@ -285,8 +273,7 @@ class MyCode
 
                             $expr_is_assign = rtrim(fgets($handle));
 
-                            if ($expr_is_assign === "true")
-                            {
+                            if ($expr_is_assign === "true") {
                                 $expr_def_assign_id = (int) fgets($handle);
                                 $myexpr->set_assign(true);
                                 $myexpr->set_assign_def($expr_def_assign_id);
@@ -296,8 +283,7 @@ class MyCode
 
                             $array_exprs[] = $myexpr;
 
-                            for ($i = 0; $i < $nb_exprs; $i ++)
-                            {
+                            for ($i = 0; $i < $nb_exprs; $i ++) {
                                 $def_id = (int) fgets($handle);
                                 $myexpr->add_def($def_id);
                             }
@@ -309,78 +295,67 @@ class MyCode
                             break;
                         }
                     }
-                }
-
-                foreach ($array_myblocks as $parent)
-                {
-                    $parent->addParent($parent);
-                    $childs = $array_myblocks_childs[$parent->get_id()];
-
-                    foreach ($childs as $child)
-                    {
-                        $myblock_child = $array_myblocks[$child];
-                        $myblock_child->addParent($parent);
-                    }
-                }
-
-                foreach ($array_exprs as $myexpr)
-                {
-                    $defs = $myexpr->get_defs();
-                    $myexpr->set_defs(array());
-
-                    if ($myexpr->is_assign())
-                    {
-                        $def_id = $myexpr->get_assign_def();
-                        $mydef = $array_definitions[$def_id];
-                        $myexpr->set_assign_def($mydef);
-                    }
-
-                    foreach ($defs as $def_id)
-                    {
-                        $mydef = $array_definitions[$def_id];
-                        $myexpr->add_def($mydef);
-                    }
-                }
-
-                foreach ($array_definitions as $mydef)
-                {
-                    $exprs = $mydef->get_exprs();
-                    $mydef->set_exprs(array());
-
-                    foreach ($exprs as $expr_id)
-                    {
-                        $myexpr = $array_exprs[$expr_id];
-                        $mydef->add_expr($myexpr);
-                    }
-                }
-
-                fclose($handle);
-
-
-                $myfunction->set_end_address_func(count($context->get_mycode()->get_codes()));
-
-                $inst_func = new MyInstruction(Opcodes::LEAVE_FUNCTION);
-                $inst_func->add_property(MyInstruction::MYFUNC, $myfunction);
-                $context->get_mycode()->add_code($inst_func);
-
-                $context->get_mycode()->set_start(0);
-                $context->get_mycode()->set_end(count($context->get_mycode()->get_codes()));
-
             }
+
+            foreach ($array_myblocks as $parent) {
+                $parent->addParent($parent);
+                $childs = $array_myblocks_childs[$parent->get_id()];
+
+                foreach ($childs as $child) {
+                    $myblock_child = $array_myblocks[$child];
+                    $myblock_child->addParent($parent);
+                }
+            }
+
+            foreach ($array_exprs as $myexpr) {
+                $defs = $myexpr->get_defs();
+                $myexpr->set_defs(array());
+
+                if ($myexpr->is_assign()) {
+                    $def_id = $myexpr->get_assign_def();
+                    $mydef = $array_definitions[$def_id];
+                    $myexpr->set_assign_def($mydef);
+                }
+
+                foreach ($defs as $def_id) {
+                    $mydef = $array_definitions[$def_id];
+                    $myexpr->add_def($mydef);
+                }
+            }
+
+            foreach ($array_definitions as $mydef) {
+                $exprs = $mydef->get_exprs();
+                $mydef->set_exprs(array());
+
+                foreach ($exprs as $expr_id) {
+                    $myexpr = $array_exprs[$expr_id];
+                    $mydef->add_expr($myexpr);
+                }
+            }
+
+            fclose($handle);
+
+
+            $myfunction->set_end_address_func(count($context->get_mycode()->get_codes()));
+
+            $inst_func = new MyInstruction(Opcodes::LEAVE_FUNCTION);
+            $inst_func->add_property(MyInstruction::MYFUNC, $myfunction);
+            $context->get_mycode()->add_code($inst_func);
+
+            $context->get_mycode()->set_start(0);
+            $context->get_mycode()->set_end(count($context->get_mycode()->get_codes()));
         }
+    }
 
-        public function print_stdout()
-        {
-            $index = 0;
+    public function print_stdout()
+    {
+        $index = 0;
 
-            do
-            {
-                if (isset($this->code[$index]))
-                {
-                    $instruction = $this->code[$index];
-                    echo "[$index] ";
-                    switch ($instruction->get_opcode())
-                    {
+        do {
+            if (isset($this->code[$index])) {
+                $instruction = $this->code[$index];
+                echo "[$index] ";
+                switch ($instruction->get_opcode()) {
                         case Opcodes::ENTER_FUNCTION:
                         {
                             echo Opcodes::ENTER_FUNCTION."\n";
@@ -516,12 +491,8 @@ class MyCode
                         }
                     }
 
-                    $index = $index + 1;
-                }
-
+                $index = $index + 1;
             }
-            while (isset($this->code[$index]));
-        }
+        } while (isset($this->code[$index]));
+    }
 }
-
-?>

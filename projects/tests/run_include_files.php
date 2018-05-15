@@ -4,8 +4,7 @@ require_once './vendor/autoload.php';
 require_once './framework_test.php';
 $framework = new framework_test;
 
-try
-{
+try {
     $context = new \progpilot\Context;
     $analyzer = new \progpilot\Analyzer;
 
@@ -15,12 +14,9 @@ try
     $context->inputs->set_validators("../../package/src/uptodate_data/validators.json");
     $context->inputs->set_include_files("include_files.json");
 
-    try
-    {
+    try {
         $analyzer->run($context);
-    }
-    catch (Exception $e)
-    {
+    } catch (Exception $e) {
         echo 'Exception : ',  $e->getMessage(), "\n";
     }
 
@@ -29,11 +25,6 @@ try
     $parsed_json = $outputjson["results"];
 
     var_dump($parsed_json);
-
-}
-catch (\RuntimeException $e)
-{
+} catch (\RuntimeException $e) {
     $result = $e->getMessage();
 }
-
-?>

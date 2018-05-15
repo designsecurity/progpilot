@@ -54,6 +54,3 @@ $query = sprintf("cat '%s'", $tainted);
 
 //flaw
 $ret = system($query);
-
-
-?>

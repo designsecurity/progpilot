@@ -53,6 +53,3 @@ $tainted = $result[0];
 //flaw
 
 $var = fopen($tainted, "r");
-
-
-?>

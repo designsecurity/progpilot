@@ -53,6 +53,3 @@ $tainted = intval($tainted);
 $query = sprintf("find / size '%d'", $tainted);
 
 $ret = system($query);
-
-
-?>

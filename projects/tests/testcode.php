@@ -13,12 +13,9 @@ $context->inputs->set_sanitizers("../../package/src/uptodate_data/sanitizers.jso
 $context->inputs->set_validators("../../package/src/uptodate_data/validators.json");
 $context->inputs->set_code($code);
 
-try
-{
+try {
     $analyzer->run($context);
-}
-catch (Exception $e)
-{
+} catch (Exception $e) {
     echo 'Exception : ',  $e->getMessage(), "\n";
 }
 

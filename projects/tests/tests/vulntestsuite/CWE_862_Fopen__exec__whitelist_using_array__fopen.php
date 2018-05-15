@@ -49,17 +49,11 @@ exec($script, $result, $return);
 $tainted = $result[0];
 
 $legal_table = array("safe1", "safe2");
-if (in_array($tainted, $legal_table, true))
-{
+if (in_array($tainted, $legal_table, true)) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = $legal_table[0];
 }
 
 
 $var = fopen($tainted, "r");
-
-
-?>

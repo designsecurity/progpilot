@@ -48,15 +48,13 @@ exec($script, $result, $return);
 $tainted = $result[0];
 
 $sanitized = filter_var($tainted, FILTER_SANITIZE_EMAIL);
-if (filter_var($sanitized, FILTER_VALIDATE_EMAIL))
+if (filter_var($sanitized, FILTER_VALIDATE_EMAIL)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = "cat ' $tainted '";
 
 //flaw
 $ret = system($query);
-
-
-?>

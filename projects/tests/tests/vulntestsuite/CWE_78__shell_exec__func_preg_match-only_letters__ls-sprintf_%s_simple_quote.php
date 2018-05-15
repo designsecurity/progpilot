@@ -45,18 +45,12 @@ MODIFICATIONS.*/
 $tainted = shell_exec('cat /tmp/tainted.txt');
 
 $re = "/^[a-zA-Z]*$/";
-if (preg_match($re, $tainted) == 1)
-{
+if (preg_match($re, $tainted) == 1) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = "";
 }
 
 $query = sprintf("ls '%s'", $tainted);
 
 $ret = system($query);
-
-
-?>

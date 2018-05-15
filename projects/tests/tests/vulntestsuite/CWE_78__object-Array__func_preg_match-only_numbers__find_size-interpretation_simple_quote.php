@@ -51,7 +51,7 @@ class Input
         return $this->input[1];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input[0] = 'safe' ;
@@ -63,18 +63,12 @@ $temp = new Input();
 $tainted =  $temp->getInput();
 
 $re = "/^[0-9]*$/";
-if (preg_match($re, $tainted) == 1)
-{
+if (preg_match($re, $tainted) == 1) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = "";
 }
 
 $query = "find / size ' $tainted '";
 
 $ret = system($query);
-
-
-?>

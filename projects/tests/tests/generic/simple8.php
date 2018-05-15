@@ -8,5 +8,3 @@ echo $var_gauche[0];
 $ret = [$ret = $_GET["p"]];
 
 echo $ret[0];
-
-?>

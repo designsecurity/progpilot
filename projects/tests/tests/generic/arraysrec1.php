@@ -9,6 +9,3 @@ $var1 = array($var1, $_GET["p1"]);
 
 
 echo $var1[1];
-
-
-?>

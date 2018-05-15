@@ -7,5 +7,3 @@ $testarr = $onearr[11];
 
 echo $testarr[6661];
 echo $testarr[6662];
-
-?>

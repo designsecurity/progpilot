@@ -49,9 +49,8 @@ $descriptorspec = array(
                       2 => array("file", "/tmp/error-output.txt", "a")
                   );
 $cwd = '/tmp';
-$process = proc_open('more /tmp/tainted.txt', $descriptorspec, $pipes, $cwd, NULL);
-if (is_resource($process))
-{
+$process = proc_open('more /tmp/tainted.txt', $descriptorspec, $pipes, $cwd, null);
+if (is_resource($process)) {
     fclose($pipes[0]);
     $tainted = stream_get_contents($pipes[1]);
     fclose($pipes[1]);
@@ -59,12 +58,9 @@ if (is_resource($process))
 }
 
 $legal_table = array("safe1", "safe2");
-if (in_array($tainted, $legal_table, true))
-{
+if (in_array($tainted, $legal_table, true)) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = $legal_table[0];
 }
 
@@ -75,5 +71,3 @@ $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $checked_data);
 $stmt->execute();
 mysql_close($conn);
-
-?>

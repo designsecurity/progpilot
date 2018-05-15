@@ -19,5 +19,3 @@ $var7safe3 = rtrim(htmlentities($var7));
 echo "$var7safe3";
 
 echo "$var7";
-
-?>

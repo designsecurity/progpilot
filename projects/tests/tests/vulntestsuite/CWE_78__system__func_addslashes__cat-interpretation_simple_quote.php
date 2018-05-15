@@ -49,6 +49,3 @@ $tainted = addslashes($tainted);
 $query = "cat ' $tainted '";
 
 $ret = system($query);
-
-
-?>

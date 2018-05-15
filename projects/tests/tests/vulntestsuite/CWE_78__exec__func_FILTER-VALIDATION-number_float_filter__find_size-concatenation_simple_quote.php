@@ -47,14 +47,12 @@ exec($script, $result, $return);
 
 $tainted = $result[0];
 
-if (filter_var($sanitized, FILTER_VALIDATE_FLOAT))
+if (filter_var($sanitized, FILTER_VALIDATE_FLOAT)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = "find / size '". $tainted . "'";
 
 $ret = system($query);
-
-
-?>

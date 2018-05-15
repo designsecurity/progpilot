@@ -14,5 +14,3 @@ $framework->add_output("./tests/real/composer/index.php", "xss");
 $framework->add_output("./tests/real/composer/index.php", array("\$_GET[\"p\"]"));
 $framework->add_output("./tests/real/composer/index.php", array("14"));
 $framework->add_output("./tests/real/composer/index.php", "xss");
-
-?>

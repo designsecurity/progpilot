@@ -55,6 +55,3 @@ $tainted = $sanitized ;
 $query = sprintf("cat '%s'", $tainted);
 
 $ret = system($query);
-
-
-?>

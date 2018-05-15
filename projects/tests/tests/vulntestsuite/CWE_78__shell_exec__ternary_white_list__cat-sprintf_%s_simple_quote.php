@@ -49,6 +49,3 @@ $tainted = $tainted  == 'safe1' ? 'safe1' : 'safe2';
 $query = sprintf("cat '%s'", $tainted);
 
 $ret = system($query);
-
-
-?>

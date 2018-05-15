@@ -9,7 +9,6 @@ class testc2
 {
     public function mysanitizer()
     {
-
     }
 }
 
@@ -45,6 +44,3 @@ $ret1 = $instance1->object->mysanitizer($_GET["p"]);
 echo "$ret1";
 
 mysql_query($ret1);
-
-
-?>

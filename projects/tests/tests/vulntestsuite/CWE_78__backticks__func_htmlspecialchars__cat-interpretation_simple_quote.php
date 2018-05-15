@@ -49,6 +49,3 @@ $tainted = htmlspecialchars($tainted, ENT_QUOTES);
 $query = "cat ' $tainted '";
 
 $ret = system($query);
-
-
-?>

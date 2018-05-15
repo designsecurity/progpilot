@@ -2,7 +2,7 @@
 
 $framework->add_testbasis("./tests/generic/alias1.php");
 $framework->add_output("./tests/generic/alias1.php", array("\$var1"));
-$framework->add_output("./tests/generic/alias1.php", array("9"));
+$framework->add_output("./tests/generic/alias1.php", array("6"));
 $framework->add_output("./tests/generic/alias1.php", "xss");
 
 $framework->add_testbasis("./tests/generic/alias2.php");
@@ -27,17 +27,17 @@ $framework->add_output("./tests/generic/alias5.php", "xss");
 
 $framework->add_testbasis("./tests/generic/mix1.php");
 $framework->add_output("./tests/generic/mix1.php", array("\$var1[0]"));
-$framework->add_output("./tests/generic/mix1.php", array("5"));
+$framework->add_output("./tests/generic/mix1.php", array("4"));
 $framework->add_output("./tests/generic/mix1.php", "xss");
 
 $framework->add_testbasis("./tests/generic/mix2.php");
 $framework->add_output("./tests/generic/mix2.php", array("\$var1"));
-$framework->add_output("./tests/generic/mix2.php", array("9"));
+$framework->add_output("./tests/generic/mix2.php", array("6"));
 $framework->add_output("./tests/generic/mix2.php", "xss");
 
 $framework->add_testbasis("./tests/generic/mix3.php");
 $framework->add_output("./tests/generic/mix3.php", array("\$var2"));
-$framework->add_output("./tests/generic/mix3.php", array("12"));
+$framework->add_output("./tests/generic/mix3.php", array("9"));
 $framework->add_output("./tests/generic/mix3.php", "xss");
 
 $framework->add_testbasis("./tests/generic/simple1.php");
@@ -52,7 +52,7 @@ $framework->add_output("./tests/generic/simple2.php", "xss");
 
 $framework->add_testbasis("./tests/generic/simple3.php");
 $framework->add_output("./tests/generic/simple3.php", array("\$var7"));
-$framework->add_output("./tests/generic/simple3.php", array("5"));
+$framework->add_output("./tests/generic/simple3.php", array("4"));
 $framework->add_output("./tests/generic/simple3.php", "xss");
 
 $framework->add_testbasis("./tests/generic/simple4.php");
@@ -158,7 +158,7 @@ $framework->add_output("./tests/generic/arrays11.php", "xss");
 
 $framework->add_testbasis("./tests/generic/arrays12.php");
 $framework->add_output("./tests/generic/arrays12.php", array("\$var1[1]"));
-$framework->add_output("./tests/generic/arrays12.php", array("9"));
+$framework->add_output("./tests/generic/arrays12.php", array("6"));
 $framework->add_output("./tests/generic/arrays12.php", "xss");
 
 $framework->add_testbasis("./tests/generic/arrays13.php");
@@ -168,7 +168,7 @@ $framework->add_output("./tests/generic/arrays13.php", "xss");
 
 $framework->add_testbasis("./tests/generic/arrays14.php");
 $framework->add_output("./tests/generic/arrays14.php", array("\$var1[11][1]"));
-$framework->add_output("./tests/generic/arrays14.php", array("9"));
+$framework->add_output("./tests/generic/arrays14.php", array("6"));
 $framework->add_output("./tests/generic/arrays14.php", "xss");
 
 $framework->add_testbasis("./tests/generic/arrays15.php");
@@ -243,7 +243,7 @@ $framework->add_output("./tests/generic/functions7.php", "xss");
 
 $framework->add_testbasis("./tests/generic/functions8.php");
 $framework->add_output("./tests/generic/functions8.php", array("\$var1"));
-$framework->add_output("./tests/generic/functions8.php", array("7"));
+$framework->add_output("./tests/generic/functions8.php", array("6"));
 $framework->add_output("./tests/generic/functions8.php", "xss");
 
 $framework->add_testbasis("./tests/generic/functions9.php");
@@ -297,7 +297,7 @@ $framework->add_output("./tests/generic/functions18.php", array("5"));
 $framework->add_output("./tests/generic/functions18.php", "xss");
 
 $framework->add_testbasis("./tests/generic/functions19.php");
-$framework->add_output("./tests/generic/functions19.php", array("\$testf1_param0_line10_column74_progpilot[\"test\"]"));
+$framework->add_output("./tests/generic/functions19.php", array("\$testf1_param0_line10_column65_progpilot[\"test\"]"));
 $framework->add_output("./tests/generic/functions19.php", array("10"));
 $framework->add_output("./tests/generic/functions19.php", "xss");
 
@@ -379,5 +379,3 @@ $framework->add_testbasis("./tests/generic/namespace2.php");
 $framework->add_output("./tests/generic/namespace2.php", array("\$_GET[\"p\"]"));
 $framework->add_output("./tests/generic/namespace2.php", array("7"));
 $framework->add_output("./tests/generic/namespace2.php", "xss");
-
-?>

@@ -44,14 +44,12 @@ MODIFICATIONS.*/
 
 $tainted = system('ls', $retval);
 
-if (settype($tainted, "integer"))
+if (settype($tainted, "integer")) {
     $tainted = $tainted ;
-else
+} else {
     $tainted = 0 ;
+}
 
 $query = sprintf("find / size '%d'", $tainted);
 
 $ret = system($query);
-
-
-?>

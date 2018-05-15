@@ -7,5 +7,3 @@ $bbb = (int)($aaa)." ".$aaa;
 echo $aaa;
 
 echo $bbb;
-
-?>

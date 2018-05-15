@@ -49,11 +49,10 @@ class Input
 
     public function getInput()
     {
-
         return $this->input;
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = $_GET['UserData'] ;
     }
@@ -66,6 +65,3 @@ $tainted = preg_replace('/\'/', '', $tainted);
 //flaw
 
 $var = fopen($tainted, "r");
-
-
-?>

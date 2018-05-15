@@ -13,6 +13,3 @@ class testc1
 
 $instance1 = new testc1();
 $instance1->testf1();
-
-
-?>

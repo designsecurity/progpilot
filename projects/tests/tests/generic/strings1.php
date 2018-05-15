@@ -72,5 +72,3 @@ echo "<a href=$tainted31>click</a>"; // vuln
 
 $tainted32 =  htmlentities($_GET["p"], ENT_QUOTES);
 echo "<a href=$tainted32>click</a>"; // vuln
-
-?>

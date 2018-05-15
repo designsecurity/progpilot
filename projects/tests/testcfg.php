@@ -14,12 +14,9 @@ $context->inputs->set_validators("../../package/src/uptodate_data/validators.jso
 $context->set_analyze_js(false);
 $context->set_analyze_includes(false);
 $context->inputs->set_code($code);
-try
-{
+try {
     $analyzer->run($context);
-}
-catch (Exception $e)
-{
+} catch (Exception $e) {
     echo 'Exception : ',  $e->getMessage(), "\n";
 }
 

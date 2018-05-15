@@ -53,6 +53,3 @@ $tainted = preg_replace('/\'/', '', $tainted);
 $query = sprintf("cat '%s'", $tainted);
 
 $ret = system($query);
-
-
-?>

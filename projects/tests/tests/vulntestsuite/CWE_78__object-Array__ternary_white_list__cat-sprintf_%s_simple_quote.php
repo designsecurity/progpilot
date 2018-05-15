@@ -51,7 +51,7 @@ class Input
         return $this->input[1];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input[0] = 'safe' ;
@@ -67,6 +67,3 @@ $tainted = $tainted  == 'safe1' ? 'safe1' : 'safe2';
 $query = sprintf("cat '%s'", $tainted);
 
 $ret = system($query);
-
-
-?>

@@ -53,6 +53,3 @@ $tainted = $tainted  == 'safe1' ? 'safe1' : 'safe2';
 
 
 $var = fopen($tainted, "r");
-
-
-?>

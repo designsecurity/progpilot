@@ -49,11 +49,10 @@ class Input
 
     public function getInput()
     {
-
         return $this->input[1];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input[0] = 'safe' ;
@@ -69,5 +68,3 @@ $tainted = preg_replace('/\'/', '', $tainted);
 //flaw
 
 $var = fopen($tainted, "r");
-
-?>

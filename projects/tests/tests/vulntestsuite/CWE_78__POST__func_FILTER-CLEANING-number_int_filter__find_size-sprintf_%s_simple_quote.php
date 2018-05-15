@@ -45,14 +45,12 @@ MODIFICATIONS.*/
 $tainted = $_POST['UserData'];
 
 $sanitized = filter_var($tainted, FILTER_SANITIZE_NUMBER_INT);
-if (filter_var($sanitized, FILTER_VALIDATE_INT))
+if (filter_var($sanitized, FILTER_VALIDATE_INT)) {
     $tainted = $sanitized ;
-else
+} else {
     $tainted = "" ;
+}
 
 $query = sprintf("find / size '%d'", $tainted);
 
 $ret = system($query);
-
-
-?>

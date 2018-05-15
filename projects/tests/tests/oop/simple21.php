@@ -28,5 +28,3 @@ $xml = new simplexml_load_file("users.xml");//file load
 $res = $xml->xpath($query); //execution
 print_r($res);
 echo "<br />" ;
-
-?>

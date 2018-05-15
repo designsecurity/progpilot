@@ -2,8 +2,7 @@
 
 require_once './vendor/autoload.php';
 
-try
-{
+try {
 
     //$file = "./tests/graphs/functionsgraph1.php";
     $file = "./tests/custom/custom1.php";
@@ -17,28 +16,27 @@ try
     $graphcallgraph_json = $context->outputs->get_callgraph();
     
     echo "\ndigraph callgraph {\nordering=out;\n";
-    foreach($graphcallgraph_json["nodes"] as $node)
+    foreach ($graphcallgraph_json["nodes"] as $node) {
         echo "node_".$node["id"]." [label=\"".$node["name"]."\"];\n";
+    }
 
-    foreach($graphcallgraph_json["links"] as $link)
+    foreach ($graphcallgraph_json["links"] as $link) {
         echo "node_".$link["source"]."->"."node_".$link["target"]."\n";
+    }
     
     echo "\n\n}\n\n";
     
     
     echo "\ndigraph cfg {\nordering=out;\n";
-    foreach($graphcfg_json["nodes"] as $node)
+    foreach ($graphcfg_json["nodes"] as $node) {
         echo "node_".$node["id"]." [label=\"".$node["name"]."\"];\n";
+    }
 
-    foreach($graphcfg_json["links"] as $link)
+    foreach ($graphcfg_json["links"] as $link) {
         echo "node_".$link["source"]."->"."node_".$link["target"]."\n";
+    }
     
     echo "\n\n}\n\n";
-
-}
-catch (\RuntimeException $e)
-{
+} catch (\RuntimeException $e) {
     echo 'Exception : ',  $e->getMessage(), "\n";
 }
-
-?>

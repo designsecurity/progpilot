@@ -6,5 +6,3 @@ $testarr[11] = $onearr;
 
 echo $testarr[11][9865];
 echo $testarr[11][9866];
-
-?>

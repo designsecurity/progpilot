@@ -52,6 +52,3 @@ pclose($handle);
 //flaw
 
 $var = fopen($tainted, "r");
-
-
-?>

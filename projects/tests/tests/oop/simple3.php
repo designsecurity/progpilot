@@ -6,12 +6,8 @@ class testc1
 
     public function __construct()
     {
-
         echo $_GET["p"];
     }
 };
 
 $instance1 = new testc1;
-
-
-?>

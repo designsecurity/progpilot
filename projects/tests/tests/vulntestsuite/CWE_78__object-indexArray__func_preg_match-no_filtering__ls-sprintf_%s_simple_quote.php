@@ -51,7 +51,7 @@ class Input
         return $this->input['realOne'];
     }
 
-    public  function __construct()
+    public function __construct()
     {
         $this->input = array();
         $this->input['test'] = 'safe' ;
@@ -63,12 +63,9 @@ $temp = new Input();
 $tainted =  $temp->getInput();
 
 $re = "/^.*$/";
-if (preg_match($re, $tainted) == 1)
-{
+if (preg_match($re, $tainted) == 1) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = "";
 }
 
@@ -76,6 +73,3 @@ $query = sprintf("ls '%s'", $tainted);
 
 //flaw
 $ret = system($query);
-
-
-?>

@@ -72,8 +72,3 @@ echo $inst12->object->member1;
 $inst123->object->member1 = $_GET["p"];
 
 echo $inst123->object->member1;
-
-
-
-
-?>

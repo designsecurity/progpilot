@@ -47,12 +47,9 @@ $tainted = fread($handle, 4096);
 pclose($handle);
 
 $legal_table = array("safe1", "safe2");
-if (in_array($tainted, $legal_table, true))
-{
+if (in_array($tainted, $legal_table, true)) {
     $tainted = $tainted;
-}
-else
-{
+} else {
     $tainted = $legal_table[0];
 }
 
@@ -62,5 +59,3 @@ $ds = ldap_connect("localhost");
 $r = ldap_bind($ds);
 $sr = ldap_search($ds, "o=My Company, c=US", $query);
 ldap_close($ds);
-
-?>

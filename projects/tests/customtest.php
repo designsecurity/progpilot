@@ -2,11 +2,11 @@
 
 $framework->add_testbasis("./tests/custom/custom1.php");
 $framework->add_output("./tests/custom/custom1.php", "bypass access control");
-$framework->add_output("./tests/custom/custom1.php", "16");
-$framework->add_output("./tests/custom/custom1.php", "165");
+$framework->add_output("./tests/custom/custom1.php", "13");
+$framework->add_output("./tests/custom/custom1.php", "154");
 $framework->add_output("./tests/custom/custom1.php", "bypass access control");
-$framework->add_output("./tests/custom/custom1.php", "16");
-$framework->add_output("./tests/custom/custom1.php", "165");
+$framework->add_output("./tests/custom/custom1.php", "13");
+$framework->add_output("./tests/custom/custom1.php", "154");
 
 $framework->add_testbasis("./tests/custom/custom2.php");
 $framework->add_output("./tests/custom/custom2.php", "security misconfiguration");
@@ -28,5 +28,3 @@ $framework->add_testbasis("./tests/custom/custom4.php");
 $framework->add_output("./tests/custom/custom4.php", "security misconfiguration");
 $framework->add_output("./tests/custom/custom4.php", "3");
 $framework->add_output("./tests/custom/custom4.php", "7");
-
-?>

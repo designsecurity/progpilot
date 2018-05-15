@@ -11,6 +11,3 @@ echo $result;
 echo $tainted;
 
 echo $_GET;
-
-
-?>
