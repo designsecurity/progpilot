@@ -1,5 +1,5 @@
 parameters:
-  bin_dir: "../../vendor/bin"
+  bin_dir: "../../../vendor/bin"
   git_dir: "."
   process_timeout: 120
   tasks:
