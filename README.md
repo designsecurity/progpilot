@@ -46,10 +46,10 @@ require_once './vendor/autoload.php';
 $context = new \progpilot\Context;
 $analyzer = new \progpilot\Analyzer;
 
-$context->inputs->set_file("source_code1.php");
+$context->inputs->setFile("source_code1.php");
 
 $analyzer->run($context);
-$results = $context->outputs->get_results();
+$results = $context->outputs->getResults();
 
 var_dump($results);
 
