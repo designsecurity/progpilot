@@ -21,7 +21,7 @@ options:
     setAnalyzeJs: false
     setAnalyzeIncludes: true
     setAnalyzeFunctions: true
-    setAnalyzeHardrules: true
+    setAnalyzeHardRules: true
     setPrintFile: true
     setPrintWarning: false
     setPrettyPrint: true
