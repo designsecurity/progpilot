@@ -29,76 +29,77 @@ class Utils
         return $pos - $lineStartPos;
     }
 
-    public static function encode_characters($string)
+    public static function encodeCharacters($string)
     {
         return htmlentities($string, ENT_QUOTES, 'UTF-8');
     }
 
-    public static function print_warning($context, $message)
+    public static function printWarning($context, $message)
     {
-        if ($context->get_print_warning()) {
+        if ($context->getPrintWarning()) {
             fwrite(STDERR, "progpilot warning : $message\n");
         }
     }
 
-    public static function print_error($message)
+    public static function printError($message)
     {
         throw new \Exception($message);
     }
 
-    public static function print_properties($props)
+    public static function printProperties($props)
     {
         $property_name = "";
 
         if (is_array($props)) {
             foreach ($props as $prop) {
-                $property_name .= "->".Utils::encode_characters($prop);
+                $property_name .= "->".Utils::encodeCharacters($prop);
             }
         }
 
         return $property_name;
     }
 
-    public static function print_definition($def)
+    public static function printDefinition($def)
     {
-        if ($def->is_type(MyDefinition::TYPE_PROPERTY)) {
-            $def_name = "\$".Utils::encode_characters($def->get_name()).Utils::print_properties($def->property->get_properties());
+        if ($def->isType(MyDefinition::TYPE_PROPERTY)) {
+            $def_name = "\$".Utils::encodeCharacters($def->getName()).
+                Utils::printProperties($def->property->getProperties());
         } else {
-            $def_name = "\$".Utils::encode_characters($def->get_name());
+            $def_name = "\$".Utils::encodeCharacters($def->getName());
         }
 
         $name_array = "";
-        if ($def->is_type(MyDefinition::TYPE_ARRAY)) {
-            Utils::print_array($def->get_array_value(), $name_array);
+        if ($def->isType(MyDefinition::TYPE_ARRAY)) {
+            Utils::printArray($def->getArrayValue(), $name_array);
         }
 
         return $def_name.$name_array;
     }
 
-    public static function print_function($function)
+    public static function printFunction($function)
     {
         $function_name = "\$";
-        if ($function->is_type(MyFunction::TYPE_FUNC_METHOD)) {
-            $function_name = Utils::encode_characters($function->get_myclass()->get_name())."->";
+        if ($function->isType(MyFunction::TYPE_FUNC_METHOD)) {
+            $function_name = Utils::encodeCharacters($function->getMyClass()->getName())."->";
         }
 
-        $function_name .= Utils::encode_characters($function->get_name());
+        $function_name .= Utils::encodeCharacters($function->getName());
 
         return $function_name;
     }
 
-    public static function print_array($array, &$print)
+    public static function printArray($array, &$print)
     {
         if (is_array($array)) {
             foreach ($array as $index => $value) {
                 if (isset($array[$index])) {
                     if (is_string($index)) {
-                        $print .= "[\"".Utils::encode_characters($index)."\"]";
+                        $print .= "[\"".Utils::encodeCharacters($index)."\"]";
                     } else {
-                        $print .= "[".Utils::encode_characters($index)."]";
+                        $print .= "[".Utils::encodeCharacters($index)."]";
                     }
 
-                    Utils::print_array($array[$index], $print);
+                    Utils::printArray($array[$index], $print);
                 }
             }
         }

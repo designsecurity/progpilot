@@ -38,92 +38,92 @@ class MyCustomRule
         $this->cwe = null;
     }
 
-    public function get_attack()
+    public function getAttack()
     {
         return $this->attack;
     }
 
-    public function set_attack($attack)
+    public function setAttack($attack)
     {
         $this->attack = $attack;
     }
 
-    public function get_cwe()
+    public function getCwe()
     {
         return $this->cwe;
     }
 
-    public function set_cwe($cwe)
+    public function setCwe($cwe)
     {
         $this->cwe = $cwe;
     }
 
-    public function get_type()
+    public function getType()
     {
         return $this->type;
     }
 
-    public function set_type($type)
+    public function setType($type)
     {
         $this->type = $type;
     }
 
-    public function get_function_definition()
+    public function getFunctionDefinition()
     {
         return $this->function_definition;
     }
 
-    public function set_function_definition($function_definition)
+    public function setFunctionDefinition($function_definition)
     {
         $this->function_definition = $function_definition;
     }
 
-    public function get_name()
+    public function getName()
     {
         return $this->name_rule;
     }
 
-    public function set_name($name_rule)
+    public function setName($name_rule)
     {
         $this->name_rule = $name_rule;
     }
 
-    public function get_description()
+    public function getDescription()
     {
         return $this->description_rule;
     }
 
-    public function set_description($description_rule)
+    public function setDescription($description_rule)
     {
         $this->description_rule = $description_rule;
     }
 
-    public function get_current_order_number()
+    public function getCurrentOrderNumber()
     {
         return $this->current_order_number;
     }
 
-    public function set_current_order_number($current_order_number)
+    public function setCurrentOrderNumber($current_order_number)
     {
         $this->current_order_number = $current_order_number;
     }
 
-    public function get_sequence()
+    public function getSequence()
     {
         return $this->sequence_rule;
     }
 
-    public function add_to_sequence_with_action($function_name, $language, $action)
+    public function addToSequenceWithAction($function_name, $language, $action)
     {
         $this->current_order_number ++;
         $mycustomfunction = new MyCustomFunction($function_name, $language, $this->current_order_number);
-        $mycustomfunction->set_action($action);
+        $mycustomfunction->setAction($action);
         $this->sequence_rule[] = $mycustomfunction;
 
         return $mycustomfunction;
     }
 
-    public function add_to_sequence($function_name, $language)
+    public function addToSequence($function_name, $language)
     {
         $this->current_order_number ++;
         $mycustomfunction = new MyCustomFunction($function_name, $language, $this->current_order_number);
@@ -132,7 +132,7 @@ class MyCustomRule
         return $mycustomfunction;
     }
 
-    public function add_function_definition($function_name, $language)
+    public function addFunctionDefinition($function_name, $language)
     {
         $mycustomfunction = new MyCustomFunction($function_name, $language);
         $this->function_definition = $mycustomfunction;
@@ -140,12 +140,12 @@ class MyCustomRule
         return $mycustomfunction;
     }
 
-    public function get_action()
+    public function getAction()
     {
         return $this->action;
     }
 
-    public function set_action($action)
+    public function setAction($action)
     {
         return $this->action = $action;
     }

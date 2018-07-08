@@ -31,9 +31,9 @@ class ArrayExpr
         if (isset($op->ops[0]->values)) {
             $nb_arrayexpr = 0;
             foreach ($op->ops[0]->values as $value) {
-                $name = Common::get_name_definition($value);
-                $type = Common::get_type_definition($value);
-                $type_array = Common::get_type_is_array($value);
+                $name = Common::getNameDefinition($value);
+                $type = Common::getTypeDefinition($value);
+                $type_array = Common::getTypeIsArray($value);
 
                 // we create an element for each value of array expr
                 // name_arr = [expr1, expr2] => name_arr[0] = expr1, name_arr[1] = expr2
@@ -47,37 +47,37 @@ class ArrayExpr
                 if ($type_array === MyOp::TYPE_ARRAY_EXPR) {
                     $building_arr = ArrayExpr::instruction($value, $context, $building_arr, $def_name, $is_returndef);
                 } else {
-                    $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_ASSIGN));
-                    $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+                    $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_ASSIGN));
+                    $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
 
-                    $myexpr = new MyExpr($context->get_current_line(), $context->get_current_column());
-                    $myexpr->set_assign(true);
+                    $myexpr = new MyExpr($context->getCurrentLine(), $context->getCurrentColumn());
+                    $myexpr->setAssign(true);
 
                     Expr::instruction($value, $context, $myexpr, null);
 
                     $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                    $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
-                    $context->get_current_mycode()->add_code($inst_end_expr);
+                    $inst_end_expr->addProperty(MyInstruction::EXPR, $myexpr);
+                    $context->getCurrentMycode()->addCode($inst_end_expr);
 
-                    $context->get_current_mycode()->add_code(new MyInstruction(Opcodes::END_ASSIGN));
+                    $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::END_ASSIGN));
 
                     // mydef after expr because expr is executed before (and his id lower than mydef id)
-                    $mydef = new MyDefinition($context->get_current_line(), $context->get_current_column(), $def_name);
+                    $mydef = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), $def_name);
 
                     if ($is_returndef) {
-                        $context->get_current_func()->add_return_def($mydef);
+                        $context->getCurrentFunc()->addReturnDef($mydef);
                     }
 
-                    $myexpr->set_assign_def($mydef);
+                    $myexpr->setAssignDef($mydef);
 
                     // we reverse the arr
-                    $arrtrans = BuildArrays::build_array_from_arr($building_arr, false);
-                    $mydef->add_type(MyDefinition::TYPE_ARRAY);
-                    $mydef->set_array_value($arrtrans);
+                    $arrtrans = BuildArrays::buildArrayFromArr($building_arr, false);
+                    $mydef->addType(MyDefinition::TYPE_ARRAY);
+                    $mydef->setArrayValue($arrtrans);
 
                     $inst_def = new MyInstruction(Opcodes::DEFINITION);
-                    $inst_def->add_property(MyInstruction::DEF, $mydef);
-                    $context->get_current_mycode()->add_code($inst_def);
+                    $inst_def->addProperty(MyInstruction::DEF, $mydef);
+                    $context->getCurrentMycode()->addCode($inst_def);
 
                     unset($myexpr);
                     unset($mydef);

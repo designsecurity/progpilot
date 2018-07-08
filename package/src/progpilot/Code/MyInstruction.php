@@ -53,22 +53,22 @@ class MyInstruction
         $this->opcode = $opcode;
     }
 
-    public function add_property($index, $property)
+    public function addProperty($index, $property)
     {
         $this->properties[$index] = $property;
     }
 
-    public function is_property_exist($index)
+    public function isPropertyExist($index)
     {
         return isset($this->properties[$index]);
     }
 
-    public function get_property($index)
+    public function getProperty($index)
     {
         return $this->properties[$index];
     }
 
-    public function get_opcode()
+    public function getOpcode()
     {
         return $this->opcode;
     }

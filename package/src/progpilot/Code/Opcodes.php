@@ -21,7 +21,7 @@ class Opcodes
     const END_ASSIGN = "end_assign";
     const START_EXPRESSION = "start_expression";
     const END_EXPRESSION = "end_expression";
-    const TEMPORARY = "temporary_simple";
+    const TEMPORARY = "temporarySimple";
     const CONCAT_LEFT = "concat_left";
     const CONCAT_RIGHT = "concat_right";
     const CONCAT_LIST = "concat_list";

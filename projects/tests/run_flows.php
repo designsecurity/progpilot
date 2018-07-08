@@ -11,10 +11,10 @@ try {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
-        $context->inputs->set_file($file);
+        $context->inputs->setFile($file);
 
-        $context->set_analyze_functions(false);
-        $context->outputs->tainted_flow(true);
+        $context->setAnalyzeFunctions(false);
+        $context->outputs->taintedFlow(true);
 
         try {
             $analyzer->run($context);
@@ -22,7 +22,7 @@ try {
             echo 'Exception : ',  $e->getMessage(), "\n";
         }
 
-        $results = $context->outputs->get_results();
+        $results = $context->outputs->getResults();
         $outputjson = array('results' => $results);
         $parsed_json = $outputjson["results"];
 
@@ -36,7 +36,7 @@ try {
                 foreach ($vuln["tainted_flow"] as $one_tainted_flow) {
                     foreach ($one_tainted_flow as $one_tainted_flow_value) {
                         if (!in_array($one_tainted_flow_value["flow_name"], $output_testbasis, true)
-                    || !in_array($one_tainted_flow_value["flow_line"], $output_testbasis, true)) {
+                        || !in_array($one_tainted_flow_value["flow_line"], $output_testbasis, true)) {
                             $result_test = false;
                             break;
                         }

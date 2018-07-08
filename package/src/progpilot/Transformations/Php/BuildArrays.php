@@ -17,12 +17,12 @@ use PHPCfg\Operand;
 
 class BuildArrays
 {
-    public static function function_start_ops($initops)
+    public static function functionStartOps($initops)
     {
         if (isset($initops->ops)) {
             foreach ($initops->ops as $op) {
                 if ($op instanceof Op\Expr\ArrayDimFetch) {
-                    return BuildArrays::function_start_ops($op->var);
+                    return BuildArrays::functionStartOps($op->var);
                 }
             }
         }
@@ -30,19 +30,19 @@ class BuildArrays
         return $initops;
     }
 
-    public static function build_array_from_arr($start, $end)
+    public static function buildArrayFromArr($start, $end)
     {
         if (is_array($start)) {
             foreach ($start as $ind => $value) {
                 $end = array($ind => $end);
-                $end = BuildArrays::build_array_from_arr($value, $end);
+                $end = BuildArrays::buildArrayFromArr($value, $end);
             }
         }
 
         return $end;
     }
 
-    public static function extract_array_from_arr($originalarr, $indarr)
+    public static function extractArrayFromArr($originalarr, $indarr)
     {
         if ($originalarr === $indarr) {
             return false;
@@ -57,7 +57,7 @@ class BuildArrays
                         return $originalarr[$ind];
                     }
 
-                    $arr = BuildArrays::extract_array_from_arr($originalarr[$ind], $indarr[$ind]);
+                    $arr = BuildArrays::extractArrayFromArr($originalarr[$ind], $indarr[$ind]);
                 } else {
                     $arr = false;
                 }
@@ -67,7 +67,7 @@ class BuildArrays
         return $arr;
     }
 
-    public static function build_array_from_ops($initops, $arr)
+    public static function buildArrayFromOps($initops, $arr)
     {
         if (isset($initops->ops)) {
             foreach ($initops->ops as $op) {
@@ -78,7 +78,7 @@ class BuildArrays
                     }
 
                     $arr = array($ind => $arr);
-                    $arr = BuildArrays::build_array_from_ops($op->var, $arr);
+                    $arr = BuildArrays::buildArrayFromOps($op->var, $arr);
                 }
             }
         }

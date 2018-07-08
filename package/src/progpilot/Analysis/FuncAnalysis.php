@@ -16,81 +16,89 @@ use progpilot\Code\MyInstruction;
 
 class FuncAnalysis
 {
-    public static function funccall_after($context, $data, $myfunc_call, $myfunc, $arr_funccall, $instruction, $op_apr)
+    public static function funccallAfter($context, $data, $myfunc_call, $myfunc, $arr_funccall, $instruction, $op_apr)
     {
-        $exprreturn = $instruction->get_property(MyInstruction::EXPR);
+        $exprreturn = $instruction->getProperty(MyInstruction::EXPR);
 
         if (!is_null($myfunc)) {
-            $defsreturn = $myfunc->get_return_defs();
+            $defsreturn = $myfunc->getReturnDefs();
             foreach ($defsreturn as $defreturn) {
-                if (($arr_funccall !== false && $defreturn->is_type(MyDefinition::TYPE_ARRAY) && $defreturn->get_array_value() === $arr_funccall) || ($arr_funccall === false && !$defreturn->is_type(MyDefinition::TYPE_ARRAY))) {
+                if (($arr_funccall !== false
+                    && $defreturn->isType(MyDefinition::TYPE_ARRAY)
+                        && $defreturn->getArrayValue() === $arr_funccall)
+                            || ($arr_funccall === false && !$defreturn->isType(MyDefinition::TYPE_ARRAY))) {
                     $copydefreturn = $defreturn;
 
                     // copydefreturn = return $defreturn;
-                    $copydefreturn->set_expr($exprreturn);
+                    $copydefreturn->setExpr($exprreturn);
                     // exprreturn = $def = exprreturn(funccall());
-                    $exprreturn->add_def($copydefreturn);
+                    $exprreturn->addDef($copydefreturn);
 
 
-                    $expr = $copydefreturn->get_expr();
-                    if ($expr->is_assign()) {
-                        $defassign = $expr->get_assign_def();
-                        //TaintAnalysis::set_tainted($copydefreturn, $defassign, $expr);
+                    $expr = $copydefreturn->getExpr();
+                    if ($expr->isAssign()) {
+                        $defassign = $expr->getAssignDef();
+                        //TaintAnalysis::setTainted($copydefreturn, $defassign, $expr);
 
-                        if (ResolveDefs::get_visibility_from_instances($context, $data, $defassign)) {
-                            ValueAnalysis::copy_values($copydefreturn, $defassign);
-                            TaintAnalysis::set_tainted($copydefreturn->is_tainted(), $defassign, $expr);
+                        if (ResolveDefs::getVisibilityFromInstances($context, $data, $defassign)) {
+                            ValueAnalysis::copyValues($copydefreturn, $defassign);
+                            TaintAnalysis::setTainted($copydefreturn->isTainted(), $defassign, $expr);
                         }
 
-                        ArrayAnalysis::copy_array_from_def($defreturn, $arr_funccall, $defassign, $defassign->get_array_value());
+                        ArrayAnalysis::copyArrayFromDef(
+                            $defreturn,
+                            $arr_funccall,
+                            $defassign,
+                            $defassign->getArrayValue()
+                        );
                     }
                 }
             }
 
-            if ($op_apr->get_opcode() === Opcodes::DEFINITION) {
-                $copytab = $op_apr->get_property(MyInstruction::DEF);
+            if ($op_apr->getOpcode() === Opcodes::DEFINITION) {
+                $copytab = $op_apr->getProperty(MyInstruction::DEF);
 
-                $originaltabs = $myfunc->get_return_defs();
+                $originaltabs = $myfunc->getReturnDefs();
 
                 foreach ($originaltabs as $originaltab) {
-                    ArrayAnalysis::copy_array_from_def($originaltab, $arr_funccall, $copytab, $copytab->get_array_value());
+                    ArrayAnalysis::copyArrayFromDef($originaltab, $arr_funccall, $copytab, $copytab->getArrayValue());
                 }
             }
         }
     }
 
-    public static function funccall_before($context, $data, $myfunc, $myfunc_call, $instruction)
+    public static function funccallBefore($context, $data, $myfunc, $myfunc_call, $instruction)
     {
         $nbparams = 0;
-        $params = $myfunc->get_params();
+        $params = $myfunc->getParams();
 
         foreach ($params as $param) {
-            if ($instruction->is_property_exist("argdef$nbparams")) {
-                $defarg = $instruction->get_property("argdef$nbparams");
-                $exprarg = $instruction->get_property("argexpr$nbparams");
+            if ($instruction->isPropertyExist("argdef$nbparams")) {
+                $defarg = $instruction->getProperty("argdef$nbparams");
+                $exprarg = $instruction->getProperty("argexpr$nbparams");
 
                 $newparam = clone $param;
-                $myfunc_call->add_param($newparam);
+                $myfunc_call->addParam($newparam);
 
-                $newparam->set_last_known_values($defarg->get_last_known_values());
-                ArrayAnalysis::copy_array_from_def($defarg, $defarg->get_array_value(), $newparam, false);
+                $newparam->setLastKnownValues($defarg->getLastKnownValues());
+                ArrayAnalysis::copyArrayFromDef($defarg, $defarg->getArrayValue(), $newparam, false);
 
-                $param->set_copyarrays($newparam->get_copyarrays());
-                $param->set_last_known_values($newparam->get_last_known_values());
-                $param->set_type($newparam->get_type());
+                $param->setCopyArrays($newparam->getCopyArrays());
+                $param->setLastKnownValues($newparam->getLastKnownValues());
+                $param->setType($newparam->getType());
 
-                if ($defarg->is_tainted()) {
+                if ($defarg->isTainted()) {
                     // useful just for inside the function
-                    TaintAnalysis::set_tainted($defarg->is_tainted(), $param, $exprarg);
+                    TaintAnalysis::setTainted($defarg->isTainted(), $param, $exprarg);
 
-                    $expr = $param->get_expr();
+                    $expr = $param->getExpr();
 
-                    if (!is_null($expr) && $expr->is_assign()) {
-                        $defassign = $expr->get_assign_def();
+                    if (!is_null($expr) && $expr->isAssign()) {
+                        $defassign = $expr->getAssignDef();
 
-                        if (ResolveDefs::get_visibility_from_instances($context, $data, $defassign)) {
-                            ValueAnalysis::copy_values($defarg, $defassign);
-                            TaintAnalysis::set_tainted($defarg->is_tainted(), $defassign, $expr);
+                        if (ResolveDefs::getVisibilityFromInstances($context, $data, $defassign)) {
+                            ValueAnalysis::copyValues($defarg, $defassign);
+                            TaintAnalysis::setTainted($defarg->isTainted(), $defassign, $expr);
                         }
                     }
                 }

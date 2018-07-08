@@ -15,5 +15,15 @@ real    13m1,293s
 user    11m12,556s
 sys     0m1,254s
 
+/srv/www/htdocs/phpMyAdmin/ (07/07/2018 : 3000 defs & 500ko) :
+real    10m20,371s
+user    9m57,704s
+sys     0m1,577s
+
+
 good test, a lot of defs and includes :
 /home/eric/dev/scripts/drupal/core/includes/install.core.inc
+
+exhausted memory good test:
+/srv/www/htdocs/phpMyAdmin/libraries/DisplayResults.php
+/srv/www/htdocs/phpMyAdmin/vendor/tecnickcom/tcpdf/tcpdf.php

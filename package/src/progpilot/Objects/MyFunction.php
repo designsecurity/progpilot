@@ -36,8 +36,8 @@ class MyFunction extends MyOp
     private $last_column;
     private $last_block_id;
 
-    private $is_analyzed;
-    private $is_data_analyzed;
+    private $isAnalyzed;
+    private $isDataAnalyzed;
 
     private $mycode;
 
@@ -61,8 +61,8 @@ class MyFunction extends MyOp
         $this->last_column = 0;
         $this->last_block_id = 0;
 
-        $this->is_analyzed = false;
-        $this->is_data_analyzed = false;
+        $this->isAnalyzed = false;
+        $this->isDataAnalyzed = false;
 
         $this->property = new MyProperty;
 
@@ -74,157 +74,157 @@ class MyFunction extends MyOp
         $this->property = clone $this->property;
     }
 
-    public function set_is_data_analyzed($is_data_analyzed)
+    public function setIsDataAnalyzed($isDataAnalyzed)
     {
-        $this->is_data_analyzed = $is_data_analyzed;
+        $this->isDataAnalyzed = $isDataAnalyzed;
     }
 
-    public function is_data_analyzed()
+    public function isDataAnalyzed()
     {
-        return $this->is_data_analyzed;
+        return $this->isDataAnalyzed;
     }
 
-    public function set_is_analyzed($is_analyzed)
+    public function setIsAnalyzed($isAnalyzed)
     {
-        $this->is_analyzed = $is_analyzed;
+        $this->isAnalyzed = $isAnalyzed;
     }
 
-    public function is_analyzed()
+    public function isAnalyzed()
     {
-        return $this->is_analyzed;
+        return $this->isAnalyzed;
     }
 
-    public function set_mycode($mycode)
+    public function setMyCode($mycode)
     {
         $this->mycode = $mycode;
     }
 
-    public function get_mycode()
+    public function getMyCode()
     {
         return $this->mycode;
     }
 
-    public function set_last_line($last_line)
+    public function setLastLine($last_line)
     {
         $this->last_line = $last_line;
     }
 
-    public function set_last_column($last_column)
+    public function setLastColumn($last_column)
     {
         $this->last_column = $last_column;
     }
 
-    public function set_last_block_id($last_block_id)
+    public function setLastBlockId($last_block_id)
     {
         $this->last_block_id = $last_block_id;
     }
 
-    public function get_last_line()
+    public function getLastLine()
     {
         return $this->last_line;
     }
 
-    public function get_last_column()
+    public function getLastColumn()
     {
         return $this->last_column;
     }
 
-    public function get_last_block_id()
+    public function getLastBlockId()
     {
         return $this->last_block_id;
     }
 
-    public function get_myclass()
+    public function getMyClass()
     {
         return $this->myclass;
     }
 
-    public function set_myclass($myclass)
+    public function setMyClass($myclass)
     {
         $this->myclass = $myclass;
     }
 
-    public function get_this_def()
+    public function getThisDef()
     {
         return $this->this_def;
     }
 
-    public function set_this_def($this_def)
+    public function setThisDef($this_def)
     {
         $this->this_def = $this_def;
     }
 
-    public function get_back_def()
+    public function getBackDef()
     {
         return $this->back_def;
     }
 
-    public function set_back_def($back_def)
+    public function setBackDef($back_def)
     {
         $this->back_def = $back_def;
     }
 
-    public function get_name_instance()
+    public function getNameInstance()
     {
         return $this->name_instance;
     }
 
-    public function set_name_instance($name_instance)
+    public function setNameInstance($name_instance)
     {
         $this->name_instance = $name_instance;
     }
 
-    public function set_visibility($visibility)
+    public function setVisibility($visibility)
     {
         $this->visibility = $visibility;
     }
 
-    public function get_visibility()
+    public function getVisibility()
     {
         return $this->visibility;
     }
 
-    public function set_blocks($blocks)
+    public function setBlocks($blocks)
     {
         $this->blocks = $blocks;
     }
 
-    public function get_blocks()
+    public function getBlocks()
     {
         return $this->blocks;
     }
 
-    public function set_defs($defs)
+    public function setDefs($defs)
     {
         $this->defs = $defs;
     }
 
-    public function get_defs()
+    public function getDefs()
     {
         return $this->defs;
     }
 
-    public function add_param($param)
+    public function addParam($param)
     {
         $this->params[] = $param;
     }
 
-    public function get_params()
+    public function getParams()
     {
         return $this->params;
     }
 
-    public function set_nb_params($nb_params)
+    public function setNbParams($nb_params)
     {
         $this->nb_params = $nb_params;
     }
 
-    public function get_nb_params()
+    public function getNbParams()
     {
         return $this->nb_params;
     }
 
-    public function get_param($i)
+    public function getParam($i)
     {
         if (isset($this->params[$i])) {
             return $this->params[$i];
@@ -233,22 +233,22 @@ class MyFunction extends MyOp
         return null;
     }
 
-    public function get_return_defs()
+    public function getReturnDefs()
     {
         return $this->return_defs;
     }
 
-    public function add_return_def($return_def)
+    public function addReturnDef($return_def)
     {
         $this->return_defs[] = $return_def;
     }
 
-    public function get_block_id()
+    public function getBlockId()
     {
         return $this->block_id;
     }
 
-    public function set_block_id($block_id)
+    public function setBlockId($block_id)
     {
         $this->block_id = $block_id;
     }

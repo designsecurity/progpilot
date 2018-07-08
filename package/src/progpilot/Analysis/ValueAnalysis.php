@@ -33,13 +33,13 @@ class ValueAnalysis
     {
     }
 
-    public static function build_storage()
+    public static function buildStorage()
     {
         ValueAnalysis::$exprs_cast = new \SplObjectStorage;
         ValueAnalysis::$exprs_knownvalues = new \SplObjectStorage;
     }
 
-    public static function update_storage_to_expr($expr)
+    public static function updateStorageToExpr($expr)
     {
         if (!isset(ValueAnalysis::$exprs_cast[$expr])) {
             ValueAnalysis::$exprs_cast[$expr] = [];
@@ -50,58 +50,59 @@ class ValueAnalysis
         }
     }
 
-    public static function compute_known_values($defassign, $expr)
+    public static function computeKnownValues($defassign, $expr)
     {
         if (isset(ValueAnalysis::$exprs_knownvalues[$expr])) {
             $known_values = ValueAnalysis::$exprs_knownvalues[$expr];
             $final_def_values = [];
 
-            // we dont want to compute values with more than 3 concat : $def = $val1.$val2.$val3; (too much possibilities)
+            // we dont want to compute values with more than 3 concat :
+            // $def = $val1.$val2.$val3; (too much possibilities)
             if (count($known_values) < 4) {
-                // storage[id_temp][] = def->get_last_known_values()
+                // storage[id_temp][] = def->getLastKnownValues()
                     // value = "id_temp1"."id_temp2"."id_temp3";
-                    foreach ($known_values as $id_temp => $defs_known_values) { // 1
-                        // def
-                        // "id_temp1"
-                        $def_values = [];
-                        foreach ($defs_known_values as $def_known_values) { // 2
-                            // def->get_last_known_values()
-                            // "def_id_temp1"
-                            foreach ($def_known_values as $def_known_value) {
-                                if (Common::valid_last_known_value($def_known_value)
-                                        && !in_array($def_known_value, $def_values, true)) {
-                                    $def_values[] = $def_known_value;
-                                }
+                foreach ($known_values as $id_temp => $defs_known_values) { // 1
+                    // def
+                    // "id_temp1"
+                    $def_values = [];
+                    foreach ($defs_known_values as $def_known_values) { // 2
+                        // def->getLastKnownValues()
+                        // "def_id_temp1"
+                        foreach ($def_known_values as $def_known_value) {
+                            if (Common::validLastKnownValue($def_known_value)
+                                    && !in_array($def_known_value, $def_values, true)) {
+                                $def_values[] = $def_known_value;
                             }
-                        }
-
-                        if (count($final_def_values) === 0) {
-                            $final_def_values = $def_values;
-                        } else {
-                            $new_final_def_values = [];
-
-                            foreach ($final_def_values as $final_def_value) {
-                                foreach ($def_values as $def_value) {
-                                    $new_value = $final_def_value.$def_value;
-                                    if (Common::valid_last_known_value($def_known_value)
-                                            && !in_array($new_value, $new_final_def_values, true)) {
-                                        $new_final_def_values[] = $new_value;
-                                    }
-                                }
-                            }
-
-                            $final_def_values = $new_final_def_values;
                         }
                     }
 
+                    if (count($final_def_values) === 0) {
+                        $final_def_values = $def_values;
+                    } else {
+                        $new_final_def_values = [];
+
+                        foreach ($final_def_values as $final_def_value) {
+                            foreach ($def_values as $def_value) {
+                                $new_value = $final_def_value.$def_value;
+                                if (Common::validLastKnownValue($def_known_value)
+                                        && !in_array($new_value, $new_final_def_values, true)) {
+                                    $new_final_def_values[] = $new_value;
+                                }
+                            }
+                        }
+
+                        $final_def_values = $new_final_def_values;
+                    }
+                }
+
                 foreach ($final_def_values as $final_def_value) {
-                    $defassign->add_last_known_value($final_def_value);
+                    $defassign->addLastKnownValue($final_def_value);
                 }
             }
         }
     }
 
-    public static function compute_cast_values($defassign, $expr)
+    public static function computeCastValues($defassign, $expr)
     {
         if (isset(ValueAnalysis::$exprs_cast[$expr])) {
             $nb_cast_safe = 0;
@@ -114,18 +115,18 @@ class ValueAnalysis
             }
 
             if ($nb_cast_safe === count($cast_values)) {
-                $defassign->set_cast(MyDefinition::CAST_SAFE);
+                $defassign->setCast(MyDefinition::CAST_SAFE);
             } else {
-                $defassign->set_cast(MyDefinition::CAST_NOT_SAFE);
+                $defassign->setCast(MyDefinition::CAST_NOT_SAFE);
             }
         }
     }
 
-    public static function compute_embedded_chars($defassign, $expr)
+    public static function computeEmbeddedChars($defassign, $expr)
     {
         $concat_embedded_chars = [];
-        foreach ($expr->get_defs() as $def) {
-            foreach ($def->get_is_embeddedbychars() as $embedded_char => $boolean) {
+        foreach ($expr->getDefs() as $def) {
+            foreach ($def->getIsEmbeddedByChars() as $embedded_char => $boolean) {
                 $concat_embedded_chars[] = $embedded_char;
             }
         }
@@ -133,8 +134,8 @@ class ValueAnalysis
         foreach ($concat_embedded_chars as $embedded_char) {
             $embedded_value = false;
 
-            foreach ($expr->get_defs() as $def) {
-                $boolean = $def->get_is_embeddedbychar($embedded_char);
+            foreach ($expr->getDefs() as $def) {
+                $boolean = $def->getIsEmbeddedByChar($embedded_char);
 
                 if ($boolean && $embedded_value) {
                     $embedded_value = false;
@@ -153,16 +154,16 @@ class ValueAnalysis
                 }
             }
 
-            $defassign->set_is_embeddedbychar($embedded_char, $embedded_value);
+            $defassign->setIsEmbeddedByChar($embedded_char, $embedded_value);
         }
     }
 
-    public static function compute_sanitized_values($defassign, $expr)
+    public static function computeSanitizedValues($defassign, $expr)
     {
         $concat_types_sanitize = [];
-        foreach ($expr->get_defs() as $def) {
-            if ($def->is_sanitized()) {
-                foreach ($def->get_type_sanitized() as $type_sanitized) {
+        foreach ($expr->getDefs() as $def) {
+            if ($def->isSanitized()) {
+                foreach ($def->getTypeSanitized() as $type_sanitized) {
                     $concat_types_sanitize["$type_sanitized"] = true;
                 }
             }
@@ -171,22 +172,22 @@ class ValueAnalysis
         // foreach sanitize types
         foreach ($concat_types_sanitize as $type_sanitized => $boolean_true) {
             $type_ok = true;
-            foreach ($expr->get_defs() as $def) {
+            foreach ($expr->getDefs() as $def) {
                 // if we find a tainted value that is not sanitized the defassign is not sanitized
-                if (!$def->is_type_sanitized($type_sanitized) && $def->is_tainted()) {
+                if (!$def->isTypeSanitized($type_sanitized) && $def->isTainted()) {
                     $type_ok = false;
                 }
             }
 
             if ($type_ok) {
-                $defassign->set_sanitized(true);
-                $defassign->add_type_sanitized($type_sanitized);
+                $defassign->setSanitized(true);
+                $defassign->addTypeSanitized($type_sanitized);
             }
         }
     }
 
-    public static function copy_values($def, $defassign)
+    public static function copyValues($def, $defassign)
     {
-        $defassign->set_is_embeddedbychars($def->get_is_embeddedbychars(), true);
+        $defassign->setIsEmbeddedByChars($def->getIsEmbeddedByChars(), true);
     }
 }

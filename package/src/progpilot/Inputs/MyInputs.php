@@ -72,67 +72,67 @@ class MyInputs
         $this->folder = null;
     }
 
-    public function get_sinks_file()
+    public function getSinksFile()
     {
         return $this->sinks_file;
     }
 
-    public function get_sources_file()
+    public function getSourcesFile()
     {
         return $this->sources_file;
     }
 
-    public function get_validators_file()
+    public function getValidatorsFile()
     {
         return $this->validators_file;
     }
 
-    public function get_sanitizers_file()
+    public function getSanitizersFile()
     {
         return $this->sanitizers_file;
     }
 
-    public function get_included_files()
+    public function getIncludedFiles()
     {
         return $this->includes_files_analysis;
     }
 
-    public function get_included_folders()
+    public function getIncludedFolders()
     {
         return $this->includes_folders_analysis;
     }
 
-    public function get_folder()
+    public function getFolder()
     {
         return $this->folder;
     }
 
-    public function get_file()
+    public function getFile()
     {
         return $this->file;
     }
 
-    public function get_code()
+    public function getCode()
     {
         return $this->code;
     }
 
-    public function set_folder($folder)
+    public function setFolder($folder)
     {
         $this->folder = $folder;
     }
 
-    public function set_file($file)
+    public function setFile($file)
     {
         $this->file = $file;
     }
 
-    public function set_code($code)
+    public function setCode($code)
     {
         $this->code = $code;
     }
 
-    public function is_excluded_folder($name)
+    public function isExcludedFolder($name)
     {
         $name = realpath($name);
         foreach ($this->excludes_folders_analysis as $exclude_name) {
@@ -144,7 +144,7 @@ class MyInputs
         return false;
     }
 
-    public function is_included_folder($name)
+    public function isIncludedFolder($name)
     {
         $name = realpath($name);
         foreach ($this->includes_folders_analysis as $include_name) {
@@ -156,7 +156,7 @@ class MyInputs
         return false;
     }
 
-    public function is_excluded_file($name)
+    public function isExcludedFile($name)
     {
         $name = realpath($name);
         foreach ($this->excludes_files_analysis as $exclude_name) {
@@ -168,7 +168,7 @@ class MyInputs
         return false;
     }
 
-    public function is_included_file($name)
+    public function isIncludedFile($name)
     {
         $name = realpath($name);
         foreach ($this->includes_files_analysis as $include_name) {
@@ -180,12 +180,12 @@ class MyInputs
         return false;
     }
 
-    public function get_include_bylocation($line, $column, $source_file)
+    public function getIncludeByLocation($line, $column, $source_file)
     {
         foreach ($this->resolved_includes as $myinclude) {
-            if ($myinclude->get_line() === $line
-                                                && $myinclude->get_column() === $column
-                                                        && $myinclude->get_source_file() === $source_file) {
+            if ($myinclude->getLine() === $line
+                                                && $myinclude->getColumn() === $column
+                                                        && $myinclude->getSourceFile() === $source_file) {
                 return $myinclude;
             }
         }
@@ -193,20 +193,20 @@ class MyInputs
         return null;
     }
 
-    public function get_validator_byname($stack_class, $myfunc, $myclass)
+    public function getValidatorByName($stack_class, $myfunc, $myclass)
     {
         foreach ($this->validators as $myvalidator) {
-            if ($myvalidator->get_name() === $myfunc->get_name()) {
-                if (!$myvalidator->is_instance() && !$myfunc->is_type(MyFunction::TYPE_FUNC_METHOD)) {
+            if ($myvalidator->getName() === $myfunc->getName()) {
+                if (!$myvalidator->isInstance() && !$myfunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
                     return $myvalidator;
                 }
 
-                if ($myvalidator->is_instance() && $myfunc->is_type(MyFunction::TYPE_FUNC_METHOD)) {
-                    if (!is_null($myclass) && $myvalidator->get_instanceof_name() === $myclass->get_name()) {
+                if ($myvalidator->isInstance() && $myfunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
+                    if (!is_null($myclass) && $myvalidator->getInstanceOfName() === $myclass->getName()) {
                         return $myvalidator;
                     }
 
-                    $properties_validator = explode("->", $myvalidator->get_instanceof_name());
+                    $properties_validator = explode("->", $myvalidator->getInstanceOfName());
 
                     if (is_array($properties_validator)) {
                         $myvalidator_instance_name = $properties_validator[0];
@@ -215,10 +215,11 @@ class MyInputs
                         $stack_number_ofproperties = count($stack_class);
 
                         if ($stack_number_ofproperties >= $myvalidator_number_ofproperties) {
-                            $known_properties = $stack_class[$stack_number_ofproperties - $myvalidator_number_ofproperties];
+                            $known_properties =
+                                $stack_class[$stack_number_ofproperties - $myvalidator_number_ofproperties];
 
                             foreach ($known_properties as $prop_class) {
-                                if ($prop_class->get_name() === $myvalidator_instance_name) {
+                                if ($prop_class->getName() === $myvalidator_instance_name) {
                                     return $myvalidator;
                                 }
                             }
@@ -231,20 +232,20 @@ class MyInputs
         return null;
     }
 
-    public function get_sanitizer_byname($stack_class, $myfunc, $myclass)
+    public function getSanitizerByName($stack_class, $myfunc, $myclass)
     {
         foreach ($this->sanitizers as $mysanitizer) {
-            if ($mysanitizer->get_name() === $myfunc->get_name()) {
-                if (!$mysanitizer->is_instance() && !$myfunc->is_type(MyFunction::TYPE_FUNC_METHOD)) {
+            if ($mysanitizer->getName() === $myfunc->getName()) {
+                if (!$mysanitizer->isInstance() && !$myfunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
                     return $mysanitizer;
                 }
 
-                if ($mysanitizer->is_instance() && $myfunc->is_type(MyFunction::TYPE_FUNC_METHOD)) {
-                    if (!is_null($myclass) && $mysanitizer->get_instanceof_name() === $myclass->get_name()) {
+                if ($mysanitizer->isInstance() && $myfunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
+                    if (!is_null($myclass) && $mysanitizer->getInstanceOfName() === $myclass->getName()) {
                         return $mysanitizer;
                     }
 
-                    $properties_sanitizer = explode("->", $mysanitizer->get_instanceof_name());
+                    $properties_sanitizer = explode("->", $mysanitizer->getInstanceOfName());
 
                     if (is_array($properties_sanitizer)) {
                         $mysanitizer_instance_name = $properties_sanitizer[0];
@@ -253,10 +254,11 @@ class MyInputs
                         $stack_number_ofproperties = count($stack_class);
 
                         if ($stack_number_ofproperties >= $mysanitizer_number_ofproperties) {
-                            $known_properties = $stack_class[$stack_number_ofproperties - $mysanitizer_number_ofproperties];
+                            $known_properties =
+                            $stack_class[$stack_number_ofproperties - $mysanitizer_number_ofproperties];
 
                             foreach ($known_properties as $prop_class) {
-                                if ($prop_class->get_name() === $mysanitizer_instance_name) {
+                                if ($prop_class->getName() === $mysanitizer_instance_name) {
                                     return $mysanitizer;
                                 }
                             }
@@ -269,20 +271,20 @@ class MyInputs
         return null;
     }
 
-    public function get_sink_byname($context, $stack_class, $myfunc, $myclass)
+    public function getSinkByName($context, $stack_class, $myfunc, $myclass)
     {
         foreach ($this->sinks as $mysink) {
-            if ($mysink->get_name() === $myfunc->get_name()) {
-                if (!$mysink->is_instance() && !$myfunc->is_type(MyFunction::TYPE_FUNC_METHOD)) {
+            if ($mysink->getName() === $myfunc->getName()) {
+                if (!$mysink->isInstance() && !$myfunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
                     return $mysink;
                 }
 
-                if ($mysink->is_instance() && $myfunc->is_type(MyFunction::TYPE_FUNC_METHOD)) {
-                    if (!is_null($myclass) && $mysink->get_instanceof_name() === $myclass->get_name()) {
+                if ($mysink->isInstance() && $myfunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
+                    if (!is_null($myclass) && $mysink->getInstanceOfName() === $myclass->getName()) {
                         return $mysink;
                     }
 
-                    $properties_sink = explode("->", $mysink->get_instanceof_name());
+                    $properties_sink = explode("->", $mysink->getInstanceOfName());
 
                     if (is_array($properties_sink)) {
                         $mysink_instance_name = $properties_sink[0];
@@ -291,13 +293,14 @@ class MyInputs
                         $stack_number_ofproperties = count($stack_class);
 
                         if ($stack_number_ofproperties >= $mysink_number_ofproperties) {
-                            $known_properties = $stack_class[$stack_number_ofproperties - $mysink_number_ofproperties];
+                            $known_properties =
+                            $stack_class[$stack_number_ofproperties - $mysink_number_ofproperties];
 
                             foreach ($known_properties as $prop_class) {
-                                $object_id = $prop_class->get_object_id();
-                                $myclass = $context->get_objects()->get_myclass_from_object($object_id);
-
-                                if ($myclass->get_name() === $mysink_instance_name) {
+                                $object_id = $prop_class->getObjectId();
+                                $myclass = $context->getObjects()->getMyClassFromObject($object_id);
+                                
+                                if (!is_null($myclass) && $myclass->getName() === $mysink_instance_name) {
                                     return $mysink;
                                 }
                             }
@@ -310,10 +313,15 @@ class MyInputs
         return null;
     }
 
-    public function get_source_byname($stack_class, $myfunc_or_def, $is_function = false, $instance_name = false, $arr_value = false)
-    {
+    public function getSourceByName(
+        $stack_class,
+        $myfunc_or_def,
+        $isFunction = false,
+        $instance_name = false,
+        $arr_value = false
+    ) {
         foreach ($this->sources as $mysource) {
-            if ($mysource->get_name() === $myfunc_or_def->get_name()) {
+            if ($mysource->getName() === $myfunc_or_def->getName()) {
                 $check_function = false;
                 $check_array = false;
                 $check_instance = false;
@@ -323,12 +331,12 @@ class MyInputs
                 }
 
 
-                if ($instance_name && $mysource->is_instance()) {
-                    if ($mysource->get_instanceof_name() === $instance_name) {
+                if ($instance_name && $mysource->isInstance()) {
+                    if ($mysource->getInstanceOfName() === $instance_name) {
                         $check_instance = true;
                     }
 
-                    $properties_source = explode("->", $mysource->get_instanceof_name());
+                    $properties_source = explode("->", $mysource->getInstanceOfName());
 
                     if (is_array($properties_source)) {
                         $mysource_instance_name = $properties_source[0];
@@ -337,10 +345,11 @@ class MyInputs
                         $stack_number_ofproperties = count($stack_class);
 
                         if ($stack_number_ofproperties >= $mysource_number_ofproperties) {
-                            $known_properties = $stack_class[$stack_number_ofproperties - $mysource_number_ofproperties];
+                            $known_properties =
+                                $stack_class[$stack_number_ofproperties - $mysource_number_ofproperties];
 
                             foreach ($known_properties as $prop_class) {
-                                if ($prop_class->get_name() === $mysource_instance_name) {
+                                if ($prop_class->getName() === $mysource_instance_name) {
                                     $check_instance = true;
                                 }
                             }
@@ -348,30 +357,32 @@ class MyInputs
                     }
                 }
 
-                if ($mysource->is_function() === $is_function) {
+                if ($mysource->isFunction() === $isFunction) {
                     $check_function = true;
                 }
 
-                // if we request an array the source must be an array and array nots equals (like $_GET["p"])
+                // if we request an array the source must be an array
+                // and array nots equals (like $_GET["p"])
                 if (($arr_value !== false
-                                         && $mysource->get_is_array()
-                                         && is_null($mysource->get_array_value()))
-                            // or we don't request an array and the source is not an array (echo $hardcoded_tainted)
-                            || (!$arr_value && !$mysource->get_is_array())
+                                         && $mysource->getIsArray()
+                                         && is_null($mysource->getArrayValue()))
+                            // or we don't request an array
+                            // and the source is not an array (echo $hardcoded_tainted)
+                            || (!$arr_value && !$mysource->getIsArray())
                             // or we don't request an array
                             // if mysource is a function and a array like that :
                             // $row = mysqli_fetch_assoc()
                             // echo $row[0]
                             // we don't want an array ie : $row = mysqli_fetch_assoc()[0]
-                            || (!$arr_value && $mysource->is_function() && $mysource->get_is_array())) {
+                            || (!$arr_value && $mysource->isFunction() && $mysource->getIsArray())) {
                     $check_array = true;
                 }
 
                 // if we request an array the source must be an array and array value equals
                 if (($arr_value !== false
-                                         && $mysource->get_is_array()
-                                         && !is_null($mysource->get_array_value())
-                                         && $mysource->get_array_value() === $arr_value)) {
+                                         && $mysource->getIsArray()
+                                         && !is_null($mysource->getArrayValue())
+                                         && $mysource->getArrayValue() === $arr_value)) {
                     $check_array = true;
                 }
 
@@ -384,10 +395,10 @@ class MyInputs
         return null;
     }
 
-    public function get_false_positive_byid($id)
+    public function getFalsePositiveById($id)
     {
         foreach ($this->false_positives as $false_positive) {
-            if ($false_positive->get_id() === $id) {
+            if ($false_positive->getId() === $id) {
                 return $false_positive;
             }
         }
@@ -395,97 +406,97 @@ class MyInputs
         return null;
     }
 
-    public function get_sanitizers()
+    public function getSanitizers()
     {
         return $this->sanitizers;
     }
 
-    public function get_sinks()
+    public function getSinks()
     {
         return $this->sinks;
     }
 
-    public function get_sources()
+    public function getSources()
     {
         return $this->sources;
     }
 
-    public function get_validators()
+    public function getValidators()
     {
         return $this->validators;
     }
 
-    public function get_resolved_includes()
+    public function getResolvedIncludes()
     {
         return $this->resolved_includes;
     }
 
-    public function get_false_positives()
+    public function getFalsePositives()
     {
         return $this->false_positives_file;
     }
 
-    public function get_exclude_files()
+    public function getExcludeFiles()
     {
         return $this->excludes_files;
     }
 
-    public function get_include_files()
+    public function getIncludeFiles()
     {
         return $this->includes_files;
     }
 
-    public function get_custom_rules()
+    public function getCustomRules()
     {
         return $this->custom_rules;
     }
 
-    public function set_custom_rules($file)
+    public function setCustomRules($file)
     {
         $this->custom_file = $file;
     }
 
-    public function set_include_files($file)
+    public function setIncludeFiles($file)
     {
         $this->includes_file = $file;
     }
 
-    public function set_exclude_files($file)
+    public function setExcludeFiles($file)
     {
         $this->excludes_file = $file;
     }
 
-    public function set_false_positives($file)
+    public function setFalsePositives($file)
     {
         $this->false_positives_file = $file;
     }
 
-    public function set_resolved_includes($file)
+    public function setResolvedIncludes($file)
     {
         $this->resolved_includes_file = $file;
     }
 
-    public function set_sources($file)
+    public function setSources($file)
     {
         $this->sources_file = $file;
     }
 
-    public function set_sinks($file)
+    public function setSinks($file)
     {
         $this->sinks_file = $file;
     }
 
-    public function set_sanitizers($file)
+    public function setSanitizers($file)
     {
         $this->sanitizers_file = $file;
     }
 
-    public function set_validators($file)
+    public function setValidators($file)
     {
         $this->validators_file = $file;
     }
 
-    public function read_sanitizers()
+    public function readSanitizers()
     {
         if (is_null($this->sanitizers_file)) {
             $this->sanitizers_file = __DIR__."/../../uptodate_data/sanitizers.json";
@@ -493,7 +504,7 @@ class MyInputs
 
         if (!is_null($this->sanitizers_file)) {
             if (!file_exists($this->sanitizers_file)) {
-                Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->sanitizers_file).")");
+                Utils::printError(Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->sanitizers_file).")");
             }
 
             $output_json = file_get_contents($this->sanitizers_file);
@@ -505,7 +516,7 @@ class MyInputs
                 foreach ($sanitizers as $sanitizer) {
                     if (!isset($sanitizer-> {'name'})
                                 || !isset($sanitizer-> {'language'})) {
-                        Utils::print_error(Lang::FORMAT_SANITIZERS);
+                        Utils::printError(Lang::FORMAT_SANITIZERS);
                     }
 
                     $name = $sanitizer-> {'name'};
@@ -519,8 +530,8 @@ class MyInputs
                     $mysanitizer = new MySanitizer($name, $language, $prevent);
 
                     if (isset($sanitizer-> {'instanceof'})) {
-                        $mysanitizer->set_is_instance(true);
-                        $mysanitizer->set_instanceof_name($sanitizer-> {'instanceof'});
+                        $mysanitizer->setIsInstance(true);
+                        $mysanitizer->setInstanceOfName($sanitizer-> {'instanceof'});
                     }
 
                     if (isset($sanitizer-> {'parameters'})) {
@@ -533,27 +544,34 @@ class MyInputs
                                                             || $parameter-> {'condition'} === "sanitize")) {
                                     if ($parameter-> {'condition'} === "equals") {
                                         if (isset($parameter-> {'values'})) {
-                                            $mysanitizer->add_parameter($parameter-> {'id'}, $parameter-> {'condition'}, $parameter-> {'values'});
+                                            $mysanitizer->addParameter(
+                                                $parameter-> {'id'},
+                                                $parameter-> {'condition'},
+                                                $parameter-> {'values'}
+                                            );
                                         }
                                     } else {
-                                        $mysanitizer->add_parameter($parameter-> {'id'}, $parameter-> {'condition'});
+                                        $mysanitizer->addParameter(
+                                            $parameter-> {'id'},
+                                            $parameter-> {'condition'}
+                                        );
                                     }
                                 }
                             }
                         }
 
-                        $mysanitizer->set_has_parameters(true);
+                        $mysanitizer->setHasParameters(true);
                     }
 
                     $this->sanitizers[] = $mysanitizer;
                 }
             } else {
-                Utils::print_error(Lang::FORMAT_SANITIZERS);
+                Utils::printError(Lang::FORMAT_SANITIZERS);
             }
         }
     }
 
-    public function read_sinks()
+    public function readSinks()
     {
         if (is_null($this->sinks_file)) {
             $this->sinks_file = __DIR__."/../../uptodate_data/sinks.json";
@@ -561,7 +579,7 @@ class MyInputs
 
         if (!is_null($this->sinks_file)) {
             if (!file_exists($this->sinks_file)) {
-                Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->sinks_file).")");
+                Utils::printError(Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->sinks_file).")");
             }
 
             $output_json = file_get_contents($this->sinks_file);
@@ -574,7 +592,7 @@ class MyInputs
                                 || !isset($sink-> {'language'})
                                 || !isset($sink-> {'attack'})
                                 || !isset($sink-> {'cwe'})) {
-                        Utils::print_error(Lang::FORMAT_SINKS);
+                        Utils::printError(Lang::FORMAT_SINKS);
                     }
 
                     $name = $sink-> {'name'};
@@ -585,12 +603,12 @@ class MyInputs
                     $mysink = new MySink($name, $language, $attack, $cwe);
 
                     if (isset($sink-> {'instanceof'})) {
-                        $mysink->set_is_instance(true);
-                        $mysink->set_instanceof_name($sink-> {'instanceof'});
+                        $mysink->setIsInstance(true);
+                        $mysink->setInstanceOfName($sink-> {'instanceof'});
                     }
 
                     if (isset($sink-> {'condition'})) {
-                        $mysink->add_global_condition($sink-> {'condition'});
+                        $mysink->addGlobalCondition($sink-> {'condition'});
                     }
 
                     if (isset($sink-> {'parameters'})) {
@@ -598,25 +616,25 @@ class MyInputs
                         foreach ($parameters as $parameter) {
                             if (isset($parameter-> {'id'}) && is_int($parameter-> {'id'})) {
                                 if (isset($parameter-> {'condition'})) {
-                                    $mysink->add_parameter($parameter-> {'id'}, $parameter-> {'condition'});
+                                    $mysink->addParameter($parameter-> {'id'}, $parameter-> {'condition'});
                                 } else {
-                                    $mysink->add_parameter($parameter-> {'id'});
+                                    $mysink->addParameter($parameter-> {'id'});
                                 }
                             }
                         }
 
-                        $mysink->set_has_parameters(true);
+                        $mysink->setHasParameters(true);
                     }
 
                     $this->sinks[] = $mysink;
                 }
             } else {
-                Utils::print_error(Lang::FORMAT_SINKS);
+                Utils::printError(Lang::FORMAT_SINKS);
             }
         }
     }
 
-    public function read_sources()
+    public function readSources()
     {
         if (is_null($this->sources_file)) {
             $this->sources_file = __DIR__."/../../uptodate_data/sources.json";
@@ -624,7 +642,7 @@ class MyInputs
 
         if (!is_null($this->sources_file)) {
             if (!file_exists($this->sources_file)) {
-                Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->sources_file).")");
+                Utils::printError(Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->sources_file).")");
             }
 
             $output_json = file_get_contents($this->sources_file);
@@ -635,7 +653,7 @@ class MyInputs
                 foreach ($sources as $source) {
                     if (!isset($source-> {'name'})
                                 || !isset($source-> {'language'})) {
-                        Utils::print_error(Lang::FORMAT_SOURCES);
+                        Utils::printError(Lang::FORMAT_SOURCES);
                     }
 
                     $name = $source-> {'name'};
@@ -644,54 +662,58 @@ class MyInputs
                     $mysource = new MySource($name, $language);
 
                     if (isset($source-> {'is_function'}) && $source-> {'is_function'}) {
-                        $mysource->set_is_function(true);
+                        $mysource->setIsFunction(true);
                     }
 
                     if (isset($source-> {'is_array'}) && $source-> {'is_array'}) {
-                        $mysource->set_is_array(true);
+                        $mysource->setIsArray(true);
                     }
 
                     if (isset($source-> {'array_index'})) {
                         $arr = array($source-> {'array_index'} => false);
-                        $mysource->set_array_value($arr);
+                        $mysource->setArrayValue($arr);
                     }
 
                     if (isset($source-> {'instanceof'})) {
-                        $mysource->set_is_instance(true);
-                        $mysource->set_instanceof_name($source-> {'instanceof'});
+                        $mysource->setIsInstance(true);
+                        $mysource->setInstanceOfName($source-> {'instanceof'});
                     }
 
                     if (isset($source-> {'return_array_index'})) {
-                        $mysource->set_return_array(true);
-                        $mysource->set_return_array_value($source-> {'return_array_index'});
+                        $mysource->setReturnArray(true);
+                        $mysource->setReturnArrayValue($source-> {'return_array_index'});
                     }
 
                     if (isset($source-> {'parameters'})) {
                         $parameters = $source-> {'parameters'};
                         foreach ($parameters as $parameter) {
                             if (is_int($parameter-> {'id'})) {
-                                $mysource->add_parameter($parameter-> {'id'});
+                                $mysource->addParameter($parameter-> {'id'});
 
                                 if (isset($parameter-> {'is_array'})
                                             && $parameter-> {'is_array'}
                                             && isset($parameter-> {'array_index'})) {
-                                    $mysource->add_condition_parameter($parameter-> {'id'}, MySource::CONDITION_ARRAY, $parameter-> {'array_index'});
+                                    $mysource->addConditionParameter(
+                                        $parameter-> {'id'},
+                                        MySource::CONDITION_ARRAY,
+                                        $parameter-> {'array_index'}
+                                    );
                                 }
                             }
                         }
 
-                        $mysource->set_has_parameters(true);
+                        $mysource->setHasParameters(true);
                     }
 
                     $this->sources[] = $mysource;
                 }
             } else {
-                Utils::print_error(Lang::FORMAT_SOURCES);
+                Utils::printError(Lang::FORMAT_SOURCES);
             }
         }
     }
 
-    public function read_validators()
+    public function readValidators()
     {
         if (is_null($this->validators_file)) {
             $this->validators_file = __DIR__."/../../uptodate_data/validators.json";
@@ -699,7 +721,7 @@ class MyInputs
 
         if (!is_null($this->validators_file)) {
             if (!file_exists($this->validators_file)) {
-                Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->validators_file).")");
+                Utils::printError(Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->validators_file).")");
             }
 
             $output_json = file_get_contents($this->validators_file);
@@ -710,7 +732,7 @@ class MyInputs
                 foreach ($validators as $validator) {
                     if (!isset($validator-> {'name'})
                                 || !isset($validator-> {'language'})) {
-                        Utils::print_error(Lang::FORMAT_VALIDATORS);
+                        Utils::printError(Lang::FORMAT_VALIDATORS);
                     }
 
                     $name = $validator-> {'name'};
@@ -729,36 +751,45 @@ class MyInputs
                                                                     || $parameter-> {'condition'} === "equals")) {
                                     if ($parameter-> {'condition'} === "equals") {
                                         if (isset($parameter-> {'values'})) {
-                                            $myvalidator->add_parameter($parameter-> {'id'}, $parameter-> {'condition'}, $parameter-> {'values'});
+                                            $myvalidator->addParameter(
+                                                $parameter-> {'id'},
+                                                $parameter-> {'condition'},
+                                                $parameter-> {'values'}
+                                            );
                                         }
                                     } else {
-                                        $myvalidator->add_parameter($parameter-> {'id'}, $parameter-> {'condition'});
+                                        $myvalidator->addParameter(
+                                            $parameter-> {'id'},
+                                            $parameter-> {'condition'}
+                                        );
                                     }
                                 }
                             }
                         }
 
-                        $myvalidator->set_has_parameters(true);
+                        $myvalidator->setHasParameters(true);
                     }
 
                     if (isset($validator-> {'instanceof'})) {
-                        $myvalidator->set_is_instance(true);
-                        $myvalidator->set_instanceof_name($validator-> {'instanceof'});
+                        $myvalidator->setIsInstance(true);
+                        $myvalidator->setInstanceOfName($validator-> {'instanceof'});
                     }
 
                     $this->validators[] = $myvalidator;
                 }
             } else {
-                Utils::print_error(Lang::FORMAT_VALIDATORS);
+                Utils::printError(Lang::FORMAT_VALIDATORS);
             }
         }
     }
 
-    public function read_resolved_includes()
+    public function readResolvedIncludes()
     {
         if (!is_null($this->resolved_includes_file)) {
             if (!file_exists($this->resolved_includes_file)) {
-                Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->resolved_includes_file).")");
+                Utils::printError(
+                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->resolved_includes_file).")"
+                );
             }
 
             $output_json = file_get_contents($this->resolved_includes_file);
@@ -771,7 +802,7 @@ class MyInputs
                                 || !isset($include-> {'column'})
                                 || !isset($include-> {'source_file'})
                                 || !isset($include-> {'value'})) {
-                        Utils::print_error(Lang::FORMAT_INCLUDES);
+                        Utils::printError(Lang::FORMAT_INCLUDES);
                     }
 
                     if (realpath($include-> {'source_file'})) {
@@ -785,16 +816,18 @@ class MyInputs
                     }
                 }
             } else {
-                Utils::print_error(Lang::FORMAT_INCLUDES);
+                Utils::printError(Lang::FORMAT_INCLUDES);
             }
         }
     }
 
-    public function read_false_positives()
+    public function readFalsePositives()
     {
         if (!is_null($this->false_positives_file)) {
             if (!file_exists($this->false_positives_file)) {
-                Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->false_positives_file).")");
+                Utils::printError(
+                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->false_positives_file).")"
+                );
             }
 
             $output_json = file_get_contents($this->false_positives_file);
@@ -804,7 +837,7 @@ class MyInputs
                 $false_positives = $parsed_json-> {'false_positives'};
                 foreach ($false_positives as $false_positive) {
                     if (!isset($false_positive-> {'vuln_id'})) {
-                        Utils::print_error(Lang::FORMAT_FALSE_POSITIVES);
+                        Utils::printError(Lang::FORMAT_FALSE_POSITIVES);
                     }
 
                     $vuln_id = $false_positive-> {'vuln_id'};
@@ -813,16 +846,18 @@ class MyInputs
                     $this->false_positives[] = $myvuln;
                 }
             } else {
-                Utils::print_error(Lang::FORMAT_FALSE_POSITIVES);
+                Utils::printError(Lang::FORMAT_FALSE_POSITIVES);
             }
         }
     }
 
-    public function read_excludes_file()
+    public function readExcludesFile()
     {
         if (!is_null($this->excludes_file)) {
             if (!file_exists($this->excludes_file)) {
-                Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->excludes_file).")");
+                Utils::printError(
+                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->excludes_file).")"
+                );
             }
 
             $output_json = file_get_contents($this->excludes_file);
@@ -848,11 +883,13 @@ class MyInputs
         }
     }
 
-    public function read_includes_file()
+    public function readIncludesFile()
     {
         if (!is_null($this->includes_file)) {
             if (!file_exists($this->includes_file)) {
-                Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->includes_file).")");
+                Utils::printError(
+                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->includes_file).")"
+                );
             }
 
             $output_json = file_get_contents($this->includes_file);
@@ -878,7 +915,7 @@ class MyInputs
         }
     }
 
-    public function read_custom_file()
+    public function readCustomFile()
     {
         if (is_null($this->custom_file)) {
             $this->custom_file = __DIR__."/../../uptodate_data/rules.json";
@@ -886,7 +923,9 @@ class MyInputs
 
         if (!is_null($this->custom_file)) {
             if (!file_exists($this->custom_file)) {
-                Utils::print_error(Lang::FILE_DOESNT_EXIST." (".Utils::encode_characters($this->custom_file).")");
+                Utils::printError(
+                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->custom_file).")"
+                );
             }
 
             $output_json = file_get_contents($this->custom_file);
@@ -900,28 +939,38 @@ class MyInputs
                                 && isset($custom_rule-> {'cwe'})
                                 && isset($custom_rule-> {'attack'})) {
                         $mycustom = new MyCustomRule($custom_rule-> {'name'}, $custom_rule-> {'description'});
-                        $mycustom->set_cwe($custom_rule-> {'cwe'});
-                        $mycustom->set_attack($custom_rule-> {'attack'});
+                        $mycustom->setCwe($custom_rule-> {'cwe'});
+                        $mycustom->setAttack($custom_rule-> {'attack'});
 
                         if (isset($custom_rule-> {'sequence'}) && isset($custom_rule-> {'action'})) {
-                            $mycustom->set_type(MyCustomRule::TYPE_SEQUENCE);
-                            $mycustom->set_action($custom_rule-> {'action'});
+                            $mycustom->setType(MyCustomRule::TYPE_SEQUENCE);
+                            $mycustom->setAction($custom_rule-> {'action'});
 
                             foreach ($custom_rule-> {'sequence'} as $seq) {
                                 if (isset($seq-> {'function_name'}) && isset($seq-> {'language'})) {
                                     $mycustomfunction = null;
 
                                     if (!isset($seq-> {'action'})) {
-                                        $mycustomfunction = $mycustom->add_to_sequence($seq-> {'function_name'}, $seq-> {'language'});
+                                        $mycustomfunction = $mycustom->addToSequence(
+                                            $seq-> {'function_name'},
+                                            $seq-> {'language'}
+                                        );
                                     } else {
                                         switch ($seq-> {'action'}) {
-                                                case 'MUST_VERIFY_DEFINITION':
-                                                    $mycustomfunction = $mycustom->add_to_sequence_with_action($seq-> {'function_name'}, $seq-> {'language'}, $seq-> {'action'});
-                                                    break;
-                                                default:
-                                                    $mycustomfunction = $mycustom->add_to_sequence($seq-> {'function_name'}, $seq-> {'language'});
-                                                    break;
-                                            }
+                                            case 'MUST_VERIFY_DEFINITION':
+                                                $mycustomfunction = $mycustom->addToSequenceWithAction(
+                                                    $seq-> {'function_name'},
+                                                    $seq-> {'language'},
+                                                    $seq-> {'action'}
+                                                );
+                                                break;
+                                            default:
+                                                $mycustomfunction = $mycustom->addToSequence(
+                                                    $seq-> {'function_name'},
+                                                    $seq-> {'language'}
+                                                );
+                                                break;
+                                        }
                                     }
 
                                     if (isset($seq-> {'parameters'}) && !is_null($mycustomfunction)) {
@@ -929,43 +978,52 @@ class MyInputs
                                         foreach ($parameters as $parameter) {
                                             if (isset($parameter-> {'id'}) && isset($parameter-> {'values'})) {
                                                 if (is_int($parameter-> {'id'})) {
-                                                    $mycustomfunction->add_parameter($parameter-> {'id'}, $parameter-> {'values'});
+                                                    $mycustomfunction->addParameter(
+                                                        $parameter-> {'id'},
+                                                        $parameter-> {'values'}
+                                                    );
                                                 }
                                             }
                                         }
 
-                                        $mycustomfunction->set_has_parameters(true);
+                                        $mycustomfunction->setHasParameters(true);
                                     }
 
                                     if (isset($seq-> {'instanceof'})) {
-                                        $mycustomfunction->set_is_instance(true);
-                                        $mycustomfunction->set_instanceof_name($seq-> {'instanceof'});
+                                        $mycustomfunction->setIsInstance(true);
+                                        $mycustomfunction->setInstanceOfName($seq-> {'instanceof'});
                                     }
                                 }
                             }
                         } elseif (isset($custom_rule-> {'function_name'})
                                      && isset($custom_rule-> {'language'})
                                      && isset($custom_rule-> {'action'})) {
-                            $mycustom->set_type(MyCustomRule::TYPE_FUNCTION);
-                            $mycustom->set_action($custom_rule-> {'action'});
-                            $mycustomfunction = $mycustom->add_function_definition($custom_rule-> {'function_name'}, $custom_rule-> {'language'});
+                            $mycustom->setType(MyCustomRule::TYPE_FUNCTION);
+                            $mycustom->setAction($custom_rule-> {'action'});
+                            $mycustomfunction = $mycustom->addFunctionDefinition(
+                                $custom_rule-> {'function_name'},
+                                $custom_rule-> {'language'}
+                            );
 
                             if (isset($custom_rule-> {'parameters'})) {
                                 $parameters = $custom_rule-> {'parameters'};
                                 foreach ($parameters as $parameter) {
                                     if (isset($parameter-> {'id'}) && isset($parameter-> {'values'})) {
                                         if (is_int($parameter-> {'id'})) {
-                                            $mycustomfunction->add_parameter($parameter-> {'id'}, $parameter-> {'values'});
+                                            $mycustomfunction->addParameter(
+                                                $parameter-> {'id'},
+                                                $parameter-> {'values'}
+                                            );
                                         }
                                     }
                                 }
 
-                                $mycustomfunction->set_has_parameters(true);
+                                $mycustomfunction->setHasParameters(true);
                             }
 
                             if (isset($custom_rule-> {'instanceof'})) {
-                                $mycustomfunction->set_is_instance(true);
-                                $mycustomfunction->set_instanceof_name($custom_rule-> {'instanceof'});
+                                $mycustomfunction->setIsInstance(true);
+                                $mycustomfunction->setInstanceOfName($custom_rule-> {'instanceof'});
                             }
                         }
 

@@ -21,7 +21,3 @@ $testc1->member1 = $_GET["p"];
 $testc1->member2 = $_GET["p"];
 
 $testc1->print_members();
-
-?>
-
-

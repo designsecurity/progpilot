@@ -21,12 +21,12 @@ class Objects
         $this->objects = [];
     }
 
-    public function get_objects()
+    public function getObjects()
     {
         return $this->objects;
     }
 
-    public function add_object()
+    public function addObject()
     {
         $id_object = count($this->objects);
         $this->objects[$id_object] = null;
@@ -34,12 +34,12 @@ class Objects
         return $id_object;
     }
 
-    public function add_myclass_to_object($id_object, $myclass)
+    public function addMyclassToObject($id_object, $myclass)
     {
         $this->objects[$id_object] = $myclass;
     }
 
-    public function get_myclass_from_object($id_object)
+    public function getMyClassFromObject($id_object)
     {
         if (isset($this->objects[$id_object])) {
             return $this->objects[$id_object];

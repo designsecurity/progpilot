@@ -25,7 +25,7 @@ class ControlFlowGraph
         $this->myblock_text = [];
     }
 
-    public function get_textofmyblock($id)
+    public function getTextOfMyBlock($id)
     {
         if (isset($this->myblock_text["$id"])) {
             return $this->myblock_text["$id"];
@@ -34,7 +34,7 @@ class ControlFlowGraph
         return "";
     }
 
-    public function add_textofmyblock($id, $text)
+    public function addTextOfMyBlock($id, $text)
     {
         if (isset($this->myblock_text["$id"])) {
             $this->myblock_text["$id"] = $this->myblock_text["$id"]."$text";
@@ -43,22 +43,22 @@ class ControlFlowGraph
         }
     }
 
-    public function get_nodes()
+    public function getNodes()
     {
         return $this->nodes;
     }
 
-    public function get_edges()
+    public function getEdges()
     {
         return $this->edges;
     }
 
-    public function add_node($id, $block)
+    public function addNode($id, $block)
     {
         $this->nodes["$id"] = $block;
     }
 
-    public function get_id_of_node($block)
+    public function getIdOfNode($block)
     {
         foreach ($this->nodes as $id => $block_tmp) {
             if ($block === $block_tmp) {
@@ -69,7 +69,7 @@ class ControlFlowGraph
         return -1;
     }
 
-    public function add_edge($caller, $callee)
+    public function addEdge($caller, $callee)
     {
         $this->edges[] = [$caller, $callee];
     }

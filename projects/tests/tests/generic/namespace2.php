@@ -8,7 +8,3 @@ function cool()
 }
 
 cool();
-
-?>
-
-

@@ -12,7 +12,7 @@ namespace progpilot\Dataflow;
 
 class ArrayMulti
 {
-    public static function array_merge_multi($ar1, $ar2)
+    public static function arrayMergeMulti($ar1, $ar2)
     {
         $newar1 = $ar1;
 
@@ -34,7 +34,7 @@ class ArrayMulti
         return $newar1;
     }
 
-    public static function array_minus_multi($ar1, $ar2)
+    public static function arrayMinusMulti($ar1, $ar2)
     {
         $newar1 = [];
 

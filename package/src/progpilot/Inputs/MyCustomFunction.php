@@ -13,7 +13,7 @@ namespace progpilot\Inputs;
 class MyCustomFunction extends MySpecify
 {
     private $parameters;
-    private $has_parameters;
+    private $hasParameters;
 
     private $action;
     private $order_number_expected;
@@ -26,31 +26,31 @@ class MyCustomFunction extends MySpecify
         $this->order_number_expected = $order_number_expected;
         $this->order_number_real = -1;
 
-        $this->has_parameters = false;
+        $this->hasParameters = false;
         $this->parameters = [];
     }
 
-    public function add_parameter($parameter, $values = null)
+    public function addParameter($parameter, $values = null)
     {
         $this->parameters[] = [$parameter, $values];
     }
 
-    public function get_parameters()
+    public function getParameters()
     {
         return $this->parameters;
     }
 
-    public function has_parameters()
+    public function hasParameters()
     {
-        return $this->has_parameters;
+        return $this->hasParameters;
     }
 
-    public function set_has_parameters($has_parameters)
+    public function setHasParameters($hasParameters)
     {
-        $this->has_parameters = $has_parameters;
+        $this->hasParameters = $hasParameters;
     }
 
-    public function get_parameter_values($i)
+    public function getParameterValues($i)
     {
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
@@ -64,32 +64,32 @@ class MyCustomFunction extends MySpecify
         return null;
     }
 
-    public function set_order_number_real($order_number_real)
+    public function setOrderNumberReal($order_number_real)
     {
         $this->order_number_real = $order_number_real;
     }
 
-    public function get_order_number_real()
+    public function getOrderNumberReal()
     {
         return $this->order_number_real;
     }
 
-    public function set_order_number_expected($order_number_expected)
+    public function setOrderNumberExpected($order_number_expected)
     {
         $this->order_number_expected = $order_number_expected;
     }
 
-    public function get_order_number_expected()
+    public function getOrderNumberExpected()
     {
         return $this->order_number_expected;
     }
 
-    public function get_action()
+    public function getAction()
     {
         return $this->action;
     }
 
-    public function set_action($action)
+    public function setAction($action)
     {
         return $this->action = $action;
     }

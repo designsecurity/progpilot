@@ -5,8 +5,8 @@ require_once './framework_test.php';
 $framework = new framework_test;
 
 require_once './ooptest.php';
-require_once './generictest.php';
 require_once './realtest.php';
+require_once './generictest.php';
 require_once './includetest.php';
 require_once './datatest.php';
 require_once './conditionstest.php';
@@ -20,16 +20,16 @@ try {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
-        $context->inputs->set_sources("../../package/src/uptodate_data/sources.json");
-        $context->inputs->set_sinks("../../package/src/uptodate_data/sinks.json");
-        $context->inputs->set_sanitizers("../../package/src/uptodate_data/sanitizers.json");
-        $context->inputs->set_validators("../../package/src/uptodate_data/validators.json");
-        $context->inputs->set_custom_rules("../../package/src/uptodate_data/rules.json");
-        $context->inputs->set_file($file);
+        $context->inputs->setSources("../../package/src/uptodate_data/sources.json");
+        $context->inputs->setSinks("../../package/src/uptodate_data/sinks.json");
+        $context->inputs->setSanitizers("../../package/src/uptodate_data/sanitizers.json");
+        $context->inputs->setValidators("../../package/src/uptodate_data/validators.json");
+        $context->inputs->setCustomRules("../../package/src/uptodate_data/rules.json");
+        $context->inputs->setFile($file);
 
-        $context->set_analyze_hardrules(true);
-        $context->set_analyze_functions(false);
-        $context->outputs->tainted_flow(true);
+        $context->setAnalyzeHardrules(true);
+        $context->setAnalyzeFunctions(false);
+        $context->outputs->taintedFlow(true);
         
         //$context->set_print_file(true);
 
@@ -40,7 +40,7 @@ try {
               $context->outputs->resolve_includes_file("./tests/includes/includes_simple5.txt");
               $context->outputs->resolve_includes(true);
             */
-            $context->inputs->set_resolved_includes("./tests/includes/resolved_includes_simple5.txt");
+            $context->inputs->setResolvedIncludes("./tests/includes/resolved_includes_simple5.txt");
         }
 
         try {
@@ -49,7 +49,7 @@ try {
             echo 'Exception : ',  $e->getMessage(), "\n";
         }
 
-        $results = $context->outputs->get_results();
+        $results = $context->outputs->getResults();
         $outputjson = array('results' => $results);
         $parsed_json = $outputjson["results"];
 

@@ -36,49 +36,49 @@ class Definitions
         $this->nb_defs = 0;
     }
 
-    public function set_nb_defs($nb_defs)
+    public function setNbDefs($nb_defs)
     {
         $this->nb_defs = $nb_defs;
     }
 
-    public function get_nb_defs()
+    public function getNbDefs()
     {
         return $this->nb_defs;
     }
 
-    public function printall()
+    public function printAll()
     {
         echo "print gen : \n";
-        Definitions::print_stdout($this->gen);
+        Definitions::printStdout($this->gen);
         echo "\n";
 
         echo "print kill : \n";
-        Definitions::print_stdout($this->kill);
+        Definitions::printStdout($this->kill);
         echo "\n";
 
         echo "print out : \n";
-        Definitions::print_stdout($this->out);
+        Definitions::printStdout($this->out);
         echo "\n";
 
         echo "print out-kill : \n";
-        Definitions::print_stdout($this->outminuskill);
+        Definitions::printStdout($this->outminuskill);
         echo "\n";
 
         echo "print in : \n";
-        Definitions::print_stdout($this->in);
+        Definitions::printStdout($this->in);
         echo "\n";
     }
 
-    public static function printblock($defsparam)
+    public static function printBlock($defsparam)
     {
         if (!is_null($defsparam)) {
             foreach ($defsparam as $def) {
-                $def->print_stdout();
+                $def->printStdout();
             }
         }
     }
 
-    public static function print_stdout($defsparam)
+    public static function printStdout($defsparam)
     {
         if (!is_null($defsparam)) {
             foreach ($defsparam as $blockid => $defs) {
@@ -86,14 +86,14 @@ class Definitions
 
                 if (!is_null($defs)) {
                     foreach ($defs as $def) {
-                        $def->print_stdout();
+                        $def->printStdout();
                     }
                 }
             }
         }
     }
 
-    public function create_block($id)
+    public function createBlock($id)
     {
         $this->in[$id] = [];
         $this->out[$id] = [];
@@ -103,12 +103,12 @@ class Definitions
     }
 
     /* getters and setters */
-    public function get_defs()
+    public function getDefs()
     {
         return $this->defs;
     }
 
-    public function adddef($name, $def)
+    public function addDef($name, $def)
     {
         $continue = true;
         if (isset($this->defs[$name])) {
@@ -126,7 +126,7 @@ class Definitions
         return $continue;
     }
 
-    public function addin($block, $def)
+    public function addIn($block, $def)
     {
         if (isset($this->in[$block]) && !in_array($def, $this->in[$block], true)) {
             $this->in[$block][] = $def;
@@ -136,7 +136,7 @@ class Definitions
         return false;
     }
 
-    public function addout($block, $def)
+    public function addOut($block, $def)
     {
         if (isset($this->out[$block]) && !in_array($def, $this->out[$block], true)) {
             $this->out[$block][] = $def;
@@ -146,7 +146,7 @@ class Definitions
         return false;
     }
 
-    public function addgen($block, $def)
+    public function addGen($block, $def)
     {
         if (isset($this->gen[$block]) && !in_array($def, $this->gen[$block], true)) {
             $this->gen[$block][] = $def;
@@ -156,7 +156,7 @@ class Definitions
         return false;
     }
 
-    public function addkill($block, $def)
+    public function addKill($block, $def)
     {
         if (isset($this->kill[$block]) && !in_array($def, $this->kill[$block], true)) {
             $this->kill[$block][] = $def;
@@ -166,7 +166,7 @@ class Definitions
         return false;
     }
 
-    public function getkill($block)
+    public function getKill($block)
     {
         if (isset($this->kill[$block])) {
             return $this->kill[$block];
@@ -175,7 +175,7 @@ class Definitions
         return null;
     }
 
-    public function getgen($block)
+    public function getGen($block)
     {
         if (isset($this->gen[$block])) {
             return $this->gen[$block];
@@ -184,7 +184,7 @@ class Definitions
         return null;
     }
 
-    public function getout($block)
+    public function getOut($block)
     {
         if (isset($this->out[$block])) {
             return $this->out[$block];
@@ -193,7 +193,7 @@ class Definitions
         return null;
     }
 
-    public function getoutminuskill($block)
+    public function getOutMinusKill($block)
     {
         if (isset($this->outminuskill[$block])) {
             return $this->outminuskill[$block];
@@ -202,7 +202,7 @@ class Definitions
         return null;
     }
 
-    public function getin($block)
+    public function getIn($block)
     {
         if (isset($this->in[$block])) {
             return $this->in[$block];
@@ -211,42 +211,42 @@ class Definitions
         return null;
     }
 
-    public function setkill($block, $kill)
+    public function setKill($block, $kill)
     {
         $this->kill[$block] = $kill;
     }
 
-    public function setgen($block, $gen)
+    public function setGen($block, $gen)
     {
         $this->gen[$block] = $gen;
     }
 
-    public function setout($block, $out)
+    public function setOut($block, $out)
     {
         $this->out[$block] = $out;
     }
 
-    public function setoutminuskill($block, $outminuskill)
+    public function setOutMinusKill($block, $outminuskill)
     {
         $this->outminuskill[$block] = $outminuskill;
     }
 
-    public function setin($block, $in)
+    public function setIn($block, $in)
     {
         $this->in[$block] = $in;
     }
 
-    public function get_current_func()
+    public function getCurrentFunc()
     {
         return $this->current_func;
     }
 
-    public function set_current_func($current_func)
+    public function setCurrentFunc($current_func)
     {
         $this->current_func = $current_func;
     }
 
-    public function getdefrefbyname($name)
+    public function getDefRefByName($name)
     {
         if (isset($this->defs[$name])) {
             return $this->defs[$name];
@@ -256,16 +256,16 @@ class Definitions
     }
 
     // def1 = def, def2 = defsearch inside resolvedefs function
-    public static function def_equality($def1, $def2, $bypass_array = false)
+    public static function defEquality($def1, $def2, $bypass_array = false)
     {
-        if ($def1->get_name() === $def2->get_name()) {
-            if ($def1->property->get_properties() !== $def2->property->get_properties()) {
+        if ($def1->getName() === $def2->getName()) {
+            if ($def1->property->getProperties() !== $def2->property->getProperties()) {
                 return false;
             }
 
-            if (($def1->get_array_value() !== $def2->get_array_value()) && !$bypass_array) {
-                if (($def1->is_type(MyDefinition::TYPE_ARRAY) && $def2->is_type(MyDefinition::TYPE_ARRAY))) {
-                    $extract = BuildArrays::extract_array_from_arr($def1->get_array_value(), $def2->get_array_value());
+            if (($def1->getArrayValue() !== $def2->getArrayValue()) && !$bypass_array) {
+                if (($def1->isType(MyDefinition::TYPE_ARRAY) && $def2->isType(MyDefinition::TYPE_ARRAY))) {
+                    $extract = BuildArrays::extractArrayFromArr($def1->getArrayValue(), $def2->getArrayValue());
 
                     if ($extract === false) {
                         return false;
@@ -280,13 +280,13 @@ class Definitions
     }
 
     // $this->data["gen"][$blockid]
-    public function computekill($context, $blockid)
+    public function computeKill($context, $blockid)
     {
         foreach ($this->gen[$blockid] as $gen) {
-            $tmpdefs = $this->getdefrefbyname($gen->get_name());
+            $tmpdefs = $this->getDefRefByName($gen->getName());
             if (!is_null($tmpdefs)) {
                 foreach ($tmpdefs as $def) {
-                    if ($this->def_equality($def, $gen)) {
+                    if ($this->defEquality($def, $gen)) {
                         if ($def !== $gen && !in_array($def, $this->kill[$blockid], true)) {
                             $this->kill[$blockid][] = $def;
                         }
@@ -299,9 +299,9 @@ class Definitions
     public function reachingDefs($myblocks)
     {
         foreach ($myblocks as $block) {
-            $block_id = $block->get_id();
-            $this->setoutminuskill($block_id, $this->getgen($block_id));
-            $this->setout($block_id, $this->getgen($block_id));
+            $block_id = $block->getId();
+            $this->setOutMinusKill($block_id, $this->getGen($block_id));
+            $this->setOut($block_id, $this->getGen($block_id));
         }
 
         $change = true;
@@ -311,21 +311,24 @@ class Definitions
 
             foreach ($myblocks as $id => $block) {
                 foreach ($block->parents as $idparent => $parent) {
-                    $idcurrent = $block->get_id();
-                    $idparent = $parent->get_id();
+                    $idcurrent = $block->getId();
+                    $idparent = $parent->getId();
 
                     if ($idcurrent !== $idparent) {
-                        $temp = ArrayMulti::array_merge_multi($this->getin($idcurrent), $this->getout($idparent));
-                        $this->setin($idcurrent, $temp);
+                        $temp = ArrayMulti::arrayMergeMulti($this->getIn($idcurrent), $this->getOut($idparent));
+                        $this->setIn($idcurrent, $temp);
 
-                        $oldout = $this->getout($idcurrent);
+                        $oldout = $this->getOut($idcurrent);
 
-                        $inminus = ArrayMulti::array_minus_multi($this->getin($idcurrent), $this->getkill($idcurrent));
-                        $this->setout($idcurrent, ArrayMulti::array_merge_multi($this->getgen($idcurrent), $inminus));
+                        $inminus = ArrayMulti::arrayMinusMulti($this->getIn($idcurrent), $this->getKill($idcurrent));
+                        $this->setOut($idcurrent, ArrayMulti::arrayMergeMulti($this->getGen($idcurrent), $inminus));
 
-                        $this->setoutminuskill($idcurrent, ArrayMulti::array_merge_multi($this->getgen($idcurrent), $this->getin($idcurrent)));
+                        $this->setOutMinusKill(
+                            $idcurrent,
+                            ArrayMulti::arrayMergeMulti($this->getGen($idcurrent), $this->getIn($idcurrent))
+                        );
 
-                        if ($this->getout($idcurrent) !== $oldout) {
+                        if ($this->getOut($idcurrent) !== $oldout) {
                             $change = true;
                         }
                     }

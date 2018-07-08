@@ -13,27 +13,27 @@ namespace progpilot\Inputs;
 class MyValidator extends MySpecify
 {
     private $parameters;
-    private $has_parameters;
+    private $hasParameters;
 
     public function __construct($name, $language)
     {
         parent::__construct($name, $language);
 
-        $this->has_parameters = false;
+        $this->hasParameters = false;
         $this->parameters = [];
     }
 
-    public function add_parameter($parameter, $condition, $values = null)
+    public function addParameter($parameter, $condition, $values = null)
     {
         $this->parameters[] = [$parameter, $condition, $values];
     }
 
-    public function get_parameters()
+    public function getParameters()
     {
         return $this->parameters;
     }
 
-    public function get_parameter_condition($i)
+    public function getParameterCondition($i)
     {
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
@@ -47,7 +47,7 @@ class MyValidator extends MySpecify
         return null;
     }
 
-    public function get_parameter_values($i)
+    public function getParameterValues($i)
     {
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
@@ -62,7 +62,7 @@ class MyValidator extends MySpecify
         return null;
     }
 
-    public function is_parameter($i)
+    public function isParameter($i)
     {
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
@@ -76,13 +76,13 @@ class MyValidator extends MySpecify
         return false;
     }
 
-    public function has_parameters()
+    public function hasParameters()
     {
-        return $this->has_parameters;
+        return $this->hasParameters;
     }
 
-    public function set_has_parameters($has_parameters)
+    public function setHasParameters($hasParameters)
     {
-        $this->has_parameters = $has_parameters;
+        $this->hasParameters = $hasParameters;
     }
 }

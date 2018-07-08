@@ -8,8 +8,8 @@ You can specify the way of vulnerabilities are detected by playing with sources,
 - **validators** : the functions that valid tainted values without transforming them into safe value.
 
 ## Configure sources
-- $obj_context->inputs->set_sources($file_sources);
-- $obj_context->inputs->get_sources();
+- $obj_context->inputs->setSources($file_sources);
+- $obj_context->inputs->getSources();
 
 Where *$file_sources* is a json file like below :
 ```javascript
@@ -34,8 +34,8 @@ If you want to define only one element of an array as a source add *array_index*
 If you want to define one parameter of a function as a source use *parameters* property.
 
 ## Configure sanitizers
-- $obj_context->inputs->set_sanitizers($file_sanitizers);
-- $obj_context->inputs->get_sanitizers();
+- $obj_context->inputs->setSanitizers($file_sanitizers);
+- $obj_context->inputs->getSanitizers();
 
 Where *$file_sanitizers* is a json file like below :
 ```javascript
@@ -67,8 +67,8 @@ You can add conditions to parameters of your sanitizer function :
 - **equals** : the argument must be equals to the specified string.
 
 ## Configure sinks
-- $obj_context->inputs->set_sinks($file_sinks);
-- $obj_context->inputs->get_sinks();
+- $obj_context->inputs->setSinks($file_sinks);
+- $obj_context->inputs->getSinks();
 
 Where *$file_sinks* is a json file like below :
 ```javascript
@@ -97,8 +97,8 @@ Global conditions could be applied :
 - **QUOTES_HTML** : if the tainted variable is inside an html tag it's a vulnerability if the variable is embedded into quotes and quotes are not sanitized or if the variable is not embedded into quotes.
 
 ## Configure validators
-- $obj_context->inputs->set_validators($file_validators);
-- $obj_context->inputs->get_validators();
+- $obj_context->inputs->setValidators($file_validators);
+- $obj_context->inputs->getValidators();
 
 Where *$file_validators* is a json file like below :
 ```javascript
@@ -188,3 +188,9 @@ Otherwise if it finds *$safe = htmlentites($tainted, ENT_QUOTES)*, the *prevent*
 *Prevent* properties could take also these predefined values :
 - *ALL* which prevent all vulnerabilities
 - *QUOTES* which indicates that quotes are encoded
+
+### parameters property
+
+the sink is vulnerable if : 
+- no parameters are specified and at least one argument is tainted.
+- parameters are specified and all the arguments must be tainted.

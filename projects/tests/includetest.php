@@ -45,7 +45,7 @@ $framework->add_output("./tests/includes/simple9.php", array("\$pLocation"));
 $framework->add_output("./tests/includes/simple9.php", array("505"));
 $framework->add_output("./tests/includes/simple9.php", "header_injection");
 $framework->add_output("./tests/includes/simple9.php", array("\$page[\"body\"]"));
-$framework->add_output("./tests/includes/simple9.php", array("52"));
+$framework->add_output("./tests/includes/simple9.php", array("51"));
 $framework->add_output("./tests/includes/simple9.php", "xss");
 $framework->add_output("./tests/includes/simple9.php", "security misconfiguration");
 $framework->add_output("./tests/includes/simple9.php", "158");

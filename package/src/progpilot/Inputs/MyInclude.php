@@ -25,22 +25,22 @@ class MyInclude
         $this->value = $value;
     }
 
-    public function get_line()
+    public function getLine()
     {
         return $this->line;
     }
 
-    public function get_column()
+    public function getColumn()
     {
         return $this->column;
     }
 
-    public function get_source_file()
+    public function getSourceFile()
     {
         return $this->source_file;
     }
 
-    public function get_value()
+    public function getValue()
     {
         return $this->value;
     }

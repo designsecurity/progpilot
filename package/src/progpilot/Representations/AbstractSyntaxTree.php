@@ -22,22 +22,22 @@ class AbstractSyntaxTree extends NodeVisitorAbstract
         $this->edges = [];
     }
 
-    public function get_nodes()
+    public function getNodes()
     {
         return $this->nodes;
     }
 
-    public function get_edges()
+    public function getEdges()
     {
         return $this->edges;
     }
 
-    public function add_node($node)
+    public function addNode($node)
     {
         $this->nodes[] = $node;
     }
 
-    public function add_edge($caller, $callee)
+    public function addEdge($caller, $callee)
     {
         $this->edges[] = [$caller, $callee];
     }
@@ -52,7 +52,7 @@ class AbstractSyntaxTree extends NodeVisitorAbstract
             $subNode = & $node->$name;
 
             if (is_object($subNode)) {
-                $this->add_edge($node, $subNode);
+                $this->addEdge($node, $subNode);
             }
         }
     }

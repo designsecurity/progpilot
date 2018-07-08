@@ -47,49 +47,49 @@ class MyOp
         $this->array_value = false;
     }
 
-    public function set_id($var_id)
+    public function setId($var_id)
     {
         $this->var_id = $var_id;
     }
 
-    public function get_id()
+    public function getId()
     {
         return $this->var_id;
     }
 
-    public function set_type($flags)
+    public function setType($flags)
     {
         $this->flags = $flags;
     }
 
-    public function get_type()
+    public function getType()
     {
         return $this->flags;
     }
 
-    public function is_type($type)
+    public function isType($type)
     {
         return (bool) ($this->flags & $type);
     }
 
-    public function add_type($type)
+    public function addType($type)
     {
         $this->flags |= $type;
     }
 
-    public function remove_type($type)
+    public function removeType($type)
     {
-        if ($this->is_type($type)) {
+        if ($this->isType($type)) {
             $this->flags ^= $type;
         }
     }
 
-    public function set_array_value($array_value)
+    public function setArrayValue($array_value)
     {
         $this->array_value = $array_value;
     }
 
-    public function get_array_value()
+    public function getArrayValue()
     {
         return $this->array_value;
     }
@@ -114,22 +114,22 @@ class MyOp
         $this->var_column = $column;
     }
 
-    public function get_source_myfile()
+    public function getSourceMyFile()
     {
         return $this->source_myfile;
     }
 
-    public function set_source_myfile($source_myfile)
+    public function setSourceMyFile($source_myfile)
     {
         $this->source_myfile = $source_myfile;
     }
 
-    public function set_name($var_name)
+    public function setName($var_name)
     {
         $this->var_name = $var_name;
     }
 
-    public function get_name()
+    public function getName()
     {
         return $this->var_name;
     }

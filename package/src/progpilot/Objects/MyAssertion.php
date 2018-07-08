@@ -23,22 +23,22 @@ class MyAssertion
         $this->mydef = $mydef;
     }
 
-    public function add_def($mydef)
+    public function addDef($mydef)
     {
         $this->mydef = $mydef;
     }
 
-    public function get_def()
+    public function getDef()
     {
         return $this->mydef;
     }
 
-    public function add_type($type_assertion)
+    public function addType($type_assertion)
     {
         $this->type_assertion = $type_assertion;
     }
 
-    public function get_type()
+    public function getType()
     {
         return $this->type_assertion;
     }

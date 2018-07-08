@@ -12,14 +12,14 @@ $framework->add_output("./tests/includes/simple5.php", "xss");
 $context = new \progpilot\Context;
 $analyzer = new \progpilot\Analyzer;
 
-$context->inputs->set_sources("../../package/src/uptodate_data/sources.json");
-$context->inputs->set_sinks("../../package/src/uptodate_data/sinks.json");
-$context->inputs->set_sanitizers("../../package/src/uptodate_data/sanitizers.json");
-$context->inputs->set_validators("../../package/src/uptodate_data/validators.json");
-$context->inputs->set_file("./tests/includes/simple5.php");
+$context->inputs->setSources("../../package/src/uptodate_data/sources.json");
+$context->inputs->setSinks("../../package/src/uptodate_data/sinks.json");
+$context->inputs->setSanitizers("../../package/src/uptodate_data/sanitizers.json");
+$context->inputs->setValidators("../../package/src/uptodate_data/validators.json");
+$context->inputs->setFile("./tests/includes/simple5.php");
 
-$context->outputs->resolve_includes_file("resolve_includes.json");
-$context->outputs->resolve_includes(true);
+$context->outputs->resolveIncludesFile("resolve_includes.json");
+$context->outputs->resolveIncludes(true);
 
 //$context->inputs->set_includes("./tests/includes/resolved_includes_simple5.txt");
 

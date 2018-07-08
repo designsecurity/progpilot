@@ -11,12 +11,12 @@ try {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
-        $context->inputs->set_sources("../../package/src/uptodate_data/sources.json");
-        $context->inputs->set_sinks("../../package/src/uptodate_data/sinks.json");
-        $context->inputs->set_sanitizers("../../package/src/uptodate_data/sanitizers.json");
-        $context->inputs->set_validators("../../package/src/uptodate_data/validators.json");
-        $context->inputs->set_exclude_files("exclude_files.json");
-        $context->inputs->set_folder($folder);
+        $context->inputs->setSources("../../package/src/uptodate_data/sources.json");
+        $context->inputs->setSinks("../../package/src/uptodate_data/sinks.json");
+        $context->inputs->setSanitizers("../../package/src/uptodate_data/sanitizers.json");
+        $context->inputs->setValidators("../../package/src/uptodate_data/validators.json");
+        $context->inputs->setExcludeFiles("exclude_files.json");
+        $context->inputs->setFolder($folder);
 
         try {
             $analyzer->run($context);

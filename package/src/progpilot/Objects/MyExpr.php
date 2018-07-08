@@ -33,12 +33,12 @@ class MyExpr extends MyOp
         $this->thedefs = [];
     }
 
-    public function set_nb_chars($char, $nb_chars)
+    public function setNbChars($char, $nb_chars)
     {
         $this->nb_chars[$char] = $nb_chars;
     }
 
-    public function get_nb_chars($char)
+    public function getNbChars($char)
     {
         if (isset($this->nb_chars[$char])) {
             return $this->nb_chars[$char];
@@ -47,25 +47,25 @@ class MyExpr extends MyOp
         return 0;
     }
 
-    public function set_is_concat($concat)
+    public function setIsConcat($concat)
     {
         $this->is_concat = $concat;
     }
 
-    public function get_is_concat()
+    public function getIsConcat()
     {
         return $this->is_concat;
     }
 
-    public function set_tainted($tainted)
+    public function setTainted($tainted)
     {
         $this->tainted = $tainted;
     }
 
-    public function is_tainted()
+    public function isTainted()
     {
         foreach ($this->thedefs as $thedef) {
-            if ($thedef->is_tainted()) {
+            if ($thedef->isTainted()) {
                 return true;
             }
         }
@@ -73,49 +73,49 @@ class MyExpr extends MyOp
     }
 
     /* assignement utilisant cette expression */
-    public function set_assign_def($def)
+    public function setAssignDef($def)
     {
         $this->assign_def = $def;
     }
 
-    public function get_assign_def()
+    public function getAssignDef()
     {
         return $this->assign_def;
     }
 
-    public function set_assign_iterator($assign_iterator)
+    public function setAssignIterator($assign_iterator)
     {
         $this->assign_iterator = $assign_iterator;
     }
 
-    public function set_assign($assign)
+    public function setAssign($assign)
     {
         $this->assign = $assign;
     }
 
-    public function is_assign()
+    public function isAssign()
     {
         return $this->assign;
     }
 
-    public function is_assign_iterator()
+    public function isAssignIterator()
     {
         return $this->assign_iterator;
     }
 
-    public function set_defs($defs)
+    public function setDefs($defs)
     {
         $this->thedefs = $defs;
     }
 
-    public function add_def($mydef)
+    public function addDef($mydef)
     {
         if (!in_array($mydef, $this->thedefs, true)) {
             $this->thedefs[] = $mydef;
         }
     }
 
-    public function get_defs()
+    public function getDefs()
     {
         return $this->thedefs;
     }

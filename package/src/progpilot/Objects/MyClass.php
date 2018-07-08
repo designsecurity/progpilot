@@ -36,11 +36,11 @@ class MyClass extends MyOp
         }
     }
 
-    public function add_method($method)
+    public function addMethod($method)
     {
         $exist = false;
         foreach ($this->methods as $method_class) {
-            if ($method_class->get_name() === $method->get_name()) {
+            if ($method_class->getName() === $method->getName()) {
                 $exist = true;
                 break;
             }
@@ -51,10 +51,10 @@ class MyClass extends MyOp
         }
     }
 
-    public function get_method($name)
+    public function getMethod($name)
     {
         foreach ($this->methods as $method) {
-            if ($method->get_name() === $name) {
+            if ($method->getName() === $name) {
                 return $method;
             }
         }
@@ -62,21 +62,21 @@ class MyClass extends MyOp
         return null;
     }
 
-    public function get_methods()
+    public function getMethods()
     {
         return $this->methods;
     }
 
-    public function get_properties()
+    public function getProperties()
     {
         return $this->properties;
     }
 
-    public function add_property($property)
+    public function addProperty($property)
     {
         $exist = false;
         foreach ($this->properties as $property_class) {
-            if ($property_class->property->get_properties() === $property->property->get_properties()) {
+            if ($property_class->property->getProperties() === $property->property->getProperties()) {
                 $exist = true;
                 break;
             }
@@ -87,10 +87,10 @@ class MyClass extends MyOp
         }
     }
 
-    public function get_property($name)
+    public function getProperty($name)
     {
         foreach ($this->properties as $property) {
-            if ($property->property->get_properties()[0] === $name) {
+            if ($property->property->getProperties()[0] === $name) {
                 return $property;
             }
         }
@@ -98,12 +98,12 @@ class MyClass extends MyOp
         return null;
     }
 
-    public function set_object_id_this($object_id)
+    public function setObjectIdThis($object_id)
     {
         $this->object_id_this = $object_id;
     }
 
-    public function get_object_id_this()
+    public function getObjectIdThis()
     {
         return $this->object_id_this;
     }

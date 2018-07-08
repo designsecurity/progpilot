@@ -34,42 +34,42 @@ class MyBlock extends MyOp
         $this->parents[] = $parent;
     }
 
-    public function add_assertion($myassertion)
+    public function addAssertion($myassertion)
     {
         $this->assertions[] = $myassertion;
     }
 
-    public function get_assertions()
+    public function getAssertions()
     {
         return $this->assertions;
     }
 
-    public function set_start_address_block($address)
+    public function setStartAddressBlock($address)
     {
         $this->start_address_block = $address;
     }
 
-    public function set_end_address_block($address)
+    public function setEndAddressBlock($address)
     {
         $this->end_address_block = $address;
     }
 
-    public function get_start_address_block()
+    public function getStartAddressBlock()
     {
         return $this->start_address_block;
     }
 
-    public function get_end_address_block()
+    public function getEndAddressBlock()
     {
         return $this->end_address_block;
     }
 
-    public function get_id()
+    public function getId()
     {
         return $this->id;
     }
 
-    public function set_id($id)
+    public function setId($id)
     {
         $this->id = $id;
     }

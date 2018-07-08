@@ -11,9 +11,9 @@ class ComposerStaticInit687f153b069c251a8396d68dc94ed595
     );
 
     public static $prefixesPsr0 = array (
-        't' => 
+        't' =>
         array (
-            'test_package' => 
+            'test_package' =>
             array (
                 0 => __DIR__ . '/..' . '/progpilot/tests/test_package',
             ),
@@ -24,7 +24,6 @@ class ComposerStaticInit687f153b069c251a8396d68dc94ed595
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixesPsr0 = ComposerStaticInit687f153b069c251a8396d68dc94ed595::$prefixesPsr0;
-
         }, null, ClassLoader::class);
     }
 }

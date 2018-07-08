@@ -36,97 +36,97 @@ class NodeCG
         $this->color = "white";
     }
 
-    public function get_myclass()
+    public function getMyClass()
     {
         return $this->myclass;
     }
 
-    public function set_myclass($myclass)
+    public function setMyClass($myclass)
     {
         $this->myclass = $myclass;
     }
 
-    public function get_name()
+    public function getName()
     {
         return $this->name;
     }
 
-    public function get_line()
+    public function getLine()
     {
         return $this->line;
     }
 
-    public function get_column()
+    public function getColumn()
     {
         return $this->column;
     }
 
-    public function get_file()
+    public function getFile()
     {
         return $this->file;
     }
 
-    public function get_nb_parents()
+    public function getNbParents()
     {
         return $this->nb_parents;
     }
 
-    public function get_nb_views()
+    public function getNbViews()
     {
         return $this->nb_views;
     }
 
-    public function get_children()
+    public function getChildren()
     {
         return $this->children;
     }
 
-    public function get_color()
+    public function getColor()
     {
         return $this->color;
     }
 
-    public function set_color($color)
+    public function setColor($color)
     {
         $this->color = $color;
     }
 
-    public function set_children($children)
+    public function setChildren($children)
     {
         $this->children = $children;
     }
 
-    public function set_nb_views($nb_views)
+    public function setNbViews($nb_views)
     {
         $this->nb_views = $nb_views;
     }
 
-    public function set_nb_parents($nb_parents)
+    public function setNbParents($nb_parents)
     {
         $this->nb_parents = $nb_parents;
     }
 
-    public function set_name($name)
+    public function setName($name)
     {
         $this->name = $name;
     }
 
-    public function set_line($line)
+    public function setLine($line)
     {
         $this->line = $line;
     }
 
-    public function set_column($column)
+    public function setColumn($column)
     {
         $this->column = $column;
     }
 
-    public function set_file($file)
+    public function setFile($file)
     {
         $this->file = $file;
     }
 
-    public function get_id()
+    public function getId()
     {
         return hash("sha256", $this->name);
     }

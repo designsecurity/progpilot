@@ -3,7 +3,6 @@
 require_once './vendor/autoload.php';
 
 try {
-
     //$file = "./tests/graphs/functionsgraph1.php";
     $file = "./tests/custom/custom1.php";
     $context = new \progpilot\Context;

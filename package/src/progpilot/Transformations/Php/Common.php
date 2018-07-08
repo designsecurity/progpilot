@@ -21,7 +21,7 @@ use progpilot\Transformations\Php\Transform;
 
 class Common
 {
-    public static function valid_last_known_value($value)
+    public static function validLastKnownValue($value)
     {
         if (strpos($value, '\n') === false && strpos($value, '\r') === false && strlen($value) < 200) {
             return true;
@@ -30,28 +30,28 @@ class Common
         return false;
     }
 
-    public static function get_name_property($op)
+    public static function getNameProperty($op)
     {
         $property_name_array = [];
 
         if (isset($op->ops[0])) {
             if ($op->ops[0] instanceof Op\Expr\ArrayDimFetch) {
-                $property_name_array = Common::get_name_property($op->ops[0]);
+                $property_name_array = Common::getNameProperty($op->ops[0]);
             }
 
             if ($op instanceof Op\Expr\PropertyFetch) {
-                $property_name_array = Common::get_name_property($op->ops[0]);
+                $property_name_array = Common::getNameProperty($op->ops[0]);
             }
         }
 
         if (isset($op->var->ops)) {
             foreach ($op->var->ops as $opeach) {
                 if ($opeach instanceof Op\Expr\ArrayDimFetch) {
-                    $property_name_array =  Common::get_name_property($opeach);
+                    $property_name_array =  Common::getNameProperty($opeach);
                 }
 
                 if ($opeach instanceof Op\Expr\PropertyFetch) {
-                    $property_name_array = Common::get_name_property($opeach);
+                    $property_name_array = Common::getNameProperty($opeach);
                 }
             }
         }
@@ -63,7 +63,7 @@ class Common
         return $property_name_array;
     }
 
-    public static function get_name_definition($ops, $looking_for_property = false)
+    public static function getNameDefinition($ops, $looking_for_property = false)
     {
         //  $this->property = property
         if ($looking_for_property && $ops instanceof Op\Expr\PropertyFetch && isset($ops->name->value)) {
@@ -77,30 +77,30 @@ class Common
 
         if (isset($ops->ops[0])) {
             if ($ops->ops[0] instanceof Op\Expr\ConstFetch) {
-                return Common::get_name_definition($ops->ops[0], $looking_for_property);
+                return Common::getNameDefinition($ops->ops[0], $looking_for_property);
             }
 
             if ($ops->ops[0] instanceof Op\Expr\ArrayDimFetch) {
-                return Common::get_name_definition($ops->ops[0], $looking_for_property);
+                return Common::getNameDefinition($ops->ops[0], $looking_for_property);
             }
 
             if ($ops->ops[0] instanceof Op\Expr\PropertyFetch) {
-                return Common::get_name_definition($ops->ops[0], $looking_for_property);
+                return Common::getNameDefinition($ops->ops[0], $looking_for_property);
             }
         }
 
         if (isset($ops->var->ops)) {
             foreach ($ops->var->ops as $op) {
                 if ($op instanceof Op\Expr\ConstFetch) {
-                    return Common::get_name_definition($op, $looking_for_property);
+                    return Common::getNameDefinition($op, $looking_for_property);
                 }
 
                 if ($op instanceof Op\Expr\ArrayDimFetch) {
-                    return Common::get_name_definition($op, $looking_for_property);
+                    return Common::getNameDefinition($op, $looking_for_property);
                 }
 
                 if ($op instanceof Op\Expr\PropertyFetch) {
-                    return Common::get_name_definition($op, $looking_for_property);
+                    return Common::getNameDefinition($op, $looking_for_property);
                 }
             }
         }
@@ -139,21 +139,21 @@ class Common
          const FLAG_CLOSURE     = 0x80;
      */
 
-    public static function get_type_visibility($visibility)
+    public static function getTypeVisibility($visibility)
     {
         switch ($visibility) {
-                case 1:
-                    return "public";
-                case 2:
-                    return "protected";
-                case 4:
-                    return "private";
-                default:
-                    return "public";
-            }
+            case 1:
+                return "public";
+            case 2:
+                return "protected";
+            case 4:
+                return "private";
+            default:
+                return "public";
+        }
     }
 
-    public static function is_funccall_withoutreturn($op)
+    public static function isFuncCallWithoutReturn($op)
     {
         if (!(isset($op->result->usages[0])) || (
                         // funccall()[0]
@@ -180,7 +180,7 @@ class Common
         return false;
     }
 
-    public static function get_type_is_array($ops)
+    public static function getTypeIsArray($ops)
     {
         if (isset($ops->ops[0])) {
             if ($ops->ops[0] instanceof Op\Expr\FuncCall || $ops->ops[0] instanceof Op\Expr\NsFuncCall) {
@@ -188,7 +188,7 @@ class Common
             }
 
             if ($ops->ops[0] instanceof Op\Expr\ArrayDimFetch) {
-                $ret = Common::get_type_definition($ops->ops[0]);
+                $ret = Common::getTypeDefinition($ops->ops[0]);
 
                 if ($ret === MyOp::TYPE_FUNCCALL_ARRAY) {
                     return MyOp::TYPE_FUNCCALL_ARRAY;
@@ -210,7 +210,7 @@ class Common
 
         if (isset($ops->var->ops[0])) {
             if ($ops->var->ops[0] instanceof Op\Expr\ArrayDimFetch) {
-                $ret = Common::get_type_definition($ops->var->ops[0]);
+                $ret = Common::getTypeDefinition($ops->var->ops[0]);
 
                 if ($ret == MyOp::TYPE_FUNCCALL_ARRAY) {
                     return MyOp::TYPE_FUNCCALL_ARRAY;
@@ -254,7 +254,7 @@ class Common
     }
 
 
-    public static function get_type_is_instance($ops)
+    public static function getTypeIsInstance($ops)
     {
         if (isset($ops->expr->ops[0])) {
             if ($ops->expr->ops[0] instanceof Op\Expr\New_) {
@@ -265,7 +265,7 @@ class Common
         return null;
     }
 
-    public static function get_type_definition($ops)
+    public static function getTypeDefinition($ops)
     {
         if (isset($ops->ops[0])) {
             if ($ops->ops[0] instanceof Op\Expr\ConstFetch) {
@@ -281,13 +281,13 @@ class Common
             }
 
             if ($ops->ops[0] instanceof Op\Expr\ArrayDimFetch) {
-                return Common::get_type_definition($ops->ops[0]);
+                return Common::getTypeDefinition($ops->ops[0]);
             }
         }
 
         if (isset($ops->var->ops[0])) {
             if ($ops->var->ops[0] instanceof Op\Expr\ArrayDimFetch) {
-                return Common::get_type_definition($ops->var->ops[0]);
+                return Common::getTypeDefinition($ops->var->ops[0]);
             }
 
             if ($ops->var->ops[0] instanceof Op\Expr\PropertyFetch) {

@@ -29,10 +29,10 @@ class MyDefinition extends MyOp
     const TYPE_INSTANCE = 0x0040;
     const TYPE_GLOBAL = 0x0080;
 
-    private $is_copy_array;
+    private $is_copyArray;
     private $object_id;
     private $block_id;
-    private $is_tainted;
+    private $isTainted;
     private $is_const;
     private $is_ref;
     private $ref_name;
@@ -43,12 +43,12 @@ class MyDefinition extends MyOp
     private $taintedbyexpr;
     private $instance;
     private $class_name;
-    private $is_sanitized;
+    private $isSanitized;
     private $type_sanitized;
     private $value_from_def;
     private $cast;
     private $is_property;
-    private $is_instance;
+    private $isInstance;
     private $is_embeddedbychar;
 
     public $property;
@@ -59,12 +59,12 @@ class MyDefinition extends MyOp
 
         $this->is_embeddedbychar = [];
 
-        $this->is_copy_array = false;
+        $this->is_copyArray = false;
         $this->value_from_def = null;
 
         $this->object_id = -1;
         $this->block_id = -1;
-        $this->is_tainted = false;
+        $this->isTainted = false;
         $this->is_const = false;
         $this->is_ref = false;
         $this->is_ref_arr = false;
@@ -75,7 +75,7 @@ class MyDefinition extends MyOp
         $this->taintedbyexpr = null;
         $this->class_name = "";
 
-        $this->is_sanitized = false;
+        $this->isSanitized = false;
         $this->type_sanitized = [];
 
         $this->last_known_value = [];
@@ -84,7 +84,7 @@ class MyDefinition extends MyOp
         $this->cast = MyDefinition::CAST_NOT_SAFE;
 
         $this->is_property = false;
-        $this->is_instance = false;
+        $this->isInstance = false;
     }
 
     public function __clone()
@@ -92,13 +92,19 @@ class MyDefinition extends MyOp
         $this->property = clone $this->property;
     }
 
-    public function print_stdout()
+    public function printStdout()
     {
-        echo "def id ".$this->var_id." ::  name = ".htmlentities($this->get_name(), ENT_QUOTES, 'UTF-8')." :: line = ".$this->getLine()." :: column = ".$this->getColumn()." :: tainted = ".$this->is_tainted()." :: ref = ".$this->is_type(MyDefinition::TYPE_REFERENCE)." :: is_property = ".$this->is_type(MyDefinition::TYPE_PROPERTY)." :: is_instance = ".$this->is_type(MyDefinition::TYPE_INSTANCE)." :: is_const = ".$this->is_type(MyDefinition::TYPE_CONSTANTE)." :: blockid = ".$this->get_block_id()." :: cast = ".$this->get_cast()."\n";
-        /*
-                    echo "my_source_file :\n";
-                    var_dump($this->get_source_myfile()->get_name());
-        */
+        echo "def id ".$this->var_id." :: \
+        name = ".htmlentities($this->getName(), ENT_QUOTES, 'UTF-8')." :: \
+        line = ".$this->getLine()." :: column = ".$this->getColumn()." :: \
+        tainted = ".$this->isTainted()." :: \
+        ref = ".$this->isType(MyDefinition::TYPE_REFERENCE)." :: \
+        is_property = ".$this->isType(MyDefinition::TYPE_PROPERTY)." :: \
+        isInstance = ".$this->isType(MyDefinition::TYPE_INSTANCE)." :: \
+        is_const = ".$this->isType(MyDefinition::TYPE_CONSTANTE)." :: \
+        blockid = ".$this->getBlockId()." :: \
+        cast = ".$this->getCast()."\n";
+
         echo "last_known_value :\n";
         var_dump($this->last_known_value);
 
@@ -107,32 +113,32 @@ class MyDefinition extends MyOp
         echo "type_sanitized :\n";
         var_dump($this->type_sanitized);
 
-        if ($this->is_type(MyDefinition::TYPE_ARRAY)) {
+        if ($this->isType(MyDefinition::TYPE_ARRAY)) {
             echo "array index value :\n";
-            var_dump($this->get_array_value());
+            var_dump($this->getArrayValue());
         }
 
-        if ($this->is_type(MyDefinition::TYPE_PROPERTY)) {
-            echo "property : ".Utils::print_properties($this->property->get_properties())."\n";
-            echo "class_name : ".htmlentities($this->get_class_name(), ENT_QUOTES, 'UTF-8')."\n";
-            echo "visibility : ".htmlentities($this->property->get_visibility(), ENT_QUOTES, 'UTF-8')."\n";
+        if ($this->isType(MyDefinition::TYPE_PROPERTY)) {
+            echo "property : ".Utils::printProperties($this->property->getProperties())."\n";
+            echo "class_name : ".htmlentities($this->getClassName(), ENT_QUOTES, 'UTF-8')."\n";
+            echo "visibility : ".htmlentities($this->property->getVisibility(), ENT_QUOTES, 'UTF-8')."\n";
         }
 
-        if ($this->is_type(MyDefinition::TYPE_INSTANCE)) {
-            echo "instance : ".htmlentities($this->get_class_name(), ENT_QUOTES, 'UTF-8')."\n";
-            echo "object id : ".$this->get_object_id()."\n";
+        if ($this->isType(MyDefinition::TYPE_INSTANCE)) {
+            echo "instance : ".htmlentities($this->getClassName(), ENT_QUOTES, 'UTF-8')."\n";
+            echo "object id : ".$this->getObjectId()."\n";
         }
 
-        if ($this->is_type(MyDefinition::TYPE_COPY_ARRAY)) {
-            echo "copyarray start ================= count = ".count($this->get_copyarrays())."\n";
-            foreach ($this->get_copyarrays() as $copy_array) {
-                var_dump($copy_array[0]);
+        if ($this->isType(MyDefinition::TYPE_COPY_ARRAY)) {
+            echo "copyarray start ================= count = ".count($this->getCopyArrays())."\n";
+            foreach ($this->getCopyArrays() as $copyArray) {
+                var_dump($copyArray[0]);
             }
             echo "copyarray end =================\n";
         }
     }
 
-    public function set_is_embeddedbychars($chars, $control)
+    public function setIsEmbeddedByChars($chars, $control)
     {
         foreach ($chars as $char => $value) {
             if (!isset($this->is_embeddedbychar[$char])) {
@@ -147,17 +153,17 @@ class MyDefinition extends MyOp
         }
     }
 
-    public function get_is_embeddedbychars()
+    public function getIsEmbeddedByChars()
     {
         return $this->is_embeddedbychar;
     }
 
-    public function set_is_embeddedbychar($char, $bool)
+    public function setIsEmbeddedByChar($char, $bool)
     {
         $this->is_embeddedbychar[$char] = $bool;
     }
 
-    public function get_is_embeddedbychar($char)
+    public function getIsEmbeddedByChar($char)
     {
         if (isset($this->is_embeddedbychar[$char])) {
             return $this->is_embeddedbychar[$char];
@@ -166,126 +172,126 @@ class MyDefinition extends MyOp
         return false;
     }
 
-    public function set_cast($cast)
+    public function setCast($cast)
     {
         $this->cast = $cast;
     }
 
-    public function get_cast()
+    public function getCast()
     {
         return $this->cast;
     }
 
-    public function set_value_from_def($def)
+    public function setValueFromDef($def)
     {
         $this->value_from_def = $def;
     }
 
-    public function get_value_from_def()
+    public function getValueFromDef()
     {
         return $this->value_from_def;
     }
 
-    public function reset_last_known_values()
+    public function resetLastKnownValues()
     {
         $this->last_known_value = [];
     }
 
-    public function set_last_known_values($values)
+    public function setLastKnownValues($values)
     {
         $this->last_known_value = $values;
     }
 
-    public function set_last_known_value($id, $value)
+    public function setLastKnownValue($id, $value)
     {
         $this->last_known_value[$id] = $value;
     }
 
-    public function add_last_known_value($value)
+    public function addLastKnownValue($value)
     {
         $value = rtrim(ltrim($value));
 
-        if (Common::valid_last_known_value($value) && !in_array($value, $this->last_known_value, true)) {
+        if (Common::validLastKnownValue($value) && !in_array($value, $this->last_known_value, true)) {
             $this->last_known_value[] = $value;
         }
     }
 
-    public function get_last_known_values()
+    public function getLastKnownValues()
     {
         return $this->last_known_value;
     }
 
-    public function get_class_name()
+    public function getClassName()
     {
         return $this->class_name;
     }
 
-    public function set_class_name($class_name)
+    public function setClassName($class_name)
     {
         $this->class_name = $class_name;
     }
 
-    public function get_ref_name()
+    public function getRefName()
     {
         return $this->ref_name;
     }
 
-    public function set_ref_name($refname)
+    public function setRefName($refname)
     {
         $this->ref_name = $refname;
     }
 
-    public function is_tainted()
+    public function isTainted()
     {
-        return $this->is_tainted;
+        return $this->isTainted;
     }
 
-    public function set_tainted($tainted)
+    public function setTainted($tainted)
     {
-        $this->is_tainted = $tainted;
+        $this->isTainted = $tainted;
     }
 
-    public function set_taintedbyexpr($expr)
+    public function setTaintedByExpr($expr)
     {
         $this->taintedbyexpr = $expr;
     }
 
-    public function get_taintedbyexpr()
+    public function getTaintedByExpr()
     {
         return $this->taintedbyexpr;
     }
 
-    public function get_ref_arr_value()
+    public function getRefArrValue()
     {
         return $this->ref_arr_value;
     }
 
-    public function set_ref_arr_value($arr)
+    public function setRefArrValue($arr)
     {
         $this->ref_arr_value = $arr;
     }
 
-    public function get_object_id()
+    public function getObjectId()
     {
         return $this->object_id;
     }
 
-    public function set_object_id($object_id)
+    public function setObjectId($object_id)
     {
         $this->object_id = $object_id;
     }
 
-    public function get_block_id()
+    public function getBlockId()
     {
         return $this->block_id;
     }
 
-    public function set_block_id($block_id)
+    public function setBlockId($block_id)
     {
         $this->block_id = $block_id;
     }
 
-    public function add_copyarray($arr, $def)
+    public function addCopyArray($arr, $def)
     {
         $val = [$arr, $def];
         if (!in_array($val, $this->thearrays, true)) {
@@ -293,59 +299,59 @@ class MyDefinition extends MyOp
         }
     }
 
-    public function set_copyarrays($thearrays)
+    public function setCopyArrays($thearrays)
     {
         $this->thearrays = $thearrays;
     }
 
-    public function get_copyarrays()
+    public function getCopyArrays()
     {
         return $this->thearrays;
     }
 
-    public function set_exprs($exprs)
+    public function setExprs($exprs)
     {
         $this->theexprs = $exprs;
     }
 
-    public function set_expr($myexpr)
+    public function setExpr($myexpr)
     {
         $this->theexpr = $myexpr;
     }
 
-    public function get_expr()
+    public function getExpr()
     {
         return $this->theexpr;
     }
 
-    public function set_sanitized($is_sanitized)
+    public function setSanitized($isSanitized)
     {
-        $this->is_sanitized = $is_sanitized;
+        $this->isSanitized = $isSanitized;
     }
 
-    public function is_sanitized()
+    public function isSanitized()
     {
-        return $this->is_sanitized;
+        return $this->isSanitized;
     }
 
-    public function set_type_sanitized($type_sanitized)
+    public function setTypeSanitized($type_sanitized)
     {
         $this->type_sanitized = $type_sanitized;
     }
 
-    public function get_type_sanitized()
+    public function getTypeSanitized()
     {
         return $this->type_sanitized;
     }
 
-    public function add_type_sanitized($type_sanitized)
+    public function addTypeSanitized($type_sanitized)
     {
         if (!in_array($type_sanitized, $this->type_sanitized, true)) {
             $this->type_sanitized[] = $type_sanitized;
         }
     }
 
-    public function is_type_sanitized($type_sanitized)
+    public function isTypeSanitized($type_sanitized)
     {
         if (in_array($type_sanitized, $this->type_sanitized, true)) {
             return true;

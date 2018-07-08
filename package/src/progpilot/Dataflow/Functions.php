@@ -17,18 +17,18 @@ class Functions
 {
     private $functions;
 
-    public function get_function($funcname, $class_name = null)
+    public function getFunction($funcname, $class_name = null)
     {
         if (isset($this->functions[$funcname])) {
             $list_funcs = $this->functions[$funcname];
             foreach ($list_funcs as $myfunc) {
-                if (!$myfunc->is_type(MyFunction::TYPE_FUNC_METHOD) && is_null($class_name)) {
+                if (!$myfunc->isType(MyFunction::TYPE_FUNC_METHOD) && is_null($class_name)) {
                     return $myfunc;
                 }
 
-                if ($myfunc->is_type(MyFunction::TYPE_FUNC_METHOD)) {
-                    $myclass = $myfunc->get_myclass();
-                    if ($class_name === $myclass->get_name()) {
+                if ($myfunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
+                    $myclass = $myfunc->getMyClass();
+                    if ($class_name === $myclass->getName()) {
                         return $myfunc;
                     }
                 }
@@ -38,7 +38,7 @@ class Functions
         return null;
     }
 
-    public function get_functions_byname($name)
+    public function getFunctionsByName($name)
     {
         if (isset($this->functions[$name])) {
             return $this->functions[$name];
@@ -47,12 +47,12 @@ class Functions
         return null;
     }
 
-    public function get_functions()
+    public function getFunctions()
     {
         return $this->functions;
     }
 
-    public function add_function($funcname, $func)
+    public function addFunction($funcname, $func)
     {
         // we can have many functions/methods with the same name
         $continue = true;
@@ -68,7 +68,7 @@ class Functions
         }
     }
 
-    public function del_function($funcname)
+    public function delFunction($funcname)
     {
         $save = $this->functions[$funcname];
         $this->functions[$funcname] = [];

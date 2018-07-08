@@ -15,30 +15,34 @@ use progpilot\Representations\DFSVisitor;
 use progpilot\Representations\NodeCG;
 use progpilot\Inputs\MyCustomRule;
 use progpilot\Objects\MyDefinition;
+use progpilot\Utils;
 
 class CustomAnalysis
 {
-    public static function must_verify_definition($context, $instruction, $myfunc, $myclass)
+    public static function mustVerifyDefinition($context, $instruction, $myfunc, $myclass)
     {
-        $custom_rules = $context->inputs->get_custom_rules();
+        $custom_rules = $context->inputs->getCustomRules();
         foreach ($custom_rules as $custom_rule) {
-            if ($custom_rule->get_type() === MyCustomRule::TYPE_FUNCTION
-                                                  && ($custom_rule->get_action() === "MUST_VERIFY_DEFINITION" || $custom_rule->get_action() === "MUST_NOT_VERIFY_DEFINITION")) {
-                $function_definition = $custom_rule->get_function_definition();
+            if ($custom_rule->getType() === MyCustomRule::TYPE_FUNCTION
+                && ($custom_rule->getAction() === "MUST_VERIFY_DEFINITION"
+                    || $custom_rule->getAction() === "MUST_NOT_VERIFY_DEFINITION")) {
+                $function_definition = $custom_rule->getFunctionDefinition();
 
                 if (!is_null($function_definition)) {
-                    if ($function_definition->get_name() === $myfunc->get_name()
-                                && ((!$function_definition->is_instance() && is_null($myclass)) || (!is_null($myclass) && $function_definition->is_instance() && $function_definition->get_instanceof_name() === $myclass->get_name()))) {
+                    if ($function_definition->getName() === $myfunc->getName()
+                                && ((!$function_definition->isInstance() && is_null($myclass))
+                                    || (!is_null($myclass) && $function_definition->isInstance()
+                                        && $function_definition->getInstanceOfName() === $myclass->getName()))) {
                         $nbparams = 0;
                         $is_global_valid = true;
 
                         while (true) {
-                            if (!$instruction->is_property_exist("argdef$nbparams")) {
+                            if (!$instruction->isPropertyExist("argdef$nbparams")) {
                                 break;
                             }
 
-                            $defarg = $instruction->get_property("argdef$nbparams");
-                            $values_parameter = $function_definition->get_parameter_values($nbparams + 1);
+                            $defarg = $instruction->getProperty("argdef$nbparams");
+                            $values_parameter = $function_definition->getParameterValues($nbparams + 1);
 
                             if (!is_null($values_parameter)) {
                                 $is_global_valid = false;
@@ -50,12 +54,12 @@ class CustomAnalysis
                                     if (isset($value_parameter->is_array)
                                                 && $value_parameter->is_array === true
                                                         && isset($value_parameter->array_index)) {
-                                        if ($defarg->is_type(MyDefinition::TYPE_COPY_ARRAY)) {
-                                            $copy_arrays = $defarg->get_copyarrays();
-                                            foreach ($copy_arrays as $copy_array) {
-                                                foreach ($copy_array[0] as $copy_index => $copy_value) {
+                                        if ($defarg->isType(MyDefinition::TYPE_COPY_ARRAY)) {
+                                            $copyArrays = $defarg->getCopyArrays();
+                                            foreach ($copyArrays as $copyArray) {
+                                                foreach ($copyArray[0] as $copy_index => $copy_value) {
                                                     if ($copy_index === $value_parameter->array_index) {
-                                                        $def_last_known_values = $copy_array[1]->get_last_known_values();
+                                                        $def_last_known_values = $copyArray[1]->getLastKnownValues();
 
                                                         break 2;
                                                     }
@@ -63,12 +67,14 @@ class CustomAnalysis
                                             }
                                         }
                                     } else {
-                                        $def_last_known_values = $defarg->get_last_known_values();
+                                        $def_last_known_values = $defarg->getLastKnownValues();
                                     }
 
                                     foreach ($def_last_known_values as $last_known_value) {
-                                        if (($value_parameter->value !== $last_known_value && $custom_rule->get_action() === "MUST_VERIFY_DEFINITION")
-                                                    || ($value_parameter->value === $last_known_value && $custom_rule->get_action() === "MUST_NOT_VERIFY_DEFINITION")) {
+                                        if (($value_parameter->value !== $last_known_value
+                                            && $custom_rule->getAction() === "MUST_VERIFY_DEFINITION")
+                                                || ($value_parameter->value === $last_known_value
+                                                    && $custom_rule->getAction() === "MUST_NOT_VERIFY_DEFINITION")) {
                                             $is_valid = false;
                                             break;
                                         }
@@ -76,7 +82,8 @@ class CustomAnalysis
 
                                     $is_global_valid = $is_valid;
 
-                                    // if for one defined parameter value all last know values are valid parameter is verified
+                                    // if for one defined parameter value
+                                    // all last know values are valid parameter is verified
                                     if ($is_valid) {
                                         break;
                                     }
@@ -92,18 +99,19 @@ class CustomAnalysis
                         }
 
                         if (!$is_global_valid) {
-                            $hash_id_vuln = hash("sha256", $custom_rule->get_name()."-".$myfunc->get_source_myfile()->get_name());
+                            $hashed_value = $custom_rule->getName()."-".$myfunc->getSourceMyFile()->getName();
+                            $hash_id_vuln = hash("sha256", $hashed_value);
 
-                            $temp["vuln_rule"] = \progpilot\Utils::encode_characters($custom_rule->get_name());
-                            $temp["vuln_name"] = \progpilot\Utils::encode_characters($custom_rule->get_attack());
+                            $temp["vuln_rule"] = Utils::encodeCharacters($custom_rule->getName());
+                            $temp["vuln_name"] = Utils::encodeCharacters($custom_rule->getAttack());
                             $temp["vuln_line"] = $myfunc->getLine();
                             $temp["vuln_column"] = $myfunc->getColumn();
-                            $temp["vuln_file"] = \progpilot\Utils::encode_characters($myfunc->get_source_myfile()->get_name());
-                            $temp["vuln_description"] = \progpilot\Utils::encode_characters($custom_rule->get_description());
-                            $temp["vuln_cwe"] = \progpilot\Utils::encode_characters($custom_rule->get_cwe());
+                            $temp["vuln_file"] = Utils::encodeCharacters($myfunc->getSourceMyFile()->getName());
+                            $temp["vuln_description"] = Utils::encodeCharacters($custom_rule->getDescription());
+                            $temp["vuln_cwe"] = Utils::encodeCharacters($custom_rule->getCwe());
                             $temp["vuln_id"] = $hash_id_vuln;
                             $temp["vuln_type"] = "custom";
-                            $context->outputs->add_result($temp);
+                            $context->outputs->addResult($temp);
                         }
                     }
                 }
@@ -111,46 +119,55 @@ class CustomAnalysis
         }
     }
 
-    public static function must_verify_call_flow($context)
+    public static function mustVerifyCallFlow($context)
     {
-        if ($context->get_analyze_hardrules()) {
+        if ($context->getAnalyzeHardrules()) {
             $rules_verify_call_flow = [];
-            $custom_rules = $context->inputs->get_custom_rules();
+            $custom_rules = $context->inputs->getCustomRules();
             foreach ($custom_rules as $custom_rule) {
-                if ($custom_rule->get_type() === MyCustomRule::TYPE_SEQUENCE
-                                                      && $custom_rule->get_action() === "MUST_VERIFY_CALL_FLOW") {
-                    $sequence = $custom_rule->get_sequence();
+                if ($custom_rule->getType() === MyCustomRule::TYPE_SEQUENCE
+                    && $custom_rule->getAction() === "MUST_VERIFY_CALL_FLOW") {
+                    $sequence = $custom_rule->getSequence();
 
-                    $custom_rule->set_current_order_number(0);
+                    $custom_rule->setCurrentOrderNumber(0);
                     $rules_verify_call_flow[] = $custom_rule;
 
                     foreach ($sequence as $custom_function) {
-                        $custom_function->set_order_number_real(-1);
+                        $custom_function->setOrderNumberReal(-1);
                     }
                 }
             }
 
-            $function = $context->get_functions()->get_function("{main}");
+            $function = $context->getFunctions()->getFunction("{main}");
             if (!is_null($function)) {
-                $context->outputs->callgraph->add_node($function, null);
+                $context->outputs->callgraph->addNode($function, null);
 
-                foreach ($function->get_blocks() as $first_myblock) {
-                    $calls = $context->outputs->callgraph->get_calls($first_myblock);
+                foreach ($function->getBlocks() as $first_myblock) {
+                    $calls = $context->outputs->callgraph->getCalls($first_myblock);
                     if (!is_null($calls)) {
                         foreach ($calls as $call) {
-                            $context->outputs->callgraph->add_edge($function, null, $call[0], $call[1]);
+                            $context->outputs->callgraph->addEdge($function, null, $call[0], $call[1]);
                         }
                     }
 
                     break;
                 }
 
-                $NodeCG = new NodeCG($function->get_name(), $function->getLine(), $function->getColumn(), $function->get_source_myfile()->get_name(), null);
-                $nodes = $context->outputs->callgraph->get_nodes();
+                $NodeCG = new NodeCG(
+                    $function->getName(),
+                    $function->getLine(),
+                    $function->getColumn(),
+                    $function->getSourceMyFile()->getName(),
+                    null
+                );
+                $nodes = $context->outputs->callgraph->getNodes();
 
-                if (array_key_exists($NodeCG->get_id(), $nodes)) {
-                    $depthfirstsearch = new DepthFirstSearch($nodes, new DFSVisitor($context, $rules_verify_call_flow));
-                    $depthfirstsearch->init($nodes[$NodeCG->get_id()]);
+                if (array_key_exists($NodeCG->getId(), $nodes)) {
+                    $depthfirstsearch = new DepthFirstSearch(
+                        $nodes,
+                        new DFSVisitor($context, $rules_verify_call_flow)
+                    );
+                    $depthfirstsearch->init($nodes[$NodeCG->getId()]);
                 }
             }
         }

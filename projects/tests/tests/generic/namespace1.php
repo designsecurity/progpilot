@@ -11,7 +11,3 @@ class testc
 }
 
 $a = new \testns\testc;
-
-?>
-
-

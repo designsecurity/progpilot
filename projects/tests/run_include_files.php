@@ -8,11 +8,11 @@ try {
     $context = new \progpilot\Context;
     $analyzer = new \progpilot\Analyzer;
 
-    $context->inputs->set_sources("../../package/src/uptodate_data/sources.json");
-    $context->inputs->set_sinks("../../package/src/uptodate_data/sinks.json");
-    $context->inputs->set_sanitizers("../../package/src/uptodate_data/sanitizers.json");
-    $context->inputs->set_validators("../../package/src/uptodate_data/validators.json");
-    $context->inputs->set_include_files("include_files.json");
+    $context->inputs->setSources("../../package/src/uptodate_data/sources.json");
+    $context->inputs->setSinks("../../package/src/uptodate_data/sinks.json");
+    $context->inputs->setSanitizers("../../package/src/uptodate_data/sanitizers.json");
+    $context->inputs->setSalidators("../../package/src/uptodate_data/validators.json");
+    $context->inputs->setIncludeFiles("include_files.json");
 
     try {
         $analyzer->run($context);
@@ -20,7 +20,7 @@ try {
         echo 'Exception : ',  $e->getMessage(), "\n";
     }
 
-    $results = $context->outputs->get_results();
+    $results = $context->outputs->getResults();
     $outputjson = array('results' => $results);
     $parsed_json = $outputjson["results"];
 

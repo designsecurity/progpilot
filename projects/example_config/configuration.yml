@@ -1,30 +1,30 @@
 inputs:
-    set_sources: ../../package/src/uptodate_data/sources.json
-    set_sinks: ../../package/src/uptodate_data/sinks.json
-    set_validators: ../../package/src/uptodate_data/validators.json
-    set_sanitizers: ../../package/src/uptodate_data/sanitizers.json
-    set_custom_rules: ../../package/src/uptodate_data/rules.json
-    set_include_files: 
-    set_exclude_files: 
-    set_folder: /home/eric/dev/scripts/drupal/
-    set_file: 
-    set_code:
-    set_resolved_includes:
-    set_false_positives:
+    setSources: ../../package/src/uptodate_data/sources.json
+    setSinks: ../../package/src/uptodate_data/sinks.json
+    setValidators: ../../package/src/uptodate_data/validators.json
+    setSanitizers: ../../package/src/uptodate_data/sanitizers.json
+    setCustomRules: ../../package/src/uptodate_data/rules.json
+    setIncludeFiles: 
+    setExcludeFiles: 
+    setFolder: /home/eric/dev/scripts/drupal/
+    setFile: 
+    setCode:
+    setResolvedIncludes:
+    setFalsePositives:
     
 outputs:
-    tainted_flow: true
-    resolve_includes: false
-    resolve_includes_file:
+    taintedFlow: true
+    resolveIncludes: false
+    resolveIncludesFile:
     
 options:
-    set_analyze_js: false
-    set_analyze_includes: true
-    set_analyze_functions: true
-    set_analyze_hardrules: true
-    set_print_file: true
-    set_print_warning: false
-    set_pretty_print: true
-    set_limit_time: 10
-    set_limit_defs: 10000
-    set_limit_size: 1000000
+    setAnalyzeJs: false
+    setAnalyzeIncludes: true
+    setAnalyzeFunctions: true
+    setAnalyzeHardrules: true
+    setPrintFile: true
+    setPrintWarning: false
+    setPrettyPrint: true
+    setLimitTime: 10
+    setLimitDefs: 3000
+    setLimitSize: 500000

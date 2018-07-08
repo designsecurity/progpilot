@@ -379,3 +379,18 @@ $framework->add_testbasis("./tests/generic/namespace2.php");
 $framework->add_output("./tests/generic/namespace2.php", array("\$_GET[\"p\"]"));
 $framework->add_output("./tests/generic/namespace2.php", array("7"));
 $framework->add_output("./tests/generic/namespace2.php", "xss");
+
+
+$framework->add_testbasis("./tests/generic/simple9.php");
+$framework->add_output("./tests/generic/simple9.php", array("\$_GET[\"p1\"]"));
+$framework->add_output("./tests/generic/simple9.php", array("3"));
+$framework->add_output("./tests/generic/simple9.php", "create_function code_injection");
+$framework->add_output("./tests/generic/simple9.php", array("\$_GET[\"t1\"]"));
+$framework->add_output("./tests/generic/simple9.php", array("3"));
+$framework->add_output("./tests/generic/simple9.php", "create_function code_injection");
+$framework->add_output("./tests/generic/simple9.php", array("\$_GET[\"t1\"]"));
+$framework->add_output("./tests/generic/simple9.php", array("4"));
+$framework->add_output("./tests/generic/simple9.php", "create_function code_injection");
+$framework->add_output("./tests/generic/simple9.php", array("\$_GET[\"p1\"]"));
+$framework->add_output("./tests/generic/simple9.php", array("5"));
+$framework->add_output("./tests/generic/simple9.php", "create_function code_injection");

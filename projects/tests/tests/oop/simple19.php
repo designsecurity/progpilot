@@ -69,7 +69,3 @@ $val = $testc1_encore2->member1;
 echo $testc1_encore2->member1;
 
 echo $val;
-
-?>
-
-

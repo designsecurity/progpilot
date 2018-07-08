@@ -5,10 +5,10 @@ require_once './vendor/autoload.php';
 $context = new \progpilot\Context;
 $analyzer = new \progpilot\Analyzer;
 
-$context->inputs->set_file("flow1.php");
-$context->outputs->tainted_flow(true);
+$context->inputs->setFile("flow1.php");
+$context->outputs->taintedFlow(true);
 
 $analyzer->run($context);
-$results = $context->outputs->get_results();
+$results = $context->outputs->getResults();
 
 var_dump($results);

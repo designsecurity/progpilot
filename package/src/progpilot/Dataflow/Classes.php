@@ -19,12 +19,12 @@ class Classes
         $this->list_classes = [];
     }
 
-    public function get_list_classes()
+    public function getListClasses()
     {
         return $this->list_classes;
     }
 
-    public function add_myclass($new_myclass)
+    public function addMyclass($new_myclass)
     {
         /*
             if (!in_array($myclass, $this->list_classes, true))
@@ -33,7 +33,7 @@ class Classes
 
         $continue = true;
         foreach ($this->list_classes as $myclass) {
-            if ($myclass->get_name() === $new_myclass->get_name()) {
+            if ($myclass->getName() === $new_myclass->getName()) {
                 $continue = false;
                 break;
             }
@@ -44,10 +44,10 @@ class Classes
         }
     }
 
-    public function get_myclass($name)
+    public function getMyClass($name)
     {
         foreach ($this->list_classes as $myclass) {
-            if ($myclass->get_name() === $name) {
+            if ($myclass->getName() === $name) {
                 return $myclass;
             }
         }

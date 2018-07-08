@@ -428,7 +428,7 @@ function dvwaSourceHtmlEcho($pPage)
 }
 
 // To be used on all external links --
-function dvwaExternalLinkUrlGet($pLink, $text=null)
+function dvwaExternalLinkUrlGet($pLink, $text = null)
 {
     if (is_null($text)) {
         return '<a href="' . $pLink . '" target="_blank">' . $pLink . '</a>';
@@ -466,11 +466,11 @@ if ($DBMS == 'MySQL') {
 }
 
 //$DBMS_connError = '
-//	<div align="center">
-//		<img src="' . DVWA_WEB_PAGE_TO_ROOT . 'dvwa/images/logo.png" />
-//		<pre>Unable to connect to the database.<br />' . $DBMS_errorFunc . '<br /><br /></pre>
-//		Click <a href="' . DVWA_WEB_PAGE_TO_ROOT . 'setup.php">here</a> to setup the database.
-//	</div>';
+//  <div align="center">
+//      <img src="' . DVWA_WEB_PAGE_TO_ROOT . 'dvwa/images/logo.png" />
+//      <pre>Unable to connect to the database.<br />' . $DBMS_errorFunc . '<br /><br /></pre>
+//      Click <a href="' . DVWA_WEB_PAGE_TO_ROOT . 'setup.php">here</a> to setup the database.
+//  </div>';
 
 function dvwaDatabaseConnect()
 {
@@ -535,7 +535,8 @@ function dvwaGuestbook()
 
 // Token functions --
 function checkToken($user_token, $session_token, $returnURL)
-{  # Validate the given (CSRF) token
+{
+    # Validate the given (CSRF) token
     if ($user_token !== $session_token || !isset($session_token)) {
         dvwaMessagePush('CSRF token is incorrect');
         dvwaRedirect($returnURL);
@@ -543,7 +544,8 @@ function checkToken($user_token, $session_token, $returnURL)
 }
 
 function generateSessionToken()
-{  # Generate a brand new (CSRF) token
+{
+    # Generate a brand new (CSRF) token
     if (isset($_SESSION[ 'session_token' ])) {
         destroySessionToken();
     }
@@ -551,12 +553,14 @@ function generateSessionToken()
 }
 
 function destroySessionToken()
-{  # Destroy any session with the name 'session_token'
+{
+    # Destroy any session with the name 'session_token'
     unset($_SESSION[ 'session_token' ]);
 }
 
 function tokenField()
-{  # Return a field for the (CSRF) token
+{
+    # Return a field for the (CSRF) token
     return "<input type='hidden' name='user_token' value='{$_SESSION[ 'session_token' ]}' />";
 }
 // -- END (Token functions)

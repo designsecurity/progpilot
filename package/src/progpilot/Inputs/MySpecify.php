@@ -15,42 +15,42 @@ class MySpecify
     private $name;
     private $language;
     private $instanceof_name;
-    private $is_instance;
+    private $isInstance;
 
     public function __construct($name, $language)
     {
         $this->name = $name;
         $this->language = $language;
         $this->instanceof_name = null;
-        $this->is_instance = false;
+        $this->isInstance = false;
     }
 
-    public function get_name()
+    public function getName()
     {
         return $this->name;
     }
 
-    public function get_language()
+    public function getLanguage()
     {
         return $this->language;
     }
 
-    public function set_is_instance($is_instance)
+    public function setIsInstance($isInstance)
     {
-        $this->is_instance = $is_instance;
+        $this->isInstance = $isInstance;
     }
 
-    public function is_instance()
+    public function isInstance()
     {
-        return $this->is_instance;
+        return $this->isInstance;
     }
 
-    public function get_instanceof_name()
+    public function getInstanceOfName()
     {
         return $this->instanceof_name;
     }
 
-    public function set_instanceof_name($name)
+    public function setInstanceOfName($name)
     {
         return $this->instanceof_name = $name;
     }

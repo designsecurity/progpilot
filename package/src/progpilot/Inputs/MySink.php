@@ -15,7 +15,7 @@ class MySink extends MySpecify
     private $attack;
     private $cwe;
     private $parameters;
-    private $has_parameters;
+    private $hasParameters;
 
     public function __construct($name, $language, $attack, $cwe)
     {
@@ -23,17 +23,17 @@ class MySink extends MySpecify
 
         $this->attack = $attack;
         $this->cwe = $cwe;
-        $this->has_parameters = false;
+        $this->hasParameters = false;
         $this->parameters = [];
         $this->global_conditions = [];
     }
 
-    public function add_global_condition($condition)
+    public function addGlobalCondition($condition)
     {
         $this->global_conditions[] = $condition;
     }
 
-    public function is_global_condition($condition)
+    public function isGlobalCondition($condition)
     {
         foreach ($this->global_conditions as $condition_global) {
             if ($condition === $condition_global) {
@@ -44,18 +44,18 @@ class MySink extends MySpecify
         return false;
     }
 
-    public function add_parameter($id, $condition = null)
+    public function addParameter($id, $condition = null)
     {
         $parameter = [$id, $condition];
         $this->parameters[] = $parameter;
     }
 
-    public function get_parameters()
+    public function getParameters()
     {
         return $this->parameters;
     }
 
-    public function get_parameter_condition($i)
+    public function getParameterCondition($i)
     {
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
@@ -69,7 +69,7 @@ class MySink extends MySpecify
         return null;
     }
 
-    public function is_parameter($i)
+    public function isParameter($i)
     {
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
@@ -81,22 +81,22 @@ class MySink extends MySpecify
         return false;
     }
 
-    public function has_parameters()
+    public function hasParameters()
     {
-        return $this->has_parameters;
+        return $this->hasParameters;
     }
 
-    public function set_has_parameters($has_parameters)
+    public function setHasParameters($hasParameters)
     {
-        $this->has_parameters = $has_parameters;
+        $this->hasParameters = $hasParameters;
     }
 
-    public function get_attack()
+    public function getAttack()
     {
         return $this->attack;
     }
 
-    public function get_cwe()
+    public function getCwe()
     {
         return $this->cwe;
     }

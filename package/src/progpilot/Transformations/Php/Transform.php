@@ -45,7 +45,7 @@ class Transform implements Visitor
         $this->block_if_to_be_resolved = [];
     }
 
-    public function set_context($context)
+    public function setContext($context)
     {
         $this->context = $context;
     }
@@ -77,8 +77,8 @@ class Transform implements Visitor
                 $myblock_if = $this->s_blocks[$block_if];
                 $myblock_else = $this->s_blocks[$block_else];
 
-                $instruction_if->add_property(MyInstruction::MYBLOCK_IF, $myblock_if);
-                $instruction_if->add_property(MyInstruction::MYBLOCK_ELSE, $myblock_else);
+                $instruction_if->addProperty(MyInstruction::MYBLOCK_IF, $myblock_if);
+                $instruction_if->addProperty(MyInstruction::MYBLOCK_ELSE, $myblock_else);
             }
         }
     }
@@ -86,21 +86,21 @@ class Transform implements Visitor
     public function enterBlock(Block $block, Block $prior = null)
     {
         $this->inside_include = false;
-        if (!($this->context->get_current_op() instanceof Op\Expr\Include_)) {
+        if (!($this->context->getCurrentOp() instanceof Op\Expr\Include_)) {
             $myblock = new MyBlock;
-            $myblock->set_start_address_block(count($this->context->get_current_mycode()->get_codes()));
-            $this->context->set_current_block($block);
+            $myblock->setStartAddressBlock(count($this->context->getCurrentMycode()->getCodes()));
+            $this->context->setCurrentBlock($block);
 
             $this->s_blocks[$block] = $myblock;
 
             $inst_block = new MyInstruction(Opcodes::ENTER_BLOCK);
-            $inst_block->add_property(MyInstruction::MYBLOCK, $myblock);
-            $this->context->get_current_mycode()->add_code($inst_block);
+            $inst_block->addProperty(MyInstruction::MYBLOCK, $myblock);
+            $this->context->getCurrentMycode()->addCode($inst_block);
 
             // block is for himself a parent block (handle dataflow for first block)
             $block->addParent($block);
 
-            $myblock->set_id(rand());
+            $myblock->setId(rand());
         } else {
             $this->inside_include = true;
         }
@@ -120,12 +120,12 @@ class Transform implements Visitor
             if ($this->s_blocks->contains($block)) {
                 $myblock = $this->s_blocks[$block];
 
-                $address_end_block = count($this->context->get_current_mycode()->get_codes());
-                $myblock->set_end_address_block($address_end_block);
+                $address_end_block = count($this->context->getCurrentMycode()->getCodes());
+                $myblock->setEndAddressBlock($address_end_block);
 
                 $inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
-                $inst_block->add_property(MyInstruction::MYBLOCK, $myblock);
-                $this->context->get_current_mycode()->add_code($inst_block);
+                $inst_block->addProperty(MyInstruction::MYBLOCK, $myblock);
+                $this->context->getCurrentMycode()->addCode($inst_block);
             }
         }
     }
@@ -133,35 +133,35 @@ class Transform implements Visitor
     public function enterFunc(Func $func)
     {
         // blocks are set back to zero when entering new function
-        $this->context->set_current_block(null);
+        $this->context->setCurrentBlock(null);
 
         $myfunction = new MyFunction($func->name);
-        $this->context->set_current_mycode($myfunction->get_mycode());
+        $this->context->setCurrentMycode($myfunction->getMyCode());
 
         $inst_func = new MyInstruction(Opcodes::ENTER_FUNCTION);
-        $inst_func->add_property(MyInstruction::MYFUNC, $myfunction);
-        $this->context->get_current_mycode()->add_code($inst_func);
+        $inst_func->addProperty(MyInstruction::MYFUNC, $myfunction);
+        $this->context->getCurrentMycode()->addCode($inst_func);
 
         if (!is_null($func->class)) {
             $class_name = $func->class->value;
             // at this moment class is defined
-            $myclass = $this->context->get_classes()->get_myclass($class_name);
+            $myclass = $this->context->getClasses()->getMyClass($class_name);
 
             if (!is_null($myclass)) {
-                $myclass->add_method($myfunction);
+                $myclass->addMethod($myfunction);
 
-                $myfunction->set_visibility(Common::get_type_visibility($func->flags));
-                $myfunction->add_type(MyFunction::TYPE_FUNC_METHOD);
-                $myfunction->set_myclass($myclass);
+                $myfunction->setVisibility(Common::getTypeVisibility($func->flags));
+                $myfunction->addType(MyFunction::TYPE_FUNC_METHOD);
+                $myfunction->setMyClass($myclass);
 
                 if (($func->flags & Func::FLAG_STATIC) === Func::FLAG_STATIC) {
-                    $myfunction->add_type(MyFunction::TYPE_FUNC_STATIC);
+                    $myfunction->addType(MyFunction::TYPE_FUNC_STATIC);
                 }
 
                 $mythisdef = new MyDefinition(0, 0, "this");
-                $mythisdef->set_block_id(0);
-                $mythisdef->add_type(MyDefinition::TYPE_INSTANCE);
-                $myfunction->set_this_def($mythisdef);
+                $mythisdef->setBlockId(0);
+                $mythisdef->addType(MyDefinition::TYPE_INSTANCE);
+                $myfunction->setThisDef($mythisdef);
             }
         }
 
@@ -172,38 +172,38 @@ class Transform implements Visitor
             $mydef = new MyDefinition($param->getLine(), $param->getAttribute("startFilePos", -1), $param_name);
 
             if ($byref) {
-                $mydef->add_type(MyDefinition::TYPE_REFERENCE);
+                $mydef->addType(MyDefinition::TYPE_REFERENCE);
             }
 
-            $myfunction->add_param($mydef);
+            $myfunction->addParam($mydef);
 
             $inst_def = new MyInstruction(Opcodes::DEFINITION);
-            $inst_def->add_property(MyInstruction::DEF, $mydef);
-            $this->context->get_current_mycode()->add_code($inst_def);
+            $inst_def->addProperty(MyInstruction::DEF, $mydef);
+            $this->context->getCurrentMycode()->addCode($inst_def);
 
             unset($mydef);
         }
 
         // because when we call (funccall) a function by name, it can be undefined
-        $this->context->get_functions()->add_function($myfunction->get_name(), $myfunction);
-        $this->context->set_current_func($myfunction);
+        $this->context->getFunctions()->addFunction($myfunction->getName(), $myfunction);
+        $this->context->setCurrentFunc($myfunction);
     }
 
     public function leaveFunc(Func $func)
     {
-        $mycode_codes = $this->context->get_current_mycode()->get_codes();
+        $mycode_codes = $this->context->getCurrentMycode()->getCodes();
 
         $inst = $mycode_codes[count($mycode_codes) - 1];
 
         // we can have a block opened and we need to leave it
-        if ($inst->get_opcode() !== Opcodes::LEAVE_BLOCK) {
-            if (!is_null($this->context->get_current_block())) {
-                $myblock = $this->s_blocks[$this->context->get_current_block()];
-                $myblock->set_end_address_block(count($this->context->get_current_mycode()->get_codes()));
+        if ($inst->getOpcode() !== Opcodes::LEAVE_BLOCK) {
+            if (!is_null($this->context->getCurrentBlock())) {
+                $myblock = $this->s_blocks[$this->context->getCurrentBlock()];
+                $myblock->setEndAddressBlock(count($this->context->getCurrentMycode()->getCodes()));
 
                 $inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
-                $inst_block->add_property(MyInstruction::MYBLOCK, $myblock);
-                $this->context->get_current_mycode()->add_code($inst_block);
+                $inst_block->addProperty(MyInstruction::MYBLOCK, $myblock);
+                $this->context->getCurrentMycode()->addCode($inst_block);
             }
         }
 
@@ -212,51 +212,51 @@ class Transform implements Visitor
             $class_name = $func->class->value;
         }
 
-        $myfunction = $this->context->get_functions()->get_function($func->name, $class_name);
+        $myfunction = $this->context->getFunctions()->getFunction($func->name, $class_name);
 
         if (!is_null($myfunction)) {
-            $myfunction->set_last_line($this->context->get_current_line());
-            $myfunction->set_last_column($this->context->get_current_column());
-            $myfunction->set_last_block_id(-1);
+            $myfunction->setLastLine($this->context->getCurrentLine());
+            $myfunction->setLastColumn($this->context->getCurrentColumn());
+            $myfunction->setLastBlockId(-1);
 
             $inst_func = new MyInstruction(Opcodes::LEAVE_FUNCTION);
-            $inst_func->add_property(MyInstruction::MYFUNC, $myfunction);
-            $this->context->get_current_mycode()->add_code($inst_func);
+            $inst_func->addProperty(MyInstruction::MYFUNC, $myfunction);
+            $this->context->getCurrentMycode()->addCode($inst_func);
         }
     }
 
-    public function parse_condition($inst_start_if, $cond)
+    public function parseCondition($inst_start_if, $cond)
     {
         foreach ($cond as $ops) {
             if ($ops instanceof Op\Expr\BooleanNot) {
-                $inst_start_if->add_property(MyInstruction::NOT_BOOLEAN, true);
-                $this->parse_condition($inst_start_if, $ops->expr->ops);
+                $inst_start_if->addProperty(MyInstruction::NOT_BOOLEAN, true);
+                $this->parseCondition($inst_start_if, $ops->expr->ops);
             }
         }
     }
 
     public function enterOp(Op $op, Block $block)
     {
-        $this->context->set_current_op($op);
-        $this->context->set_current_block($block);
+        $this->context->setCurrentOp($op);
+        $this->context->setCurrentBlock($block);
 
         // for theses objects getline et getcolumn methods exists except for assertion
         if ($op instanceof Op\Stmt ||
                     ($op instanceof Op\Expr && !($op instanceof Op\Expr\Assertion)) ||
                     $op instanceof Op\Terminal) {
             if ($op->getLine() !== -1 && $op->getAttribute("startFilePos", -1) !== -1) {
-                $this->context->set_current_line($op->getLine());
-                $this->context->set_current_column($op->getAttribute("startFilePos", -1));
+                $this->context->setCurrentLine($op->getLine());
+                $this->context->setCurrentColumn($op->getAttribute("startFilePos", -1));
             }
         }
 
         if ($op instanceof Op\Stmt\JumpIf) {
             $inst_start_if = new MyInstruction(Opcodes::COND_START_IF);
-            $this->context->get_current_mycode()->add_code($inst_start_if);
+            $this->context->getCurrentMycode()->addCode($inst_start_if);
 
             $this->block_if_to_be_resolved[] = [$inst_start_if, $op->if, $op->else];
 
-            $this->parse_condition($inst_start_if, $op->cond->ops);
+            $this->parseCondition($inst_start_if, $op->cond->ops);
         }
         /*
            const TYPE_INCLUDE = 1;
@@ -266,134 +266,146 @@ class Transform implements Visitor
         */
 
         if ($op instanceof Op\Expr\Include_) {
-            if (Common::is_funccall_withoutreturn($op)) {
+            if (Common::isFuncCallWithoutReturn($op)) {
                 // expr of type "assign" to have a defined return
-                $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
-                $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+                $myexpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
+                $this->context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
 
                 FuncCall::instruction($this->context, $myexpr, false);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
-                $this->context->get_current_mycode()->add_code($inst_end_expr);
+                $inst_end_expr->addProperty(MyInstruction::EXPR, $myexpr);
+                $this->context->getCurrentMycode()->addCode($inst_end_expr);
             }
         } elseif ($op instanceof Op\Terminal\GlobalVar) {
-            $name_global = Common::get_name_definition($this->context->get_current_op()->var);
+            $name_global = Common::getNameDefinition($this->context->getCurrentOp()->var);
 
-            $mydef_global = new MyDefinition($this->context->get_current_line(), $this->context->get_current_column(), $name_global);
-            $mydef_global->set_type(MyDefinition::TYPE_GLOBAL);
+            $mydef_global = new MyDefinition(
+                $this->context->getCurrentLine(),
+                $this->context->getCurrentColumn(),
+                $name_global
+            );
+            $mydef_global->setType(MyDefinition::TYPE_GLOBAL);
 
             $inst_def = new MyInstruction(Opcodes::DEFINITION);
-            $inst_def->add_property(MyInstruction::DEF, $mydef_global);
-            $this->context->get_current_mycode()->add_code($inst_def);
+            $inst_def->addProperty(MyInstruction::DEF, $mydef_global);
+            $this->context->getCurrentMycode()->addCode($inst_def);
         } elseif ($op instanceof Op\Terminal\Return_) {
             Assign::instruction($this->context, true);
 
             $inst = new MyInstruction(Opcodes::RETURN_FUNCTION);
-            $inst->add_property(MyInstruction::RETURN_DEFS, $this->context->get_current_func()->get_return_defs());
-            $this->context->get_current_mycode()->add_code($inst);
+            $inst->addProperty(MyInstruction::RETURN_DEFS, $this->context->getCurrentFunc()->getReturnDefs());
+            $this->context->getCurrentMycode()->addCode($inst);
         } elseif ($op instanceof Op\Expr\Eval_) {
-            if (Common::is_funccall_withoutreturn($op)) {
+            if (Common::isFuncCallWithoutReturn($op)) {
                 // expr of type "assign" to have a defined return
-                $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
-                $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+                $myexpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
+                $this->context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
 
                 FuncCall::instruction($this->context, $myexpr, false);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
-                $this->context->get_current_mycode()->add_code($inst_end_expr);
+                $inst_end_expr->addProperty(MyInstruction::EXPR, $myexpr);
+                $this->context->getCurrentMycode()->addCode($inst_end_expr);
             }
         } elseif ($op instanceof Op\Terminal\Echo_) {
-            if (Common::is_funccall_withoutreturn($op)) {
+            if (Common::isFuncCallWithoutReturn($op)) {
                 // expr of type "assign" to have a defined return
-                $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
-                $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+                $myexpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
+                $this->context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
 
                 FuncCall::instruction($this->context, $myexpr, false);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
-                $this->context->get_current_mycode()->add_code($inst_end_expr);
+                $inst_end_expr->addProperty(MyInstruction::EXPR, $myexpr);
+                $this->context->getCurrentMycode()->addCode($inst_end_expr);
             }
         } elseif ($op instanceof Op\Expr\Print_) {
-            if (Common::is_funccall_withoutreturn($op)) {
+            if (Common::isFuncCallWithoutReturn($op)) {
                 // expr of type "assign" to have a defined return
-                $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
-                $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+                $myexpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
+                $this->context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
 
                 FuncCall::instruction($this->context, $myexpr, false);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
-                $this->context->get_current_mycode()->add_code($inst_end_expr);
+                $inst_end_expr->addProperty(MyInstruction::EXPR, $myexpr);
+                $this->context->getCurrentMycode()->addCode($inst_end_expr);
             }
         } elseif ($op instanceof Op\Expr\StaticCall) {
-            if (Common::is_funccall_withoutreturn($op)) {
+            if (Common::isFuncCallWithoutReturn($op)) {
                 // expr of type "assign" to have a defined return
-                $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
-                $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+                $myexpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
+                $this->context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
 
                 FuncCall::instruction($this->context, $myexpr, false, false, true);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
-                $this->context->get_current_mycode()->add_code($inst_end_expr);
+                $inst_end_expr->addProperty(MyInstruction::EXPR, $myexpr);
+                $this->context->getCurrentMycode()->addCode($inst_end_expr);
             }
         } elseif ($op instanceof Op\Expr\FuncCall || $op instanceof Op\Expr\NsFuncCall) {
-            if (Common::is_funccall_withoutreturn($op)) {
+            if (Common::isFuncCallWithoutReturn($op)) {
                 // expr of type "assign" to have a defined return
-                $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
-                $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+                $myexpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
+                $this->context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
 
                 FuncCall::instruction($this->context, $myexpr, false);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
-                $this->context->get_current_mycode()->add_code($inst_end_expr);
+                $inst_end_expr->addProperty(MyInstruction::EXPR, $myexpr);
+                $this->context->getCurrentMycode()->addCode($inst_end_expr);
             }
         } elseif ($op instanceof Op\Expr\MethodCall) {
-            if (Common::is_funccall_withoutreturn($op)) {
-                $class_name = Common::get_name_definition($op->var);
+            if (Common::isFuncCallWithoutReturn($op)) {
+                $class_name = Common::getNameDefinition($op->var);
 
-                $myexpr = new MyExpr($this->context->get_current_line(), $this->context->get_current_column());
+                $myexpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
 
-                $this->context->get_current_mycode()->add_code(new MyInstruction(Opcodes::START_EXPRESSION));
+                $this->context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
 
                 FuncCall::instruction($this->context, $myexpr, false, true);
 
                 $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                $inst_end_expr->add_property(MyInstruction::EXPR, $myexpr);
-                $this->context->get_current_mycode()->add_code($inst_end_expr);
+                $inst_end_expr->addProperty(MyInstruction::EXPR, $myexpr);
+                $this->context->getCurrentMycode()->addCode($inst_end_expr);
             }
         } elseif ($op instanceof Op\Expr\Assign || $op instanceof Op\Expr\AssignRef) {
             Assign::instruction($this->context);
         } elseif ($op instanceof Op\Stmt\Class_) {
-            $class_name = Common::get_name_definition($op);
+            $class_name = Common::getNameDefinition($op);
 
-            $myclass = new MyClass($this->context->get_current_line(), $this->context->get_current_column(), $class_name);
-            $this->context->get_classes()->add_myclass($myclass);
-
+            $myclass = new MyClass(
+                $this->context->getCurrentLine(),
+                $this->context->getCurrentColumn(),
+                $class_name
+            );
+            $this->context->getClasses()->addMyclass($myclass);
+            
             foreach ($op->stmts->children as $property) {
                 // if($property instanceof Op\Stmt\ClassMethod)
                 if ($property instanceof Op\Stmt\Property) {
-                    $property_name = Common::get_name_definition($property);
-                    $visibility = Common::get_type_visibility($property->visiblity);
+                    $property_name = Common::getNameDefinition($property);
+                    $visibility = Common::getTypeVisibility($property->visiblity);
 
-                    $mydef = new MyDefinition($property->getLine(), $property->getAttribute("startFilePos", -1), "this");
-                    $mydef->property->set_visibility($visibility);
-                    $mydef->property->add_property($property_name);
-                    $mydef->set_class_name($class_name);
+                    $mydef = new MyDefinition(
+                        $property->getLine(),
+                        $property->getAttribute("startFilePos", -1),
+                        "this"
+                    );
+                    $mydef->property->setVisibility($visibility);
+                    $mydef->property->addProperty($property_name);
+                    $mydef->setClassName($class_name);
 
                     // it's necessary for securityanalysis (visibility)
-                    $mydef->add_type(MyDefinition::TYPE_PROPERTY);
-                    $myclass->add_property($mydef);
+                    $mydef->addType(MyDefinition::TYPE_PROPERTY);
+                    $myclass->addProperty($mydef);
                 }
             }
 
             $inst_class = new MyInstruction(Opcodes::CLASSE);
-            $inst_class->add_property(MyInstruction::MYCLASS, $myclass);
-            $this->context->get_current_mycode()->add_code($inst_class);
+            $inst_class->addProperty(MyInstruction::MYCLASS, $myclass);
+            $this->context->getCurrentMycode()->addCode($inst_class);
         }
     }
 }

@@ -5,9 +5,9 @@ require_once './vendor/autoload.php';
 $context = new \progpilot\Context;
 $analyzer = new \progpilot\Analyzer;
 
-$context->set_configuration("./configuration.yml");
+$context->setConfiguration("./configuration.yml");
 
 $analyzer->run($context);
-$results = $context->outputs->get_results();
+$results = $context->outputs->getResults();
 
 var_dump($results);

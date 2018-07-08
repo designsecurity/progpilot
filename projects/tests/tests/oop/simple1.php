@@ -13,6 +13,3 @@ $instance1->boum2 = $_GET["p"];
 
 echo $instance1->boum1;
 echo $instance1->boum2;
-
-?>
-

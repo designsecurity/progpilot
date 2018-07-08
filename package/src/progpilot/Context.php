@@ -38,7 +38,7 @@ class Context
     private $analyze_js;
     private $print_file_under_analysis;
     private $configuration_file;
-    private $print_warning;
+    private $printWarning;
     private $pretty_print;
     private $limit_time;
     private $limit_defs;
@@ -56,11 +56,11 @@ class Context
         $this->analyze_includes = true;
         $this->analyze_js = true;
         $this->print_file_under_analysis = false;
-        $this->print_warning = false;
+        $this->printWarning = false;
         $this->pretty_print = true;
         $this->limit_time = 10;
-        $this->limit_defs = 10000;
-        $this->limit_size = 1000000;
+        $this->limit_defs = 3000;
+        $this->limit_size = 500000;
         $this->current_nb_defs = 0;
 
         $this->inputs = new \progpilot\Inputs\MyInputs;
@@ -70,7 +70,7 @@ class Context
         $this->classes = new \progpilot\Dataflow\Classes;
         $this->functions = new \progpilot\Dataflow\Functions;
 
-        $this->reset_internal_values();
+        $this->resetInternalValues();
 
         $this->current_myfile = null;
         $this->myfiles = [];
@@ -78,17 +78,17 @@ class Context
         $this->array_requires = [];
     }
 
-    public function get_current_nb_defs()
+    public function getCurrentNbDefs()
     {
         return $this->current_nb_defs;
     }
 
-    public function set_current_nb_defs($current_nb_defs)
+    public function setCurrentNbDefs($current_nb_defs)
     {
         $this->current_nb_defs = $current_nb_defs;
     }
 
-    public function reset_internal_lowvalues()
+    public function resetInternalLowvalues()
     {
         $this->current_op = null;
         $this->current_block = null;
@@ -99,9 +99,9 @@ class Context
         $this->path = null;
     }
 
-    public function reset_internal_values()
+    public function resetInternalValues()
     {
-        $this->reset_internal_lowvalues();
+        $this->resetInternalLowvalues();
         /*
         unset($this->objects);
         unset($this->classes);
@@ -109,7 +109,7 @@ class Context
         */
         unset($this->current_mycode);
 
-        $this->inputs->set_code(null);
+        $this->inputs->setCode(null);
         /*
                 $this->objects = new \progpilot\Dataflow\Objects;
                 $this->classes = new \progpilot\Dataflow\Classes;
@@ -117,10 +117,10 @@ class Context
              */
         // representations (cfg, ast ...) are deleted to avoid memory grown
         //$this->outputs = new \progpilot\Outputs\MyOutputs;
-        $this->outputs->reset_representations();
+        $this->outputs->resetRepresentations();
     }
 
-    public function reset_dataflow()
+    public function resetDataflow()
     {
         unset($this->objects);
         unset($this->classes);
@@ -131,267 +131,267 @@ class Context
         $this->functions = new \progpilot\Dataflow\Functions;
     }
 
-    public function set_array_includes($array_includes)
+    public function setArrayIncludes($array_includes)
     {
         $this->array_includes = $array_includes;
     }
 
-    public function set_array_requires($array_requires)
+    public function setArrayRequires($array_requires)
     {
         $this->array_requires = $array_requires;
     }
 
-    public function get_array_includes()
+    public function getArrayIncludes()
     {
         return $this->array_includes;
     }
 
-    public function get_array_requires()
+    public function getArrayRequires()
     {
         return $this->array_requires;
     }
 
-    public function set_pretty_print($bool)
+    public function setPrettyPrint($bool)
     {
         $this->pretty_print = $bool;
     }
 
-    public function get_pretty_print()
+    public function getPrettyPrint()
     {
         return $this->pretty_print;
     }
 
-    public function set_print_warning($bool)
+    public function setPrintWarning($bool)
     {
-        $this->print_warning = $bool;
+        $this->printWarning = $bool;
     }
 
-    public function get_print_warning()
+    public function getPrintWarning()
     {
-        return $this->print_warning;
+        return $this->printWarning;
     }
 
-    public function set_limit_defs($limit_defs)
+    public function setLimitDefs($limit_defs)
     {
         $this->limit_defs = $limit_defs;
     }
 
-    public function get_limit_defs()
+    public function getLimitDefs()
     {
         return $this->limit_defs;
     }
 
-    public function set_limit_time($limit_time)
+    public function setLimitTime($limit_time)
     {
         $this->limit_time = $limit_time;
     }
 
-    public function get_limit_time()
+    public function getLimitTime()
     {
         return $this->limit_time;
     }
 
-    public function set_limit_size($limit_size)
+    public function setLimitSize($limit_size)
     {
         $this->limit_size = $limit_size;
     }
 
-    public function get_limit_size()
+    public function getLimitSize()
     {
         return $this->limit_size;
     }
 
-    public function get_analyze_js()
+    public function getAnalyzeJs()
     {
         return $this->analyze_js;
     }
 
-    public function get_analyze_hardrules()
+    public function getAnalyzeHardrules()
     {
         return $this->analyze_hardrules;
     }
 
-    public function get_analyze_includes()
+    public function getAnalyzeIncludes()
     {
         return $this->analyze_includes;
     }
 
-    public function set_analyze_hardrules($analyze_hardrules)
+    public function setAnalyzeHardRules($analyze_hardrules)
     {
         $this->analyze_hardrules = $analyze_hardrules;
     }
 
-    public function set_analyze_js($analyze_js)
+    public function setAnalyzeJs($analyze_js)
     {
         $this->analyze_js = $analyze_js;
     }
 
-    public function set_analyze_includes($analyze_includes)
+    public function setAnalyzeIncludes($analyze_includes)
     {
         $this->analyze_includes = $analyze_includes;
     }
 
-    public function set_analyze_functions($analyze_functions)
+    public function setAnalyzeFunctions($analyze_functions)
     {
         $this->analyze_functions = $analyze_functions;
     }
 
-    public function get_analyze_functions()
+    public function getAnalyzeFunctions()
     {
         return $this->analyze_functions;
     }
 
-    public function get_current_mycode()
+    public function getCurrentMycode()
     {
         return $this->current_mycode;
     }
 
-    public function get_current_op()
+    public function getCurrentOp()
     {
         return $this->current_op;
     }
 
-    public function get_current_block()
+    public function getCurrentBlock()
     {
         return $this->current_block;
     }
 
-    public function get_current_line()
+    public function getCurrentLine()
     {
         return $this->current_line;
     }
 
-    public function get_current_column()
+    public function getCurrentColumn()
     {
         return $this->current_column;
     }
 
-    public function get_current_func()
+    public function getCurrentFunc()
     {
         return $this->current_func;
     }
 
-    public function get_objects()
+    public function getObjects()
     {
         return $this->objects;
     }
 
-    public function get_classes()
+    public function getClasses()
     {
         return $this->classes;
     }
 
-    public function get_functions()
+    public function getFunctions()
     {
         return $this->functions;
     }
 
-    public function get_inputs()
+    public function getInputs()
     {
         return $this->inputs;
     }
 
-    public function get_outputs()
+    public function getOutputs()
     {
         return $this->outputs;
     }
 
-    public function get_path()
+    public function getPath()
     {
         return $this->path;
     }
 
-    public function get_current_myfile()
+    public function getCurrentMyfile()
     {
         return $this->current_myfile;
     }
 
-    public function set_current_myfile($myfile)
+    public function setCurrentMyfile($myfile)
     {
         $this->current_myfile = $myfile;
     }
 
-    public function set_path($path)
+    public function setPath($path)
     {
         $this->path = $path;
     }
 
-    public function set_current_mycode($mycode)
+    public function setCurrentMycode($mycode)
     {
         $this->current_mycode = $mycode;
     }
 
-    public function set_current_op($current_op)
+    public function setCurrentOp($current_op)
     {
         $this->current_op = $current_op;
     }
 
-    public function set_current_block($current_block)
+    public function setCurrentBlock($current_block)
     {
         $this->current_block = $current_block;
     }
 
-    public function set_current_line($current_line)
+    public function setCurrentLine($current_line)
     {
         $this->current_line = $current_line;
     }
 
-    public function set_current_column($current_column)
+    public function setCurrentColumn($current_column)
     {
         $this->current_column = $current_column;
     }
 
-    public function set_current_func($current_func)
+    public function setCurrentFunc($current_func)
     {
         $this->current_func = $current_func;
     }
 
-    public function set_objects($objects)
+    public function setObjects($objects)
     {
         $this->objects = $objects;
     }
 
-    public function set_classes($classes)
+    public function setClasses($classes)
     {
         $this->classes = $classes;
     }
 
-    public function set_functions($functions)
+    public function setFunctions($functions)
     {
         $this->functions = $functions;
     }
 
-    public function set_inputs($inputs)
+    public function setInputs($inputs)
     {
         $this->inputs = $inputs;
     }
 
-    public function set_outputs($outputs)
+    public function setOutputs($outputs)
     {
         $this->outputs = $outputs;
     }
 
-    public function set_configuration($file)
+    public function setConfiguration($file)
     {
         $this->configuration_file = $file;
     }
 
-    public function get_configuration()
+    public function getConfiguration()
     {
         return $this->configuration_file;
     }
 
-    public function set_print_file($bool)
+    public function setPrintFile($bool)
     {
         $this->print_file_under_analysis = $bool;
     }
 
-    public function get_print_file()
+    public function getPrintFile()
     {
         return $this->print_file_under_analysis;
     }
 
-    public function read_configuration()
+    public function readConfiguration()
     {
         if (!is_null($this->configuration_file)) {
             try {
@@ -401,114 +401,114 @@ class Context
 
                     if (is_array($value)) {
                         if (isset($value["inputs"])) {
-                            if (isset($value["inputs"]["set_custom_rules"])) {
-                                $this->inputs->set_custom_rules($value["inputs"]["set_custom_rules"]);
+                            if (isset($value["inputs"]["setCustomRules"])) {
+                                $this->inputs->setCustomRules($value["inputs"]["setCustomRules"]);
                             }
 
-                            if (isset($value["inputs"]["set_sources"])) {
-                                $this->inputs->set_sources($value["inputs"]["set_sources"]);
+                            if (isset($value["inputs"]["setSources"])) {
+                                $this->inputs->setSources($value["inputs"]["setSources"]);
                             }
 
-                            if (isset($value["inputs"]["set_sinks"])) {
-                                $this->inputs->set_sinks($value["inputs"]["set_sinks"]);
+                            if (isset($value["inputs"]["setSinks"])) {
+                                $this->inputs->setSinks($value["inputs"]["setSinks"]);
                             }
 
-                            if (isset($value["inputs"]["set_validators"])) {
-                                $this->inputs->set_validators($value["inputs"]["set_validators"]);
+                            if (isset($value["inputs"]["setValidators"])) {
+                                $this->inputs->setValidators($value["inputs"]["setValidators"]);
                             }
 
-                            if (isset($value["inputs"]["set_sanitizers"])) {
-                                $this->inputs->set_sanitizers($value["inputs"]["set_sanitizers"]);
+                            if (isset($value["inputs"]["setSanitizers"])) {
+                                $this->inputs->setSanitizers($value["inputs"]["setSanitizers"]);
                             }
 
-                            if (isset($value["inputs"]["set_include_files"])) {
-                                $this->inputs->set_include_files($value["inputs"]["set_include_files"]);
+                            if (isset($value["inputs"]["setIncludeFiles"])) {
+                                $this->inputs->setIncludeFiles($value["inputs"]["setIncludeFiles"]);
                             }
 
-                            if (isset($value["inputs"]["set_exclude_files"])) {
-                                $this->inputs->set_exclude_files($value["inputs"]["set_exclude_files"]);
+                            if (isset($value["inputs"]["setExcludeFiles"])) {
+                                $this->inputs->setExcludeFiles($value["inputs"]["setExcludeFiles"]);
                             }
 
-                            if (isset($value["inputs"]["set_folder"])) {
-                                $this->inputs->set_folder($value["inputs"]["set_folder"]);
+                            if (isset($value["inputs"]["setFolder"])) {
+                                $this->inputs->setFolder($value["inputs"]["setFolder"]);
                             }
 
-                            if (isset($value["inputs"]["set_file"])) {
-                                $this->inputs->set_file($value["inputs"]["set_file"]);
+                            if (isset($value["inputs"]["setFile"])) {
+                                $this->inputs->setFile($value["inputs"]["setFile"]);
                             }
 
-                            if (isset($value["inputs"]["set_code"])) {
-                                $this->inputs->set_code($value["inputs"]["set_code"]);
+                            if (isset($value["inputs"]["setCode"])) {
+                                $this->inputs->setCode($value["inputs"]["setCode"]);
                             }
 
-                            if (isset($value["inputs"]["set_resolved_includes"])) {
-                                $this->inputs->set_resolved_includes($value["inputs"]["set_resolved_includes"]);
+                            if (isset($value["inputs"]["setResolvedIncludes"])) {
+                                $this->inputs->setResolvedIncludes($value["inputs"]["setResolvedIncludes"]);
                             }
 
-                            if (isset($value["inputs"]["set_false_positives"])) {
-                                $this->inputs->set_false_positives($value["inputs"]["set_false_positives"]);
+                            if (isset($value["inputs"]["setFalsePositives"])) {
+                                $this->inputs->setFalsePositives($value["inputs"]["setFalsePositives"]);
                             }
                         }
 
                         if (isset($value["outputs"])) {
-                            if (isset($value["outputs"]["tainted_flow"])) {
-                                $this->outputs->tainted_flow($value["outputs"]["tainted_flow"]);
+                            if (isset($value["outputs"]["taintedFlow"])) {
+                                $this->outputs->taintedFlow($value["outputs"]["taintedFlow"]);
                             }
 
-                            if (isset($value["outputs"]["resolve_includes"])) {
-                                $this->outputs->resolve_includes($value["outputs"]["resolve_includes"]);
+                            if (isset($value["outputs"]["resolveIncludes"])) {
+                                $this->outputs->resolveIncludes($value["outputs"]["resolveIncludes"]);
                             }
 
-                            if (isset($value["outputs"]["resolve_includes_file"])) {
-                                $this->outputs->resolve_includes_file($value["outputs"]["resolve_includes_file"]);
+                            if (isset($value["outputs"]["resolveIncludesFile"])) {
+                                $this->outputs->resolveIncludesFile($value["outputs"]["resolveIncludesFile"]);
                             }
                         }
 
                         if (isset($value["options"])) {
-                            if (isset($value["options"]["set_analyze_js"])) {
-                                $this->set_analyze_js($value["options"]["set_analyze_js"]);
+                            if (isset($value["options"]["setAnalyzeJs"])) {
+                                $this->setAnalyzeJs($value["options"]["setAnalyzeJs"]);
                             }
 
-                            if (isset($value["options"]["set_analyze_hardrules"])) {
-                                $this->set_analyze_hardrules($value["options"]["set_analyze_hardrules"]);
+                            if (isset($value["options"]["setAnalyzeHardRules"])) {
+                                $this->setAnalyzeHardRules($value["options"]["setAnalyzeHardRules"]);
                             }
 
-                            if (isset($value["options"]["set_analyze_includes"])) {
-                                $this->set_analyze_includes($value["options"]["set_analyze_includes"]);
+                            if (isset($value["options"]["setAnalyzeIncludes"])) {
+                                $this->setAnalyzeIncludes($value["options"]["setAnalyzeIncludes"]);
                             }
 
-                            if (isset($value["options"]["set_analyze_functions"])) {
-                                $this->set_analyze_functions($value["options"]["set_analyze_functions"]);
+                            if (isset($value["options"]["setAnalyzeFunctions"])) {
+                                $this->setAnalyzeFunctions($value["options"]["setAnalyzeFunctions"]);
                             }
 
-                            if (isset($value["options"]["set_print_file"])) {
-                                $this->set_print_file($value["options"]["set_print_file"]);
+                            if (isset($value["options"]["setPrintFile"])) {
+                                $this->setPrintFile($value["options"]["setPrintFile"]);
                             }
 
-                            if (isset($value["options"]["set_limit_time"])) {
-                                $this->set_limit_time($value["options"]["set_limit_time"]);
+                            if (isset($value["options"]["setLimitTime"])) {
+                                $this->setLimitTime($value["options"]["setLimitTime"]);
                             }
 
-                            if (isset($value["options"]["set_limit_defs"])) {
-                                $this->set_limit_defs($value["options"]["set_limit_defs"]);
+                            if (isset($value["options"]["setLimitDefs"])) {
+                                $this->setLimitDefs($value["options"]["setLimitDefs"]);
                             }
 
-                            if (isset($value["options"]["set_limit_size"])) {
-                                $this->set_limit_time($value["options"]["set_limit_size"]);
+                            if (isset($value["options"]["setLimitSize"])) {
+                                $this->setLimitSize($value["options"]["setLimitSize"]);
                             }
 
-                            if (isset($value["options"]["set_print_warning"])) {
-                                $this->set_print_warning($value["options"]["set_print_warning"]);
+                            if (isset($value["options"]["setPrintWarning"])) {
+                                $this->setPrintWarning($value["options"]["setPrintWarning"]);
                             }
 
-                            if (isset($value["options"]["set_pretty_print"])) {
-                                $this->set_pretty_print($value["options"]["set_pretty_print"]);
+                            if (isset($value["options"]["setPrettyPrint"])) {
+                                $this->setPrettyPrint($value["options"]["setPrettyPrint"]);
                             }
                         }
                     }
                 }
             } catch (ParseException $e) {
-                Utils::print_error($context, Lang::UNABLE_TO_PARSER_YAML);
+                Utils::printError($context, Lang::UNABLE_TO_PARSER_YAML);
             }
         }
     }

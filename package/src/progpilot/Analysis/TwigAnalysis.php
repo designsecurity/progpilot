@@ -26,20 +26,20 @@ class TwigAnalysis
 {
     public static function funccall($context, $myfunc_call, $instruction)
     {
-        $nb_params = $myfunc_call->get_nb_params();
-        $path = $context->get_path();
+        $nb_params = $myfunc_call->getNbParams();
+        $path = $context->getPath();
 
         // !!! Ca peut être 1 aussi quand on passe pas de variables
         if ($nb_params === 2) {
-            $template = $instruction->get_property("argdef0");
-            $variable = $instruction->get_property("argdef1");
+            $template = $instruction->getProperty("argdef0");
+            $variable = $instruction->getProperty("argdef1");
 
-            $file = $path."/".$template->get_last_known_values()[0];
+            $file = $path."/".$template->getLastKnownValues()[0];
             $myjavascript_file = new MyFile($file, $myfunc_call->getLine(), $myfunc_call->getColumn());
 
             if (file_exists($file)) {
                 $thedefs = [];
-                $thearrays = $variable->get_copyarrays();
+                $thearrays = $variable->getCopyArrays();
 
                 foreach ($thearrays as $array) {
                     $def = $array[1];
@@ -48,23 +48,25 @@ class TwigAnalysis
                     $arr_index = "{{".key($arr)."}}";
 
                     $mydef = new MyDefinition($def->getLine(), $def->getColumn(), $arr_index);
-                    $mydef->set_source_myfile($myjavascript_file->get_source_myfile());
+                    $mydef->setSourceMyFile($myjavascript_file->getSourceMyFile());
 
-                    if ($def->is_tainted()) {
-                        $mydef->set_tainted(true);
+                    if ($def->isTainted()) {
+                        $mydef->setTainted(true);
                     }
 
                     $thedefs[] = $mydef;
                 }
 
-                shell_exec("node ./vendor/progpilot/package/src/progpilot/Transformations/Js/Transform.js $file > tmpjscode.txt");
+                $exec = "node ./vendor/progpilot/package/src/progpilot/Transformations/Js/Transform.js";
+                $exec .= " $file > tmpjscode.txt";
+                shell_exec($exec);
 
                 $newcontext = new \progpilot\Context;
 
-                MyCode::read_code($newcontext, "tmpjscode.txt", $thedefs, $myjavascript_file);
+                MyCode::readCode($newcontext, "tmpjscode.txt", $thedefs, $myjavascript_file);
 
-                $newcontext->set_inputs($context->get_inputs());
-                $newcontext->outputs->set_results($context->outputs->get_results());
+                $newcontext->setInputs($context->getInputs());
+                $newcontext->outputs->setResults($context->outputs->getResults());
                 $newcontext->set_first_file($file);
 
                 $analyzer = new Analyzer;

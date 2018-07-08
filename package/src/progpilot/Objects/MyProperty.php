@@ -22,32 +22,32 @@ class MyProperty extends MyOp
         $this->properties = [];
     }
 
-    public function set_visibility($visibility)
+    public function setVisibility($visibility)
     {
         $this->visibility = $visibility;
     }
 
-    public function get_visibility()
+    public function getVisibility()
     {
         return $this->visibility;
     }
 
-    public function set_properties($properties)
+    public function setProperties($properties)
     {
         $this->properties = $properties;
     }
 
-    public function get_properties()
+    public function getProperties()
     {
         return $this->properties;
     }
 
-    public function add_property($property)
+    public function addProperty($property)
     {
         $this->properties[] = $property;
     }
 
-    public function pop_property()
+    public function popProperty()
     {
         return array_pop($this->properties);
     }

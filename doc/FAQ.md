@@ -11,7 +11,7 @@ Example of control flow graph and call graph of source code transformed to dot f
 
 #### When I use progpilot I often run out of memory ?
 Static analyzers use a lot of memory but you could try to handle this with [these functions](./API.md) :
-- *$obj_context->set_limit_defs($nb);* 
-- *$obj_context->set_limit_size($size_bytes);* 
+- *$obj_context->setLimitDefs($nb);* 
+- *$obj_context->setLimitSize($size_bytes);* 
 
 And by increasing the maximum memory amount for a script (*memory_limit*) in the configuration of PHP (*php.ini*).

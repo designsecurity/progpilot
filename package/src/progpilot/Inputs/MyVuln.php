@@ -19,12 +19,12 @@ class MyVuln
         $this->vuln_id = $vuln_id;
     }
 
-    public function get_id()
+    public function getId()
     {
         return $this->vuln_id;
     }
 
-    public function set_id($vuln_id)
+    public function setId($vuln_id)
     {
         return $this->vuln_id = $vuln_id;
     }
