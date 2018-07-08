@@ -1,24 +1,4 @@
 <?php
-
-function scandir_rec($dir, &$files)
-{
-    if (is_dir($dir)) {
-        $filesanddirs = scandir($dir);
-
-        if ($filesanddirs !== false) {
-            foreach ($filesanddirs as $filedir) {
-                if ($filedir !== '.' && $filedir !== "..") {
-                    if (is_dir($dir."/".$filedir)) {
-                        scandir_rec($dir."/".$filedir, $files);
-                    } else {
-                        $files[] = $dir."/".$filedir;
-                    }
-                }
-            }
-        }
-    }
-}
-
 /*
 name folder = './IDOR/CWE_862_Fopen/safe' et 31
 name folder = './IDOR/CWE_862_Fopen/unsafe' et 31
@@ -55,8 +35,26 @@ name folder = './URF' et 0
 name folder = './XSS/CWE_79/safe' et 5727
 name folder = './XSS/CWE_79/unsafe' et 4351
 name folder = './XSS' et 0
+*/
+ 
+function scandir_rec($dir, &$files)
+{
+    if (is_dir($dir)) {
+        $filesanddirs = scandir($dir);
 
- */
+        if ($filesanddirs !== false) {
+            foreach ($filesanddirs as $filedir) {
+                if ($filedir !== '.' && $filedir !== "..") {
+                    if (is_dir($dir."/".$filedir)) {
+                        scandir_rec($dir."/".$filedir, $files);
+                    } else {
+                        $files[] = $dir."/".$filedir;
+                    }
+                }
+            }
+        }
+    }
+}
 
 $folders = [];
 $files = [];
