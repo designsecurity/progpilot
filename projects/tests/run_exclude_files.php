@@ -24,7 +24,7 @@ try {
             echo 'Exception : ',  $e->getMessage(), "\n";
         }
 
-        $results = $context->outputs->get_results();
+        $results = $context->outputs->getResults();
         $outputjson = array('results' => $results);
         $parsed_json = $outputjson["results"];
 

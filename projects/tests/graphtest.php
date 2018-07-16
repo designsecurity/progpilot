@@ -8,18 +8,18 @@ try {
     $context = new \progpilot\Context;
     $analyzer = new \progpilot\Analyzer;
 
-    $context->inputs->set_file($file);
+    $context->inputs->setFile($file);
     $analyzer->run($context);
 
-    $graphcfg_json = $context->outputs->get_cfg();
-    $graphcallgraph_json = $context->outputs->get_callgraph();
+    $graphCfgJson = $context->outputs->getCfg();
+    $graphCallgraphJson = $context->outputs->getCallGraph();
     
     echo "\ndigraph callgraph {\nordering=out;\n";
-    foreach ($graphcallgraph_json["nodes"] as $node) {
+    foreach ($graphCallgraphJson["nodes"] as $node) {
         echo "node_".$node["id"]." [label=\"".$node["name"]."\"];\n";
     }
 
-    foreach ($graphcallgraph_json["links"] as $link) {
+    foreach ($graphCallgraphJson["links"] as $link) {
         echo "node_".$link["source"]."->"."node_".$link["target"]."\n";
     }
     
@@ -27,11 +27,11 @@ try {
     
     
     echo "\ndigraph cfg {\nordering=out;\n";
-    foreach ($graphcfg_json["nodes"] as $node) {
+    foreach ($graphCfgJson["nodes"] as $node) {
         echo "node_".$node["id"]." [label=\"".$node["name"]."\"];\n";
     }
 
-    foreach ($graphcfg_json["links"] as $link) {
+    foreach ($graphCfgJson["links"] as $link) {
         echo "node_".$link["source"]."->"."node_".$link["target"]."\n";
     }
     
