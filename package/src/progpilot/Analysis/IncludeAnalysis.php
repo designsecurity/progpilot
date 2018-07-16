@@ -32,15 +32,15 @@ class IncludeAnalysis
     {
     }
 
-    public static function isCircularInclude($myfile)
+    public static function isCircularInclude($myFile)
     {
-        $myfile_included = $myfile->getIncludedFromMyfile();
-        while (!is_null($myfile_included)) {
-            if ($myfile_included->getName() === $myfile->getName()) {
+        $includedMyFile = $myFile->getIncludedFromMyfile();
+        while (!is_null($includedMyFile)) {
+            if ($includedMyFile->getName() === $myFile->getName()) {
                 return true;
             }
 
-            $myfile_included = $myfile_included->getIncludedFromMyfile();
+            $includedMyFile = $includedMyFile->getIncludedFromMyfile();
         }
 
         return false;
@@ -48,143 +48,143 @@ class IncludeAnalysis
 
     public static function funccall($context, $defs, $blocks, $instruction, $code, $index)
     {
-        $funcname = $instruction->getProperty(MyInstruction::FUNCNAME);
-        $arr_funccall = $instruction->getProperty(MyInstruction::ARR);
-        $myfunc_call = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
+        $funcName = $instruction->getProperty(MyInstruction::FUNCNAME);
+        $arrFuncCall = $instruction->getProperty(MyInstruction::ARR);
+        $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
 
         // require, require_once ... already handled in transform Expr/include_
-        if ($myfunc_call->getName() === "include" && $context->getAnalyzeIncludes()) {
-            $type_include = $instruction->getProperty(MyInstruction::TYPE_INCLUDE);
-            $nb_params = $myfunc_call->getNbParams();
-            if ($nb_params > 0) {
-                $at_least_one_include_resolved = false;
+        if ($myFuncCall->getName() === "include" && $context->getAnalyzeIncludes()) {
+            $typeInclude = $instruction->getProperty(MyInstruction::TYPE_INCLUDE);
+            $nbParams = $myFuncCall->getNbParams();
+            if ($nbParams > 0) {
+                $atLeastOneIncludeResolved = false;
 
-                $mydef_arg = $instruction->getProperty("argdef0");
+                $myDefArg = $instruction->getProperty("argdef0");
 
-                if (count($mydef_arg->getLastKnownValues()) !== 0) {
-                    foreach ($mydef_arg->getLastKnownValues() as $last_known_value) {
-                        $real_file = false;
+                if (count($myDefArg->getLastKnownValues()) !== 0) {
+                    foreach ($myDefArg->getLastKnownValues() as $lastKnownValue) {
+                        $realFile = false;
 
                         // else it's maybe a relative path
-                        $file = $context->getPath()."/".$last_known_value;
-                        $real_file = realpath($file);
+                        $file = $context->getPath()."/".$lastKnownValue;
+                        $realFile = realpath($file);
 
-                        // if $last_known_value is a absolute path to the file :
+                        // if $lastKnownValue is a absolute path to the file :
                         // /home/dev/file.php
-                        if (!$real_file) {
-                            $real_file = realpath($last_known_value);
+                        if (!$realFile) {
+                            $realFile = realpath($lastKnownValue);
                         }
 
-                        if (!$real_file) {
-                            $continue_include = false;
+                        if (!$realFile) {
+                            $continueInclude = false;
 
-                            $myinclude = $context->inputs->getIncludeByLocation(
+                            $myInclude = $context->inputs->getIncludeByLocation(
                                 $context->getCurrentLine(),
                                 $context->getCurrentColumn(),
-                                $myfunc_call->getSourceMyFile()->getName()
+                                $myFuncCall->getSourceMyFile()->getName()
                             );
 
-                            if (!is_null($myinclude)) {
-                                $name_included_file = realpath($myinclude->getValue());
-                                if ($name_included_file) {
-                                    $continue_include = true;
+                            if (!is_null($myInclude)) {
+                                $nameIncludedFile = realpath($myInclude->getValue());
+                                if ($nameIncludedFile) {
+                                    $continueInclude = true;
                                 }
                             }
                         } else {
-                            $continue_include = true;
-                            $name_included_file = $real_file;
+                            $continueInclude = true;
+                            $nameIncludedFile = $realFile;
                         }
 
-                        if ($continue_include) {
-                            $at_least_one_include_resolved = true;
+                        if ($continueInclude) {
+                            $atLeastOneIncludeResolved = true;
 
-                            $array_includes = $context->getArrayIncludes();
-                            $array_requires = $context->getArrayRequires();
+                            $arrayIncludes = $context->getArrayIncludes();
+                            $arrayRequires = $context->getArrayRequires();
 
-                            if ((!in_array($name_included_file, $array_includes, true) && $type_include === 2)
-                                || (!in_array($name_included_file, $array_requires, true) && $type_include === 4)
-                                    || ($type_include === 1 || $type_include === 3)) {
-                                $myfile = new MyFile(
-                                    $name_included_file,
-                                    $myfunc_call->getLine(),
-                                    $myfunc_call->getColumn()
+                            if ((!in_array($nameIncludedFile, $arrayIncludes, true) && $typeInclude === 2)
+                                || (!in_array($nameIncludedFile, $arrayRequires, true) && $typeInclude === 4)
+                                    || ($typeInclude === 1 || $typeInclude === 3)) {
+                                $myFile = new MyFile(
+                                    $nameIncludedFile,
+                                    $myFuncCall->getLine(),
+                                    $myFuncCall->getColumn()
                                 );
-                                $myfile->setIncludedFromMyfile($myfunc_call->getSourceMyFile());
+                                $myFile->setIncludedFromMyfile($myFuncCall->getSourceMyFile());
 
-                                if (!IncludeAnalysis::isCircularInclude($myfile)) {
-                                    if ($type_include === 2) {
-                                        $array_includes[] = $name_included_file;
+                                if (!IncludeAnalysis::isCircularInclude($myFile)) {
+                                    if ($typeInclude === 2) {
+                                        $arrayIncludes[] = $nameIncludedFile;
                                     }
 
-                                    if ($type_include === 4) {
-                                        $array_requires[] = $name_included_file;
+                                    if ($typeInclude === 4) {
+                                        $arrayRequires[] = $nameIncludedFile;
                                     }
 
-                                    $context_include = clone $context;
+                                    $contextInclude = clone $context;
 
-                                    $context_include->resetInternalValues();
+                                    $contextInclude->resetInternalValues();
 
                                     // not need to propagate files already included to the current analyzed file
                                     // because of clone context and reset values that don't
-                                    // ie : $context_include->set_array_includes($array_includes); ect
-                                    $context_include->inputs->setFile($name_included_file);
-                                    $context_include->inputs->setCode(null);
-                                    $context_include->setCurrentMyfile($myfile);
-                                    //$context_include->setOutputs(new \progpilot\Outputs\MyOutputs);
-                                    $context_include->outputs->resetRepresentations();
+                                    // ie : $contextInclude->set_array_includes($arrayIncludes); ect
+                                    $contextInclude->inputs->setFile($nameIncludedFile);
+                                    $contextInclude->inputs->setCode(null);
+                                    $contextInclude->setCurrentMyfile($myFile);
+                                    //$contextInclude->setOutputs(new \progpilot\Outputs\MyOutputs);
+                                    $contextInclude->outputs->resetRepresentations();
 
-                                    $main_function_save = $context->getFunctions()->getFunction("{main}");
-                                    $save_main = $context_include->getFunctions()->delFunction("{main}");
+                                    $mainFunctionSave = $context->getFunctions()->getFunction("{main}");
+                                    $saveMain = $contextInclude->getFunctions()->delFunction("{main}");
 
-                                    $analyzer_include = new \progpilot\Analyzer;
-                                    $analyzer_include->runInternal(
-                                        $context_include,
-                                        $defs->getOutMinusKill($myfunc_call->getBlockId())
+                                    $analyzerInclude = new \progpilot\Analyzer;
+                                    $analyzerInclude->runInternal(
+                                        $contextInclude,
+                                        $defs->getOutMinusKill($myFuncCall->getBlockId())
                                     );
 
-                                    if (count($context_include->outputs->current_includes_file) > 0) {
-                                        foreach ($context_include->outputs->current_includes_file as $include_file) {
-                                            $context->current_includes_file[] = $include_file;
+                                    if (count($contextInclude->outputs->currentIncludesFile) > 0) {
+                                        foreach ($contextInclude->outputs->currentIncludesFile as $includeFile) {
+                                            $context->currentIncludesFile[] = $includeFile;
                                         }
                                     }
 
-                                    if (!is_null($context_include->outputs->getResults())) {
-                                        foreach ($context_include->outputs->getResults() as $result_include) {
-                                            $context->outputs->addResult($result_include);
+                                    if (!is_null($contextInclude->outputs->getResults())) {
+                                        foreach ($contextInclude->outputs->getResults() as $resultInclude) {
+                                            $context->outputs->addResult($resultInclude);
                                         }
                                     }
 
-                                    $context->setCurrentNbDefs($context_include->getCurrentNbDefs());
+                                    $context->setCurrentNbDefs($contextInclude->getCurrentNbDefs());
 
-                                    $main_include = $context_include->getFunctions()->getFunction("{main}");
+                                    $mainInclude = $contextInclude->getFunctions()->getFunction("{main}");
 
-                                    $defs_output_included_final = [];
-                                    if (!is_null($main_include)) {
+                                    $defsOutputIncludedFinal = [];
+                                    if (!is_null($mainInclude)) {
                                         FuncAnalysis::funccallAfter(
-                                            $context_include,
-                                            $defs->getOutMinusKill($myfunc_call->getBlockId()),
-                                            $main_include,
-                                            $main_include,
-                                            $arr_funccall,
+                                            $contextInclude,
+                                            $defs->getOutMinusKill($myFuncCall->getBlockId()),
+                                            $mainInclude,
+                                            $mainInclude,
+                                            $arrFuncCall,
                                             $instruction,
                                             $code[$index + 3]
                                         );
 
-                                        if (!is_null($main_include->getDefs())) {
-                                            $defs_main_return =
-                                                $main_include->getDefs()->getDefRefByName("{main}_return");
-                                            foreach ($defs_main_return as $def_main_return) {
-                                                $defs_output_included = $main_include->getDefs()->getOutMinusKill(
-                                                    $def_main_return->getBlockId()
+                                        if (!is_null($mainInclude->getDefs())) {
+                                            $defsMainReturn =
+                                                $mainInclude->getDefs()->getDefRefByName("{main}_return");
+                                            foreach ($defsMainReturn as $defMainReturn) {
+                                                $defsOutputIncluded = $mainInclude->getDefs()->getOutMinusKill(
+                                                    $defMainReturn->getBlockId()
                                                 );
-                                                if (!is_null($defs_output_included)) {
-                                                    foreach ($defs_output_included as $def_output_included) {
+                                                if (!is_null($defsOutputIncluded)) {
+                                                    foreach ($defsOutputIncluded as $defOutputIncluded) {
                                                         if (!in_array(
-                                                            $def_output_included,
-                                                            $defs_output_included_final,
+                                                            $defOutputIncluded,
+                                                            $defsOutputIncludedFinal,
                                                             true
                                                         )) {
-                                                            $defs_output_included_final[] = $def_output_included;
+                                                            $defsOutputIncludedFinal[] = $defOutputIncluded;
                                                         }
                                                     }
                                                 }
@@ -193,30 +193,30 @@ class IncludeAnalysis
                                     }
 
                                     // for all class found, we resolve previous seen objects of this class
-                                    $myclasses_include = $context_include->getClasses()->getListClasses();
-                                    foreach ($myclasses_include as $myclass_include) {
-                                        $func_callback = "Callbacks::modifyMyclassOfObject";
-                                        AbstractAnalysis::forAllobjects($context, $func_callback, $myclass_include);
+                                    $myClassesIncluded = $contextInclude->getClasses()->getListClasses();
+                                    foreach ($myClassesIncluded as $myClassIncluded) {
+                                        $funcCallBack = "Callbacks::modifyMyclassOfObject";
+                                        AbstractAnalysis::forAllobjects($context, $funcCallBack, $myClassIncluded);
                                     }
 
-                                    $new_defs = false;
-                                    if (count($defs_output_included_final) > 0) {
-                                        foreach ($defs_output_included_final as $def_output_included_final) {
+                                    $newDefs = false;
+                                    if (count($defsOutputIncludedFinal) > 0) {
+                                        foreach ($defsOutputIncludedFinal as $defOutputIncludedFinal) {
                                             $ret1 = $defs->addDef(
-                                                $def_output_included_final->getName(),
-                                                $def_output_included_final
+                                                $defOutputIncludedFinal->getName(),
+                                                $defOutputIncludedFinal
                                             );
                                             $ret2 = $defs->addGen(
-                                                $myfunc_call->getBlockId(),
-                                                $def_output_included_final
+                                                $myFuncCall->getBlockId(),
+                                                $defOutputIncludedFinal
                                             );
 
-                                            $new_defs = true;
+                                            $newDefs = true;
                                         }
                                     }
 
-                                    if ($new_defs) {
-                                        $defs->computeKill($context, $myfunc_call->getBlockId());
+                                    if ($newDefs) {
+                                        $defs->computeKill($context, $myFuncCall->getBlockId());
                                         $defs->reachingDefs($blocks);
                                     }
                                 }
@@ -225,14 +225,14 @@ class IncludeAnalysis
                     }
                 }
 
-                if (!$at_least_one_include_resolved && $context->outputs->getResolveIncludes()) {
-                    $myfile_temp = new MyFile(
-                        $myfunc_call->getSourceMyFile()->getName(),
-                        $myfunc_call->getLine(),
-                        $myfunc_call->getColumn()
+                if (!$atLeastOneIncludeResolved && $context->outputs->getResolveIncludes()) {
+                    $myFileTemp = new MyFile(
+                        $myFuncCall->getSourceMyFile()->getName(),
+                        $myFuncCall->getLine(),
+                        $myFuncCall->getColumn()
                     );
 
-                    $context->outputs->current_includes_file[] = $myfile_temp;
+                    $context->outputs->currentIncludesFile[] = $myFileTemp;
                 }
             }
         }

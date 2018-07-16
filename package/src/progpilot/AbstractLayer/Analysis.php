@@ -12,21 +12,21 @@ namespace progpilot\AbstractLayer;
 
 class Analysis
 {
-    public static function forAllobjects($context, $func, $myclass)
+    public static function forAllobjects($context, $func, $myClass)
     {
-        foreach ($context->getObjects()->getObjects() as $id => $object_class) {
-            $params = array($context, $id, $object_class, $myclass);
+        foreach ($context->getObjects()->getObjects() as $id => $objectClass) {
+            $params = array($context, $id, $objectClass, $myClass);
             call_user_func_array(__NAMESPACE__ ."\\$func", $params);
         }
     }
 
-    public static function forDefsInFunctions($context, $func, $myclass)
+    public static function forDefsInFunctions($context, $func, $myClass)
     {
-        foreach ($context->getFunctions()->getFunctions() as $functions_blocks) {
-            foreach ($functions_blocks as $function_block) {
-                foreach ($function_block->getDefs()->getDefs() as $defs_blocks) {
-                    foreach ($defs_blocks as $def_block) {
-                        $params = array($context, $def_block, $myclass);
+        foreach ($context->getFunctions()->getFunctions() as $functionsBlocks) {
+            foreach ($functionsBlocks as $functionBlock) {
+                foreach ($functionBlock->getDefs()->getDefs() as $defsBlocks) {
+                    foreach ($defsBlocks as $defBlock) {
+                        $params = array($context, $defBlock, $myClass);
                         call_user_func_array(__NAMESPACE__ ."\\$func", $params);
                     }
                 }

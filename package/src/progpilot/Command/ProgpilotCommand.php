@@ -56,9 +56,9 @@ class ProgpilotCommand extends Command
             $context->setConfiguration($input->getOption('configuration'));
         }
 
-        $cmd_files = $this->input->getArgument('files');
+        $cmdFiles = $this->input->getArgument('files');
         try {
-            $analyzer->run($context, $cmd_files);
+            $analyzer->run($context, $cmdFiles);
 
             if ($context->getPrettyPrint()) {
                 echo json_encode($context->outputs->getResults(), JSON_PRETTY_PRINT);

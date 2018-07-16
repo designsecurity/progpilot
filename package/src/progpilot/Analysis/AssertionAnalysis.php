@@ -14,30 +14,30 @@ use progpilot\Objects\MyDefinition;
 
 class AssertionAnalysis
 {
-    public static function temporarySimple($context, $data, $myblock, $resolve_temporary, $tempdefa)
+    public static function temporarySimple($context, $data, $myBlock, $resolveTemporary, $tempDef)
     {
-        $assertions = $myblock->getAssertions();
+        $assertions = $myBlock->getAssertions();
 
         $equality = false;
         $safe = false;
 
         // for each assertions, we could have definitions with same name (from different block for example)
         foreach ($assertions as $assertion) {
-            $mydef_assertion = $assertion->getDef();
-            $type_assertion = $assertion->getType();
+            $myDefAssertion = $assertion->getDef();
+            $typeAssertion = $assertion->getType();
 
             // there was not resolution so we simply check name (or better equality values)
-            if ($resolve_temporary === $tempdefa) {
-                if ($mydef_assertion->getName() === $tempdefa->getName()) {
-                    $tempdefa->setTainted(false);
+            if ($resolveTemporary === $tempDef) {
+                if ($myDefAssertion->getName() === $tempDef->getName()) {
+                    $tempDef->setTainted(false);
                 }
 
                 $equality = true;
             }
 
-            if ($mydef_assertion === $resolve_temporary) {
-                if ($mydef_assertion->getName() === $tempdefa->getName()) {
-                    $tempdefa->setTainted(false);
+            if ($myDefAssertion === $resolveTemporary) {
+                if ($myDefAssertion->getName() === $tempDef->getName()) {
+                    $tempDef->setTainted(false);
                 }
 
                 $equality = true;
@@ -46,11 +46,11 @@ class AssertionAnalysis
         }
 
 
-        if ($equality && $type_assertion !== "string") {
+        if ($equality && $typeAssertion !== "string") {
             $safe = true;
         }
 
-        if ($resolve_temporary->getCast() === MyDefinition::CAST_SAFE) {
+        if ($resolveTemporary->getCast() === MyDefinition::CAST_SAFE) {
             $safe = true;
         }
 

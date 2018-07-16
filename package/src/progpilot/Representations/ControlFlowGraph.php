@@ -16,19 +16,19 @@ class ControlFlowGraph
 {
     private $nodes;
     private $edges;
-    private $myblock_text;
+    private $myBlockText;
 
     public function __construct()
     {
         $this->nodes = [];
         $this->edges = [];
-        $this->myblock_text = [];
+        $this->myBlockText = [];
     }
 
     public function getTextOfMyBlock($id)
     {
-        if (isset($this->myblock_text["$id"])) {
-            return $this->myblock_text["$id"];
+        if (isset($this->myBlockText["$id"])) {
+            return $this->myBlockText["$id"];
         }
 
         return "";
@@ -36,10 +36,10 @@ class ControlFlowGraph
 
     public function addTextOfMyBlock($id, $text)
     {
-        if (isset($this->myblock_text["$id"])) {
-            $this->myblock_text["$id"] = $this->myblock_text["$id"]."$text";
+        if (isset($this->myBlockText["$id"])) {
+            $this->myBlockText["$id"] = $this->myBlockText["$id"]."$text";
         } else {
-            $this->myblock_text["$id"] = "$text";
+            $this->myBlockText["$id"] = "$text";
         }
     }
 
@@ -60,8 +60,8 @@ class ControlFlowGraph
 
     public function getIdOfNode($block)
     {
-        foreach ($this->nodes as $id => $block_tmp) {
-            if ($block === $block_tmp) {
+        foreach ($this->nodes as $id => $blockTmp) {
+            if ($block === $blockTmp) {
                 return $id;
             }
         }

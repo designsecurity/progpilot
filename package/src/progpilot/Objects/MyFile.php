@@ -12,20 +12,20 @@ namespace progpilot\Objects;
 
 class MyFile extends MyOp
 {
-    private $included_from_myfile;
+    private $includedFromMyFile;
 
-    public function __construct($var_name, $var_line, $var_column)
+    public function __construct($varName, $varLine, $varColumn)
     {
-        parent::__construct($var_name, $var_line, $var_column);
+        parent::__construct($varName, $varLine, $varColumn);
     }
 
-    public function setIncludedFromMyfile($myfile_from)
+    public function setIncludedFromMyfile($myFileFrom)
     {
-        $this->included_from_myfile = $myfile_from;
+        $this->includedFromMyFile = $myFileFrom;
     }
 
     public function getIncludedFromMyfile()
     {
-        return $this->included_from_myfile;
+        return $this->includedFromMyFile;
     }
 }

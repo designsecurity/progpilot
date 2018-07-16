@@ -12,20 +12,20 @@ namespace progpilot\Inputs;
 
 class MyVuln
 {
-    private $vuln_id;
+    private $vulnId;
 
-    public function __construct($vuln_id)
+    public function __construct($vulnId)
     {
-        $this->vuln_id = $vuln_id;
+        $this->vulnId = $vulnId;
     }
 
     public function getId()
     {
-        return $this->vuln_id;
+        return $this->vulnId;
     }
 
-    public function setId($vuln_id)
+    public function setId($vulnId)
     {
-        return $this->vuln_id = $vuln_id;
+        return $this->vulnId = $vulnId;
     }
 }

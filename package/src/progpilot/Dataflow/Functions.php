@@ -17,19 +17,19 @@ class Functions
 {
     private $functions;
 
-    public function getFunction($funcname, $class_name = null)
+    public function getFunction($funcname, $className = null)
     {
         if (isset($this->functions[$funcname])) {
             $list_funcs = $this->functions[$funcname];
-            foreach ($list_funcs as $myfunc) {
-                if (!$myfunc->isType(MyFunction::TYPE_FUNC_METHOD) && is_null($class_name)) {
-                    return $myfunc;
+            foreach ($list_funcs as $myFunc) {
+                if (!$myFunc->isType(MyFunction::TYPE_FUNC_METHOD) && is_null($className)) {
+                    return $myFunc;
                 }
 
-                if ($myfunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                    $myclass = $myfunc->getMyClass();
-                    if ($class_name === $myclass->getName()) {
-                        return $myfunc;
+                if ($myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
+                    $myClass = $myFunc->getMyClass();
+                    if ($className === $myClass->getName()) {
+                        return $myFunc;
                     }
                 }
             }

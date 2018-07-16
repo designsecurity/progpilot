@@ -12,43 +12,43 @@ namespace progpilot\Dataflow;
 
 class Classes
 {
-    private $list_classes;
+    private $listClasses;
 
     public function __construct()
     {
-        $this->list_classes = [];
+        $this->listClasses = [];
     }
 
     public function getListClasses()
     {
-        return $this->list_classes;
+        return $this->listClasses;
     }
 
-    public function addMyclass($new_myclass)
+    public function addMyclass($newMyClass)
     {
         /*
-            if (!in_array($myclass, $this->list_classes, true))
-                $this->list_classes[] = $myclass;
+            if (!in_array($myClass, $this->listClasses, true))
+                $this->listClasses[] = $myClass;
         */
 
         $continue = true;
-        foreach ($this->list_classes as $myclass) {
-            if ($myclass->getName() === $new_myclass->getName()) {
+        foreach ($this->listClasses as $myClass) {
+            if ($myClass->getName() === $newMyClass->getName()) {
                 $continue = false;
                 break;
             }
         }
 
         if ($continue) {
-            $this->list_classes[] = $new_myclass;
+            $this->listClasses[] = $newMyClass;
         }
     }
 
     public function getMyClass($name)
     {
-        foreach ($this->list_classes as $myclass) {
-            if ($myclass->getName() === $name) {
-                return $myclass;
+        foreach ($this->listClasses as $myClass) {
+            if ($myClass->getName() === $name) {
+                return $myClass;
             }
         }
 

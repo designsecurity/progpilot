@@ -111,19 +111,19 @@ class Analyzer
         }
     }
 
-    public function runInternalFunction($context, $myfunc)
+    public function runInternalFunction($context, $myFunc)
     {
-        if (!is_null($myfunc) && !$myfunc->isAnalyzed()) {
-            $myfunc->setIsAnalyzed(true);
+        if (!is_null($myFunc) && !$myFunc->isAnalyzed()) {
+            $myFunc->setIsAnalyzed(true);
 
-            $myfunc->getMyCode()->setStart(0);
-            $myfunc->getMyCode()->setEnd(count($myfunc->getMyCode()->getCodes()));
+            $myFunc->getMyCode()->setStart(0);
+            $myFunc->getMyCode()->setEnd(count($myFunc->getMyCode()->getCodes()));
 
             \progpilot\Analysis\ValueAnalysis::buildStorage();
 
             $visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
             $visitoranalyzer->setContext($context);
-            $visitoranalyzer->analyze($myfunc->getMyCode());
+            $visitoranalyzer->analyze($myFunc->getMyCode());
 
             unset($visitoranalyzer);
         } else {
@@ -131,7 +131,7 @@ class Analyzer
         }
     }
 
-    public function runInternal($context, $defs_included = null)
+    public function runInternal($context, $includedDefs = null)
     {
         // free memory
         if (function_exists('gc_mem_caches')) {
@@ -143,49 +143,49 @@ class Analyzer
             return;
         }
 
-        $start_time = microtime(true);
+        $startTime = microtime(true);
 
-        $past_results = &$context->outputs->getResults();
+        $pastResults = &$context->outputs->getResults();
         $context->resetInternalValues();
-        $context->outputs->setResults($past_results);
+        $context->outputs->setResults($pastResults);
 
         $script = $this->parse($context);
 
-        if ((microtime(true) - $start_time) > $context->getLimitTime()) {
+        if ((microtime(true) - $startTime) > $context->getLimitTime()) {
             Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
             return;
         }
 
         $this->transform($context, $script);
 
-        if ((microtime(true) - $start_time) > $context->getLimitTime()) {
+        if ((microtime(true) - $startTime) > $context->getLimitTime()) {
             Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
             return;
         }
 
         // analyze
         if (!is_null($context)) {
-            $context_functions = [];
+            $contextFunctions = [];
             if (!is_null($context->getFunctions()->getFunctions())) {
-                foreach ($context->getFunctions()->getFunctions() as $functions_name) {
-                    if (!is_null($functions_name)) {
-                        foreach ($functions_name as $myfunc) {
-                            $context_functions[] = $myfunc;
+                foreach ($context->getFunctions()->getFunctions() as $functionsName) {
+                    if (!is_null($functionsName)) {
+                        foreach ($functionsName as $myFunc) {
+                            $contextFunctions[] = $myFunc;
                         }
                     }
                 }
             }
     
-            foreach ($context->getClasses()->getListClasses() as $myclass) {
-                $context_functions = array_merge($context_functions, $myclass->getMethods());
+            foreach ($context->getClasses()->getListClasses() as $myClass) {
+                $contextFunctions = array_merge($contextFunctions, $myClass->getMethods());
             }
                 
             $visitordataflow = new \progpilot\Dataflow\VisitorDataflow();
 
-            foreach ($context_functions as $myfunc) {
-                if (!is_null($myfunc) && !$myfunc->isDataAnalyzed()) {
-                    $myfunc->setIsDataAnalyzed(true);
-                    $visitordataflow->analyze($context, $myfunc, $defs_included);
+            foreach ($contextFunctions as $myFunc) {
+                if (!is_null($myFunc) && !$myFunc->isDataAnalyzed()) {
+                    $myFunc->setIsDataAnalyzed(true);
+                    $visitordataflow->analyze($context, $myFunc, $includedDefs);
                 }
             }
 
@@ -194,7 +194,7 @@ class Analyzer
                 return;
             }
 
-            if ((microtime(true) - $start_time) > $context->getLimitTime()) {
+            if ((microtime(true) - $startTime) > $context->getLimitTime()) {
                 Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
                 return;
             }
@@ -202,8 +202,8 @@ class Analyzer
             if (!$context->getAnalyzeFunctions()) {
                 $this->runInternalFunction($context, $context->getFunctions()->getFunction("{main}"));
             } else {
-                foreach ($context_functions as $myfunc) {
-                    $this->runInternalFunction($context, $myfunc);
+                foreach ($contextFunctions as $myFunc) {
+                    $this->runInternalFunction($context, $myFunc);
                 }
             }
             
@@ -221,7 +221,7 @@ class Analyzer
         unset($script);
     }
 
-    public function run($context, $cmd_files = null)
+    public function run($context, $cmdFiles = null)
     {
         $files = [];
 
@@ -237,31 +237,31 @@ class Analyzer
         $context->inputs->readFalsePositives();
         $context->inputs->readCustomFile();
 
-        $included_files = $context->inputs->getIncludedFiles();
-        $included_folders = $context->inputs->getIncludedFolders();
+        $includedFiles = $context->inputs->getIncludedFiles();
+        $includedFolders = $context->inputs->getIncludedFolders();
 
-        if ($cmd_files !== null) {
-            foreach ($cmd_files as $cmd_file) {
-                if (is_dir($cmd_file)) {
-                    $this->getFilesOfDir($context, $cmd_file, $files);
+        if ($cmdFiles !== null) {
+            foreach ($cmdFiles as $cmdFile) {
+                if (is_dir($cmdFile)) {
+                    $this->getFilesOfDir($context, $cmdFile, $files);
                 } else {
-                    if (!in_array($cmd_file, $files, true)
-                                && !$context->inputs->isExcludedFile($cmd_file)) {
-                        $files[] = $cmd_file;
+                    if (!in_array($cmdFile, $files, true)
+                                && !$context->inputs->isExcludedFile($cmdFile)) {
+                        $files[] = $cmdFile;
                     }
                 }
             }
         }
 
-        foreach ($included_files as $included_file) {
-            if (!in_array($included_file, $files, true)
-                        && !$context->inputs->isExcludedFile($included_file)) {
-                $files[] = $included_file;
+        foreach ($includedFiles as $includedFile) {
+            if (!in_array($includedFile, $files, true)
+                        && !$context->inputs->isExcludedFile($includedFile)) {
+                $files[] = $includedFile;
             }
         }
 
-        foreach ($included_folders as $included_folder) {
-            $this->getFilesOfDir($context, $included_folder, $files);
+        foreach ($includedFolders as $includedFolder) {
+            $this->getFilesOfDir($context, $includedFolder, $files);
         }
 
         if (!is_null($context->inputs->getFolder())) {
@@ -283,9 +283,9 @@ class Analyzer
                 echo "progpilot analyze : ".Utils::encodeCharacters($file)."\n";
             }
 
-            $myfile = new MyFile($file, 0, 0);
+            $myFile = new MyFile($file, 0, 0);
             $context->inputs->setFile($file);
-            $context->setCurrentMyfile($myfile);
+            $context->setCurrentMyfile($myFile);
             $context->resetDataflow();
             $this->runInternal($context);
         }

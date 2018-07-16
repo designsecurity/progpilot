@@ -17,23 +17,23 @@ class MyCustomRule
 
     private $action;
     private $type;
-    private $function_definition;
-    private $name_rule;
+    private $functionDefinition;
+    private $nameRule;
     private $attack;
     private $cwe;
-    private $description_rule;
-    private $sequence_rule;
-    private $current_order_number;
+    private $descriptionRule;
+    private $sequenceRule;
+    private $currentOrderNumber;
 
-    public function __construct($name_rule, $description_rule)
+    public function __construct($nameRule, $descriptionRule)
     {
         $this->action = null;
         $this->type = MyCustomRule::TYPE_FUNCTION;
-        $this->name_rule = $name_rule;
-        $this->description_rule = $description_rule;
-        $this->sequence_rule = [];
-        $this->current_order_number = 0;
-        $this->function_definition = null;
+        $this->nameRule = $nameRule;
+        $this->descriptionRule = $descriptionRule;
+        $this->sequenceRule = [];
+        $this->currentOrderNumber = 0;
+        $this->functionDefinition = null;
         $this->attack = null;
         $this->cwe = null;
     }
@@ -70,74 +70,74 @@ class MyCustomRule
 
     public function getFunctionDefinition()
     {
-        return $this->function_definition;
+        return $this->functionDefinition;
     }
 
-    public function setFunctionDefinition($function_definition)
+    public function setFunctionDefinition($functionDefinition)
     {
-        $this->function_definition = $function_definition;
+        $this->functionDefinition = $functionDefinition;
     }
 
     public function getName()
     {
-        return $this->name_rule;
+        return $this->nameRule;
     }
 
-    public function setName($name_rule)
+    public function setName($nameRule)
     {
-        $this->name_rule = $name_rule;
+        $this->nameRule = $nameRule;
     }
 
     public function getDescription()
     {
-        return $this->description_rule;
+        return $this->descriptionRule;
     }
 
-    public function setDescription($description_rule)
+    public function setDescription($descriptionRule)
     {
-        $this->description_rule = $description_rule;
+        $this->descriptionRule = $descriptionRule;
     }
 
     public function getCurrentOrderNumber()
     {
-        return $this->current_order_number;
+        return $this->currentOrderNumber;
     }
 
-    public function setCurrentOrderNumber($current_order_number)
+    public function setCurrentOrderNumber($currentOrderNumber)
     {
-        $this->current_order_number = $current_order_number;
+        $this->currentOrderNumber = $currentOrderNumber;
     }
 
     public function getSequence()
     {
-        return $this->sequence_rule;
+        return $this->sequenceRule;
     }
 
-    public function addToSequenceWithAction($function_name, $language, $action)
+    public function addToSequenceWithAction($functionName, $language, $action)
     {
-        $this->current_order_number ++;
-        $mycustomfunction = new MyCustomFunction($function_name, $language, $this->current_order_number);
-        $mycustomfunction->setAction($action);
-        $this->sequence_rule[] = $mycustomfunction;
+        $this->currentOrderNumber ++;
+        $myCustomFunction = new MyCustomFunction($functionName, $language, $this->currentOrderNumber);
+        $myCustomFunction->setAction($action);
+        $this->sequenceRule[] = $myCustomFunction;
 
-        return $mycustomfunction;
+        return $myCustomFunction;
     }
 
-    public function addToSequence($function_name, $language)
+    public function addToSequence($functionName, $language)
     {
-        $this->current_order_number ++;
-        $mycustomfunction = new MyCustomFunction($function_name, $language, $this->current_order_number);
-        $this->sequence_rule[] = $mycustomfunction;
+        $this->currentOrderNumber ++;
+        $myCustomFunction = new MyCustomFunction($functionName, $language, $this->currentOrderNumber);
+        $this->sequenceRule[] = $myCustomFunction;
 
-        return $mycustomfunction;
+        return $myCustomFunction;
     }
 
-    public function addFunctionDefinition($function_name, $language)
+    public function addFunctionDefinition($functionName, $language)
     {
-        $mycustomfunction = new MyCustomFunction($function_name, $language);
-        $this->function_definition = $mycustomfunction;
+        $myCustomFunction = new MyCustomFunction($functionName, $language);
+        $this->functionDefinition = $myCustomFunction;
 
-        return $mycustomfunction;
+        return $myCustomFunction;
     }
 
     public function getAction()

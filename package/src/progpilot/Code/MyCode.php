@@ -68,167 +68,167 @@ class MyCode
         return $this->code[$last_index - 1];
     }
 
-    public static function readCode($context, $file, $defs, $myjavascript_file)
+    public static function readCode($context, $file, $defs, $myJavascriptFile)
     {
-        $first_block = true;
+        $firstBlock = true;
         $handle = fopen($file, "r");
 
-        $myfunction = new MyFunction("{main}");
-        $myfunction->setStart_address_func(0);
-        $context->getFunctions()->addFunction($myfunction->getName(), $myfunction);
+        $myFunction = new MyFunction("{main}");
+        $myFunction->setStart_address_func(0);
+        $context->getFunctions()->addFunction($myFunction->getName(), $myFunction);
 
-        $inst_func = new MyInstruction(Opcodes::ENTER_FUNCTION);
-        $inst_func->addProperty(MyInstruction::MYFUNC, $myfunction);
-        $context->getMyCode()->addCode($inst_func);
+        $instFunc = new MyInstruction(Opcodes::ENTER_FUNCTION);
+        $instFunc->addProperty(MyInstruction::MYFUNC, $myFunction);
+        $context->getMyCode()->addCode($instFunc);
 
         if ($handle) {
-            $array_myblocks = [];
-            $array_myblocks_childs = [];
+            $arrayMyBlocks = [];
+            $arrayMyBlocksChilds = [];
 
-            $array_exprs = [];
-            $array_definitions = [];
+            $arrayExprs = [];
+            $arrayDefinitions = [];
 
             while (!feof($handle)) {
                 $buffer = rtrim(fgets($handle));
 
                 switch ($buffer) {
                     case 'EnterBlock':
-                        $myblock_string = fgets($handle);
-                        $myblock_id = (int) fgets($handle);
-                        $myblock_start_address_block = (int) fgets($handle);
-                        $myblock_end_address_block = (int) fgets($handle);
+                        $myBlockString = fgets($handle);
+                        $myBlockId = (int) fgets($handle);
+                        $myBlockStartAddressBlock = (int) fgets($handle);
+                        $myBlockEndAddressBlock = (int) fgets($handle);
                         $edges = fgets($handle);
-                        $nb_edges = (int) fgets($handle);
+                        $nbEdges = (int) fgets($handle);
 
-                        $myblock = new MyBlock;
-                        $myblock->setId($myblock_id);
-                        $myblock->setStartAddressBlock(count($context->getMyCode()->getCodes()));
+                        $myBlock = new MyBlock;
+                        $myBlock->setId($myBlockId);
+                        $myBlock->setStartAddressBlock(count($context->getMyCode()->getCodes()));
 
-                        $array_myblocks[$myblock_id] = $myblock;
-                        $array_myblocks_childs[$myblock_id] = [];
+                        $arrayMyBlocks[$myBlockId] = $myBlock;
+                        $arrayMyBlocksChilds[$myBlockId] = [];
 
-                        for ($i = 0; $i < $nb_edges; $i ++) {
-                            $id_child = (int) fgets($handle);
-                            $array_myblocks_childs[$myblock_id][] = $id_child;
+                        for ($i = 0; $i < $nbEdges; $i ++) {
+                            $idChild = (int) fgets($handle);
+                            $arrayMyBlocksChilds[$myBlockId][] = $idChild;
                         }
 
-                        $inst_block = new MyInstruction(Opcodes::ENTER_BLOCK);
-                        $inst_block->addProperty(MyInstruction::MYBLOCK, $myblock);
-                        $context->getMyCode()->addCode($inst_block);
+                        $instBlock = new MyInstruction(Opcodes::ENTER_BLOCK);
+                        $instBlock->addProperty(MyInstruction::MYBLOCK, $myBlock);
+                        $context->getMyCode()->addCode($instBlock);
 
-                        if ($first_block) {
-                            $first_block = false;
+                        if ($firstBlock) {
+                            $firstBlock = false;
 
-                            foreach ($defs as $mydef) {
-                                $inst_def = new MyInstruction(Opcodes::DEFINITION);
-                                $inst_def->addProperty(MyInstruction::DEF, $mydef);
-                                $context->getMyCode()->addCode($inst_def);
+                            foreach ($defs as $myDef) {
+                                $instDef = new MyInstruction(Opcodes::DEFINITION);
+                                $instDef->addProperty(MyInstruction::DEF, $myDef);
+                                $context->getMyCode()->addCode($instDef);
                             }
                         }
 
                         break;
 
                     case 'LeaveBlock':
-                        $myblock_string = fgets($handle);
-                        $myblock_id = (int) fgets($handle);
+                        $myBlockString = fgets($handle);
+                        $myBlockId = (int) fgets($handle);
 
-                        if (isset($array_myblocks[$myblock_id])) {
-                            $myblock = $array_myblocks[$myblock_id];
-                            $myblock->setEndAddressBlock(count($context->getMyCode()->getCodes()));
+                        if (isset($arrayMyBlocks[$myBlockId])) {
+                            $myBlock = $arrayMyBlocks[$myBlockId];
+                            $myBlock->setEndAddressBlock(count($context->getMyCode()->getCodes()));
 
-                            $inst_block = new MyInstruction(Opcodes::LEAVE_BLOCK);
-                            $inst_block->addProperty(MyInstruction::MYBLOCK, $myblock);
-                            $context->getMyCode()->addCode($inst_block);
+                            $instBlock = new MyInstruction(Opcodes::LEAVE_BLOCK);
+                            $instBlock->addProperty(MyInstruction::MYBLOCK, $myBlock);
+                            $context->getMyCode()->addCode($instBlock);
                         }
 
                         break;
 
                     case 'Definition':
                         $code = $context->getMyCode()->getCodes();
-                        $last_opcode = $code[count($code) - 1];
+                        $lastOpCode = $code[count($code) - 1];
 
-                        $def_string = fgets($handle);
-                        $def_name = rtrim(fgets($handle));
-                        $def_line = (int) fgets($handle);
-                        $def_column = (int) fgets($handle);
+                        $defString = fgets($handle);
+                        $defName = rtrim(fgets($handle));
+                        $defLine = (int) fgets($handle);
+                        $defColumn = (int) fgets($handle);
 
-                        $mydef = new MyDefinition($def_line, $def_column, $def_name);
-                        $mydef->setSourceMyFile($myjavascript_file);
-                        $array_definitions[] = $mydef;
+                        $myDef = new MyDefinition($defLine, $defColumn, $defName);
+                        $myDef->setSourceMyFile($myJavascriptFile);
+                        $arrayDefinitions[] = $myDef;
 
-                        $inst_def = new MyInstruction(Opcodes::DEFINITION);
-                        $inst_def->addProperty(MyInstruction::DEF, $mydef);
-                        $context->getMyCode()->addCode($inst_def);
+                        $instDef = new MyInstruction(Opcodes::DEFINITION);
+                        $instDef->addProperty(MyInstruction::DEF, $myDef);
+                        $context->getMyCode()->addCode($instDef);
 
                         break;
 
                     case 'funccall':
-                        $func_string = fgets($handle);
-                        $func_line = (int) fgets($handle);
-                        $func_column = (int) fgets($handle);
-                        $func_name = rtrim(fgets($handle));
-                        $func_isInstance = rtrim(fgets($handle));
-                        $func_name_instance = rtrim(fgets($handle));
-                        $func_nb_params = (int) fgets($handle);
+                        $funcString = fgets($handle);
+                        $funcLine = (int) fgets($handle);
+                        $funcColumn = (int) fgets($handle);
+                        $funcName = rtrim(fgets($handle));
+                        $funcIsInstance = rtrim(fgets($handle));
+                        $funcNameInstance = rtrim(fgets($handle));
+                        $funcNbParams = (int) fgets($handle);
 
-                        $inst_funcall_main = new MyInstruction(Opcodes::FUNC_CALL);
-                        $inst_funcall_main->addProperty(MyInstruction::FUNCNAME, $func_name);
+                        $instFuncCallMain = new MyInstruction(Opcodes::FUNC_CALL);
+                        $instFuncCallMain->addProperty(MyInstruction::FUNCNAME, $funcName);
 
-                        $myfunction_call = new MyFunction($func_name);
-                        $myfunction_call->setLine($func_line);
-                        $myfunction_call->setColumn($func_column);
-                        $myfunction_call->setNbParams($func_nb_params);
-                        $myfunction_call->setSourceMyFile($myjavascript_file);
+                        $myFunctionCall = new MyFunction($funcName);
+                        $myFunctionCall->setLine($funcLine);
+                        $myFunctionCall->setColumn($funcColumn);
+                        $myFunctionCall->setNbParams($funcNbParams);
+                        $myFunctionCall->setSourceMyFile($myJavascriptFile);
 
-                        if ($func_isInstance === "true") {
-                            $myfunction_call->addType(MyOp::TYPE_INSTANCE);
-                            $myfunction_call->setNameInstance($func_name_instance);
+                        if ($funcIsInstance === "true") {
+                            $myFunctionCall->addType(MyOp::TYPE_INSTANCE);
+                            $myFunctionCall->setNameInstance($funcNameInstance);
 
-                            $mybackdef = new MyDefinition($func_line, $func_column, $func_name_instance);
+                            $mybackdef = new MyDefinition($funcLine, $funcColumn, $funcNameInstance);
                             $mybackdef->addType(MyDefinition::TYPE_INSTANCE);
-                            $mybackdef->setSourceMyFile($myjavascript_file);
-                            $myfunction_call->setBackDef($mybackdef);
+                            $mybackdef->setSourceMyFile($myJavascriptFile);
+                            $myFunctionCall->setBackDef($mybackdef);
                         }
 
-                        for ($j = 0; $j < $func_nb_params; $j ++) {
-                            $func_def_id_param = (int) fgets($handle);
-                            $func_def_param = $array_definitions[$func_def_id_param];
-                            $inst_funcall_main->addProperty("argdef$j", $func_def_param);
+                        for ($j = 0; $j < $funcNbParams; $j ++) {
+                            $funcDefIdParam = (int) fgets($handle);
+                            $funcDefParam = $arrayDefinitions[$funcDefIdParam];
+                            $instFuncCallMain->addProperty("argdef$j", $funcDefParam);
                         }
 
-                        $func_expr_string = fgets($handle);
-                        $func_expr_id = (int) fgets($handle);
+                        $funcExprString = fgets($handle);
+                        $funcExprId = (int) fgets($handle);
 
                         // !!!!????
-                        //$myexpr = $array_exprs[$func_expr_id];
-                        $myexpr = null;
+                        //$myExpr = $arrayExprs[$funcExprId];
+                        $myExpr = null;
 
-                        $inst_funcall_main->addProperty(MyInstruction::MYFUNC_CALL, $myfunction_call);
-                        $inst_funcall_main->addProperty(MyInstruction::EXPR, $myexpr);
-                        $inst_funcall_main->addProperty(MyInstruction::ARR, null);
-                        $context->getMyCode()->addCode($inst_funcall_main);
+                        $instFuncCallMain->addProperty(MyInstruction::MYFUNC_CALL, $myFunctionCall);
+                        $instFuncCallMain->addProperty(MyInstruction::EXPR, $myExpr);
+                        $instFuncCallMain->addProperty(MyInstruction::ARR, null);
+                        $context->getMyCode()->addCode($instFuncCallMain);
 
                         break;
 
                     case 'temporary':
-                        $def_string = fgets($handle);
-                        $def_name = rtrim(fgets($handle));
-                        $def_line = (int) fgets($handle);
-                        $def_column = (int) fgets($handle);
+                        $defString = fgets($handle);
+                        $defName = rtrim(fgets($handle));
+                        $defLine = (int) fgets($handle);
+                        $defColumn = (int) fgets($handle);
 
-                        $mytemp = new MyDefinition($def_line, $def_column, $def_name);
-                        $mytemp->setSourceMyFile($myjavascript_file);
-                        $array_definitions[] = $mytemp;
+                        $myTemp = new MyDefinition($defLine, $defColumn, $defName);
+                        $myTemp->setSourceMyFile($myJavascriptFile);
+                        $arrayDefinitions[] = $myTemp;
 
-                        $nb_exprs = (int) fgets($handle);
-                        for ($i = 0; $i < $nb_exprs; $i ++) {
-                            $id_expr = (int) fgets($handle);
-                            $mytemp->add_expr($id_expr);
+                        $nbExprs = (int) fgets($handle);
+                        for ($i = 0; $i < $nbExprs; $i ++) {
+                            $idExpr = (int) fgets($handle);
+                            $myTemp->add_expr($idExpr);
                         }
 
-                        $inst_temporarySimple = new MyInstruction(Opcodes::TEMPORARY);
-                        $inst_temporarySimple->addProperty(MyInstruction::TEMPORARY, $mytemp);
-                        $context->getMyCode()->addCode($inst_temporarySimple);
+                        $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
+                        $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
+                        $context->getMyCode()->addCode($instTemporarySimple);
 
                         break;
 
@@ -248,81 +248,81 @@ class MyCode
                         break;
 
                     case 'end_expression':
-                        $expr_string = fgets($handle);
-                        $expr_line = (int) fgets($handle);
-                        $expr_column = (int) fgets($handle);
+                        $exprString = fgets($handle);
+                        $exprLine = (int) fgets($handle);
+                        $exprColumn = (int) fgets($handle);
 
-                        $myexpr = new MyExpr($expr_line, $expr_column);
+                        $myExpr = new MyExpr($exprLine, $exprColumn);
 
-                        $expr_isAssign = rtrim(fgets($handle));
+                        $exprIsAssign = rtrim(fgets($handle));
 
-                        if ($expr_isAssign === "true") {
-                            $expr_def_assign_id = (int) fgets($handle);
-                            $myexpr->setAssign(true);
-                            $myexpr->setAssignDef($expr_def_assign_id);
+                        if ($exprIsAssign === "true") {
+                            $exprDefAssignId = (int) fgets($handle);
+                            $myExpr->setAssign(true);
+                            $myExpr->setAssignDef($exprDefAssignId);
                         }
 
-                        $nb_exprs = (int) fgets($handle);
+                        $nbExprs = (int) fgets($handle);
 
-                        $array_exprs[] = $myexpr;
+                        $arrayExprs[] = $myExpr;
 
-                        for ($i = 0; $i < $nb_exprs; $i ++) {
-                            $def_id = (int) fgets($handle);
-                            $myexpr->addDef($def_id);
+                        for ($i = 0; $i < $nbExprs; $i ++) {
+                            $defId = (int) fgets($handle);
+                            $myExpr->addDef($defId);
                         }
 
-                        $inst_end_expr = new MyInstruction(Opcodes::END_EXPRESSION);
-                        $inst_end_expr->addProperty(MyInstruction::EXPR, $myexpr);
-                        $context->getMyCode()->addCode($inst_end_expr);
+                        $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);
+                        $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
+                        $context->getMyCode()->addCode($instEndExpr);
 
                         break;
                 }
             }
 
-            foreach ($array_myblocks as $parent) {
+            foreach ($arrayMyBlocks as $parent) {
                 $parent->addParent($parent);
-                $childs = $array_myblocks_childs[$parent->getId()];
+                $childs = $arrayMyBlocksChilds[$parent->getId()];
 
                 foreach ($childs as $child) {
-                    $myblock_child = $array_myblocks[$child];
-                    $myblock_child->addParent($parent);
+                    $myBlockChild = $arrayMyBlocks[$child];
+                    $myBlockChild->addParent($parent);
                 }
             }
 
-            foreach ($array_exprs as $myexpr) {
-                $defs = $myexpr->getDefs();
-                $myexpr->setDefs(array());
+            foreach ($arrayExprs as $myExpr) {
+                $defs = $myExpr->getDefs();
+                $myExpr->setDefs(array());
 
-                if ($myexpr->isAssign()) {
-                    $def_id = $myexpr->getAssignDef();
-                    $mydef = $array_definitions[$def_id];
-                    $myexpr->setAssignDef($mydef);
+                if ($myExpr->isAssign()) {
+                    $defId = $myExpr->getAssignDef();
+                    $myDef = $arrayDefinitions[$defId];
+                    $myExpr->setAssignDef($myDef);
                 }
 
-                foreach ($defs as $def_id) {
-                    $mydef = $array_definitions[$def_id];
-                    $myexpr->addDef($mydef);
+                foreach ($defs as $defId) {
+                    $myDef = $arrayDefinitions[$defId];
+                    $myExpr->addDef($myDef);
                 }
             }
 
-            foreach ($array_definitions as $mydef) {
-                $exprs = $mydef->getExprs();
-                $mydef->setExprs(array());
+            foreach ($arrayDefinitions as $myDef) {
+                $exprs = $myDef->getExprs();
+                $myDef->setExprs(array());
 
-                foreach ($exprs as $expr_id) {
-                    $myexpr = $array_exprs[$expr_id];
-                    $mydef->add_expr($myexpr);
+                foreach ($exprs as $exprId) {
+                    $myExpr = $arrayExprs[$exprId];
+                    $myDef->add_expr($myExpr);
                 }
             }
 
             fclose($handle);
 
 
-            $myfunction->setEnd_address_func(count($context->getMyCode()->getCodes()));
+            $myFunction->setEnd_address_func(count($context->getMyCode()->getCodes()));
 
-            $inst_func = new MyInstruction(Opcodes::LEAVE_FUNCTION);
-            $inst_func->addProperty(MyInstruction::MYFUNC, $myfunction);
-            $context->getMyCode()->addCode($inst_func);
+            $instFunc = new MyInstruction(Opcodes::LEAVE_FUNCTION);
+            $instFunc->addProperty(MyInstruction::MYFUNC, $myFunction);
+            $context->getMyCode()->addCode($instFunc);
 
             $context->getMyCode()->setStart(0);
             $context->getMyCode()->setEnd(count($context->getMyCode()->getCodes()));
@@ -341,30 +341,30 @@ class MyCode
                     case Opcodes::ENTER_FUNCTION:
                         echo Opcodes::ENTER_FUNCTION."\n";
 
-                        $myfunc = $instruction->getProperty(MyInstruction::MYFUNC);
-                        echo "name = ".htmlentities($myfunc->getName(), ENT_QUOTES, 'UTF-8')."\n";
+                        $myFunc = $instruction->getProperty(MyInstruction::MYFUNC);
+                        echo "name = ".htmlentities($myFunc->getName(), ENT_QUOTES, 'UTF-8')."\n";
                         break;
 
                     case Opcodes::CLASSE:
                         echo Opcodes::CLASSE."\n";
 
-                        $myclass = $instruction->getProperty(MyInstruction::MYCLASS);
-                        echo "name = ".htmlentities($myclass->getName(), ENT_QUOTES, 'UTF-8')."\n";
+                        $myClass = $instruction->getProperty(MyInstruction::MYCLASS);
+                        echo "name = ".htmlentities($myClass->getName(), ENT_QUOTES, 'UTF-8')."\n";
                         break;
 
                     case Opcodes::ENTER_BLOCK:
                         echo Opcodes::ENTER_BLOCK."\n";
 
-                        $myblock = $instruction->getProperty(MyInstruction::MYBLOCK);
-                        echo "id = ".$myblock->getId()."\n";
+                        $myBlock = $instruction->getProperty(MyInstruction::MYBLOCK);
+                        echo "id = ".$myBlock->getId()."\n";
 
                         break;
 
                     case Opcodes::LEAVE_BLOCK:
                         echo Opcodes::LEAVE_BLOCK."\n";
 
-                        $myblock = $instruction->getProperty(MyInstruction::MYBLOCK);
-                        echo "id = ".$myblock->getId()."\n";
+                        $myBlock = $instruction->getProperty(MyInstruction::MYBLOCK);
+                        echo "id = ".$myBlock->getId()."\n";
 
                         break;
 
@@ -391,8 +391,8 @@ class MyCode
 
                     case Opcodes::END_EXPRESSION:
                         echo Opcodes::END_EXPRESSION."\n";
-                        $myexpr = $instruction->getProperty(MyInstruction::EXPR);
-                        echo "expression et tainted = ".$myexpr->isTainted()."\n";
+                        $myExpr = $instruction->getProperty(MyInstruction::EXPR);
+                        echo "expression et tainted = ".$myExpr->isTainted()."\n";
                         break;
 
                     case Opcodes::CONCAT_LIST:

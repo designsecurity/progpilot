@@ -16,15 +16,15 @@ class MyCustomFunction extends MySpecify
     private $hasParameters;
 
     private $action;
-    private $order_number_expected;
-    private $order_number_real;
+    private $orderNumberExpected;
+    private $orderNumberReal;
 
-    public function __construct($name, $language, $order_number_expected = 0)
+    public function __construct($name, $language, $orderNumberExpected = 0)
     {
         parent::__construct($name, $language);
         $this->action = null;
-        $this->order_number_expected = $order_number_expected;
-        $this->order_number_real = -1;
+        $this->orderNumberExpected = $orderNumberExpected;
+        $this->orderNumberReal = -1;
 
         $this->hasParameters = false;
         $this->parameters = [];
@@ -64,24 +64,24 @@ class MyCustomFunction extends MySpecify
         return null;
     }
 
-    public function setOrderNumberReal($order_number_real)
+    public function setOrderNumberReal($orderNumberReal)
     {
-        $this->order_number_real = $order_number_real;
+        $this->orderNumberReal = $orderNumberReal;
     }
 
     public function getOrderNumberReal()
     {
-        return $this->order_number_real;
+        return $this->orderNumberReal;
     }
 
-    public function setOrderNumberExpected($order_number_expected)
+    public function setOrderNumberExpected($orderNumberExpected)
     {
-        $this->order_number_expected = $order_number_expected;
+        $this->orderNumberExpected = $orderNumberExpected;
     }
 
     public function getOrderNumberExpected()
     {
-        return $this->order_number_expected;
+        return $this->orderNumberExpected;
     }
 
     public function getAction()

@@ -16,52 +16,52 @@ use progpilot\Utils;
 
 class Context
 {
-    private $array_includes;
-    private $array_requires;
+    private $arrayIncludes;
+    private $arrayRequires;
 
-    private $current_mycode;
-    private $current_op;
-    private $current_block;
-    private $current_line;
-    private $current_column;
-    private $current_func;
-    private $current_myfile;
-    private $current_nb_defs;
-    private $myfiles;
+    private $currentMyCode;
+    private $currentOp;
+    private $currentBlock;
+    private $currentLine;
+    private $currentColumn;
+    private $currentFunc;
+    private $currentMyFile;
+    private $currentNbDefs;
+    private $myFiles;
     private $classes;
     private $objects;
     private $functions;
     private $path;
-    private $analyze_hardrules;
-    private $analyze_functions;
-    private $analyze_includes;
-    private $analyze_js;
-    private $print_file_under_analysis;
-    private $configuration_file;
+    private $analyzeHardRules;
+    private $analyzeFunctions;
+    private $analyzeIncludes;
+    private $analyzeJs;
+    private $printFileUnderAnalysis;
+    private $configurationFile;
     private $printWarning;
-    private $pretty_print;
-    private $limit_time;
-    private $limit_defs;
-    private $limit_size;
-    private $limit_values;
+    private $prettyPrint;
+    private $limitTime;
+    private $limitDefs;
+    private $limitSize;
+    private $limitValues;
 
     public $inputs;
     public $outputs;
 
     public function __construct()
     {
-        $this->configuration_file = null;
-        $this->analyze_hardrules = false;
-        $this->analyze_functions = true;
-        $this->analyze_includes = true;
-        $this->analyze_js = true;
-        $this->print_file_under_analysis = false;
+        $this->configurationFile = null;
+        $this->analyzeHardRules = false;
+        $this->analyzeFunctions = true;
+        $this->analyzeIncludes = true;
+        $this->analyzeJs = true;
+        $this->printFileUnderAnalysis = false;
         $this->printWarning = false;
-        $this->pretty_print = true;
-        $this->limit_time = 10;
-        $this->limit_defs = 3000;
-        $this->limit_size = 500000;
-        $this->current_nb_defs = 0;
+        $this->prettyPrint = true;
+        $this->limitTime = 10;
+        $this->limitDefs = 3000;
+        $this->limitSize = 500000;
+        $this->currentNbDefs = 0;
 
         $this->inputs = new \progpilot\Inputs\MyInputs;
         $this->outputs = new \progpilot\Outputs\MyOutputs;
@@ -72,30 +72,30 @@ class Context
 
         $this->resetInternalValues();
 
-        $this->current_myfile = null;
+        $this->currentMyFile = null;
         $this->myfiles = [];
-        $this->array_includes = [];
-        $this->array_requires = [];
+        $this->arrayIncludes = [];
+        $this->arrayRequires = [];
     }
 
     public function getCurrentNbDefs()
     {
-        return $this->current_nb_defs;
+        return $this->currentNbDefs;
     }
 
-    public function setCurrentNbDefs($current_nb_defs)
+    public function setCurrentNbDefs($currentNbDefs)
     {
-        $this->current_nb_defs = $current_nb_defs;
+        $this->currentNbDefs = $currentNbDefs;
     }
 
     public function resetInternalLowvalues()
     {
-        $this->current_op = null;
-        $this->current_block = null;
-        $this->current_line = -1;
-        $this->current_column = -1;
-        $this->current_func = null;
-        $this->current_mycode = null;
+        $this->currentOp = null;
+        $this->currentBlock = null;
+        $this->currentLine = -1;
+        $this->currentColumn = -1;
+        $this->currentFunc = null;
+        $this->currentMyCode = null;
         $this->path = null;
     }
 
@@ -107,7 +107,7 @@ class Context
         unset($this->classes);
         unset($this->functions);
         */
-        unset($this->current_mycode);
+        unset($this->currentMyCode);
 
         $this->inputs->setCode(null);
         /*
@@ -131,34 +131,34 @@ class Context
         $this->functions = new \progpilot\Dataflow\Functions;
     }
 
-    public function setArrayIncludes($array_includes)
+    public function setArrayIncludes($arrayIncludes)
     {
-        $this->array_includes = $array_includes;
+        $this->arrayIncludes = $arrayIncludes;
     }
 
-    public function setArrayRequires($array_requires)
+    public function setArrayRequires($arrayRequires)
     {
-        $this->array_requires = $array_requires;
+        $this->arrayRequires = $arrayRequires;
     }
 
     public function getArrayIncludes()
     {
-        return $this->array_includes;
+        return $this->arrayIncludes;
     }
 
     public function getArrayRequires()
     {
-        return $this->array_requires;
+        return $this->arrayRequires;
     }
 
     public function setPrettyPrint($bool)
     {
-        $this->pretty_print = $bool;
+        $this->prettyPrint = $bool;
     }
 
     public function getPrettyPrint()
     {
-        return $this->pretty_print;
+        return $this->prettyPrint;
     }
 
     public function setPrintWarning($bool)
@@ -171,104 +171,104 @@ class Context
         return $this->printWarning;
     }
 
-    public function setLimitDefs($limit_defs)
+    public function setLimitDefs($limitDefs)
     {
-        $this->limit_defs = $limit_defs;
+        $this->limitDefs = $limitDefs;
     }
 
     public function getLimitDefs()
     {
-        return $this->limit_defs;
+        return $this->limitDefs;
     }
 
-    public function setLimitTime($limit_time)
+    public function setLimitTime($limitTime)
     {
-        $this->limit_time = $limit_time;
+        $this->limitTime = $limitTime;
     }
 
     public function getLimitTime()
     {
-        return $this->limit_time;
+        return $this->limitTime;
     }
 
-    public function setLimitSize($limit_size)
+    public function setLimitSize($limitSize)
     {
-        $this->limit_size = $limit_size;
+        $this->limitSize = $limitSize;
     }
 
     public function getLimitSize()
     {
-        return $this->limit_size;
+        return $this->limitSize;
     }
 
     public function getAnalyzeJs()
     {
-        return $this->analyze_js;
+        return $this->analyzeJs;
     }
 
     public function getAnalyzeHardrules()
     {
-        return $this->analyze_hardrules;
+        return $this->analyzeHardRules;
     }
 
     public function getAnalyzeIncludes()
     {
-        return $this->analyze_includes;
+        return $this->analyzeIncludes;
     }
 
-    public function setAnalyzeHardRules($analyze_hardrules)
+    public function setAnalyzeHardRules($analyzeHardRules)
     {
-        $this->analyze_hardrules = $analyze_hardrules;
+        $this->analyzeHardRules = $analyzeHardRules;
     }
 
-    public function setAnalyzeJs($analyze_js)
+    public function setAnalyzeJs($analyzeJs)
     {
-        $this->analyze_js = $analyze_js;
+        $this->analyzeJs = $analyzeJs;
     }
 
-    public function setAnalyzeIncludes($analyze_includes)
+    public function setAnalyzeIncludes($analyzeIncludes)
     {
-        $this->analyze_includes = $analyze_includes;
+        $this->analyzeIncludes = $analyzeIncludes;
     }
 
-    public function setAnalyzeFunctions($analyze_functions)
+    public function setAnalyzeFunctions($analyzeFunctions)
     {
-        $this->analyze_functions = $analyze_functions;
+        $this->analyzeFunctions = $analyzeFunctions;
     }
 
     public function getAnalyzeFunctions()
     {
-        return $this->analyze_functions;
+        return $this->analyzeFunctions;
     }
 
     public function getCurrentMycode()
     {
-        return $this->current_mycode;
+        return $this->currentMyCode;
     }
 
     public function getCurrentOp()
     {
-        return $this->current_op;
+        return $this->currentOp;
     }
 
     public function getCurrentBlock()
     {
-        return $this->current_block;
+        return $this->currentBlock;
     }
 
     public function getCurrentLine()
     {
-        return $this->current_line;
+        return $this->currentLine;
     }
 
     public function getCurrentColumn()
     {
-        return $this->current_column;
+        return $this->currentColumn;
     }
 
     public function getCurrentFunc()
     {
-        return $this->current_func;
+        return $this->currentFunc;
     }
 
     public function getObjects()
@@ -303,12 +303,12 @@ class Context
 
     public function getCurrentMyfile()
     {
-        return $this->current_myfile;
+        return $this->currentMyFile;
     }
 
-    public function setCurrentMyfile($myfile)
+    public function setCurrentMyfile($myFile)
     {
-        $this->current_myfile = $myfile;
+        $this->currentMyFile = $myFile;
     }
 
     public function setPath($path)
@@ -316,34 +316,34 @@ class Context
         $this->path = $path;
     }
 
-    public function setCurrentMycode($mycode)
+    public function setCurrentMycode($myCode)
     {
-        $this->current_mycode = $mycode;
+        $this->currentMyCode = $myCode;
     }
 
-    public function setCurrentOp($current_op)
+    public function setCurrentOp($currentOp)
     {
-        $this->current_op = $current_op;
+        $this->currentOp = $currentOp;
     }
 
-    public function setCurrentBlock($current_block)
+    public function setCurrentBlock($currentBlock)
     {
-        $this->current_block = $current_block;
+        $this->currentBlock = $currentBlock;
     }
 
-    public function setCurrentLine($current_line)
+    public function setCurrentLine($currentLine)
     {
-        $this->current_line = $current_line;
+        $this->currentLine = $currentLine;
     }
 
-    public function setCurrentColumn($current_column)
+    public function setCurrentColumn($currentColumn)
     {
-        $this->current_column = $current_column;
+        $this->currentColumn = $currentColumn;
     }
 
-    public function setCurrentFunc($current_func)
+    public function setCurrentFunc($currentFunc)
     {
-        $this->current_func = $current_func;
+        $this->currentFunc = $currentFunc;
     }
 
     public function setObjects($objects)
@@ -373,31 +373,31 @@ class Context
 
     public function setConfiguration($file)
     {
-        $this->configuration_file = $file;
+        $this->configurationFile = $file;
     }
 
     public function getConfiguration()
     {
-        return $this->configuration_file;
+        return $this->configurationFile;
     }
 
     public function setPrintFile($bool)
     {
-        $this->print_file_under_analysis = $bool;
+        $this->printFileUnderAnalysis = $bool;
     }
 
     public function getPrintFile()
     {
-        return $this->print_file_under_analysis;
+        return $this->printFileUnderAnalysis;
     }
 
     public function readConfiguration()
     {
-        if (!is_null($this->configuration_file)) {
+        if (!is_null($this->configurationFile)) {
             try {
-                if (file_exists($this->configuration_file)) {
+                if (file_exists($this->configurationFile)) {
                     $yaml = new Parser();
-                    $value = $yaml->parse(file_get_contents($this->configuration_file));
+                    $value = $yaml->parse(file_get_contents($this->configurationFile));
 
                     if (is_array($value)) {
                         if (isset($value["inputs"])) {

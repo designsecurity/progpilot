@@ -24,72 +24,72 @@ use progpilot\Transformations\Php\Transform;
 
 class Expr
 {
-    public static function setChars($myexpr, $mytemp, $string, $array_chars)
+    public static function setChars($myExpr, $myTemp, $string, $arrayChars)
     {
-        $nb_chars = [];
-        foreach ($array_chars as $char) {
-            $nb_chars[$char] = 0;
+        $nbChars = [];
+        foreach ($arrayChars as $char) {
+            $nbChars[$char] = 0;
         }
 
         for ($i = 0; $i < strlen($string); $i++) {
-            foreach ($array_chars as $char) {
+            foreach ($arrayChars as $char) {
                 if ($string[$i] === $char) {
-                    $nb_chars[$char] ++;
+                    $nbChars[$char] ++;
                 }
             }
         }
 
-        foreach ($array_chars as $char) {
-            $myexpr->setNbChars($char, $myexpr->getNbChars($char) + $nb_chars[$char]);
-            $mytemp->setIsEmbeddedByChar($char, $myexpr->getNbChars($char));
+        foreach ($arrayChars as $char) {
+            $myExpr->setNbChars($char, $myExpr->getNbChars($char) + $nbChars[$char]);
+            $myTemp->setIsEmbeddedByChar($char, $myExpr->getNbChars($char));
         }
     }
 
     public static function setCharsDefsOfMyExpr(
-        &$defs_ofexpr,
-        $myexpr,
-        $array_chars
+        &$defsOfExpr,
+        $myExpr,
+        $arrayChars
     ) {
-        $nb_chars = [];
+        $nbChars = [];
 
-        foreach ($defs_ofexpr as $one_def) {
-            if ($one_def->getIsEmbeddedByChar("<") >
-                        $one_def->getIsEmbeddedByChar(">")) {
-                $one_def->setIsEmbeddedByChar("<", true);
+        foreach ($defsOfExpr as $oneDef) {
+            if ($oneDef->getIsEmbeddedByChar("<") >
+                        $oneDef->getIsEmbeddedByChar(">")) {
+                $oneDef->setIsEmbeddedByChar("<", true);
             } else {
-                $one_def->setIsEmbeddedByChar("<", false);
+                $oneDef->setIsEmbeddedByChar("<", false);
             }
 
-            if ((($one_def->getIsEmbeddedByChar("'") % 2) === 1)
-                        && $myexpr->getNbChars("'") > $one_def->getIsEmbeddedByChar("'")) {
-                $one_def->setIsEmbeddedByChar("'", true);
+            if ((($oneDef->getIsEmbeddedByChar("'") % 2) === 1)
+                        && $myExpr->getNbChars("'") > $oneDef->getIsEmbeddedByChar("'")) {
+                $oneDef->setIsEmbeddedByChar("'", true);
             } else {
-                $one_def->setIsEmbeddedByChar("'", false);
+                $oneDef->setIsEmbeddedByChar("'", false);
             }
         }
     }
 
-    public static function instruction($op, $context, $myexpr, $cast = MyDefinition::CAST_NOT_SAFE)
+    public static function instruction($op, $context, $myExpr, $cast = MyDefinition::CAST_NOT_SAFE)
     {
-        $defs_ofexpr = [];
-        $ret = Expr::instructionInternal($defs_ofexpr, $op, $context, $myexpr, $cast);
-        Expr::setCharsDefsOfMyExpr($defs_ofexpr, $myexpr, ["'", "<", ">"]);
+        $defsOfExpr = [];
+        $ret = Expr::instructionInternal($defsOfExpr, $op, $context, $myExpr, $cast);
+        Expr::setCharsDefsOfMyExpr($defsOfExpr, $myExpr, ["'", "<", ">"]);
 
         return $ret;
     }
 
     public static function instructionInternal(
-        &$defs_ofexpr,
+        &$defsOfExpr,
         $op,
         $context,
-        $myexpr,
+        $myExpr,
         $cast = MyDefinition::CAST_NOT_SAFE
     ) {
-        $mytemp_def = null;
-        $arr_funccall = false;
+        $myTempDef = null;
+        $arrFuncCall = false;
         $name = Common::getNameDefinition($op);
         $type = Common::getTypeDefinition($op);
-        $type_array = Common::getTypeIsArray($op);
+        $typeArray = Common::getTypeIsArray($op);
 
         // end of expression
         if (!is_null($type) && $type !== MyOp::TYPE_FUNCCALL_ARRAY) {
@@ -104,46 +104,46 @@ class Expr
                 $column = $op->getAttribute("startFilePos", -1);
             }
 
-            $mytemp = new MyDefinition($context->getCurrentLine(), $column, $name);
+            $myTemp = new MyDefinition($context->getCurrentLine(), $column, $name);
             if ($type === MyOp::TYPE_CONST || $type === MyOp::TYPE_LITERAL) {
-                $mytemp->addLastKnownValue($name);
+                $myTemp->addLastKnownValue($name);
             }
-            $mytemp->setCast($cast);
+            $myTemp->setCast($cast);
 
-            Expr::setChars($myexpr, $mytemp, $name, ["'", "<", ">"]);
+            Expr::setChars($myExpr, $myTemp, $name, ["'", "<", ">"]);
 
             if ($arr != false) {
-                $mytemp->addType(MyDefinition::TYPE_ARRAY);
-                $mytemp->setArrayValue($arr);
+                $myTemp->addType(MyDefinition::TYPE_ARRAY);
+                $myTemp->setArrayValue($arr);
             }
 
-            $mytemp->setExpr($myexpr);
-            $defs_ofexpr[] = $mytemp;
+            $myTemp->setExpr($myExpr);
+            $defsOfExpr[] = $myTemp;
 
             if ($type === MyOp::TYPE_CONST) {
-                $mytemp->addType(MyDefinition::TYPE_CONSTANTE);
+                $myTemp->addType(MyDefinition::TYPE_CONSTANTE);
             }
 
             if ($type === MyOp::TYPE_PROPERTY) {
-                $property_name = "";
+                $propertyName = "";
                 if (isset($op->ops[0])) {
-                    $property_name = Common::getNameProperty($op->ops[0]);
+                    $propertyName = Common::getNameProperty($op->ops[0]);
                 }
 
-                $mytemp->addType(MyDefinition::TYPE_PROPERTY);
-                $mytemp->property->setProperties($property_name);
+                $myTemp->addType(MyDefinition::TYPE_PROPERTY);
+                $myTemp->property->setProperties($propertyName);
             }
 
-            $inst_temporarySimple = new MyInstruction(Opcodes::TEMPORARY);
-            $inst_temporarySimple->addProperty(MyInstruction::TEMPORARY, $mytemp);
-            $context->getCurrentMycode()->addCode($inst_temporarySimple);
+            $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
+            $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
+            $context->getCurrentMycode()->addCode($instTemporarySimple);
 
-            return $mytemp;
+            return $myTemp;
         } // func()[0][1]
         elseif ($type === MyOp::TYPE_FUNCCALL_ARRAY) {
-            $arr_funccall = BuildArrays::buildArrayFromOps($op, false);
-            $start_ops = BuildArrays::functionStartOps($op);
-            $op = $start_ops;
+            $arrFuncCall = BuildArrays::buildArrayFromOps($op, false);
+            $startOps = BuildArrays::functionStartOps($op);
+            $op = $startOps;
         }
 
         if (isset($op->ops)) {
@@ -154,72 +154,72 @@ class Expr
                             || $ops instanceof Op\Expr\Cast\Double_
                             || $ops instanceof Op\Expr\Cast\Object_
                             || $ops instanceof Op\Expr\Cast\Array_) {
-                    Expr::instructionInternal($defs_ofexpr, $ops->expr, $context, $myexpr, MyDefinition::CAST_SAFE);
+                    Expr::instructionInternal($defsOfExpr, $ops->expr, $context, $myExpr, MyDefinition::CAST_SAFE);
                 } elseif ($ops instanceof Op\Expr\Cast\String_) {
-                    Expr::instructionInternal($defs_ofexpr, $ops->expr, $context, $myexpr, MyDefinition::CAST_NOT_SAFE);
+                    Expr::instructionInternal($defsOfExpr, $ops->expr, $context, $myExpr, MyDefinition::CAST_NOT_SAFE);
                 } elseif ($ops instanceof Op\Expr\BinaryOp\Concat) {
-                    $myexpr->setIsConcat(true);
+                    $myExpr->setIsConcat(true);
 
                     $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::CONCAT_LEFT));
-                    Expr::instructionInternal($defs_ofexpr, $ops->left, $context, $myexpr);
+                    Expr::instructionInternal($defsOfExpr, $ops->left, $context, $myExpr);
 
                     $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::CONCAT_RIGHT));
-                    Expr::instructionInternal($defs_ofexpr, $ops->right, $context, $myexpr);
+                    Expr::instructionInternal($defsOfExpr, $ops->right, $context, $myExpr);
                 } elseif ($ops instanceof Op\Expr\ConcatList) {
-                    $myexpr->setIsConcat(true);
+                    $myExpr->setIsConcat(true);
 
                     $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::CONCAT_LIST));
 
                     foreach ($ops->list as $opsbis) {
-                        Expr::instructionInternal($defs_ofexpr, $opsbis, $context, $myexpr);
+                        Expr::instructionInternal($defsOfExpr, $opsbis, $context, $myExpr);
                     }
                 } elseif ($ops instanceof Op\Expr\Include_) {
-                    $old_op = $context->getCurrentOp();
+                    $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);
-                    FuncCall::instruction($context, $myexpr, $arr_funccall, false);
-                    $context->setCurrentOp($old_op);
+                    FuncCall::instruction($context, $myExpr, $arrFuncCall, false);
+                    $context->setCurrentOp($oldOp);
                 } elseif ($ops instanceof Op\Expr\Print_) {
-                    $old_op = $context->getCurrentOp();
+                    $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);
-                    FuncCall::instruction($context, $myexpr, $arr_funccall, false);
-                    $context->setCurrentOp($old_op);
+                    FuncCall::instruction($context, $myExpr, $arrFuncCall, false);
+                    $context->setCurrentOp($oldOp);
                 } elseif ($ops instanceof Op\Terminal\Echo_) {
-                    $old_op = $context->getCurrentOp();
+                    $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);
-                    FuncCall::instruction($context, $myexpr, $arr_funccall, false);
-                    $context->setCurrentOp($old_op);
+                    FuncCall::instruction($context, $myExpr, $arrFuncCall, false);
+                    $context->setCurrentOp($oldOp);
                 } elseif ($ops instanceof Op\Expr\Eval_) {
-                    $old_op = $context->getCurrentOp();
+                    $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);
-                    FuncCall::instruction($context, $myexpr, $arr_funccall, false);
-                    $context->setCurrentOp($old_op);
+                    FuncCall::instruction($context, $myExpr, $arrFuncCall, false);
+                    $context->setCurrentOp($oldOp);
                 } elseif ($ops instanceof Op\Expr\FuncCall || $ops instanceof Op\Expr\NsFuncCall) {
-                    $old_op = $context->getCurrentOp();
+                    $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);
-                    $mytemp_def = FuncCall::instruction($context, $myexpr, $arr_funccall, false);
-                    $context->setCurrentOp($old_op);
+                    $myTempDef = FuncCall::instruction($context, $myExpr, $arrFuncCall, false);
+                    $context->setCurrentOp($oldOp);
                 } elseif ($ops instanceof Op\Expr\MethodCall) {
-                    $old_op = $context->getCurrentOp();
+                    $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);
-                    $mytemp_def = FuncCall::instruction($context, $myexpr, $arr_funccall, true);
-                    $context->setCurrentOp($old_op);
+                    $myTempDef = FuncCall::instruction($context, $myExpr, $arrFuncCall, true);
+                    $context->setCurrentOp($oldOp);
                 } elseif ($ops instanceof Op\Expr\StaticCall) {
-                    $old_op = $context->getCurrentOp();
+                    $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);
-                    $mytemp_def = FuncCall::instruction($context, $myexpr, $arr_funccall, false, true);
-                    $context->setCurrentOp($old_op);
+                    $myTempDef = FuncCall::instruction($context, $myExpr, $arrFuncCall, false, true);
+                    $context->setCurrentOp($oldOp);
                 } elseif ($ops instanceof Op\Expr\New_) {
                     // funccall for the constructor
-                    $old_op = $context->getCurrentOp();
+                    $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);
-                    $mytemp_def = FuncCall::instruction($context, $myexpr, $arr_funccall);
-                    $context->setCurrentOp($old_op);
+                    $myTempDef = FuncCall::instruction($context, $myExpr, $arrFuncCall);
+                    $context->setCurrentOp($oldOp);
                 } else {
-                    $mytemp_def = Expr::instructionInternal($defs_ofexpr, $ops, $context, $myexpr);
+                    $myTempDef = Expr::instructionInternal($defsOfExpr, $ops, $context, $myExpr);
                 }
             }
         }
 
-        return $mytemp_def;
+        return $myTempDef;
     }
 }

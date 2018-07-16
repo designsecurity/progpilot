@@ -14,15 +14,15 @@ class MyClass extends MyOp
 {
     private $properties;
     private $methods;
-    private $object_id_this;
+    private $objectIdThis;
 
-    public function __construct($var_line, $var_column, $var_name)
+    public function __construct($varLine, $varColumn, $varName)
     {
-        parent::__construct($var_name, $var_line, $var_column);
+        parent::__construct($varName, $varLine, $varColumn);
 
         $this->properties = [];
         $this->methods = [];
-        $this->object_id_this = null;
+        $this->objectIdThis = null;
     }
 
     public function __clone()
@@ -39,8 +39,8 @@ class MyClass extends MyOp
     public function addMethod($method)
     {
         $exist = false;
-        foreach ($this->methods as $method_class) {
-            if ($method_class->getName() === $method->getName()) {
+        foreach ($this->methods as $methodClass) {
+            if ($methodClass->getName() === $method->getName()) {
                 $exist = true;
                 break;
             }
@@ -75,8 +75,8 @@ class MyClass extends MyOp
     public function addProperty($property)
     {
         $exist = false;
-        foreach ($this->properties as $property_class) {
-            if ($property_class->property->getProperties() === $property->property->getProperties()) {
+        foreach ($this->properties as $propertyClass) {
+            if ($propertyClass->property->getProperties() === $property->property->getProperties()) {
                 $exist = true;
                 break;
             }
@@ -98,13 +98,13 @@ class MyClass extends MyOp
         return null;
     }
 
-    public function setObjectIdThis($object_id)
+    public function setObjectIdThis($objectId)
     {
-        $this->object_id_this = $object_id;
+        $this->objectIdThis = $objectId;
     }
 
     public function getObjectIdThis()
     {
-        return $this->object_id_this;
+        return $this->objectIdThis;
     }
 }

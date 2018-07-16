@@ -28,21 +28,21 @@ class Objects
 
     public function addObject()
     {
-        $id_object = count($this->objects);
-        $this->objects[$id_object] = null;
+        $idObject = count($this->objects);
+        $this->objects[$idObject] = null;
 
-        return $id_object;
+        return $idObject;
     }
 
-    public function addMyclassToObject($id_object, $myclass)
+    public function addMyclassToObject($idObject, $myClass)
     {
-        $this->objects[$id_object] = $myclass;
+        $this->objects[$idObject] = $myClass;
     }
 
-    public function getMyClassFromObject($id_object)
+    public function getMyClassFromObject($idObject)
     {
-        if (isset($this->objects[$id_object])) {
-            return $this->objects[$id_object];
+        if (isset($this->objects[$idObject])) {
+            return $this->objects[$idObject];
         }
 
         return null;

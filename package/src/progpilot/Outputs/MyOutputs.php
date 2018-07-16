@@ -24,7 +24,7 @@ class MyOutputs
     private $resolveIncludesFile;
     private $taintedFlow;
 
-    public $current_includes_file;
+    public $currentIncludesFile;
     public $cfg;
     public $callgraph;
     public $ast;
@@ -33,7 +33,7 @@ class MyOutputs
     {
         $this->resolveIncludes = false;
         $this->resolveIncludesFile = null;
-        $this->current_includes_file = [];
+        $this->currentIncludesFile = [];
         $this->results = [];
         $this->taintedFlow = false;
 
@@ -80,21 +80,21 @@ class MyOutputs
     {
         $nodesjson = [];
         $linksjson = [];
-        $real_nodes = [];
+        $realNodes = [];
 
         foreach ($this->cfg->getNodes() as $id => $node) {
-            $real_nodes[] = $id;
+            $realNodes[] = $id;
             $nodesjson[] = array('name' => $this->cfg->getTextOfMyBlock($id), 'id' => $id);
         }
 
         foreach ($this->cfg->getEdges() as $edge) {
-            $caller_id = $this->cfg->getIdOfNode($edge[0]);
-            $callee_id = $this->cfg->getIdOfNode($edge[1]);
+            $callerId = $this->cfg->getIdOfNode($edge[0]);
+            $calleeId = $this->cfg->getIdOfNode($edge[1]);
 
-            if ($caller_id !== $callee_id
-                                    && in_array($caller_id, $real_nodes, true)
-                                    && in_array($callee_id, $real_nodes, true)) {
-                $linksjson[] = array('source' => $caller_id, 'target' => $callee_id);
+            if ($callerId !== $calleeId
+                && in_array($callerId, $realNodes, true)
+                    && in_array($calleeId, $realNodes, true)) {
+                $linksjson[] = array('source' => $callerId, 'target' => $calleeId);
             }
         }
 
@@ -106,22 +106,22 @@ class MyOutputs
     {
         $nodesjson = [];
         $linksjson = [];
-        $real_nodes = [];
+        $realNodes = [];
 
         $nodes = $this->callgraph->getNodes();
 
-        foreach ($nodes as $node_caller) {
-            $real_nodes[] = $node_caller->getId();
-            $nodesjson[] = array('name' => $node_caller->getName(), 'id' => $node_caller->getId());
+        foreach ($nodes as $nodeCaller) {
+            $realNodes[] = $nodeCaller->getId();
+            $nodesjson[] = array('name' => $nodeCaller->getName(), 'id' => $nodeCaller->getId());
         }
 
-        foreach ($nodes as $key => $node_caller) {
-            foreach ($node_caller->getChildren() as $key => $node_callee_id) {
-                $node_callee = $nodes[$node_callee_id];
-                if ($node_caller->getId() !== $node_callee->getId()
-                                                    && in_array($node_caller->getId(), $real_nodes, true)
-                                                    && in_array($node_callee->getId(), $real_nodes, true)) {
-                    $linksjson[] = array('source' => $node_caller->getId(), 'target' => $node_callee->getId());
+        foreach ($nodes as $key => $nodeCaller) {
+            foreach ($nodeCaller->getChildren() as $key => $nodeCalleeId) {
+                $nodeCallee = $nodes[$nodeCalleeId];
+                if ($nodeCaller->getId() !== $nodeCallee->getId()
+                                                    && in_array($nodeCaller->getId(), $realNodes, true)
+                                                    && in_array($nodeCallee->getId(), $realNodes, true)) {
+                    $linksjson[] = array('source' => $nodeCaller->getId(), 'target' => $nodeCallee->getId());
                 }
             }
         }
@@ -182,15 +182,15 @@ class MyOutputs
         if ($this->resolveIncludes) {
             $fp = fopen($this->resolveIncludesFile, "w");
             if ($fp) {
-                $myarray = "";
-                if (count($this->current_includes_file) > 0) {
-                    $myarray = [];
-                    foreach ($this->current_includes_file as $include_file) {
-                        $myarray[] = [$include_file->getName(), $include_file->getLine(), $include_file->getColumn()];
+                $myArray = "";
+                if (count($this->currentIncludesFile) > 0) {
+                    $myArray = [];
+                    foreach ($this->currentIncludesFile as $includeFile) {
+                        $myArray[] = [$includeFile->getName(), $includeFile->getLine(), $includeFile->getColumn()];
                     }
                 }
 
-                $outputjson = array('includes_not_resolved' => $myarray);
+                $outputjson = array('includes_not_resolved' => $myArray);
                 fwrite($fp, json_encode($outputjson, JSON_UNESCAPED_SLASHES));
                 fclose($fp);
             }

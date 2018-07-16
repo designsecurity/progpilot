@@ -12,13 +12,13 @@ namespace progpilot\Inputs;
 
 class MySource extends MySpecify
 {
-    private $is_array;
+    private $isArray;
     private $isFunction;
-    private $array_value;
-    private $return_array_value;
-    private $is_return_array;
+    private $arrayValue;
+    private $returnArrayValue;
+    private $isReturnArray;
     private $parameters;
-    private $conditions_parameters;
+    private $conditionsParameters;
     private $hasParameters;
 
     const CONDITION_ARRAY = "condition_array";
@@ -28,53 +28,53 @@ class MySource extends MySpecify
         parent::__construct($name, $language);
 
         $this->isFunction = false;
-        $this->return_array_value = null;
-        $this->is_return_array = false;
-        $this->array_value = null;
-        $this->is_array = false;
+        $this->returnArrayValue = null;
+        $this->isReturnArray = false;
+        $this->arrayValue = null;
+        $this->isArray = false;
         $this->hasParameters = false;
         $this->parameters = [];
-        $this->conditions_parameters = [];
+        $this->conditionsParameters = [];
     }
 
     public function getIsReturnArray()
     {
-        return $this->is_return_array;
+        return $this->isReturnArray;
     }
 
     public function setReturnArray($arr)
     {
-        $this->is_return_array = $arr;
+        $this->isReturnArray = $arr;
     }
 
     public function setReturnArrayValue($arr)
     {
-        $this->return_array_value = $arr;
+        $this->returnArrayValue = $arr;
     }
 
     public function getReturnArrayValue()
     {
-        return $this->return_array_value;
+        return $this->returnArrayValue;
     }
 
     public function getIsArray()
     {
-        return $this->is_array;
+        return $this->isArray;
     }
 
-    public function setIsArray($is_array)
+    public function setIsArray($isArray)
     {
-        $this->is_array = $is_array;
+        $this->isArray = $isArray;
     }
 
     public function getArrayValue()
     {
-        return $this->array_value;
+        return $this->arrayValue;
     }
 
-    public function setArrayValue($array_value)
+    public function setArrayValue($arrayValue)
     {
-        $this->array_value = $array_value;
+        $this->arrayValue = $arrayValue;
     }
 
     public function isFunction()
@@ -89,14 +89,14 @@ class MySource extends MySpecify
 
     public function addConditionParameter($parameter, $condition, $value)
     {
-        $this->conditions_parameters[$parameter][] = [$condition, $value];
+        $this->conditionsParameters[$parameter][] = [$condition, $value];
     }
 
     public function getConditionParameter($parameter, $condition)
     {
-        foreach ($this->conditions_parameters[$parameter] as $condition_param) {
-            if ($condition_param[0] === $condition) {
-                return $condition_param[1];
+        foreach ($this->conditionsParameters[$parameter] as $conditionParam) {
+            if ($conditionParam[0] === $condition) {
+                return $conditionParam[1];
             }
         }
 

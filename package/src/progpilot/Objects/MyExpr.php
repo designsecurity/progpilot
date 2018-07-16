@@ -14,34 +14,34 @@ class MyExpr extends MyOp
 {
     private $tainted;
     private $assign;
-    private $assign_iterator;
-    private $assign_def;
-    private $thedefs;
-    private $is_concat;
-    private $nb_chars;
+    private $assignIterator;
+    private $assignDef;
+    private $theDefs;
+    private $isConcat;
+    private $nbChars;
 
-    public function __construct($var_line, $var_column)
+    public function __construct($varLine, $varColumn)
     {
-        parent::__construct("", $var_line, $var_column);
+        parent::__construct("", $varLine, $varColumn);
 
-        $this->nb_chars = [];
-        $this->is_concat = false;
+        $this->nbChars = [];
+        $this->isConcat = false;
         $this->tainted = false;
         $this->assign = false;
-        $this->assign_iterator = false;
-        $this->assign_def = null;
-        $this->thedefs = [];
+        $this->assignIterator = false;
+        $this->assignDef = null;
+        $this->theDefs = [];
     }
 
-    public function setNbChars($char, $nb_chars)
+    public function setNbChars($char, $nbChars)
     {
-        $this->nb_chars[$char] = $nb_chars;
+        $this->nbChars[$char] = $nbChars;
     }
 
     public function getNbChars($char)
     {
-        if (isset($this->nb_chars[$char])) {
-            return $this->nb_chars[$char];
+        if (isset($this->nbChars[$char])) {
+            return $this->nbChars[$char];
         }
 
         return 0;
@@ -49,12 +49,12 @@ class MyExpr extends MyOp
 
     public function setIsConcat($concat)
     {
-        $this->is_concat = $concat;
+        $this->isConcat = $concat;
     }
 
     public function getIsConcat()
     {
-        return $this->is_concat;
+        return $this->isConcat;
     }
 
     public function setTainted($tainted)
@@ -64,8 +64,8 @@ class MyExpr extends MyOp
 
     public function isTainted()
     {
-        foreach ($this->thedefs as $thedef) {
-            if ($thedef->isTainted()) {
+        foreach ($this->theDefs as $theDef) {
+            if ($theDef->isTainted()) {
                 return true;
             }
         }
@@ -75,17 +75,17 @@ class MyExpr extends MyOp
     /* assignement utilisant cette expression */
     public function setAssignDef($def)
     {
-        $this->assign_def = $def;
+        $this->assignDef = $def;
     }
 
     public function getAssignDef()
     {
-        return $this->assign_def;
+        return $this->assignDef;
     }
 
-    public function setAssignIterator($assign_iterator)
+    public function setAssignIterator($assignIterator)
     {
-        $this->assign_iterator = $assign_iterator;
+        $this->assignIterator = $assignIterator;
     }
 
     public function setAssign($assign)
@@ -100,23 +100,23 @@ class MyExpr extends MyOp
 
     public function isAssignIterator()
     {
-        return $this->assign_iterator;
+        return $this->assignIterator;
     }
 
     public function setDefs($defs)
     {
-        $this->thedefs = $defs;
+        $this->theDefs = $defs;
     }
 
-    public function addDef($mydef)
+    public function addDef($myDef)
     {
-        if (!in_array($mydef, $this->thedefs, true)) {
-            $this->thedefs[] = $mydef;
+        if (!in_array($myDef, $this->theDefs, true)) {
+            $this->theDefs[] = $myDef;
         }
     }
 
     public function getDefs()
     {
-        return $this->thedefs;
+        return $this->theDefs;
     }
 }

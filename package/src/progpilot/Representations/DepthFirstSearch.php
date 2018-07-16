@@ -34,9 +34,9 @@ class DepthFirstSearch
         if (!is_null($node) && array_key_exists($node->getId(), $this->nodes)) {
             $this->visitor->examineNode($node);
 
-            foreach ($node->getChildren() as $child_id) {
-                if (array_key_exists($child_id, $this->nodes)) {
-                    $child = $this->nodes[$child_id];
+            foreach ($node->getChildren() as $childId) {
+                if (array_key_exists($childId, $this->nodes)) {
+                    $child = $this->nodes[$childId];
                     if ($child->getColor() === "white") {
                         $this->visitor->examineNodeTarget($node);
 

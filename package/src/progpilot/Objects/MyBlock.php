@@ -12,8 +12,8 @@ namespace progpilot\Objects;
 
 class MyBlock extends MyOp
 {
-    private $start_address_block;
-    private $end_address_block;
+    private $startAddressBlock;
+    private $endAddressBlock;
     private $id;
 
     public $parents;
@@ -23,8 +23,8 @@ class MyBlock extends MyOp
     {
         parent::__construct("", 0, 0);
 
-        $this->start_address_block = -1;
-        $this->end_address_block = -1;
+        $this->startAddressBlock = -1;
+        $this->endAddressBlock = -1;
         $this->assertions = [];
         $this->parents = [];
     }
@@ -46,22 +46,22 @@ class MyBlock extends MyOp
 
     public function setStartAddressBlock($address)
     {
-        $this->start_address_block = $address;
+        $this->startAddressBlock = $address;
     }
 
     public function setEndAddressBlock($address)
     {
-        $this->end_address_block = $address;
+        $this->endAddressBlock = $address;
     }
 
     public function getStartAddressBlock()
     {
-        return $this->start_address_block;
+        return $this->startAddressBlock;
     }
 
     public function getEndAddressBlock()
     {
-        return $this->end_address_block;
+        return $this->endAddressBlock;
     }
 
     public function getId()

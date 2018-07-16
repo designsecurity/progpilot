@@ -32,41 +32,41 @@ class Common
 
     public static function getNameProperty($op)
     {
-        $property_name_array = [];
+        $propertyNameArray = [];
 
         if (isset($op->ops[0])) {
             if ($op->ops[0] instanceof Op\Expr\ArrayDimFetch) {
-                $property_name_array = Common::getNameProperty($op->ops[0]);
+                $propertyNameArray = Common::getNameProperty($op->ops[0]);
             }
 
             if ($op instanceof Op\Expr\PropertyFetch) {
-                $property_name_array = Common::getNameProperty($op->ops[0]);
+                $propertyNameArray = Common::getNameProperty($op->ops[0]);
             }
         }
 
         if (isset($op->var->ops)) {
             foreach ($op->var->ops as $opeach) {
                 if ($opeach instanceof Op\Expr\ArrayDimFetch) {
-                    $property_name_array =  Common::getNameProperty($opeach);
+                    $propertyNameArray =  Common::getNameProperty($opeach);
                 }
 
                 if ($opeach instanceof Op\Expr\PropertyFetch) {
-                    $property_name_array = Common::getNameProperty($opeach);
+                    $propertyNameArray = Common::getNameProperty($opeach);
                 }
             }
         }
 
         if (isset($op->name->value)) {
-            $property_name_array[] = $op->name->value;
+            $propertyNameArray[] = $op->name->value;
         }
 
-        return $property_name_array;
+        return $propertyNameArray;
     }
 
-    public static function getNameDefinition($ops, $looking_for_property = false)
+    public static function getNameDefinition($ops, $lookingForProperty = false)
     {
         //  $this->property = property
-        if ($looking_for_property && $ops instanceof Op\Expr\PropertyFetch && isset($ops->name->value)) {
+        if ($lookingForProperty && $ops instanceof Op\Expr\PropertyFetch && isset($ops->name->value)) {
             return $ops->name->value;
         }
 
@@ -77,30 +77,30 @@ class Common
 
         if (isset($ops->ops[0])) {
             if ($ops->ops[0] instanceof Op\Expr\ConstFetch) {
-                return Common::getNameDefinition($ops->ops[0], $looking_for_property);
+                return Common::getNameDefinition($ops->ops[0], $lookingForProperty);
             }
 
             if ($ops->ops[0] instanceof Op\Expr\ArrayDimFetch) {
-                return Common::getNameDefinition($ops->ops[0], $looking_for_property);
+                return Common::getNameDefinition($ops->ops[0], $lookingForProperty);
             }
 
             if ($ops->ops[0] instanceof Op\Expr\PropertyFetch) {
-                return Common::getNameDefinition($ops->ops[0], $looking_for_property);
+                return Common::getNameDefinition($ops->ops[0], $lookingForProperty);
             }
         }
 
         if (isset($ops->var->ops)) {
             foreach ($ops->var->ops as $op) {
                 if ($op instanceof Op\Expr\ConstFetch) {
-                    return Common::getNameDefinition($op, $looking_for_property);
+                    return Common::getNameDefinition($op, $lookingForProperty);
                 }
 
                 if ($op instanceof Op\Expr\ArrayDimFetch) {
-                    return Common::getNameDefinition($op, $looking_for_property);
+                    return Common::getNameDefinition($op, $lookingForProperty);
                 }
 
                 if ($op instanceof Op\Expr\PropertyFetch) {
-                    return Common::getNameDefinition($op, $looking_for_property);
+                    return Common::getNameDefinition($op, $lookingForProperty);
                 }
             }
         }

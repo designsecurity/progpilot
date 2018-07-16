@@ -12,15 +12,14 @@ namespace progpilot\Objects;
 
 class MyOp
 {
-    private static $nb_objects = 0;
+    public static $nbObjects;
+    protected $varId;
 
-    protected $var_id;
-
-    private $var_name;
-    private $var_line;
-    private $var_column;
-    private $source_myfile;
-    private $array_value;
+    private $varName;
+    private $varLine;
+    private $varColumn;
+    private $sourceMyFile;
+    private $arrayValue;
 
     private $flags;
 
@@ -36,25 +35,25 @@ class MyOp
     const TYPE_FUNCCALL_ARRAY = "type_funccall_array";
     const TYPE_CONST = "type_const";
 
-    public function __construct($var_name, $var_line, $var_column)
+    public function __construct($varName, $varLine, $varColumn)
     {
         $this->flags = 0;
-        $this->var_id = MyOp::$nb_objects ++;
-        $this->var_name = $var_name;
-        $this->var_line = $var_line;
-        $this->var_column = $var_column;
-        $this->source_myfile = null;
-        $this->array_value = false;
+        $this->varId = MyOp::$nbObjects ++;
+        $this->varName = $varName;
+        $this->varLine = $varLine;
+        $this->varColumn = $varColumn;
+        $this->sourceMyFile = null;
+        $this->arrayValue = false;
     }
 
-    public function setId($var_id)
+    public function setId($varId)
     {
-        $this->var_id = $var_id;
+        $this->varId = $varId;
     }
 
     public function getId()
     {
-        return $this->var_id;
+        return $this->varId;
     }
 
     public function setType($flags)
@@ -84,53 +83,53 @@ class MyOp
         }
     }
 
-    public function setArrayValue($array_value)
+    public function setArrayValue($arrayValue)
     {
-        $this->array_value = $array_value;
+        $this->arrayValue = $arrayValue;
     }
 
     public function getArrayValue()
     {
-        return $this->array_value;
+        return $this->arrayValue;
     }
 
     public function getLine()
     {
-        return $this->var_line;
+        return $this->varLine;
     }
 
     public function getColumn()
     {
-        return $this->var_column;
+        return $this->varColumn;
     }
 
     public function setLine($line)
     {
-        $this->var_line = $line;
+        $this->varLine = $line;
     }
 
     public function setColumn($column)
     {
-        $this->var_column = $column;
+        $this->varColumn = $column;
     }
 
     public function getSourceMyFile()
     {
-        return $this->source_myfile;
+        return $this->sourceMyFile;
     }
 
-    public function setSourceMyFile($source_myfile)
+    public function setSourceMyFile($sourceMyFile)
     {
-        $this->source_myfile = $source_myfile;
+        $this->sourceMyFile = $sourceMyFile;
     }
 
-    public function setName($var_name)
+    public function setName($varName)
     {
-        $this->var_name = $var_name;
+        $this->varName = $varName;
     }
 
     public function getName()
     {
-        return $this->var_name;
+        return $this->varName;
     }
 }

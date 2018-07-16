@@ -12,26 +12,26 @@ namespace progpilot\Representations;
 
 class NodeCG
 {
-    private $myclass;
+    private $myClass;
     private $name;
     private $line;
     private $column;
     private $file;
-    private $nb_parents;
-    private $nb_views;
+    private $nbParents;
+    private $nbViews;
     private $children;
     private $color;
 
-    public function __construct($name, $line, $column, $file, $myclass)
+    public function __construct($name, $line, $column, $file, $myClass)
     {
-        $this->myclass = $myclass;
+        $this->myclass = $myClass;
         $this->name = $name;
         $this->line = $line;
         $this->column = $column;
         $this->file = $file;
 
-        $this->nb_parents = 0;
-        $this->nb_views = 0;
+        $this->nbParents = 0;
+        $this->nbViews = 0;
         $this->children = [];
         $this->color = "white";
     }
@@ -41,9 +41,9 @@ class NodeCG
         return $this->myclass;
     }
 
-    public function setMyClass($myclass)
+    public function setMyClass($myClass)
     {
-        $this->myclass = $myclass;
+        $this->myclass = $myClass;
     }
 
     public function getName()
@@ -68,12 +68,12 @@ class NodeCG
 
     public function getNbParents()
     {
-        return $this->nb_parents;
+        return $this->nbParents;
     }
 
     public function getNbViews()
     {
-        return $this->nb_views;
+        return $this->nbViews;
     }
 
     public function getChildren()
@@ -96,14 +96,14 @@ class NodeCG
         $this->children = $children;
     }
 
-    public function setNbViews($nb_views)
+    public function setNbViews($nbViews)
     {
-        $this->nb_views = $nb_views;
+        $this->nbViews = $nbViews;
     }
 
-    public function setNbParents($nb_parents)
+    public function setNbParents($nbParents)
     {
-        $this->nb_parents = $nb_parents;
+        $this->nbParents = $nbParents;
     }
 
     public function setName($name)

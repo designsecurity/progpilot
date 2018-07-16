@@ -29,115 +29,115 @@ class ArrayAnalysis
     {
     }
 
-    public static function temporarySimple($context, $data, $defsearch, $def, $is_iterator = false, $isAssign = false)
+    public static function temporarySimple($context, $data, $searchedDef, $def, $isIterator = false, $isAssign = false)
     {
-        $good_defs = [];
+        $goodDefs = [];
 
         if (($def->isType(MyDefinition::TYPE_COPY_ARRAY)
-            && ($defsearch->isType(MyDefinition::TYPE_ARRAY) || $is_iterator))) {
-            foreach ($def->getCopyArrays() as $def_copyarray) {
-                $mydef_arr = $def_copyarray[0];
-                $mydef_tmp = $def_copyarray[1];
+            && ($searchedDef->isType(MyDefinition::TYPE_ARRAY) || $isIterator))) {
+            foreach ($def->getCopyArrays() as $defCopyArray) {
+                $myDef_arr = $defCopyArray[0];
+                $myDef_tmp = $defCopyArray[1];
 
-                if (($mydef_arr === $defsearch->getArrayValue()) || $is_iterator) {
-                    $good_defs[] = $mydef_tmp;
+                if (($myDef_arr === $searchedDef->getArrayValue()) || $isIterator) {
+                    $goodDefs[] = $myDef_tmp;
                 }
             }
         } // I'm looking for def[arr], I want to find def[arr], but I can have def (must be eliminated)
-        elseif ($defsearch->isType(MyDefinition::TYPE_ARRAY)) {
+        elseif ($searchedDef->isType(MyDefinition::TYPE_ARRAY)) {
             if (($def->isType(MyDefinition::TYPE_ARRAY)
-                        && ($defsearch->getArrayValue() === $def->getArrayValue()) || $is_iterator)
+                        && ($searchedDef->getArrayValue() === $def->getArrayValue()) || $isIterator)
                             || $def->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED") {
                 if ($def->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED") {
-                    $defsearch->setTainted(true);
-                    //TaintAnalysis::setTainted($context, $data, $defsearch, $def, $def->getExpr(), false);
+                    $searchedDef->setTainted(true);
+                    //TaintAnalysis::setTainted($context, $data, $searchedDef, $def, $def->getExpr(), false);
 
                     if (ResolveDefs::getVisibilityFromInstances($context, $data, $def)) {
-                        ValueAnalysis::copyValues($defsearch, $def);
-                        TaintAnalysis::setTainted($defsearch, $def, $def->getExpr());
+                        ValueAnalysis::copyValues($searchedDef, $def);
+                        TaintAnalysis::setTainted($searchedDef, $def, $def->getExpr());
                     }
                 }
 
-                $good_defs[] = $def;
+                $goodDefs[] = $def;
             }
         } // I'm looking for def, I want to find def, but I can have def[arr] (must be eliminated)
-        elseif (!$defsearch->isType(MyDefinition::TYPE_ARRAY)) {
-            if (!$def->isType(MyDefinition::TYPE_ARRAY) || $is_iterator) {
-                $good_defs[] = $def;
+        elseif (!$searchedDef->isType(MyDefinition::TYPE_ARRAY)) {
+            if (!$def->isType(MyDefinition::TYPE_ARRAY) || $isIterator) {
+                $goodDefs[] = $def;
             }
         }
 
-        return $good_defs;
+        return $goodDefs;
     }
 
-    public static function copyArray($context, $data, $originaltab, $originalarr, $copytab, $copyarr)
+    public static function copyArray($context, $data, $originalTab, $originalArr, $copyTab, $copyArr)
     {
-        if (!is_null($originaltab) && !is_null($copytab)) {
-            if ($originaltab->isType(MyDefinition::TYPE_PROPERTY)) {
+        if (!is_null($originalTab) && !is_null($copyTab)) {
+            if ($originalTab->isType(MyDefinition::TYPE_PROPERTY)) {
                 $defs = ResolveDefs::selectProperties(
                     $context,
                     $data,
-                    $originaltab,
+                    $originalTab,
                     true
                 );
             } else {
                 $defs = ResolveDefs::selectDefinitions(
                     $context,
                     $data,
-                    $originaltab,
+                    $originalTab,
                     true
                 );
             }
 
             foreach ($defs as $defa) {
-                ArrayAnalysis::copyArrayFromDef($defa, $originalarr, $copytab, $copyarr);
+                ArrayAnalysis::copyArrayFromDef($defa, $originalArr, $copyTab, $copyArr);
             }
         }
     }
 
-    public static function copyArrayFromDef($defa, $originalarr, $copytab, $copyarr)
+    public static function copyArrayFromDef($defa, $originalArr, $copyTab, $copyArr)
     {
         if ($defa->isType(MyDefinition::TYPE_COPY_ARRAY)) {
-            $copyarrays = $defa->getCopyArrays();
+            $copyArrays = $defa->getCopyArrays();
 
-            foreach ($copyarrays as $value) {
-                $arrvalue = $value[0];
-                $defarr = $value[1];
+            foreach ($copyArrays as $value) {
+                $arrValue = $value[0];
+                $defArr = $value[1];
 
-                $extract = BuildArrays::extractArrayFromArr($arrvalue, $originalarr);
+                $extract = BuildArrays::extractArrayFromArr($arrValue, $originalArr);
                 if ($extract !== false) {
-                    $extractbis = BuildArrays::buildArrayFromArr($copyarr, $extract);
+                    $extractBis = BuildArrays::buildArrayFromArr($copyArr, $extract);
 
-                    $copytab->addCopyArray($extractbis, $defarr);
-                    $copytab->addType(MyDefinition::TYPE_COPY_ARRAY);
-                    if ($copytab->isType(MyDefinition::TYPE_ARRAY)) {
-                        $copytab->removeType(MyDefinition::TYPE_ARRAY);
+                    $copyTab->addCopyArray($extractBis, $defArr);
+                    $copyTab->addType(MyDefinition::TYPE_COPY_ARRAY);
+                    if ($copyTab->isType(MyDefinition::TYPE_ARRAY)) {
+                        $copyTab->removeType(MyDefinition::TYPE_ARRAY);
                     }
-                    $copytab->setArrayValue(false);
+                    $copyTab->setArrayValue(false);
 
-                    unset($defarr);
+                    unset($defArr);
                 }
             }
         } else {
-            $extract = BuildArrays::extractArrayFromArr($defa->getArrayValue(), $originalarr);
+            $extract = BuildArrays::extractArrayFromArr($defa->getArrayValue(), $originalArr);
 
             // si on cherchait $copy = $array[11] ici il y a des arrays de type $array[11][quelquechose]
             // ou deuxieme cas
             // si on cherchait $copy = $arrays ici il y a des arrays de type $arrays[quelquechose]
             if ($extract !== false) {
                 // si on a $copy[11] = $array[12] on veut $copy[11][12]
-                if ($copyarr !== false) {
-                    $extract = BuildArrays::buildArrayFromArr($copyarr, $extract);
+                if ($copyArr !== false) {
+                    $extract = BuildArrays::buildArrayFromArr($copyArr, $extract);
                 }
 
-                $copytab->addCopyArray($extract, $defa);
-                $copytab->addType(MyDefinition::TYPE_COPY_ARRAY);
+                $copyTab->addCopyArray($extract, $defa);
+                $copyTab->addType(MyDefinition::TYPE_COPY_ARRAY);
 
-                if ($copytab->isType(MyDefinition::TYPE_ARRAY)) {
-                    $copytab->removeType(MyDefinition::TYPE_ARRAY);
+                if ($copyTab->isType(MyDefinition::TYPE_ARRAY)) {
+                    $copyTab->removeType(MyDefinition::TYPE_ARRAY);
                 }
 
-                $copytab->setArrayValue(false);
+                $copyTab->setArrayValue(false);
             }
         }
     }

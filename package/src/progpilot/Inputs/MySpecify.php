@@ -14,14 +14,14 @@ class MySpecify
 {
     private $name;
     private $language;
-    private $instanceof_name;
+    private $instanceOfName;
     private $isInstance;
 
     public function __construct($name, $language)
     {
         $this->name = $name;
         $this->language = $language;
-        $this->instanceof_name = null;
+        $this->instanceOfName = null;
         $this->isInstance = false;
     }
 
@@ -47,11 +47,11 @@ class MySpecify
 
     public function getInstanceOfName()
     {
-        return $this->instanceof_name;
+        return $this->instanceOfName;
     }
 
     public function setInstanceOfName($name)
     {
-        return $this->instanceof_name = $name;
+        return $this->instanceOfName = $name;
     }
 }

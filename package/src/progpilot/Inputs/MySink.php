@@ -16,6 +16,7 @@ class MySink extends MySpecify
     private $cwe;
     private $parameters;
     private $hasParameters;
+    private $globalConditions;
 
     public function __construct($name, $language, $attack, $cwe)
     {
@@ -25,18 +26,18 @@ class MySink extends MySpecify
         $this->cwe = $cwe;
         $this->hasParameters = false;
         $this->parameters = [];
-        $this->global_conditions = [];
+        $this->globalConditions = [];
     }
 
     public function addGlobalCondition($condition)
     {
-        $this->global_conditions[] = $condition;
+        $this->globalConditions[] = $condition;
     }
 
     public function isGlobalCondition($condition)
     {
-        foreach ($this->global_conditions as $condition_global) {
-            if ($condition === $condition_global) {
+        foreach ($this->globalConditions as $conditionGlobal) {
+            if ($condition === $conditionGlobal) {
                 return true;
             }
         }

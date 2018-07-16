@@ -14,14 +14,14 @@ class MyInclude
 {
     private $line;
     private $column;
-    private $source_file;
+    private $sourceFile;
     private $value;
 
-    public function __construct($line, $column, $source_file, $value)
+    public function __construct($line, $column, $sourceFile, $value)
     {
         $this->line = $line;
         $this->column = $column;
-        $this->source_file = $source_file;
+        $this->sourceFile = $sourceFile;
         $this->value = $value;
     }
 
@@ -37,7 +37,7 @@ class MyInclude
 
     public function getSourceFile()
     {
-        return $this->source_file;
+        return $this->sourceFile;
     }
 
     public function getValue()

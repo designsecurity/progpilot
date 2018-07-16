@@ -27,23 +27,23 @@ class Definitions
     private $kill;
 
     private $defs;
-    private $current_func;
-    private $nb_defs;
+    private $currentFunc;
+    private $nbDefs;
 
     public function __construct()
     {
-        $this->current_func = null;
-        $this->nb_defs = 0;
+        $this->currentFunc = null;
+        $this->nbDefs = 0;
     }
 
-    public function setNbDefs($nb_defs)
+    public function setNbDefs($nbDefs)
     {
-        $this->nb_defs = $nb_defs;
+        $this->nbDefs = $nbDefs;
     }
 
     public function getNbDefs()
     {
-        return $this->nb_defs;
+        return $this->nbDefs;
     }
 
     public function printAll()
@@ -69,20 +69,20 @@ class Definitions
         echo "\n";
     }
 
-    public static function printBlock($defsparam)
+    public static function printBlock($defsParam)
     {
-        if (!is_null($defsparam)) {
-            foreach ($defsparam as $def) {
+        if (!is_null($defsParam)) {
+            foreach ($defsParam as $def) {
                 $def->printStdout();
             }
         }
     }
 
-    public static function printStdout($defsparam)
+    public static function printStdout($defsParam)
     {
-        if (!is_null($defsparam)) {
-            foreach ($defsparam as $blockid => $defs) {
-                echo "blockid $blockid\n";
+        if (!is_null($defsParam)) {
+            foreach ($defsParam as $blockId => $defs) {
+                echo "blockid $blockId\n";
 
                 if (!is_null($defs)) {
                     foreach ($defs as $def) {
@@ -119,7 +119,7 @@ class Definitions
         }
 
         if ($continue) {
-            $this->nb_defs ++;
+            $this->nbDefs ++;
             $this->defs[$name][] = $def;
         }
 
@@ -238,12 +238,12 @@ class Definitions
 
     public function getCurrentFunc()
     {
-        return $this->current_func;
+        return $this->currentFunc;
     }
 
-    public function setCurrentFunc($current_func)
+    public function setCurrentFunc($currentFunc)
     {
-        $this->current_func = $current_func;
+        $this->currentFunc = $currentFunc;
     }
 
     public function getDefRefByName($name)
@@ -255,15 +255,15 @@ class Definitions
         return null;
     }
 
-    // def1 = def, def2 = defsearch inside resolvedefs function
-    public static function defEquality($def1, $def2, $bypass_array = false)
+    // def1 = def, def2 = defsearch inside ResolveDefs function
+    public static function defEquality($def1, $def2, $byPassArray = false)
     {
         if ($def1->getName() === $def2->getName()) {
             if ($def1->property->getProperties() !== $def2->property->getProperties()) {
                 return false;
             }
 
-            if (($def1->getArrayValue() !== $def2->getArrayValue()) && !$bypass_array) {
+            if (($def1->getArrayValue() !== $def2->getArrayValue()) && !$byPassArray) {
                 if (($def1->isType(MyDefinition::TYPE_ARRAY) && $def2->isType(MyDefinition::TYPE_ARRAY))) {
                     $extract = BuildArrays::extractArrayFromArr($def1->getArrayValue(), $def2->getArrayValue());
 
@@ -279,16 +279,16 @@ class Definitions
         return false;
     }
 
-    // $this->data["gen"][$blockid]
-    public function computeKill($context, $blockid)
+    // $this->data["gen"][$blockId]
+    public function computeKill($context, $blockId)
     {
-        foreach ($this->gen[$blockid] as $gen) {
+        foreach ($this->gen[$blockId] as $gen) {
             $tmpdefs = $this->getDefRefByName($gen->getName());
             if (!is_null($tmpdefs)) {
                 foreach ($tmpdefs as $def) {
                     if ($this->defEquality($def, $gen)) {
-                        if ($def !== $gen && !in_array($def, $this->kill[$blockid], true)) {
-                            $this->kill[$blockid][] = $def;
+                        if ($def !== $gen && !in_array($def, $this->kill[$blockId], true)) {
+                            $this->kill[$blockId][] = $def;
                         }
                     }
                 }
@@ -296,12 +296,12 @@ class Definitions
         }
     }
 
-    public function reachingDefs($myblocks)
+    public function reachingDefs($myBlocks)
     {
-        foreach ($myblocks as $block) {
-            $block_id = $block->getId();
-            $this->setOutMinusKill($block_id, $this->getGen($block_id));
-            $this->setOut($block_id, $this->getGen($block_id));
+        foreach ($myBlocks as $block) {
+            $blockId = $block->getId();
+            $this->setOutMinusKill($blockId, $this->getGen($blockId));
+            $this->setOut($blockId, $this->getGen($blockId));
         }
 
         $change = true;
@@ -309,7 +309,7 @@ class Definitions
         while ($change) {
             $change = false;
 
-            foreach ($myblocks as $id => $block) {
+            foreach ($myBlocks as $id => $block) {
                 foreach ($block->parents as $idparent => $parent) {
                     $idcurrent = $block->getId();
                     $idparent = $parent->getId();

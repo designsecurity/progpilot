@@ -30,18 +30,18 @@ use progpilot\Dataflow\Definitions;
 
 class ResolveDefs
 {
-    public static function funccallReturnValues($context, $myfunc_call, $instruction, $mycode, $index)
+    public static function funccallReturnValues($context, $myFuncCall, $instruction, $myCode, $index)
     {
-        if ($myfunc_call->getName() === "dirname") {
-            $codes = $mycode->getCodes();
+        if ($myFuncCall->getName() === "dirname") {
+            $codes = $myCode->getCodes();
             if (isset($codes[$index + 2]) && $codes[$index + 2]->getOpcode() === Opcodes::END_ASSIGN) {
-                $instruction_def = $codes[$index + 3];
-                $mydef_return = $instruction_def->getProperty(MyInstruction::DEF);
+                $instructionDef = $codes[$index + 3];
+                $myDefReturn = $instructionDef->getProperty(MyInstruction::DEF);
 
                 if ($instruction->isPropertyExist("argdef0")) {
                     $defarg = $instruction->getProperty("argdef0");
-                    foreach ($defarg->getLastKnownValues() as $known_value) {
-                        $mydef_return->addLastKnownValue(dirname($known_value));
+                    foreach ($defarg->getLastKnownValues() as $knownValue) {
+                        $myDefReturn->addLastKnownValue(dirname($knownValue));
                     }
                 }
             }
@@ -49,47 +49,47 @@ class ResolveDefs
     }
 
 
-    public static function funccallClass($context, $data, $myfunc_call)
+    public static function funccallClass($context, $data, $myFuncCall)
     {
         $i = 0;
-        $class_stack_name = [];
+        $classStackName = [];
 
-        if ($myfunc_call->getName() === "__construct") {
-            $class_stack_name[$i][] = $myfunc_call->getBackDef();
-        } elseif ($myfunc_call->isType(MyFunction::TYPE_FUNC_METHOD)) {
-            $properties = $myfunc_call->getBackDef()->property->getProperties();
+        if ($myFuncCall->getName() === "__construct") {
+            $classStackName[$i][] = $myFuncCall->getBackDef();
+        } elseif ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
+            $properties = $myFuncCall->getBackDef()->property->getProperties();
 
-            $tmp_properties = [];
+            $tmpProperties = [];
 
             while (true) {
-                $prop_value = [];
+                $propValue = [];
 
-                $mydef_tmp = new MyDefinition(
-                    $myfunc_call->getLine(),
-                    $myfunc_call->getColumn(),
-                    $myfunc_call->getNameInstance()
+                $myDefTmp = new MyDefinition(
+                    $myFuncCall->getLine(),
+                    $myFuncCall->getColumn(),
+                    $myFuncCall->getNameInstance()
                 );
-                $mydef_tmp->setBlockId($myfunc_call->getBlockId());
-                $mydef_tmp->setSourceMyFile($myfunc_call->getSourceMyFile());
-                $mydef_tmp->property->setProperties($tmp_properties);
-                $mydef_tmp->addType(MyDefinition::TYPE_PROPERTY);
-                $mydef_tmp->setId($myfunc_call->getBackDef()->getId() - 1);
+                $myDefTmp->setBlockId($myFuncCall->getBlockId());
+                $myDefTmp->setSourceMyFile($myFuncCall->getSourceMyFile());
+                $myDefTmp->property->setProperties($tmpProperties);
+                $myDefTmp->addType(MyDefinition::TYPE_PROPERTY);
+                $myDefTmp->setId($myFuncCall->getBackDef()->getId() - 1);
                 // we don't want the backdef but the original instance
 
-                $class_stack_name[$i] = [];
+                $classStackName[$i] = [];
                 if ($i === 0) {
                     $instances = ResolveDefs::selectInstances(
                         $context,
                         $data,
-                        $mydef_tmp
+                        $myDefTmp
                     );
                 } else {
-                    $instances = ResolveDefs::selectProperties($context, $data, $mydef_tmp);
+                    $instances = ResolveDefs::selectProperties($context, $data, $myDefTmp);
                 }
 
                 foreach ($instances as $instance) {
                     if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
-                        $class_stack_name[$i][] = $instance;
+                        $classStackName[$i][] = $instance;
                     }
                 }
 
@@ -97,131 +97,131 @@ class ResolveDefs
                     break;
                 }
 
-                $tmp_properties[] = $properties[$i];
+                $tmpProperties[] = $properties[$i];
 
                 $i ++;
             }
         }
 
-        return $class_stack_name;
+        return $classStackName;
     }
 
-    public static function instanceBuildBack($context, $data, $myfunc, $myfunc_call)
+    public static function instanceBuildBack($context, $data, $myFunc, $myFuncCall)
     {
-        if (!is_null($myfunc) && $myfunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
-            if ($myfunc_call->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                $mybackdef = $myfunc_call->getBackDef();
-                $myclass = $myfunc->getMyClass();
-                $new_myback_myclass = $context->getObjects()->getMyClassFromObject($mybackdef->getObjectId());
+        if (!is_null($myFunc) && $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
+            if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
+                $myBackDef = $myFuncCall->getBackDef();
+                $myClass = $myFunc->getMyClass();
+                $newMyBackMyClass = $context->getObjects()->getMyClassFromObject($myBackDef->getObjectId());
 
-                if (is_null($new_myback_myclass)) {
-                    $new_myback_myclass = new MyClass(
-                        $myclass->getLine(),
-                        $myclass->getColumn(),
-                        $myclass->getName()
+                if (is_null($newMyBackMyClass)) {
+                    $newMyBackMyClass = new MyClass(
+                        $myClass->getLine(),
+                        $myClass->getColumn(),
+                        $myClass->getName()
                     );
 
-                    $context->getObjects()->addMyclassToObject($mybackdef->getObjectId(), $new_myback_myclass);
+                    $context->getObjects()->addMyclassToObject($myBackDef->getObjectId(), $newMyBackMyClass);
                 }
 
-                $copy_myclass = clone $myclass;
+                $copyMyClass = clone $myClass;
 
-                foreach ($copy_myclass->getProperties() as $property) {
-                    $mydef = new MyDefinition($myfunc->getLastLine() + 1, $myfunc->getLastColumn(), "this");
+                foreach ($copyMyClass->getProperties() as $property) {
+                    $myDef = new MyDefinition($myFunc->getLastLine() + 1, $myFunc->getLastColumn(), "this");
 
-                    $mydef->addType(MyDefinition::TYPE_PROPERTY);
-                    $mydef->property->setProperties($property->property->getProperties());
-                    $mydef->setBlockId($myfunc->getLastBlockId());
-                    $mydef->setSourceMyFile($mybackdef->getSourceMyFile());
+                    $myDef->addType(MyDefinition::TYPE_PROPERTY);
+                    $myDef->property->setProperties($property->property->getProperties());
+                    $myDef->setBlockId($myFunc->getLastBlockId());
+                    $myDef->setSourceMyFile($myBackDef->getSourceMyFile());
 
-                    $new_property = $new_myback_myclass->getProperty($property->property->getProperties()[0]);
-                    if (is_null($new_property)) {
-                        $new_myback_myclass->addProperty($property);
-                        $new_property = $property;
+                    $newProperty = $newMyBackMyClass->getProperty($property->property->getProperties()[0]);
+                    if (is_null($newProperty)) {
+                        $newMyBackMyClass->addProperty($property);
+                        $newProperty = $property;
                     }
 
-                    $properties_inside = ResolveDefs::selectProperties(
+                    $propertiesInside = ResolveDefs::selectProperties(
                         $context,
-                        $myfunc->getDefs()->getOutMinusKill($mydef->getBlockId()),
-                        $mydef
+                        $myFunc->getDefs()->getOutMinusKill($myDef->getBlockId()),
+                        $myDef
                     );
 
-                    foreach ($properties_inside as $property_inside) {
+                    foreach ($propertiesInside as $propertyInside) {
                         TaintAnalysis::setTainted(
-                            $property_inside->isTainted(),
-                            $new_property,
-                            $property_inside->getTaintedByExpr()
+                            $propertyInside->isTainted(),
+                            $newProperty,
+                            $propertyInside->getTaintedByExpr()
                         );
 
-                        if ($property_inside->isSanitized()) {
-                            $new_property->setSanitized(true);
-                            foreach ($property_inside->getTypeSanitized() as $type_sanitized) {
-                                $new_property->addTypeSanitized($type_sanitized);
+                        if ($propertyInside->isSanitized()) {
+                            $newProperty->setSanitized(true);
+                            foreach ($propertyInside->getTypeSanitized() as $typeSanitized) {
+                                $newProperty->addTypeSanitized($typeSanitized);
                             }
                         }
 
-                        if ($property_inside->isType(MyDefinition::TYPE_INSTANCE)
-                            && !$new_property->isType(MyDefinition::TYPE_INSTANCE)) {
-                            $new_property->addType(MyDefinition::TYPE_INSTANCE);
-                            $new_property->setObjectId($property_inside->getObjectId());
-                            $new_property->setClassName($property_inside->getClassName());
+                        if ($propertyInside->isType(MyDefinition::TYPE_INSTANCE)
+                            && !$newProperty->isType(MyDefinition::TYPE_INSTANCE)) {
+                            $newProperty->addType(MyDefinition::TYPE_INSTANCE);
+                            $newProperty->setObjectId($propertyInside->getObjectId());
+                            $newProperty->setClassName($propertyInside->getClassName());
 
-                            $myclass = $context->getObjects()->getMyClassFromObject($property_inside->getObjectId());
+                            $myClass = $context->getObjects()->getMyClassFromObject($propertyInside->getObjectId());
                         }
                     }
 
-                    $new_property->setName($mybackdef->getName());
+                    $newProperty->setName($myBackDef->getName());
 
                     ArrayAnalysis::copyArray(
                         $context,
-                        $myfunc->getDefs()->getOutMinusKill($mydef->getBlockId()),
-                        $mydef,
-                        $mydef->getArrayValue(),
-                        $new_property,
-                        $new_property->getArrayValue()
+                        $myFunc->getDefs()->getOutMinusKill($myDef->getBlockId()),
+                        $myDef,
+                        $myDef->getArrayValue(),
+                        $newProperty,
+                        $newProperty->getArrayValue()
                     );
                 }
 
-                foreach ($copy_myclass->getMethods() as $method) {
-                    $new_method = clone $method;
-                    $new_myback_myclass->addMethod($new_method);
+                foreach ($copyMyClass->getMethods() as $method) {
+                    $newMethod = clone $method;
+                    $newMyBackMyClass->addMethod($newMethod);
                 }
             }
         }
     }
 
-    public static function instanceBuildThis($context, $data, $object_id, $myclass, $myfunc, $myfunc_call)
+    public static function instanceBuildThis($context, $data, $objectId, $myClass, $myFunc, $myFuncCall)
     {
-        if (!is_null($myfunc) && $myfunc_call->isType(MyFunction::TYPE_FUNC_METHOD)) {
-            //$copy_myclass = clone $myclass;
+        if (!is_null($myFunc) && $myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
+            //$copyMyClass = clone $myClass;
             //<= It was good ? clone for backdef and thisdef or only one of these two ?
-            $copy_myclass = $myclass;
+            $copyMyClass = $myClass;
             
-            foreach ($copy_myclass->getProperties() as $property) {
-                $mydef = new MyDefinition(
-                    $myfunc_call->getLine(),
-                    $myfunc_call->getColumn(),
-                    $myfunc_call->getNameInstance()
+            foreach ($copyMyClass->getProperties() as $property) {
+                $myDef = new MyDefinition(
+                    $myFuncCall->getLine(),
+                    $myFuncCall->getColumn(),
+                    $myFuncCall->getNameInstance()
                 );
-                $mydef->addType(MyDefinition::TYPE_PROPERTY);
-                $mydef->property->setProperties($property->property->getProperties());
-                $mydef->setBlockId($myfunc_call->getBlockId());
-                $mydef->setSourceMyFile($myfunc_call->getSourceMyFile());
-                $mydef->setId($myfunc_call->getId());
+                $myDef->addType(MyDefinition::TYPE_PROPERTY);
+                $myDef->property->setProperties($property->property->getProperties());
+                $myDef->setBlockId($myFuncCall->getBlockId());
+                $myDef->setSourceMyFile($myFuncCall->getSourceMyFile());
+                $myDef->setId($myFuncCall->getId());
 
-                $defs_found = ResolveDefs::selectProperties($context, $data, $mydef, true);
-                foreach ($defs_found as $def_found) {
-                    if ($def_found->isType(MyDefinition::TYPE_COPY_ARRAY)) {
-                        $property->setCopyArrays($def_found->getCopyArrays());
+                $defsFound = ResolveDefs::selectProperties($context, $data, $myDef, true);
+                foreach ($defsFound as $defFound) {
+                    if ($defFound->isType(MyDefinition::TYPE_COPY_ARRAY)) {
+                        $property->setCopyArrays($defFound->getCopyArrays());
                         $property->addType(MyDefinition::TYPE_COPY_ARRAY);
                     }
 
-                    TaintAnalysis::setTainted($def_found->isTainted(), $property, $def_found->getTaintedByExpr());
+                    TaintAnalysis::setTainted($defFound->isTainted(), $property, $defFound->getTaintedByExpr());
 
-                    if ($def_found->isSanitized()) {
+                    if ($defFound->isSanitized()) {
                         $property->setSanitized(true);
-                        foreach ($def_found->getTypeSanitized() as $type_sanitized) {
-                            $property->addTypeSanitized($type_sanitized);
+                        foreach ($defFound->getTypeSanitized() as $typeSanitized) {
+                            $property->addTypeSanitized($typeSanitized);
                         }
                     }
                 }
@@ -229,7 +229,7 @@ class ResolveDefs
                 $property->setName("this");
             }
 
-            $context->getObjects()->addMyclassToObject($object_id, $copy_myclass);
+            $context->getObjects()->addMyclassToObject($objectId, $copyMyClass);
         }
     }
 
@@ -237,65 +237,65 @@ class ResolveDefs
     // return true if def1 is deeper by def2
     public static function isNearestIncludes($def1, $def2)
     {
-        $def1_includedby_def2 = false;
+        $def1IncludedByDef2 = false;
 
-        $myfile = $def1->getSourceMyFile();
-        while (!is_null($myfile)) {
-            $myfile_from = $myfile->getIncludedFromMyfile();
-            if (!is_null($myfile_from) && ($myfile_from->getName() === $def2->getSourceMyFile()->getName())) {
-                $def1_includedby_def2 = true;
+        $myFile = $def1->getSourceMyFile();
+        while (!is_null($myFile)) {
+            $myFileFrom = $myFile->getIncludedFromMyfile();
+            if (!is_null($myFileFrom) && ($myFileFrom->getName() === $def2->getSourceMyFile()->getName())) {
+                $def1IncludedByDef2 = true;
                 break;
             }
 
-            $myfile = $myfile_from;
+            $myFile = $myFileFrom;
         }
 
-        if (!$def1_includedby_def2) {
-            $def2_includedby_def1 = false;
-            $myfile = $def2->getSourceMyFile();
-            while (!is_null($myfile)) {
-                $myfile_from = $myfile->getIncludedFromMyfile();
-                if (!is_null($myfile_from) && ($myfile_from->getName() === $def1->getSourceMyFile()->getName())) {
-                    $def2_includedby_def1 = true;
+        if (!$def1IncludedByDef2) {
+            $def2IncludedByDef1 = false;
+            $myFile = $def2->getSourceMyFile();
+            while (!is_null($myFile)) {
+                $myFileFrom = $myFile->getIncludedFromMyfile();
+                if (!is_null($myFileFrom) && ($myFileFrom->getName() === $def1->getSourceMyFile()->getName())) {
+                    $def2IncludedByDef1 = true;
                     break;
                 }
 
-                $myfile = $myfile_from;
+                $myFile = $myFileFrom;
             }
         }
 
         // the two defs are defined in different included file
-        if (!$def1_includedby_def2 && !$def2_includedby_def1) {
-            $myfile_def1 = $def1->getSourceMyFile();
-            while (!is_null($myfile_def1)) {
-                $myfile_def2 = $def2->getSourceMyFile();
-                while (!is_null($myfile_def2)) {
+        if (!$def1IncludedByDef2 && !$def2IncludedByDef1) {
+            $myFileDef1 = $def1->getSourceMyFile();
+            while (!is_null($myFileDef1)) {
+                $myFileDef2 = $def2->getSourceMyFile();
+                while (!is_null($myFileDef2)) {
                     // we found the file from where the include chain start
-                    if ($myfile_def1->getName() === $myfile_def2->getName()) {
+                    if ($myFileDef1->getName() === $myFileDef2->getName()) {
                         // if the file of def1 is included later so def1 is deeper
-                        if (($myfile_def1->getLine() > $myfile_def2->getLine())
-                            || ($myfile_def1->getLine() === $myfile_def2->getLine()
-                                && $myfile_def1->getColumn() >= $myfile_def2->getColumn())) {
+                        if (($myFileDef1->getLine() > $myFileDef2->getLine())
+                            || ($myFileDef1->getLine() === $myFileDef2->getLine()
+                                && $myFileDef1->getColumn() >= $myFileDef2->getColumn())) {
                             return true;
                         } else {
                             return false;
                         }
                     }
 
-                    $myfile_def2 = $myfile_def2->getIncludedFromMyfile();
+                    $myFileDef2 = $myFileDef2->getIncludedFromMyfile();
                 }
 
-                $myfile_def1 = $myfile_def1->getIncludedFromMyfile();
+                $myFileDef1 = $myFileDef1->getIncludedFromMyfile();
             }
         }
 
         // def1 is included by file from def2
         // but def2 defined before or after the include ?
-        if ($def1_includedby_def2) {
+        if ($def1IncludedByDef2) {
             // def2 defined after the include so def2 is deeper
-            if (($def2->getLine() > $myfile->getLine())
-                || ($def2->getLine() === $myfile->getLine()
-                    && $def2->getColumn() >= $myfile->getColumn())) {
+            if (($def2->getLine() > $myFile->getLine())
+                || ($def2->getLine() === $myFile->getLine()
+                    && $def2->getColumn() >= $myFile->getColumn())) {
                 return false;
             }
 
@@ -304,12 +304,12 @@ class ResolveDefs
 
         // def2 is included by file from def1
         // but def1 defined before or after the include ?
-        if ($def2_includedby_def1) {
+        if ($def2IncludedByDef1) {
             // def1 defined after the include so def1 is deeper
 
-            if (($def1->getLine() > $myfile->getLine())
-                || ($def1->getLine() === $myfile->getLine()
-                    &&  $def1->getColumn() >= $myfile->getColumn())) {
+            if (($def1->getLine() > $myFile->getLine())
+                || ($def1->getLine() === $myFile->getLine()
+                    &&  $def1->getColumn() >= $myFile->getColumn())) {
                 return true;
             }
 
@@ -342,15 +342,15 @@ class ResolveDefs
         return false;
     }
 
-    public static function getVisibilityMethod($def_name, $method)
+    public static function getVisibilityMethod($defName, $method)
     {
-        if ($def_name === "this") {
+        if ($defName === "this") {
             return true;
         }
 
         if (!is_null($method)
-                    && $method->isType(MyFunction::TYPE_FUNC_METHOD)
-                    && $method->getVisibility() === "public") {
+            && $method->isType(MyFunction::TYPE_FUNC_METHOD)
+                && $method->getVisibility() === "public") {
             return true;
         }
 
@@ -364,35 +364,35 @@ class ResolveDefs
         }
 
         if (!is_null($property)
-                    && $property->isType(MyDefinition::TYPE_PROPERTY)
-                    && $property->property->getVisibility() === "public") {
+            && $property->isType(MyDefinition::TYPE_PROPERTY)
+                && $property->property->getVisibility() === "public") {
             return true;
         }
 
         return false;
     }
 
-    public static function getVisibilityFromInstances($context, $data, $defassign)
+    public static function getVisibilityFromInstances($context, $data, $defAssign)
     {
-        $visibility_final = true;
+        $visibilityFinal = true;
 
-        if ($defassign->isType(MyDefinition::TYPE_PROPERTY)) {
-            $copy_defassign = clone $defassign;
-            $prop = $copy_defassign->property->popProperty();
-            $visibility_final = false;
+        if ($defAssign->isType(MyDefinition::TYPE_PROPERTY)) {
+            $copyDefAssign = clone $defAssign;
+            $prop = $copyDefAssign->property->popProperty();
+            $visibilityFinal = false;
 
-            $instances = ResolveDefs::selectInstances($context, $data, $copy_defassign);
+            $instances = ResolveDefs::selectInstances($context, $data, $copyDefAssign);
 
             foreach ($instances as $instance) {
                 if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
-                    $id_object = $instance->getObjectId();
-                    $tmp_myclass = $context->getObjects()->getMyClassFromObject($id_object);
+                    $idObject = $instance->getObjectId();
+                    $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
 
-                    if (!is_null($tmp_myclass)) {
-                        $property = $tmp_myclass->getProperty($prop);
+                    if (!is_null($tmpMyClass)) {
+                        $property = $tmpMyClass->getProperty($prop);
 
-                        if (!is_null($property) && (ResolveDefs::getVisibility($copy_defassign, $property))) {
-                            $visibility_final = true;
+                        if (!is_null($property) && (ResolveDefs::getVisibility($copyDefAssign, $property))) {
+                            $visibilityFinal = true;
                             break;
                         }
                     }
@@ -400,203 +400,203 @@ class ResolveDefs
             }
 
             if (count($instances) === 0) {
-                $visibility_final = true;
+                $visibilityFinal = true;
             }
         }
 
-        return $visibility_final;
+        return $visibilityFinal;
     }
 
-    public static function selectDefinitions($context, $data, $defsearch, $bypass_isnearest = false)
+    public static function selectDefinitions($context, $data, $searchedDed, $bypassIsNearest = false)
     {
-        $defsfound = [];
+        $defsFound = [];
         if (is_null($data)) {
-            return $defsfound;
+            return $defsFound;
         }
 
         foreach ($data as $def) {
-            if (Definitions::defEquality($def, $defsearch, $bypass_isnearest)
-                        && ResolveDefs::isNearest($context, $defsearch, $def)) {
+            if (Definitions::defEquality($def, $searchedDed, $bypassIsNearest)
+                        && ResolveDefs::isNearest($context, $searchedDed, $def)) {
                 // CA SERT A QUOI ICI REDONDANT AVEC LE DERNIER ?
                 if ($def->isType(MyDefinition::TYPE_INSTANCE)
-                    && $defsearch->isType(MyDefinition::TYPE_INSTANCE)) {
-                    $defsfound[$def->getBlockId()][] = $def;
+                    && $searchedDed->isType(MyDefinition::TYPE_INSTANCE)) {
+                    $defsFound[$def->getBlockId()][] = $def;
                 } elseif (($def->isType(MyDefinition::TYPE_PROPERTY) ===
-                $defsearch->isType(MyDefinition::TYPE_PROPERTY))
+                $searchedDed->isType(MyDefinition::TYPE_PROPERTY))
                     || ($def->isType(MyDefinition::TYPE_INSTANCE) ===
-                    $defsearch->isType(MyDefinition::TYPE_INSTANCE))) {
+                    $searchedDed->isType(MyDefinition::TYPE_INSTANCE))) {
                     if ($def->isType(MyDefinition::TYPE_PROPERTY)
-                        && $defsearch->isType(MyDefinition::TYPE_PROPERTY)) {
-                        $defsfound[$def->getBlockId()][] = $def;
+                        && $searchedDed->isType(MyDefinition::TYPE_PROPERTY)) {
+                        $defsFound[$def->getBlockId()][] = $def;
                     } elseif (!$def->isType(MyDefinition::TYPE_PROPERTY)
-                        && !$defsearch->isType(MyDefinition::TYPE_PROPERTY)) {
-                        $defsfound[$def->getBlockId()][] = $def;
+                        && !$searchedDed->isType(MyDefinition::TYPE_PROPERTY)) {
+                        $defsFound[$def->getBlockId()][] = $def;
                     }
                 } // we are looking for the nearest not instance of a property
                 elseif (!$def->isType(MyDefinition::TYPE_INSTANCE)
-                    && $defsearch->isType(MyDefinition::TYPE_PROPERTY)) {
-                    $defsfound[$def->getBlockId()][] = $def;
+                    && $searchedDed->isType(MyDefinition::TYPE_PROPERTY)) {
+                    $defsFound[$def->getBlockId()][] = $def;
                 }
             }
         }
 
         // si on a trouvé des defs dans le même bloc que la ou on cherche elles killent les autres
-        if (isset($defsfound[$defsearch->getBlockId()])
-                    && count($defsfound[$defsearch->getBlockId()]) > 0) {
-            $defsfound_good[$defsearch->getBlockId()] = $defsfound[$defsearch->getBlockId()];
+        if (isset($defsFound[$searchedDed->getBlockId()])
+                    && count($defsFound[$searchedDed->getBlockId()]) > 0) {
+            $defsFoundGood[$searchedDed->getBlockId()] = $defsFound[$searchedDed->getBlockId()];
         } else {
-            $defsfound_good = $defsfound;
+            $defsFoundGood = $defsFound;
         }
 
-        $truedefsfound = [];
+        $trueDefsFound = [];
 
-        foreach ($defsfound_good as $blockdefs) {
-            $nearestdef = null;
+        foreach ($defsFoundGood as $blockDefs) {
+            $nearestDef = null;
 
-            foreach ($blockdefs as $block_id => $deflast) {
-                if (!$bypass_isnearest) {
-                    if (ResolveDefs::isNearest($context, $defsearch, $deflast)) {
-                        if (is_null($nearestdef) || ResolveDefs::isNearest($context, $deflast, $nearestdef)) {
-                            $nearestdef = $deflast;
+            foreach ($blockDefs as $blockId => $defLast) {
+                if (!$bypassIsNearest) {
+                    if (ResolveDefs::isNearest($context, $searchedDed, $defLast)) {
+                        if (is_null($nearestDef) || ResolveDefs::isNearest($context, $defLast, $nearestDef)) {
+                            $nearestDef = $defLast;
                         }
                     }
                 } else {
-                    $truedefsfound[] = $deflast;
+                    $trueDefsFound[] = $defLast;
                 }
             }
 
-            if (!is_null($nearestdef) && !$bypass_isnearest) {
-                $truedefsfound[] = $nearestdef;
+            if (!is_null($nearestDef) && !$bypassIsNearest) {
+                $trueDefsFound[] = $nearestDef;
             }
         }
 
-        return $truedefsfound;
+        return $trueDefsFound;
     }
 
-    public static function selectInstances($context, $data, $tempdefa, $bypass_isnearest = false)
+    public static function selectInstances($context, $data, $tempDefa, $bypassIsNearest = false)
     {
-        $instances_defs = [];
+        $instancesDefs = [];
 
         // we can have multiple instances with the same property assigned
         // we are looking for and instance, not a property
-        $copy_tempdefa = clone $tempdefa;
+        $copyTempDefa = clone $tempDefa;
 
-        if (!$copy_tempdefa->isType(MyDefinition::TYPE_INSTANCE)) {
-            $copy_tempdefa->addType(MyDefinition::TYPE_INSTANCE);
+        if (!$copyTempDefa->isType(MyDefinition::TYPE_INSTANCE)) {
+            $copyTempDefa->addType(MyDefinition::TYPE_INSTANCE);
         }
 
-        if ($copy_tempdefa->isType(MyDefinition::TYPE_ARRAY)) {
-            $copy_tempdefa->removeType(MyDefinition::TYPE_ARRAY);
+        if ($copyTempDefa->isType(MyDefinition::TYPE_ARRAY)) {
+            $copyTempDefa->removeType(MyDefinition::TYPE_ARRAY);
         }
 
-        $copy_tempdefa->setArrayValue(false);
+        $copyTempDefa->setArrayValue(false);
 
-        $instances_defs = ResolveDefs::selectDefinitions(
+        $instancesDefs = ResolveDefs::selectDefinitions(
             $context,
             $data,
-            $copy_tempdefa,
-            $bypass_isnearest
+            $copyTempDefa,
+            $bypassIsNearest
         );
 
-        return $instances_defs;
+        return $instancesDefs;
     }
 
-    public static function selectProperties($context, $data, $tempdefa, $bypass_visibility = false)
+    public static function selectProperties($context, $data, $tempDefa, $bypassVisibility = false)
     {
-        $properties_defs = [];
+        $propertiesDefs = [];
 
-        if ($tempdefa->isType(MyDefinition::TYPE_PROPERTY)) {
-            $prop_line = $tempdefa->getLine();
-            $prop_column = $tempdefa->getColumn();
+        if ($tempDefa->isType(MyDefinition::TYPE_PROPERTY)) {
+            $propLine = $tempDefa->getLine();
+            $propColumn = $tempDefa->getColumn();
 
-            $tempdefa_prop = clone $tempdefa;
-            $first_properties = [];
-            $is_first_property = true;
-            $property_exist = false;
+            $tempDefaProp = clone $tempDefa;
+            $firstProperties = [];
+            $isFirstProperty = true;
+            $propertyExist = false;
 
-            if (is_array($tempdefa->property->getProperties())) {
-                $myproperties = $tempdefa->property->getProperties();
-                for ($index_property = count($myproperties) - 1; $index_property !== -1; $index_property --) {
-                    $tempdefa_prop->setLine($prop_line);
-                    $tempdefa_prop->setColumn($prop_column);
+            if (is_array($tempDefa->property->getProperties())) {
+                $myProperties = $tempDefa->property->getProperties();
+                for ($indexProperty = count($myProperties) - 1; $indexProperty !== -1; $indexProperty --) {
+                    $tempDefaProp->setLine($propLine);
+                    $tempDefaProp->setColumn($propColumn);
 
                     $defs = ResolveDefs::selectDefinitions(
                         $context,
                         $data,
-                        $tempdefa_prop,
-                        $bypass_visibility
+                        $tempDefaProp,
+                        $bypassVisibility
                     );
 
-                    $tempdefa_prop->property->popProperty();
-                    $prop = $myproperties[$index_property];
+                    $tempDefaProp->property->popProperty();
+                    $prop = $myProperties[$indexProperty];
 
                     if (count($defs) > 0) {
                         foreach ($defs as $defa) {
                             if ($defa->isType(MyDefinition::TYPE_PROPERTY)) {
                                 // if we found a property, we are looking for the nearest instance or not instance
                                 // and we are looking for an instance that contains this visible property
-                                $instances = ResolveDefs::selectInstances($context, $data, $tempdefa_prop);
+                                $instances = ResolveDefs::selectInstances($context, $data, $tempDefaProp);
 
                                 foreach ($instances as $instance) {
-                                    $id_object = $instance->getObjectId();
-                                    $tmp_myclass = $context->getObjects()->getMyClassFromObject($id_object);
+                                    $idObject = $instance->getObjectId();
+                                    $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
 
 
-                                    if (!is_null($tmp_myclass)) {
-                                        $property = $tmp_myclass->getProperty($prop);
+                                    if (!is_null($tmpMyClass)) {
+                                        $property = $tmpMyClass->getProperty($prop);
 
                                         if (!is_null($property)
-                                            && (ResolveDefs::getVisibility($defa, $property) || $bypass_visibility)) {
-                                            $property_exist = true;
+                                            && (ResolveDefs::getVisibility($defa, $property) || $bypassVisibility)) {
+                                            $propertyExist = true;
 
-                                            if ($is_first_property || $bypass_visibility) {
-                                                $is_first_property = false;
+                                            if ($isFirstProperty || $bypassVisibility) {
+                                                $isFirstProperty = false;
 
                                                 // if the instance is nearest (deeper) than the property,
                                                 // it has the priority
                                                 if (ResolveDefs::isNearest($context, $instance, $defa)) {
-                                                    $first_properties[] = $property;
+                                                    $firstProperties[] = $property;
                                                 } // else property exist in the nearest instance
                                                 //but property has the priority
                                                 else {
-                                                    $first_properties[] = $defa;
+                                                    $firstProperties[] = $defa;
                                                 }
                                             }
                                         }
                                     }
                                 }
 
-                                if (count($instances) === 0 && $first_properties) {
-                                    $property_exist = true;
-                                    $first_properties[] = $defa;
+                                if (count($instances) === 0 && $firstProperties) {
+                                    $propertyExist = true;
+                                    $firstProperties[] = $defa;
                                 }
                             }
                         }
                     } else {
                         // we didn't find a property, we are looking for the nearest instance
                         // or not instance
-                        $instances = ResolveDefs::selectInstances($context, $data, $tempdefa_prop);
+                        $instances = ResolveDefs::selectInstances($context, $data, $tempDefaProp);
 
                         foreach ($instances as $instance) {
                             if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
-                                for ($i = $index_property; $i < count($myproperties); $i++) {
-                                    $id_object = $instance->getObjectId();
-                                    $tmp_myclass = $context->getObjects()->getMyClassFromObject($id_object);
+                                for ($i = $indexProperty; $i < count($myProperties); $i++) {
+                                    $idObject = $instance->getObjectId();
+                                    $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
 
-                                    if (!is_null($tmp_myclass)) {
-                                        $prop = $myproperties[$i];
-                                        $property = $tmp_myclass->getProperty($prop);
+                                    if (!is_null($tmpMyClass)) {
+                                        $prop = $myProperties[$i];
+                                        $property = $tmpMyClass->getProperty($prop);
 
                                         if (!is_null($property)
-                                            && (ResolveDefs::getVisibility($tempdefa_prop, $property)
-                                                || $bypass_visibility)) {
-                                            $limit = count($myproperties) - 1;
+                                            && (ResolveDefs::getVisibility($tempDefaProp, $property)
+                                                || $bypassVisibility)) {
+                                            $limit = count($myProperties) - 1;
 
                                             if ($property->isType(MyDefinition::TYPE_INSTANCE)
-                                                && $i < (count($myproperties) - 1)) {
+                                                && $i < (count($myProperties) - 1)) {
                                                 $instance = $property;
-                                            } elseif ($i === (count($myproperties) - 1)) {
-                                                $properties_defs[] = $property;
+                                            } elseif ($i === (count($myProperties) - 1)) {
+                                                $propertiesDefs[] = $property;
                                             }
                                         }
                                     }
@@ -607,43 +607,43 @@ class ResolveDefs
                 }
             }
 
-            if ($property_exist) {
-                foreach ($first_properties as $first_property) {
-                    $properties_defs[] = $first_property;
+            if ($propertyExist) {
+                foreach ($firstProperties as $first_property) {
+                    $propertiesDefs[] = $first_property;
                 }
             }
         }
 
-        return $properties_defs;
+        return $propertiesDefs;
     }
 
-    public static function selectGlobals($name_global, $context, $data, $tempdefa, $is_iterator, $isAssign, $call_stack)
+    public static function selectGlobals($globalName, $context, $data, $tempDefa, $isIterator, $isAssign, $callStack)
     {
-        if (is_array($call_stack)) {
-            for ($call_number = count($call_stack) - 1; $call_number !== 0; $call_number --) {
-                $current_context_call = $call_stack[$call_number][4];
+        if (is_array($callStack)) {
+            for ($callNumber = count($callStack) - 1; $callNumber !== 0; $callNumber --) {
+                $currentContextCall = $callStack[$callNumber][4];
 
                 // ca peut arriver si on est dans le main() est qu'on appelle une globale
-                if (!is_null($current_context_call->func_called) && !is_null($current_context_call->func_callee)) {
+                if (!is_null($currentContextCall->func_called) && !is_null($currentContextCall->func_callee)) {
                     // we can't looking for an element of a global array in PHP
-                    $tempdefa->removeType(MyDefinition::TYPE_ARRAY);
-                    $tempdefa->setArrayValue(false);
+                    $tempDefa->removeType(MyDefinition::TYPE_ARRAY);
+                    $tempDefa->setArrayValue(false);
 
-                    $tempdefa->setName($name_global);
-                    $tempdefa->setLine($current_context_call->func_called->getLine());
-                    $tempdefa->setColumn($current_context_call->func_called->getColumn());
-                    $tempdefa->setBlockId($current_context_call->func_callee->getLastBlockId());
+                    $tempDefa->setName($globalName);
+                    $tempDefa->setLine($currentContextCall->func_called->getLine());
+                    $tempDefa->setColumn($currentContextCall->func_called->getColumn());
+                    $tempDefa->setBlockId($currentContextCall->func_callee->getLastBlockId());
 
-                    $res_global = ResolveDefs::temporarySimple(
+                    $resGlobal = ResolveDefs::temporarySimple(
                         $context,
-                        $current_context_call->func_callee->getDefs(),
-                        $tempdefa,
-                        $is_iterator,
+                        $currentContextCall->func_callee->getDefs(),
+                        $tempDefa,
+                        $isIterator,
                         $isAssign,
-                        $current_context_call
+                        $currentContextCall
                     );
-                    if (!(count($res_global) === 1 && $res_global[0] === $tempdefa)) {
-                        return $res_global;
+                    if (!(count($resGlobal) === 1 && $resGlobal[0] === $tempDefa)) {
+                        return $resGlobal;
                     }
                 }
             }
@@ -652,37 +652,37 @@ class ResolveDefs
         return array();
     }
 
-    public static function temporarySimple($context, $data, $tempdefa, $is_iterator, $isAssign, $call_stack)
+    public static function temporarySimple($context, $data, $tempDefa, $isIterator, $isAssign, $callStack)
     {
-        if ($tempdefa->isType(MyDefinition::TYPE_ARRAY) && $tempdefa->getName() === "GLOBALS") {
+        if ($tempDefa->isType(MyDefinition::TYPE_ARRAY) && $tempDefa->getName() === "GLOBALS") {
             return ResolveDefs::selectGlobals(
-                key($tempdefa->getArrayValue()),
+                key($tempDefa->getArrayValue()),
                 $context,
                 $data,
-                $tempdefa,
-                $is_iterator,
+                $tempDefa,
+                $isIterator,
                 $isAssign,
-                $call_stack
+                $callStack
             );
         } else {
-            $myexpr = $tempdefa->getExpr();
+            $myExpr = $tempDefa->getExpr();
 
-            if ($tempdefa->isType(MyDefinition::TYPE_PROPERTY)) {
+            if ($tempDefa->isType(MyDefinition::TYPE_PROPERTY)) {
                 $defs = ResolveDefs::selectProperties(
                     $context,
-                    $data->getOutMinusKill($tempdefa->getBlockId()),
-                    $tempdefa
+                    $data->getOutMinusKill($tempDefa->getBlockId()),
+                    $tempDefa
                 );
             } else {
                 $defs = ResolveDefs::selectDefinitions(
                     $context,
-                    $data->getOutMinusKill($tempdefa->getBlockId()),
-                    $tempdefa,
-                    $is_iterator
+                    $data->getOutMinusKill($tempDefa->getBlockId()),
+                    $tempDefa,
+                    $isIterator
                 );
             }
 
-            $gooddefs = [];
+            $goodDefs = [];
             if (count($defs) > 0) {
                 foreach ($defs as $defz) {
                     if ($defz->isType(MyDefinition::TYPE_GLOBAL)) {
@@ -690,61 +690,61 @@ class ResolveDefs
                             $defz->getName(),
                             $context,
                             $data,
-                            $tempdefa,
-                            $is_iterator,
+                            $tempDefa,
+                            $isIterator,
                             $isAssign,
-                            $call_stack
+                            $callStack
                         );
                     } else {
                         $defaa = ArrayAnalysis::temporarySimple(
                             $context,
-                            $data->getOutMinusKill($tempdefa->getBlockId()),
-                            $tempdefa,
+                            $data->getOutMinusKill($tempDefa->getBlockId()),
+                            $tempDefa,
                             $defz,
-                            $is_iterator,
+                            $isIterator,
                             $isAssign
                         );
 
                         foreach ($defaa as $defa) {
                             if ($defa->isType(MyDefinition::TYPE_REFERENCE)) {
-                                $refdef = new MyDefinition(
-                                    $tempdefa->getLine(),
-                                    $tempdefa->getColumn(),
+                                $refDef = new MyDefinition(
+                                    $tempDefa->getLine(),
+                                    $tempDefa->getColumn(),
                                     $defa->getRefName()
                                 );
-                                $refdef->setBlockId($tempdefa->getBlockId());
-                                $refdef->setSourceMyFile($tempdefa->getSourceMyFile());
+                                $refDef->setBlockId($tempDefa->getBlockId());
+                                $refDef->setSourceMyFile($tempDefa->getSourceMyFile());
 
                                 if ($defa->isType(MyDefinition::TYPE_ARRAY_REFERENCE)) {
-                                    $refdef->addType(MyDefinition::TYPE_ARRAY);
-                                    $refdef->setArrayValue($defa->getRefArrValue());
+                                    $refDef->addType(MyDefinition::TYPE_ARRAY);
+                                    $refDef->setArrayValue($defa->getRefArrValue());
                                 }
 
-                                $truerefs = ResolveDefs::selectDefinitions(
+                                $trueRefs = ResolveDefs::selectDefinitions(
                                     $context,
-                                    $data->getOutMinusKill($refdef->getBlockId()),
-                                    $refdef
+                                    $data->getOutMinusKill($refDef->getBlockId()),
+                                    $refDef
                                 );
 
-                                foreach ($truerefs as $ref) {
-                                    $myexpr->addDef($ref);
-                                    $gooddefs[] = $ref;
+                                foreach ($trueRefs as $ref) {
+                                    $myExpr->addDef($ref);
+                                    $goodDefs[] = $ref;
                                 }
 
-                                unset($truerefs);
+                                unset($trueRefs);
                             } else {
-                                $myexpr->addDef($defa);
-                                $gooddefs[] = $defa;
+                                $myExpr->addDef($defa);
+                                $goodDefs[] = $defa;
                             }
                         }
                     }
                 }
             } else {
-                $myexpr->addDef($tempdefa);
-                $gooddefs[] = $tempdefa;
+                $myExpr->addDef($tempDefa);
+                $goodDefs[] = $tempDefa;
             }
 
-            return $gooddefs;
+            return $goodDefs;
         }
     }
 }

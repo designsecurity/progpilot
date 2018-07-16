@@ -29,61 +29,62 @@ class MyDefinition extends MyOp
     const TYPE_INSTANCE = 0x0040;
     const TYPE_GLOBAL = 0x0080;
 
-    private $is_copyArray;
-    private $object_id;
-    private $block_id;
+    private $isCopyArray;
+    private $objectId;
+    private $blockId;
     private $isTainted;
-    private $is_const;
-    private $is_ref;
-    private $ref_name;
-    private $is_ref_arr;
-    private $ref_arr_value;
-    private $thearrays;
-    private $theexpr;
-    private $taintedbyexpr;
+    private $isConst;
+    private $isRef;
+    private $refName;
+    private $isRefArr;
+    private $refArrValue;
+    private $theArrays;
+    private $theExpr;
+    private $theExprs;
+    private $taintedByExpr;
     private $instance;
-    private $class_name;
+    private $className;
     private $isSanitized;
-    private $type_sanitized;
-    private $value_from_def;
+    private $typeSanitized;
+    private $valueFromDef;
     private $cast;
-    private $is_property;
+    private $isProperty;
     private $isInstance;
-    private $is_embeddedbychar;
+    private $isEmbeddedByChar;
 
     public $property;
 
-    public function __construct($var_line, $var_column, $var_name)
+    public function __construct($varLine, $varColumn, $varName)
     {
-        parent::__construct($var_name, $var_line, $var_column);
+        parent::__construct($varName, $varLine, $varColumn);
 
-        $this->is_embeddedbychar = [];
+        $this->isEmbeddedByChar = [];
 
-        $this->is_copyArray = false;
-        $this->value_from_def = null;
+        $this->isCopyArray = false;
+        $this->valueFromDef = null;
 
-        $this->object_id = -1;
-        $this->block_id = -1;
+        $this->objectId = -1;
+        $this->blockId = -1;
         $this->isTainted = false;
-        $this->is_const = false;
-        $this->is_ref = false;
-        $this->is_ref_arr = false;
-        $this->ref_arr_value = null;
+        $this->isConst = false;
+        $this->isRef = false;
+        $this->isRefArr = false;
+        $this->refArrValue = null;
         $this->instance = false;
-        $this->thearrays = [];
-        $this->theexpr = null;
-        $this->taintedbyexpr = null;
-        $this->class_name = "";
+        $this->theArrays = [];
+        $this->theExpr = null;
+        $this->taintedByExpr = null;
+        $this->className = "";
 
         $this->isSanitized = false;
-        $this->type_sanitized = [];
+        $this->typeSanitized = [];
 
-        $this->last_known_value = [];
+        $this->lastKnownValue = [];
 
         $this->property = new MyProperty;
         $this->cast = MyDefinition::CAST_NOT_SAFE;
 
-        $this->is_property = false;
+        $this->isProperty = false;
         $this->isInstance = false;
     }
 
@@ -94,7 +95,7 @@ class MyDefinition extends MyOp
 
     public function printStdout()
     {
-        echo "def id ".$this->var_id." :: \
+        echo "def id ".$this->varId." :: \
         name = ".htmlentities($this->getName(), ENT_QUOTES, 'UTF-8')." :: \
         line = ".$this->getLine()." :: column = ".$this->getColumn()." :: \
         tainted = ".$this->isTainted()." :: \
@@ -106,12 +107,12 @@ class MyDefinition extends MyOp
         cast = ".$this->getCast()."\n";
 
         echo "last_known_value :\n";
-        var_dump($this->last_known_value);
+        var_dump($this->lastKnownValue);
 
         echo "is_embeddedbychar :\n";
-        var_dump($this->is_embeddedbychar);
+        var_dump($this->isEmbeddedByChar);
         echo "type_sanitized :\n";
-        var_dump($this->type_sanitized);
+        var_dump($this->typeSanitized);
 
         if ($this->isType(MyDefinition::TYPE_ARRAY)) {
             echo "array index value :\n";
@@ -141,13 +142,13 @@ class MyDefinition extends MyOp
     public function setIsEmbeddedByChars($chars, $control)
     {
         foreach ($chars as $char => $value) {
-            if (!isset($this->is_embeddedbychar[$char])) {
-                $this->is_embeddedbychar[$char] = $value;
+            if (!isset($this->isEmbeddedByChar[$char])) {
+                $this->isEmbeddedByChar[$char] = $value;
             } else {
                 if (!$value && !$control) {
-                    $this->is_embeddedbychar[$char] = false;
+                    $this->isEmbeddedByChar[$char] = false;
                 } elseif ($value) {
-                    $this->is_embeddedbychar[$char] = true;
+                    $this->isEmbeddedByChar[$char] = true;
                 }
             }
         }
@@ -155,18 +156,18 @@ class MyDefinition extends MyOp
 
     public function getIsEmbeddedByChars()
     {
-        return $this->is_embeddedbychar;
+        return $this->isEmbeddedByChar;
     }
 
     public function setIsEmbeddedByChar($char, $bool)
     {
-        $this->is_embeddedbychar[$char] = $bool;
+        $this->isEmbeddedByChar[$char] = $bool;
     }
 
     public function getIsEmbeddedByChar($char)
     {
-        if (isset($this->is_embeddedbychar[$char])) {
-            return $this->is_embeddedbychar[$char];
+        if (isset($this->isEmbeddedByChar[$char])) {
+            return $this->isEmbeddedByChar[$char];
         }
 
         return false;
@@ -184,61 +185,61 @@ class MyDefinition extends MyOp
 
     public function setValueFromDef($def)
     {
-        $this->value_from_def = $def;
+        $this->valueFromDef = $def;
     }
 
     public function getValueFromDef()
     {
-        return $this->value_from_def;
+        return $this->valueFromDef;
     }
 
     public function resetLastKnownValues()
     {
-        $this->last_known_value = [];
+        $this->lastKnownValue = [];
     }
 
     public function setLastKnownValues($values)
     {
-        $this->last_known_value = $values;
+        $this->lastKnownValue = $values;
     }
 
     public function setLastKnownValue($id, $value)
     {
-        $this->last_known_value[$id] = $value;
+        $this->lastKnownValue[$id] = $value;
     }
 
     public function addLastKnownValue($value)
     {
         $value = rtrim(ltrim($value));
 
-        if (Common::validLastKnownValue($value) && !in_array($value, $this->last_known_value, true)) {
-            $this->last_known_value[] = $value;
+        if (Common::validLastKnownValue($value) && !in_array($value, $this->lastKnownValue, true)) {
+            $this->lastKnownValue[] = $value;
         }
     }
 
     public function getLastKnownValues()
     {
-        return $this->last_known_value;
+        return $this->lastKnownValue;
     }
 
     public function getClassName()
     {
-        return $this->class_name;
+        return $this->className;
     }
 
-    public function setClassName($class_name)
+    public function setClassName($className)
     {
-        $this->class_name = $class_name;
+        $this->className = $className;
     }
 
     public function getRefName()
     {
-        return $this->ref_name;
+        return $this->refName;
     }
 
     public function setRefName($refname)
     {
-        $this->ref_name = $refname;
+        $this->refName = $refname;
     }
 
     public function isTainted()
@@ -253,75 +254,75 @@ class MyDefinition extends MyOp
 
     public function setTaintedByExpr($expr)
     {
-        $this->taintedbyexpr = $expr;
+        $this->taintedByExpr = $expr;
     }
 
     public function getTaintedByExpr()
     {
-        return $this->taintedbyexpr;
+        return $this->taintedByExpr;
     }
 
     public function getRefArrValue()
     {
-        return $this->ref_arr_value;
+        return $this->refArrValue;
     }
 
     public function setRefArrValue($arr)
     {
-        $this->ref_arr_value = $arr;
+        $this->refArrValue = $arr;
     }
 
     public function getObjectId()
     {
-        return $this->object_id;
+        return $this->objectId;
     }
 
-    public function setObjectId($object_id)
+    public function setObjectId($objectId)
     {
-        $this->object_id = $object_id;
+        $this->objectId = $objectId;
     }
 
     public function getBlockId()
     {
-        return $this->block_id;
+        return $this->blockId;
     }
 
-    public function setBlockId($block_id)
+    public function setBlockId($blockId)
     {
-        $this->block_id = $block_id;
+        $this->blockId = $blockId;
     }
 
     public function addCopyArray($arr, $def)
     {
         $val = [$arr, $def];
-        if (!in_array($val, $this->thearrays, true)) {
-            $this->thearrays[] = $val;
+        if (!in_array($val, $this->theArrays, true)) {
+            $this->theArrays[] = $val;
         }
     }
 
-    public function setCopyArrays($thearrays)
+    public function setCopyArrays($theArrays)
     {
-        $this->thearrays = $thearrays;
+        $this->theArrays = $theArrays;
     }
 
     public function getCopyArrays()
     {
-        return $this->thearrays;
+        return $this->theArrays;
     }
 
     public function setExprs($exprs)
     {
-        $this->theexprs = $exprs;
+        $this->theExprs = $exprs;
     }
 
-    public function setExpr($myexpr)
+    public function setExpr($myExpr)
     {
-        $this->theexpr = $myexpr;
+        $this->theExpr = $myExpr;
     }
 
     public function getExpr()
     {
-        return $this->theexpr;
+        return $this->theExpr;
     }
 
     public function setSanitized($isSanitized)
@@ -334,26 +335,26 @@ class MyDefinition extends MyOp
         return $this->isSanitized;
     }
 
-    public function setTypeSanitized($type_sanitized)
+    public function setTypeSanitized($typeSanitized)
     {
-        $this->type_sanitized = $type_sanitized;
+        $this->typeSanitized = $typeSanitized;
     }
 
     public function getTypeSanitized()
     {
-        return $this->type_sanitized;
+        return $this->typeSanitized;
     }
 
-    public function addTypeSanitized($type_sanitized)
+    public function addTypeSanitized($typeSanitized)
     {
-        if (!in_array($type_sanitized, $this->type_sanitized, true)) {
-            $this->type_sanitized[] = $type_sanitized;
+        if (!in_array($typeSanitized, $this->typeSanitized, true)) {
+            $this->typeSanitized[] = $typeSanitized;
         }
     }
 
-    public function isTypeSanitized($type_sanitized)
+    public function isTypeSanitized($typeSanitized)
     {
-        if (in_array($type_sanitized, $this->type_sanitized, true)) {
+        if (in_array($typeSanitized, $this->typeSanitized, true)) {
             return true;
         }
 

@@ -19,27 +19,28 @@ class MyFunction extends MyOp
     const TYPE_FUNC_STATIC = 0x0002;
     const TYPE_FUNC_METHOD = 0x0004;
 
-    private $nb_params;
+    private $nbParams;
     private $params;
-    private $return_defs;
+    private $returnDefs;
     private $defs;
     private $blocks;
     private $visibility;
-    private $myclass;
+    private $myClass;
     private $instance;
-    private $block_id;
+    private $blockId;
+    private $nameInstance;
+    
+    private $thisDef;
+    private $backDef;
 
-    private $this_def;
-    private $back_def;
-
-    private $last_line;
-    private $last_column;
-    private $last_block_id;
+    private $lastLine;
+    private $lastColumn;
+    private $lastBlockId;
 
     private $isAnalyzed;
     private $isDataAnalyzed;
 
-    private $mycode;
+    private $myCode;
 
     public $property;
 
@@ -48,25 +49,25 @@ class MyFunction extends MyOp
         parent::__construct($name, 0, 0);
 
         $this->params = [];
-        $this->return_defs = [];
+        $this->returnDefs = [];
         $this->visibility = "public";
         $this->myclass = null;
-        $this->name_instance = null;
-        $this->this_def = null;
-        $this->back_def = null;
-        $this->block_id = 0;
-        $this->nb_params = 0;
+        $this->nameInstance = null;
+        $this->thisDef = null;
+        $this->backDef = null;
+        $this->blockId = 0;
+        $this->nbParams = 0;
 
-        $this->last_line = 0;
-        $this->last_column = 0;
-        $this->last_block_id = 0;
+        $this->lastLine = 0;
+        $this->lastColumn = 0;
+        $this->lastBlockId = 0;
 
         $this->isAnalyzed = false;
         $this->isDataAnalyzed = false;
 
         $this->property = new MyProperty;
 
-        $this->mycode = new \progpilot\Code\MyCode;
+        $this->myCode = new \progpilot\Code\MyCode;
     }
 
     public function __clone()
@@ -94,44 +95,44 @@ class MyFunction extends MyOp
         return $this->isAnalyzed;
     }
 
-    public function setMyCode($mycode)
+    public function setMyCode($myCode)
     {
-        $this->mycode = $mycode;
+        $this->myCode = $myCode;
     }
 
     public function getMyCode()
     {
-        return $this->mycode;
+        return $this->myCode;
     }
 
-    public function setLastLine($last_line)
+    public function setLastLine($lastLine)
     {
-        $this->last_line = $last_line;
+        $this->lastLine = $lastLine;
     }
 
-    public function setLastColumn($last_column)
+    public function setLastColumn($lastColumn)
     {
-        $this->last_column = $last_column;
+        $this->lastColumn = $lastColumn;
     }
 
-    public function setLastBlockId($last_block_id)
+    public function setLastBlockId($lastBlockId)
     {
-        $this->last_block_id = $last_block_id;
+        $this->lastBlockId = $lastBlockId;
     }
 
     public function getLastLine()
     {
-        return $this->last_line;
+        return $this->lastLine;
     }
 
     public function getLastColumn()
     {
-        return $this->last_column;
+        return $this->lastColumn;
     }
 
     public function getLastBlockId()
     {
-        return $this->last_block_id;
+        return $this->lastBlockId;
     }
 
     public function getMyClass()
@@ -139,39 +140,39 @@ class MyFunction extends MyOp
         return $this->myclass;
     }
 
-    public function setMyClass($myclass)
+    public function setMyClass($myClass)
     {
-        $this->myclass = $myclass;
+        $this->myclass = $myClass;
     }
 
     public function getThisDef()
     {
-        return $this->this_def;
+        return $this->thisDef;
     }
 
-    public function setThisDef($this_def)
+    public function setThisDef($thisDef)
     {
-        $this->this_def = $this_def;
+        $this->thisDef = $thisDef;
     }
 
     public function getBackDef()
     {
-        return $this->back_def;
+        return $this->backDef;
     }
 
-    public function setBackDef($back_def)
+    public function setBackDef($backDef)
     {
-        $this->back_def = $back_def;
+        $this->backDef = $backDef;
     }
 
     public function getNameInstance()
     {
-        return $this->name_instance;
+        return $this->nameInstance;
     }
 
-    public function setNameInstance($name_instance)
+    public function setNameInstance($nameInstance)
     {
-        $this->name_instance = $name_instance;
+        $this->nameInstance = $nameInstance;
     }
 
     public function setVisibility($visibility)
@@ -214,14 +215,14 @@ class MyFunction extends MyOp
         return $this->params;
     }
 
-    public function setNbParams($nb_params)
+    public function setNbParams($nbParams)
     {
-        $this->nb_params = $nb_params;
+        $this->nbParams = $nbParams;
     }
 
     public function getNbParams()
     {
-        return $this->nb_params;
+        return $this->nbParams;
     }
 
     public function getParam($i)
@@ -235,21 +236,21 @@ class MyFunction extends MyOp
 
     public function getReturnDefs()
     {
-        return $this->return_defs;
+        return $this->returnDefs;
     }
 
     public function addReturnDef($return_def)
     {
-        $this->return_defs[] = $return_def;
+        $this->returnDefs[] = $return_def;
     }
 
     public function getBlockId()
     {
-        return $this->block_id;
+        return $this->blockId;
     }
 
-    public function setBlockId($block_id)
+    public function setBlockId($blockId)
     {
-        $this->block_id = $block_id;
+        $this->blockId = $blockId;
     }
 }

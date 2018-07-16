@@ -28,23 +28,23 @@ class Callgraph
         return $this->nodes;
     }
 
-    public function newBlock($myblock)
+    public function newBlock($myBlock)
     {
         $obj = new \stdClass;
         $obj->calls = [];
         $obj->children = [];
 
-        $this->blocks[$myblock] = $obj;
+        $this->blocks[$myBlock] = $obj;
     }
 
-    public function addNode($myfunc, $myclass)
+    public function addNode($myFunc, $myClass)
     {
         $NodeCG = new NodeCG(
-            $myfunc->getName(),
-            $myfunc->getLine(),
-            $myfunc->getColumn(),
-            $myfunc->getSourceMyFile()->getName(),
-            $myclass
+            $myFunc->getName(),
+            $myFunc->getLine(),
+            $myFunc->getColumn(),
+            $myFunc->getSourceMyFile()->getName(),
+            $myClass
         );
 
         if (!array_key_exists($NodeCG->getId(), $this->nodes)) {
@@ -52,74 +52,74 @@ class Callgraph
         }
     }
 
-    public function addEdge($myfunc_caller, $myclass_caller, $myfunc_callee, $myclass_callee)
+    public function addEdge($myFuncCaller, $myClassCaller, $myFuncCallee, $myClassCallee)
     {
-        $NodeCG_caller = new NodeCG(
-            $myfunc_caller->getName(),
-            $myfunc_caller->getLine(),
-            $myfunc_caller->getColumn(),
-            $myfunc_caller->getSourceMyFile()->getName(),
-            $myclass_caller
+        $NodeCGCaller = new NodeCG(
+            $myFuncCaller->getName(),
+            $myFuncCaller->getLine(),
+            $myFuncCaller->getColumn(),
+            $myFuncCaller->getSourceMyFile()->getName(),
+            $myClassCaller
         );
-        $NodeCG_callee = new NodeCG(
-            $myfunc_callee->getName(),
-            $myfunc_callee->getLine(),
-            $myfunc_callee->getColumn(),
-            $myfunc_callee->getSourceMyFile()->getName(),
-            $myclass_callee
+        $NodeCGCallee = new NodeCG(
+            $myFuncCallee->getName(),
+            $myFuncCallee->getLine(),
+            $myFuncCallee->getColumn(),
+            $myFuncCallee->getSourceMyFile()->getName(),
+            $myClassCallee
         );
 
-        if (array_key_exists($NodeCG_caller->getId(), $this->nodes)
-                    && array_key_exists($NodeCG_callee->getId(), $this->nodes)
-                    && $NodeCG_caller->getId() !== $NodeCG_callee->getId()) {
-            if (!in_array($NodeCG_callee->getId(), $this->nodes[$NodeCG_caller->getId()]->getChildren(), true)) {
-                $storage = $this->nodes[$NodeCG_caller->getId()]->getChildren();
-                $storage[] = $NodeCG_callee->getId();
-                $this->nodes[$NodeCG_caller->getId()]->setChildren($storage);
+        if (array_key_exists($NodeCGCaller->getId(), $this->nodes)
+                    && array_key_exists($NodeCGCallee->getId(), $this->nodes)
+                    && $NodeCGCaller->getId() !== $NodeCGCallee->getId()) {
+            if (!in_array($NodeCGCallee->getId(), $this->nodes[$NodeCGCaller->getId()]->getChildren(), true)) {
+                $storage = $this->nodes[$NodeCGCaller->getId()]->getChildren();
+                $storage[] = $NodeCGCallee->getId();
+                $this->nodes[$NodeCGCaller->getId()]->setChildren($storage);
 
-                $this->nodes[$NodeCG_callee->getId()]->setNbParents(
-                    $this->nodes[$NodeCG_callee->getId()]->getNbParents() + 1
+                $this->nodes[$NodeCGCallee->getId()]->setNbParents(
+                    $this->nodes[$NodeCGCallee->getId()]->getNbParents() + 1
                 );
             }
         }
     }
 
-    public function addFuncCall($myblock, $myfunc, $myclass)
+    public function addFuncCall($myBlock, $myFunc, $myClass)
     {
-        if (!$this->blocks->contains($myblock)) {
-            $this->newBlock($myblock);
+        if (!$this->blocks->contains($myBlock)) {
+            $this->newBlock($myBlock);
         }
 
-        if (!in_array($myfunc, $this->blocks[$myblock]->calls, true)) {
-            $storage = $this->blocks[$myblock]->calls;
-            $storage[] = [$myfunc, $myclass];
-            $this->blocks[$myblock]->calls = $storage;
-        }
-    }
-
-    public function addChild($myblock_parent, $myblock_child)
-    {
-        if ($myblock_parent !== $myblock_child) {
-            if (!$this->blocks->contains($myblock_parent)) {
-                $this->newBlock($myblock_parent);
-            }
-
-            if (!$this->blocks->contains($myblock_child)) {
-                $this->newBlock($myblock_child);
-            }
-
-            if (!in_array($myblock_child, $this->blocks[$myblock_parent]->children, true)) {
-                $storage = $this->blocks[$myblock_parent]->children;
-                $storage[] = $myblock_child;
-                $this->blocks[$myblock_parent]->children = $storage;
-            }
+        if (!in_array($myFunc, $this->blocks[$myBlock]->calls, true)) {
+            $storage = $this->blocks[$myBlock]->calls;
+            $storage[] = [$myFunc, $myClass];
+            $this->blocks[$myBlock]->calls = $storage;
         }
     }
 
-    public function getCalls($myblock)
+    public function addChild($myBlockParent, $myBlockChild)
     {
-        if ($this->blocks->contains($myblock)) {
-            return $this->blocks[$myblock]->calls;
+        if ($myBlockParent !== $myBlockChild) {
+            if (!$this->blocks->contains($myBlockParent)) {
+                $this->newBlock($myBlockParent);
+            }
+
+            if (!$this->blocks->contains($myBlockChild)) {
+                $this->newBlock($myBlockChild);
+            }
+
+            if (!in_array($myBlockChild, $this->blocks[$myBlockParent]->children, true)) {
+                $storage = $this->blocks[$myBlockParent]->children;
+                $storage[] = $myBlockChild;
+                $this->blocks[$myBlockParent]->children = $storage;
+            }
+        }
+    }
+
+    public function getCalls($myBlock)
+    {
+        if ($this->blocks->contains($myBlock)) {
+            return $this->blocks[$myBlock]->calls;
         }
 
         return null;
@@ -128,55 +128,55 @@ class Callgraph
     public function computeCallGraph()
     {
         // transform parents to children
-        foreach ($this->blocks as $myblock) {
-            foreach ($myblock->parents as $parent) {
-                $this->addChild($parent, $myblock);
+        foreach ($this->blocks as $myBlock) {
+            foreach ($myBlock->parents as $parent) {
+                $this->addChild($parent, $myBlock);
             }
         }
 
         // handle circular graph like recursive function
-        $null_nodes = [];
+        $nullNodes = [];
         // reduce graph
-        foreach ($this->blocks as $myblock) {
+        foreach ($this->blocks as $myBlock) {
             do {
                 $modification = false;
-                $new_children = [];
+                $newChildren = [];
 
-                foreach ($this->blocks[$myblock]->children as $child) {
-                    if ($myblock !== $child) {
-                        $calls_child = $this->getCalls($child);
-                        if (is_null($calls_child) || count($calls_child) === 0) {
-                            if (!in_array($child, $null_nodes, true)) {
-                                $null_nodes[] = $child;
-                                foreach ($this->blocks[$child]->children as $child_far) {
-                                    if (!in_array($child_far, $new_children, true)
-                                                && $myblock !== $child_far
-                                                                 && $child !== $child_far) {
-                                        $new_children[] = $child_far;
+                foreach ($this->blocks[$myBlock]->children as $child) {
+                    if ($myBlock !== $child) {
+                        $callsChild = $this->getCalls($child);
+                        if (is_null($callsChild) || count($callsChild) === 0) {
+                            if (!in_array($child, $nullNodes, true)) {
+                                $nullNodes[] = $child;
+                                foreach ($this->blocks[$child]->children as $childFar) {
+                                    if (!in_array($childFar, $newChildren, true)
+                                                && $myBlock !== $childFar
+                                                                 && $child !== $childFar) {
+                                        $newChildren[] = $childFar;
                                         $modification = true;
                                     }
                                 }
                             }
                         } else {
-                            $new_children[] = $child;
+                            $newChildren[] = $child;
                         }
                     }
                 }
 
-                $this->blocks[$myblock]->children = $new_children;
+                $this->blocks[$myBlock]->children = $newChildren;
             } while ($modification);
         }
 
         //calculate nodes
-        foreach ($this->blocks as $myblock) {
-            foreach ($this->blocks[$myblock]->calls as $call) {
+        foreach ($this->blocks as $myBlock) {
+            foreach ($this->blocks[$myBlock]->calls as $call) {
                 $this->addNode($call[0], $call[1]);
             }
         }
 
         // calculate edges
-        foreach ($this->blocks as $myblock) {
-            $calls = $this->getCalls($myblock);
+        foreach ($this->blocks as $myBlock) {
+            $calls = $this->getCalls($myBlock);
 
             // calculate edges first case : sequential calls
             if (count($calls) > 1) {
@@ -187,18 +187,18 @@ class Callgraph
 
             // calculate edges second case : calls from parents
             if (count($calls) > 0) {
-                $last_call_parent = $calls[count($calls) - 1][0];
-                $last_myclass_parent = $calls[count($calls) - 1][1];
-                foreach ($this->blocks[$myblock]->children as $child) {
+                $lastCallParent = $calls[count($calls) - 1][0];
+                $lastMyClassParent = $calls[count($calls) - 1][1];
+                foreach ($this->blocks[$myBlock]->children as $child) {
                     $calls = $this->getCalls($child);
                     if (!is_null($calls) && count($calls) > 0) {
-                        $first_call_child = $calls[0][0];
-                        $first_myclass_child = $calls[0][1];
+                        $firstCallChild = $calls[0][0];
+                        $firstMyClassChild = $calls[0][1];
                         $this->addEdge(
-                            $last_call_parent,
-                            $last_myclass_parent,
-                            $first_call_child,
-                            $first_myclass_child
+                            $lastCallParent,
+                            $lastMyClassParent,
+                            $firstCallChild,
+                            $firstMyClassChild
                         );
                     }
                 }

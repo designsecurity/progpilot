@@ -48,44 +48,44 @@ class Utils
 
     public static function printProperties($props)
     {
-        $property_name = "";
+        $propertyName = "";
 
         if (is_array($props)) {
             foreach ($props as $prop) {
-                $property_name .= "->".Utils::encodeCharacters($prop);
+                $propertyName .= "->".Utils::encodeCharacters($prop);
             }
         }
 
-        return $property_name;
+        return $propertyName;
     }
 
     public static function printDefinition($def)
     {
         if ($def->isType(MyDefinition::TYPE_PROPERTY)) {
-            $def_name = "\$".Utils::encodeCharacters($def->getName()).
+            $defName = "\$".Utils::encodeCharacters($def->getName()).
                 Utils::printProperties($def->property->getProperties());
         } else {
-            $def_name = "\$".Utils::encodeCharacters($def->getName());
+            $defName = "\$".Utils::encodeCharacters($def->getName());
         }
 
-        $name_array = "";
+        $nameArray = "";
         if ($def->isType(MyDefinition::TYPE_ARRAY)) {
-            Utils::printArray($def->getArrayValue(), $name_array);
+            Utils::printArray($def->getArrayValue(), $nameArray);
         }
 
-        return $def_name.$name_array;
+        return $defName.$nameArray;
     }
 
     public static function printFunction($function)
     {
-        $function_name = "\$";
+        $functionName = "\$";
         if ($function->isType(MyFunction::TYPE_FUNC_METHOD)) {
-            $function_name = Utils::encodeCharacters($function->getMyClass()->getName())."->";
+            $functionName = Utils::encodeCharacters($function->getMyClass()->getName())."->";
         }
 
-        $function_name .= Utils::encodeCharacters($function->getName());
+        $functionName .= Utils::encodeCharacters($function->getName());
 
-        return $function_name;
+        return $functionName;
     }
 
     public static function printArray($array, &$print)
