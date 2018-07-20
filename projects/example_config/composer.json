@@ -5,6 +5,10 @@
         {
             "type": "path",
             "url": "../../package"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/ircmaxell/php-cfg"
         }
     ],
     "require": {

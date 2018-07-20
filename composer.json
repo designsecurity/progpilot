@@ -8,6 +8,12 @@
             "email": "eric.therond.fr@gmail.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/ircmaxell/php-cfg"
+        }
+    ],
     "require": {
         "php": "^7.0",
         "ircmaxell/php-cfg": "dev-master",

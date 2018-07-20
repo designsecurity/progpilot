@@ -55,8 +55,7 @@ class RunAllFoldersTest extends TestCase
                         $this->assertContains($expectedSourceLine, $vuln["source_line"]);
                         $this->assertEquals($expectedVulnName, $vuln["vuln_name"]);
                     }
-                }
-                // custom
+                } // custom
                 else {
                     $this->assertEquals($expectedSourceName, $vuln["vuln_line"]);
                     $this->assertEquals($expectedSourceLine, $vuln["vuln_column"]);

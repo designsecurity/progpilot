@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         colors="false"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         syntaxCheck="false"
+         bootstrap="./vendor/autoload.php">
+    <testsuites>
+        <testsuite name="progpilot Test Suite">
+            <file>run_all.php</file>
+            <file>run_all_folders.php</file>
+            <file>run_exclude_files.php</file>
+            <file>run_flows.php</file>
+        </testsuite>
+    </testsuites>
+
+</phpunit>
