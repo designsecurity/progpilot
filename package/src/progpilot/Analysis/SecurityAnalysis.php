@@ -179,7 +179,7 @@ class SecurityAnalysis
         $temp["source_file"] = [];
 
         if ($context->outputs->getTaintedFlow()) {
-            $temp["taintedFlow"] = [];
+            $temp["tainted_flow"] = [];
         }
 
         $nbtainted = 0;
@@ -209,7 +209,7 @@ class SecurityAnalysis
                         $temp["source_name"][] = $sourceName;
 
                         if ($context->outputs->getTaintedFlow()) {
-                            $temp["taintedFlow"][] = $resultTaintedFlow;
+                            $temp["tainted_flow"][] = $resultTaintedFlow;
                         }
 
                         $temp["source_line"][] = $sourceLine;

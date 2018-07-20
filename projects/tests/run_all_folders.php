@@ -1,13 +1,15 @@
 <?php
 
 require_once './vendor/autoload.php';
-require_once './framework_test.php';
-$framework = new framework_test;
+use PHPUnit\Framework\TestCase;
 
-require_once './foldertest.php';
-
-try {
-    foreach ($framework->get_testbasis() as $folder) {
+class RunAllFoldersTest extends TestCase
+{
+    /**
+     * @dataProvider dataProvider
+     */
+    public function testSecurity($folder, $expectedVulns)
+    {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
@@ -15,8 +17,15 @@ try {
         $context->inputs->setSinks("../../package/src/uptodate_data/sinks.json");
         $context->inputs->setSanitizers("../../package/src/uptodate_data/sanitizers.json");
         $context->inputs->setValidators("../../package/src/uptodate_data/validators.json");
-        $context->inputs->setFolder($folder);
+        $context->inputs->setCustomRules("../../package/src/uptodate_data/rules.json");
 
+        $context->setAnalyzeHardrules(true);
+        $context->setAnalyzeFunctions(false);
+        $context->outputs->taintedFlow(true);
+        
+        $nbVulns = 0;
+        $context->inputs->setFolder($folder);
+        
         try {
             $analyzer->run($context);
         } catch (Exception $e) {
@@ -24,43 +33,49 @@ try {
         }
 
         $results = $context->outputs->getResults();
-        $outputjson = array('results' => $results);
-        $parsed_json = $outputjson["results"];
 
-        $result_test = false;
-
-        if (is_array($parsed_json) && count($parsed_json) > 0) {
-            foreach ($parsed_json as $vuln) {
-                $result_test = true;
+        foreach ($results as $vuln) {
+            if (isset($expectedVulns[$nbVulns])) {
+                $expectedSourceName = $expectedVulns[$nbVulns][0];
+                $expectedSourceLine = $expectedVulns[$nbVulns][1];
+                $expectedVulnName = $expectedVulns[$nbVulns][2];
                 
+                // taint-style
                 if (isset($vuln['source_name']) && isset($vuln['source_line'])) {
-                    $basis_outputs = [
-                        $vuln['source_name'],
-                        $vuln['source_line'],
-                        $vuln['vuln_name']];
-                } else {
-                    $basis_outputs = [
-                        $vuln['vuln_name'],
-                        $vuln['vuln_line'],
-                        $vuln['vuln_column']];
+                    if (is_array($expectedSourceName) && is_array($expectedSourceLine)) {
+                        foreach ($expectedSourceName as $oneSourceName) {
+                            $this->assertContains($oneSourceName, $vuln["source_name"]);
+                        }
+                            
+                        foreach ($expectedSourceLine as $oneSourceLine) {
+                            $this->assertContains($oneSourceLine, $vuln["source_line"]);
+                        }
+                    } else {
+                        $this->assertContains($expectedSourceName, $vuln["source_name"]);
+                        $this->assertContains($expectedSourceLine, $vuln["source_line"]);
+                        $this->assertEquals($expectedVulnName, $vuln["vuln_name"]);
+                    }
                 }
-
-                if (!$framework->check_outputs($folder, $basis_outputs, $parsed_json)) {
-                    $result_test = false;
-                    break;
+                // custom
+                else {
+                    $this->assertEquals($expectedSourceName, $vuln["vuln_line"]);
+                    $this->assertEquals($expectedSourceLine, $vuln["vuln_column"]);
+                    $this->assertEquals($expectedVulnName, $vuln["vuln_name"]);
                 }
+            } else {
+                $this->assertTrue(false);
             }
-        } else {
-            if (count($framework->get_output($folder)) == 0) {
-                $result_test = true;
-            }
+            
+            $nbVulns ++;
         }
-
-        if (!$result_test) {
-            echo "[$folder] test result ko\n";
-            var_dump($parsed_json);
-        }
+        
+        $this->assertCount(count($expectedVulns), $results);
     }
-} catch (\RuntimeException $e) {
-    $result = $e->getMessage();
+
+    public function dataProvider()
+    {
+        $tab = include("foldertest.php");
+        
+        return $tab;
+    }
 }

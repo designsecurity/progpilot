@@ -1,22 +1,15 @@
 <?php
 
 require_once './vendor/autoload.php';
-require_once './framework_test.php';
-$framework = new framework_test;
+use PHPUnit\Framework\TestCase;
 
-require_once './ooptest.php';
-require_once './realtest.php';
-require_once './generictest.php';
-require_once './includetest.php';
-require_once './datatest.php';
-require_once './conditionstest.php';
-//require_once './negativetest.php'; !!!! ERREUR SYNTAX = RESTE NON EXECUTE ?
-//require_once './twigtest.php';
-require_once './testvulntestsuite.php';
-require_once './customtest.php';
-
-try {
-    foreach ($framework->get_testbasis() as $file) {
+class RunAllTest extends TestCase
+{
+    /**
+     * @dataProvider dataProvider
+     */
+    public function testSecurity($file, $expectedVulns)
+    {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
@@ -25,24 +18,14 @@ try {
         $context->inputs->setSanitizers("../../package/src/uptodate_data/sanitizers.json");
         $context->inputs->setValidators("../../package/src/uptodate_data/validators.json");
         $context->inputs->setCustomRules("../../package/src/uptodate_data/rules.json");
-        $context->inputs->setFile($file);
 
         $context->setAnalyzeHardrules(true);
         $context->setAnalyzeFunctions(false);
         $context->outputs->taintedFlow(true);
         
-        //$context->set_print_file(true);
-
-        //$context->set_analyze_includes(false);
-
-        if ($file === "./tests/includes/simple5.php") {
-            /*
-              $context->outputs->resolve_includes_file("./tests/includes/includes_simple5.txt");
-              $context->outputs->resolve_includes(true);
-            */
-            $context->inputs->setResolvedIncludes("./tests/includes/resolved_includes_simple5.txt");
-        }
-
+        $nbVulns = 0;
+        $context->inputs->setFile($file);
+        
         try {
             $analyzer->run($context);
         } catch (Exception $e) {
@@ -50,43 +33,60 @@ try {
         }
 
         $results = $context->outputs->getResults();
-        $outputjson = array('results' => $results);
-        $parsed_json = $outputjson["results"];
 
-        $result_test = false;
-
-        if (is_array($parsed_json) && count($parsed_json) > 0) {
-            foreach ($parsed_json as $vuln) {
-                $result_test = true;
+        foreach ($results as $vuln) {
+            if (isset($expectedVulns[$nbVulns])) {
+                $expectedSourceName = $expectedVulns[$nbVulns][0];
+                $expectedSourceLine = $expectedVulns[$nbVulns][1];
+                $expectedVulnName = $expectedVulns[$nbVulns][2];
                 
+                // taint-style
                 if (isset($vuln['source_name']) && isset($vuln['source_line'])) {
-                    $basis_outputs = [
-                        $vuln['source_name'],
-                        $vuln['source_line'],
-                        $vuln['vuln_name']];
-                } else {
-                    $basis_outputs = [
-                        $vuln['vuln_name'],
-                        $vuln['vuln_line'],
-                        $vuln['vuln_column']];
+                    if (is_array($expectedSourceName) && is_array($expectedSourceLine)) {
+                        foreach ($expectedSourceName as $oneSourceName) {
+                            $this->assertContains($oneSourceName, $vuln["source_name"]);
+                        }
+                            
+                        foreach ($expectedSourceLine as $oneSourceLine) {
+                            $this->assertContains($oneSourceLine, $vuln["source_line"]);
+                        }
+                    } else {
+                        $this->assertContains($expectedSourceName, $vuln["source_name"]);
+                        $this->assertContains($expectedSourceLine, $vuln["source_line"]);
+                        $this->assertEquals($expectedVulnName, $vuln["vuln_name"]);
+                    }
                 }
-
-                if (!$framework->check_outputs($file, $basis_outputs, $parsed_json)) {
-                    $result_test = false;
-                    break;
+                // custom
+                else {
+                    $this->assertEquals($expectedSourceName, $vuln["vuln_line"]);
+                    $this->assertEquals($expectedSourceLine, $vuln["vuln_column"]);
+                    $this->assertEquals($expectedVulnName, $vuln["vuln_name"]);
                 }
+            } else {
+                $this->assertTrue(false);
             }
-        } else {
-            if (count($framework->get_output($file)) == 0) {
-                $result_test = true;
-            }
+            
+            $nbVulns ++;
         }
-
-        if (!$result_test) {
-            echo "[$file] test result ko\n";
-            var_dump($parsed_json);
-        }
+        
+        $this->assertCount(count($expectedVulns), $results);
     }
-} catch (\RuntimeException $e) {
-    $result = $e->getMessage();
+
+    public function dataProvider()
+    {
+        $taboop = include("ooptest.php");
+        $tabreal = include("realtest.php");
+        $tabgen = include("generictest.php");
+        $tabinc = include("includetest.php");
+        $tabdata = include("datatest.php");
+        $tabcond = include("conditionstest.php");
+        $tabneg = include("negativetest.php");
+        $tabcus = include("customtest.php");
+        //$tabtwig = include("twigtest.php");
+        $tabvulntest = include("testvulntestsuite.php");
+        
+        $tab = array_merge($taboop, $tabreal, $tabgen, $tabinc, $tabdata, $tabcond, $tabneg, $tabcus, $tabvulntest);
+        
+        return $tab;
+    }
 }

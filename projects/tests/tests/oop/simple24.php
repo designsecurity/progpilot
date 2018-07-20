@@ -13,24 +13,18 @@ class Testc1
 
 $a = new Testc1;
 
-if(rand() === 1)
-{
+if (rand() === 1) {
     $a->change_data($_GET["p"]);
-}
-else
-{
+} else {
     $a->change_data("eee");
 }
 
 echo $a->data;
 
 $b = new Testc1;
-if(rand() === 1)
-{
+if (rand() === 1) {
     $b->change_data("eee");
-}
-else
-{
+} else {
     $b->change_data($_GET["p"]);
 }
 

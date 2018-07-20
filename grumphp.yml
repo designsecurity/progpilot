@@ -7,4 +7,4 @@ parameters:
         standard: PSR2
         metadata:
           priority: 300
-        ignore_patterns: ["*/projects/tests/*"]
+        ignore_patterns: ["*/projects/tests/tests/*"]

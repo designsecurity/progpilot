@@ -1,34 +1,30 @@
 <?php
 
-$framework->add_testbasis("./tests/conditions/condition1.php");
-$framework->add_output("./tests/conditions/condition1.php", array("\$_GET[\"p1\"]"));
-$framework->add_output("./tests/conditions/condition1.php", array("7"));
-$framework->add_output("./tests/conditions/condition1.php", "xss");
+        return [
+                [
+                    "./tests/conditions/condition1.php",
+                        [["\$_GET[\"p1\"]", "7", "xss"]]
+                ],
+                [
+                    "./tests/conditions/condition4.php",
+                        [["\$blabla", "3", "xss"]]
+                ],
 
-$framework->add_testbasis("./tests/conditions/condition4.php");
-$framework->add_output("./tests/conditions/condition4.php", array("\$blabla"));
-$framework->add_output("./tests/conditions/condition4.php", array("3"));
-$framework->add_output("./tests/conditions/condition4.php", "xss");
-
-$framework->add_testbasis("./tests/conditions/condition5.php");
-$framework->add_output("./tests/conditions/condition5.php", array("\$tainted"));
-$framework->add_output("./tests/conditions/condition5.php", array("7"));
-$framework->add_output("./tests/conditions/condition5.php", "xss");
-
-$framework->add_testbasis("./tests/conditions/condition6.php");
-$framework->add_output("./tests/conditions/condition6.php", array("\$tainted"));
-$framework->add_output("./tests/conditions/condition6.php", array("3"));
-$framework->add_output("./tests/conditions/condition6.php", "xss");
-
-$framework->add_testbasis("./tests/conditions/condition7.php");
-$framework->add_output("./tests/conditions/condition7.php", array("\$tainted"));
-$framework->add_output("./tests/conditions/condition7.php", array("3"));
-$framework->add_output("./tests/conditions/condition7.php", "xss");
-
-$framework->add_testbasis("./tests/conditions/condition8.php");
-$framework->add_output("./tests/conditions/condition8.php", array("\$tainted"));
-$framework->add_output("./tests/conditions/condition8.php", array("47"));
-$framework->add_output("./tests/conditions/condition8.php", "xss");
-$framework->add_output("./tests/conditions/condition8.php", array("\$tainted"));
-$framework->add_output("./tests/conditions/condition8.php", array("53"));
-$framework->add_output("./tests/conditions/condition8.php", "xss");
+                [
+                    "./tests/conditions/condition5.php",
+                        [["\$tainted", "7", "xss"]]
+                ],
+                [
+                    "./tests/conditions/condition6.php",
+                        [["\$tainted", "3", "xss"]]
+                ],
+                [
+                    "./tests/conditions/condition7.php",
+                        [["\$tainted", "3", "xss"]]
+                ],
+                [
+                    "./tests/conditions/condition8.php",
+                        [["\$tainted", "47", "xss"],
+                        ["\$tainted", "53", "xss"]]
+                ]
+            ];

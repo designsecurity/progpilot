@@ -1,23 +1,16 @@
 <?php
 
-$framework->add_testbasis("./tests/folders/folder1");
-$framework->add_output("./tests/folders/folder1", array("\$var1[0]"));
-$framework->add_output("./tests/folders/folder1", array("4"));
-$framework->add_output("./tests/folders/folder1", "xss");
-$framework->add_output("./tests/folders/folder1", array("\$var1"));
-$framework->add_output("./tests/folders/folder1", array("6"));
-$framework->add_output("./tests/folders/folder1", "xss");
-$framework->add_output("./tests/folders/folder1", array("\$var2"));
-$framework->add_output("./tests/folders/folder1", array("9"));
-$framework->add_output("./tests/folders/folder1", "xss");
-
-$framework->add_testbasis("./tests/folders/folder2");
-$framework->add_output("./tests/folders/folder2", array("\$var1[0]"));
-$framework->add_output("./tests/folders/folder2", array("4"));
-$framework->add_output("./tests/folders/folder2", "xss");
-$framework->add_output("./tests/folders/folder2", array("\$var1"));
-$framework->add_output("./tests/folders/folder2", array("6"));
-$framework->add_output("./tests/folders/folder2", "xss");
-$framework->add_output("./tests/folders/folder2", array("\$var2"));
-$framework->add_output("./tests/folders/folder2", array("9"));
-$framework->add_output("./tests/folders/folder2", "xss");
+        return [
+                [
+                    "./tests/folders/folder1",
+                        [["\$var1[0]", '4', "xss"],
+                        ["\$var1", '6', "xss"],
+                        ["\$var2", '9', "xss"]]
+                ],
+                [
+                    "./tests/folders/folder2",
+                        [["\$var2", "9", "xss"],
+                        ["\$var1[0]", "4", "xss"],
+                        ["\$var1", "6", "xss"]]
+                ]
+            ];

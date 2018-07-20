@@ -1,8 +1,6 @@
 <?php
 
 require_once './vendor/autoload.php';
-require_once './framework_test.php';
-$framework = new framework_test;
 
 try {
     $context = new \progpilot\Context;

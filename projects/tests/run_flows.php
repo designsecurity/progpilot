@@ -1,21 +1,31 @@
 <?php
 
 require_once './vendor/autoload.php';
-require_once './framework_test.php';
-$framework = new framework_test;
+use PHPUnit\Framework\TestCase;
 
-require_once './flowstest.php';
-
-try {
-    foreach ($framework->get_testbasis() as $file) {
+class RunFlowsTest extends TestCase
+{
+    /**
+     * @dataProvider dataProvider
+     */
+    public function testSecurity($file, $expectedVulns)
+    {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
-        $context->inputs->setFile($file);
+        $context->inputs->setSources("../../package/src/uptodate_data/sources.json");
+        $context->inputs->setSinks("../../package/src/uptodate_data/sinks.json");
+        $context->inputs->setSanitizers("../../package/src/uptodate_data/sanitizers.json");
+        $context->inputs->setValidators("../../package/src/uptodate_data/validators.json");
+        $context->inputs->setCustomRules("../../package/src/uptodate_data/rules.json");
 
+        $context->setAnalyzeHardrules(true);
         $context->setAnalyzeFunctions(false);
         $context->outputs->taintedFlow(true);
-
+        
+        $nbVulns = 0;
+        $context->inputs->setFile($file);
+        
         try {
             $analyzer->run($context);
         } catch (Exception $e) {
@@ -23,37 +33,26 @@ try {
         }
 
         $results = $context->outputs->getResults();
-        $outputjson = array('results' => $results);
-        $parsed_json = $outputjson["results"];
 
-        $result_test = false;
-
-        if (is_array($parsed_json) && count($parsed_json) > 0) {
-            $output_testbasis = $framework->get_output($file);
-            
-            foreach ($parsed_json as $vuln) {
-                $result_test = true;
-                foreach ($vuln["tainted_flow"] as $one_tainted_flow) {
-                    foreach ($one_tainted_flow as $one_tainted_flow_value) {
-                        if (!in_array($one_tainted_flow_value["flow_name"], $output_testbasis, true)
-                        || !in_array($one_tainted_flow_value["flow_line"], $output_testbasis, true)) {
-                            $result_test = false;
-                            break;
-                        }
-                    }
+        foreach ($results as $vuln) {
+            foreach ($vuln["tainted_flow"][0] as $taintedFlow) {
+                if (isset($expectedVulns[$nbVulns])) {
+                    $expectedSourceName = $expectedVulns[$nbVulns][0];
+                    $expectedSourceLine = $expectedVulns[$nbVulns][1];
+                        
+                    $this->assertEquals($expectedSourceName, $taintedFlow["flow_name"]);
+                    $this->assertEquals($expectedSourceLine, $taintedFlow["flow_line"]);
                 }
+            
+                $nbVulns ++;
             }
-        } else {
-            if (count($framework->get_output($file)) == 0) {
-                $result_test = true;
-            }
-        }
-
-        if (!$result_test) {
-            echo "[$file] test result ko\n";
-            var_dump($parsed_json);
         }
     }
-} catch (\RuntimeException $e) {
-    $result = $e->getMessage();
+
+    public function dataProvider()
+    {
+        $tab = include("flowstest.php");
+        
+        return $tab;
+    }
 }

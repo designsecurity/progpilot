@@ -1,13 +1,9 @@
 <?php
 
 require_once './vendor/autoload.php';
-require_once './framework_test.php';
-$framework = new framework_test;
 
 try {
-
-    if($argc > 1)
-    {
+    if ($argc > 1) {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 

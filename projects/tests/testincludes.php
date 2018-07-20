@@ -1,13 +1,6 @@
 <?php
 
 require_once './vendor/autoload.php';
-require_once './framework_test.php';
-$framework = new framework_test;
-
-$framework->add_testbasis("./tests/includes/simple5.php");
-$framework->add_output("./tests/includes/simple5.php", array("\$var1"));
-$framework->add_output("./tests/includes/simple5.php", array("3"));
-$framework->add_output("./tests/includes/simple5.php", "xss");
 
 $context = new \progpilot\Context;
 $analyzer = new \progpilot\Analyzer;

@@ -1,396 +1,302 @@
 <?php
 
-$framework->add_testbasis("./tests/generic/alias1.php");
-$framework->add_output("./tests/generic/alias1.php", array("\$var1"));
-$framework->add_output("./tests/generic/alias1.php", array("6"));
-$framework->add_output("./tests/generic/alias1.php", "xss");
-
-$framework->add_testbasis("./tests/generic/alias2.php");
-$framework->add_output("./tests/generic/alias2.php", array("\$var6"));
-$framework->add_output("./tests/generic/alias2.php", array("4"));
-$framework->add_output("./tests/generic/alias2.php", "xss");
-
-$framework->add_testbasis("./tests/generic/alias3.php");
-$framework->add_output("./tests/generic/alias3.php", array("\$var5", "\$var6"));
-$framework->add_output("./tests/generic/alias3.php", array("3", "4"));
-$framework->add_output("./tests/generic/alias3.php", "xss");
-
-$framework->add_testbasis("./tests/generic/alias4.php");
-$framework->add_output("./tests/generic/alias4.php", array("\$var5"));
-$framework->add_output("./tests/generic/alias4.php", array("3"));
-$framework->add_output("./tests/generic/alias4.php", "xss");
-
-$framework->add_testbasis("./tests/generic/alias5.php");
-$framework->add_output("./tests/generic/alias5.php", array("\$var5[\"t\"]"));
-$framework->add_output("./tests/generic/alias5.php", array("3"));
-$framework->add_output("./tests/generic/alias5.php", "xss");
-
-$framework->add_testbasis("./tests/generic/mix1.php");
-$framework->add_output("./tests/generic/mix1.php", array("\$var1[0]"));
-$framework->add_output("./tests/generic/mix1.php", array("4"));
-$framework->add_output("./tests/generic/mix1.php", "xss");
-
-$framework->add_testbasis("./tests/generic/mix2.php");
-$framework->add_output("./tests/generic/mix2.php", array("\$var1"));
-$framework->add_output("./tests/generic/mix2.php", array("6"));
-$framework->add_output("./tests/generic/mix2.php", "xss");
-
-$framework->add_testbasis("./tests/generic/mix3.php");
-$framework->add_output("./tests/generic/mix3.php", array("\$var2"));
-$framework->add_output("./tests/generic/mix3.php", array("9"));
-$framework->add_output("./tests/generic/mix3.php", "xss");
-
-$framework->add_testbasis("./tests/generic/simple1.php");
-$framework->add_output("./tests/generic/simple1.php", array("\$myvar4"));
-$framework->add_output("./tests/generic/simple1.php", array("9"));
-$framework->add_output("./tests/generic/simple1.php", "xss");
-
-$framework->add_testbasis("./tests/generic/simple2.php");
-$framework->add_output("./tests/generic/simple2.php", array("\$myvar2"));
-$framework->add_output("./tests/generic/simple2.php", array("3"));
-$framework->add_output("./tests/generic/simple2.php", "xss");
-
-$framework->add_testbasis("./tests/generic/simple3.php");
-$framework->add_output("./tests/generic/simple3.php", array("\$var7"));
-$framework->add_output("./tests/generic/simple3.php", array("4"));
-$framework->add_output("./tests/generic/simple3.php", "xss");
-
-$framework->add_testbasis("./tests/generic/simple4.php");
-$framework->add_output("./tests/generic/simple4.php", array("\$var4"));
-$framework->add_output("./tests/generic/simple4.php", array("5"));
-$framework->add_output("./tests/generic/simple4.php", "xss");
-
-$framework->add_testbasis("./tests/generic/simple5.php");
-$framework->add_output("./tests/generic/simple5.php", array("\$myvar1[11]"));
-$framework->add_output("./tests/generic/simple5.php", array("3"));
-$framework->add_output("./tests/generic/simple5.php", "xss");
-
-$framework->add_testbasis("./tests/generic/simple6.php");
-$framework->add_output("./tests/generic/simple6.php", array("\$var4"));
-$framework->add_output("./tests/generic/simple6.php", array("5"));
-$framework->add_output("./tests/generic/simple6.php", "xss");
-
-$framework->add_testbasis("./tests/generic/simple7.php");
-$framework->add_output("./tests/generic/simple7.php", array("\$myvar1"));
-$framework->add_output("./tests/generic/simple7.php", array("3"));
-$framework->add_output("./tests/generic/simple7.php", "xss");
-
-$framework->add_testbasis("./tests/generic/simple8.php");
-$framework->add_output("./tests/generic/simple8.php", array("\$ret[0]"));
-$framework->add_output("./tests/generic/simple8.php", array("8"));
-$framework->add_output("./tests/generic/simple8.php", "xss");
-$framework->add_output("./tests/generic/simple8.php", array("\$var_gauche[0]"));
-$framework->add_output("./tests/generic/simple8.php", array("3"));
-$framework->add_output("./tests/generic/simple8.php", "xss");
-
-$framework->add_testbasis("./tests/generic/concat1.php");
-$framework->add_output("./tests/generic/concat1.php", array("\$myvar7"));
-$framework->add_output("./tests/generic/concat1.php", array("7"));
-$framework->add_output("./tests/generic/concat1.php", "xss");
-
-$framework->add_testbasis("./tests/generic/concat2.php");
-$framework->add_output("./tests/generic/concat2.php", array("\$query"));
-$framework->add_output("./tests/generic/concat2.php", array("12"));
-$framework->add_output("./tests/generic/concat2.php", "sql_injection");
-
-$framework->add_testbasis("./tests/generic/concat3.php");
-$framework->add_output("./tests/generic/concat3.php", array("\$aaa"));
-$framework->add_output("./tests/generic/concat3.php", array("3"));
-$framework->add_output("./tests/generic/concat3.php", "xss");
-$framework->add_output("./tests/generic/concat3.php", array("\$bbb"));
-$framework->add_output("./tests/generic/concat3.php", array("5"));
-$framework->add_output("./tests/generic/concat3.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arrays1.php");
-$framework->add_output("./tests/generic/arrays1.php", array("\$newmyarr[11][9865]"));
-$framework->add_output("./tests/generic/arrays1.php", array("4"));
-$framework->add_output("./tests/generic/arrays1.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arrays2.php");
-$framework->add_output("./tests/generic/arrays2.php", array("\$newmyarr[11][9865]"));
-$framework->add_output("./tests/generic/arrays2.php", array("3"));
-$framework->add_output("./tests/generic/arrays2.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arrays3.php");
-$framework->add_output("./tests/generic/arrays3.php", array("\$newmyarr[11]"));
-$framework->add_output("./tests/generic/arrays3.php", array("4"));
-$framework->add_output("./tests/generic/arrays3.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arrays4.php");
-$framework->add_output("./tests/generic/arrays4.php", array("\$newmyarr[11]"));
-$framework->add_output("./tests/generic/arrays4.php", array("4"));
-$framework->add_output("./tests/generic/arrays4.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arrays5.php");
-$framework->add_output("./tests/generic/arrays5.php", array("\$var1"));
-$framework->add_output("./tests/generic/arrays5.php", array("3"));
-$framework->add_output("./tests/generic/arrays5.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arrays6.php");
-$framework->add_output("./tests/generic/arrays6.php", array("\$_GET[\"t\"]"));
-$framework->add_output("./tests/generic/arrays6.php", array("6"));
-$framework->add_output("./tests/generic/arrays6.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arrays7.php");
-$framework->add_output("./tests/generic/arrays7.php", array("\$onearr[9865]"));
-$framework->add_output("./tests/generic/arrays7.php", array("3"));
-$framework->add_output("./tests/generic/arrays7.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arrays8.php");
-$framework->add_output("./tests/generic/arrays8.php", array("\$arr[1113]"));
-$framework->add_output("./tests/generic/arrays8.php", array("6"));
-$framework->add_output("./tests/generic/arrays8.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arrays9.php");
-$framework->add_output("./tests/generic/arrays9.php", array("\$onearr[11][6661]"));
-$framework->add_output("./tests/generic/arrays9.php", array("4"));
-$framework->add_output("./tests/generic/arrays9.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arrays10.php");
-$framework->add_output("./tests/generic/arrays10.php", array("\$arr[0]"));
-$framework->add_output("./tests/generic/arrays10.php", array("3"));
-$framework->add_output("./tests/generic/arrays10.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arrays11.php");
-$framework->add_output("./tests/generic/arrays11.php", array("\$arr[0][2]"));
-$framework->add_output("./tests/generic/arrays11.php", array("3"));
-$framework->add_output("./tests/generic/arrays11.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arrays12.php");
-$framework->add_output("./tests/generic/arrays12.php", array("\$var1[1]"));
-$framework->add_output("./tests/generic/arrays12.php", array("6"));
-$framework->add_output("./tests/generic/arrays12.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arrays13.php");
-$framework->add_output("./tests/generic/arrays13.php", array("\$_GET[\"t\"]"));
-$framework->add_output("./tests/generic/arrays13.php", array("5"));
-$framework->add_output("./tests/generic/arrays13.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arrays14.php");
-$framework->add_output("./tests/generic/arrays14.php", array("\$var1[11][1]"));
-$framework->add_output("./tests/generic/arrays14.php", array("6"));
-$framework->add_output("./tests/generic/arrays14.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arrays15.php");
-$framework->add_output("./tests/generic/arrays15.php", array("\$var"));
-$framework->add_output("./tests/generic/arrays15.php", array("8"));
-$framework->add_output("./tests/generic/arrays15.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arrays16.php");
-$framework->add_output("./tests/generic/arrays16.php", array("\$var[\"t\"]"));
-$framework->add_output("./tests/generic/arrays16.php", array("3"));
-$framework->add_output("./tests/generic/arrays16.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arraysrec1.php");
-$framework->add_output("./tests/generic/arraysrec1.php", array("\$var1[1]"));
-$framework->add_output("./tests/generic/arraysrec1.php", array("8"));
-$framework->add_output("./tests/generic/arraysrec1.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arraysexpr1.php");
-$framework->add_output("./tests/generic/arraysexpr1.php", array("\$newmyarr[2]"));
-$framework->add_output("./tests/generic/arraysexpr1.php", array("3"));
-$framework->add_output("./tests/generic/arraysexpr1.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arraysexpr2.php");
-$framework->add_output("./tests/generic/arraysexpr2.php", array("\$newmyarr[2][1][2]"));
-$framework->add_output("./tests/generic/arraysexpr2.php", array("3"));
-$framework->add_output("./tests/generic/arraysexpr2.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arraysexpr3.php");
-$framework->add_output("./tests/generic/arraysexpr3.php", array("\$onearr[11][6661]"));
-$framework->add_output("./tests/generic/arraysexpr3.php", array("3"));
-$framework->add_output("./tests/generic/arraysexpr3.php", "xss");
-
-$framework->add_testbasis("./tests/generic/arraysexpr4.php");
-$framework->add_output("./tests/generic/arraysexpr4.php", array("\$var_main[\"TEST1\"]"));
-$framework->add_output("./tests/generic/arraysexpr4.php", array("4"));
-$framework->add_output("./tests/generic/arraysexpr4.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions1.php");
-$framework->add_output("./tests/generic/functions1.php", array("\$parama"));
-$framework->add_output("./tests/generic/functions1.php", array("3"));
-$framework->add_output("./tests/generic/functions1.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions2.php");
-$framework->add_output("./tests/generic/functions2.php", array("\$safea"));
-$framework->add_output("./tests/generic/functions2.php", array("8"));
-$framework->add_output("./tests/generic/functions2.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions3.php");
-$framework->add_output("./tests/generic/functions3.php", array("\$testf_return[0]"));
-$framework->add_output("./tests/generic/functions3.php", array("7"));
-$framework->add_output("./tests/generic/functions3.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions4.php");
-$framework->add_output("./tests/generic/functions4.php", array("\$testf_return"));
-$framework->add_output("./tests/generic/functions4.php", array("5"));
-$framework->add_output("./tests/generic/functions4.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions5.php");
-$framework->add_output("./tests/generic/functions5.php", array("\$testf_return[0]"));
-$framework->add_output("./tests/generic/functions5.php", array("5"));
-$framework->add_output("./tests/generic/functions5.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions6.php");
-$framework->add_output("./tests/generic/functions6.php", array("\$_GET[\"p\"]"));
-$framework->add_output("./tests/generic/functions6.php", array("15"));
-$framework->add_output("./tests/generic/functions6.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions7.php");
-$framework->add_output("./tests/generic/functions7.php", array("\$var1"));
-$framework->add_output("./tests/generic/functions7.php", array("5"));
-$framework->add_output("./tests/generic/functions7.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions8.php");
-$framework->add_output("./tests/generic/functions8.php", array("\$var1"));
-$framework->add_output("./tests/generic/functions8.php", array("6"));
-$framework->add_output("./tests/generic/functions8.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions9.php");
-$framework->add_output("./tests/generic/functions9.php", array("\$arr[8989][1]"));
-$framework->add_output("./tests/generic/functions9.php", array("5"));
-$framework->add_output("./tests/generic/functions9.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions10.php");
-$framework->add_output("./tests/generic/functions10.php", array("\$arr[8989][1][989]"));
-$framework->add_output("./tests/generic/functions10.php", array("5"));
-$framework->add_output("./tests/generic/functions10.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions11.php");
-$framework->add_output("./tests/generic/functions11.php", array("\$ret[0]"));
-$framework->add_output("./tests/generic/functions11.php", array("8"));
-$framework->add_output("./tests/generic/functions11.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions12.php");
-$framework->add_output("./tests/generic/functions12.php", array("\$arr[8989][1][989]"));
-$framework->add_output("./tests/generic/functions12.php", array("5"));
-$framework->add_output("./tests/generic/functions12.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions13.php");
-$framework->add_output("./tests/generic/functions13.php", array("\$testf1_return[0]"));
-$framework->add_output("./tests/generic/functions13.php", array("5"));
-$framework->add_output("./tests/generic/functions13.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions14.php");
-$framework->add_output("./tests/generic/functions14.php", array("\$param"));
-$framework->add_output("./tests/generic/functions14.php", array("3"));
-$framework->add_output("./tests/generic/functions14.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions15.php");
-$framework->add_output("./tests/generic/functions15.php", array("\$var[1][12]"));
-$framework->add_output("./tests/generic/functions15.php", array("9"));
-$framework->add_output("./tests/generic/functions15.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions16.php");
-$framework->add_output("./tests/generic/functions16.php", array("\$var[1][12]"));
-$framework->add_output("./tests/generic/functions16.php", array("9"));
-$framework->add_output("./tests/generic/functions16.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions17.php");
-$framework->add_output("./tests/generic/functions17.php", array("\$param2"));
-$framework->add_output("./tests/generic/functions17.php", array("3"));
-$framework->add_output("./tests/generic/functions17.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions18.php");
-$framework->add_output("./tests/generic/functions18.php", array("\$param2"));
-$framework->add_output("./tests/generic/functions18.php", array("5"));
-$framework->add_output("./tests/generic/functions18.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functions19.php");
-$framework->add_output("./tests/generic/functions19.php", array("\$testf1_param0_line10_column65_progpilot[\"test\"]"));
-$framework->add_output("./tests/generic/functions19.php", array("10"));
-$framework->add_output("./tests/generic/functions19.php", "xss");
-
-$framework->add_testbasis("./tests/generic/functionsrec1.php");
-$framework->add_output("./tests/generic/functionsrec1.php", array("\$var"));
-$framework->add_output("./tests/generic/functionsrec1.php", array("10"));
-$framework->add_output("./tests/generic/functionsrec1.php", "xss");
-
-$framework->add_testbasis("./tests/generic/strings1.php");
-$framework->add_output("./tests/generic/strings1.php", array("\$vuln2"));
-$framework->add_output("./tests/generic/strings1.php", array("7"));
-$framework->add_output("./tests/generic/strings1.php", "command_injection");
-$framework->add_output("./tests/generic/strings1.php", array("\$vuln3"));
-$framework->add_output("./tests/generic/strings1.php", array("11"));
-$framework->add_output("./tests/generic/strings1.php", "command_injection");
-$framework->add_output("./tests/generic/strings1.php", array("\$vuln4"));
-$framework->add_output("./tests/generic/strings1.php", array("15"));
-$framework->add_output("./tests/generic/strings1.php", "command_injection");
-$framework->add_output("./tests/generic/strings1.php", array("\$id1"));
-$framework->add_output("./tests/generic/strings1.php", array("19"));
-$framework->add_output("./tests/generic/strings1.php", "sql_injection");
-$framework->add_output("./tests/generic/strings1.php", array("\$id2"));
-$framework->add_output("./tests/generic/strings1.php", array("22"));
-$framework->add_output("./tests/generic/strings1.php", "sql_injection");
-$framework->add_output("./tests/generic/strings1.php", array("\$id3"));
-$framework->add_output("./tests/generic/strings1.php", array("25"));
-$framework->add_output("./tests/generic/strings1.php", "sql_injection");
-$framework->add_output("./tests/generic/strings1.php", array("\$id5"));
-$framework->add_output("./tests/generic/strings1.php", array("31"));
-$framework->add_output("./tests/generic/strings1.php", "sql_injection");
-$framework->add_output("./tests/generic/strings1.php", array("\$id7"));
-$framework->add_output("./tests/generic/strings1.php", array("35"));
-$framework->add_output("./tests/generic/strings1.php", "sql_injection");
-$framework->add_output("./tests/generic/strings1.php", array("\$tainted1"));
-$framework->add_output("./tests/generic/strings1.php", array("48"));
-$framework->add_output("./tests/generic/strings1.php", "xss");
-$framework->add_output("./tests/generic/strings1.php", array("\$tainted2"));
-$framework->add_output("./tests/generic/strings1.php", array("51"));
-$framework->add_output("./tests/generic/strings1.php", "xss");
-$framework->add_output("./tests/generic/strings1.php", array("\$tainted3"));
-$framework->add_output("./tests/generic/strings1.php", array("54"));
-$framework->add_output("./tests/generic/strings1.php", "xss");
-$framework->add_output("./tests/generic/strings1.php", array("\$tainted21"));
-$framework->add_output("./tests/generic/strings1.php", array("64"));
-$framework->add_output("./tests/generic/strings1.php", "xss");
-$framework->add_output("./tests/generic/strings1.php", array("\$tainted31"));
-$framework->add_output("./tests/generic/strings1.php", array("70"));
-$framework->add_output("./tests/generic/strings1.php", "xss");
-$framework->add_output("./tests/generic/strings1.php", array("\$tainted32"));
-$framework->add_output("./tests/generic/strings1.php", array("73"));
-$framework->add_output("./tests/generic/strings1.php", "xss");
-
-$framework->add_testbasis("./tests/generic/foreach1.php");
-$framework->add_output("./tests/generic/foreach1.php", array("\$array_value"));
-$framework->add_output("./tests/generic/foreach1.php", array("6"));
-$framework->add_output("./tests/generic/foreach1.php", "xss");
-
-$framework->add_testbasis("./tests/generic/global1.php");
-$framework->add_output("./tests/generic/global1.php", array("\$myvar1"));
-$framework->add_output("./tests/generic/global1.php", array("4"));
-$framework->add_output("./tests/generic/global1.php", "xss");
-
-$framework->add_testbasis("./tests/generic/global2.php");
-$framework->add_output("./tests/generic/global2.php", array("\$myvar1"));
-$framework->add_output("./tests/generic/global2.php", array("4"));
-$framework->add_output("./tests/generic/global2.php", "xss");
-
-$framework->add_testbasis("./tests/generic/global3.php");
-$framework->add_output("./tests/generic/global3.php", array("\$myvar1"));
-$framework->add_output("./tests/generic/global3.php", array("3"));
-$framework->add_output("./tests/generic/global3.php", "xss");
-
-$framework->add_testbasis("./tests/generic/namespace1.php");
-$framework->add_output("./tests/generic/namespace1.php", array("\$_GET[\"p\"]"));
-$framework->add_output("./tests/generic/namespace1.php", array("9"));
-$framework->add_output("./tests/generic/namespace1.php", "xss");
-
-$framework->add_testbasis("./tests/generic/namespace2.php");
-$framework->add_output("./tests/generic/namespace2.php", array("\$_GET[\"p\"]"));
-$framework->add_output("./tests/generic/namespace2.php", array("7"));
-$framework->add_output("./tests/generic/namespace2.php", "xss");
-
-
-$framework->add_testbasis("./tests/generic/simple9.php");
-$framework->add_output("./tests/generic/simple9.php", array("\$_GET[\"p1\"]"));
-$framework->add_output("./tests/generic/simple9.php", array("3"));
-$framework->add_output("./tests/generic/simple9.php", "create_function code_injection");
-$framework->add_output("./tests/generic/simple9.php", array("\$_GET[\"t1\"]"));
-$framework->add_output("./tests/generic/simple9.php", array("3"));
-$framework->add_output("./tests/generic/simple9.php", "create_function code_injection");
-$framework->add_output("./tests/generic/simple9.php", array("\$_GET[\"t1\"]"));
-$framework->add_output("./tests/generic/simple9.php", array("4"));
-$framework->add_output("./tests/generic/simple9.php", "create_function code_injection");
-$framework->add_output("./tests/generic/simple9.php", array("\$_GET[\"p1\"]"));
-$framework->add_output("./tests/generic/simple9.php", array("5"));
-$framework->add_output("./tests/generic/simple9.php", "create_function code_injection");
+        return [
+                [
+                    "./tests/generic/alias1.php",
+                        [["\$var1", "6", "xss"]]
+                ],
+                [
+                    "./tests/generic/alias2.php",
+                        [["\$var6", "4", "xss"]]
+                ],
+                [
+                    "./tests/generic/alias3.php",
+                        [[array("\$var5", "\$var6"), array("3", "4") , "xss"]]
+                ],
+                [
+                    "./tests/generic/alias4.php",
+                        [["\$var5", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/alias5.php",
+                        [["\$var5[\"t\"]", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/mix1.php",
+                        [["\$var1[0]", "4", "xss"]]
+                ],
+                [
+                    "./tests/generic/mix2.php",
+                        [["\$var1", "6", "xss"]]
+                ],
+                [
+                    "./tests/generic/mix3.php",
+                        [["\$var2", "9", "xss"]]
+                ],
+                [
+                    "./tests/generic/simple1.php",
+                        [["\$myvar4", "9", "xss"]]
+                ],
+                [
+                    "./tests/generic/simple2.php",
+                        [["\$myvar2", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/simple3.php",
+                        [["\$var7", "4", "xss"]]
+                ],
+                [
+                    "./tests/generic/simple4.php",
+                        [["\$var4", "5", "xss"]]
+                ],
+                [
+                    "./tests/generic/simple5.php",
+                        [["\$myvar1[11]", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/simple6.php",
+                        [["\$var4", "5", "xss"]]
+                ],
+                [
+                    "./tests/generic/simple7.php",
+                        [["\$myvar1", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/simple8.php",
+                        [["\$var_gauche[0]", "3", "xss"],
+                        ["\$ret[0]", "8", "xss"]]
+                ],
+                [
+                    "./tests/generic/concat1.php",
+                        [["\$myvar7", "7", "xss"]]
+                ],
+                [
+                    "./tests/generic/concat2.php",
+                        [["\$query", "12", "sql_injection"]]
+                ],
+
+                [
+                    "./tests/generic/concat3.php",
+                        [["\$aaa", "3", "xss"],
+                        ["\$bbb", "5", "xss"]]
+                ],
+
+                [
+                    "./tests/generic/arrays1.php",
+                        [["\$newmyarr[11][9865]", "4", "xss"]]
+                ],
+
+                [
+                    "./tests/generic/arrays2.php",
+                        [["\$newmyarr[11][9865]", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays3.php",
+                        [["\$newmyarr[11]", "4", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays4.php",
+                        [["\$newmyarr[11]", "4", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays5.php",
+                        [["\$var1", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays6.php",
+                        [["\$_GET[\"t\"]", "6", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays7.php",
+                        [["\$onearr[9865]", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays8.php",
+                        [["\$arr[1113]", "6", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays9.php",
+                        [["\$onearr[11][6661]", "4", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays10.php",
+                        [["\$arr[0]", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays11.php",
+                        [["\$arr[0][2]", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays12.php",
+                        [["\$var1[1]", "6", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays13.php",
+                        [["\$_GET[\"t\"]", "5", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays14.php",
+                        [["\$var1[11][1]", "6", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays15.php",
+                        [["\$var", "8", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays16.php",
+                        [["\$var[\"t\"]", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/arraysrec1.php",
+                        [["\$var1[1]", "8", "xss"]]
+                ],
+                [
+                    "./tests/generic/arraysexpr1.php",
+                        [["\$newmyarr[2]", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/arraysexpr2.php",
+                        [["\$newmyarr[2][1][2]", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/arraysexpr3.php",
+                        [["\$onearr[11][6661]", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/arraysexpr4.php",
+                        [["\$var_main[\"TEST1\"]", "4", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions1.php",
+                        [["\$parama", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions2.php",
+                        [["\$safea", "8", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions3.php",
+                        [["\$testf_return[0]", "7", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions4.php",
+                        [["\$testf_return", "5", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions5.php",
+                        [["\$testf_return[0]", "5", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions6.php",
+                        [["\$_GET[\"p\"]", "15", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions7.php",
+                        [["\$var1", "5", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions8.php",
+                        [["\$var1", "6", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions9.php",
+                        [["\$arr[8989][1]", "5", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions10.php",
+                        [["\$arr[8989][1][989]", "5", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions11.php",
+                        [["\$ret[0]", "8", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions12.php",
+                        [["\$arr[8989][1][989]", "5", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions13.php",
+                        [["\$testf1_return[0]", "5", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions14.php",
+                        [["\$param", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions15.php",
+                        [["\$var[1][12]", "9", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions16.php",
+                        [["\$var[1][12]", "9", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions17.php",
+                        [["\$param2", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions18.php",
+                        [["\$param2", "5", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions19.php",
+                        [["\$testf1_param0_line10_column65_progpilot[\"test\"]", "10", "xss"]]
+                ],
+                [
+                    "./tests/generic/functionsrec1.php",
+                        [["\$var", "10", "xss"]]
+                ],
+                [
+                    "./tests/generic/strings1.php",
+                        [["\$vuln2", "7", "command_injection"],
+                        ["\$vuln3", "11", "command_injection"],
+                        ["\$vuln4", "15", "command_injection"],
+                        ["\$id1", "19", "sql_injection"],
+                        ["\$id2", "22", "sql_injection"],
+                        ["\$id3", "25", "sql_injection"],
+                        ["\$id5", "31", "sql_injection"],
+                        ["\$id7", "35", "sql_injection"],
+                        ["\$tainted1", "48", "xss"],
+                        ["\$tainted2", "51", "xss"],
+                        ["\$tainted3", "54", "xss"],
+                        ["\$tainted21", "64", "xss"],
+                        ["\$tainted31", "70", "xss"],
+                        ["\$tainted32", "73", "xss"]]
+                ],
+                [
+                    "./tests/generic/foreach1.php",
+                        [["\$array_value", "6", "xss"]]
+                ],
+
+                [
+                    "./tests/generic/global1.php",
+                        [["\$myvar1", "4", "xss"]]
+                ],
+
+                [
+                    "./tests/generic/global2.php",
+                        [["\$myvar1", "4", "xss"]]
+                ],
+
+                [
+                    "./tests/generic/global3.php",
+                        [["\$myvar1", "3", "xss"]]
+                ],
+
+                [
+                    "./tests/generic/namespace1.php",
+                        [["\$_GET[\"p\"]", "9", "xss"]]
+                ],
+                [
+                    "./tests/generic/namespace2.php",
+                        [["\$_GET[\"p\"]", "7", "xss"]]
+                ],
+                [
+                    "./tests/generic/simple9.php",
+                        [["\$_GET[\"p1\"]", "3", "create_function code_injection"],
+                        ["\$_GET[\"t1\"]", "3", "create_function code_injection"],
+                        ["\$_GET[\"t1\"]", "4", "create_function code_injection"],
+                        ["\$_GET[\"p1\"]", "5", "create_function code_injection"]]
+                ]
+                
+        ];
