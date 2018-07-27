@@ -172,6 +172,13 @@ class Common
                               || $op->result->usages[0] instanceof Op\Expr\Array_
                               || $op->result->usages[0] instanceof Op\Expr\Include_
                               || $op->result->usages[0] instanceof Op\Expr\Eval_
+                              
+                              || $op->result->usages[0] instanceof Op\Expr\Cast\Int_
+                              || $op->result->usages[0] instanceof Op\Expr\Cast\Array_
+                              || $op->result->usages[0] instanceof Op\Expr\Cast\Bool_
+                              || $op->result->usages[0] instanceof Op\Expr\Cast\Double_
+                              || $op->result->usages[0] instanceof Op\Expr\Cast\Object_
+                              || $op->result->usages[0] instanceof Op\Expr\Cast\String_
                           ))
             )) {
             return true;

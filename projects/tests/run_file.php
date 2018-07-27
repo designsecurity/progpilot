@@ -6,12 +6,6 @@ try {
     if ($argc > 1) {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
-
-        $context->inputs->setSources("../../package/src/uptodate_data/sources.json");
-        $context->inputs->setSinks("../../package/src/uptodate_data/sinks.json");
-        $context->inputs->setSanitizers("../../package/src/uptodate_data/sanitizers.json");
-        $context->inputs->setValidators("../../package/src/uptodate_data/validators.json");
-        $context->inputs->setCustomRules("../../package/src/uptodate_data/rules.json");
         $context->inputs->setFile($argv[1]);
 
         $context->setAnalyzeHardrules(true);

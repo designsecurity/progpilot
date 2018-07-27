@@ -1,0 +1,8 @@
+{
+    "sanitizers": [
+        {"name": "is_php", "language": "php", "prevent": ["ALL"]},
+        {"name": "is_really_writable", "language": "php", "prevent": ["ALL"]},
+        {"name": "html_escape", "language": "php", "prevent": ["xss", "QUOTES"]},
+        {"name": "xss_clean", "instanceof": "CI_Controller->security", "language": "php", "prevent": ["xss", "QUOTES"]}
+        ]
+}

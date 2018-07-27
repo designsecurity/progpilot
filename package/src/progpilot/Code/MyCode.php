@@ -429,8 +429,17 @@ class MyCode
 
                     case Opcodes::TEMPORARY:
                         echo Opcodes::TEMPORARY."\n";
-                        $def = $instruction->getProperty(MyInstruction::TEMPORARY);
-                        $def->printStdout();
+                        $listOfMyTemp = [];
+                        if($instruction->isPropertyExist(MyInstruction::PHI))
+                        {
+                            for($i = 0; $i < $instruction->getProperty(MyInstruction::PHI); $i++)
+                                $listOfMyTemp[] = $instruction->getProperty("temp_".$i);
+                        }
+                        else
+                            $listOfMyTemp[] = $instruction->getProperty(MyInstruction::TEMPORARY);
+                            
+                        foreach($listOfMyTemp as $def)
+                            $def->printStdout();
 
                         break;
 

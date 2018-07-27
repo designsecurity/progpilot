@@ -12,6 +12,7 @@ namespace progpilot\Objects;
 
 use PHPCfg\Op;
 use PHPCfg\Script;
+use progpilot\Objects\MyDefinition;
 
 class MyFunction extends MyOp
 {
@@ -41,6 +42,7 @@ class MyFunction extends MyOp
     private $isDataAnalyzed;
 
     private $myCode;
+    private $castReturn;
 
     public $property;
 
@@ -68,6 +70,7 @@ class MyFunction extends MyOp
         $this->property = new MyProperty;
 
         $this->myCode = new \progpilot\Code\MyCode;
+        $this->castReturn = MyDefinition::CAST_NOT_SAFE;
     }
 
     public function __clone()
@@ -252,5 +255,15 @@ class MyFunction extends MyOp
     public function setBlockId($blockId)
     {
         $this->blockId = $blockId;
+    }
+    
+    public function setCastReturn($cast)
+    {
+        $this->castReturn = $cast;
+    }
+    
+    public function getCastReturn()
+    {
+        return $this->castReturn;
     }
 }

@@ -303,17 +303,29 @@ class VisitorDataflow
                         break;
 
                     case Opcodes::TEMPORARY:
-                        $myDef = $instruction->getProperty(MyInstruction::TEMPORARY);
-                        $myDef->setBlockId($this->currentBlockId);
-
-                        if (is_null($myDef->getSourceMyFile())) {
-                            $myDef->setSourceMyFile($context->getCurrentMyfile());
+                    
+                        $listOfMyTemp = [];
+                        if($instruction->isPropertyExist(MyInstruction::PHI))
+                        {
+                            for($i = 0; $i < $instruction->getProperty(MyInstruction::PHI); $i++)
+                                $listOfMyTemp[] = $instruction->getProperty("temp_".$i);
                         }
+                        else
+                            $listOfMyTemp[] = $instruction->getProperty(MyInstruction::TEMPORARY);
+                            
+                        foreach($listOfMyTemp as $myDef)
+                        {
+                            $myDef->setBlockId($this->currentBlockId);
 
-                        // representations start
-                        $idCfg = hash("sha256", $this->currentFunc->getName()."-".$this->currentBlockId);
-                        $context->outputs->cfg->addTextOfMyBlock($idCfg, Opcodes::TEMPORARY."\n");
-                        // representations end
+                            if (is_null($myDef->getSourceMyFile())) {
+                                $myDef->setSourceMyFile($context->getCurrentMyfile());
+                            }
+
+                            // representations start
+                            $idCfg = hash("sha256", $this->currentFunc->getName()."-".$this->currentBlockId);
+                            $context->outputs->cfg->addTextOfMyBlock($idCfg, Opcodes::TEMPORARY."\n");
+                            // representations end
+                        }
 
                         break;
 

@@ -13,12 +13,6 @@ class RunAllTest extends TestCase
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
-        $context->inputs->setSources("../../package/src/uptodate_data/sources.json");
-        $context->inputs->setSinks("../../package/src/uptodate_data/sinks.json");
-        $context->inputs->setSanitizers("../../package/src/uptodate_data/sanitizers.json");
-        $context->inputs->setValidators("../../package/src/uptodate_data/validators.json");
-        $context->inputs->setCustomRules("../../package/src/uptodate_data/rules.json");
-
         $context->setAnalyzeHardrules(true);
         $context->setAnalyzeFunctions(false);
         $context->outputs->taintedFlow(true);
@@ -83,8 +77,9 @@ class RunAllTest extends TestCase
         $tabcus = include("customtest.php");
         //$tabtwig = include("twigtest.php");
         $tabvulntest = include("testvulntestsuite.php");
+        $tabwander = include("phpwandertest.php");
         
-        $tab = array_merge($taboop, $tabreal, $tabgen, $tabinc, $tabdata, $tabcond, $tabneg, $tabcus, $tabvulntest);
+        $tab = array_merge($taboop, $tabreal, $tabgen, $tabinc, $tabdata, $tabcond, $tabneg, $tabcus, $tabvulntest, $tabwander);
         
         return $tab;
     }

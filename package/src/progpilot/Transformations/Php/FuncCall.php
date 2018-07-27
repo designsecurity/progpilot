@@ -88,7 +88,13 @@ class FuncCall
     arg2 : expr for the return
     arg3 : arr for the return : function_call()[0] (arr = [0])
      */
-    public static function instruction($context, $myExpr, $funcCallArr, $isMethod = false, $isStatic = false)
+    public static function instruction(
+        $context,
+        $myExpr,
+        $funcCallArr,
+        $isMethod = false,
+        $isStatic = false,
+        $cast = MyDefinition::CAST_NOT_SAFE)
     {
         $mybackdef = null;
         $nbparams = 0;
@@ -142,6 +148,7 @@ class FuncCall
         $instFuncCallMain->addProperty(MyInstruction::FUNCNAME, $funcCallName);
 
         $myFunctionCall = new MyFunction($funcCallName);
+        $myFunctionCall->setCastReturn($cast);
         $myFunctionCall->setLine($context->getCurrentLine());
         $myFunctionCall->setColumn($context->getCurrentColumn());
 

@@ -83,16 +83,38 @@ class Expr
         $op,
         $context,
         $myExpr,
-        $cast = MyDefinition::CAST_NOT_SAFE
+        $cast = MyDefinition::CAST_NOT_SAFE,
+        $phi = false
     ) {
         $myTempDef = null;
         $arrFuncCall = false;
         $name = Common::getNameDefinition($op);
         $type = Common::getTypeDefinition($op);
         $typeArray = Common::getTypeIsArray($op);
+        
+        if($op instanceof Op\Phi)
+        {
+            $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
+            $instTemporarySimple->addProperty(MyInstruction::PHI, count($op->vars));
+            
+            $nbvars = 0;
+            foreach($op->vars as $var)
+            {
+                $myTemp = Expr::instructionInternal($defsOfExpr, $var, $context, $myExpr, $cast, true);
+                
+                if(!is_null($myTemp))
+                {
+                    $instTemporarySimple->addProperty("temp_".$nbvars, $myTemp);
+                    $nbvars ++;
+                }
+            }  
+            
+            $instTemporarySimple->addProperty(MyInstruction::PHI, $nbvars);
+            $context->getCurrentMycode()->addCode($instTemporarySimple);
+        }
 
         // end of expression
-        if (!is_null($type) && $type !== MyOp::TYPE_FUNCCALL_ARRAY) {
+        else if (!is_null($type) && $type !== MyOp::TYPE_FUNCCALL_ARRAY) {
             if (is_null($name)) {
                 $name = mt_rand();
             }
@@ -134,10 +156,13 @@ class Expr
                 $myTemp->property->setProperties($propertyName);
             }
 
-            $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
-            $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
-            $context->getCurrentMycode()->addCode($instTemporarySimple);
-
+            if(!$phi)
+            {
+                $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
+                $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
+                $context->getCurrentMycode()->addCode($instTemporarySimple);
+            }
+            
             return $myTemp;
         } // func()[0][1]
         elseif ($type === MyOp::TYPE_FUNCCALL_ARRAY) {
@@ -152,70 +177,70 @@ class Expr
                             || $ops instanceof Op\Expr\Cast\Array_
                             || $ops instanceof Op\Expr\Cast\Bool_
                             || $ops instanceof Op\Expr\Cast\Double_
-                            || $ops instanceof Op\Expr\Cast\Object_
-                            || $ops instanceof Op\Expr\Cast\Array_) {
-                    Expr::instructionInternal($defsOfExpr, $ops->expr, $context, $myExpr, MyDefinition::CAST_SAFE);
+                            || $ops instanceof Op\Expr\Cast\Object_) {
+
+                    Expr::instructionInternal($defsOfExpr, $ops->expr, $context, $myExpr, MyDefinition::CAST_SAFE, $phi);
                 } elseif ($ops instanceof Op\Expr\Cast\String_) {
-                    Expr::instructionInternal($defsOfExpr, $ops->expr, $context, $myExpr, MyDefinition::CAST_NOT_SAFE);
+                    Expr::instructionInternal($defsOfExpr, $ops->expr, $context, $myExpr, MyDefinition::CAST_NOT_SAFE, $phi);
                 } elseif ($ops instanceof Op\Expr\BinaryOp\Concat) {
                     $myExpr->setIsConcat(true);
 
                     $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::CONCAT_LEFT));
-                    Expr::instructionInternal($defsOfExpr, $ops->left, $context, $myExpr);
+                    Expr::instructionInternal($defsOfExpr, $ops->left, $context, $myExpr, $cast, $phi);
 
                     $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::CONCAT_RIGHT));
-                    Expr::instructionInternal($defsOfExpr, $ops->right, $context, $myExpr);
+                    Expr::instructionInternal($defsOfExpr, $ops->right, $context, $myExpr, $cast, $phi);
                 } elseif ($ops instanceof Op\Expr\ConcatList) {
                     $myExpr->setIsConcat(true);
 
                     $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::CONCAT_LIST));
 
                     foreach ($ops->list as $opsbis) {
-                        Expr::instructionInternal($defsOfExpr, $opsbis, $context, $myExpr);
+                        Expr::instructionInternal($defsOfExpr, $opsbis, $context, $myExpr, $cast, $phi);
                     }
                 } elseif ($ops instanceof Op\Expr\Include_) {
                     $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);
-                    FuncCall::instruction($context, $myExpr, $arrFuncCall, false);
+                    FuncCall::instruction($context, $myExpr, $arrFuncCall, false, false, $cast);
                     $context->setCurrentOp($oldOp);
                 } elseif ($ops instanceof Op\Expr\Print_) {
                     $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);
-                    FuncCall::instruction($context, $myExpr, $arrFuncCall, false);
+                    FuncCall::instruction($context, $myExpr, $arrFuncCall, false, false, $cast);
                     $context->setCurrentOp($oldOp);
                 } elseif ($ops instanceof Op\Terminal\Echo_) {
                     $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);
-                    FuncCall::instruction($context, $myExpr, $arrFuncCall, false);
+                    FuncCall::instruction($context, $myExpr, $arrFuncCall, false, false, $cast);
                     $context->setCurrentOp($oldOp);
                 } elseif ($ops instanceof Op\Expr\Eval_) {
                     $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);
-                    FuncCall::instruction($context, $myExpr, $arrFuncCall, false);
+                    FuncCall::instruction($context, $myExpr, $arrFuncCall, false, false, $cast);
                     $context->setCurrentOp($oldOp);
                 } elseif ($ops instanceof Op\Expr\FuncCall || $ops instanceof Op\Expr\NsFuncCall) {
                     $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);
-                    $myTempDef = FuncCall::instruction($context, $myExpr, $arrFuncCall, false);
+                    $myTempDef = FuncCall::instruction($context, $myExpr, $arrFuncCall, false, false, $cast);
                     $context->setCurrentOp($oldOp);
                 } elseif ($ops instanceof Op\Expr\MethodCall) {
                     $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);
-                    $myTempDef = FuncCall::instruction($context, $myExpr, $arrFuncCall, true);
+                    $myTempDef = FuncCall::instruction($context, $myExpr, $arrFuncCall, true, false, $cast);
                     $context->setCurrentOp($oldOp);
                 } elseif ($ops instanceof Op\Expr\StaticCall) {
                     $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);
-                    $myTempDef = FuncCall::instruction($context, $myExpr, $arrFuncCall, false, true);
+                    $myTempDef = FuncCall::instruction($context, $myExpr, $arrFuncCall, false, true, $cast);
                     $context->setCurrentOp($oldOp);
                 } elseif ($ops instanceof Op\Expr\New_) {
                     // funccall for the constructor
                     $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);
-                    $myTempDef = FuncCall::instruction($context, $myExpr, $arrFuncCall);
+                    $myTempDef = FuncCall::instruction($context, $myExpr, $arrFuncCall, false, false, $cast);
                     $context->setCurrentOp($oldOp);
                 } else {
-                    $myTempDef = Expr::instructionInternal($defsOfExpr, $ops, $context, $myExpr);
+                    $myTempDef = Expr::instructionInternal($defsOfExpr, $ops, $context, $myExpr, $cast, $phi);
                 }
             }
         }

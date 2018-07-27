@@ -224,138 +224,156 @@ class VisitorAnalysis
 
 
                     case Opcodes::TEMPORARY:
-                        $tempDefa = $instruction->getProperty(MyInstruction::TEMPORARY);
-                        $tempDefaMyExpr = $tempDefa->getExpr();
-                        $defAssignMyExpr = $tempDefaMyExpr->getAssignDef();
+                        $listOfMyTemp = [];
+                        if($instruction->isPropertyExist(MyInstruction::PHI))
+                        {
+                            for($i = 0; $i < $instruction->getProperty(MyInstruction::PHI); $i++)
+                                $listOfMyTemp[] = $instruction->getProperty("temp_".$i);
+                        }
+                        else
+                            $listOfMyTemp[] = $instruction->getProperty(MyInstruction::TEMPORARY);
+                            
+                        foreach($listOfMyTemp as $tempDefa)
+                        {
+                            $tempDefaMyExpr = $tempDefa->getExpr();
+                            $defAssignMyExpr = $tempDefaMyExpr->getAssignDef();
 
-                        if ($tempDefaMyExpr->isAssign() && !$tempDefaMyExpr->isAssignIterator()) {
-                            ArrayAnalysis::copyArray(
-                                $this->context,
-                                $this->defs->getOutMinusKill($tempDefa->getBlockId()),
+                            if(!is_null($this->context->inputs->getSourceArrayByName(
+                                $tempDefa, 
+                                $tempDefa->getArrayValue()
+                            ))) {
+                                $tempDefa->setArrayValue("PROGPILOT_ALL_INDEX_TAINTED");
+                            }
+                            
+                            if ($tempDefaMyExpr->isAssign() && !$tempDefaMyExpr->isAssignIterator()) {
+                                ArrayAnalysis::copyArray(
+                                    $this->context,
+                                    $this->defs->getOutMinusKill($tempDefa->getBlockId()),
+                                    $tempDefa,
+                                    $tempDefa->getArrayValue(),
+                                    $defAssignMyExpr,
+                                    $defAssignMyExpr->getArrayValue()
+                                );
+                            }
+
+                            $tainted = false;
+                            if (!is_null($this->context->inputs->getSourceByName(
+                                null,
                                 $tempDefa,
-                                $tempDefa->getArrayValue(),
-                                $defAssignMyExpr,
-                                $defAssignMyExpr->getArrayValue()
-                            );
-                        }
+                                false,
+                                false,
+                                $tempDefa->getArrayValue()
+                            ))) {
+                                $tainted = true;
+                            }
+                            $tempDefa->setTainted($tainted);
 
-                        $tainted = false;
-                        if (!is_null($this->context->inputs->getSourceByName(
-                            null,
-                            $tempDefa,
-                            false,
-                            false,
-                            $tempDefa->getArrayValue()
-                        ))) {
-                            $tainted = true;
-                        }
-                        $tempDefa->setTainted($tainted);
-
-                        $defs = ResolveDefs::temporarySimple(
-                            $this->context,
-                            $this->defs,
-                            $tempDefa,
-                            $tempDefaMyExpr->isAssignIterator(),
-                            $tempDefaMyExpr->isAssign(),
-                            $this->callStack
-                        );
-
-                        ValueAnalysis::updateStorageToExpr($tempDefaMyExpr);
-                        $storageCast = ValueAnalysis::$exprsCast[$tempDefaMyExpr];
-                        $storageKnownValues = ValueAnalysis::$exprsKnownValues[$tempDefaMyExpr];
-
-                        //$new_defsassign[] = $defAssignMyExpr;
-
-                        foreach ($defs as $def) {
-                            $safe = AssertionAnalysis::temporarySimple(
+                            $defs = ResolveDefs::temporarySimple(
                                 $this->context,
                                 $this->defs,
-                                $this->currentMyBlock,
-                                $def,
-                                $tempDefa
-                            );
-                            $visibility = ResolveDefs::getVisibilityFromInstances(
-                                $this->context,
-                                $this->defs->getOutMinusKill($def->getBlockId()),
-                                $defAssignMyExpr
+                                $tempDefa,
+                                $tempDefaMyExpr->isAssignIterator(),
+                                $tempDefaMyExpr->isAssign(),
+                                $this->callStack
                             );
 
-                            if ($def->isType(MyDefinition::TYPE_PROPERTY)) {
-                                if (!is_null($this->context->inputs->getSourceByName(
-                                    null,
+                            ValueAnalysis::updateStorageToExpr($tempDefaMyExpr);
+                            $storageCast = ValueAnalysis::$exprsCast[$tempDefaMyExpr];
+                            $storageKnownValues = ValueAnalysis::$exprsKnownValues[$tempDefaMyExpr];
+
+                            foreach ($defs as $def) {
+                    
+                                $safe = AssertionAnalysis::temporarySimple(
+                                    $this->context,
+                                    $this->defs,
+                                    $this->currentMyBlock,
                                     $def,
-                                    false,
-                                    $def->getClassName(),
-                                    false,
-                                    $def
-                                ))) {
-                                    $def->setTainted(true);
+                                    $tempDefa
+                                );
+                                $visibility = ResolveDefs::getVisibilityFromInstances(
+                                    $this->context,
+                                    $this->defs->getOutMinusKill($def->getBlockId()),
+                                    $defAssignMyExpr
+                                );
+
+                                if ($def->isType(MyDefinition::TYPE_PROPERTY)) {
+                                    if (!is_null($this->context->inputs->getSourceByName(
+                                        null,
+                                        $def,
+                                        false,
+                                        $def->getClassName(),
+                                        false,
+                                        $def
+                                    ))) {
+                                        $def->setTainted(true);
+                                    }
                                 }
-                            }
 
-                            if ($visibility) {
-                                $storageCast[] = $tempDefa->getCast();
-                                $storageKnownValues["".$tempDefa->getId().""][] = $def->getLastKnownValues();
+                                if ($visibility) {
+                                    $storageCast[] = $tempDefa->getCast();
+                                    $storageKnownValues["".$tempDefa->getId().""][] = $def->getLastKnownValues();
 
-                                ValueAnalysis::copyValues($tempDefa, $def);
-                            }
+                                    $def->setIsEmbeddedByChars($tempDefa->getIsEmbeddedByChars(), true);
+                                }
 
-                            if ($visibility && !$safe) {
-                                TaintAnalysis::setTainted($def->isTainted(), $defAssignMyExpr, $tempDefaMyExpr);
-                            }
+                                if ($visibility && !$safe) {
+                                    TaintAnalysis::setTainted($def->isTainted(), $defAssignMyExpr, $tempDefaMyExpr);
+                                    ValueAnalysis::copyValues($def, $defAssignMyExpr);
+                                }
 
-                            // vérifier s'il y a pas de concat
-                            // mis a jour de l'object
-                            if ($def->isType(MyDefinition::TYPE_INSTANCE)) {
-                                $defAssignMyExpr->addType(MyDefinition::TYPE_INSTANCE);
-                                $defAssignMyExpr->setObjectId($def->getObjectId());
+                                // vérifier s'il y a pas de concat
+                                // mis a jour de l'object
+                                if ($def->isType(MyDefinition::TYPE_INSTANCE)) {
+                                    $defAssignMyExpr->addType(MyDefinition::TYPE_INSTANCE);
+                                    $defAssignMyExpr->setObjectId($def->getObjectId());
 
-                                $tmpMyClass = $this->context->getObjects()->getMyClassFromObject($def->getObjectId());
-                                if (!is_null($tmpMyClass)) {
-                                    foreach ($tmpMyClass->getProperties() as $property) {
-                                        $myDefTemp = new MyDefinition(
-                                            $tempDefa->getLine(),
-                                            $tempDefa->getColumn(),
-                                            $tempDefa->getName()
-                                        );
-                                        $myDefTemp->addType(MyDefinition::TYPE_PROPERTY);
-                                        $myDefTemp->property->setProperties($property->property->getProperties());
-                                        $myDefTemp->setBlockId($tempDefa->getBlockId());
-                                        $myDefTemp->setSourceMyFile($tempDefa->getSourceMyFile());
-                                        $myDefTemp->setId($tempDefa->getId());
-
-                                        $defsFound = ResolveDefs::selectProperties(
-                                            $this->context,
-                                            $this->defs->getOutMinusKill($tempDefa->getBlockId()),
-                                            $myDefTemp,
-                                            true
-                                        );
-                                        foreach ($defsFound as $defFound) {
-                                            if ($defFound->isType(MyDefinition::TYPE_COPY_ARRAY)) {
-                                                $property->setCopyArrays($defFound->getCopyArrays());
-                                                $property->addType(MyDefinition::TYPE_COPY_ARRAY);
-                                            }
-
-                                            TaintAnalysis::setTainted(
-                                                $defFound->isTainted(),
-                                                $property,
-                                                $defFound->getTaintedByExpr()
+                                    $tmpMyClass = $this->context->getObjects()->getMyClassFromObject($def->getObjectId());
+                                    if (!is_null($tmpMyClass)) {
+                                        foreach ($tmpMyClass->getProperties() as $property) {
+                                            $myDefTemp = new MyDefinition(
+                                                $tempDefa->getLine(),
+                                                $tempDefa->getColumn(),
+                                                $tempDefa->getName()
                                             );
+                                            $myDefTemp->addType(MyDefinition::TYPE_PROPERTY);
+                                            $myDefTemp->property->setProperties($property->property->getProperties());
+                                            $myDefTemp->setBlockId($tempDefa->getBlockId());
+                                            $myDefTemp->setSourceMyFile($tempDefa->getSourceMyFile());
+                                            $myDefTemp->setId($tempDefa->getId());
 
-                                            if ($defFound->isSanitized()) {
-                                                $property->setSanitized(true);
-                                                foreach ($defFound->getTypeSanitized() as $typeSanitized) {
-                                                    $property->addTypeSanitized($typeSanitized);
+                                            $defsFound = ResolveDefs::selectProperties(
+                                                $this->context,
+                                                $this->defs->getOutMinusKill($tempDefa->getBlockId()),
+                                                $myDefTemp,
+                                                true
+                                            );
+                                            foreach ($defsFound as $defFound) {
+                                                if ($defFound->isType(MyDefinition::TYPE_COPY_ARRAY)) {
+                                                    $property->setCopyArrays($defFound->getCopyArrays());
+                                                    $property->addType(MyDefinition::TYPE_COPY_ARRAY);
+                                                }
+
+                                                TaintAnalysis::setTainted(
+                                                    $defFound->isTainted(),
+                                                    $property,
+                                                    $defFound->getTaintedByExpr()
+                                                );
+
+                                                if ($defFound->isSanitized()) {
+                                                    $property->setSanitized(true);
+                                                    foreach ($defFound->getTypeSanitized() as $typeSanitized) {
+                                                        $property->addTypeSanitized($typeSanitized);
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
-                        }
 
-                        ValueAnalysis::$exprsCast[$tempDefaMyExpr] = $storageCast;
-                        ValueAnalysis::$exprsKnownValues[$tempDefaMyExpr] = $storageKnownValues;
+                            ValueAnalysis::$exprsCast[$tempDefaMyExpr] = $storageCast;
+                            ValueAnalysis::$exprsKnownValues[$tempDefaMyExpr] = $storageKnownValues;
+                        }
 
                         break;
                     

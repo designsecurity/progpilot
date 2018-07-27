@@ -31,10 +31,10 @@ class FuncAnalysis
 
                     // copydefreturn = return $defReturn;
                     $copyDefReturn->setExpr($exprReturn);
+                    $defReturn->setCast($myFuncCall->getCastReturn());
                     // exprreturn = $def = exprreturn(funccall());
                     $exprReturn->addDef($copyDefReturn);
-
-
+                    
                     $expr = $copyDefReturn->getExpr();
                     if ($expr->isAssign()) {
                         $defAssign = $expr->getAssignDef();
@@ -87,21 +87,24 @@ class FuncAnalysis
                 $param->setLastKnownValues($newParam->getLastKnownValues());
                 $param->setType($newParam->getType());
 
+                $expr = $param->getExpr();
+                    
                 if ($defArg->isTainted()) {
                     // useful just for inside the function
                     TaintAnalysis::setTainted($defArg->isTainted(), $param, $exprArg);
-
-                    $expr = $param->getExpr();
 
                     if (!is_null($expr) && $expr->isAssign()) {
                         $defAssign = $expr->getAssignDef();
 
                         if (ResolveDefs::getVisibilityFromInstances($context, $data, $defAssign)) {
-                            ValueAnalysis::copyValues($defArg, $defAssign);
                             TaintAnalysis::setTainted($defArg->isTainted(), $defAssign, $expr);
+                            ValueAnalysis::copyValues($defArg, $defAssign);
                         }
                     }
                 }
+                
+                // useful for copy all tainted array progpilot
+                ValueAnalysis::copyValues($defArg, $param);
 
                 $nbParams ++;
                 unset($defArg);

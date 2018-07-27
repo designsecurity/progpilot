@@ -32,7 +32,7 @@ class ArrayAnalysis
     public static function temporarySimple($context, $data, $searchedDef, $def, $isIterator = false, $isAssign = false)
     {
         $goodDefs = [];
-
+        
         if (($def->isType(MyDefinition::TYPE_COPY_ARRAY)
             && ($searchedDef->isType(MyDefinition::TYPE_ARRAY) || $isIterator))) {
             foreach ($def->getCopyArrays() as $defCopyArray) {
@@ -95,10 +95,10 @@ class ArrayAnalysis
         }
     }
 
-    public static function copyArrayFromDef($defa, $originalArr, $copyTab, $copyArr)
+    public static function copyArrayFromDef($originalTab, $originalArr, $copyTab, $copyArr)
     {
-        if ($defa->isType(MyDefinition::TYPE_COPY_ARRAY)) {
-            $copyArrays = $defa->getCopyArrays();
+        if ($originalTab->isType(MyDefinition::TYPE_COPY_ARRAY)) {
+            $copyArrays = $originalTab->getCopyArrays();
 
             foreach ($copyArrays as $value) {
                 $arrValue = $value[0];
@@ -118,8 +118,8 @@ class ArrayAnalysis
                     unset($defArr);
                 }
             }
-        } else {
-            $extract = BuildArrays::extractArrayFromArr($defa->getArrayValue(), $originalArr);
+        } else if($originalTab->getArrayValue() !== "PROGPILOT_ALL_INDEX_TAINTED") {
+            $extract = BuildArrays::extractArrayFromArr($originalTab->getArrayValue(), $originalArr);
 
             // si on cherchait $copy = $array[11] ici il y a des arrays de type $array[11][quelquechose]
             // ou deuxieme cas
@@ -130,7 +130,7 @@ class ArrayAnalysis
                     $extract = BuildArrays::buildArrayFromArr($copyArr, $extract);
                 }
 
-                $copyTab->addCopyArray($extract, $defa);
+                $copyTab->addCopyArray($extract, $originalTab);
                 $copyTab->addType(MyDefinition::TYPE_COPY_ARRAY);
 
                 if ($copyTab->isType(MyDefinition::TYPE_ARRAY)) {

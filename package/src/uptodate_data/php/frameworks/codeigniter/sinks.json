@@ -1,0 +1,6 @@
+{
+    "sinks": [
+        {"name": "view", "parameters": [{"id": 2}], "instanceof": "this->load", "language": "php", "attack": "xss", "cwe": "CWE_79"},
+        {"name": "query", "parameters": [{"id": 1}], "instanceof": "this->db", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"}
+        ]
+}

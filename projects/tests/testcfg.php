@@ -7,10 +7,6 @@ $code = "<?php function testf(\$param){	return [\$param, \"nono\"];}\$var = test
 $context = new \progpilot\Context;
 $analyzer = new \progpilot\Analyzer;
 
-$context->inputs->setSources("../../package/src/uptodate_data/sources.json");
-$context->inputs->setSinks("../../package/src/uptodate_data/sinks.json");
-$context->inputs->setSanitizers("../../package/src/uptodate_data/sanitizers.json");
-$context->inputs->setValidators("../../package/src/uptodate_data/validators.json");
 $context->setAnalyzeJs(false);
 $context->setAnalyzeIncludes(false);
 $context->inputs->setCode($code);

@@ -1,9 +1,9 @@
 inputs:
-    setSources: ../../package/src/uptodate_data/sources.json
-    setSinks: ../../package/src/uptodate_data/sinks.json
-    setValidators: ../../package/src/uptodate_data/validators.json
-    setSanitizers: ../../package/src/uptodate_data/sanitizers.json
-    setCustomRules: ../../package/src/uptodate_data/rules.json
+    setSources: ../../package/src/uptodate_data/php/sources.json
+    setSinks: ../../package/src/uptodate_data/php/sinks.json
+    setValidators: ../../package/src/uptodate_data/php/validators.json
+    setSanitizers: ../../package/src/uptodate_data/php/sanitizers.json
+    setCustomRules: ../../package/src/uptodate_data/php/rules.json
     setIncludeFiles: 
     setExcludeFiles: 
     setFolder: /home/eric/dev/scripts/drupal/

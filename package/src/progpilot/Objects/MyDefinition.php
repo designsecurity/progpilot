@@ -118,6 +118,10 @@ class MyDefinition extends MyOp
             echo "array index value :\n";
             var_dump($this->getArrayValue());
         }
+        
+        if ($this->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED") {
+            echo "array index value : PROGPILOT_ALL_INDEX_TAINTED\n";
+        }
 
         if ($this->isType(MyDefinition::TYPE_PROPERTY)) {
             echo "property : ".Utils::printProperties($this->property->getProperties())."\n";
@@ -137,6 +141,7 @@ class MyDefinition extends MyOp
             }
             echo "copyarray end =================\n";
         }
+        echo "__________________________________________\n\n\n";
     }
 
     public function setIsEmbeddedByChars($chars, $control)

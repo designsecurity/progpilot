@@ -15,6 +15,7 @@ use PHPCfg\Func;
 use PHPCfg\Op;
 use PHPCfg\Script;
 use PHPCfg\Visitor;
+use PHPCfg\Printer;
 
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyBlock;
@@ -54,6 +55,11 @@ class Transform implements Visitor
     public function enterScript(Script $script)
     {
         $this->context->outputs->currentIncludesFile = [];
+        
+        /*
+        $printer = new Printer\Text();
+        var_dump($printer->printScript($script));
+        */
     }
 
     public function leaveScript(Script $script)

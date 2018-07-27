@@ -313,6 +313,21 @@ class MyInputs
         return null;
     }
 
+    public function getSourceArrayByName(
+        $myFuncOrDef,
+        $arrValue = false
+    ) {
+        foreach ($this->sources as $mySource) {
+            if ($mySource->getName() === $myFuncOrDef->getName() 
+                && $mySource->getIsArray() 
+                    && $arrValue === false) {
+                    return $mySource;
+            }
+        }
+
+        return null;
+    }
+    
     public function getSourceByName(
         $stackClass,
         $myFuncOrDef,
@@ -363,7 +378,7 @@ class MyInputs
 
                 // if we request an array the source must be an array
                 // and array nots equals (like $_GET["p"])
-                if (($arrValue !== false
+                if (($arrValue !== false && $arrValue !== "PROGPILOT_ALL_INDEX_TAINTED"
                     && $mySource->getIsArray()
                         && is_null($mySource->getArrayValue()))
                             // or we don't request an array
@@ -379,7 +394,7 @@ class MyInputs
                 }
 
                 // if we request an array the source must be an array and array value equals
-                if (($arrValue !== false
+                if (($arrValue !== false && $arrValue !== "PROGPILOT_ALL_INDEX_TAINTED"
                     && $mySource->getIsArray()
                         && !is_null($mySource->getArrayValue())
                             && $mySource->getArrayValue() === $arrValue)) {
@@ -499,7 +514,7 @@ class MyInputs
     public function readSanitizers()
     {
         if (is_null($this->sanitizersFile)) {
-            $this->sanitizersFile = __DIR__."/../../uptodate_data/sanitizers.json";
+            $this->sanitizersFile = __DIR__."/../../uptodate_data/php/sanitizers.json";
         }
 
         if (!is_null($this->sanitizersFile)) {
@@ -574,7 +589,7 @@ class MyInputs
     public function readSinks()
     {
         if (is_null($this->sinksFile)) {
-            $this->sinksFile = __DIR__."/../../uptodate_data/sinks.json";
+            $this->sinksFile = __DIR__."/../../uptodate_data/php/sinks.json";
         }
 
         if (!is_null($this->sinksFile)) {
@@ -637,7 +652,7 @@ class MyInputs
     public function readSources()
     {
         if (is_null($this->sourcesFile)) {
-            $this->sourcesFile = __DIR__."/../../uptodate_data/sources.json";
+            $this->sourcesFile = __DIR__."/../../uptodate_data/php/sources.json";
         }
 
         if (!is_null($this->sourcesFile)) {
@@ -716,7 +731,7 @@ class MyInputs
     public function readValidators()
     {
         if (is_null($this->validatorsFile)) {
-            $this->validatorsFile = __DIR__."/../../uptodate_data/validators.json";
+            $this->validatorsFile = __DIR__."/../../uptodate_data/php/validators.json";
         }
 
         if (!is_null($this->validatorsFile)) {
@@ -918,7 +933,7 @@ class MyInputs
     public function readCustomFile()
     {
         if (is_null($this->customFile)) {
-            $this->customFile = __DIR__."/../../uptodate_data/rules.json";
+            $this->customFile = __DIR__."/../../uptodate_data/php/rules.json";
         }
 
         if (!is_null($this->customFile)) {

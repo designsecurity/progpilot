@@ -43,6 +43,7 @@ class MyInstruction
     const MYFUNC_CALL = "myfunc_call";
     const ARR = "arr";
     const TEMPORARY = "temporary";
+    const PHI = "phi";
 
     private $properties;
     private $opcode;

@@ -19,6 +19,7 @@ use PHPCfg\Operand;
 
 use progpilot\Objects\MyOp;
 use progpilot\Objects\MyFunction;
+use progpilot\Objects\MyDefinition;
 use progpilot\Code\MyInstruction;
 
 class SecurityAnalysis
@@ -27,9 +28,9 @@ class SecurityAnalysis
     {
         for ($i = 0; $i < count($temp["source_name"]); $i ++) {
             if ($temp["source_name"][$i] === $name
-                                                  && $temp["source_line"][$i] === $line
-                                                          && $temp["source_column"][$i] === $column
-                                                                  && $temp["source_file"][$i] === $file) {
+                && $temp["source_line"][$i] === $line
+                    && $temp["source_column"][$i] === $column
+                        && $temp["source_file"][$i] === $file) {
                 return true;
             }
         }
@@ -41,7 +42,7 @@ class SecurityAnalysis
     {
         $condition = $mySink->getParameterCondition($indexParameter);
 
-        if ($myDef->isTainted()) {
+        if ($myDef->isTainted() && $myDef->getCast() === MyDefinition::CAST_NOT_SAFE) {
             if ($myDef->isSanitized()) {
                 if ($myDef->isTypeSanitized($mySink->getAttack())
                             || $myDef->isTypeSanitized("ALL")) {
