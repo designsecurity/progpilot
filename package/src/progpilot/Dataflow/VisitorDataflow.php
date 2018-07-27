@@ -303,18 +303,16 @@ class VisitorDataflow
                         break;
 
                     case Opcodes::TEMPORARY:
-                    
                         $listOfMyTemp = [];
-                        if($instruction->isPropertyExist(MyInstruction::PHI))
-                        {
-                            for($i = 0; $i < $instruction->getProperty(MyInstruction::PHI); $i++)
+                        if ($instruction->isPropertyExist(MyInstruction::PHI)) {
+                            for ($i = 0; $i < $instruction->getProperty(MyInstruction::PHI); $i++) {
                                 $listOfMyTemp[] = $instruction->getProperty("temp_".$i);
-                        }
-                        else
+                            }
+                        } else {
                             $listOfMyTemp[] = $instruction->getProperty(MyInstruction::TEMPORARY);
+                        }
                             
-                        foreach($listOfMyTemp as $myDef)
-                        {
+                        foreach ($listOfMyTemp as $myDef) {
                             $myDef->setBlockId($this->currentBlockId);
 
                             if (is_null($myDef->getSourceMyFile())) {

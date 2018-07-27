@@ -225,21 +225,20 @@ class VisitorAnalysis
 
                     case Opcodes::TEMPORARY:
                         $listOfMyTemp = [];
-                        if($instruction->isPropertyExist(MyInstruction::PHI))
-                        {
-                            for($i = 0; $i < $instruction->getProperty(MyInstruction::PHI); $i++)
+                        if ($instruction->isPropertyExist(MyInstruction::PHI)) {
+                            for ($i = 0; $i < $instruction->getProperty(MyInstruction::PHI); $i++) {
                                 $listOfMyTemp[] = $instruction->getProperty("temp_".$i);
-                        }
-                        else
+                            }
+                        } else {
                             $listOfMyTemp[] = $instruction->getProperty(MyInstruction::TEMPORARY);
+                        }
                             
-                        foreach($listOfMyTemp as $tempDefa)
-                        {
+                        foreach ($listOfMyTemp as $tempDefa) {
                             $tempDefaMyExpr = $tempDefa->getExpr();
                             $defAssignMyExpr = $tempDefaMyExpr->getAssignDef();
 
-                            if(!is_null($this->context->inputs->getSourceArrayByName(
-                                $tempDefa, 
+                            if (!is_null($this->context->inputs->getSourceArrayByName(
+                                $tempDefa,
                                 $tempDefa->getArrayValue()
                             ))) {
                                 $tempDefa->setArrayValue("PROGPILOT_ALL_INDEX_TAINTED");
@@ -282,7 +281,6 @@ class VisitorAnalysis
                             $storageKnownValues = ValueAnalysis::$exprsKnownValues[$tempDefaMyExpr];
 
                             foreach ($defs as $def) {
-                    
                                 $safe = AssertionAnalysis::temporarySimple(
                                     $this->context,
                                     $this->defs,
@@ -327,7 +325,9 @@ class VisitorAnalysis
                                     $defAssignMyExpr->addType(MyDefinition::TYPE_INSTANCE);
                                     $defAssignMyExpr->setObjectId($def->getObjectId());
 
-                                    $tmpMyClass = $this->context->getObjects()->getMyClassFromObject($def->getObjectId());
+                                    $tmpMyClass = $this->context->getObjects()->getMyClassFromObject(
+                                        $def->getObjectId()
+                                    );
                                     if (!is_null($tmpMyClass)) {
                                         foreach ($tmpMyClass->getProperties() as $property) {
                                             $myDefTemp = new MyDefinition(

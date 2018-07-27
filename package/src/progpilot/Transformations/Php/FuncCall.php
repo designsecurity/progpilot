@@ -94,8 +94,8 @@ class FuncCall
         $funcCallArr,
         $isMethod = false,
         $isStatic = false,
-        $cast = MyDefinition::CAST_NOT_SAFE)
-    {
+        $cast = MyDefinition::CAST_NOT_SAFE
+    ) {
         $mybackdef = null;
         $nbparams = 0;
         $propertyName = "";

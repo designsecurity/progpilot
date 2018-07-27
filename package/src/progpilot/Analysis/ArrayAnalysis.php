@@ -118,7 +118,7 @@ class ArrayAnalysis
                     unset($defArr);
                 }
             }
-        } else if($originalTab->getArrayValue() !== "PROGPILOT_ALL_INDEX_TAINTED") {
+        } elseif ($originalTab->getArrayValue() !== "PROGPILOT_ALL_INDEX_TAINTED") {
             $extract = BuildArrays::extractArrayFromArr($originalTab->getArrayValue(), $originalArr);
 
             // si on cherchait $copy = $array[11] ici il y a des arrays de type $array[11][quelquechose]

@@ -318,8 +318,8 @@ class MyInputs
         $arrValue = false
     ) {
         foreach ($this->sources as $mySource) {
-            if ($mySource->getName() === $myFuncOrDef->getName() 
-                && $mySource->getIsArray() 
+            if ($mySource->getName() === $myFuncOrDef->getName()
+                && $mySource->getIsArray()
                     && $arrValue === false) {
                     return $mySource;
             }

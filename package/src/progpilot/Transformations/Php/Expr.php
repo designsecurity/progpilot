@@ -92,29 +92,24 @@ class Expr
         $type = Common::getTypeDefinition($op);
         $typeArray = Common::getTypeIsArray($op);
         
-        if($op instanceof Op\Phi)
-        {
+        if ($op instanceof Op\Phi) {
             $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
             $instTemporarySimple->addProperty(MyInstruction::PHI, count($op->vars));
             
             $nbvars = 0;
-            foreach($op->vars as $var)
-            {
+            foreach ($op->vars as $var) {
                 $myTemp = Expr::instructionInternal($defsOfExpr, $var, $context, $myExpr, $cast, true);
                 
-                if(!is_null($myTemp))
-                {
+                if (!is_null($myTemp)) {
                     $instTemporarySimple->addProperty("temp_".$nbvars, $myTemp);
                     $nbvars ++;
                 }
-            }  
+            }
             
             $instTemporarySimple->addProperty(MyInstruction::PHI, $nbvars);
             $context->getCurrentMycode()->addCode($instTemporarySimple);
-        }
-
-        // end of expression
-        else if (!is_null($type) && $type !== MyOp::TYPE_FUNCCALL_ARRAY) {
+        } // end of expression
+        elseif (!is_null($type) && $type !== MyOp::TYPE_FUNCCALL_ARRAY) {
             if (is_null($name)) {
                 $name = mt_rand();
             }
@@ -156,8 +151,7 @@ class Expr
                 $myTemp->property->setProperties($propertyName);
             }
 
-            if(!$phi)
-            {
+            if (!$phi) {
                 $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
                 $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
                 $context->getCurrentMycode()->addCode($instTemporarySimple);
@@ -178,10 +172,23 @@ class Expr
                             || $ops instanceof Op\Expr\Cast\Bool_
                             || $ops instanceof Op\Expr\Cast\Double_
                             || $ops instanceof Op\Expr\Cast\Object_) {
-
-                    Expr::instructionInternal($defsOfExpr, $ops->expr, $context, $myExpr, MyDefinition::CAST_SAFE, $phi);
+                    Expr::instructionInternal(
+                        $defsOfExpr,
+                        $ops->expr,
+                        $context,
+                        $myExpr,
+                        MyDefinition::CAST_SAFE,
+                        $phi
+                    );
                 } elseif ($ops instanceof Op\Expr\Cast\String_) {
-                    Expr::instructionInternal($defsOfExpr, $ops->expr, $context, $myExpr, MyDefinition::CAST_NOT_SAFE, $phi);
+                    Expr::instructionInternal(
+                        $defsOfExpr,
+                        $ops->expr,
+                        $context,
+                        $myExpr,
+                        MyDefinition::CAST_NOT_SAFE,
+                        $phi
+                    );
                 } elseif ($ops instanceof Op\Expr\BinaryOp\Concat) {
                     $myExpr->setIsConcat(true);
 

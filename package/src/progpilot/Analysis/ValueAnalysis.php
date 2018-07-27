@@ -192,7 +192,7 @@ class ValueAnalysis
         
         $defAssign->setCast($def->getCast());
         
-        if($def->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED") {
+        if ($def->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED") {
             $defAssign->setArrayValue("PROGPILOT_ALL_INDEX_TAINTED");
         }
     }

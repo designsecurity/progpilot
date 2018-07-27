@@ -127,7 +127,6 @@ class ResolveDefs
                 $copyMyClass = clone $myClass;
 
                 foreach ($copyMyClass->getProperties() as $property) {
-                    
                     $myDef = new MyDefinition($myFunc->getLastLine() + 1, $myFunc->getLastColumn(), "this");
 
                     $myDef->addType(MyDefinition::TYPE_PROPERTY);
@@ -148,7 +147,6 @@ class ResolveDefs
                     );
 
                     foreach ($propertiesInside as $propertyInside) {
-                        
                         ValueAnalysis::copyValues($propertyInside, $newProperty);
                     
                         TaintAnalysis::setTainted(
