@@ -40,7 +40,7 @@ class TwigAnalysis
             if (file_exists($file)) {
                 $theDefs = [];
                 $theArrays = $variable->getCopyArrays();
-
+                
                 foreach ($theArrays as $array) {
                     $def = $array[1];
                     $arr = $array[0];
@@ -48,31 +48,23 @@ class TwigAnalysis
                     $arrIndex = "{{".key($arr)."}}";
 
                     $myDef = new MyDefinition($def->getLine(), $def->getColumn(), $arrIndex);
-                    $myDef->setSourceMyFile($myJavascriptFile->getSourceMyFile());
+                    $myDef->setSourceMyFile($myJavascriptFile);
 
                     if ($def->isTainted()) {
                         $myDef->setTainted(true);
                     }
-
+                    
                     $theDefs[] = $myDef;
                 }
 
-                $exec = "node ./vendor/progpilot/package/src/progpilot/Transformations/Js/Transform.js";
-                $exec .= " $file > tmpjscode.txt";
-                shell_exec($exec);
-
                 $newContext = new \progpilot\Context;
-
-                MyCode::readCode($newContext, "tmpjscode.txt", $theDefs, $myJavascriptFile);
-
-                $newContext->setInputs($context->getInputs());
+                $newContext->setInputs(clone $context->getInputs());
+                $newContext->inputs->setFile($file);
                 $newContext->outputs->setResults($context->outputs->getResults());
-                $newContext->set_first_file($file);
+                $newContext->setCurrentMyfile(new MyFile($file, 0, 0));
 
                 $analyzer = new Analyzer;
-                $analyzer->run($newContext, false);
-
-                unlink("tmpjscode.txt");
+                $analyzer->runInternalJs($newContext, $theDefs, true);
             }
         }
     }

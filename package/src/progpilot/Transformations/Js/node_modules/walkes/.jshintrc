@@ -1,0 +1,20 @@
+{
+	"curly": false,
+	"eqeqeq": true,
+	"unused": true,
+	"undef": true,
+	"esnext": true,
+	"laxbreak": true,
+	"smarttabs": true,
+	"node": true,
+	"browser": true,
+	"expr": true,
+	"globals" : {
+		"describe"   : false,
+		"it"         : false,
+		"before"     : false,
+		"beforeEach" : false,
+		"after"      : false,
+		"afterEach"  : false
+	}
+}

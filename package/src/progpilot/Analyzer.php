@@ -10,10 +10,14 @@
 namespace progpilot;
 
 use progpilot\Utils;
+use progpilot\Code\MyCode;
 use progpilot\Objects\MyFile;
 
 class Analyzer
 {
+    const PHP = "php";
+    const JS = "js";
+    
     public function __construct()
     {
     }
@@ -44,7 +48,7 @@ class Analyzer
         }
     }
 
-    public function parse($context)
+    public function parsePhp($context)
     {
         $script = null;
 
@@ -60,31 +64,20 @@ class Analyzer
 
             $parser = new \PHPCfg\Parser($astparser, null);
 
-            if (!file_exists($context->inputs->getFile()) && is_null($context->inputs->getCode())) {
-                Utils::printWarning(
-                    $context,
-                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($context->inputs->getFile()).")"
-                );
-            } elseif (is_null($context->inputs->getFile()) && is_null($context->inputs->getCode())) {
-                Utils::printWarning($context, Lang::FILE_AND_CODE_ARE_NULL);
-            } else {
-                try {
-                    if (is_null($context->inputs->getCode())) {
-                        if (filesize($context->inputs->getFile()) > $context->getLimitSize()) {
-                            Utils::printWarning(
-                                $context,
-                                Lang::MAX_SIZE_EXCEEDED." (".Utils::encodeCharacters($context->inputs->getFile()).")"
-                            );
-                        } else {
-                            $context->inputs->setCode(file_get_contents($context->inputs->getFile()));
-                            $context->setPath(dirname($context->inputs->getFile()));
-                            $script = $parser->parse($context->inputs->getCode(), $context->inputs->getFile());
-                        }
-                    } else {
-                        $script = $parser->parse($context->inputs->getCode(), "");
+            try {
+                if (is_null($context->inputs->getCode())) {
+                    $fileContent = file_get_contents($context->inputs->getFile());
+                    if(Analyzer::getTypeOfLanguage($fileContent) === Analyzer::PHP) {
+                        $context->inputs->setCode($fileContent);
+                        $context->setPath(dirname($context->inputs->getFile()));
+                        $script = $parser->parse($context->inputs->getCode(), $context->inputs->getFile());
                     }
-                } catch (\PhpParser\Error $e) {
                 }
+                else {
+                    if(Analyzer::getTypeOfLanguage($context->inputs->getCode()) === Analyzer::PHP)
+                        $script = $parser->parse($context->inputs->getCode(), "");
+                }
+            } catch (\PhpParser\Error $e) {
             }
         }
 
@@ -95,7 +88,7 @@ class Analyzer
         return $script;
     }
 
-    public function transform($context, $script)
+    public function transformPhp($context, $script)
     {
         // transform
         if (!is_null($script)) {
@@ -118,9 +111,9 @@ class Analyzer
 
             $myFunc->getMyCode()->setStart(0);
             $myFunc->getMyCode()->setEnd(count($myFunc->getMyCode()->getCodes()));
-
+            
             \progpilot\Analysis\ValueAnalysis::buildStorage();
-
+            
             $visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
             $visitoranalyzer->setContext($context);
             $visitoranalyzer->analyze($myFunc->getMyCode());
@@ -130,39 +123,11 @@ class Analyzer
             // throw main function missing
         }
     }
-
-    public function runInternal($context, $includedDefs = null)
+    
+    public function runInternalAnalysis($context, $includedDefs = null)
     {
-        // free memory
-        if (function_exists('gc_mem_caches')) {
-            gc_mem_caches();
-        }
-            
-        if ($context->getCurrentNbDefs() > $context->getLimitDefs()) {
-            Utils::printWarning($context, Lang::MAX_DEFS_EXCEEDED);
-            return;
-        }
-
         $startTime = microtime(true);
-
-        $pastResults = &$context->outputs->getResults();
-        $context->resetInternalValues();
-        $context->outputs->setResults($pastResults);
-
-        $script = $this->parse($context);
-
-        if ((microtime(true) - $startTime) > $context->getLimitTime()) {
-            Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
-            return;
-        }
-
-        $this->transform($context, $script);
-
-        if ((microtime(true) - $startTime) > $context->getLimitTime()) {
-            Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
-            return;
-        }
-
+        
         // analyze
         if (!is_null($context)) {
             $contextFunctions = [];
@@ -217,10 +182,132 @@ class Analyzer
 
             unset($visitordataflow);
         }
-
-        unset($script);
     }
+    
+    public function runInternalPhp($context, $includedDefs = null, $transform = true)
+    {
+        $startTime = microtime(true);
+        
+        // free memory
+        if (function_exists('gc_mem_caches')) {
+            gc_mem_caches();
+        }
+            
+        if ($context->getCurrentNbDefs() > $context->getLimitDefs()) {
+            Utils::printWarning($context, Lang::MAX_DEFS_EXCEEDED);
+            return;
+        }
 
+        if($transform) {
+        
+            $pastResults = &$context->outputs->getResults();
+            $context->resetInternalValues();
+            $context->outputs->setResults($pastResults);
+
+            $script = $this->parsePhp($context);
+
+            if ((microtime(true) - $startTime) > $context->getLimitTime()) {
+                Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
+                return;
+            }
+
+            $this->transformPhp($context, $script);
+
+            unset($script);
+            
+            if ((microtime(true) - $startTime) > $context->getLimitTime()) {
+                Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
+                return;
+            }
+        
+            $this->runInternalAnalysis($context, $includedDefs);
+        }
+    }
+    
+    public function runInternalJs($context, $includedDefs = null, $transform = true)
+    {
+        $startTime = microtime(true);
+        
+        // free memory
+        if (function_exists('gc_mem_caches')) {
+            gc_mem_caches();
+        }
+            
+        if ($context->getCurrentNbDefs() > $context->getLimitDefs()) {
+            Utils::printWarning($context, Lang::MAX_DEFS_EXCEEDED);
+            return;
+        }
+        
+        if(!is_null($context->inputs->getFile()) && $transform) {
+            $content = file_get_contents($context->inputs->getFile());
+            
+            if(Analyzer::getTypeOfLanguage($content) === Analyzer::JS) {
+                $pastResults = &$context->outputs->getResults();
+                $context->resetInternalValues();
+                $context->outputs->setResults($pastResults);
+                
+                $cmd = "node ".__DIR__."/Transformations/Js/Transform.js ".$context->inputs->getFile(); 
+                exec($cmd, $return, $returnValue);
+                
+                if ((microtime(true) - $startTime) > $context->getLimitTime()) {
+                    Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
+                    return;
+                }
+                
+                $myJavascriptFile = new MyFile($context->inputs->getFile(), 0, 0);
+                MyCode::readCode($context, $return, $myJavascriptFile);
+                
+                if ((microtime(true) - $startTime) > $context->getLimitTime()) {
+                    Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
+                    return;
+                }
+                
+                $this->runInternalAnalysis($context, $includedDefs);
+            }
+        }
+    }
+    
+    public function runAllInternal($context)
+    {
+        if (!file_exists($context->inputs->getFile()) && is_null($context->inputs->getCode())) {
+            Utils::printWarning(
+                $context,
+                Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($context->inputs->getFile()).")"
+            );
+        } elseif (is_null($context->inputs->getFile()) && is_null($context->inputs->getCode())) {
+            Utils::printWarning($context, Lang::FILE_AND_CODE_ARE_NULL);
+        } else {
+                
+            if (is_null($context->inputs->getCode()) 
+                && filesize($context->inputs->getFile()) > $context->getLimitSize()) {
+                Utils::printWarning(
+                    $context,
+                    Lang::MAX_SIZE_EXCEEDED." (".Utils::encodeCharacters($context->inputs->getFile()).")"
+                );
+            }
+            else {
+                if($context->isLanguage(Analyzer::PHP)) {
+                    $context->resetDataflow();
+                    $this->runInternalPhp($context);
+                }
+                
+                if($context->isLanguage(Analyzer::JS)) {
+                    $context->resetDataflow();
+                    $this->runInternalJs($context);
+                }
+            }
+        }
+    }
+    
+    public static function getTypeOfLanguage($content)
+    {
+        if(substr(ltrim($content), 0, 2) === "<?"
+            || substr(ltrim($content), 0, 5) === "<?php")
+            return Analyzer::PHP;
+
+        return Analyzer::JS;
+    }
+    
     public function run($context, $cmdFiles = null)
     {
         $files = [];
@@ -269,8 +356,8 @@ class Analyzer
         } else {
             if ($context->inputs->getFile() !== null) {
                 if (!in_array($context->inputs->getFile(), $files, true)
-                            && !$context->inputs->isExcludedFile($context->inputs->getFile())
-                            && realpath($context->inputs->getFile())) {
+                    && !$context->inputs->isExcludedFile($context->inputs->getFile())
+                        && realpath($context->inputs->getFile())) {
                     $files[] = realpath($context->inputs->getFile());
                 }
             }
@@ -286,12 +373,11 @@ class Analyzer
             $myFile = new MyFile($file, 0, 0);
             $context->inputs->setFile($file);
             $context->setCurrentMyfile($myFile);
-            $context->resetDataflow();
-            $this->runInternal($context);
+            $this->runAllInternal($context);
         }
 
         if (count($files) === 0 && !is_null($context->inputs->getCode())) {
-            $this->runInternal($context);
+            $this->runAllInternal($context);
         }
 
         if ($context->outputs->getResolveIncludes()) {

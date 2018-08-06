@@ -24,6 +24,7 @@ use progpilot\Code\MyInstruction;
 
 use progpilot\Lang;
 use progpilot\Utils;
+use progpilot\Analyzer;
 
 class VisitorAnalysis
 {
@@ -232,7 +233,7 @@ class VisitorAnalysis
                         } else {
                             $listOfMyTemp[] = $instruction->getProperty(MyInstruction::TEMPORARY);
                         }
-                            
+                          
                         foreach ($listOfMyTemp as $tempDefa) {
                             $tempDefaMyExpr = $tempDefa->getExpr();
                             $defAssignMyExpr = $tempDefaMyExpr->getAssignDef();
@@ -293,7 +294,7 @@ class VisitorAnalysis
                                     $this->defs->getOutMinusKill($def->getBlockId()),
                                     $defAssignMyExpr
                                 );
-
+                            
                                 if ($def->isType(MyDefinition::TYPE_PROPERTY)) {
                                     if (!is_null($this->context->inputs->getSourceByName(
                                         null,
@@ -417,9 +418,16 @@ class VisitorAnalysis
                                         $method->getThisDef()->setObjectId($objectId);
                                     }
 
+                                    // twig analysis
+                                    if($this->context->isLanguage(Analyzer::JS)) {
+                                        if(!is_null($myClass) && $myClass->getName() === "Twig_Environment") {
+                                            if($funcName === "render") {
+                                                TwigAnalysis::funccall($this->context, $myFuncCall, $instruction);
+                                            }
+                                        }
+                                    }
+                                    
                                     $listMyFunc[] = [$objectId, $myClass, $method];
-
-
 
                                     TaintAnalysis::funccallSpecifyAnalysis(
                                         $method,
@@ -452,23 +460,7 @@ class VisitorAnalysis
                                     $index
                                 );
                             }
-
-
-                            /*
-
-                            // twig analysis
-                            if($this->context->getAnalyzeJs())
-                            {
-                            if($myClass->getName() == "Twig_Environment")
-                            {
-                            if($myFuncCall->getName() == "render")
-                            {
-                            TwigAnalysis::funccall($this->context, $myFuncCall, $instruction);
-                            }
-                            }
-                            }
-
-                             */
+                            
                         } elseif ($myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC)) {
                             $myClassStatic = $this->context->getClasses()->getMyClass(
                                 $myFuncCall->getNameInstance()

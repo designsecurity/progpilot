@@ -1,3 +1,4 @@
+/*
 {
     var vartest = 56;
 }
@@ -15,3 +16,6 @@ if (vartest % 2 == 0) {
     variable3 = "eee";
     document.write("{{TEST1}}");
 }
+*/
+
+document.write("{{TEST1}}");

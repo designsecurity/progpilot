@@ -35,7 +35,7 @@ class Context
     private $analyzeHardRules;
     private $analyzeFunctions;
     private $analyzeIncludes;
-    private $analyzeJs;
+    private $languages;
     private $printFileUnderAnalysis;
     private $configurationFile;
     private $printWarning;
@@ -54,7 +54,7 @@ class Context
         $this->analyzeHardRules = false;
         $this->analyzeFunctions = true;
         $this->analyzeIncludes = true;
-        $this->analyzeJs = true;
+        $this->languages = ["php"];
         $this->printFileUnderAnalysis = false;
         $this->printWarning = false;
         $this->prettyPrint = true;
@@ -201,9 +201,9 @@ class Context
         return $this->limitSize;
     }
 
-    public function getAnalyzeJs()
+    public function getLanguages()
     {
-        return $this->analyzeJs;
+        return $this->languages;
     }
 
     public function getAnalyzeHardrules()
@@ -221,9 +221,14 @@ class Context
         $this->analyzeHardRules = $analyzeHardRules;
     }
 
-    public function setAnalyzeJs($analyzeJs)
+    public function setLanguages($languages)
     {
-        $this->analyzeJs = $analyzeJs;
+        $this->languages = $languages;
+    }
+
+    public function isLanguage($lang)
+    {
+        return in_array($lang, $this->languages, true);
     }
 
     public function setAnalyzeIncludes($analyzeIncludes)
@@ -465,8 +470,8 @@ class Context
                         }
 
                         if (isset($value["options"])) {
-                            if (isset($value["options"]["setAnalyzeJs"])) {
-                                $this->setAnalyzeJs($value["options"]["setAnalyzeJs"]);
+                            if (isset($value["options"]["setLanguages"])) {
+                                $this->setLanguages($value["options"]["setLanguages"]);
                             }
 
                             if (isset($value["options"]["setAnalyzeHardRules"])) {

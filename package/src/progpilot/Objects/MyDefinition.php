@@ -315,11 +315,6 @@ class MyDefinition extends MyOp
         return $this->theArrays;
     }
 
-    public function setExprs($exprs)
-    {
-        $this->theExprs = $exprs;
-    }
-
     public function setExpr($myExpr)
     {
         $this->theExpr = $myExpr;

@@ -137,7 +137,7 @@ class IncludeAnalysis
                                     $saveMain = $contextInclude->getFunctions()->delFunction("{main}");
 
                                     $analyzerInclude = new \progpilot\Analyzer;
-                                    $analyzerInclude->runInternal(
+                                    $analyzerInclude->runInternalPhp(
                                         $contextInclude,
                                         $defs->getOutMinusKill($myFuncCall->getBlockId())
                                     );

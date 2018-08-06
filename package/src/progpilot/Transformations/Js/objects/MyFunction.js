@@ -12,6 +12,7 @@ class MyFunction extends MyOp.MyOp
         this.name_instance = null;
         this.name = null;
         this.params = [];
+        this.paramsexprs = [];
         this.nb_params = 0;
     }
     
@@ -55,6 +56,11 @@ class MyFunction extends MyOp.MyOp
         this.is_method = is_method;
     }
     
+    addParamExpr(expr)
+    {
+        this.paramsexprs.push(expr);
+    }
+    
     addParam(param)
     {
         this.params.push(param);
@@ -63,6 +69,11 @@ class MyFunction extends MyOp.MyOp
     getParams()
     {
         return this.params;
+    }
+
+    getParamsExprs()
+    {
+        return this.paramsexprs;
     }
 
     setNbParams(nb_params)
@@ -79,6 +90,15 @@ class MyFunction extends MyOp.MyOp
     {
         if (typeof this.params[i] !== 'undefined') {
             return this.params[i];
+        }
+
+        return null;
+    }
+
+    getParamExpr(i)
+    {
+        if (typeof this.paramsexprs[i] !== 'undefined') {
+            return this.paramsexprs[i];
         }
 
         return null;

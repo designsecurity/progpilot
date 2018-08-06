@@ -6,7 +6,7 @@ inputs:
     setCustomRules: ../../package/src/uptodate_data/php/rules.json
     setIncludeFiles: 
     setExcludeFiles: 
-    setFolder: /home/eric/dev/scripts/drupal/
+    setFolder: /srv/www/htdocs/phpMyAdmin/
     setFile: 
     setCode:
     setResolvedIncludes:
@@ -18,7 +18,7 @@ outputs:
     resolveIncludesFile:
     
 options:
-    setAnalyzeJs: false
+    setLanguages: ["php"]
     setAnalyzeIncludes: true
     setAnalyzeFunctions: true
     setAnalyzeHardRules: true

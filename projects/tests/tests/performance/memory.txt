@@ -27,3 +27,9 @@ good test, a lot of defs and includes :
 exhausted memory good test:
 /srv/www/htdocs/phpMyAdmin/libraries/DisplayResults.php 
 /srv/www/htdocs/phpMyAdmin/vendor/tecnickcom/tcpdf/tcpdf.php
+
+drupal last version (0.3.1) :
+real    10m50,612s
+user    7m54,834s
+sys     0m3,183s
+

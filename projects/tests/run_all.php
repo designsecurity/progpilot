@@ -13,6 +13,7 @@ class RunAllTest extends TestCase
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
+        $context->setLanguages(["php", "js"]);
         $context->setAnalyzeHardrules(true);
         $context->setAnalyzeFunctions(false);
         $context->outputs->taintedFlow(true);
@@ -75,11 +76,23 @@ class RunAllTest extends TestCase
         $tabcond = include("conditionstest.php");
         $tabneg = include("negativetest.php");
         $tabcus = include("customtest.php");
-        //$tabtwig = include("twigtest.php");
         $tabvulntest = include("testvulntestsuite.php");
         $tabwander = include("phpwandertest.php");
+        $tabtwig = include("twigtest.php");
         
-        $tab = array_merge($taboop, $tabreal, $tabgen, $tabinc, $tabdata, $tabcond, $tabneg, $tabcus, $tabvulntest, $tabwander);
+        $tab = array_merge(
+            $taboop,
+            $tabreal,
+            $tabgen,
+            $tabinc,
+            $tabdata,
+            $tabcond,
+            $tabneg,
+            $tabcus,
+            $tabvulntest,
+            $tabwander,
+            $tabtwig
+        );
         
         return $tab;
     }

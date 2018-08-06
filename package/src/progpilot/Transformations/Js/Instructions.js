@@ -5,71 +5,37 @@ var MyBlock = require('./objects/MyBlock');
 var MyFunction = require('./objects/MyFunction');
 var MyExpr = require('./objects/MyExpr');
 
-var blocks = [];
-var definitions = [];
-
-function select_block(id)
-{
-    for (var i = 0; i < blocks.length; i ++) {
-        if (blocks[i].id == id) {
-            return blocks[i];
-        }
-    }
-
-    return null;
+function getRandomInt() {
+    return Math.floor(Math.random() * Math.floor(Number.MAX_SAFE_INTEGER));
 }
 
-function select_block_to_address(address)
+if(typeof FlowNodes === 'undefined')
 {
-    for (var i = 1; i < blocks.length; i ++) {
-        if (address == blocks[i].start_address_block_from) {
-            return blocks[i];
-        }
-    }
-
-    return null;
+    var FlowNodeIds = new Map();
+    var blocks = new Map();
+    var definitions = [];
 }
 
-function select_block_from_address(address)
+function EnterBlock(FlowNode)
 {
-    var min = -1;
-    var good = null;
-    
-    for (var i = 0; i < blocks.length; i ++) {
-        if (address >= blocks[i].start_address_block_to && address <= blocks[i].end_address_block_to) {
-            if (blocks[i].end_address_block_from > min) {
-                min = blocks[i].end_address_block_from;
-                good = blocks[i];
-            }
-        }
-    }
-
-    return good;
-}
-
-function EnterBlock(myedge)
-{
+    var idblock = getRandomInt();
     var myblock = new MyBlock.MyBlock;
-    myblock.setId(myedge.data.id);
-    myblock.setLine(myedge.data.loc.start_line);
-    myblock.setColumn(myedge.data.loc.start_column);
-    myblock.setStartAddressBlock_from(myedge.from);
-    myblock.setStartAddressBlock_to(myedge.to);
+    myblock.setId(idblock);
+    if(typeof FlowNode.astNode !== 'undefined') {
+        myblock.setLine(FlowNode.astNode.loc.start_line);
+        myblock.setColumn(FlowNode.astNode.loc.start_column);
+    }
+    myblock.setChilds(FlowNode.next);
 
-    blocks.push(myblock);
+    blocks.set(FlowNode, myblock);
+    FlowNodeIds.set(FlowNode, idblock);
 
     return myblock;
 }
 
-function LeaveBlock(myedge)
+function LeaveBlock(FlowNode)
 {
-    var myblock = select_block(myedge.data.id);
-    if (myblock != null) {
-        myblock.setEndAddressBlock_from(myedge.from);
-        myblock.setEndAddressBlock_to(myedge.to);
-    }
-    
-    return myblock;
+    return blocks.get(FlowNode);
 }
 
 function AssignmentExpression(code, mydata, my_expr)
@@ -171,7 +137,7 @@ function CallExpression(code, myinit, exprs)
         var myarguments = myinit.arguments;
 
         for (var i = 0; i < myarguments.length; i ++) {
-            var def_name = method_name+"_param"+i+"_"+Math.random();
+            var def_name = method_name+"_param"+i+"_"+getRandomInt();
             var mydef = new MyDefinition.MyDefinition;
             mydef.set_var_name(def_name);
             mydef.setLine(mycallee.loc.start.line);
@@ -202,6 +168,7 @@ function CallExpression(code, myinit, exprs)
             definitions.push(mytemp);
             
             myfunction.addParam(mydef);
+            myfunction.addParamExpr(myexprparam);
             
             code.instructions.push("temporary");
             code.instructions.push("def");
@@ -232,9 +199,9 @@ module.exports = {
     ReturnStatement: ReturnStatement,
     EnterBlock: EnterBlock,
     LeaveBlock: LeaveBlock,
-    select_block_from_address: select_block_from_address,
-    select_block_to_address: select_block_to_address,
-    definitions: definitions
+    definitions: definitions,
+    FlowNodeIds: FlowNodeIds,
+    blocks: blocks
 };
 
 

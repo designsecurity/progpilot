@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "update the version of progpilot in console/application.php file"
+
 composertool=/home/eric/dev/phar-composer.phar
 version="dev"
 date=`date "+%Y%m%d-%H%M%S"`

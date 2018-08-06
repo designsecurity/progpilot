@@ -1,5 +1,7 @@
 "use strict";
 
+var Instructions = require('./Instructions');
+
 class Code
 {
     constructor()
@@ -16,14 +18,12 @@ class Code
                     console.log(this.instructions[i]);
                     console.log(this.instructions[i + 1]);
                     var tmp_block = this.instructions[i + 2];
-                    console.log(tmp_block.id);
-                    console.log(tmp_block.start_address_block_from);
-                    console.log(tmp_block.end_address_block_to);
+                    console.log(tmp_block.getId());
                     console.log("edges");
                     console.log(tmp_block.childs.length);
                     for (var j = 0; j < tmp_block.childs.length; j++) {
                         var child = tmp_block.childs[j];
-                        console.log(tmp_block.childs[j].id);
+                        console.log(Instructions.FlowNodeIds.get(child));
                     }
                     
                     i = i + 3;
@@ -63,6 +63,7 @@ class Code
                     
                     for (var j = 0; j < myfunction.getNbParams(); j ++) {
                         console.log(myfunction.getParam(j).getId());
+                        console.log(myfunction.getParamExpr(j).getId());
                     }
                     
                     console.log(this.instructions[i + 3]);
@@ -128,6 +129,10 @@ class Code
                     }
                     
                     i = i + 3;
+                    break;
+                    
+                default:
+                    i = i + 1;
                     break;
             }
         }

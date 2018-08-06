@@ -7,7 +7,8 @@ try {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
         $context->inputs->setFile($argv[1]);
-
+        
+        $context->setLanguages(["php", "js"]);
         $context->setAnalyzeHardrules(true);
         $context->setAnalyzeFunctions(false);
         $context->outputs->taintedFlow(true);

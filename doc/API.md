@@ -73,8 +73,8 @@ do not analyze file that are larger than this defined size (default is 500 000 b
 *true* if you want to pretty print the JSON output of standalone progpilot application, default is *true*
 - $obj_context->setAnalyzeFunctions($bool);  
 *true* if you want to analyze all functions (*false* only *main function* is analyzed), default is *true*
-- $obj_context->setAnalyzeJs($bool);  
-*true* or *false* if you want to analyze javascript (in development), default is *true*
+- $obj_context->setLanguages($array);  
+Languages you want to analyze (["php", "js"] but js is in development), default is *["php"]*
 - $obj_context->setAnalyzeIncludes($bool);  
 *true* or *false* if you want to analyze included files, default is *true*
 - $obj_context->setConfiguration($config);  

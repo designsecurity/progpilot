@@ -10,6 +10,7 @@
 
 namespace progpilot\Analysis;
 
+use progpilot\Objects\MyClass;
 use progpilot\Objects\MyOp;
 use progpilot\Objects\MyCode;
 use progpilot\Objects\ArrayStatic;
@@ -53,7 +54,15 @@ class TaintAnalysis
         );
         TaintAnalysis::funccallSource($stackClass, $context, $data, $myClass, $instruction);
 
-
+        // for example for document.write
+        if(is_null($myClass) && $myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
+            $myClass = new MyClass(
+                $myFuncCall->getLine(),
+                $myFuncCall->getColumn(),
+                $myFuncCall->getNameInstance()
+            );
+        }
+        
         SecurityAnalysis::funccall($stackClass, $context, $instruction, $myClass);
     }
 
