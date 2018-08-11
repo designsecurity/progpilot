@@ -16,6 +16,9 @@ use progpilot\Objects\MyFunction;
 
 class MyInputs
 {
+    private $languages;
+    private $frameworks;
+    
     private $customRules;
     private $resolvedIncludes;
 
@@ -45,6 +48,10 @@ class MyInputs
 
     public function __construct()
     {
+        $this->dev = false;
+        $this->languages = ["php"];
+        $this->frameworks = ["suitecrm", "codeigniter"];
+        
         $this->customRules = [];
         $this->resolvedIncludes = [];
         $this->sanitizers = [];
@@ -72,6 +79,32 @@ class MyInputs
         $this->folder = null;
     }
 
+
+    public function setFrameworks($frameworks)
+    {
+        $this->frameworks = $frameworks;
+    }
+
+    public function setLanguages($languages)
+    {
+        $this->languages = $languages;
+    }
+
+    public function isLanguage($lang)
+    {
+        return in_array($lang, $this->languages, true);
+    }
+    
+    public function getLanguages()
+    {
+        return $this->languages;
+    }
+
+    public function getFrameworks()
+    {
+        return $this->frameworks;
+    }
+    
     public function getSinksFile()
     {
         return $this->sinksFile;
@@ -280,7 +313,9 @@ class MyInputs
                 }
 
                 if ($mySink->isInstance() && $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                    if (!is_null($myClass) && $mySink->getInstanceOfName() === $myClass->getName()) {
+                    if (!is_null($myClass) 
+                        && ($mySink->getInstanceOfName() === $myClass->getName() 
+                            || $mySink->getInstanceOfName() === $myClass->getExtendsOf())) {
                         return $mySink;
                     }
 
@@ -300,7 +335,9 @@ class MyInputs
                                 $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                 
-                                if (!is_null($myClass) && $myClass->getName() === $mySinkInstanceName) {
+                                if (!is_null($myClass) 
+                                    && ($myClass->getName() === $mySinkInstanceName 
+                                        || $myClass->getExtendsOf() === $mySinkInstanceName)) {
                                     return $mySink;
                                 }
                             }
@@ -341,7 +378,7 @@ class MyInputs
                 $checkArray = false;
                 $checkInstance = false;
 
-                if (!$instanceName) {
+                if (!$instanceName && !$mySource->isInstance()) {
                     $checkInstance = true;
                 }
 
@@ -461,6 +498,16 @@ class MyInputs
         return $this->includesFiles;
     }
 
+    public function getDev()
+    {
+        return $this->dev;
+    }
+
+    public function setDev($dev)
+    {
+        $this->dev = $dev;
+    }
+
     public function getCustomRules()
     {
         return $this->customRules;
@@ -511,18 +558,125 @@ class MyInputs
         $this->validatorsFile = $file;
     }
 
+    public function readDev()
+    {
+        if($this->dev) {
+            $sanitizersfile = __DIR__."/../../uptodate_data/php/dev/sanitizers.json";
+            $this->readSanitizersFile($sanitizersfile);
+            
+            $sinksfile = __DIR__."/../../uptodate_data/php/dev/sinks.json";
+            $this->readSinksFile($sinksfile);
+            
+            $sourcesfile = __DIR__."/../../uptodate_data/php/dev/sources.json";
+            $this->readSourcesFile($sourcesfile);
+            
+            $validatorsfile = __DIR__."/../../uptodate_data/php/dev/validators.json";
+            $this->readValidatorsFile($validatorsfile);
+            
+            $customsfile = __DIR__."/../../uptodate_data/php/dev/rules.json";
+            $this->readCustomFile($customsfile);
+        }
+    
+    }
+
+    public function readFrameworks()
+    {
+        if(in_array("suitecrm", $this->frameworks, true)) {
+            $sanitizersfile = __DIR__."/../../uptodate_data/php/frameworks/suitecrm/sanitizers.json";
+            
+            if(is_array($this->sanitizersFile)) {
+                if(!in_array($sanitizersfile, $this->sanitizersFile, true))
+                    $this->readSanitizersFile($sanitizersfile);
+            }
+            else {
+                if($this->sanitizersFile !== $sanitizersfile)
+                    $this->readSanitizersFile($sanitizersfile);
+            }
+            
+            $sinksfile = __DIR__."/../../uptodate_data/php/frameworks/suitecrm/sinks.json";
+            
+            if(is_array($this->sinksFile)) {
+                if(!in_array($sinksfile, $this->sinksFile, true))
+                    $this->readSinksFile($sinksfile);
+            }
+            else {
+                if($this->sinksFile !== $sinksfile)
+                    $this->readSinksFile($sinksfile);
+            }
+        }
+        
+        if(in_array("codeigniter", $this->frameworks, true)) {
+            $sanitizersfile = __DIR__."/../../uptodate_data/php/frameworks/codeigniter/sanitizers.json";
+            
+            if(is_array($this->sanitizersFile)) {
+                if(!in_array($sanitizersfile, $this->sanitizersFile, true))
+                    $this->readSanitizersFile($sanitizersfile);
+            }
+            else {
+                if($this->sanitizersFile !== $sanitizersfile)
+                    $this->readSanitizersFile($sanitizersfile);
+            }
+            
+            $sinksfile = __DIR__."/../../uptodate_data/php/frameworks/codeigniter/sinks.json";
+            
+            if(is_array($this->sinksFile)) {
+                if(!in_array($sinksfile, $this->sinksFile, true))
+                    $this->readSinksFile($sinksfile);
+            }
+            else {
+                if($this->sinksFile !== $sinksfile)
+                    $this->readSinksFile($sinksfile);
+            }
+            
+            $sourcesfile = __DIR__."/../../uptodate_data/php/frameworks/codeigniter/sources.json";
+            
+            if(is_array($this->sourcesFile)) {
+                if(!in_array($sourcesfile, $this->sourcesFile, true))
+                    $this->readSourcesFile($sourcesfile);
+            }
+            else {
+                if($this->sourcesFile !== $sourcesfile)
+                    $this->readSourcesFile($sourcesfile);
+            }
+            
+            $validatorsfile = __DIR__."/../../uptodate_data/php/frameworks/codeigniter/validators.json";
+            
+            if(is_array($this->validatorsFile)) {
+                if(!in_array($validatorsfile, $this->validatorsFile, true))
+                    $this->readValidatorsFile($validatorsfile);
+            }
+            else {
+                if($this->validatorsFile !== $validatorsfile)
+                    $this->readValidatorsFile($validatorsfile);
+            }
+        }
+    }
+
     public function readSanitizers()
     {
         if (is_null($this->sanitizersFile)) {
-            $this->sanitizersFile = __DIR__."/../../uptodate_data/php/sanitizers.json";
+            $this->readSanitizersFile(__DIR__."/../../uptodate_data/php/sanitizers.json");
         }
+        else {
+            if(is_array($this->sanitizersFile)) {
+                foreach($this->sanitizersFile as $file) {
+                    $this->readSanitizersFile($file);
+                }
+            }
+            else {
+                $this->readSanitizersFile($this->sanitizersFile);
+            }
+        }
+    }
 
-        if (!is_null($this->sanitizersFile)) {
-            if (!file_exists($this->sanitizersFile)) {
-                Utils::printError(Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->sanitizersFile).")");
+    public function readSanitizersFile($file)
+    {
+        if (!is_null($file)) {
+            if (!file_exists($file)) {
+                Utils::printError(Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($file).")");
             }
 
-            $outputJson = file_get_contents($this->sanitizersFile);
+            $outputJson = file_get_contents($file);
 
             $parsedJson = json_decode($outputJson);
 
@@ -552,23 +706,23 @@ class MyInputs
                     if (isset($sanitizer-> {'parameters'})) {
                         $parameters = $sanitizer-> {'parameters'};
                         foreach ($parameters as $parameter) {
-                            if (isset($parameter-> {'id'}) && isset($parameter-> {'condition'})) {
+                            if (isset($parameter-> {'id'}) && isset($parameter-> {'conditions'})) {
                                 if (is_int($parameter-> {'id'})
-                                            && ($parameter-> {'condition'} === "equals"
-                                                    || $parameter-> {'condition'} === "taint"
-                                                            || $parameter-> {'condition'} === "sanitize")) {
-                                    if ($parameter-> {'condition'} === "equals") {
+                                            && ($parameter-> {'conditions'} === "equals"
+                                                    || $parameter-> {'conditions'} === "taint"
+                                                            || $parameter-> {'conditions'} === "sanitize")) {
+                                    if ($parameter-> {'conditions'} === "equals") {
                                         if (isset($parameter-> {'values'})) {
                                             $mySanitizer->addParameter(
                                                 $parameter-> {'id'},
-                                                $parameter-> {'condition'},
+                                                $parameter-> {'conditions'},
                                                 $parameter-> {'values'}
                                             );
                                         }
                                     } else {
                                         $mySanitizer->addParameter(
                                             $parameter-> {'id'},
-                                            $parameter-> {'condition'}
+                                            $parameter-> {'conditions'}
                                         );
                                     }
                                 }
@@ -589,15 +743,28 @@ class MyInputs
     public function readSinks()
     {
         if (is_null($this->sinksFile)) {
-            $this->sinksFile = __DIR__."/../../uptodate_data/php/sinks.json";
+            $this->readSinksFile(__DIR__."/../../uptodate_data/php/sinks.json");
         }
+        else {
+            if(is_array($this->sinksFile)) {
+                foreach($this->sinksFile as $file) {
+                    $this->readSinksFile($file);
+                }
+            }
+            else {
+                $this->readSinksFile($this->sinksFile);
+            }
+        }
+    }
 
-        if (!is_null($this->sinksFile)) {
-            if (!file_exists($this->sinksFile)) {
-                Utils::printError(Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->sinksFile).")");
+    public function readSinksFile($file)
+    {
+        if (!is_null($file)) {
+            if (!file_exists($file)) {
+                Utils::printError(Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($file).")");
             }
 
-            $outputJson = file_get_contents($this->sinksFile);
+            $outputJson = file_get_contents($file);
             $parsedJson = json_decode($outputJson);
 
             if (isset($parsedJson-> {'sinks'})) {
@@ -622,16 +789,16 @@ class MyInputs
                         $mySink->setInstanceOfName($sink-> {'instanceof'});
                     }
 
-                    if (isset($sink-> {'condition'})) {
-                        $mySink->addGlobalCondition($sink-> {'condition'});
+                    if (isset($sink-> {'conditions'})) {
+                        $mySink->addGlobalconditions($sink-> {'conditions'});
                     }
 
                     if (isset($sink-> {'parameters'})) {
                         $parameters = $sink-> {'parameters'};
                         foreach ($parameters as $parameter) {
                             if (isset($parameter-> {'id'}) && is_int($parameter-> {'id'})) {
-                                if (isset($parameter-> {'condition'})) {
-                                    $mySink->addParameter($parameter-> {'id'}, $parameter-> {'condition'});
+                                if (isset($parameter-> {'conditions'})) {
+                                    $mySink->addParameter($parameter-> {'id'}, $parameter-> {'conditions'});
                                 } else {
                                     $mySink->addParameter($parameter-> {'id'});
                                 }
@@ -652,15 +819,28 @@ class MyInputs
     public function readSources()
     {
         if (is_null($this->sourcesFile)) {
-            $this->sourcesFile = __DIR__."/../../uptodate_data/php/sources.json";
+            $this->readSourcesFile(__DIR__."/../../uptodate_data/php/sources.json");
         }
+        else {
+            if(is_array($this->sourcesFile)) {
+                foreach($this->sourcesFile as $file) {
+                    $this->readSourcesFile($file);
+                }
+            }
+            else {
+                $this->readSourcesFile($this->sourcesFile);
+            }
+        }
+    }
 
-        if (!is_null($this->sourcesFile)) {
-            if (!file_exists($this->sourcesFile)) {
-                Utils::printError(Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->sourcesFile).")");
+    public function readSourcesFile($file)
+    {
+        if (!is_null($file)) {
+            if (!file_exists($file)) {
+                Utils::printError(Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($file).")");
             }
 
-            $outputJson = file_get_contents($this->sourcesFile);
+            $outputJson = file_get_contents($file);
             $parsedJson = json_decode($outputJson);
 
             if (isset($parsedJson-> {'sources'})) {
@@ -708,7 +888,7 @@ class MyInputs
                                 if (isset($parameter-> {'is_array'})
                                             && $parameter-> {'is_array'}
                                             && isset($parameter-> {'array_index'})) {
-                                    $mySource->addConditionParameter(
+                                    $mySource->addconditionsParameter(
                                         $parameter-> {'id'},
                                         MySource::CONDITION_ARRAY,
                                         $parameter-> {'array_index'}
@@ -731,15 +911,28 @@ class MyInputs
     public function readValidators()
     {
         if (is_null($this->validatorsFile)) {
-            $this->validatorsFile = __DIR__."/../../uptodate_data/php/validators.json";
+            $this->readValidatorsFile(__DIR__."/../../uptodate_data/php/validators.json");
         }
+        else {
+            if(is_array($this->validatorsFile)) {
+                foreach($this->validatorsFile as $file) {
+                    $this->readValidatorsFile($file);
+                }
+            }
+            else {
+                $this->readValidatorsFile($this->validatorsFile);
+            }
+        }
+    }
 
-        if (!is_null($this->validatorsFile)) {
-            if (!file_exists($this->validatorsFile)) {
-                Utils::printError(Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->validatorsFile).")");
+    public function readValidatorsFile($file)
+    {
+        if (!is_null($file)) {
+            if (!file_exists($file)) {
+                Utils::printError(Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($file).")");
             }
 
-            $outputJson = file_get_contents($this->validatorsFile);
+            $outputJson = file_get_contents($file);
             $parsedJson = json_decode($outputJson);
 
             if (isset($parsedJson-> {'validators'})) {
@@ -758,24 +951,24 @@ class MyInputs
                     if (isset($validator-> {'parameters'})) {
                         $parameters = $validator-> {'parameters'};
                         foreach ($parameters as $parameter) {
-                            if (isset($parameter-> {'id'}) && isset($parameter-> {'condition'})) {
+                            if (isset($parameter-> {'id'}) && isset($parameter-> {'conditions'})) {
                                 if (is_int($parameter-> {'id'})
-                                            && ($parameter-> {'condition'} === "not_tainted"
-                                                    || $parameter-> {'condition'} === "array_not_tainted"
-                                                            || $parameter-> {'condition'} === "valid"
-                                                                    || $parameter-> {'condition'} === "equals")) {
-                                    if ($parameter-> {'condition'} === "equals") {
+                                            && ($parameter-> {'conditions'} === "not_tainted"
+                                                    || $parameter-> {'conditions'} === "array_not_tainted"
+                                                            || $parameter-> {'conditions'} === "valid"
+                                                                    || $parameter-> {'conditions'} === "equals")) {
+                                    if ($parameter-> {'conditions'} === "equals") {
                                         if (isset($parameter-> {'values'})) {
                                             $myValidator->addParameter(
                                                 $parameter-> {'id'},
-                                                $parameter-> {'condition'},
+                                                $parameter-> {'conditions'},
                                                 $parameter-> {'values'}
                                             );
                                         }
                                     } else {
                                         $myValidator->addParameter(
                                             $parameter-> {'id'},
-                                            $parameter-> {'condition'}
+                                            $parameter-> {'conditions'}
                                         );
                                     }
                                 }
@@ -929,21 +1122,34 @@ class MyInputs
             }
         }
     }
-
-    public function readCustomFile()
+    
+    public function readCustomRules()
     {
         if (is_null($this->customFile)) {
-            $this->customFile = __DIR__."/../../uptodate_data/php/rules.json";
+            $this->readCustomFile(__DIR__."/../../uptodate_data/php/rules.json");
         }
+        else {
+            if(is_array($this->customFile)) {
+                foreach($this->customFile as $file) {
+                    $this->readCustomFile($file);
+                }
+            }
+            else {
+                $this->readCustomFile($this->customFile);
+            }
+        }
+    }
 
-        if (!is_null($this->customFile)) {
-            if (!file_exists($this->customFile)) {
+    public function readCustomFile($file)
+    {
+        if (!is_null($file)) {
+            if (!file_exists($file)) {
                 Utils::printError(
-                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->customFile).")"
+                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($file).")"
                 );
             }
 
-            $outputJson = file_get_contents($this->customFile);
+            $outputJson = file_get_contents($file);
             $parsedJson = json_decode($outputJson);
 
             if (isset($parsedJson-> {'custom_rules'})) {

@@ -88,6 +88,22 @@ class Transform implements Visitor
                 $instructionIf->addProperty(MyInstruction::MYBLOCK_ELSE, $myBlockElse);
             }
         }
+        
+        // extends class
+        foreach($this->context->getClasses()->getListClasses() as $myClass) {
+            if(!is_null($myClass->getExtendsOf())) {
+                $myClassFather = $this->context->getClasses()->getMyClass($myClass->getExtendsOf());
+                if(!is_null($myClassFather)) {
+                    foreach($myClassFather->getMethods() as $methodFather) {
+                        $myClass->addMethod(clone $methodFather);
+                        $methodFather->setMyClass($myClass);
+                    }
+                                    
+                    foreach($myClassFather->getProperties() as $propertyFather)
+                        $myClass->addProperty(clone $propertyFather);
+                }
+            }
+        }
     }
 
     public function enterBlock(Block $block, Block $prior = null)
@@ -232,12 +248,12 @@ class Transform implements Visitor
         }
     }
 
-    public function parseCondition($instStartIf, $cond)
+    public function parseconditions($instStartIf, $cond)
     {
         foreach ($cond as $ops) {
             if ($ops instanceof Op\Expr\BooleanNot) {
                 $instStartIf->addProperty(MyInstruction::NOT_BOOLEAN, true);
-                $this->parseCondition($instStartIf, $ops->expr->ops);
+                $this->parseconditions($instStartIf, $ops->expr->ops);
             }
         }
     }
@@ -263,7 +279,7 @@ class Transform implements Visitor
 
             $this->blockIfToBeResolved[] = [$instStartIf, $op->if, $op->else];
 
-            $this->parseCondition($instStartIf, $op->cond->ops);
+            $this->parseconditions($instStartIf, $op->cond->ops);
         }
         /*
            const TYPE_INCLUDE = 1;
@@ -387,6 +403,10 @@ class Transform implements Visitor
                 $this->context->getCurrentColumn(),
                 $className
             );
+            
+            if(!is_null($op->extends))
+                $myClass->setExtendsOf($op->extends->value);
+                
             $this->context->getClasses()->addMyclass($myClass);
             
             foreach ($op->stmts->children as $property) {

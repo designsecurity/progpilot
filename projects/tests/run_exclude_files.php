@@ -18,6 +18,7 @@ class RunExcludeFilesTest extends TestCase
         $context->outputs->taintedFlow(true);
         
         $nbVulns = 0;
+        $context->inputs->setDev(true);
         $context->inputs->setExcludeFiles("exclude_files.json");
         $context->inputs->setFolder($folder);
         

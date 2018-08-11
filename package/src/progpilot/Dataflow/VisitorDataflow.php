@@ -91,7 +91,8 @@ class VisitorDataflow
 
                         $objectId = $context->getObjects()->addObject();
                         $myClass->setObjectIdThis($objectId);
-
+                        
+                        
                         $this->currentClass = $myClass;
 
                         break;
@@ -250,14 +251,16 @@ class VisitorDataflow
 
                             $idObject = $context->getObjects()->addObject();
                             $mybackdef->setObjectId($idObject);
-
+                            
                             if (!empty($mybackdef->getClassName())) {
-                                $myClass = $context->getClasses()->getMyClass($mybackdef->getClassName());
+                                $className = $mybackdef->getClassName();
+                                $myClass = $context->getClasses()->getMyClass($className);
+                                
                                 if (is_null($myClass)) {
                                     $myClass = new MyClass(
                                         $mybackdef->getLine(),
                                         $mybackdef->getColumn(),
-                                        $mybackdef->getClassName()
+                                        $className
                                     );
                                 }
 
@@ -334,7 +337,7 @@ class VisitorDataflow
                         if (is_null($myDef->getSourceMyFile())) {
                             $myDef->setSourceMyFile($context->getCurrentMyfile());
                         }
-
+                        
                         $this->defs->addDef($myDef->getName(), $myDef);
                         $this->defs->addGen($myDef->getBlockId(), $myDef);
 

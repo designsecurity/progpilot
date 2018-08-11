@@ -87,16 +87,16 @@ class MySource extends MySpecify
         $this->isFunction = $isFunction;
     }
 
-    public function addConditionParameter($parameter, $condition, $value)
+    public function addconditionsParameter($parameter, $conditions, $value)
     {
-        $this->conditionsParameters[$parameter][] = [$condition, $value];
+        $this->conditionsParameters[$parameter][] = [$conditions, $value];
     }
 
-    public function getConditionParameter($parameter, $condition)
+    public function getconditionsParameter($parameter, $conditions)
     {
-        foreach ($this->conditionsParameters[$parameter] as $conditionParam) {
-            if ($conditionParam[0] === $condition) {
-                return $conditionParam[1];
+        foreach ($this->conditionsParameters[$parameter] as $conditionsParam) {
+            if ($conditionsParam[0] === $conditions) {
+                return $conditionsParam[1];
             }
         }
 

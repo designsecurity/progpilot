@@ -18,6 +18,7 @@ class RunAllFoldersTest extends TestCase
         $context->outputs->taintedFlow(true);
         
         $nbVulns = 0;
+        $context->inputs->setDev(true);
         $context->inputs->setFolder($folder);
         
         try {

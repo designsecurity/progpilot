@@ -36,7 +36,7 @@ composer install
 Then you could try the following example.
 
 ## Library example
-- For more informations : look at the [chapter about API explaination](./doc/API.md)
+- For more informations : look at the [chapter about API explaination](./docs/API.md)
 - Use this code to analyze *source_code1.php* :
 ```php
 <?php
@@ -65,7 +65,7 @@ echo "$var4";
 
 ?>	
 ```
-- The simplified [output](./doc/OUTPUT.md) will be :
+- The simplified [output](./docs/OUTPUT.md) will be :
 ```javascript
 array(1) {
   [0]=>
@@ -90,7 +90,7 @@ array(1) {
 }
 ```
 All files (composer.json, example1.php, source_code1.php) used in this example are in the [projects/example](./projects/example) folder.  
-For more examples look at this [page](./doc/EXAMPLES.md).
+For more examples look at this [page](./docs/EXAMPLES.md).
 
 ## Specify an analysis
 You can configure an analysis (the definitions of sinks, sources, sanitizers and validators) according to your own context.  
@@ -105,10 +105,10 @@ You can define traditional variables like *_GET*, *_POST* or *_COOKIE* as untrus
 		]
 }
 ```
-See more available options in the [corresponding chapter about specifying an analysis](./doc/SPECIFY_ANALYSIS.md)
+See more available options in the [corresponding chapter about specifying an analysis](./docs/SPECIFY_ANALYSIS.md)
 
 ## Development
-[Learn more](./doc/DEV.md) about the development of Progpilot
+[Learn more](./docs/DEV.md) about the development of Progpilot
 
 ## Faq
-[Here](./doc/FAQ.md)
+[Here](./docs/FAQ.md)

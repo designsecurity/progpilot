@@ -35,7 +35,6 @@ class Context
     private $analyzeHardRules;
     private $analyzeFunctions;
     private $analyzeIncludes;
-    private $languages;
     private $printFileUnderAnalysis;
     private $configurationFile;
     private $printWarning;
@@ -54,7 +53,6 @@ class Context
         $this->analyzeHardRules = false;
         $this->analyzeFunctions = true;
         $this->analyzeIncludes = true;
-        $this->languages = ["php"];
         $this->printFileUnderAnalysis = false;
         $this->printWarning = false;
         $this->prettyPrint = true;
@@ -201,11 +199,6 @@ class Context
         return $this->limitSize;
     }
 
-    public function getLanguages()
-    {
-        return $this->languages;
-    }
-
     public function getAnalyzeHardrules()
     {
         return $this->analyzeHardRules;
@@ -219,16 +212,6 @@ class Context
     public function setAnalyzeHardRules($analyzeHardRules)
     {
         $this->analyzeHardRules = $analyzeHardRules;
-    }
-
-    public function setLanguages($languages)
-    {
-        $this->languages = $languages;
-    }
-
-    public function isLanguage($lang)
-    {
-        return in_array($lang, $this->languages, true);
     }
 
     public function setAnalyzeIncludes($analyzeIncludes)
@@ -453,6 +436,18 @@ class Context
                             if (isset($value["inputs"]["setFalsePositives"])) {
                                 $this->inputs->setFalsePositives($value["inputs"]["setFalsePositives"]);
                             }
+                            
+                            if (isset($value["inputs"]["setLanguages"])) {
+                                $this->inputs->setLanguages($value["inputs"]["setLanguages"]);
+                            }
+                            
+                            if (isset($value["inputs"]["setFrameworks"])) {
+                                $this->inputs->setFrameworks($value["inputs"]["setFrameworks"]);
+                            }
+                            
+                            if (isset($value["inputs"]["setDev"])) {
+                                $this->inputs->setDev($value["inputs"]["setDev"]);
+                            }
                         }
 
                         if (isset($value["outputs"])) {
@@ -470,10 +465,6 @@ class Context
                         }
 
                         if (isset($value["options"])) {
-                            if (isset($value["options"]["setLanguages"])) {
-                                $this->setLanguages($value["options"]["setLanguages"]);
-                            }
-
                             if (isset($value["options"]["setAnalyzeHardRules"])) {
                                 $this->setAnalyzeHardRules($value["options"]["setAnalyzeHardRules"]);
                             }

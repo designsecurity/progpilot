@@ -13,12 +13,13 @@ class RunAllTest extends TestCase
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
-        $context->setLanguages(["php", "js"]);
         $context->setAnalyzeHardrules(true);
         $context->setAnalyzeFunctions(false);
         $context->outputs->taintedFlow(true);
         
         $nbVulns = 0;
+        $context->inputs->setDev(true);
+        $context->inputs->setLanguages(["php", "js"]);
         $context->inputs->setFile($file);
         
         try {
@@ -79,6 +80,7 @@ class RunAllTest extends TestCase
         $tabvulntest = include("testvulntestsuite.php");
         $tabwander = include("phpwandertest.php");
         $tabtwig = include("twigtest.php");
+        $tabframeworks = include("frameworkstest.php");
         
         $tab = array_merge(
             $taboop,
@@ -91,7 +93,8 @@ class RunAllTest extends TestCase
             $tabcus,
             $tabvulntest,
             $tabwander,
-            $tabtwig
+            $tabtwig,
+            $tabframeworks
         );
         
         return $tab;

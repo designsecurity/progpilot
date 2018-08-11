@@ -13,6 +13,7 @@ namespace progpilot\Objects;
 use PHPCfg\Op;
 use PHPCfg\Script;
 use progpilot\Objects\MyDefinition;
+use progpilot\Dataflow\Definitions;
 
 class MyFunction extends MyOp
 {
@@ -45,7 +46,7 @@ class MyFunction extends MyOp
     private $castReturn;
 
     public $property;
-
+    
     public function __construct($name)
     {
         parent::__construct($name, 0, 0);
@@ -68,6 +69,8 @@ class MyFunction extends MyOp
         $this->isDataAnalyzed = false;
 
         $this->property = new MyProperty;
+        $this->defs = new Definitions;
+        $this->blocks = new \SplObjectStorage;
 
         $this->myCode = new \progpilot\Code\MyCode;
         $this->castReturn = MyDefinition::CAST_NOT_SAFE;
@@ -76,6 +79,8 @@ class MyFunction extends MyOp
     public function __clone()
     {
         $this->property = clone $this->property;
+        $this->blocks = clone $this->blocks;
+        $this->defs = clone $this->defs;
     }
 
     public function setIsDataAnalyzed($isDataAnalyzed)

@@ -2,7 +2,7 @@
     "sanitizers": [
         {"name": "htmlentities", "language": "php", "prevent": ["xss"], "parameters": 
             [
-                {"id": 2, "condition": "equals", "values": 
+                {"id": 2, "conditions": "equals", "values": 
                     [
                         {"value" : "ENT_QUOTES", "prevent" : ["xss", "sql_injection", "command_injection", "QUOTES"]}
                     ]}
@@ -10,7 +10,7 @@
         },
         {"name": "htmlspecialchars", "language": "php", "prevent": ["xss"], "parameters": 
             [
-                {"id": 2, "condition": "equals", "values": 
+                {"id": 2, "conditions": "equals", "values": 
                     [
                         {"value" : "ENT_QUOTES", "prevent" : ["xss", "sql_injection", "command_injection", "QUOTES"]}
                     ]}
@@ -34,15 +34,9 @@
         {"name": "pg_escape_identifier", "language": "php", "prevent": ["sql_injection", "ldap_injection", "command_injection", "QUOTES"]},
         {"name": "pg_escape_bytea", "language": "php", "prevent": ["sql_injection", "ldap_injection", "command_injection", "QUOTES"]},
         {"name": "mysql_real_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
-        {"name": "str_replace", "language": "js", "prevent": ["xss"], "comment": "for dev purposes"},
-        {"name": "mysanitizer", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
-        {"name": "mysanitizer", "instanceof": "testccc1", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
-        {"name": "mysanitizer", "instanceof": "testc2", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
-        {"name": "mysanitizer", "instanceof": "testc1->object", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
-        {"name": "mysanitizer", "instanceof": "newtestc2", "language": "php",  "prevent": ["xss"], "comment": "for dev purposes"},
-		{"name": "filter_var",  "language": "php", "parameters": 
+        {"name": "filter_var",  "language": "php", "parameters": 
             [
-                {"id": 2, "condition": "equals", "values": 
+                {"id": 2, "conditions": "equals", "values": 
                     [
                         {"value" : "FILTER_SANITIZE_ENCODED", "prevent" : ["xss"]},
                         {"value" : "FILTER_SANITIZE_MAGIC_QUOTES", "prevent" : ["command_injection", "sql_injection", "ldap_injection", "QUOTES"]},
@@ -55,8 +49,8 @@
         }, 
         {"name": "settype",  "language": "php", "parameters": 
             [
-                {"id": 1, "condition": "sanitize"},
-                {"id": 2, "condition": "equals", "values": 
+                {"id": 1, "conditions": "sanitize"},
+                {"id": 2, "conditions": "equals", "values": 
                     [
                         {"value" : "boolean", "prevent": ["ALL"]},
                         {"value" : "integer", "prevent": ["ALL"]},
@@ -138,12 +132,12 @@
         {"name": "gethostbyname", "language": "php", "prevent": ["ALL"]},
         {"name": "preg_replace",  "language": "php", "parameters": 
             [
-                {"id": 3, "condition": "taint"},
-                {"id": 2, "condition": "equals", "values": 
+                {"id": 3, "conditions": "taint"},
+                {"id": 2, "conditions": "equals", "values": 
                     [
                         {"value" : ""}
                     ]},
-                {"id": 1, "condition": "equals", "values": 
+                {"id": 1, "conditions": "equals", "values": 
                     [
                         {"value" : "/'/", "prevent" : ["command_injection", "ldap_injection", "sql_injection", "QUOTES"]},
                         {"value" : "/\\W/si", "prevent" : ["command_injection", "ldap_injection", "sql_injection", "QUOTES"]},

@@ -1,0 +1,10 @@
+{
+    "sanitizers": [
+        {"name": "str_replace", "language": "js", "prevent": ["xss"], "comment": "for dev purposes"},
+        {"name": "mysanitizer", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
+        {"name": "mysanitizer", "instanceof": "testccc1", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
+        {"name": "mysanitizer", "instanceof": "testc2", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
+        {"name": "mysanitizer", "instanceof": "testc1->object", "language": "php", "prevent": ["xss"], "comment": "for dev purposes"},
+        {"name": "mysanitizer", "instanceof": "newtestc2", "language": "php",  "prevent": ["xss"], "comment": "for dev purposes"}
+        ]
+}

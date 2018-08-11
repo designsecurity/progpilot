@@ -106,24 +106,28 @@ class ResolveDefs
         return $classStackName;
     }
 
-    public static function instanceBuildBack($context, $data, $myFunc, $myFuncCall)
+    public static function instanceBuildBack($context, $data, $myFunc, $myClass, $myFuncCall)
     {
         if (!is_null($myFunc) && $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
             if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
                 $myBackDef = $myFuncCall->getBackDef();
-                $myClass = $myFunc->getMyClass();
+                //$myClass = $myFunc->getMyClass();
+                $method = $myClass->getMethod($myFuncCall->getName());
+                
                 $newMyBackMyClass = $context->getObjects()->getMyClassFromObject($myBackDef->getObjectId());
-
+                
                 if (is_null($newMyBackMyClass)) {
                     $newMyBackMyClass = new MyClass(
                         $myClass->getLine(),
                         $myClass->getColumn(),
                         $myClass->getName()
                     );
+                    
+                    $newMyBackMyClass->setExtendsOf($myClass->getExtendsOf());
 
                     $context->getObjects()->addMyclassToObject($myBackDef->getObjectId(), $newMyBackMyClass);
                 }
-
+                
                 $copyMyClass = clone $myClass;
 
                 foreach ($copyMyClass->getProperties() as $property) {

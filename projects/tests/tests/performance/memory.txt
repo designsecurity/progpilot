@@ -33,3 +33,13 @@ real    10m50,612s
 user    7m54,834s
 sys     0m3,183s
 
+/srv/www/htdocs/phpMyAdmin/ (0.3.2) :
+real    17m24,932s
+user    13m48,302s
+sys     0m3,614s
+
+drupal last version  (0.3.2) :
+real    10m27,480s
+user    7m20,230s
+sys     0m2,637s
+

@@ -6,6 +6,7 @@ try {
     $context = new \progpilot\Context;
     $analyzer = new \progpilot\Analyzer;
 
+    $context->inputs->setDev(true);
     $context->inputs->setIncludeFiles("include_files.json");
 
     try {

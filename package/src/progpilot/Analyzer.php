@@ -55,10 +55,10 @@ class Analyzer
         // parser
         if (!is_null($context->inputs->getFile()) || !is_null($context->inputs->getCode())) {
             $lexer = new \PhpParser\Lexer(array(
-                                                  'usedAttributes' => array(
-                                                      'comments', 'startLine', 'endLine', 'startFilePos', 'endFilePos'
-                                                  )
-                                              ));
+                'usedAttributes' => array(
+                    'comments', 'startLine', 'endLine', 'startFilePos', 'endFilePos'
+                )
+            ));
 
             $astparser = (new \PhpParser\ParserFactory)->create(\PhpParser\ParserFactory::PREFER_PHP7, $lexer);
 
@@ -67,15 +67,15 @@ class Analyzer
             try {
                 if (is_null($context->inputs->getCode())) {
                     $fileContent = file_get_contents($context->inputs->getFile());
-                    if(Analyzer::getTypeOfLanguage($fileContent) === Analyzer::PHP) {
+                    if (Analyzer::getTypeOfLanguage($fileContent) === Analyzer::PHP) {
                         $context->inputs->setCode($fileContent);
                         $context->setPath(dirname($context->inputs->getFile()));
                         $script = $parser->parse($context->inputs->getCode(), $context->inputs->getFile());
                     }
-                }
-                else {
-                    if(Analyzer::getTypeOfLanguage($context->inputs->getCode()) === Analyzer::PHP)
+                } else {
+                    if (Analyzer::getTypeOfLanguage($context->inputs->getCode()) === Analyzer::PHP) {
                         $script = $parser->parse($context->inputs->getCode(), "");
+                    }
                 }
             } catch (\PhpParser\Error $e) {
             }
@@ -198,8 +198,7 @@ class Analyzer
             return;
         }
 
-        if($transform) {
-        
+        if ($transform) {
             $pastResults = &$context->outputs->getResults();
             $context->resetInternalValues();
             $context->outputs->setResults($pastResults);
@@ -238,15 +237,15 @@ class Analyzer
             return;
         }
         
-        if(!is_null($context->inputs->getFile()) && $transform) {
+        if (!is_null($context->inputs->getFile()) && $transform) {
             $content = file_get_contents($context->inputs->getFile());
             
-            if(Analyzer::getTypeOfLanguage($content) === Analyzer::JS) {
+            if (Analyzer::getTypeOfLanguage($content) === Analyzer::JS) {
                 $pastResults = &$context->outputs->getResults();
                 $context->resetInternalValues();
                 $context->outputs->setResults($pastResults);
                 
-                $cmd = "node ".__DIR__."/Transformations/Js/Transform.js ".$context->inputs->getFile(); 
+                $cmd = "node ".__DIR__."/Transformations/Js/Transform.js ".$context->inputs->getFile();
                 exec($cmd, $return, $returnValue);
                 
                 if ((microtime(true) - $startTime) > $context->getLimitTime()) {
@@ -277,21 +276,19 @@ class Analyzer
         } elseif (is_null($context->inputs->getFile()) && is_null($context->inputs->getCode())) {
             Utils::printWarning($context, Lang::FILE_AND_CODE_ARE_NULL);
         } else {
-                
-            if (is_null($context->inputs->getCode()) 
+            if (is_null($context->inputs->getCode())
                 && filesize($context->inputs->getFile()) > $context->getLimitSize()) {
                 Utils::printWarning(
                     $context,
                     Lang::MAX_SIZE_EXCEEDED." (".Utils::encodeCharacters($context->inputs->getFile()).")"
                 );
-            }
-            else {
-                if($context->isLanguage(Analyzer::PHP)) {
+            } else {
+                if ($context->inputs->isLanguage(Analyzer::PHP)) {
                     $context->resetDataflow();
                     $this->runInternalPhp($context);
                 }
                 
-                if($context->isLanguage(Analyzer::JS)) {
+                if ($context->inputs->isLanguage(Analyzer::JS)) {
                     $context->resetDataflow();
                     $this->runInternalJs($context);
                 }
@@ -301,9 +298,10 @@ class Analyzer
     
     public static function getTypeOfLanguage($content)
     {
-        if(substr(ltrim($content), 0, 2) === "<?"
-            || substr(ltrim($content), 0, 5) === "<?php")
+        if (substr(ltrim($content), 0, 2) === "<?"
+            || substr(ltrim($content), 0, 5) === "<?php") {
             return Analyzer::PHP;
+        }
 
         return Analyzer::JS;
     }
@@ -316,13 +314,15 @@ class Analyzer
         $context->inputs->readIncludesFile();
         $context->inputs->readExcludesFile();
 
+        $context->inputs->readDev();
+        $context->inputs->readFrameworks();
         $context->inputs->readSanitizers();
         $context->inputs->readSinks();
         $context->inputs->readSources();
         $context->inputs->readResolvedIncludes();
         $context->inputs->readValidators();
         $context->inputs->readFalsePositives();
-        $context->inputs->readCustomFile();
+        $context->inputs->readCustomRules();
 
         $includedFiles = $context->inputs->getIncludedFiles();
         $includedFolders = $context->inputs->getIncludedFolders();

@@ -1,0 +1,32 @@
+inputs:
+    setDev: false
+    setLanguages: ["php"]
+    setFrameworks: ["suitecrm", "codeigniter"]
+    setSources: ./package/src/uptodate_data/php/sources.json
+    setSinks: ./package/src/uptodate_data/php/sinks.json
+    setValidators: ./package/src/uptodate_data/php/validators.json
+    setSanitizers: ./package/src/uptodate_data/php/sanitizers.json
+    setCustomRules: ./package/src/uptodate_data/php/rules.json
+    setIncludeFiles: 
+    setExcludeFiles: progpilot_exclusions.json
+    setFolder: .
+    setFile: 
+    setCode:
+    setResolvedIncludes:
+    setFalsePositives:
+    
+outputs:
+    taintedFlow: false
+    resolveIncludes: false
+    resolveIncludesFile:
+    
+options:
+    setAnalyzeIncludes: true
+    setAnalyzeFunctions: true
+    setAnalyzeHardRules: true
+    setPrintFile: false
+    setPrintWarning: false
+    setPrettyPrint: true
+    setLimitTime: 10
+    setLimitDefs: 3000
+    setLimitSize: 500000

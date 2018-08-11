@@ -405,11 +405,9 @@ class VisitorAnalysis
                             $classOfFuncCallArr = $stackClass[count($stackClass) - 1];
                             foreach ($classOfFuncCallArr as $classOfFuncCall) {
                                 $objectId = $classOfFuncCall->getObjectId();
-
                                 $myClass = $this->context->getObjects()->getMyClassFromObject($objectId);
                                 if (!is_null($myClass)) {
                                     $method = $myClass->getMethod($funcName);
-
                                     if (!ResolveDefs::getVisibilityMethod($myFuncCall->getNameInstance(), $method)) {
                                         $method = null;
                                     }
@@ -419,9 +417,9 @@ class VisitorAnalysis
                                     }
 
                                     // twig analysis
-                                    if($this->context->isLanguage(Analyzer::JS)) {
-                                        if(!is_null($myClass) && $myClass->getName() === "Twig_Environment") {
-                                            if($funcName === "render") {
+                                    if ($this->context->inputs->isLanguage(Analyzer::JS)) {
+                                        if (!is_null($myClass) && $myClass->getName() === "Twig_Environment") {
+                                            if ($funcName === "render") {
                                                 TwigAnalysis::funccall($this->context, $myFuncCall, $instruction);
                                             }
                                         }
@@ -460,7 +458,6 @@ class VisitorAnalysis
                                     $index
                                 );
                             }
-                            
                         } elseif ($myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC)) {
                             $myClassStatic = $this->context->getClasses()->getMyClass(
                                 $myFuncCall->getNameInstance()
@@ -613,6 +610,7 @@ class VisitorAnalysis
                                 $this->context,
                                 $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
                                 $myFunc,
+                                $myClass,
                                 $myFuncCall
                             );
 

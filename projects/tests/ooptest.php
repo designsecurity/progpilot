@@ -97,6 +97,25 @@
                 [
                     "./tests/oop/simple23/a.php",
                         [["\$sql", "10", "sql_injection"]]
+                ],
+                [
+                    "./tests/oop/simple24.php",
+                        [["\$a->data", "6", "xss"],
+                        ["\$b->data", "6", "xss"]]
+                ],
+                [
+                    "./tests/oop/simple25.php",
+                        [["\$query", "6", "sql_injection"]]
+                ],
+                [
+                    "./tests/oop/simple26.php",
+                        [["\$_GET[\"t\"]", "17", "xss"],
+                        ["\$_GET[\"p\"]", "8", "xss"]]
+                ],
+                [
+                    "./tests/oop/simple27.php",
+                        [["\$_GET[\"p\"]", "8", "xss"],
+                        ["\$_GET[\"t\"]", "17", "xss"]]
                 ]
                 
         ];

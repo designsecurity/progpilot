@@ -1,26 +1,5 @@
 {
     "custom_rules": [
-        {"name": "rules_#1", "sequence":
-            [
-                {"function_name": "dev_iam_authenticated", "language": "php"},
-                {"function_name": "dev_iam_rights", "language": "php"},
-                {"function_name": "dev_retrieve_secret", "language": "php"}
-            ],
-            "description": "rule #1 not verified",
-            "action": "MUST_VERIFY_CALL_FLOW",
-            "attack": "bypass access control", "cwe": "CWE_285"
-        },
-        {"name": "rules_#2", "sequence":
-            [
-                {"function_name": "secret", "language": "php"},
-                {"function_name": "dev_iam_authenticated", "language": "php"},
-                {"function_name": "dev_iam_rights", "language": "php"},
-                {"function_name": "dev_retrieve_secret", "language": "php"}
-            ],
-            "description": "rule #2 not verified",
-            "action": "MUST_VERIFY_CALL_FLOW",
-            "attack": "bypass access control", "cwe": "CWE_285"
-        },
         {"name": "rules_#3", "function_name": "setcookie", "parameters": 
             [
                 {"id": 6, "values": 
@@ -33,17 +12,6 @@
                     ]}
             ], 
             "description": "cookie set without secure or httponly flags",
-            "language": "php", "action": "MUST_VERIFY_DEFINITION",
-            "attack": "security misconfiguration", "cwe": "CWE_1004"
-        },
-        {"name": "rules_#4", "function_name": "__construct", "instanceof": "testc", "parameters": 
-            [
-                {"id": 1, "values": 
-                    [ 
-                        {"value" : "vuln"} 
-                    ]}
-            ], 
-            "description": "test instanceof",
             "language": "php", "action": "MUST_VERIFY_DEFINITION",
             "attack": "security misconfiguration", "cwe": "CWE_1004"
         },

@@ -16,7 +16,7 @@ class MySink extends MySpecify
     private $cwe;
     private $parameters;
     private $hasParameters;
-    private $globalConditions;
+    private $globalconditions;
 
     public function __construct($name, $language, $attack, $cwe)
     {
@@ -26,18 +26,18 @@ class MySink extends MySpecify
         $this->cwe = $cwe;
         $this->hasParameters = false;
         $this->parameters = [];
-        $this->globalConditions = [];
+        $this->globalconditions = [];
     }
 
-    public function addGlobalCondition($condition)
+    public function addGlobalconditions($conditions)
     {
-        $this->globalConditions[] = $condition;
+        $this->globalconditions[] = $conditions;
     }
 
-    public function isGlobalCondition($condition)
+    public function isGlobalcondition($condition)
     {
-        foreach ($this->globalConditions as $conditionGlobal) {
-            if ($condition === $conditionGlobal) {
+        foreach ($this->globalconditions as $conditionsGlobal) {
+            if ($condition === $conditionsGlobal) {
                 return true;
             }
         }
@@ -45,9 +45,9 @@ class MySink extends MySpecify
         return false;
     }
 
-    public function addParameter($id, $condition = null)
+    public function addParameter($id, $conditions = null)
     {
-        $parameter = [$id, $condition];
+        $parameter = [$id, $conditions];
         $this->parameters[] = $parameter;
     }
 
@@ -55,15 +55,52 @@ class MySink extends MySpecify
     {
         return $this->parameters;
     }
-
-    public function getParameterCondition($i)
+    
+    public function parameterHasconditions($i)
     {
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
-            $condition = $parameter[1];
+            $conditions = $parameter[1];
 
             if ($index === $i) {
-                return $condition;
+                return !is_null($conditions);
+            }
+        }
+
+        return false;
+    }
+
+    public function isParametercondition($i, $condition)
+    {
+        if(is_null($condition))
+            return true;
+            
+        foreach ($this->parameters as $parameter) {
+            $index = $parameter[0];
+            $conditions = $parameter[1];
+
+            if($i === $index) {
+                if (is_array($conditions)) {
+                    return in_array($condition, $conditions, true);
+                }
+                else {
+                    if($conditions === $condition)
+                        return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public function getParameterConditions($i)
+    {
+        foreach ($this->parameters as $parameter) {
+            $index = $parameter[0];
+            $conditions = $parameter[1];
+
+            if ($index === $i) {
+                return $conditions;
             }
         }
 

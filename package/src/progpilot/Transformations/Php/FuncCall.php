@@ -160,7 +160,6 @@ class FuncCall
         }
 
         if ($isMethod) {
-            // when we define a method in a class (TYPE_METHOD) but when we use a method (TYPE_INSTANCE)
             $myFunctionCall->addType(MyFunction::TYPE_FUNC_METHOD);
             $myFunctionCall->setNameInstance($instanceName);
 

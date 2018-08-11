@@ -55,7 +55,7 @@ class TaintAnalysis
         TaintAnalysis::funccallSource($stackClass, $context, $data, $myClass, $instruction);
 
         // for example for document.write
-        if(is_null($myClass) && $myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
+        if (is_null($myClass) && $myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
             $myClass = new MyClass(
                 $myFuncCall->getLine(),
                 $myFuncCall->getColumn(),
@@ -74,7 +74,7 @@ class TaintAnalysis
 
         $nbParams = 0;
         $defsValid = [];
-        $conditionRespected = true;
+        $conditionsRespected = true;
 
         $myValidator = $context->inputs->getValidatorByName($stackClass, $myFuncCall, $myClass);
         if (!is_null($myValidator)) {
@@ -86,16 +86,16 @@ class TaintAnalysis
                 $defArg = $instruction->getProperty("argdef$nbParams");
                 $exprArg = $instruction->getProperty("argexpr$nbParams");
 
-                $condition = $myValidator->getParameterCondition($nbParams + 1);
-                if ($condition === "valid" && !$exprArg->getIsConcat()) {
+                $conditions = $myValidator->getParameterconditions($nbParams + 1);
+                if ($conditions === "valid" && !$exprArg->getIsConcat()) {
                     $theDefsArgs = $exprArg->getDefs();
 
                     foreach ($theDefsArgs as $theDefsArg) {
                         $defsValid[] = $theDefsArg;
                     }
-                } elseif ($condition === "array_not_tainted") {
+                } elseif ($conditions === "array_not_tainted") {
                     if ($defArg->isType(MyDefinition::TYPE_ARRAY) && $defArg->isTainted()) {
-                        $conditionRespected = false;
+                        $conditionsRespected = false;
                     } elseif ($defArg->isType(MyDefinition::TYPE_COPY_ARRAY)) {
                         $copyArrays = $defArg->getCopyArrays();
                         foreach ($copyArrays as $copyArray) {
@@ -103,16 +103,16 @@ class TaintAnalysis
                             $defarr = $copyArray[1];
 
                             if ($defarr->isTainted()) {
-                                $conditionRespected = false;
+                                $conditionsRespected = false;
                             }
                         }
                     }
-                } elseif ($condition === "not_tainted") {
+                } elseif ($conditions === "not_tainted") {
                     if ($defArg->isTainted()) {
-                        $conditionRespected = false;
+                        $conditionsRespected = false;
                     }
-                } elseif ($condition === "equals") {
-                    $conditionRespectedEquals = false;
+                } elseif ($conditions === "equals") {
+                    $conditionsRespectedEquals = false;
                     $values = $myValidator->getParameterValues($nbParams + 1);
 
                     if (!is_null($values)) {
@@ -121,15 +121,15 @@ class TaintAnalysis
                             foreach ($values as $value) {
                                 foreach ($theDefsArgs[0]->getLastKnownValues() as $lastKnownValue) {
                                     if ($value->value === $lastKnownValue) {
-                                        $conditionRespectedEquals = true;
+                                        $conditionsRespectedEquals = true;
                                     }
                                 }
                             }
                         }
                     }
 
-                    if (!$conditionRespectedEquals) {
-                        $conditionRespected = false;
+                    if (!$conditionsRespectedEquals) {
+                        $conditionsRespected = false;
                     }
                 }
 
@@ -138,7 +138,7 @@ class TaintAnalysis
         }
 
         if (count($defsValid) > 0) {
-            if ($conditionRespected) {
+            if ($conditionsRespected) {
                 $codes = $myCode->getCodes();
 
                 if (isset($codes[$index + 2])) {
@@ -177,16 +177,16 @@ class TaintAnalysis
         $arrFuncCall = $instruction->getProperty(MyInstruction::ARR);
         $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
 
-        $conditionSanitize = false;
-        $conditionTaint = false;
-        $paramsTaintedConditionTaint = false;
+        $conditionsSanitize = false;
+        $conditionsTaint = false;
+        $paramsTaintedconditionsTaint = false;
 
         $paramsTainted = false;
         $paramsSanitized = false;
         $paramsTypeSanitized = [];
 
         $nbParams = 0;
-        $conditionRespectedFinal = true;
+        $conditionsRespectedFinal = true;
 
         $myTempReturn = new MyDefinition(
             $myFuncCall->getLine(),
@@ -237,10 +237,10 @@ class TaintAnalysis
             }
 
             if (!is_null($mySanitizer)) {
-                $condition = $mySanitizer->getParameterCondition($nbParams + 1);
+                $conditions = $mySanitizer->getParameterconditions($nbParams + 1);
 
-                if ($condition === "equals") {
-                    $conditionRespected = false;
+                if ($conditions === "equals") {
+                    $conditionsRespected = false;
                     $values = $mySanitizer->getParameterValues($nbParams + 1);
 
                     if (!is_null($values)) {
@@ -249,7 +249,7 @@ class TaintAnalysis
                             foreach ($values as $value) {
                                 foreach ($theDefsArgs[0]->getLastKnownValues() as $lastKnownValue) {
                                     if ($value->value === $lastKnownValue) {
-                                        $conditionRespected = true;
+                                        $conditionsRespected = true;
 
                                         if (isset($value->prevent)) {
                                             $preventFinal = array_merge($preventFinal, $value->prevent);
@@ -260,18 +260,18 @@ class TaintAnalysis
                         }
                     }
 
-                    if (!$conditionRespected) {
-                        $conditionRespectedFinal = false;
+                    if (!$conditionsRespected) {
+                        $conditionsRespectedFinal = false;
                     }
-                } elseif ($condition === "taint") {
-                    $conditionTaint = true;
+                } elseif ($conditions === "taint") {
+                    $conditionsTaint = true;
                     if ($defArg->isTainted()) {
-                        $paramsTaintedConditionTaint = true;
+                        $paramsTaintedconditionsTaint = true;
                         $myExprReturn2->addDef($defArg);
                     }
-                } elseif ($condition === "sanitize") {
-                    $conditionSanitize = true;
-                    $exprsTaintedConditionSanitize[] = $exprArg;
+                } elseif ($conditions === "sanitize") {
+                    $conditionsSanitize = true;
+                    $exprsTaintedconditionsSanitize[] = $exprArg;
                 }
             }
 
@@ -292,10 +292,10 @@ class TaintAnalysis
             TaintAnalysis::setTainted($paramsTainted, $myTempReturn, $myExprReturn2);
         }
 
-        if ($returnSanitizer || $conditionSanitize) {
-            if (!is_null($mySanitizer) && $conditionRespectedFinal) {
-                if ($conditionSanitize) {
-                    foreach ($exprsTaintedConditionSanitize as $exprsanitize) {
+        if ($returnSanitizer || $conditionsSanitize) {
+            if (!is_null($mySanitizer) && $conditionsRespectedFinal) {
+                if ($conditionsSanitize) {
+                    foreach ($exprsTaintedconditionsSanitize as $exprsanitize) {
                         foreach ($exprsanitize->getDefs() as $oneDef) {
                             $oneDef->setSanitized(true);
                             if (is_array($preventFinal)) {
@@ -359,15 +359,18 @@ class TaintAnalysis
 
                     if ($mySource->isParameter($nbParams + 1)) {
                         $defFrom = $defArg->getValueFromDef();
-                        $arrayIndex = $mySource->getConditionParameter($nbParams + 1, MySource::CONDITION_ARRAY);
-                        if (!is_null($arrayIndex)) {
-                            $trueArrayIndex = array($arrayIndex => false);
-                            $defFrom->addType(MyDefinition::TYPE_ARRAY);
-                            $defFrom->setArrayValue($trueArrayIndex);
-                        }
+                        
+                        if(!is_null($defFrom)) {
+                            $arrayIndex = $mySource->getconditionsParameter($nbParams + 1, MySource::CONDITION_ARRAY);
+                            if (!is_null($arrayIndex)) {
+                                $trueArrayIndex = array($arrayIndex => false);
+                                $defFrom->addType(MyDefinition::TYPE_ARRAY);
+                                $defFrom->setArrayValue($trueArrayIndex);
+                            }
 
-                        // no expression needed it's a source
-                        $defFrom->setTainted(true);
+                            // no expression needed it's a source
+                            $defFrom->setTainted(true);
+                        }
                     }
 
                     $nbParams ++;

@@ -30,9 +30,9 @@ class MySanitizer extends MySpecify
         return $this->prevent;
     }
 
-    public function addParameter($parameter, $condition, $values = null)
+    public function addParameter($parameter, $conditions, $values = null)
     {
-        $this->parameters[] = [$parameter, $condition, $values];
+        $this->parameters[] = [$parameter, $conditions, $values];
     }
 
     public function getParameters()
@@ -40,14 +40,14 @@ class MySanitizer extends MySpecify
         return $this->parameters;
     }
 
-    public function getParameterCondition($i)
+    public function getParameterconditions($i)
     {
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
-            $condition = $parameter[1];
+            $conditions = $parameter[1];
 
             if ($index === $i) {
-                return $condition;
+                return $conditions;
             }
         }
 
@@ -58,7 +58,7 @@ class MySanitizer extends MySpecify
     {
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
-            $condition = $parameter[1];
+            $conditions = $parameter[1];
             $values = $parameter[2];
 
             if ($index === $i) {
@@ -73,7 +73,7 @@ class MySanitizer extends MySpecify
     {
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
-            $condition = $parameter[1];
+            $conditions = $parameter[1];
 
             if ($index === $i) {
                 return true;

@@ -1,0 +1,10 @@
+{
+    "sources": [
+        {"name": "shell_exec", "language": "php", "type": "for dev purposes"},
+        {"name": "methodc1", "is_function": true, "instanceof": "testc1", "language": "php", "type": "for dev purposes"},
+        {"name": "methodc1arr", "is_function": true, "instanceof": "testc1", "return_array_index": "tainted", "language": "php", "type": "for dev purposes"},
+        {"name": "func1arr", "is_function": true, "return_array_index": "tainted", "language": "php", "type": "for dev purposes"},
+        {"name": "member1", "instanceof": "testc1", "language": "php", "type": "for dev purposes"},
+        {"name": "vardev", "is_array": true, "array_index": "tainted", "language": "php", "type": "for dev purposes"}
+		]
+}

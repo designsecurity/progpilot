@@ -1,4 +1,7 @@
 inputs:
+    setDev: false
+    setLanguages: ["php"]
+    setFrameworks: ["suitecrm", "codeigniter"]
     setSources: ../../package/src/uptodate_data/php/sources.json
     setSinks: ../../package/src/uptodate_data/php/sinks.json
     setValidators: ../../package/src/uptodate_data/php/validators.json
@@ -13,12 +16,11 @@ inputs:
     setFalsePositives:
     
 outputs:
-    taintedFlow: true
+    taintedFlow: false
     resolveIncludes: false
     resolveIncludesFile:
     
 options:
-    setLanguages: ["php"]
     setAnalyzeIncludes: true
     setAnalyzeFunctions: true
     setAnalyzeHardRules: true

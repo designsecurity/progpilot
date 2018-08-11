@@ -274,7 +274,7 @@ class MyCode
                 $childs = $arrayMyBlocksChilds[$parent->getId()];
 
                 foreach ($childs as $child) {
-                    if(isset($arrayMyBlocks[$child])) {
+                    if (isset($arrayMyBlocks[$child])) {
                         $myBlockChild = $arrayMyBlocks[$child];
                         $myBlockChild->addParent($parent);
                     }
@@ -287,14 +287,14 @@ class MyCode
 
                 if ($myExpr->isAssign()) {
                     $defId = $myExpr->getAssignDef();
-                    if(isset($arrayDefinitions[$defId])) {
+                    if (isset($arrayDefinitions[$defId])) {
                         $myDef = $arrayDefinitions[$defId];
                         $myExpr->setAssignDef($myDef);
                     }
                 }
 
                 foreach ($defs as $defId) {
-                    if(isset($arrayDefinitions[$defId])) {
+                    if (isset($arrayDefinitions[$defId])) {
                         $myDef = $arrayDefinitions[$defId];
                         $myExpr->addDef($myDef);
                     }
@@ -304,7 +304,7 @@ class MyCode
             foreach ($arrayDefinitions as $myDef) {
                 $expr = $myDef->getExpr();
                 
-                if(isset($arrayExprs[$expr])) {
+                if (isset($arrayExprs[$expr])) {
                     $myExpr = $arrayExprs[$expr];
                     $myDef->setExpr($myExpr);
                 }
