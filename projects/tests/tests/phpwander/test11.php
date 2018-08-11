@@ -5,4 +5,4 @@ $a = true ? 'abc' : $_GET['a'];
 //} else {
 //	$a = $_GET['a'];
 //}
-echo $a; 
+echo $a;

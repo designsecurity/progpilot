@@ -13,8 +13,8 @@ if ($argc > 1) {
     } catch (Error $error) {
         echo "Parse error: {$error->getMessage()}\n";
         return;
-    }  
+    }
 
     $dumper = new NodeDumper;
-    echo $dumper->dump($ast) . "\n"; 
+    echo $dumper->dump($ast) . "\n";
 }

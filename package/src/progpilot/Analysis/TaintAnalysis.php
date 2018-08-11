@@ -360,7 +360,7 @@ class TaintAnalysis
                     if ($mySource->isParameter($nbParams + 1)) {
                         $defFrom = $defArg->getValueFromDef();
                         
-                        if(!is_null($defFrom)) {
+                        if (!is_null($defFrom)) {
                             $arrayIndex = $mySource->getconditionsParameter($nbParams + 1, MySource::CONDITION_ARRAY);
                             if (!is_null($arrayIndex)) {
                                 $trueArrayIndex = array($arrayIndex => false);

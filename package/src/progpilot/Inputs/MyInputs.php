@@ -197,6 +197,14 @@ class MyInputs
                 return true;
             }
         }
+        
+        foreach ($this->excludesFoldersAnalysis as $excludeName) {
+            $realExcludeName = realpath($excludeName);
+            $folderfirst = substr($name, 0, strlen($realExcludeName));
+            if ($realExcludeName === $folderfirst) {
+                return true;
+            }
+        }
 
         return false;
     }
@@ -313,8 +321,8 @@ class MyInputs
                 }
 
                 if ($mySink->isInstance() && $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                    if (!is_null($myClass) 
-                        && ($mySink->getInstanceOfName() === $myClass->getName() 
+                    if (!is_null($myClass)
+                        && ($mySink->getInstanceOfName() === $myClass->getName()
                             || $mySink->getInstanceOfName() === $myClass->getExtendsOf())) {
                         return $mySink;
                     }
@@ -335,8 +343,8 @@ class MyInputs
                                 $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                 
-                                if (!is_null($myClass) 
-                                    && ($myClass->getName() === $mySinkInstanceName 
+                                if (!is_null($myClass)
+                                    && ($myClass->getName() === $mySinkInstanceName
                                         || $myClass->getExtendsOf() === $mySinkInstanceName)) {
                                     return $mySink;
                                 }
@@ -358,7 +366,7 @@ class MyInputs
             if ($mySource->getName() === $myFuncOrDef->getName()
                 && $mySource->getIsArray()
                     && $arrValue === false) {
-                    return $mySource;
+                return $mySource;
             }
         }
 
@@ -560,7 +568,7 @@ class MyInputs
 
     public function readDev()
     {
-        if($this->dev) {
+        if ($this->dev) {
             $sanitizersfile = __DIR__."/../../uptodate_data/php/dev/sanitizers.json";
             $this->readSanitizersFile($sanitizersfile);
             
@@ -576,78 +584,83 @@ class MyInputs
             $customsfile = __DIR__."/../../uptodate_data/php/dev/rules.json";
             $this->readCustomFile($customsfile);
         }
-    
     }
 
     public function readFrameworks()
     {
-        if(in_array("suitecrm", $this->frameworks, true)) {
+        if (in_array("suitecrm", $this->frameworks, true)) {
             $sanitizersfile = __DIR__."/../../uptodate_data/php/frameworks/suitecrm/sanitizers.json";
             
-            if(is_array($this->sanitizersFile)) {
-                if(!in_array($sanitizersfile, $this->sanitizersFile, true))
+            if (is_array($this->sanitizersFile)) {
+                if (!in_array($sanitizersfile, $this->sanitizersFile, true)) {
                     $this->readSanitizersFile($sanitizersfile);
-            }
-            else {
-                if($this->sanitizersFile !== $sanitizersfile)
+                }
+            } else {
+                if ($this->sanitizersFile !== $sanitizersfile) {
                     $this->readSanitizersFile($sanitizersfile);
+                }
             }
             
             $sinksfile = __DIR__."/../../uptodate_data/php/frameworks/suitecrm/sinks.json";
             
-            if(is_array($this->sinksFile)) {
-                if(!in_array($sinksfile, $this->sinksFile, true))
+            if (is_array($this->sinksFile)) {
+                if (!in_array($sinksfile, $this->sinksFile, true)) {
                     $this->readSinksFile($sinksfile);
-            }
-            else {
-                if($this->sinksFile !== $sinksfile)
+                }
+            } else {
+                if ($this->sinksFile !== $sinksfile) {
                     $this->readSinksFile($sinksfile);
+                }
             }
         }
         
-        if(in_array("codeigniter", $this->frameworks, true)) {
+        if (in_array("codeigniter", $this->frameworks, true)) {
             $sanitizersfile = __DIR__."/../../uptodate_data/php/frameworks/codeigniter/sanitizers.json";
             
-            if(is_array($this->sanitizersFile)) {
-                if(!in_array($sanitizersfile, $this->sanitizersFile, true))
+            if (is_array($this->sanitizersFile)) {
+                if (!in_array($sanitizersfile, $this->sanitizersFile, true)) {
                     $this->readSanitizersFile($sanitizersfile);
-            }
-            else {
-                if($this->sanitizersFile !== $sanitizersfile)
+                }
+            } else {
+                if ($this->sanitizersFile !== $sanitizersfile) {
                     $this->readSanitizersFile($sanitizersfile);
+                }
             }
             
             $sinksfile = __DIR__."/../../uptodate_data/php/frameworks/codeigniter/sinks.json";
             
-            if(is_array($this->sinksFile)) {
-                if(!in_array($sinksfile, $this->sinksFile, true))
+            if (is_array($this->sinksFile)) {
+                if (!in_array($sinksfile, $this->sinksFile, true)) {
                     $this->readSinksFile($sinksfile);
-            }
-            else {
-                if($this->sinksFile !== $sinksfile)
+                }
+            } else {
+                if ($this->sinksFile !== $sinksfile) {
                     $this->readSinksFile($sinksfile);
+                }
             }
             
             $sourcesfile = __DIR__."/../../uptodate_data/php/frameworks/codeigniter/sources.json";
             
-            if(is_array($this->sourcesFile)) {
-                if(!in_array($sourcesfile, $this->sourcesFile, true))
+            if (is_array($this->sourcesFile)) {
+                if (!in_array($sourcesfile, $this->sourcesFile, true)) {
                     $this->readSourcesFile($sourcesfile);
-            }
-            else {
-                if($this->sourcesFile !== $sourcesfile)
+                }
+            } else {
+                if ($this->sourcesFile !== $sourcesfile) {
                     $this->readSourcesFile($sourcesfile);
+                }
             }
             
             $validatorsfile = __DIR__."/../../uptodate_data/php/frameworks/codeigniter/validators.json";
             
-            if(is_array($this->validatorsFile)) {
-                if(!in_array($validatorsfile, $this->validatorsFile, true))
+            if (is_array($this->validatorsFile)) {
+                if (!in_array($validatorsfile, $this->validatorsFile, true)) {
                     $this->readValidatorsFile($validatorsfile);
-            }
-            else {
-                if($this->validatorsFile !== $validatorsfile)
+                }
+            } else {
+                if ($this->validatorsFile !== $validatorsfile) {
                     $this->readValidatorsFile($validatorsfile);
+                }
             }
         }
     }
@@ -656,14 +669,12 @@ class MyInputs
     {
         if (is_null($this->sanitizersFile)) {
             $this->readSanitizersFile(__DIR__."/../../uptodate_data/php/sanitizers.json");
-        }
-        else {
-            if(is_array($this->sanitizersFile)) {
-                foreach($this->sanitizersFile as $file) {
+        } else {
+            if (is_array($this->sanitizersFile)) {
+                foreach ($this->sanitizersFile as $file) {
                     $this->readSanitizersFile($file);
                 }
-            }
-            else {
+            } else {
                 $this->readSanitizersFile($this->sanitizersFile);
             }
         }
@@ -744,14 +755,12 @@ class MyInputs
     {
         if (is_null($this->sinksFile)) {
             $this->readSinksFile(__DIR__."/../../uptodate_data/php/sinks.json");
-        }
-        else {
-            if(is_array($this->sinksFile)) {
-                foreach($this->sinksFile as $file) {
+        } else {
+            if (is_array($this->sinksFile)) {
+                foreach ($this->sinksFile as $file) {
                     $this->readSinksFile($file);
                 }
-            }
-            else {
+            } else {
                 $this->readSinksFile($this->sinksFile);
             }
         }
@@ -820,14 +829,12 @@ class MyInputs
     {
         if (is_null($this->sourcesFile)) {
             $this->readSourcesFile(__DIR__."/../../uptodate_data/php/sources.json");
-        }
-        else {
-            if(is_array($this->sourcesFile)) {
-                foreach($this->sourcesFile as $file) {
+        } else {
+            if (is_array($this->sourcesFile)) {
+                foreach ($this->sourcesFile as $file) {
                     $this->readSourcesFile($file);
                 }
-            }
-            else {
+            } else {
                 $this->readSourcesFile($this->sourcesFile);
             }
         }
@@ -912,14 +919,12 @@ class MyInputs
     {
         if (is_null($this->validatorsFile)) {
             $this->readValidatorsFile(__DIR__."/../../uptodate_data/php/validators.json");
-        }
-        else {
-            if(is_array($this->validatorsFile)) {
-                foreach($this->validatorsFile as $file) {
+        } else {
+            if (is_array($this->validatorsFile)) {
+                foreach ($this->validatorsFile as $file) {
                     $this->readValidatorsFile($file);
                 }
-            }
-            else {
+            } else {
                 $this->readValidatorsFile($this->validatorsFile);
             }
         }
@@ -1127,14 +1132,12 @@ class MyInputs
     {
         if (is_null($this->customFile)) {
             $this->readCustomFile(__DIR__."/../../uptodate_data/php/rules.json");
-        }
-        else {
-            if(is_array($this->customFile)) {
-                foreach($this->customFile as $file) {
+        } else {
+            if (is_array($this->customFile)) {
+                foreach ($this->customFile as $file) {
                     $this->readCustomFile($file);
                 }
-            }
-            else {
+            } else {
                 $this->readCustomFile($this->customFile);
             }
         }

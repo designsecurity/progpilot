@@ -439,9 +439,9 @@ class ResolveDefs
                         && !$searchedDed->isType(MyDefinition::TYPE_PROPERTY)) {
                         $defsFound[$def->getBlockId()][] = $def;
                     }
-                } // we are looking for the nearest not instance of a property
-                elseif (!$def->isType(MyDefinition::TYPE_INSTANCE)
+                } elseif (!$def->isType(MyDefinition::TYPE_INSTANCE)
                     && $searchedDed->isType(MyDefinition::TYPE_PROPERTY)) {
+                    // we are looking for the nearest not instance of a property
                     $defsFound[$def->getBlockId()][] = $def;
                 }
             }
@@ -563,9 +563,9 @@ class ResolveDefs
                                                 // it has the priority
                                                 if (ResolveDefs::isNearest($context, $instance, $defa)) {
                                                     $firstProperties[] = $property;
-                                                } // else property exist in the nearest instance
-                                                //but property has the priority
-                                                else {
+                                                } else {
+                                                    // else property exist in the nearest instance
+                                                    //but property has the priority
                                                     $firstProperties[] = $defa;
                                                 }
                                             }

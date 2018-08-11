@@ -2,4 +2,4 @@
 // ok
 printf(htmlentities($_GET['a'], ENT_QUOTES));
 // tainted
-printf($_GET['a']); 
+printf($_GET['a']);

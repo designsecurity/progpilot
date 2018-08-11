@@ -4,8 +4,8 @@
  */
 class F
 {
-	public static function sensitive($arg)
-	{
-		echo $arg;
-	}
-} 
+    public static function sensitive($arg)
+    {
+        echo $arg;
+    }
+}

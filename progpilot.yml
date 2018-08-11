@@ -1,7 +1,7 @@
 inputs:
     setDev: false
     setLanguages: ["php"]
-    setFrameworks: ["suitecrm", "codeigniter"]
+    setFrameworks: []
     setSources: ./package/src/uptodate_data/php/sources.json
     setSinks: ./package/src/uptodate_data/php/sinks.json
     setValidators: ./package/src/uptodate_data/php/validators.json
@@ -9,7 +9,7 @@ inputs:
     setCustomRules: ./package/src/uptodate_data/php/rules.json
     setIncludeFiles: 
     setExcludeFiles: progpilot_exclusions.json
-    setFolder: .
+    setFolder: 
     setFile: 
     setCode:
     setResolvedIncludes:
@@ -24,7 +24,7 @@ options:
     setAnalyzeIncludes: true
     setAnalyzeFunctions: true
     setAnalyzeHardRules: true
-    setPrintFile: false
+    setPrintFile: true
     setPrintWarning: false
     setPrettyPrint: true
     setLimitTime: 10

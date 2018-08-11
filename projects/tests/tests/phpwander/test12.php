@@ -9,4 +9,4 @@ D::$vars = $_GET['d'];
 // tainted
 echo D::$vars;
 // tainted
-echo D::danger(); 
+echo D::danger();

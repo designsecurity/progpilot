@@ -4,8 +4,9 @@ include("test13E.php");
 
 $e = new E;
 $result = $e->get();
-echo $result; 
+echo $result;
 */
  
-foreach([$_GET["p"]] as $value)
+foreach ([$_GET["p"]] as $value) {
     echo $value;
+}

@@ -72,20 +72,21 @@ class MySink extends MySpecify
 
     public function isParametercondition($i, $condition)
     {
-        if(is_null($condition))
+        if (is_null($condition)) {
             return true;
+        }
             
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
             $conditions = $parameter[1];
 
-            if($i === $index) {
+            if ($i === $index) {
                 if (is_array($conditions)) {
                     return in_array($condition, $conditions, true);
-                }
-                else {
-                    if($conditions === $condition)
+                } else {
+                    if ($conditions === $condition) {
                         return true;
+                    }
                 }
             }
         }

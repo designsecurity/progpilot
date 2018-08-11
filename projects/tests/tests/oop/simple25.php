@@ -1,13 +1,13 @@
 <?php
 class SomeClass
 {
-    function method1()
+    public function method1()
     {
         $query = "update linked_docs set deleted=1 where id='" . $_POST['signed_id'] . "'";
         $this->db->query($query);
     }
 
-    function method2()
+    public function method2()
     {
         global $focus;
         $focusId = $_REQUEST['record'];
@@ -15,7 +15,7 @@ class SomeClass
         $where = "notes.parent_id='{$focusId}' AND notes.filename IS NOT NULL";
         $focus->get_full_list($where);
     }
-} 
+}
 
 $a = new SomeClass;
 $a->method1();

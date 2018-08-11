@@ -3,27 +3,27 @@
         return [
                 [
                     "./tests/phpwander/test0.php",
-                        [["\$id_return", "3", "file_disclosure"],
-                        ["\$return_basename", "8", "file_disclosure"],
-                        ["\$_GET[\"f\"]", "10", "file_disclosure"],
-                        ["\$b", "8", "xss"],
-                        ["\$c", "10", "xss"]]
+                        [["\$id_return", "4", "file_disclosure"],
+                        ["\$return_basename", "9", "file_disclosure"],
+                        ["\$_GET[\"f\"]", "11", "file_disclosure"],
+                        ["\$b", "9", "xss"],
+                        ["\$c", "11", "xss"]]
                 ],
                 [
                     "./tests/phpwander/test1.php",
-                        [["\$s", "17", "xss"],
-                        ["\$a", "23", "xss"]]
+                        [["\$s", "19", "xss"],
+                        ["\$a", "26", "xss"]]
                 ],
                 [
                     "./tests/phpwander/test2.php",
-                        [["\$path", "6", "xss"],
-                        ["\$path", "6", "command_injection"],
-                        ["\$shell_exec_return", "8", "xss"]]
+                        [["\$path", "7", "xss"],
+                        ["\$path", "7", "command_injection"],
+                        ["\$shell_exec_return", "9", "xss"]]
                 ],
                 [
                     "./tests/phpwander/test3.php",
                         [["\$getSource_return", "15", "xss"]]
-                ], 
+                ],
                 [
                     "./tests/phpwander/test4.php",
                         [[["\$_GET[\"user\"]", "\$_GET[\"password\"]"], ["4", "4"], "sql_injection"],

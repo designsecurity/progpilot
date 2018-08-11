@@ -39,7 +39,11 @@ user    13m48,302s
 sys     0m3,614s
 
 drupal last version  (0.3.2) :
-real    10m27,480s
-user    7m20,230s
-sys     0m2,637s
+real    10m29,448s
+user    6m55,317s
+sys     0m2,826s
+
+good test nikic :
+/home/eric/dev/perso/designsecurity/progpilot/.git/
+PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 20480 bytes) in /home/eric/dev/perso/designsecurity/progpilot/projects/example_config/vendor/nikic/php-parser/lib/PhpParser/Parser/Php5.php on line 2237
 

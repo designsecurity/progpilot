@@ -3,11 +3,13 @@
  * @param mixed $x
  * @return mixed
  */
-function g($x) {
-	return $x;
+function g($x)
+{
+    return $x;
 }
-function h() {
-	return $_GET['a'];
+function h()
+{
+    return $_GET['a'];
 }
 $a = "Hello world.";
 $a .= '..';
@@ -17,8 +19,9 @@ echo $b;
 $s = g(h());
 // tainted
 echo $s;
-function a() {
-	echo 'asd';
+function a()
+{
+    echo 'asd';
 }
 $a = $_GET['a'];
 $b = 'asd';
@@ -32,4 +35,4 @@ echo $c;
 // tainted
 $a();
 // ok
-a(); 
+a();

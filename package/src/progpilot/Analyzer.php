@@ -18,8 +18,19 @@ class Analyzer
     const PHP = "php";
     const JS = "js";
     
+    private $parser;
+    
     public function __construct()
     {
+        $lexer = new \PhpParser\Lexer(array(
+            'usedAttributes' => array(
+                'comments', 'startLine', 'endLine', 'startFilePos', 'endFilePos'
+            )
+        ));
+
+        $astparser = (new \PhpParser\ParserFactory)->create(\PhpParser\ParserFactory::PREFER_PHP7, $lexer);
+
+        $this->parser = new \PHPCfg\Parser($astparser, null);
     }
 
     public function getFilesOfDir($context, $dir, &$files)
@@ -54,36 +65,22 @@ class Analyzer
 
         // parser
         if (!is_null($context->inputs->getFile()) || !is_null($context->inputs->getCode())) {
-            $lexer = new \PhpParser\Lexer(array(
-                'usedAttributes' => array(
-                    'comments', 'startLine', 'endLine', 'startFilePos', 'endFilePos'
-                )
-            ));
-
-            $astparser = (new \PhpParser\ParserFactory)->create(\PhpParser\ParserFactory::PREFER_PHP7, $lexer);
-
-            $parser = new \PHPCfg\Parser($astparser, null);
-
             try {
                 if (is_null($context->inputs->getCode())) {
                     $fileContent = file_get_contents($context->inputs->getFile());
                     if (Analyzer::getTypeOfLanguage($fileContent) === Analyzer::PHP) {
                         $context->inputs->setCode($fileContent);
                         $context->setPath(dirname($context->inputs->getFile()));
-                        $script = $parser->parse($context->inputs->getCode(), $context->inputs->getFile());
+                        $script = $this->parser->parse($context->inputs->getCode(), $context->inputs->getFile());
                     }
                 } else {
                     if (Analyzer::getTypeOfLanguage($context->inputs->getCode()) === Analyzer::PHP) {
-                        $script = $parser->parse($context->inputs->getCode(), "");
+                        $script = $this->parser->parse($context->inputs->getCode(), "");
                     }
                 }
             } catch (\PhpParser\Error $e) {
             }
         }
-
-        unset($astparser);
-        unset($parser);
-        unset($lexer);
 
         return $script;
     }
@@ -96,11 +93,10 @@ class Analyzer
             $transformvisitor = new \progpilot\Transformations\Php\Transform();
             $transformvisitor->setContext($context);
             $traverser->addVisitor($transformvisitor);
-
             $traverser->traverse($script);
-
-            unset($transformvisitor);
+            
             unset($traverser);
+            unset($transformvisitor);
         }
     }
 

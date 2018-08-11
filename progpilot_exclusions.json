@@ -1,6 +1,8 @@
 {
     "exclude_folders":
     [
-        "./projects"
+        "./projects/",
+        ".git/",
+        "./package/src/progpilot/Transformations/Js/"
     ]
 }

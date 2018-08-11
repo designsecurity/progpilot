@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
-function id($s) {
-	return $s;
+function id($s)
+{
+    return $s;
 }
 // tainted
 $a = file_get_contents(__DIR__ . '/' . id($_GET['f']));
@@ -11,4 +12,4 @@ $c = file_get_contents(__DIR__ . '/' . $_GET['f']);
 // tainted
 print_r($b);
 // tainted
-echo $c; 
+echo $c;

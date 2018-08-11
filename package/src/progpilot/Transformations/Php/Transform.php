@@ -90,17 +90,18 @@ class Transform implements Visitor
         }
         
         // extends class
-        foreach($this->context->getClasses()->getListClasses() as $myClass) {
-            if(!is_null($myClass->getExtendsOf())) {
+        foreach ($this->context->getClasses()->getListClasses() as $myClass) {
+            if (!is_null($myClass->getExtendsOf())) {
                 $myClassFather = $this->context->getClasses()->getMyClass($myClass->getExtendsOf());
-                if(!is_null($myClassFather)) {
-                    foreach($myClassFather->getMethods() as $methodFather) {
+                if (!is_null($myClassFather)) {
+                    foreach ($myClassFather->getMethods() as $methodFather) {
                         $myClass->addMethod(clone $methodFather);
                         $methodFather->setMyClass($myClass);
                     }
                                     
-                    foreach($myClassFather->getProperties() as $propertyFather)
+                    foreach ($myClassFather->getProperties() as $propertyFather) {
                         $myClass->addProperty(clone $propertyFather);
+                    }
                 }
             }
         }
@@ -404,8 +405,9 @@ class Transform implements Visitor
                 $className
             );
             
-            if(!is_null($op->extends))
+            if (!is_null($op->extends)) {
                 $myClass->setExtendsOf($op->extends->value);
+            }
                 
             $this->context->getClasses()->addMyclass($myClass);
             

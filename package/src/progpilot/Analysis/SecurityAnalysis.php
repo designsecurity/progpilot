@@ -42,10 +42,11 @@ class SecurityAnalysis
     {
         $possibleConditions = ["QUOTES", null];
         
-        foreach($possibleConditions as $possibleCondition) {
-            if($mySink->isParameterCondition($indexParameter, $possibleCondition)) { 
-                if(!SecurityAnalysis::isSafeCondition($indexParameter, $myDef, $mySink, $possibleCondition))
+        foreach ($possibleConditions as $possibleCondition) {
+            if ($mySink->isParameterCondition($indexParameter, $possibleCondition)) {
+                if (!SecurityAnalysis::isSafeCondition($indexParameter, $myDef, $mySink, $possibleCondition)) {
                     return false;
+                }
             }
         }
         
@@ -116,15 +117,14 @@ class SecurityAnalysis
                         $myDefArg = $instruction->getProperty("argdef$i");
                         $taintedExpr = $myDefArg->getTaintedByExpr();
                             
-                        if($myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
+                        if ($myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
                             && $mySink->isParameterCondition($i + 1, "array_tainted")) {
-                            foreach($myDefArg->getCopyArrays() as $copyarray) {
+                            foreach ($myDefArg->getCopyArrays() as $copyarray) {
                                 if (!SecurityAnalysis::isSafe($i + 1, $copyarray[1], $mySink)) {
                                     $conditionRespected = true;
                                 }
                             }
-                        }
-                        elseif(!$myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
+                        } elseif (!$myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
                          && !$mySink->isParameterCondition($i + 1, "array_tainted")) {
                             if (!is_null($taintedExpr)) {
                                 $defsExpr = $taintedExpr->getDefs();
@@ -149,11 +149,9 @@ class SecurityAnalysis
                     $myDefExpr = $instruction->getProperty("argexpr$i");
 
                     if (!$mySink->hasParameters() || ($mySink->hasParameters() && $mySink->isParameter($i + 1))) {
-                    
-                        if($myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY) 
+                        if ($myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
                             && $mySink->isParameterCondition($i + 1, "array_tainted")) {
-                            
-                            foreach($myDefArg->getCopyArrays() as $copyarray)
+                            foreach ($myDefArg->getCopyArrays() as $copyarray) {
                                 SecurityAnalysis::call(
                                     $i + 1,
                                     $myFuncCall,
@@ -162,8 +160,8 @@ class SecurityAnalysis
                                     $copyarray[1],
                                     $myDefExpr
                                 );
-                        }
-                        else
+                            }
+                        } else {
                             SecurityAnalysis::call(
                                 $i + 1,
                                 $myFuncCall,
@@ -172,6 +170,7 @@ class SecurityAnalysis
                                 $myDefArg,
                                 $myDefExpr
                             );
+                        }
                     }
                 }
             }
