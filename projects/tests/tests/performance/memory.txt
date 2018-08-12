@@ -34,14 +34,14 @@ user    7m54,834s
 sys     0m3,183s
 
 /srv/www/htdocs/phpMyAdmin/ (0.3.2) :
-real    17m24,932s
-user    13m48,302s
-sys     0m3,614s
+real    15m5,136s
+user    14m10,438s
+sys     0m1,402s
 
 drupal last version  (0.3.2) :
-real    10m29,448s
-user    6m55,317s
-sys     0m2,826s
+real    10m16,104s
+user    6m37,777s
+sys     0m2,393s
 
 good test nikic :
 /home/eric/dev/perso/designsecurity/progpilot/.git/

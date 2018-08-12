@@ -76,7 +76,7 @@ class TaintAnalysis
         $defsValid = [];
         $conditionsRespected = true;
 
-        $myValidator = $context->inputs->getValidatorByName($stackClass, $myFuncCall, $myClass);
+        $myValidator = $context->inputs->getValidatorByName($context, $stackClass, $myFuncCall, $myClass);
         if (!is_null($myValidator)) {
             while (true) {
                 if (!$instruction->isPropertyExist("argdef$nbParams")) {
@@ -204,7 +204,7 @@ class TaintAnalysis
         $myExprReturn2->setAssign(true);
         $myExprReturn2->setAssignDef($myTempReturn);
 
-        $mySanitizer = $context->inputs->getSanitizerByName($stackClass, $myFuncCall, $myClass);
+        $mySanitizer = $context->inputs->getSanitizerByName($context, $stackClass, $myFuncCall, $myClass);
 
         if (!is_null($mySanitizer)) {
             $preventFinal = $mySanitizer->getPrevent();

@@ -356,6 +356,18 @@ class Transform implements Visitor
                 $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
                 $this->context->getCurrentMycode()->addCode($instEndExpr);
             }
+        } elseif ($op instanceof Op\Expr\Exit_) {
+            if (Common::isFuncCallWithoutReturn($op)) {
+                // expr of type "assign" to have a defined return
+                $myExpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
+                $this->context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
+
+                FuncCall::instruction($this->context, $myExpr, false);
+
+                $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);
+                $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
+                $this->context->getCurrentMycode()->addCode($instEndExpr);
+            }
         } elseif ($op instanceof Op\Expr\StaticCall) {
             if (Common::isFuncCallWithoutReturn($op)) {
                 // expr of type "assign" to have a defined return

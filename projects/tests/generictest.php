@@ -67,6 +67,17 @@
                         ["\$ret[0]", "8", "xss"]]
                 ],
                 [
+                    "./tests/generic/simple9.php",
+                        [["\$_GET[\"p1\"]", "3", "create_function code_injection"],
+                        ["\$_GET[\"t1\"]", "3", "create_function code_injection"],
+                        ["\$_GET[\"t1\"]", "4", "create_function code_injection"],
+                        ["\$_GET[\"p1\"]", "5", "create_function code_injection"]]
+                ],
+                [
+                    "./tests/generic/simple10.php",
+                        [["\$_GET[\"p\"]", "3", "xss"]]
+                ],
+                [
                     "./tests/generic/concat1.php",
                         [["\$myvar7", "7", "xss"]]
                 ],
@@ -290,13 +301,6 @@
                 [
                     "./tests/generic/namespace2.php",
                         [["\$_GET[\"p\"]", "7", "xss"]]
-                ],
-                [
-                    "./tests/generic/simple9.php",
-                        [["\$_GET[\"p1\"]", "3", "create_function code_injection"],
-                        ["\$_GET[\"t1\"]", "3", "create_function code_injection"],
-                        ["\$_GET[\"t1\"]", "4", "create_function code_injection"],
-                        ["\$_GET[\"p1\"]", "5", "create_function code_injection"]]
                 ]
                 
         ];

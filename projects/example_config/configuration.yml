@@ -9,7 +9,7 @@ inputs:
     setCustomRules: ../../package/src/uptodate_data/php/rules.json
     setIncludeFiles: 
     setExcludeFiles: 
-    setFolder: /home/eric/dev/scripts/drupal/
+    setFolder: /srv/www/htdocs/phpMyAdmin/
     setFile: 
     setCode:
     setResolvedIncludes:

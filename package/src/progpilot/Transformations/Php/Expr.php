@@ -225,6 +225,11 @@ class Expr
                     $context->setCurrentOp($ops);
                     FuncCall::instruction($context, $myExpr, $arrFuncCall, false, false, $cast);
                     $context->setCurrentOp($oldOp);
+                } elseif ($ops instanceof Op\Expr\Exit_) {
+                    $oldOp = $context->getCurrentOp();
+                    $context->setCurrentOp($ops);
+                    FuncCall::instruction($context, $myExpr, $arrFuncCall, false, false, $cast);
+                    $context->setCurrentOp($oldOp);
                 } elseif ($ops instanceof Op\Expr\FuncCall || $ops instanceof Op\Expr\NsFuncCall) {
                     $oldOp = $context->getCurrentOp();
                     $context->setCurrentOp($ops);

@@ -100,19 +100,10 @@ class Context
     public function resetInternalValues()
     {
         $this->resetInternalLowvalues();
-        /*
-        unset($this->objects);
-        unset($this->classes);
-        unset($this->functions);
-        */
+        
         unset($this->currentMyCode);
 
         $this->inputs->setCode(null);
-        /*
-                $this->objects = new \progpilot\Dataflow\Objects;
-                $this->classes = new \progpilot\Dataflow\Classes;
-                $this->functions = new \progpilot\Dataflow\Functions;
-             */
         // representations (cfg, ast ...) are deleted to avoid memory grown
         //$this->outputs = new \progpilot\Outputs\MyOutputs;
         $this->outputs->resetRepresentations();

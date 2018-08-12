@@ -234,7 +234,7 @@ class MyInputs
         return null;
     }
 
-    public function getValidatorByName($stackClass, $myFunc, $myClass)
+    public function getValidatorByName($context, $stackClass, $myFunc, $myClass)
     {
         foreach ($this->validators as $myValidator) {
             if ($myValidator->getName() === $myFunc->getName()) {
@@ -243,7 +243,9 @@ class MyInputs
                 }
 
                 if ($myValidator->isInstance() && $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                    if (!is_null($myClass) && $myValidator->getInstanceOfName() === $myClass->getName()) {
+                    if (!is_null($myClass) && 
+                        ($myValidator->getInstanceOfName() === $myClass->getName()
+                            || $myValidator->getInstanceOfName() === $myClass->getExtendsOf())) {
                         return $myValidator;
                     }
 
@@ -260,7 +262,11 @@ class MyInputs
                                 $stackClass[$stackNumberOfProperties - $myValidatorNumberOfProperties];
 
                             foreach ($knownProperties as $propClass) {
-                                if ($propClass->getName() === $myValidatorInstanceName) {
+                                $objectId = $propClass->getObjectId();
+                                $myClass = $context->getObjects()->getMyClassFromObject($objectId);
+                                
+                               if (($myClass->getName() === $myValidatorInstanceName
+                                    || $myClass->getExtendsOf() === $myValidatorInstanceName)) {
                                     return $myValidator;
                                 }
                             }
@@ -273,7 +279,7 @@ class MyInputs
         return null;
     }
 
-    public function getSanitizerByName($stackClass, $myFunc, $myClass)
+    public function getSanitizerByName($context, $stackClass, $myFunc, $myClass)
     {
         foreach ($this->sanitizers as $mySanitizer) {
             if ($mySanitizer->getName() === $myFunc->getName()) {
@@ -282,7 +288,9 @@ class MyInputs
                 }
 
                 if ($mySanitizer->isInstance() && $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                    if (!is_null($myClass) && $mySanitizer->getInstanceOfName() === $myClass->getName()) {
+                    if (!is_null($myClass) && 
+                        ($mySanitizer->getInstanceOfName() === $myClass->getName()
+                            || $mySanitizer->getInstanceOfName() === $myClass->getExtendsOf())) {
                         return $mySanitizer;
                     }
 
@@ -299,7 +307,11 @@ class MyInputs
                             $stackClass[$stackNumberOfProperties - $mySanitizerNumberOfProperties];
 
                             foreach ($knownProperties as $propClass) {
-                                if ($propClass->getName() === $mySanitizerInstanceName) {
+                                $objectId = $propClass->getObjectId();
+                                $myClass = $context->getObjects()->getMyClassFromObject($objectId);
+                                
+                                if (($myClass->getName() === $mySanitizerInstanceName
+                                    || $myClass->getExtendsOf() === $mySanitizerInstanceName)) {
                                     return $mySanitizer;
                                 }
                             }

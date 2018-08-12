@@ -195,6 +195,11 @@ class SecurityAnalysis
                     $oneTainted["flow_file"] = \progpilot\Utils::encodeCharacters(
                         $defExprFlowFrom->getSourceMyFile()->getName()
                     );
+                    
+                    // just in case
+                    if(in_array($oneTainted, $resultTaintedFlow, true))
+                        break 2;
+                        
                     $resultTaintedFlow[] = $oneTainted;
 
                     $idFlow .= \progpilot\Utils::printDefinition($defExprFlowFrom);

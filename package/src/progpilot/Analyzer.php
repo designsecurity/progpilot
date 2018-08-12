@@ -42,6 +42,7 @@ class Analyzer
                 foreach ($filesanddirs as $filedir) {
                     if ($filedir !== '.' && $filedir !== "..") {
                         $folderorfile = $dir."/".$filedir;
+                        
                         if (is_dir($folderorfile)) {
                             if (!$context->inputs->isExcludedFolder($folderorfile)) {
                                 $this->getFilesOfDir($context, $folderorfile, $files);
@@ -68,15 +69,15 @@ class Analyzer
             try {
                 if (is_null($context->inputs->getCode())) {
                     $fileContent = file_get_contents($context->inputs->getFile());
-                    if (Analyzer::getTypeOfLanguage($fileContent) === Analyzer::PHP) {
+                    //if (Analyzer::getTypeOfLanguage($fileContent) === Analyzer::PHP) {
                         $context->inputs->setCode($fileContent);
                         $context->setPath(dirname($context->inputs->getFile()));
                         $script = $this->parser->parse($context->inputs->getCode(), $context->inputs->getFile());
-                    }
+                    //}
                 } else {
-                    if (Analyzer::getTypeOfLanguage($context->inputs->getCode()) === Analyzer::PHP) {
+                    //if (Analyzer::getTypeOfLanguage($context->inputs->getCode()) === Analyzer::PHP) {
                         $script = $this->parser->parse($context->inputs->getCode(), "");
-                    }
+                    //}
                 }
             } catch (\PhpParser\Error $e) {
             }
@@ -370,6 +371,7 @@ class Analyzer
             $context->inputs->setFile($file);
             $context->setCurrentMyfile($myFile);
             $this->runAllInternal($context);
+            $context->inputs->setCode(null);
         }
 
         if (count($files) === 0 && !is_null($context->inputs->getCode())) {

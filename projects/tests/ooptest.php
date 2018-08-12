@@ -116,6 +116,10 @@
                     "./tests/oop/simple27.php",
                         [["\$_GET[\"p\"]", "8", "xss"],
                         ["\$_GET[\"t\"]", "17", "xss"]]
+                ],
+                [
+                    "./tests/oop/simple28.php",
+                        [["\$_GET[\"p\"]", "14", "sql_injection"]]
                 ]
                 
         ];

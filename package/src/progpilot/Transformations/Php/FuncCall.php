@@ -142,6 +142,8 @@ class FuncCall
             $funcCallName = "echo";
         } elseif ($context->getCurrentOp() instanceof Op\Expr\Eval_) {
             $funcCallName = "eval";
+        } elseif ($context->getCurrentOp() instanceof Op\Expr\Exit_) {
+            $funcCallName = "exit";
         }
 
         $instFuncCallMain = new MyInstruction(Opcodes::FUNC_CALL);
@@ -180,7 +182,8 @@ class FuncCall
         if ($context->getCurrentOp() instanceof Op\Expr\Include_
                     || $context->getCurrentOp() instanceof Op\Expr\Print_
                     || $context->getCurrentOp() instanceof Op\Terminal\Echo_
-                    || $context->getCurrentOp() instanceof Op\Expr\Eval_) {
+                    || $context->getCurrentOp() instanceof Op\Expr\Eval_
+                    || $context->getCurrentOp() instanceof Op\Expr\Exit_) {
             $listArgs[] = $context->getCurrentOp()->expr;
 
             if ($context->getCurrentOp() instanceof Op\Expr\Include_) {
