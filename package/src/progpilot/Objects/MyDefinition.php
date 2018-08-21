@@ -28,6 +28,7 @@ class MyDefinition extends MyOp
     const TYPE_COPY_ARRAY = 0x0020;
     const TYPE_INSTANCE = 0x0040;
     const TYPE_GLOBAL = 0x0080;
+    const TYPE_STATIC_PROPERTY = 0x0100;
 
     private $isCopyArray;
     private $objectId;
@@ -101,6 +102,7 @@ class MyDefinition extends MyOp
         tainted = ".$this->isTainted()." :: \
         ref = ".$this->isType(MyDefinition::TYPE_REFERENCE)." :: \
         is_property = ".$this->isType(MyDefinition::TYPE_PROPERTY)." :: \
+        is_static_property = ".$this->isType(MyDefinition::TYPE_STATIC_PROPERTY)." :: \
         isInstance = ".$this->isType(MyDefinition::TYPE_INSTANCE)." :: \
         is_const = ".$this->isType(MyDefinition::TYPE_CONSTANTE)." :: \
         blockid = ".$this->getBlockId()." :: \
@@ -123,7 +125,7 @@ class MyDefinition extends MyOp
             echo "array index value : PROGPILOT_ALL_INDEX_TAINTED\n";
         }
 
-        if ($this->isType(MyDefinition::TYPE_PROPERTY)) {
+        if ($this->isType(MyDefinition::TYPE_PROPERTY) || $this->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
             echo "property : ".Utils::printProperties($this->property->getProperties())."\n";
             echo "class_name : ".htmlentities($this->getClassName(), ENT_QUOTES, 'UTF-8')."\n";
             echo "visibility : ".htmlentities($this->property->getVisibility(), ENT_QUOTES, 'UTF-8')."\n";

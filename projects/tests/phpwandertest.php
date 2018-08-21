@@ -61,10 +61,10 @@
                     "./tests/phpwander/test11.php",
                         [["\$a", "2", "xss"]]
                 ],*/
-                // a corriger : static property
                 [
                     "./tests/phpwander/test12.php",
-                        [["\$danger_return", "12", "xss"]]
+                        [["D::\$vars", "8", "xss"],
+                        ["\$danger_return", "12", "xss"]]
                 ],// a corriger
                 [
                     "./tests/phpwander/test13.php",

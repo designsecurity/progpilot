@@ -179,6 +179,7 @@ class VisitorAnalysis
                         $this->currentContextCall->func_callee = $this->currentMyFunc;
 
                         $this->currentMyFunc = $instruction->getProperty(MyInstruction::MYFUNC);
+                        $this->context->setCurrentFunc($this->currentMyFunc);
 
                         $val = [
                             $this->currentMyFunc,

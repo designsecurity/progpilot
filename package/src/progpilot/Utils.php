@@ -46,6 +46,19 @@ class Utils
         throw new \Exception($message);
     }
 
+    public static function printStaticProperties($props)
+    {
+        $propertyName = "";
+
+        if (is_array($props)) {
+            foreach ($props as $prop) {
+                $propertyName .= "::"."\$".Utils::encodeCharacters($prop);
+            }
+        }
+
+        return $propertyName;
+    }
+
     public static function printProperties($props)
     {
         $propertyName = "";
@@ -64,7 +77,11 @@ class Utils
         if ($def->isType(MyDefinition::TYPE_PROPERTY)) {
             $defName = "\$".Utils::encodeCharacters($def->getName()).
                 Utils::printProperties($def->property->getProperties());
-        } else {
+        }
+        elseif ($def->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
+            $defName = Utils::encodeCharacters($def->getName()).
+                Utils::printStaticProperties($def->property->getProperties());
+        }else {
             $defName = "\$".Utils::encodeCharacters($def->getName());
         }
 

@@ -92,6 +92,8 @@ class MyClass extends MyOp
     public function getProperty($name)
     {
         foreach ($this->properties as $property) {
+        
+            // we don't check if it's STATIC property or NOT
             if ($property->property->getProperties()[0] === $name) {
                 return $property;
             }

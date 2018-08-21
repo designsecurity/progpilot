@@ -439,7 +439,12 @@ class Transform implements Visitor
                     $myDef->setClassName($className);
 
                     // it's necessary for SecurityAnalysis (visibility)
-                    $myDef->addType(MyDefinition::TYPE_PROPERTY);
+                    
+                    if($property->static === 8)
+                        $myDef->addType(MyDefinition::TYPE_STATIC_PROPERTY);
+                    else
+                        $myDef->addType(MyDefinition::TYPE_PROPERTY);
+                        
                     $myClass->addProperty($myDef);
                 }
             }

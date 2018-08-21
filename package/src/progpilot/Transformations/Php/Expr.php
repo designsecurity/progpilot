@@ -151,6 +151,16 @@ class Expr
                 $myTemp->property->setProperties($propertyName);
             }
 
+            if ($type === MyOp::TYPE_STATIC_PROPERTY) {
+                $propertyName = "";
+                if (isset($op->ops[0])) {
+                    $propertyName = Common::getNameProperty($op->ops[0]);
+                }
+
+                $myTemp->addType(MyDefinition::TYPE_STATIC_PROPERTY);
+                $myTemp->property->setProperties($propertyName);
+            }
+
             if (!$phi) {
                 $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
                 $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);

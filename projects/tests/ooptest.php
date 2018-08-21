@@ -120,6 +120,22 @@
                 [
                     "./tests/oop/simple28.php",
                         [["\$_GET[\"p\"]", "14", "sql_injection"]]
+                ],
+                [
+                    "./tests/oop/simple29.php",
+                        [["\$_GET[\"p\"]", "4", "sql_injection"]]
+                ],
+                [
+                    "./tests/oop/simple30.php",
+                        [["testa::\$stavar", "12", "xss"]]
+                ],
+                [
+                    "./tests/oop/simple31.php",
+                        [["\$a->stavar", "11", "xss"]]
+                ],
+                [
+                    "./tests/oop/simple32.php",
+                        [["testa::\$stavar", "9", "xss"]]
                 ]
                 
         ];

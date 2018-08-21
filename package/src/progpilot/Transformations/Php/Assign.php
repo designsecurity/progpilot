@@ -119,10 +119,14 @@ class Assign
 
             // a variable, property
             if ($type === MyOp::TYPE_PROPERTY) {
-                $propertyName = Common::getNameDefinition($context->getCurrentOp(), true);
                 $myDef->addType(MyDefinition::TYPE_PROPERTY);
-                $myDef->property->addProperty($propertyName);
+                $propertyName = Common::getNameProperty($context->getCurrentOp()->var->ops[0]);
+                $myDef->property->setProperties($propertyName);
+            }
 
+            // a variable, property
+            if ($type === MyOp::TYPE_STATIC_PROPERTY) {
+                $myDef->addType(MyDefinition::TYPE_STATIC_PROPERTY);
                 $propertyName = Common::getNameProperty($context->getCurrentOp()->var->ops[0]);
                 $myDef->property->setProperties($propertyName);
             }

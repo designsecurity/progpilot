@@ -34,6 +34,7 @@ class MyOp
     const TYPE_FUNCCALL = "type_funccall";
     const TYPE_FUNCCALL_ARRAY = "type_funccall_array";
     const TYPE_CONST = "type_const";
+    const TYPE_STATIC_PROPERTY = "type_static_property";
 
     public function __construct($varName, $varLine, $varColumn)
     {

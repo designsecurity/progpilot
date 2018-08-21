@@ -331,7 +331,6 @@ class ResolveDefs
     {
         if ($def1->getSourceMyFile()->getName() === $def2->getSourceMyFile()->getName()) {
             // def1 is deeper in the code
-
             if ($def1->getLine() > $def2->getLine()) {
                 return true;
             }
@@ -364,14 +363,21 @@ class ResolveDefs
         return false;
     }
 
-    public static function getVisibility($def, $property)
+    public static function getVisibility($def, $property, $currentFunc)
     {
-        if (!is_null($def) && $def->getName() === "this") {
+        if (!is_null($def)
+            && $def->isType(MyDefinition::TYPE_PROPERTY) 
+                && $def->getName() === "this") 
             return true;
-        }
+            
+        if (!is_null($def) && !is_null($currentFunc) && !is_null($currentFunc->getMyClass())
+            && $def->isType(MyDefinition::TYPE_STATIC_PROPERTY) 
+                && $def->getName() === $currentFunc->getMyClass()->getName()) 
+            return true;
 
         if (!is_null($property)
-            && $property->isType(MyDefinition::TYPE_PROPERTY)
+            && ($property->isType(MyDefinition::TYPE_PROPERTY) 
+                || $property->isType(MyDefinition::TYPE_STATIC_PROPERTY))
                 && $property->property->getVisibility() === "public") {
             return true;
         }
@@ -382,6 +388,7 @@ class ResolveDefs
     public static function getVisibilityFromInstances($context, $data, $defAssign)
     {
         $visibilityFinal = true;
+        $currentFunc = $context->getCurrentFunc();
 
         if ($defAssign->isType(MyDefinition::TYPE_PROPERTY)) {
             $copyDefAssign = clone $defAssign;
@@ -398,7 +405,8 @@ class ResolveDefs
                     if (!is_null($tmpMyClass)) {
                         $property = $tmpMyClass->getProperty($prop);
 
-                        if (!is_null($property) && (ResolveDefs::getVisibility($copyDefAssign, $property))) {
+                        if (!is_null($property) 
+                            && (ResolveDefs::getVisibility($copyDefAssign, $property, $currentFunc))) {
                             $visibilityFinal = true;
                             break;
                         }
@@ -408,6 +416,18 @@ class ResolveDefs
 
             if (count($instances) === 0) {
                 $visibilityFinal = true;
+            }
+        }
+        else if($defAssign->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
+            $visibilityFinal = false;
+            $myClass = $context->getClasses()->getMyClass($defAssign->getName());
+            
+            if(!is_null($myClass)) {
+                $property = $myClass->getProperty($defAssign->property->getProperties()[0]);
+                if (!is_null($property) 
+                    && (ResolveDefs::getVisibility($defAssign, $property, $currentFunc))) {
+                    $visibilityFinal = true;
+                }
             }
         }
 
@@ -511,6 +531,7 @@ class ResolveDefs
     public static function selectProperties($context, $data, $tempDefa, $bypassVisibility = false)
     {
         $propertiesDefs = [];
+        $currentFunc = $context->getCurrentFunc();
 
         if ($tempDefa->isType(MyDefinition::TYPE_PROPERTY)) {
             $propLine = $tempDefa->getLine();
@@ -548,12 +569,12 @@ class ResolveDefs
                                     $idObject = $instance->getObjectId();
                                     $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
 
-
                                     if (!is_null($tmpMyClass)) {
                                         $property = $tmpMyClass->getProperty($prop);
 
                                         if (!is_null($property)
-                                            && (ResolveDefs::getVisibility($defa, $property) || $bypassVisibility)) {
+                                            && (ResolveDefs::getVisibility($defa, $property, $currentFunc) 
+                                                || $bypassVisibility)) {
                                             $propertyExist = true;
 
                                             if ($isFirstProperty || $bypassVisibility) {
@@ -573,7 +594,7 @@ class ResolveDefs
                                     }
                                 }
 
-                                if (count($instances) === 0 && $firstProperties) {
+                                if (count($instances) === 0 && !$isFirstProperty) {
                                     $propertyExist = true;
                                     $firstProperties[] = $defa;
                                 }
@@ -595,7 +616,11 @@ class ResolveDefs
                                         $property = $tmpMyClass->getProperty($prop);
 
                                         if (!is_null($property)
-                                            && (ResolveDefs::getVisibility($tempDefaProp, $property)
+                                            && (ResolveDefs::getVisibility(
+                                                $tempDefaProp,
+                                                $property,
+                                                $currentFunc
+                                                )
                                                 || $bypassVisibility)) {
                                             $limit = count($myProperties) - 1;
 
@@ -658,10 +683,69 @@ class ResolveDefs
 
         return array();
     }
-
-    public static function temporarySimple($context, $data, $tempDefa, $isIterator, $isAssign, $callStack)
+    
+    public static function selectStaticProperty($context, $data, $tempDefa, $isIterator, $isAssign, $callStack)
     {
-        if ($tempDefa->isType(MyDefinition::TYPE_ARRAY) && $tempDefa->getName() === "GLOBALS") {
+        if (is_array($callStack)) {
+        
+            // we are looking in first for a possible static property defined inside the function
+            $resStatic = ResolveDefs::temporarySimple(
+                $context,
+                $data,
+                $tempDefa,
+                $isIterator,
+                $isAssign,
+                $callStack,
+                true
+            );
+            
+            if (!(count($resStatic) === 1 && $resStatic[0] === $tempDefa)) {
+                return $resStatic;
+            }
+            
+            // if no result we are looking inside the callee functions
+            for ($callNumber = count($callStack) - 1; $callNumber >= 0; $callNumber --) {
+                $currentContextCall = $callStack[$callNumber][4];
+
+                // ca peut arriver si on est dans le main() est qu'on appelle une static
+                if (!is_null($currentContextCall->func_called) && !is_null($currentContextCall->func_callee)) {
+                    $tempDefa->setLine($currentContextCall->func_called->getLine());
+                    $tempDefa->setColumn($currentContextCall->func_called->getColumn());
+                    $tempDefa->setBlockId($currentContextCall->func_callee->getLastBlockId());
+                    
+                    $resGlobal = ResolveDefs::temporarySimple(
+                        $context,
+                        $currentContextCall->func_callee->getDefs(),
+                        $tempDefa,
+                        $isIterator,
+                        $isAssign,
+                        $callStack,
+                        true
+                    );
+                    if (!(count($resGlobal) === 1 && $resGlobal[0] === $tempDefa)) {
+                        return $resGlobal;
+                    }
+                }
+            }
+        }
+
+        return array();
+    }
+
+
+    public static function temporarySimple($context, $data, $tempDefa, $isIterator, $isAssign, $callStack, $bypassStatic = false)
+    {
+        if ($tempDefa->isType(MyDefinition::TYPE_STATIC_PROPERTY) && !$bypassStatic) {
+            return ResolveDefs::selectStaticProperty(
+                $context,
+                $data,
+                $tempDefa,
+                $isIterator,
+                $isAssign,
+                $callStack
+            );
+        }
+        elseif ($tempDefa->isType(MyDefinition::TYPE_ARRAY) && $tempDefa->getName() === "GLOBALS") {
             return ResolveDefs::selectGlobals(
                 key($tempDefa->getArrayValue()),
                 $context,

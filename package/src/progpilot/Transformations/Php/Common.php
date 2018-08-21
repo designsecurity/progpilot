@@ -42,6 +42,10 @@ class Common
             if ($op instanceof Op\Expr\PropertyFetch) {
                 $propertyNameArray = Common::getNameProperty($op->ops[0]);
             }
+
+            if ($op instanceof Op\Expr\StaticPropertyFetch) {
+                $propertyNameArray = Common::getNameProperty($op->ops[0]);
+            }
         }
 
         if (isset($op->var->ops)) {
@@ -51,6 +55,10 @@ class Common
                 }
 
                 if ($opeach instanceof Op\Expr\PropertyFetch) {
+                    $propertyNameArray = Common::getNameProperty($opeach);
+                }
+
+                if ($opeach instanceof Op\Expr\StaticPropertyFetch) {
                     $propertyNameArray = Common::getNameProperty($opeach);
                 }
             }
@@ -66,7 +74,9 @@ class Common
     public static function getNameDefinition($ops, $lookingForProperty = false)
     {
         //  $this->property = property
-        if ($lookingForProperty && $ops instanceof Op\Expr\PropertyFetch && isset($ops->name->value)) {
+        if ($lookingForProperty 
+            && ($ops instanceof Op\Expr\PropertyFetch || $ops instanceof Op\Expr\StaticPropertyFetch)
+                && isset($ops->name->value)) {
             return $ops->name->value;
         }
 
@@ -87,6 +97,10 @@ class Common
             if ($ops->ops[0] instanceof Op\Expr\PropertyFetch) {
                 return Common::getNameDefinition($ops->ops[0], $lookingForProperty);
             }
+
+            if ($ops->ops[0] instanceof Op\Expr\StaticPropertyFetch) {
+                return Common::getNameDefinition($ops->ops[0], $lookingForProperty);
+            }
         }
 
         if (isset($ops->var->ops)) {
@@ -102,6 +116,10 @@ class Common
                 if ($op instanceof Op\Expr\PropertyFetch) {
                     return Common::getNameDefinition($op, $lookingForProperty);
                 }
+
+                if ($op instanceof Op\Expr\StaticPropertyFetch) {
+                    return Common::getNameDefinition($op, $lookingForProperty);
+                }
             }
         }
 
@@ -113,6 +131,11 @@ class Common
         // def variable
         if (isset($ops->var->original->name->value)) {
             return $ops->var->original->name->value;
+        }
+
+        // static property
+        if (isset($ops->class->value)) {
+            return $ops->class->value;
         }
 
         // class name
@@ -287,6 +310,10 @@ class Common
                 return MyOp::TYPE_PROPERTY;
             }
 
+            if ($ops->ops[0] instanceof Op\Expr\StaticPropertyFetch) {
+                return MyOp::TYPE_STATIC_PROPERTY;
+            }
+
             if ($ops->ops[0] instanceof Op\Expr\ArrayDimFetch) {
                 return Common::getTypeDefinition($ops->ops[0]);
             }
@@ -299,6 +326,10 @@ class Common
 
             if ($ops->var->ops[0] instanceof Op\Expr\PropertyFetch) {
                 return MyOp::TYPE_PROPERTY;
+            }
+
+            if ($ops->var->ops[0] instanceof Op\Expr\StaticPropertyFetch) {
+                return MyOp::TYPE_STATIC_PROPERTY;
             }
 
             if ($ops->var->ops[0] instanceof Op\Expr\FuncCall || $ops->var->ops[0] instanceof Op\Expr\NsFuncCall) {
@@ -334,6 +365,10 @@ class Common
 
         if ($ops instanceof Op\Expr\PropertyFetch) {
             return MyOp::TYPE_PROPERTY;
+        }
+
+        if ($ops instanceof Op\Expr\StaticPropertyFetch) {
+            return MyOp::TYPE_STATIC_PROPERTY;
         }
 
         return null;

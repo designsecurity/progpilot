@@ -27,7 +27,6 @@ There is a lot of tasks to do :
 - Passing by reference
 - Pushing elements into array (like array[] = ele; or push_array())
 - Property of an object is an object
-- static property
 - definitions on the same line (def = eee; def = aaa;)
 - If property hasn't been declared but used later (class { miss public $property;})
 - Chained functions calls : $obj->func1()->func2()

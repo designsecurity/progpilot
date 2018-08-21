@@ -153,11 +153,11 @@ You can define a return function or a method as a source when *is_function* prop
 
 ### instanceof property
 #### sinks, validators, sanitizers and sources
-If you known the class name of your object just type it like below :
+If you know the class name of your object just type it like below :
 ```javascript
 {"name": "prepare", "instanceof": "mysql_connect", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"}
 ```
-Instead of using the class name (ifvyou don't known it) use the name of the property :
+Instead of using the class name (or if you don't known it) use the name of the property :
 ```javascript
 {"name": "isValidNumber", "instanceof": "ESAPI->validator", "language": "php"}
 ```
