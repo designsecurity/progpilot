@@ -1,0 +1,15 @@
+{
+    "custom_rules": [
+        {
+            "name": "rules_#1", 
+            "function_name": "query", 
+            "instanceof": "CI_Model->db", 
+            "description": "Result of db queries as new sources",
+            "language": "php", 
+            "action": "RETURN_OBJECT", 
+            "extra": "DBQueryCodeIgniter",
+            "attack": "XXX", 
+            "cwe": "XXX"
+        }
+		]
+}

@@ -24,6 +24,7 @@ class MyCustomRule
     private $descriptionRule;
     private $sequenceRule;
     private $currentOrderNumber;
+    private $extra;
 
     public function __construct($nameRule, $descriptionRule)
     {
@@ -36,6 +37,17 @@ class MyCustomRule
         $this->functionDefinition = null;
         $this->attack = null;
         $this->cwe = null;
+        $this->extra = null;
+    }
+
+    public function getExtra()
+    {
+        return $this->extra;
+    }
+
+    public function setExtra($extra)
+    {
+        $this->extra = $extra;
     }
 
     public function getAttack()

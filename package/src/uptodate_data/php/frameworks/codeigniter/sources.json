@@ -3,6 +3,8 @@
         {"name": "get", "is_function": true, "instanceof": "CI_Controller->input", "language": "php"},
         {"name": "post", "is_function": true, "instanceof": "CI_Controller->input", "language": "php"},
         {"name": "cookie", "is_function": true, "instanceof": "CI_Controller->input", "language": "php"},
-        {"name": "server", "is_function": true, "instanceof": "CI_Controller->input", "language": "php"}
+        {"name": "server", "is_function": true, "instanceof": "CI_Controller->input", "language": "php"},
+        
+        {"name": "result", "is_array": true, "is_object": true, "is_function": true, "instanceof": "DBQueryCodeIgniter", "language": "php"}
 		]
 }

@@ -393,7 +393,7 @@ class MyInputs
         $arrValue = false
     ) {
         foreach ($this->sources as $mySource) {
-            if ($mySource->getName() === $myFuncOrDef->getName()) {
+            if (($mySource->getName() === $myFuncOrDef->getName()) || $mySource->getIsObject()) {
                 $checkFunction = false;
                 $checkArray = false;
                 $checkInstance = false;
@@ -674,6 +674,18 @@ class MyInputs
                     $this->readValidatorsFile($validatorsfile);
                 }
             }
+            
+            $rulesfile = __DIR__."/../../uptodate_data/php/frameworks/codeigniter/rules.json";
+            
+            if (is_array($this->customFile)) {
+                if (!in_array($rulesfile, $this->customFile, true)) {
+                    $this->readCustomFile($rulesfile);
+                }
+            } else {
+                if ($this->customFile !== $rulesfile) {
+                    $this->readCustomFile($rulesfile);
+                }
+            }
         }
     }
 
@@ -881,6 +893,10 @@ class MyInputs
 
                     if (isset($source-> {'is_array'}) && $source-> {'is_array'}) {
                         $mySource->setIsArray(true);
+                    }
+
+                    if (isset($source-> {'is_object'}) && $source-> {'is_object'}) {
+                        $mySource->setIsObject(true);
                     }
 
                     if (isset($source-> {'array_index'})) {
@@ -1171,12 +1187,14 @@ class MyInputs
                 $customRules = $parsedJson-> {'custom_rules'};
                 foreach ($customRules as $customRule) {
                     if (isset($customRule-> {'name'})
-                                && isset($customRule-> {'description'})
-                                && isset($customRule-> {'cwe'})
+                        && isset($customRule-> {'description'})
+                            && isset($customRule-> {'cwe'})
                                 && isset($customRule-> {'attack'})) {
                         $myCustom = new MyCustomRule($customRule-> {'name'}, $customRule-> {'description'});
                         $myCustom->setCwe($customRule-> {'cwe'});
                         $myCustom->setAttack($customRule-> {'attack'});
+                        if(isset($customRule-> {'extra'}))
+                            $myCustom->setExtra($customRule-> {'extra'});
 
                         if (isset($customRule-> {'sequence'}) && isset($customRule-> {'action'})) {
                             $myCustom->setType(MyCustomRule::TYPE_SEQUENCE);
@@ -1185,29 +1203,10 @@ class MyInputs
                             foreach ($customRule-> {'sequence'} as $seq) {
                                 if (isset($seq-> {'function_name'}) && isset($seq-> {'language'})) {
                                     $myCustomFunction = null;
-
-                                    if (!isset($seq-> {'action'})) {
-                                        $myCustomFunction = $myCustom->addToSequence(
-                                            $seq-> {'function_name'},
-                                            $seq-> {'language'}
-                                        );
-                                    } else {
-                                        switch ($seq-> {'action'}) {
-                                            case 'MUST_VERIFY_DEFINITION':
-                                                $myCustomFunction = $myCustom->addToSequenceWithAction(
-                                                    $seq-> {'function_name'},
-                                                    $seq-> {'language'},
-                                                    $seq-> {'action'}
-                                                );
-                                                break;
-                                            default:
-                                                $myCustomFunction = $myCustom->addToSequence(
-                                                    $seq-> {'function_name'},
-                                                    $seq-> {'language'}
-                                                );
-                                                break;
-                                        }
-                                    }
+                                    $myCustomFunction = $myCustom->addToSequence(
+                                        $seq-> {'function_name'},
+                                        $seq-> {'language'}
+                                    );
 
                                     if (isset($seq-> {'parameters'}) && !is_null($myCustomFunction)) {
                                         $parameters = $seq-> {'parameters'};

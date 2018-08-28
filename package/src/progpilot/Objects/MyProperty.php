@@ -47,6 +47,16 @@ class MyProperty extends MyOp
         $this->properties[] = $property;
     }
 
+    public function hasProperty($name)
+    {
+        foreach($this->properties as $property) {
+            if($property === $name)
+                return true;
+        }
+        
+        return false;
+    }
+
     public function popProperty()
     {
         return array_pop($this->properties);

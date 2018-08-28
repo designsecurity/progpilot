@@ -94,7 +94,7 @@ class MyDefinition extends MyOp
         $this->property = clone $this->property;
     }
 
-    public function printStdout()
+    public function printStdout($context = null)
     {
         echo "def id ".$this->varId." :: \
         name = ".htmlentities($this->getName(), ENT_QUOTES, 'UTF-8')." :: \
@@ -124,6 +124,10 @@ class MyDefinition extends MyOp
         if ($this->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED") {
             echo "array index value : PROGPILOT_ALL_INDEX_TAINTED\n";
         }
+        
+        if ($this->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
+            echo "property value : PROGPILOT_ALL_PROPERTIES_TAINTED\n";
+        }
 
         if ($this->isType(MyDefinition::TYPE_PROPERTY) || $this->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
             echo "property : ".Utils::printProperties($this->property->getProperties())."\n";
@@ -134,6 +138,13 @@ class MyDefinition extends MyOp
         if ($this->isType(MyDefinition::TYPE_INSTANCE)) {
             echo "instance : ".htmlentities($this->getClassName(), ENT_QUOTES, 'UTF-8')."\n";
             echo "object id : ".$this->getObjectId()."\n";
+            
+            if(!is_null($context)) {
+                $tmpMyClass = $context->getObjects()->getMyClassFromObject($this->getObjectId());
+                if(!is_null($tmpMyClass)) {
+                    echo "class of object : ".htmlentities($tmpMyClass->getName(), ENT_QUOTES, 'UTF-8')."\n";
+                }
+            }
         }
 
         if ($this->isType(MyDefinition::TYPE_COPY_ARRAY)) {

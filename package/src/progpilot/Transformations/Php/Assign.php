@@ -81,7 +81,7 @@ class Assign
             }
 
             $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
-
+                
             $backDef = Expr::instruction($exprOp, $context, $myExpr);
 
             $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);

@@ -26,6 +26,10 @@ class BuildArrays
                 }
             }
         }
+        
+        if ($initops instanceof Op\Iterator\Value) {
+            return BuildArrays::functionStartOps($initops->var);
+        }
 
         return $initops;
     }

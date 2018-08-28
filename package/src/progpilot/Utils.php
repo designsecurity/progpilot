@@ -77,11 +77,10 @@ class Utils
         if ($def->isType(MyDefinition::TYPE_PROPERTY)) {
             $defName = "\$".Utils::encodeCharacters($def->getName()).
                 Utils::printProperties($def->property->getProperties());
-        }
-        elseif ($def->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
+        } elseif ($def->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
             $defName = Utils::encodeCharacters($def->getName()).
                 Utils::printStaticProperties($def->property->getProperties());
-        }else {
+        } else {
             $defName = "\$".Utils::encodeCharacters($def->getName());
         }
 

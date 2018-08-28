@@ -108,8 +108,8 @@ class Expr
             
             $instTemporarySimple->addProperty(MyInstruction::PHI, $nbvars);
             $context->getCurrentMycode()->addCode($instTemporarySimple);
-        } // end of expression
-        elseif (!is_null($type) && $type !== MyOp::TYPE_FUNCCALL_ARRAY) {
+            // end of expression
+        } elseif (!is_null($type) && $type !== MyOp::TYPE_FUNCCALL_ARRAY) {
             if (is_null($name)) {
                 $name = mt_rand();
             }
@@ -168,8 +168,8 @@ class Expr
             }
             
             return $myTemp;
-        } // func()[0][1]
-        elseif ($type === MyOp::TYPE_FUNCCALL_ARRAY) {
+        } elseif ($type === MyOp::TYPE_FUNCCALL_ARRAY) {
+            // func()[0][1]
             $arrFuncCall = BuildArrays::buildArrayFromOps($op, false);
             $startOps = BuildArrays::functionStartOps($op);
             $op = $startOps;

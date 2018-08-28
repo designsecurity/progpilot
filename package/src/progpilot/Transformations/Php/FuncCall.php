@@ -203,7 +203,7 @@ class FuncCall
         $instFuncCallMain->addProperty(MyInstruction::EXPR, $myExpr);
         $instFuncCallMain->addProperty(MyInstruction::ARR, $funcCallArr);
         $context->getCurrentMycode()->addCode($instFuncCallMain);
-
+        
         return $mybackdef;
     }
 }

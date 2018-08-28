@@ -94,7 +94,7 @@ class VisitorAnalysis
     {
         $index = $myCode->getStart();
         $code = $myCode->getCodes();
-
+        
         if ($this->context->getCurrentNbDefs() > $this->context->getLimitDefs()) {
             Utils::printWarning($this->context, Lang::MAX_DEFS_EXCEEDED);
             return;
@@ -238,7 +238,8 @@ class VisitorAnalysis
                         foreach ($listOfMyTemp as $tempDefa) {
                             $tempDefaMyExpr = $tempDefa->getExpr();
                             $defAssignMyExpr = $tempDefaMyExpr->getAssignDef();
-
+                            
+                            // if we use directly echo $_GET["b"];
                             if (!is_null($this->context->inputs->getSourceArrayByName(
                                 $tempDefa,
                                 $tempDefa->getArrayValue()
@@ -295,20 +296,7 @@ class VisitorAnalysis
                                     $this->defs->getOutMinusKill($def->getBlockId()),
                                     $defAssignMyExpr
                                 );
-                            
-                                if ($def->isType(MyDefinition::TYPE_PROPERTY)) {
-                                    if (!is_null($this->context->inputs->getSourceByName(
-                                        null,
-                                        $def,
-                                        false,
-                                        $def->getClassName(),
-                                        false,
-                                        $def
-                                    ))) {
-                                        $def->setTainted(true);
-                                    }
-                                }
-
+                                
                                 if ($visibility) {
                                     $storageCast[] = $tempDefa->getCast();
                                     $storageKnownValues["".$tempDefa->getId().""][] = $def->getLastKnownValues();
@@ -384,7 +372,7 @@ class VisitorAnalysis
                         $funcName = $instruction->getProperty(MyInstruction::FUNCNAME);
                         $arrFuncCall = $instruction->getProperty(MyInstruction::ARR);
                         $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
-
+                        
                         $listMyFunc = [];
                         IncludeAnalysis::funccall(
                             $this->context,
@@ -408,9 +396,12 @@ class VisitorAnalysis
                                 $objectId = $classOfFuncCall->getObjectId();
                                 $myClass = $this->context->getObjects()->getMyClassFromObject($objectId);
                                 if (!is_null($myClass)) {
+                                    $visibility = true;
+                                    
                                     $method = $myClass->getMethod($funcName);
                                     if (!ResolveDefs::getVisibilityMethod($myFuncCall->getNameInstance(), $method)) {
                                         $method = null;
+                                        $visibility = false;
                                     }
 
                                     if (!is_null($method)) {
@@ -426,7 +417,7 @@ class VisitorAnalysis
                                         }
                                     }
                                     
-                                    $listMyFunc[] = [$objectId, $myClass, $method];
+                                    $listMyFunc[] = [$objectId, $myClass, $method, $visibility];
 
                                     TaintAnalysis::funccallSpecifyAnalysis(
                                         $method,
@@ -465,6 +456,7 @@ class VisitorAnalysis
                             );
 
                             if (!is_null($myClassStatic)) {
+                                $visibility = true;
                                 $method = $myClassStatic->getMethod($funcName);
 
                                 if (!ResolveDefs::getVisibilityMethod(
@@ -472,9 +464,10 @@ class VisitorAnalysis
                                     $method
                                 )) {
                                     $method = null;
+                                    $visibility = false;
                                 }
 
-                                $listMyFunc[] = [0, $myClassStatic, $method];
+                                $listMyFunc[] = [0, $myClassStatic, $method, $visibility];
 
                                 $stackClass[0][0] = $myClassStatic;
 
@@ -506,13 +499,14 @@ class VisitorAnalysis
                                 $index
                             );
 
-                            $listMyFunc[] = [0, null, $myFunc];
+                            $listMyFunc[] = [0, null, $myFunc, true];
                         }
 
                         foreach ($listMyFunc as $list) {
                             $objectId = $list[0];
                             $myClass = $list[1];
                             $myFunc = $list[2];
+                            $visibility = $list[3];
 
                             ResolveDefs::instanceBuildThis(
                                 $this->context,
@@ -612,9 +606,10 @@ class VisitorAnalysis
                                 $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
                                 $myFunc,
                                 $myClass,
-                                $myFuncCall
+                                $myFuncCall,
+                                $visibility
                             );
-
+                            
                             TaintAnalysis::funccallSpecifyAnalysis(
                                 $myFunc,
                                 $stackClass,

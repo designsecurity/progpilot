@@ -12,6 +12,7 @@ namespace progpilot\Inputs;
 
 class MySource extends MySpecify
 {
+    private $isObject;
     private $isArray;
     private $isFunction;
     private $arrayValue;
@@ -27,6 +28,7 @@ class MySource extends MySpecify
     {
         parent::__construct($name, $language);
 
+        $this->isObject = false;
         $this->isFunction = false;
         $this->returnArrayValue = null;
         $this->isReturnArray = false;
@@ -55,6 +57,16 @@ class MySource extends MySpecify
     public function getReturnArrayValue()
     {
         return $this->returnArrayValue;
+    }
+
+    public function getIsObject()
+    {
+        return $this->isObject;
+    }
+
+    public function setIsObject($isObject)
+    {
+        $this->isObject = $isObject;
     }
 
     public function getIsArray()

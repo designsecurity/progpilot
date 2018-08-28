@@ -4,5 +4,9 @@
                 [
                     "./tests/frameworks/codeigniter1.php",
                         [["\$_GET[\"p\"]", '6', "xss"]]
+                ],
+                [
+                    "./tests/frameworks/codeigniter2.php",
+                        [["\$row->title", '12', "xss"]]
                 ]
             ];

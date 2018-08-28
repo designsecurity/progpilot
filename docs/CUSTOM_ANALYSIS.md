@@ -77,3 +77,24 @@ $a = new Twig_Environment($loader, array("autoescape" => false));
 
 ?>
 ```
+
+## Create new object
+
+Return of a function could be a custom object of a class name defined with the extra property :  
+
+```javascript
+        {
+            "name": "rules_#1", 
+            "function_name": "query", 
+            "instanceof": "CI_Model->db", 
+            "description": "Result of db queries as new sources",
+            "language": "php", 
+            "action": "RETURN_OBJECT", 
+            "extra": "DBQueryCodeIgniter",
+            "attack": "XXX", 
+            "cwe": "XXX"
+        }
+}
+```
+
+And next you are able to use this class name as sources, sinks, sanitizers or validators.

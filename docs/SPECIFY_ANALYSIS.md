@@ -28,7 +28,7 @@ Mandatory properties :
 - [Name](#name-property), language
 
 Optional properties :
-- [instanceof](#instanceof-property), [prevent](#prevent-property), [parameters](parameters-property), [is_array](is_array-property), [array_index](#array_index-property), [is_function](#is_function-property)
+- [instanceof](#instanceof-property), [prevent](#prevent-property), [parameters](#parameters-property), [is_array](#is_array-property), [array_index](#array_index-property), [is_function](#is_function-property)
 
 ## Configure sanitizers
 - $obj_context->inputs->setSanitizers($file_sanitizers);
@@ -59,7 +59,7 @@ Mandatory properties :
 - [Name](#name-property), language
 
 Optional properties :
-- [instanceof](#instanceof-property), [prevent](#prevent-property), [parameters](parameters-property)
+- [instanceof](#instanceof-property), [prevent](#prevent-property), [parameters](#parameters-property)
 
 ## Configure sinks
 - $obj_context->inputs->setSinks($file_sinks);
@@ -85,7 +85,7 @@ Mandatory properties :
 - [Name](#name-property), language, attack
 
 Optional properties :
-- [instanceof](#instanceof-property), [prevent](#prevent-property), [parameters](parameters-property)
+- [instanceof](#instanceof-property), [prevent](#prevent-property), [parameters](#parameters-property)
 
 ## Configure validators
 - $obj_context->inputs->setValidators($file_validators);
@@ -127,7 +127,7 @@ Mandatory properties :
 - [Name](#name-property), language
 
 Optional properties :
-- [instanceof](#instanceof-property), [prevent](#prevent-property), [parameters](parameters-property)
+- [instanceof](#instanceof-property), [prevent](#prevent-property), [parameters](#parameters-property)
 
 ***
 ***
@@ -223,7 +223,8 @@ the sink is vulnerable if :
 
 The *parameter* object could take a *conditions* parameter with these values :
 - **QUOTES** : the tainted variable must be embedded into quotes if not it's a vulnerability otherwise the variable must be sanitized with a function that encode quotes.  
-Global conditions could be applied :
+- **array_tainted** : the parameter is vulnerable is the argument is an array with at least one tainted value.  
+Global conditions could be applied on all parameters :
 - **QUOTES_HTML** : if the tainted variable is inside an html tag it's a vulnerability if the variable is embedded into quotes and quotes are not sanitized or if the variable is not embedded into quotes.
 
 #### sanitizers

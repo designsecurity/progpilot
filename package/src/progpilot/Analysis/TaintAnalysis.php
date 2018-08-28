@@ -41,6 +41,14 @@ class TaintAnalysis
     ) {
         $stackClass = ResolveDefs::funccallClass($context, $data, $myFuncCall);
 
+        \progpilot\Analysis\CustomAnalysis::returnObject(
+            $context,
+            $myFuncCall,
+            $myClass,
+            $stackClass,
+            $instruction
+        );
+
         TaintAnalysis::funccallValidator($stackClass, $context, $data, $myClass, $instruction, $myCode, $index);
         TaintAnalysis::funccallSanitizer(
             $myFunc,
@@ -52,6 +60,7 @@ class TaintAnalysis
             $myCode,
             $index
         );
+        
         TaintAnalysis::funccallSource($stackClass, $context, $data, $myClass, $instruction);
 
         // for example for document.write
@@ -340,7 +349,7 @@ class TaintAnalysis
         $funcName = $instruction->getProperty(MyInstruction::FUNCNAME);
         $arrFuncCall = $instruction->getProperty(MyInstruction::ARR);
         $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
-
+        
         $className = false;
         if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD) && !is_null($myClass)) {
             $className = $myClass->getName();
@@ -391,7 +400,12 @@ class TaintAnalysis
                 $myDef->setTainted(true);
                 // no need to taintedbyexpr because it's source like _GET
 
-                if ($mySource->getIsArray()) {
+                if ($mySource->getIsObject()) {
+                    $defAssign->addType(MyDefinition::TYPE_INSTANCE);
+                    $defAssign->property->addProperty("PROGPILOT_ALL_PROPERTIES_TAINTED");
+                    $exprReturn->addDef($myDef);
+                    $myDef->setExpr($exprReturn);
+                } elseif ($mySource->getIsArray()) {
                     $defAssign->setArrayValue("PROGPILOT_ALL_INDEX_TAINTED");
                     // we don't add type of TYPE_ARRAY because is a virtual array
                     // $row = mysqli_fetch_row

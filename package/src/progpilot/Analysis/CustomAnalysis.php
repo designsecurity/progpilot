@@ -15,10 +15,101 @@ use progpilot\Representations\DFSVisitor;
 use progpilot\Representations\NodeCG;
 use progpilot\Inputs\MyCustomRule;
 use progpilot\Objects\MyDefinition;
+use progpilot\Objects\MyClass;
+use progpilot\Code\MyInstruction;
 use progpilot\Utils;
 
 class CustomAnalysis
-{
+{   
+    public static function returnObjectCreateObject($context, $exprReturn, $customRule, $myFunc)
+    {
+        $defAssign = $exprReturn->getAssignDef();
+                
+        $objectId = $context->getObjects()->addObject();
+                
+        $defAssign->addType(MyDefinition::TYPE_INSTANCE);
+        $defAssign->setObjectId($objectId);
+                        
+        $myClass = $context->getClasses()->getMyClass($customRule->getExtra());
+                                
+        if (is_null($myClass)) {
+            $myClass = new MyClass(
+                $defAssign->getLine(),
+                $defAssign->getColumn(),
+                $customRule->getExtra()
+            );
+        }
+
+        $context->getObjects()->addMyclassToObject($objectId, $myClass);
+        $myBackDef = $myFunc->getBackDef();
+        
+        if(!is_null($myBackDef)) {
+            $objectId = $myBackDef->getObjectId();
+            $context->getObjects()->addMyclassToObject($objectId, $myClass);
+        }
+    }
+    
+    public static function returnObject($context, $myFunc, $myClass, $stackClass, $instruction)
+    {
+        $exprReturn = $instruction->getProperty(MyInstruction::EXPR);
+        if (!is_null($exprReturn) && $exprReturn->isAssign()) {
+        
+            $customRules = $context->inputs->getCustomRules();
+            foreach ($customRules as $customRule) {
+                if ($customRule->getType() === MyCustomRule::TYPE_FUNCTION
+                    && $customRule->getAction() === "RETURN_OBJECT"
+                        && !is_null($customRule->getExtra())) {
+                    $functionDefinition = $customRule->getFunctionDefinition();
+                    
+                    if (!is_null($functionDefinition)) {
+                        if($functionDefinition->isInstance()) {
+                            $propertiesRule = explode("->", $functionDefinition->getInstanceOfName());
+
+                            if (is_array($propertiesRule)) {
+                                $myRuleInstanceName = $propertiesRule[0];
+                                $myRuleNumberOfProperties = count($propertiesRule);
+                                $stackNumberOfProperties = count($stackClass);
+
+                                if ($stackNumberOfProperties >= $myRuleNumberOfProperties) {
+                                    $knownProperties =
+                                        $stackClass[$stackNumberOfProperties - $myRuleNumberOfProperties];
+
+                                    foreach ($knownProperties as $propClass) {
+                                        $objectId = $propClass->getObjectId();
+                                        $myClass = $context->getObjects()->getMyClassFromObject($objectId);
+                                        
+                                        if (!is_null($myClass)
+                                            && ($myClass->getName() === $myRuleInstanceName
+                                                || $myClass->getExtendsOf() === $myRuleInstanceName)) {
+                                                
+                                            CustomAnalysis::returnObjectCreateObject(
+                                                $context,
+                                                $exprReturn,
+                                                $customRule,
+                                                $myFunc
+                                            );
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if ($functionDefinition->getName() === $myFunc->getName()
+                            && !$functionDefinition->isInstance() 
+                                && is_null($myFunc->getMyClass())) {
+                                
+                            CustomAnalysis::returnObjectCreateObject(
+                                $context,
+                                $exprReturn,
+                                $customRule,
+                                $myFunc
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public static function mustVerifyDefinition($context, $instruction, $myFunc, $myClass)
     {
         $customRules = $context->inputs->getCustomRules();
@@ -99,7 +190,8 @@ class CustomAnalysis
                         }
 
                         if (!$isGlobalValid) {
-                            $hashedValue = $customRule->getName()."-".$myFunc->getSourceMyFile()->getName();
+                            $hashedValue = $myFunc->getLine();
+                            $hashedValue.= "-".$customRule->getName()."-".$myFunc->getSourceMyFile()->getName();
                             $idVuln = hash("sha256", $hashedValue);
 
                             $temp["vuln_rule"] = Utils::encodeCharacters($customRule->getName());

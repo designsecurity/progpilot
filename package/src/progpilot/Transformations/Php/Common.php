@@ -74,7 +74,7 @@ class Common
     public static function getNameDefinition($ops, $lookingForProperty = false)
     {
         //  $this->property = property
-        if ($lookingForProperty 
+        if ($lookingForProperty
             && ($ops instanceof Op\Expr\PropertyFetch || $ops instanceof Op\Expr\StaticPropertyFetch)
                 && isset($ops->name->value)) {
             return $ops->name->value;
@@ -121,6 +121,10 @@ class Common
                     return Common::getNameDefinition($op, $lookingForProperty);
                 }
             }
+        }
+        
+        if ($ops instanceof Op\Iterator\Value) {
+            return Common::getNameDefinition($ops->var, $lookingForProperty);
         }
 
         // use variable
@@ -185,6 +189,7 @@ class Common
                         !(isset($op->result->usages[0])
                           && (
                               $op->result->usages[0] instanceof Op\Terminal\Echo_
+                              || $op->result->usages[0] instanceof Op\Terminal\Return_
                               || $op->result->usages[0] instanceof Op\Expr\Print_
                               || $op->result->usages[0] instanceof Op\Expr\StaticCall
                               || $op->result->usages[0] instanceof Op\Expr\MethodCall
@@ -202,6 +207,8 @@ class Common
                               || $op->result->usages[0] instanceof Op\Expr\Cast\Double_
                               || $op->result->usages[0] instanceof Op\Expr\Cast\Object_
                               || $op->result->usages[0] instanceof Op\Expr\Cast\String_
+                              
+                              || $op->result->usages[0] instanceof Op\Iterator\Reset
                           ))
             )) {
             return true;
@@ -213,7 +220,11 @@ class Common
     public static function getTypeIsArray($ops)
     {
         if (isset($ops->ops[0])) {
-            if ($ops->ops[0] instanceof Op\Expr\FuncCall || $ops->ops[0] instanceof Op\Expr\NsFuncCall) {
+            if ($ops->ops[0] instanceof Op\Expr\FuncCall 
+                || $ops->ops[0] instanceof Op\Expr\NsFuncCall
+                    || $ops->ops[0] instanceof Op\Expr\MethodCall
+                        || $ops->ops[0] instanceof Op\Expr\StaticCall
+                            || $ops->ops[0] instanceof Op\Expr\New_) {
                 return MyOp::TYPE_FUNCCALL_ARRAY;
             }
 
@@ -249,7 +260,11 @@ class Common
                 return MyOp::TYPE_ARRAY;
             }
 
-            if ($ops->var->ops[0] instanceof Op\Expr\FuncCall || $ops->var->ops[0] instanceof Op\Expr\NsFuncCall) {
+            if ($ops->var->ops[0] instanceof Op\Expr\FuncCall 
+                || $ops->var->ops[0] instanceof Op\Expr\NsFuncCall
+                    || $ops->var->ops[0] instanceof Op\Expr\MethodCall
+                        || $ops->var->ops[0] instanceof Op\Expr\StaticCall
+                            || $ops->var->ops[0] instanceof Op\Expr\New_) {
                 return MyOp::TYPE_FUNCCALL_ARRAY;
             }
         }
@@ -302,7 +317,11 @@ class Common
                 return MyOp::TYPE_CONST;
             }
 
-            if ($ops->ops[0] instanceof Op\Expr\FuncCall || $ops->ops[0] instanceof Op\Expr\NsFuncCall) {
+            if ($ops->ops[0] instanceof Op\Expr\FuncCall 
+                || $ops->ops[0] instanceof Op\Expr\NsFuncCall
+                    || $ops->ops[0] instanceof Op\Expr\MethodCall
+                        || $ops->ops[0] instanceof Op\Expr\StaticCall
+                            || $ops->ops[0] instanceof Op\Expr\New_) {
                 return MyOp::TYPE_FUNCCALL_ARRAY;
             }
 
@@ -332,7 +351,11 @@ class Common
                 return MyOp::TYPE_STATIC_PROPERTY;
             }
 
-            if ($ops->var->ops[0] instanceof Op\Expr\FuncCall || $ops->var->ops[0] instanceof Op\Expr\NsFuncCall) {
+            if ($ops->var->ops[0] instanceof Op\Expr\FuncCall 
+                || $ops->var->ops[0] instanceof Op\Expr\NsFuncCall
+                    || $ops->var->ops[0] instanceof Op\Expr\MethodCall
+                        || $ops->var->ops[0] instanceof Op\Expr\StaticCall
+                            || $ops->var->ops[0] instanceof Op\Expr\New_) {
                 return MyOp::TYPE_FUNCCALL_ARRAY;
             }
         }
@@ -369,6 +392,10 @@ class Common
 
         if ($ops instanceof Op\Expr\StaticPropertyFetch) {
             return MyOp::TYPE_STATIC_PROPERTY;
+        }
+
+        if ($ops instanceof Op\Iterator\Value) {
+            return MyOp::TYPE_VARIABLE;
         }
 
         return null;
