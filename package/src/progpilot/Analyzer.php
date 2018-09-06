@@ -368,7 +368,8 @@ class Analyzer
             }
             
             $context->outputs->setCountAnalyzedFiles(
-                $context->outputs->getCountAnalyzedFiles() + 1);
+                $context->outputs->getCountAnalyzedFiles() + 1
+            );
 
             $myFile = new MyFile($file, 0, 0);
             $context->inputs->setFile($file);

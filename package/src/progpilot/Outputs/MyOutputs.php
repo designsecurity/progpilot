@@ -147,8 +147,7 @@ class MyOutputs
     public function addResult($temp)
     {
         if (!in_array($temp, $this->results, true)) {
-            
-            if(!is_null($this->onAddResult)) {
+            if (!is_null($this->onAddResult)) {
                 $params = array($temp);
                 call_user_func($this->onAddResult, $params);
             }

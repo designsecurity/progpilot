@@ -128,13 +128,12 @@ class VisitorAnalysis
                         
                         // we remove this parent because it's a loop while(block1) block2
                         // and block1 must be analysis before block2
-                        if(!$myBlock->getIsLoop()) {
+                        if (!$myBlock->getIsLoop()) {
                             foreach ($myBlock->parents as $blockParent) {
                                 $addrStart = $blockParent->getStartAddressBlock();
                                 $addrEnd = $blockParent->getEndAddressBlock();
                                 
                                 if (!$this->currentStorageMyBlocks->contains($blockParent)) {
-                                
                                     $oldIndexStart = $myCode->getStart();
                                     $oldIndexEnd = $myCode->getEnd();
 
