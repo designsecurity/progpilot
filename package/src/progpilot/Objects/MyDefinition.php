@@ -139,9 +139,9 @@ class MyDefinition extends MyOp
             echo "instance : ".htmlentities($this->getClassName(), ENT_QUOTES, 'UTF-8')."\n";
             echo "object id : ".$this->getObjectId()."\n";
             
-            if(!is_null($context)) {
+            if (!is_null($context)) {
                 $tmpMyClass = $context->getObjects()->getMyClassFromObject($this->getObjectId());
-                if(!is_null($tmpMyClass)) {
+                if (!is_null($tmpMyClass)) {
                     echo "class of object : ".htmlentities($tmpMyClass->getName(), ENT_QUOTES, 'UTF-8')."\n";
                 }
             }

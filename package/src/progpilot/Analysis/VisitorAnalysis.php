@@ -124,22 +124,28 @@ class VisitorAnalysis
                         array_push($this->myBlockStack, $this->currentMyBlock);
 
                         $this->currentStorageMyBlocks->attach($myBlock);
+                        
+                        
+                        // we remove this parent because it's a loop while(block1) block2
+                        // and block1 must be analysis before block2
+                        if(!$myBlock->getIsLoop()) {
+                            foreach ($myBlock->parents as $blockParent) {
+                                $addrStart = $blockParent->getStartAddressBlock();
+                                $addrEnd = $blockParent->getEndAddressBlock();
+                                
+                                if (!$this->currentStorageMyBlocks->contains($blockParent)) {
+                                
+                                    $oldIndexStart = $myCode->getStart();
+                                    $oldIndexEnd = $myCode->getEnd();
 
-                        foreach ($myBlock->parents as $blockParent) {
-                            $addrStart = $blockParent->getStartAddressBlock();
-                            $addrEnd = $blockParent->getEndAddressBlock();
+                                    $myCode->setStart($addrStart);
+                                    $myCode->setEnd($addrEnd);
 
-                            if (!$this->currentStorageMyBlocks->contains($blockParent)) {
-                                $oldIndexStart = $myCode->getStart();
-                                $oldIndexEnd = $myCode->getEnd();
+                                    $this->analyze($myCode);
 
-                                $myCode->setStart($addrStart);
-                                $myCode->setEnd($addrEnd);
-
-                                $this->analyze($myCode);
-
-                                $myCode->setStart($oldIndexStart);
-                                $myCode->setEnd($oldIndexEnd);
+                                    $myCode->setStart($oldIndexStart);
+                                    $myCode->setEnd($oldIndexEnd);
+                                }
                             }
                         }
 
@@ -282,7 +288,7 @@ class VisitorAnalysis
                             ValueAnalysis::updateStorageToExpr($tempDefaMyExpr);
                             $storageCast = ValueAnalysis::$exprsCast[$tempDefaMyExpr];
                             $storageKnownValues = ValueAnalysis::$exprsKnownValues[$tempDefaMyExpr];
-
+                            
                             foreach ($defs as $def) {
                                 $safe = AssertionAnalysis::temporarySimple(
                                     $this->context,

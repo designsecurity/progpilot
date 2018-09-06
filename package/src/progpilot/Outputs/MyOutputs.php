@@ -22,7 +22,9 @@ class MyOutputs
     private $results;
     private $resolveIncludes;
     private $resolveIncludesFile;
+    private $onAddResult;
     private $taintedFlow;
+    private $countfilesanalyzed;
 
     public $currentIncludesFile;
     public $cfg;
@@ -36,7 +38,9 @@ class MyOutputs
         $this->currentIncludesFile = [];
         $this->results = [];
         $this->taintedFlow = false;
-
+        $this->onAddResult = null;
+        $this->countfilesanalyzed = 0;
+        
         $this->resetRepresentations();
     }
 
@@ -129,10 +133,26 @@ class MyOutputs
         $outputjson = array('nodes' => $nodesjson, 'links' => $linksjson);
         return $outputjson;
     }
+    
+    public function setOnAddResult($func)
+    {
+        $this->onAddResult = $func;
+    }
+    
+    public function getOnAddResult()
+    {
+        return $this->onAddResult;
+    }
 
     public function addResult($temp)
     {
         if (!in_array($temp, $this->results, true)) {
+            
+            if(!is_null($this->onAddResult)) {
+                $params = array($temp);
+                call_user_func($this->onAddResult, $params);
+            }
+            
             $this->results[] = $temp;
         }
     }
@@ -145,6 +165,16 @@ class MyOutputs
     public function &getResults()
     {
         return $this->results;
+    }
+
+    public function getCountAnalyzedFiles()
+    {
+        return $this->countfilesanalyzed;
+    }
+
+    public function setCountAnalyzedFiles($nb)
+    {
+        $this->countfilesanalyzed = $nb;
     }
 
     public function getResolveIncludes()

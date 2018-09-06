@@ -220,7 +220,7 @@ class Common
     public static function getTypeIsArray($ops)
     {
         if (isset($ops->ops[0])) {
-            if ($ops->ops[0] instanceof Op\Expr\FuncCall 
+            if ($ops->ops[0] instanceof Op\Expr\FuncCall
                 || $ops->ops[0] instanceof Op\Expr\NsFuncCall
                     || $ops->ops[0] instanceof Op\Expr\MethodCall
                         || $ops->ops[0] instanceof Op\Expr\StaticCall
@@ -260,7 +260,7 @@ class Common
                 return MyOp::TYPE_ARRAY;
             }
 
-            if ($ops->var->ops[0] instanceof Op\Expr\FuncCall 
+            if ($ops->var->ops[0] instanceof Op\Expr\FuncCall
                 || $ops->var->ops[0] instanceof Op\Expr\NsFuncCall
                     || $ops->var->ops[0] instanceof Op\Expr\MethodCall
                         || $ops->var->ops[0] instanceof Op\Expr\StaticCall
@@ -317,7 +317,7 @@ class Common
                 return MyOp::TYPE_CONST;
             }
 
-            if ($ops->ops[0] instanceof Op\Expr\FuncCall 
+            if ($ops->ops[0] instanceof Op\Expr\FuncCall
                 || $ops->ops[0] instanceof Op\Expr\NsFuncCall
                     || $ops->ops[0] instanceof Op\Expr\MethodCall
                         || $ops->ops[0] instanceof Op\Expr\StaticCall
@@ -351,7 +351,7 @@ class Common
                 return MyOp::TYPE_STATIC_PROPERTY;
             }
 
-            if ($ops->var->ops[0] instanceof Op\Expr\FuncCall 
+            if ($ops->var->ops[0] instanceof Op\Expr\FuncCall
                 || $ops->var->ops[0] instanceof Op\Expr\NsFuncCall
                     || $ops->var->ops[0] instanceof Op\Expr\MethodCall
                         || $ops->var->ops[0] instanceof Op\Expr\StaticCall

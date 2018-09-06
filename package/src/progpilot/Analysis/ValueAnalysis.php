@@ -189,7 +189,6 @@ class ValueAnalysis
     public static function copyValues($def, $defAssign)
     {
         $defAssign->setIsEmbeddedByChars($def->getIsEmbeddedByChars(), true);
-        
         $defAssign->setCast($def->getCast());
         
         if ($def->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED") {
@@ -199,7 +198,6 @@ class ValueAnalysis
         if ($def->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
             $defAssign->property->addProperty("PROGPILOT_ALL_PROPERTIES_TAINTED");
             $defAssign->addType(MyDefinition::TYPE_INSTANCE);
-            
         }
     }
 }

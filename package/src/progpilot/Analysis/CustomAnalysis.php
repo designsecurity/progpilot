@@ -20,7 +20,8 @@ use progpilot\Code\MyInstruction;
 use progpilot\Utils;
 
 class CustomAnalysis
-{   
+{
+
     public static function returnObjectCreateObject($context, $exprReturn, $customRule, $myFunc)
     {
         $defAssign = $exprReturn->getAssignDef();
@@ -43,7 +44,7 @@ class CustomAnalysis
         $context->getObjects()->addMyclassToObject($objectId, $myClass);
         $myBackDef = $myFunc->getBackDef();
         
-        if(!is_null($myBackDef)) {
+        if (!is_null($myBackDef)) {
             $objectId = $myBackDef->getObjectId();
             $context->getObjects()->addMyclassToObject($objectId, $myClass);
         }
@@ -53,7 +54,6 @@ class CustomAnalysis
     {
         $exprReturn = $instruction->getProperty(MyInstruction::EXPR);
         if (!is_null($exprReturn) && $exprReturn->isAssign()) {
-        
             $customRules = $context->inputs->getCustomRules();
             foreach ($customRules as $customRule) {
                 if ($customRule->getType() === MyCustomRule::TYPE_FUNCTION
@@ -62,7 +62,7 @@ class CustomAnalysis
                     $functionDefinition = $customRule->getFunctionDefinition();
                     
                     if (!is_null($functionDefinition)) {
-                        if($functionDefinition->isInstance()) {
+                        if ($functionDefinition->isInstance()) {
                             $propertiesRule = explode("->", $functionDefinition->getInstanceOfName());
 
                             if (is_array($propertiesRule)) {
@@ -81,7 +81,6 @@ class CustomAnalysis
                                         if (!is_null($myClass)
                                             && ($myClass->getName() === $myRuleInstanceName
                                                 || $myClass->getExtendsOf() === $myRuleInstanceName)) {
-                                                
                                             CustomAnalysis::returnObjectCreateObject(
                                                 $context,
                                                 $exprReturn,
@@ -92,11 +91,9 @@ class CustomAnalysis
                                     }
                                 }
                             }
-                        }
-                        else if ($functionDefinition->getName() === $myFunc->getName()
-                            && !$functionDefinition->isInstance() 
+                        } elseif ($functionDefinition->getName() === $myFunc->getName()
+                            && !$functionDefinition->isInstance()
                                 && is_null($myFunc->getMyClass())) {
-                                
                             CustomAnalysis::returnObjectCreateObject(
                                 $context,
                                 $exprReturn,

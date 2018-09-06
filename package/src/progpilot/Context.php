@@ -453,6 +453,10 @@ class Context
                             if (isset($value["outputs"]["resolveIncludesFile"])) {
                                 $this->outputs->resolveIncludesFile($value["outputs"]["resolveIncludesFile"]);
                             }
+                            
+                            if (isset($value["outputs"]["onAddResult"])) {
+                                $this->outputs->setOnAddResult($value["outputs"]["onAddResult"]);
+                            }
                         }
 
                         if (isset($value["options"])) {

@@ -49,9 +49,10 @@ class MyProperty extends MyOp
 
     public function hasProperty($name)
     {
-        foreach($this->properties as $property) {
-            if($property === $name)
+        foreach ($this->properties as $property) {
+            if ($property === $name) {
                 return true;
+            }
         }
         
         return false;

@@ -15,6 +15,7 @@ class MyBlock extends MyOp
     private $startAddressBlock;
     private $endAddressBlock;
     private $id;
+    private $loop;
 
     public $parents;
     public $assertions;
@@ -27,6 +28,7 @@ class MyBlock extends MyOp
         $this->endAddressBlock = -1;
         $this->assertions = [];
         $this->parents = [];
+        $this->loop = false;
     }
 
     public function addParent($parent)
@@ -72,5 +74,15 @@ class MyBlock extends MyOp
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    public function setIsLoop($loop)
+    {
+        $this->loop = $loop;
+    }
+
+    public function getIsLoop()
+    {
+        return $this->loop;
     }
 }

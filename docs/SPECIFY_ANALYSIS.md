@@ -28,7 +28,7 @@ Mandatory properties :
 - [Name](#name-property), language
 
 Optional properties :
-- [instanceof](#instanceof-property), [prevent](#prevent-property), [parameters](#parameters-property), [is_array](#is_array-property), [array_index](#array_index-property), [is_function](#is_function-property)
+- [instanceof](#instanceof-property), [prevent](#prevent-property), [parameters](#parameters-property), [is_object](#is_object-property), [is_array](#is_array-property), [array_index](#array_index-property), [is_function](#is_function-property)
 
 ## Configure sanitizers
 - $obj_context->inputs->setSanitizers($file_sanitizers);
@@ -142,6 +142,10 @@ the name property must be a function (the source will be the return of this func
 ### is_array property
 #### sources
 If you want to define all elements of an array as a source (like for well-known *_GET*, *_POST* and *_COOKIE* variables) use *is_array* property set to true.
+
+### is_object property
+#### sources
+If you want to define all properties of an object as a source (like for the return of *mysql_fetch_object* function) use *is_object* property set to true.
 
 ### array_index property
 #### sources

@@ -55,11 +55,6 @@ class Transform implements Visitor
     public function enterScript(Script $script)
     {
         $this->context->outputs->currentIncludesFile = [];
-        
-        /*
-        $printer = new Printer\Text();
-        var_dump($printer->printScript($script));
-        */
     }
 
     public function leaveScript(Script $script)
@@ -105,6 +100,11 @@ class Transform implements Visitor
                 }
             }
         }
+        
+        /*
+        $printer = new Printer\Text();
+        var_dump($printer->printScript($script));
+        */
     }
 
     public function enterBlock(Block $block, Block $prior = null)
@@ -279,7 +279,10 @@ class Transform implements Visitor
             $this->context->getCurrentMycode()->addCode($instStartIf);
 
             $this->blockIfToBeResolved[] = [$instStartIf, $op->if, $op->else];
-
+            
+            $myblock = $this->sBlocks[$block];
+            $myblock->setIsLoop(true);
+            
             $this->parseconditions($instStartIf, $op->cond->ops);
         }
         /*

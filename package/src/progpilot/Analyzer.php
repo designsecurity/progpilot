@@ -366,6 +366,9 @@ class Analyzer
             if ($context->getPrintFile()) {
                 echo "progpilot analyze : ".Utils::encodeCharacters($file)."\n";
             }
+            
+            $context->outputs->setCountAnalyzedFiles(
+                $context->outputs->getCountAnalyzedFiles() + 1);
 
             $myFile = new MyFile($file, 0, 0);
             $context->inputs->setFile($file);

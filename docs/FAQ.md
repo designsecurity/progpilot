@@ -15,3 +15,8 @@ Static analyzers use a lot of memory but you could try to handle this with [thes
 - *$obj_context->setLimitSize($size_bytes);* 
 
 And by increasing the maximum memory amount for a script (*memory_limit*) in the configuration of PHP (*php.ini*).
+
+#### Which frameworks are supported by progpilot ?
+At this moment, these framworks are supported :
+- suiteCRM
+- codeIgniter

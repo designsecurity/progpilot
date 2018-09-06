@@ -3685,7 +3685,8 @@
 
                 [
                     "./tests/vulntestsuite/CWE_89__backticks__func_mysql_real_escape_string__multiple_AS-sprintf_%s_simple_quote.php",
-                        [["\$query", "49", "sql_injection"]]
+                        [["\$query", "49", "sql_injection"],
+                        ["\$data", "57", "xss"]]
                 ],
 
 
@@ -3726,7 +3727,8 @@
 
                 [
                     "./tests/vulntestsuite/CWE_89__exec__func_mysql_real_escape_string__multiple_select-sprintf_%d.php",
-                        [["\$query", "52", "sql_injection"]]
+                        [["\$query", "52", "sql_injection"],
+                        ["\$data", "60", "xss"]]
                 ],
 
 
@@ -3757,7 +3759,8 @@
 
                 [
                     "./tests/vulntestsuite/CWE_89__fopen__func_preg_replace__select_from-sprintf_%s_simple_quote.php",
-                        [["\$query", "58", "sql_injection"]]
+                        [["\$query", "58", "sql_injection"],
+                        ["\$data", "66", "xss"]]
                 ],
 
 
@@ -3808,7 +3811,8 @@
 
                 [
                     "./tests/vulntestsuite/CWE_89__object-Array__func_FILTER-CLEANING-magic_quotes_filter__join-sprintf_%s_simple_quote.php",
-                        [["\$query", "69", "sql_injection"]]
+                        [["\$query", "69", "sql_injection"],
+                        ["\$data", "77", "xss"]]
                 ],
 
 
@@ -3950,13 +3954,15 @@
 
                 [
                     "./tests/vulntestsuite/CWE_89__object-directGet__func_mysql_real_escape_string__multiple_select-sprintf_%u_simple_quote.php",
-                        [["\$query", "58", "sql_injection"]]
+                        [["\$query", "58", "sql_injection"],
+                        ["\$data", "66", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__object-directGet__func_mysql_real_escape_string__select_from_where-sprintf_%s_simple_quote.php",
-                        [["\$query", "58", "sql_injection"]]
+                        [["\$query", "58", "sql_injection"],
+                        ["\$data", "66", "xss"]]
                 ],
 
 
@@ -4032,7 +4038,8 @@
 
                 [
                     "./tests/vulntestsuite/CWE_89__popen__func_mysql_real_escape_string__multiple_AS-sprintf_%d.php",
-                        [["\$query", "51", "sql_injection"]]
+                        [["\$query", "51", "sql_injection"],
+                        ["\$data", "59", "xss"]]
                 ],
 
 
@@ -4167,7 +4174,8 @@
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__system__func_FILTER-CLEANING-magic_quotes_filter__select_from-concatenation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__system__func_FILTER-CLEANING-magic_quotes_filter__select_from-concatenation_simple_quote.php", 
+                    [["\$data", "59", "xss"]]
                 ],
 
 
@@ -4182,7 +4190,8 @@
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__system__func_preg_replace2__join-concatenation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__system__func_preg_replace2__join-concatenation_simple_quote.php", 
+                     [["\$data", "57", "xss"]]
                 ],
 
 
@@ -4284,126 +4293,144 @@
                 [
                     "./tests/vulntestsuite/CWE_89__GET__no_sanitizing__join-sprintf_%s_simple_quote.php",
                         [["\$query", "49", "xss"],
-                        ["\$query", "49", "sql_injection"]]
+                        ["\$query", "49", "sql_injection"],
+                        ["\$data", "58", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__GET__no_sanitizing__multiple_AS-interpretation.php",
                         [["\$query", "49", "xss"],
-                        ["\$query", "49", "sql_injection"]]
+                        ["\$query", "49", "sql_injection"],
+                        ["\$data", "58", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__backticks__func_preg_match-no_filtering__join-concatenation_simple_quote.php",
                         [["\$query", "54", "xss"],
-                        ["\$query", "54", "sql_injection"]]
+                        ["\$query", "54", "sql_injection"],
+                        ["\$data", "63", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__exec__func_FILTER-CLEANING-email_filter__select_from-concatenation_simple_quote.php",
                         [["\$query", "57", "xss"],
-                        ["\$query", "57", "sql_injection"]]
+                        ["\$query", "57", "sql_injection"],
+                        ["\$data", "66", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__exec__no_sanitizing__multiple_AS-concatenation_simple_quote.php",
                         [["\$query", "52", "xss"],
-                        ["\$query", "52", "sql_injection"]]
+                        ["\$query", "52", "sql_injection"],
+                        ["\$data", "61", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__exec__no_sanitizing__multiple_select-interpretation_simple_quote.php",
                         [["\$query", "52", "xss"],
-                        ["\$query", "52", "sql_injection"]]
+                        ["\$query", "52", "sql_injection"],
+                        ["\$data", "61", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__object-directGet__func_FILTER-CLEANING-email_filter__join-interpretation_simple_quote.php",
                         [["\$query", "63", "xss"],
-                        ["\$query", "63", "sql_injection"]]
+                        ["\$query", "63", "sql_injection"],
+                        ["\$data", "72", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__object-directGet__no_sanitizing__select_from-sprintf_%s_simple_quote.php",
                         [["\$query", "58", "xss"],
-                        ["\$query", "58", "sql_injection"]]
+                        ["\$query", "58", "sql_injection"],
+                        ["\$data", "67", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__object-indexArray__func_FILTER-CLEANING-email_filter__select_from-sprintf_%s_simple_quote.php",
                         [["\$query", "72", "xss"],
-                        ["\$query", "72", "sql_injection"]]
+                        ["\$query", "72", "sql_injection"],
+                        ["\$data", "81", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__object-indexArray__func_preg_match-no_filtering__join-concatenation_simple_quote.php",
                         [["\$query", "72", "xss"],
-                        ["\$query", "72", "sql_injection"]]
+                        ["\$query", "72", "sql_injection"],
+                        ["\$data", "81", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__popen__func_FILTER-CLEANING-email_filter__select_from-concatenation_simple_quote.php",
                         [["\$query", "56", "xss"],
-                        ["\$query", "56", "sql_injection"]]
+                        ["\$query", "56", "sql_injection"],
+                        ["\$data", "65", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__popen__func_preg_match-no_filtering__join-sprintf_%s_simple_quote.php",
                         [["\$query", "56", "xss"],
-                        ["\$query", "56", "sql_injection"]]
+                        ["\$query", "56", "sql_injection"],
+                        ["\$data", "65", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__shell_exec__func_mysql_real_escape_string__multiple_select-interpretation.php",
                         [["\$query", "49", "xss"],
-                        ["\$query", "49", "sql_injection"]]
+                        ["\$query", "49", "sql_injection"],
+                        ["\$data", "58", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__shell_exec__no_sanitizing__multiple_AS-concatenation_simple_quote.php",
                         [["\$query", "49", "xss"],
-                        ["\$query", "49", "sql_injection"]]
+                        ["\$query", "49", "sql_injection"],
+                        ["\$data", "58", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__shell_exec__no_sanitizing__multiple_AS-sprintf_%s_simple_quote.php",
                         [["\$query", "49", "xss"],
-                        ["\$query", "49", "sql_injection"]]
+                        ["\$query", "49", "sql_injection"],
+                        ["\$data", "58", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__system__func_FILTER-CLEANING-email_filter__select_from-sprintf_%s_simple_quote.php",
                         [["\$query", "54", "xss"],
-                        ["\$query", "54", "sql_injection"]]
+                        ["\$query", "54", "sql_injection"],
+                        ["\$data", "63", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__system__func_preg_match-no_filtering__join-interpretation_simple_quote.php",
                         [["\$query", "54", "xss"],
-                        ["\$query", "54", "sql_injection"]]
+                        ["\$query", "54", "sql_injection"],
+                        ["\$data", "63", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__system__no_sanitizing__multiple_AS-concatenation.php",
                         [["\$query", "49", "xss"],
-                        ["\$query", "49", "sql_injection"]]
+                        ["\$query", "49", "sql_injection"],
+                        ["\$data", "58", "xss"]]
                 ],
 
 
@@ -4411,7 +4438,8 @@
                     "./tests/vulntestsuite/CWE_89__unserialize__func_mysql_real_escape_string__multiple_AS-concatenation.php",
                         [["\$string", "45", "code_injection"],
                         ["\$query", "51", "xss"],
-                        ["\$query", "51","sql_injection"]]
+                        ["\$query", "51","sql_injection"],
+                        ["\$data", "60", "xss"]]
                 ],
 
 
@@ -4419,7 +4447,8 @@
                     "./tests/vulntestsuite/CWE_89__unserialize__func_mysql_real_escape_string__multiple_select-concatenation.php",
                         [["\$string", "45", "code_injection"],
                         ["\$query", "51", "xss"],
-                        ["\$query", "51", "sql_injection"]]
+                        ["\$query", "51", "sql_injection"],
+                        ["\$data", "60", "xss"]]
                 ],
 
 
@@ -4427,7 +4456,8 @@
                     "./tests/vulntestsuite/CWE_89__unserialize__no_sanitizing__select_from_where-concatenation_simple_quote.php",
                         [["\$string", "45", "code_injection"],
                         ["\$query", "51", "xss"],
-                        ["\$query", "51", "sql_injection"]]
+                        ["\$query", "51", "sql_injection"],
+                        ["\$data", "60", "xss"]]
                 ],
 
 
@@ -4435,7 +4465,8 @@
                     "./tests/vulntestsuite/CWE_89__unserialize__no_sanitizing__select_from_where-interpretation_simple_quote.php",
                         [["\$string", "45", "code_injection"],
                         ["\$query", "51", "xss"],
-                        ["\$query", "51", "sql_injection"]]
+                        ["\$query", "51", "sql_injection"],
+                        ["\$data", "60", "xss"]]
                 ],
 
 

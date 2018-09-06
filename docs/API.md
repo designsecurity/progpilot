@@ -64,6 +64,10 @@ These functions are explained in the chapter about [**included files**](./INCLUD
 - $obj_context->outputs->getCallGraph();
 - $obj_context->outputs->taintedFlow($bool);  
 *true* or *false* if you want to print the complete flow of assignments that taints a variable used by a sink function (default is *false* : only the last tainted variable is printed).
+- $obj_context->outputs->setOnAddResult($func);  
+for each vulnerability found by progpilot the function *func* will be called with the vulnerability as argument.
+- $obj_context->outputs->getCountAnalyzedFiles();  
+print the number of files analyzed (it does not count the included files (with *include()* for example in PHP)).
 ***
 
 ## Options

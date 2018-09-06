@@ -243,7 +243,7 @@ class MyInputs
                 }
 
                 if ($myValidator->isInstance() && $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                    if (!is_null($myClass) && 
+                    if (!is_null($myClass) &&
                         ($myValidator->getInstanceOfName() === $myClass->getName()
                             || $myValidator->getInstanceOfName() === $myClass->getExtendsOf())) {
                         return $myValidator;
@@ -265,7 +265,7 @@ class MyInputs
                                 $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                 
-                               if (($myClass->getName() === $myValidatorInstanceName
+                                if (($myClass->getName() === $myValidatorInstanceName
                                     || $myClass->getExtendsOf() === $myValidatorInstanceName)) {
                                     return $myValidator;
                                 }
@@ -288,7 +288,7 @@ class MyInputs
                 }
 
                 if ($mySanitizer->isInstance() && $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                    if (!is_null($myClass) && 
+                    if (!is_null($myClass) &&
                         ($mySanitizer->getInstanceOfName() === $myClass->getName()
                             || $mySanitizer->getInstanceOfName() === $myClass->getExtendsOf())) {
                         return $mySanitizer;
@@ -310,7 +310,7 @@ class MyInputs
                                 $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                 
-                                if (($myClass->getName() === $mySanitizerInstanceName
+                                if (!is_null($myClass) && ($myClass->getName() === $mySanitizerInstanceName
                                     || $myClass->getExtendsOf() === $mySanitizerInstanceName)) {
                                     return $mySanitizer;
                                 }
@@ -393,7 +393,7 @@ class MyInputs
         $arrValue = false
     ) {
         foreach ($this->sources as $mySource) {
-            if (($mySource->getName() === $myFuncOrDef->getName()) || $mySource->getIsObject()) {
+            if (($mySource->getName() === $myFuncOrDef->getName())) {
                 $checkFunction = false;
                 $checkArray = false;
                 $checkInstance = false;
@@ -1193,8 +1193,9 @@ class MyInputs
                         $myCustom = new MyCustomRule($customRule-> {'name'}, $customRule-> {'description'});
                         $myCustom->setCwe($customRule-> {'cwe'});
                         $myCustom->setAttack($customRule-> {'attack'});
-                        if(isset($customRule-> {'extra'}))
+                        if (isset($customRule-> {'extra'})) {
                             $myCustom->setExtra($customRule-> {'extra'});
+                        }
 
                         if (isset($customRule-> {'sequence'}) && isset($customRule-> {'action'})) {
                             $myCustom->setType(MyCustomRule::TYPE_SEQUENCE);

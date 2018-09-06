@@ -192,12 +192,10 @@ class ResolveDefs
                     $newMyBackMyClass->addMethod($newMethod);
                 }
             }
-        }
-        else if(is_null($myFunc) 
-            && $myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD) 
+        } elseif (is_null($myFunc)
+            && $myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)
                 && !is_null($myClass)
                     && $visibility) {
-                    
             // query return object custom rule
             //$query = $this->db->query("YOUR QUERY");
         
@@ -632,11 +630,10 @@ class ResolveDefs
 
                         foreach ($instances as $instance) {
                             if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
-                                if($instance->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
+                                if ($instance->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
                                     //$propertiesDefs[] = $tempDefa;
                                     $tempDefa->setTainted(true);
-                                }
-                                else {
+                                } else {
                                     for ($i = $indexProperty; $i < count($myProperties); $i++) {
                                         $idObject = $instance->getObjectId();
                                         $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
