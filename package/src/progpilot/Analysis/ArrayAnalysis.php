@@ -48,6 +48,7 @@ class ArrayAnalysis
             if (($def->isType(MyDefinition::TYPE_ARRAY)
                         && ($searchedDef->getArrayValue() === $def->getArrayValue()) || $isIterator)
                             || $def->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED") {
+                            
                 if ($def->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED") {
                     $searchedDef->setTainted(true);
                     //TaintAnalysis::setTainted($context, $data, $searchedDef, $def, $def->getExpr(), false);
@@ -56,8 +57,10 @@ class ArrayAnalysis
                         ValueAnalysis::copyValues($searchedDef, $def);
                         TaintAnalysis::setTainted($searchedDef, $def, $def->getExpr());
                     }
+                    
+                    $goodDefs[] = $searchedDef;
                 }
-
+                else
                 $goodDefs[] = $def;
             }
         } // I'm looking for def, I want to find def, but I can have def[arr] (must be eliminated)

@@ -41,7 +41,6 @@ OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
 
 MODIFICATIONS.*/
 
-
 $tainted = $_GET['UserData'];
 
 if (settype($tainted, "float")) {
@@ -63,3 +62,4 @@ while ($data = mysql_fetch_array($res)) {
     echo "<br />" ;
 }
 mysql_close($conn);
+

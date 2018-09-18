@@ -227,7 +227,10 @@ the sink is vulnerable if :
 
 The *parameter* object could take a *conditions* parameter with these values :
 - **QUOTES** : the tainted variable must be embedded into quotes if not it's a vulnerability otherwise the variable must be sanitized with a function that encode quotes.  
-- **array_tainted** : the parameter is vulnerable is the argument is an array with at least one tainted value.  
+- **array_tainted** : the parameter is vulnerable if the argument is an array with at least one tainted value.  
+- **variable_tainted** : the parameter is vulnerable if the argument is a tainted variable.  
+- **object_tainted** : the parameter is vulnerable if the argument is an object with at least one tainted property.  
+
 Global conditions could be applied on all parameters :
 - **QUOTES_HTML** : if the tainted variable is inside an html tag it's a vulnerability if the variable is embedded into quotes and quotes are not sanitized or if the variable is not embedded into quotes.
 

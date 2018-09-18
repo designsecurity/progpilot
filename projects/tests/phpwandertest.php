@@ -28,7 +28,7 @@
                     "./tests/phpwander/test4.php",
                         [[["\$_GET[\"user\"]", "\$_GET[\"password\"]"], ["4", "4"], "sql_injection"],
                         ["\$_GET[\"file\"]", "8", "file_inclusion"],
-                        ["\$user", "9", "xss"]]
+                        ["\$user[\"email\"]", "12", "xss"]]
                 ],
                 [
                     "./tests/phpwander/test5.php",

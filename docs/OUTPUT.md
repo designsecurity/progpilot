@@ -1,6 +1,6 @@
 # Output
 
-For a taint-style vulnerability the output of progpilot if vulnerability was found is like that :
+For a taint-style vulnerability the output of progpilot is :
 ```javascript
 array(1) {
   [0]=>
@@ -94,4 +94,4 @@ array(1) {
 ```
 - *vuln_rule*, *vuln_description*, *vuln_name*, *vuln_cwe* are defined in [**rules.json**](./CUSTOM_ANALYSIS.md) data file  
 
-To make the distinction between these two kinds of vulnerabilities and ouputs you could use  *vuln_type* element which takes the value *custom*  or *taint-style*.
+You could use *vuln_type* element which takes the value *custom* or *taint-style* to distinguish the kind of vulnerability.

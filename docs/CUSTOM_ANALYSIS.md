@@ -78,9 +78,9 @@ $a = new Twig_Environment($loader, array("autoescape" => false));
 ?>
 ```
 
-## Create new object
+## Create an object
 
-Return of a function could be a custom object of a class name defined with the extra property :  
+The return of a function could be a custom object of a class name defined with the extra property :  
 
 ```javascript
         {

@@ -214,7 +214,7 @@ class TaintAnalysis
         $myExprReturn2->setAssignDef($myTempReturn);
 
         $mySanitizer = $context->inputs->getSanitizerByName($context, $stackClass, $myFuncCall, $myClass);
-
+        
         if (!is_null($mySanitizer)) {
             $preventFinal = $mySanitizer->getPrevent();
         }
@@ -295,7 +295,7 @@ class TaintAnalysis
             $myDefReturn = $instructionDef->getProperty(MyInstruction::DEF);
             $returnSanitizer = true;
         }
-
+        
         // the return of func will be tainted if one of arg is tainted
         if ($returnSanitizer) {
             TaintAnalysis::setTainted($paramsTainted, $myTempReturn, $myExprReturn2);
@@ -390,6 +390,11 @@ class TaintAnalysis
 
             if ($exprReturn->isAssign()) {
                 $defAssign = $exprReturn->getAssignDef();
+                
+                // sanitizers are deleted
+                $defAssign->setSanitized(false);
+                $defAssign->setTypeSanitized([]);
+                $defAssign->setCast(MyDefinition::CAST_NOT_SAFE);
 
                 $myDef = new MyDefinition(
                     $myFuncCall->getLine(),
@@ -403,8 +408,11 @@ class TaintAnalysis
                 if ($mySource->getIsObject()) {
                     $defAssign->addType(MyDefinition::TYPE_INSTANCE);
                     $defAssign->property->addProperty("PROGPILOT_ALL_PROPERTIES_TAINTED");
-                    $exprReturn->addDef($myDef);
-                    $myDef->setExpr($exprReturn);
+                    
+                    $defAssign->setTaintedByExpr($exprReturn);
+                    $defAssign->setExpr($exprReturn);
+                    
+                    $exprReturn->addDef($defAssign);
                 } elseif ($mySource->getIsArray()) {
                     $defAssign->setArrayValue("PROGPILOT_ALL_INDEX_TAINTED");
                     // we don't add type of TYPE_ARRAY because is a virtual array
@@ -413,9 +421,11 @@ class TaintAnalysis
                     // we don't want row as an array because it's value is constance PROGPILOT_ALL_INDEX_TAINTED
                     // which doesn't mean anything for the user
                     //$defAssign->addType(MyDefinition::TYPE_ARRAY);
+                    
+                    $defAssign->setTaintedByExpr($exprReturn);
+                    $defAssign->setExpr($exprReturn);
 
-                    $exprReturn->addDef($myDef);
-                    $myDef->setExpr($exprReturn);
+                    $exprReturn->addDef($defAssign);
                 } elseif ($mySource->getIsReturnArray() && $arrFuncCall === false) {
                     $valueArray = array($mySource->getReturnArrayValue() => false);
 

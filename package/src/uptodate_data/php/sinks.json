@@ -6,7 +6,7 @@
         
         {"name": "echo", "conditions": "QUOTES_HTML", "language": "php", "attack": "xss", "cwe": "CWE_79"},
         {"name": "print", "conditions": "QUOTES_HTML", "parameters": [{"id": 1}], "language": "php", "attack": "xss", "cwe": "CWE_79"},
-        {"name": "print_r", "conditions": "QUOTES_HTML", "parameters": [{"id": 1}], "language": "php", "attack": "xss", "cwe": "CWE_79"},
+        {"name": "print_r", "conditions": "QUOTES_HTML", "parameters": [{"id": 1, "conditions": ["array_tainted", "object_tainted", "variable_tainted"]}], "language": "php", "attack": "xss", "cwe": "CWE_79"},
         {"name": "exit", "parameters": [{"id": 1}], "language": "php", "attack": "xss", "cwe": "CWE_79"},
         {"name": "die", "parameters": [{"id": 1}], "language": "php", "attack": "xss", "cwe": "CWE_79"},
         {"name": "printf", "conditions": "QUOTES_HTML", "language": "php", "attack": "xss", "cwe": "CWE_79"},

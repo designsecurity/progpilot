@@ -21,6 +21,10 @@ Progpilot is licensed under the [MIT License](../LICENSE)
 
 See also the list of [contributors](https://github.com/designsecurity/progpilot/contributors) who participated in this project.
 
+## Contribute
+
+If you want to contribute to this project see [the contributing rules](./CONTRIBUTING;md).
+
 ## Roadmap
 
 There is a lot of tasks to do :

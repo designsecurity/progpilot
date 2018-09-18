@@ -3434,252 +3434,297 @@
 
                 ],
                 [
-                    "./tests/vulntestsuite/CWE_89__GET__CAST-cast_float_sort_of__multiple_select-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__GET__CAST-cast_float_sort_of__multiple_select-sprintf_%u_simple_quote.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__GET__CAST-cast_int__multiple_AS-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__GET__CAST-cast_int__multiple_AS-sprintf_%u_simple_quote.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__GET__CAST-cast_int__multiple_select-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__GET__CAST-cast_int__multiple_select-sprintf_%u_simple_quote.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__GET__CAST-cast_int_sort_of2__multiple_select-interpretation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__GET__CAST-cast_int_sort_of2__multiple_select-interpretation_simple_quote.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__GET__CAST-func_settype_float__multiple_select-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__GET__CAST-func_settype_float__multiple_select-sprintf_%d.php", 
+                    [["\$data", "60", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__GET__CAST-func_settype_float__select_from_where-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__GET__CAST-func_settype_float__select_from_where-sprintf_%s_simple_quote.php", 
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__GET__func_FILTER-CLEANING-number_int_filter__select_from_where-sprintf_%u.php", []
+                    "./tests/vulntestsuite/CWE_89__GET__func_FILTER-CLEANING-number_int_filter__select_from_where-sprintf_%u.php", 
+                    [["\$data", "62", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__GET__func_FILTER-VALIDATION-number_int_filter__multiple_AS-sprintf_%u.php", []
+                    "./tests/vulntestsuite/CWE_89__GET__func_FILTER-VALIDATION-number_int_filter__multiple_AS-sprintf_%u.php", 
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__GET__func_intval__multiple_AS-sprintf_%d_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__GET__func_intval__multiple_AS-sprintf_%d_simple_quote.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__GET__func_intval__select_from_where-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__GET__func_intval__select_from_where-sprintf_%d.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__GET__ternary_white_list__select_from_where-sprintf_%u.php", []
+                    "./tests/vulntestsuite/CWE_89__GET__ternary_white_list__select_from_where-sprintf_%u.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__POST__CAST-cast_float_sort_of__multiple_select-interpretation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__POST__CAST-cast_float_sort_of__multiple_select-interpretation_simple_quote.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__POST__CAST-cast_int__multiple_AS-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__POST__CAST-cast_int__multiple_AS-concatenation.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__POST__CAST-cast_int__multiple_AS-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__POST__CAST-cast_int__multiple_AS-sprintf_%d.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__POST__CAST-cast_int__multiple_select-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__POST__CAST-cast_int__multiple_select-concatenation.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__POST__CAST-cast_int_sort_of__multiple_select-interpretation.php", []
+                    "./tests/vulntestsuite/CWE_89__POST__CAST-cast_int_sort_of__multiple_select-interpretation.php",  
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__POST__CAST-func_settype_float__select_from_where-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__POST__CAST-func_settype_float__select_from_where-sprintf_%s_simple_quote.php", 
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__POST__func_FILTER-CLEANING-number_int_filter__select_from_where-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__POST__func_FILTER-CLEANING-number_int_filter__select_from_where-sprintf_%d.php", 
+                    [["\$data", "62", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__POST__func_FILTER-VALIDATION-number_int_filter__select_from_where-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__POST__func_FILTER-VALIDATION-number_int_filter__select_from_where-sprintf_%s_simple_quote.php", 
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__POST__func_floatval__select_from_where-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__POST__func_floatval__select_from_where-sprintf_%s_simple_quote.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__POST__func_preg_match-only_numbers__select_from_where-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__POST__func_preg_match-only_numbers__select_from_where-concatenation.php", 
+                    [["\$data", "62", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__SESSION__CAST-cast_int_sort_of2__multiple_select-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__SESSION__CAST-cast_int_sort_of2__multiple_select-sprintf_%u_simple_quote.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__SESSION__CAST-cast_int_sort_of__multiple_AS-concatenation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__SESSION__CAST-cast_int_sort_of__multiple_AS-concatenation_simple_quote.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__SESSION__CAST-cast_int_sort_of__select_from_where-sprintf_%u.php", []
+                    "./tests/vulntestsuite/CWE_89__SESSION__CAST-cast_int_sort_of__select_from_where-sprintf_%u.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__SESSION__func_FILTER-CLEANING-number_int_filter__multiple_AS-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__SESSION__func_FILTER-CLEANING-number_int_filter__multiple_AS-sprintf_%d.php", 
+                    [["\$data", "62", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__SESSION__func_FILTER-CLEANING-number_int_filter__multiple_AS-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__SESSION__func_FILTER-CLEANING-number_int_filter__multiple_AS-sprintf_%s_simple_quote.php", 
+                    [["\$data", "62", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__SESSION__func_FILTER-CLEANING-number_int_filter__multiple_select-sprintf_%d.php", 
+                    [["\$data", "62", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__SESSION__func_FILTER-CLEANING-number_int_filter__multiple_select-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__SESSION__func_FILTER-VALIDATION-number_float_filter__multiple_AS-sprintf_%s_simple_quote.php",
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__SESSION__func_FILTER-VALIDATION-number_float_filter__multiple_AS-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__SESSION__func_FILTER-VALIDATION-number_int_filter__select_from_where-concatenation.php",
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__SESSION__func_FILTER-VALIDATION-number_int_filter__select_from_where-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__SESSION__func_floatval__multiple_select-concatenation_simple_quote.php",
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__SESSION__func_floatval__multiple_select-concatenation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__SESSION__func_floatval__select_from_where-sprintf_%d.php",
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__SESSION__func_floatval__select_from_where-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__SESSION__ternary_white_list__multiple_select-concatenation.php", 
+                    [["\$data", "57", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__SESSION__whitelist_using_array_from__select_from-sprintf_%s_simple_quote.php",
+                    [["\$data", "62", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__SESSION__ternary_white_list__multiple_select-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__array-GET__CAST-cast_float_sort_of__multiple_select-interpretation.php",
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__SESSION__whitelist_using_array_from__select_from-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__array-GET__CAST-cast_float_sort_of__select_from_where-concatenation_simple_quote.php",
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__array-GET__CAST-cast_float_sort_of__multiple_select-interpretation.php", []
+                    "./tests/vulntestsuite/CWE_89__array-GET__CAST-cast_int__multiple_AS-concatenation.php",
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__array-GET__CAST-cast_float_sort_of__select_from_where-concatenation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__array-GET__CAST-cast_int_sort_of2__multiple_AS-sprintf_%u_simple_quote.php",
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__array-GET__CAST-cast_int__multiple_AS-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__array-GET__CAST-cast_int_sort_of__multiple_AS-sprintf_%u_simple_quote.php",
+                    [["\$data", "61", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__array-GET__CAST-func_settype_float__multiple_AS-sprintf_%s_simple_quote.php",
+                    [["\$data", "65", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__array-GET__CAST-cast_int_sort_of2__multiple_AS-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__array-GET__func_FILTER-VALIDATION-number_int_filter__select_from_where-sprintf_%s_simple_quote.php",
+                    [["\$data", "65", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__array-GET__CAST-cast_int_sort_of__multiple_AS-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__array-GET__func_floatval__multiple_select-interpretation_simple_quote.php",
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__array-GET__CAST-func_settype_float__multiple_AS-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__array-GET__func_htmlentities__join-concatenation_simple_quote.php", 
+                    [["\$data", "61", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__array-GET__func_intval__multiple_select-sprintf_%u.php",
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__array-GET__func_FILTER-VALIDATION-number_int_filter__select_from_where-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__array-GET__func_intval__select_from_where-concatenation.php", 
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__array-GET__func_floatval__multiple_select-interpretation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__backticks__CAST-cast_int_sort_of__multiple_AS-concatenation.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__array-GET__func_htmlentities__join-concatenation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__backticks__func_FILTER-CLEANING-number_float_filter__multiple_select-concatenation_simple_quote.php", 
+                    [["\$data", "62", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__array-GET__func_intval__multiple_select-sprintf_%u.php", []
+                    "./tests/vulntestsuite/CWE_89__backticks__func_FILTER-CLEANING-number_int_filter__select_from_where-sprintf_%d.php", 
+                    [["\$data", "62", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__backticks__func_FILTER-VALIDATION-number_int_filter__multiple_AS-concatenation.php", 
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__array-GET__func_intval__select_from_where-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__backticks__func_floatval__multiple_select-sprintf_%u_simple_quote.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__backticks__CAST-cast_int_sort_of__multiple_AS-concatenation.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__backticks__func_FILTER-CLEANING-number_float_filter__multiple_select-concatenation_simple_quote.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__backticks__func_FILTER-CLEANING-number_int_filter__select_from_where-sprintf_%d.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__backticks__func_FILTER-VALIDATION-number_int_filter__multiple_AS-concatenation.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__backticks__func_floatval__multiple_select-sprintf_%u_simple_quote.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__backticks__func_htmlspecialchars__join-concatenation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__backticks__func_htmlspecialchars__join-concatenation_simple_quote.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
@@ -3688,40 +3733,45 @@
                         [["\$query", "49", "sql_injection"],
                         ["\$data", "57", "xss"]]
                 ],
-
-
+                
                 [
-                    "./tests/vulntestsuite/CWE_89__backticks__func_preg_match-only_numbers__select_from_where-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__backticks__func_preg_match-only_numbers__select_from_where-sprintf_%u_simple_quote.php", 
+                    [["\$data", "62", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__backticks__whitelist_using_array__join-interpretation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__backticks__whitelist_using_array__join-interpretation_simple_quote.php",
+                    [["\$data", "62", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__exec__CAST-cast_int__multiple_AS-sprintf_%u.php", []
+                    "./tests/vulntestsuite/CWE_89__exec__CAST-cast_int__multiple_AS-sprintf_%u.php", 
+                    [["\$data", "60", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__exec__CAST-func_settype_int__multiple_select-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__exec__CAST-func_settype_int__multiple_select-sprintf_%u_simple_quote.php", 
+                    [["\$data", "64", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__exec__func_FILTER-CLEANING-number_int_filter__select_from_where-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__exec__func_FILTER-CLEANING-number_int_filter__select_from_where-sprintf_%u_simple_quote.php", 
+                    [["\$data", "65", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__exec__func_floatval__multiple_select-sprintf_%u.php", 
+                    [["\$data", "60", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__exec__func_floatval__multiple_select-sprintf_%u.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__exec__func_intval__select_from_where-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__exec__func_intval__select_from_where-concatenation.php",
+                    [["\$data", "60", "xss"]]
                 ],
 
 
@@ -3731,29 +3781,32 @@
                         ["\$data", "60", "xss"]]
                 ],
 
-
                 [
-                    "./tests/vulntestsuite/CWE_89__exec__whitelist_using_array__multiple_AS-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__exec__whitelist_using_array__multiple_AS-sprintf_%u_simple_quote.php", 
+                    [["\$data", "65", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__fopen__CAST-cast_float__multiple_select-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__fopen__CAST-cast_float__multiple_select-concatenation.php",
+                    [["\$data", "66", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__fopen__CAST-cast_int_sort_of2__select_from_where-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__fopen__CAST-cast_int_sort_of2__select_from_where-sprintf_%u_simple_quote.php",
+                    [["\$data", "66", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__fopen__func_FILTER-VALIDATION-number_float_filter__multiple_AS-concatenation.php",
+                    [["\$data", "70", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__fopen__func_FILTER-VALIDATION-number_float_filter__multiple_AS-concatenation.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__fopen__func_FILTER-VALIDATION-number_float_filter__multiple_select-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__fopen__func_FILTER-VALIDATION-number_float_filter__multiple_select-sprintf_%s_simple_quote.php",
+                    [["\$data", "70", "xss"]]
                 ],
 
 
@@ -3763,49 +3816,56 @@
                         ["\$data", "66", "xss"]]
                 ],
 
-
                 [
-                    "./tests/vulntestsuite/CWE_89__fopen__ternary_white_list__multiple_AS-sprintf_%u.php", []
+                    "./tests/vulntestsuite/CWE_89__fopen__ternary_white_list__multiple_AS-sprintf_%u.php",                     
+                    [["\$data", "66", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__fopen__ternary_white_list__select_from_where-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__fopen__ternary_white_list__select_from_where-concatenation.php",                    
+                    [["\$data", "66", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__fopen__whitelist_using_array__multiple_select-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__fopen__whitelist_using_array__multiple_select-sprintf_%u_simple_quote.php",                    
+                    [["\$data", "71", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-Array__CAST-cast_int__multiple_select-concatenation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-Array__CAST-cast_int__multiple_select-concatenation_simple_quote.php",                    
+                    [["\$data", "75", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-Array__CAST-cast_int__multiple_select-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__object-Array__CAST-cast_int__multiple_select-sprintf_%d.php",                    
+                    [["\$data", "75", "xss"]]
+                ],
+                
+                [
+                    "./tests/vulntestsuite/CWE_89__object-Array__CAST-cast_int_sort_of__multiple_AS-sprintf_%d.php",                    
+                    [["\$data", "75", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-Array__CAST-cast_int_sort_of__multiple_AS-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__object-Array__CAST-cast_int_sort_of__select_from_where-sprintf_%s_simple_quote.php",                    
+                    [["\$data", "75", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-Array__CAST-cast_int_sort_of__select_from_where-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-Array__CAST-func_settype_float__multiple_AS-sprintf_%u.php",                   
+                    [["\$data", "79", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-Array__CAST-func_settype_float__multiple_AS-sprintf_%u.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__object-Array__CAST-func_settype_float__select_from_where-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-Array__CAST-func_settype_float__select_from_where-sprintf_%u_simple_quote.php",                    
+                    [["\$data", "79", "xss"]]
                 ],
 
 
@@ -3815,140 +3875,160 @@
                         ["\$data", "77", "xss"]]
                 ],
 
-
                 [
-                    "./tests/vulntestsuite/CWE_89__object-Array__func_FILTER-CLEANING-number_float_filter__multiple_AS-sprintf_%u.php", []
+                    "./tests/vulntestsuite/CWE_89__object-Array__func_FILTER-CLEANING-number_float_filter__multiple_AS-sprintf_%u.php",            
+                    [["\$data", "80", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-Array__func_floatval__multiple_AS-sprintf_%d_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-Array__func_floatval__multiple_AS-sprintf_%d_simple_quote.php",            
+                    [["\$data", "75", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-Array__func_floatval__multiple_select-concatenation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-Array__func_floatval__multiple_select-concatenation_simple_quote.php",           
+                    [["\$data", "75", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-Array__func_floatval__multiple_select-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__object-Array__func_floatval__multiple_select-sprintf_%d.php",           
+                    [["\$data", "75", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-Array__func_floatval__select_from_where-interpretation.php", []
+                    "./tests/vulntestsuite/CWE_89__object-Array__func_floatval__select_from_where-interpretation.php",            
+                    [["\$data", "75", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-Array__func_intval__multiple_AS-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-Array__func_intval__multiple_AS-sprintf_%u_simple_quote.php",           
+                    [["\$data", "75", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__object-classicGet__CAST-cast_float__multiple_AS-interpretation.php",           
+                    [["\$data", "72", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-classicGet__CAST-cast_float__multiple_AS-interpretation.php", []
+                    "./tests/vulntestsuite/CWE_89__object-classicGet__CAST-cast_int__select_from_where-sprintf_%u.php",            
+                    [["\$data", "72", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-classicGet__CAST-cast_int__select_from_where-sprintf_%u.php", []
+                    "./tests/vulntestsuite/CWE_89__object-classicGet__CAST-func_settype_float__multiple_AS-interpretation.php",           
+                    [["\$data", "76", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-classicGet__CAST-func_settype_float__multiple_AS-interpretation.php", []
+                    "./tests/vulntestsuite/CWE_89__object-classicGet__CAST-func_settype_int__multiple_AS-sprintf_%u_simple_quote.php",           
+                    [["\$data", "76", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__object-classicGet__CAST-func_settype_int__multiple_select-concatenation.php",           
+                    [["\$data", "76", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-classicGet__CAST-func_settype_int__multiple_AS-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-classicGet__CAST-func_settype_int__select_from_where-sprintf_%d.php",            
+                    [["\$data", "76", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-classicGet__CAST-func_settype_int__multiple_select-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__object-classicGet__func_FILTER-CLEANING-number_int_filter__multiple_select-concatenation.php",           
+                    [["\$data", "77", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-classicGet__CAST-func_settype_int__select_from_where-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__object-classicGet__func_FILTER-VALIDATION-number_float_filter__multiple_select-concatenation_simple_quote.php",           
+                    [["\$data", "76", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__object-classicGet__func_FILTER-VALIDATION-number_float_filter__multiple_select-interpretation.php",           
+                    [["\$data", "76", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-classicGet__func_FILTER-CLEANING-number_int_filter__multiple_select-concatenation.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__object-classicGet__func_FILTER-VALIDATION-number_float_filter__multiple_select-concatenation_simple_quote.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__object-classicGet__func_FILTER-VALIDATION-number_float_filter__multiple_select-interpretation.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__object-classicGet__func_floatval__multiple_select-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__object-classicGet__func_floatval__multiple_select-sprintf_%d.php",           
+                    [["\$data", "72", "xss"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_89__object-classicGet__func_htmlentities__join-sprintf_%s_simple_quote.php",
-                        [["\$query", "64", "sql_injection"]]
+                        [["\$query", "64", "sql_injection"],
+                        ["\$data", "72", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__object-classicGet__func_preg_match-only_numbers__multiple_AS-interpretation.php", 
+                    [["\$data", "77", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-classicGet__func_preg_match-only_numbers__multiple_AS-interpretation.php", []
+                    "./tests/vulntestsuite/CWE_89__object-classicGet__func_preg_match-only_numbers__multiple_select-interpretation.php", 
+                    [["\$data", "77", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-classicGet__func_preg_match-only_numbers__multiple_select-interpretation.php", []
+                    "./tests/vulntestsuite/CWE_89__object-classicGet__ternary_white_list__join-sprintf_%s_simple_quote.php", 
+                    [["\$data", "72", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-classicGet__ternary_white_list__join-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-classicGet__ternary_white_list__select_from-interpretation_simple_quote.php",
+                    [["\$data", "72", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__object-directGet__CAST-cast_float_sort_of__select_from_where-concatenation.php",
+                    [["\$data", "66", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-classicGet__ternary_white_list__select_from-interpretation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-directGet__CAST-cast_int__multiple_select-sprintf_%u_simple_quote.php", 
+                    [["\$data", "66", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-directGet__CAST-cast_float_sort_of__select_from_where-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__object-directGet__CAST-cast_int_sort_of2__multiple_select-sprintf_%u_simple_quote.php", 
+                    [["\$data", "66", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-directGet__CAST-cast_int__multiple_select-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-directGet__CAST-cast_int_sort_of__multiple_select-sprintf_%u.php", 
+                    [["\$data", "66", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__object-directGet__func_FILTER-CLEANING-number_float_filter__select_from_where-concatenation.php", 
+                    [["\$data", "71", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-directGet__CAST-cast_int_sort_of2__multiple_select-sprintf_%u_simple_quote.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__object-directGet__CAST-cast_int_sort_of__multiple_select-sprintf_%u.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__object-directGet__func_FILTER-CLEANING-number_float_filter__select_from_where-concatenation.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__object-directGet__func_FILTER-VALIDATION-number_int_filter__multiple_select-interpretation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-directGet__func_FILTER-VALIDATION-number_int_filter__multiple_select-interpretation_simple_quote.php",
+                    [["\$data", "70", "xss"]]
                 ],
 
 
@@ -3965,74 +4045,85 @@
                         ["\$data", "66", "xss"]]
                 ],
 
-
                 [
-                    "./tests/vulntestsuite/CWE_89__object-indexArray__CAST-cast_float_sort_of__multiple_select-interpretation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-indexArray__CAST-cast_float_sort_of__multiple_select-interpretation_simple_quote.php",
+                    [["\$data", "75", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-indexArray__CAST-cast_int__multiple_select-sprintf_%d_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-indexArray__CAST-cast_int__multiple_select-sprintf_%d_simple_quote.php",
+                    [["\$data", "75", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-indexArray__CAST-cast_int_sort_of__multiple_select-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-indexArray__CAST-cast_int_sort_of__multiple_select-sprintf_%s_simple_quote.php", 
+                    [["\$data", "75", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__object-indexArray__CAST-func_settype_float__multiple_AS-interpretation_simple_quote.php", 
+                    [["\$data", "79", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-indexArray__CAST-func_settype_float__multiple_AS-interpretation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-indexArray__func_FILTER-VALIDATION-number_float_filter__select_from_where-sprintf_%s_simple_quote.php",
+                    [["\$data", "79", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-indexArray__func_FILTER-VALIDATION-number_float_filter__select_from_where-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-indexArray__func_preg_match-only_numbers__multiple_select-sprintf_%d_simple_quote.php", 
+                    [["\$data", "80", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-indexArray__func_preg_match-only_numbers__multiple_select-sprintf_%d_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-indexArray__whitelist_using_array__join-interpretation_simple_quote.php", 
+                    [["\$data", "80", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-indexArray__whitelist_using_array__join-interpretation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__object-indexArray__whitelist_using_array__select_from-interpretation_simple_quote.php", 
+                    [["\$data", "80", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__popen__CAST-cast_float__multiple_select-sprintf_%d_simple_quote.php", 
+                    [["\$data", "59", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__object-indexArray__whitelist_using_array__select_from-interpretation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__popen__CAST-cast_float__select_from_where-sprintf_%d_simple_quote.php",
+                    [["\$data", "59", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__popen__CAST-cast_float__multiple_select-sprintf_%d_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__popen__CAST-func_settype_int__multiple_select-concatenation_simple_quote.php", 
+                    [["\$data", "63", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__popen__CAST-cast_float__select_from_where-sprintf_%d_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__popen__func_FILTER-CLEANING-number_float_filter__select_from_where-interpretation.php", 
+                    [["\$data", "64", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__popen__CAST-func_settype_int__multiple_select-concatenation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__popen__func_floatval__multiple_select-concatenation.php", 
+                    [["\$data", "59", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__popen__func_FILTER-CLEANING-number_float_filter__select_from_where-interpretation.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__popen__func_floatval__multiple_select-concatenation.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__popen__func_intval__select_from_where-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__popen__func_intval__select_from_where-concatenation.php", 
+                    [["\$data", "59", "xss"]]
                 ],
 
 
@@ -4044,132 +4135,155 @@
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__popen__ternary_white_list__multiple_AS-concatenation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__popen__ternary_white_list__multiple_AS-concatenation_simple_quote.php", 
+                    [["\$data", "59", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__popen__ternary_white_list__multiple_select-sprintf_%u.php", []
+                    "./tests/vulntestsuite/CWE_89__popen__ternary_white_list__multiple_select-sprintf_%u.php", 
+                    [["\$data", "59", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__proc_open__CAST-cast_float__multiple_select-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__proc_open__CAST-cast_float__multiple_select-concatenation.php", 
+                    [["\$data", "69", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__proc_open__CAST-cast_float_sort_of__multiple_select-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__proc_open__CAST-cast_float_sort_of__multiple_select-sprintf_%s_simple_quote.php",
+                    [["\$data", "69", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__proc_open__CAST-cast_int__select_from_where-interpretation.php", []
+                    "./tests/vulntestsuite/CWE_89__proc_open__CAST-cast_int__select_from_where-interpretation.php", 
+                    [["\$data", "69", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__proc_open__CAST-cast_int_sort_of2__multiple_select-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__proc_open__CAST-cast_int_sort_of2__multiple_select-sprintf_%d.php", 
+                    [["\$data", "69", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__proc_open__CAST-cast_int_sort_of__multiple_AS-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__proc_open__CAST-cast_int_sort_of__multiple_AS-sprintf_%s_simple_quote.php",
+                    [["\$data", "69", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__proc_open__func_FILTER-VALIDATION-number_float_filter__select_from_where-interpretation.php", []
+                    "./tests/vulntestsuite/CWE_89__proc_open__func_FILTER-VALIDATION-number_float_filter__select_from_where-interpretation.php", 
+                    [["\$data", "73", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__proc_open__func_intval__select_from_where-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__proc_open__func_intval__select_from_where-concatenation.php",
+                    [["\$data", "69", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__proc_open__func_intval__select_from_where-sprintf_%d_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__proc_open__func_intval__select_from_where-sprintf_%d_simple_quote.php",
+                    [["\$data", "69", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__proc_open__func_preg_match-only_numbers__select_from_where-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__proc_open__func_preg_match-only_numbers__select_from_where-concatenation.php", 
+                    [["\$data", "74", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__proc_open__whitelist_using_array__multiple_AS-sprintf_%d_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__proc_open__whitelist_using_array__multiple_AS-sprintf_%d_simple_quote.php", 
+                    [["\$data", "74", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__proc_open__whitelist_using_array__select_from_where-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__proc_open__whitelist_using_array__select_from_where-sprintf_%d.php", 
+                    [["\$data", "74", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__shell_exec__CAST-cast_float_sort_of__multiple_select-sprintf_%d.php",
+                    [["\$data", "57", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__shell_exec__CAST-cast_int_sort_of2__multiple_AS-sprintf_%u.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__shell_exec__CAST-cast_float_sort_of__multiple_select-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__shell_exec__CAST-cast_int_sort_of__select_from_where-interpretation_simple_quote.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__shell_exec__CAST-cast_int_sort_of2__multiple_AS-sprintf_%u.php", []
+                    "./tests/vulntestsuite/CWE_89__shell_exec__func_FILTER-CLEANING-number_float_filter__multiple_AS-interpretation.php", 
+                    [["\$data", "62", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__shell_exec__CAST-cast_int_sort_of__select_from_where-interpretation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__shell_exec__func_FILTER-CLEANING-number_int_filter__multiple_select-sprintf_%d.php",
+                    [["\$data", "62", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__shell_exec__func_FILTER-CLEANING-number_float_filter__multiple_AS-interpretation.php", []
+                    "./tests/vulntestsuite/CWE_89__shell_exec__func_FILTER-VALIDATION-number_float_filter__multiple_AS-sprintf_%s_simple_quote.php", 
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__shell_exec__func_FILTER-CLEANING-number_int_filter__multiple_select-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__shell_exec__func_FILTER-VALIDATION-number_int_filter__multiple_select-sprintf_%u.php",
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__shell_exec__func_FILTER-VALIDATION-number_float_filter__multiple_AS-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__shell_exec__func_intval__multiple_AS-sprintf_%d_simple_quote.php",
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__shell_exec__func_FILTER-VALIDATION-number_int_filter__multiple_select-sprintf_%u.php", []
+                    "./tests/vulntestsuite/CWE_89__shell_exec__ternary_white_list__select_from_where-sprintf_%d_simple_quote.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__shell_exec__func_intval__multiple_AS-sprintf_%d_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__shell_exec__whitelist_using_array__multiple_select-sprintf_%d.php", 
+                    [["\$data", "62", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__shell_exec__ternary_white_list__select_from_where-sprintf_%d_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__system__CAST-cast_float__multiple_AS-interpretation_simple_quote.php", 
+                    [["\$data", "57", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__system__CAST-func_settype_float__multiple_select-sprintf_%u_simple_quote.php", 
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__shell_exec__whitelist_using_array__multiple_select-sprintf_%d.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__system__CAST-cast_float__multiple_AS-interpretation_simple_quote.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__system__CAST-func_settype_float__multiple_select-sprintf_%u_simple_quote.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__system__CAST-func_settype_float__select_from_where-interpretation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__system__CAST-func_settype_float__select_from_where-interpretation_simple_quote.php", 
+                    [["\$data", "61", "xss"]]
                 ],
 
 
@@ -4178,14 +4292,15 @@
                     [["\$data", "59", "xss"]]
                 ],
 
-
                 [
-                    "./tests/vulntestsuite/CWE_89__system__func_FILTER-VALIDATION-number_float_filter__multiple_AS-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__system__func_FILTER-VALIDATION-number_float_filter__multiple_AS-sprintf_%d.php", 
+                    [["\$data", "61", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__system__func_preg_match-only_numbers__select_from_where-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__system__func_preg_match-only_numbers__select_from_where-sprintf_%u_simple_quote.php", 
+                    [["\$data", "62", "xss"]]
                 ],
 
 
@@ -4196,97 +4311,112 @@
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__system__ternary_white_list__multiple_select-sprintf_%d_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__system__ternary_white_list__multiple_select-sprintf_%d_simple_quote.php", 
+                    [["\$data", "57", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__system__ternary_white_list__multiple_select-sprintf_%u.php", []
+                    "./tests/vulntestsuite/CWE_89__system__ternary_white_list__multiple_select-sprintf_%u.php", 
+                    [["\$data", "57", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__system__whitelist_using_array__multiple_AS-sprintf_%s_simple_quote.php", 
+                    [["\$data", "62", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__system__whitelist_using_array__multiple_AS-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__system__whitelist_using_array__multiple_select-sprintf_%d_simple_quote.php", 
+                    [["\$data", "62", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__system__whitelist_using_array__multiple_select-sprintf_%d_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__unserialize__CAST-cast_float_sort_of__multiple_AS-sprintf_%u.php",
+                    [["\$data", "60", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__unserialize__CAST-cast_float_sort_of__multiple_AS-sprintf_%u.php", []
+                    "./tests/vulntestsuite/CWE_89__unserialize__CAST-cast_int__multiple_AS-interpretation.php", 
+                    [["\$data", "60", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__unserialize__CAST-cast_int__multiple_AS-sprintf_%u_simple_quote.php", 
+                    [["\$data", "60", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__unserialize__CAST-cast_int__multiple_AS-interpretation.php", []
+                    "./tests/vulntestsuite/CWE_89__unserialize__CAST-func_settype_float__multiple_select-concatenation.php", 
+                    [["\$data", "64", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__unserialize__CAST-cast_int__multiple_AS-sprintf_%u_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__unserialize__func_FILTER-CLEANING-number_float_filter__select_from_where-sprintf_%d.php", 
+                    [["\$data", "65", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__unserialize__CAST-func_settype_float__multiple_select-concatenation.php", []
+                    "./tests/vulntestsuite/CWE_89__unserialize__func_FILTER-CLEANING-number_int_filter__multiple_AS-sprintf_%s_simple_quote.php", 
+                    [["\$data", "65", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__unserialize__func_FILTER-CLEANING-number_float_filter__select_from_where-sprintf_%d.php", []
+                    "./tests/vulntestsuite/CWE_89__unserialize__func_FILTER-CLEANING-number_int_filter__select_from_where-concatenation_simple_quote.php",
+                    [["\$data", "65", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__unserialize__func_FILTER-VALIDATION-number_int_filter__multiple_select-interpretation.php",
+                    [["\$data", "64", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__unserialize__func_FILTER-CLEANING-number_int_filter__multiple_AS-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__unserialize__func_floatval__multiple_AS-sprintf_%s_simple_quote.php", 
+                    [["\$data", "60", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__unserialize__func_FILTER-CLEANING-number_int_filter__select_from_where-concatenation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__unserialize__func_intval__multiple_select-sprintf_%u.php", 
+                    [["\$data", "60", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__unserialize__func_FILTER-VALIDATION-number_int_filter__multiple_select-interpretation.php", []
+                    "./tests/vulntestsuite/CWE_89__unserialize__func_intval__select_from_where-sprintf_%u.php", 
+                    [["\$data", "60", "xss"]]
+                ],
+
+                [
+                    "./tests/vulntestsuite/CWE_89__unserialize__func_preg_match-only_letters__select_from-interpretation_simple_quote.php",
+                    [["\$data", "65", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__unserialize__func_floatval__multiple_AS-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__unserialize__func_preg_match-only_numbers__multiple_select-concatenation.php", 
+                    [["\$data", "65", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__unserialize__func_intval__multiple_select-sprintf_%u.php", []
+                    "./tests/vulntestsuite/CWE_89__unserialize__ternary_white_list__select_from_where-sprintf_%u.php", 
+                    [["\$data", "60", "xss"]]
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_89__unserialize__func_intval__select_from_where-sprintf_%u.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__unserialize__func_preg_match-only_letters__select_from-interpretation_simple_quote.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__unserialize__func_preg_match-only_numbers__multiple_select-concatenation.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__unserialize__ternary_white_list__select_from_where-sprintf_%u.php", []
-                ],
-
-
-                [
-                    "./tests/vulntestsuite/CWE_89__unserialize__whitelist_using_array__multiple_select-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_89__unserialize__whitelist_using_array__multiple_select-sprintf_%s_simple_quote.php", 
+                    [["\$data", "65", "xss"]]
                 ],
 
 
@@ -4468,7 +4598,6 @@
                         ["\$query", "51", "sql_injection"],
                         ["\$data", "60", "xss"]]
                 ],
-
 
                 [
                     "./tests/vulntestsuite/CWE_90__GET__func_FILTER-CLEANING-special_chars_filter__not_name-interpretation_simple_quote.php", []
@@ -6244,5 +6373,4 @@
                 [
                     "./tests/vulntestsuite/CWE_91__system__func_preg_match-only_letters__username-sprintf_%s_simple_quote.php", []
                 ]
-            
             ];
