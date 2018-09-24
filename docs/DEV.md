@@ -23,7 +23,7 @@ See also the list of [contributors](https://github.com/designsecurity/progpilot/
 
 ## Contribute
 
-If you want to contribute to this project see [the contributing rules](./CONTRIBUTING;md).
+If you want to contribute to this project see [the contributing rules](./CONTRIBUTING.md).
 
 ## Roadmap
 

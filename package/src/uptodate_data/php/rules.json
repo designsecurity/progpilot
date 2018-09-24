@@ -25,6 +25,16 @@
             "description": "Twig_Environment autoescaping should be set to true",
             "language": "php", "action": "MUST_NOT_VERIFY_DEFINITION",
             "attack": "security misconfiguration", "cwe": "CWE_1004"
+        },
+        {
+            "name": "rule_object_return simplexml_load_file", 
+            "function_name": "simplexml_load_file", 
+            "description": "Result of simplexml_load_file as new sources",
+            "language": "php", 
+            "action": "RETURN_OBJECT", 
+            "extra": "simplexml_load_file",
+            "attack": "XXX", 
+            "cwe": "XXX"
         }
 		]
 }

@@ -45,6 +45,10 @@
                         ["\$data->boum", "25", "xss"]]
                 ],
                 [
+                    "./tests/data/sink8.php",
+                        [["\$query", "3", "xml_injection"]]
+                ],
+                [
                     "./tests/data/source1.php",
                         [["\$var7", "3", "xss"]]
                 ],

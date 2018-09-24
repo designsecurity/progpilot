@@ -8,5 +8,9 @@
                 [
                     "./tests/frameworks/codeigniter2.php",
                         [["\$row->title", '12', "xss"]]
+                ],
+                [
+                    "./tests/frameworks/codeigniter3.php",
+                        [["\$row[\"test\"]", '11', "xss"]]
                 ]
             ];

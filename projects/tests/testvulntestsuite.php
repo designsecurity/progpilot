@@ -2197,7 +2197,6 @@
                     "./tests/vulntestsuite/CWE_862_XPath__shell_exec__CAST-cast_int__concatenation-right_verification.php", []
                 ],
 
-
                 [
                     "./tests/vulntestsuite/CWE_862_XPath__shell_exec__ternary_white_list__concatenation-right_verification.php", []
                 ],
@@ -6136,7 +6135,8 @@
 
 
                 [
-                    "./tests/vulntestsuite/CWE_91__exec__func_htmlspecialchars__username-concatenation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_91__exec__func_htmlspecialchars__username-concatenation_simple_quote.php", 
+                        [["\$query", "52" , "xml_injection"]]
                 ],
 
 
@@ -6299,14 +6299,14 @@
                     "./tests/vulntestsuite/CWE_91__popen__whitelist_using_array__username_text-concatenation_simple_quote.php", []
                 ],
 
-
                 [
                     "./tests/vulntestsuite/CWE_91__proc_open__CAST-cast_int_sort_of__ID_at-sprintf_%s_simple_quote.php", []
                 ],
 
 
                 [
-                    "./tests/vulntestsuite/CWE_91__proc_open__func_htmlspecialchars__username_text-interpretation_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_91__proc_open__func_htmlspecialchars__username_text-interpretation_simple_quote.php", 
+                    [["\$query", "61", "xml_injection"]]
                 ],
 
 
@@ -6339,7 +6339,7 @@
                     "./tests/vulntestsuite/CWE_91__system__CAST-cast_int_sort_of2__ID_test-interpretation_simple_quote.php", []
                 ],
 
-
+            
                 [
                     "./tests/vulntestsuite/CWE_91__system__CAST-cast_int_sort_of__ID_at-sprintf_%u.php", []
                 ],
@@ -6361,7 +6361,8 @@
 
 
                 [
-                    "./tests/vulntestsuite/CWE_91__system__func_htmlentities__username_at-sprintf_%s_simple_quote.php", []
+                    "./tests/vulntestsuite/CWE_91__system__func_htmlentities__username_at-sprintf_%s_simple_quote.php", 
+                    [["\$query", "49", "xml_injection"]]
                 ],
 
 
@@ -6373,4 +6374,5 @@
                 [
                     "./tests/vulntestsuite/CWE_91__system__func_preg_match-only_letters__username-sprintf_%s_simple_quote.php", []
                 ]
+                
             ];

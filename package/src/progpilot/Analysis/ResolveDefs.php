@@ -632,6 +632,7 @@ class ResolveDefs
                             if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
                                 if ($instance->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
                                     //$propertiesDefs[] = $tempDefa;
+                                    $tempDefa->setTaintedByExpr($instance->getTaintedByExpr());
                                     $tempDefa->setTainted(true);
                                 } else {
                                     for ($i = $indexProperty; $i < count($myProperties); $i++) {

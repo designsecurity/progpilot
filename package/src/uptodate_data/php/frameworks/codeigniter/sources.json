@@ -4,6 +4,11 @@
         {"name": "post", "is_function": true, "instanceof": "CI_Controller->input", "language": "php"},
         {"name": "cookie", "is_function": true, "instanceof": "CI_Controller->input", "language": "php"},
         {"name": "server", "is_function": true, "instanceof": "CI_Controller->input", "language": "php"},
-        {"name": "result", "is_object": true, "is_function": true, "instanceof": "DBQueryCodeIgniter", "language": "php"}
-		]
+        {"name": "result", "is_object": true, "is_function": true, "instanceof": "DBQueryCodeIgniter", "language": "php"},
+        {"name": "result_array", "is_array": true, "is_function": true, "instanceof": "DBQueryCodeIgniter", "language": "php"},
+        {"name": "row", "is_object": true, "is_function": true, "instanceof": "DBQueryCodeIgniter", "language": "php"},
+        {"name": "row_array", "is_array": true, "is_function": true, "instanceof": "DBQueryCodeIgniter", "language": "php"},
+        {"name": "last_query", "is_function": true, "instanceof": "DBQueryCodeIgniter", "language": "php"}
+
+        ]
 }

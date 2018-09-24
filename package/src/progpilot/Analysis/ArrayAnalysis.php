@@ -43,12 +43,11 @@ class ArrayAnalysis
                     $goodDefs[] = $myDef_tmp;
                 }
             }
-        } // I'm looking for def[arr], I want to find def[arr], but I can have def (must be eliminated)
-        elseif ($searchedDef->isType(MyDefinition::TYPE_ARRAY)) {
+        } elseif ($searchedDef->isType(MyDefinition::TYPE_ARRAY)) {
+            // I'm looking for def[arr], I want to find def[arr], but I can have def (must be eliminated)
             if (($def->isType(MyDefinition::TYPE_ARRAY)
                         && ($searchedDef->getArrayValue() === $def->getArrayValue()) || $isIterator)
                             || $def->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED") {
-                            
                 if ($def->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED") {
                     $searchedDef->setTainted(true);
                     //TaintAnalysis::setTainted($context, $data, $searchedDef, $def, $def->getExpr(), false);
@@ -59,12 +58,12 @@ class ArrayAnalysis
                     }
                     
                     $goodDefs[] = $searchedDef;
+                } else {
+                    $goodDefs[] = $def;
                 }
-                else
-                $goodDefs[] = $def;
             }
-        } // I'm looking for def, I want to find def, but I can have def[arr] (must be eliminated)
-        elseif (!$searchedDef->isType(MyDefinition::TYPE_ARRAY)) {
+        } elseif (!$searchedDef->isType(MyDefinition::TYPE_ARRAY)) {
+            // I'm looking for def, I want to find def, but I can have def[arr] (must be eliminated)
             if (!$def->isType(MyDefinition::TYPE_ARRAY) || $isIterator) {
                 $goodDefs[] = $def;
             }

@@ -38,13 +38,19 @@ class SecurityAnalysis
         return false;
     }
 
-    public static function isSafe($indexParameter, $myDef, $mySink)
+    public static function isSafe($indexParameter, $myDef, $mySink, $isFlow = false)
     {
         $possibleConditions = ["QUOTES", "object_tainted", "array_tainted", "variable_tainted", null];
         
         foreach ($possibleConditions as $possibleCondition) {
             if ($mySink->isParameterCondition($indexParameter, $possibleCondition)) {
-                if (!SecurityAnalysis::isSafeCondition($indexParameter, $myDef, $mySink, $possibleCondition)) {
+                if (!SecurityAnalysis::isSafeCondition(
+                    $indexParameter,
+                    $myDef,
+                    $mySink,
+                    $possibleCondition,
+                    $isFlow)
+                    ) {
                     return false;
                 }
             }
@@ -53,13 +59,12 @@ class SecurityAnalysis
         return true;
     }
 
-    public static function isSafeCondition($indexParameter, $myDef, $mySink, $condition)
+    public static function isSafeCondition($indexParameter, $myDef, $mySink, $condition, $isFlow)
     {
-        if ($myDef->isTainted() 
+        if ($myDef->isTainted()
             && $myDef->getCast() === MyDefinition::CAST_NOT_SAFE
                 && $myDef->getArrayValue() !== "PROGPILOT_ALL_INDEX_TAINTED"
                     && !$myDef->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
-        
             if ($myDef->isSanitized()) {
                 if ($myDef->isTypeSanitized($mySink->getAttack())
                             || $myDef->isTypeSanitized("ALL")) {
@@ -93,13 +98,13 @@ class SecurityAnalysis
             }
 
             return false;
+        } elseif (($condition === "array_tainted" || $isFlow)
+            && $myDef->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED") {
+            return false;
+        } elseif (($condition === "object_tainted" || $isFlow)
+            && $myDef->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
+            return false;
         }
-        elseif($condition === "array_tainted" 
-            && $myDef->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED")
-            return false;
-        elseif($condition === "object_tainted" 
-            && $myDef->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED"))
-            return false;
 
         return true;
     }
@@ -133,7 +138,7 @@ class SecurityAnalysis
                                 }
                             }
                         } elseif (!$myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
-                         && (!$mySink->isParameterCondition($i + 1, "array_tainted") 
+                         && (!$mySink->isParameterCondition($i + 1, "array_tainted")
                          || $mySink->isParameterCondition($i + 1, "variable_tainted"))) {
                             if (!is_null($taintedExpr)) {
                                 $defsExpr = $taintedExpr->getDefs();
@@ -143,12 +148,10 @@ class SecurityAnalysis
                                     }
                                 }
                             }
-                        }
-                        elseif($myDefArg->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED"
+                        } elseif ($myDefArg->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED"
                             && $mySink->isParameterCondition($i + 1, "array_tainted")) {
                             $conditionRespected = true;
-                        }
-                        elseif($myDefArg->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")
+                        } elseif ($myDefArg->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")
                             && $mySink->isParameterCondition($i + 1, "object_tainted")) {
                             $conditionRespected = true;
                         }
@@ -205,7 +208,7 @@ class SecurityAnalysis
             $defsExprTainted = $taintedFlowExpr->getDefs();
 
             foreach ($defsExprTainted as $defExprFlowFrom) {
-                if (!SecurityAnalysis::isSafe($indexParameter, $defExprFlowFrom, $mySink)) {
+                if (!SecurityAnalysis::isSafe($indexParameter, $defExprFlowFrom, $mySink, true)) {
                     $oneTainted["flow_name"] = \progpilot\Utils::printDefinition($defExprFlowFrom);
                     $oneTainted["flow_line"] = $defExprFlowFrom->getLine();
                     $oneTainted["flow_column"] = $defExprFlowFrom->getColumn();
@@ -214,8 +217,9 @@ class SecurityAnalysis
                     );
                     
                     // just in case
-                    if(in_array($oneTainted, $resultTaintedFlow, true))
+                    if (in_array($oneTainted, $resultTaintedFlow, true)) {
                         break 2;
+                    }
                         
                     $resultTaintedFlow[] = $oneTainted;
 
