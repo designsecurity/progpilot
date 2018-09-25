@@ -49,7 +49,8 @@ class SecurityAnalysis
                     $myDef,
                     $mySink,
                     $possibleCondition,
-                    $isFlow)
+                    $isFlow
+                )
                     ) {
                     return false;
                 }

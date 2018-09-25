@@ -36,8 +36,5 @@ There is a lot of tasks to do :
 - Chained functions calls : $obj->func1()->func2()
 - Chained references  : $var = "eee"; $ref1 = &$var; $ref2 = &$ref1;
 - Sprintf strings transformations
-- No need to new for simplexml_load_file (return $instance) so we miss object creation
 - $tainted = $tainted + 0; => cast to int
-- mysqli_fetch_object (all the properties are tainted : is_object like is_array in the definition of source)
-- mysqli style object (will be handled by custom rules : $mysqli = new mysqli; $result = $mysqli->query(); (return of query method of instance mysqli is an object of type ect) $result->fetch_array();)
 - Handle all tainted flows when severals definitions taint the same expression

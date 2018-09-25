@@ -21,7 +21,6 @@ use progpilot\Utils;
 
 class CustomAnalysis
 {
-
     public static function returnObjectCreateObject($context, $exprReturn, $customRule, $myFunc)
     {
         $defAssign = $exprReturn->getAssignDef();
@@ -61,7 +60,7 @@ class CustomAnalysis
                         && !is_null($customRule->getExtra())) {
                     $functionDefinition = $customRule->getFunctionDefinition();
                     
-                    if (!is_null($functionDefinition)) {
+                    if (!is_null($functionDefinition) && $functionDefinition->getName() === $myFunc->getName()) {
                         if ($functionDefinition->isInstance()) {
                             $propertiesRule = explode("->", $functionDefinition->getInstanceOfName());
 

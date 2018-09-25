@@ -21,6 +21,7 @@ user    9m57,704s
 sys     0m1,577s
 
 
+
 good test, a lot of defs and includes :
 /home/eric/dev/scripts/drupal/core/includes/install.core.inc
 
@@ -37,6 +38,11 @@ sys     0m3,183s
 real    15m5,136s
 user    14m10,438s
 sys     0m1,402s
+
+/srv/www/htdocs/phpMyAdmin/ (25/09/2018 : 3000 defs & 500ko) :
+real    12m11,888s
+user    11m6,008s
+sys     0m1,150s
 
 drupal last version  (0.3.2) :
 real    10m16,104s

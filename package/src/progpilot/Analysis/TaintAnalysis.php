@@ -354,7 +354,7 @@ class TaintAnalysis
         if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD) && !is_null($myClass)) {
             $className = $myClass->getName();
         }
-
+        
         $mySource = $context->inputs->getSourceByName($stackClass, $myFuncCall, true, $className, false);
         if (!is_null($mySource)) {
             if ($mySource->hasParameters()) {
@@ -426,6 +426,7 @@ class TaintAnalysis
                     $defAssign->setExpr($exprReturn);
 
                     $exprReturn->addDef($defAssign);
+                    
                 } elseif ($mySource->getIsReturnArray() && $arrFuncCall === false) {
                     $valueArray = array($mySource->getReturnArrayValue() => false);
 

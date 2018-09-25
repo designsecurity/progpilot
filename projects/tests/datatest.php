@@ -119,6 +119,10 @@
                         ["\$data[\"trou\"]", "17", "xss"]]
                 ],
                 [
+                    "./tests/data/source18.php",
+                        [["\$row[1]", "11", "xss"]]
+                ],
+                [
                     "./tests/data/sanitizer1.php",
                         [["\$var7safe", "5", "xss"]]
                 ],

@@ -35,6 +35,17 @@
             "extra": "simplexml_load_file",
             "attack": "XXX", 
             "cwe": "XXX"
+        },
+        {
+            "name": "rule_object_return mysqli query", 
+            "function_name": "query", 
+            "instanceof": "mysqli", 
+            "description": "Result of mysqli::query as new sources",
+            "language": "php", 
+            "action": "RETURN_OBJECT", 
+            "extra": "mysqli_result",
+            "attack": "XXX", 
+            "cwe": "XXX"
         }
 		]
 }
