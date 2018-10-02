@@ -44,10 +44,16 @@ real    12m11,888s
 user    11m6,008s
 sys     0m1,150s
 
-drupal last version  (0.3.2) :
+drupal   (0.3.2) :
 real    10m16,104s
 user    6m37,777s
 sys     0m2,393s
+
+drupal last version  (0.3.3) :(25/09/2018 : 3000 defs & 500ko) :
+real    11m52,976s
+user    7m56,919s
+sys     0m2,874s
+
 
 good test nikic :
 /home/eric/dev/perso/designsecurity/progpilot/.git/

@@ -1,0 +1,97 @@
+>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+
+
+
+
+array(1) {
+  [0]=>
+  object(PhpParser\Node\Stmt\Expression)#1753 (2) {
+    ["expr"]=>
+    object(PhpParser\Node\Expr\Assign)#1754 (3) {
+      ["var"]=>
+      object(PhpParser\Node\Expr\Variable)#13 (2) {
+        ["name"]=>
+        string(3) "var"
+        ["attributes":protected]=>
+        array(4) {
+          ["startLine"]=>
+          int(3)
+          ["startFilePos"]=>
+          int(7)
+          ["endLine"]=>
+          int(3)
+          ["endFilePos"]=>
+          int(10)
+        }
+      }
+      ["expr"]=>
+      object(PhpParser\Node\Expr\New_)#1756 (3) {
+        ["class"]=>
+        object(PhpParser\Node\Stmt\Class_)#1752 (6) {
+          ["flags"]=>
+          int(0)
+          ["extends"]=>
+          NULL
+          ["implements"]=>
+          array(0) {
+          }
+          ["name"]=>
+          NULL
+          ["stmts"]=>
+          array(0) {
+          }
+          ["attributes":protected]=>
+          array(4) {
+            ["startLine"]=>
+            int(3)
+            ["startFilePos"]=>
+            int(18)
+            ["endLine"]=>
+            int(4)
+            ["endFilePos"]=>
+            int(34)
+          }
+        }
+        ["args"]=>
+        array(0) {
+        }
+        ["attributes":protected]=>
+        array(4) {
+          ["startLine"]=>
+          int(3)
+          ["startFilePos"]=>
+          int(14)
+          ["endLine"]=>
+          int(4)
+          ["endFilePos"]=>
+          int(34)
+        }
+      }
+      ["attributes":protected]=>
+      array(4) {
+        ["startLine"]=>
+        int(3)
+        ["startFilePos"]=>
+        int(7)
+        ["endLine"]=>
+        int(4)
+        ["endFilePos"]=>
+        int(34)
+      }
+    }
+    ["attributes":protected]=>
+    array(4) {
+      ["startLine"]=>
+      int(3)
+      ["startFilePos"]=>
+      int(7)
+      ["endLine"]=>
+      int(4)
+      ["endFilePos"]=>
+      int(35)
+    }
+  }
+}

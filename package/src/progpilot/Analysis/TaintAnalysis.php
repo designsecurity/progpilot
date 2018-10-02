@@ -426,7 +426,6 @@ class TaintAnalysis
                     $defAssign->setExpr($exprReturn);
 
                     $exprReturn->addDef($defAssign);
-                    
                 } elseif ($mySource->getIsReturnArray() && $arrFuncCall === false) {
                     $valueArray = array($mySource->getReturnArrayValue() => false);
 

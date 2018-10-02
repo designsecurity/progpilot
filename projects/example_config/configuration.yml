@@ -9,7 +9,7 @@ inputs:
     setCustomRules: ../../package/src/uptodate_data/php/rules.json
     setIncludeFiles: 
     setExcludeFiles: 
-    setFolder: /srv/www/htdocs/phpMyAdmin/
+    setFolder: /home/eric/dev/perso/designsecurity/progpilot/
     setFile: 
     setCode:
     setResolvedIncludes:

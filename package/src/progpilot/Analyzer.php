@@ -36,7 +36,7 @@ class Analyzer
     public function getFilesOfDir($context, $dir, &$files)
     {
         if (is_dir($dir) && !$context->inputs->isExcludedFolder($dir)) {
-            $filesanddirs = scandir($dir);
+            $filesanddirs = @scandir($dir);
 
             if ($filesanddirs !== false) {
                 foreach ($filesanddirs as $filedir) {

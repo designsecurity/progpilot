@@ -394,7 +394,6 @@ class MyInputs
     ) {
         foreach ($this->sources as $mySource) {
             if (($mySource->getName() === $myFuncOrDef->getName())) {
-        
                 $checkFunction = false;
                 $checkArray = false;
                 $checkInstance = false;

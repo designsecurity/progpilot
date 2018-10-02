@@ -27,11 +27,11 @@ If you want to use security data relative to development of progpilot (default i
 ***
 
 ***
-- $obj_context->inputs->setSources($file_sources);
-- $obj_context->inputs->setSinks($file_sinks);
-- $obj_context->inputs->setSanitizers($file_sanitizers);
-- $obj_context->inputs->setValidators($file_validators);
-- $obj_context->inputs->setCustomRules($file_custom);
+- $obj_context->inputs->setSources($files_sources);
+- $obj_context->inputs->setSinks($files_sinks);
+- $obj_context->inputs->setSanitizers($files_sanitizers);
+- $obj_context->inputs->setValidators($files_validators);
+- $obj_context->inputs->setCustomRules($files_custom);
 - $obj_context->inputs->getCustomRules();
 - $obj_context->inputs->getSources();
 - $obj_context->inputs->getSinks();

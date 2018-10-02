@@ -8,10 +8,10 @@ You can specify the way of vulnerabilities are detected by playing with sources,
 - **validators** : the functions that valid tainted values without transforming them into safe value.
 
 ## Configure sources
-- $obj_context->inputs->setSources($file_sources);
+- $obj_context->inputs->setSources($files_sources);
 - $obj_context->inputs->getSources();
 
-Where *$file_sources* is a json file like below :
+Where *$file_sources* is a json file (or an array of json files) like below :
 ```javascript
 {
     "sources": [
@@ -34,7 +34,7 @@ Optional properties :
 - $obj_context->inputs->setSanitizers($file_sanitizers);
 - $obj_context->inputs->getSanitizers();
 
-Where *$file_sanitizers* is a json file like below :
+Where *$file_sanitizers* is a json file (or an array of json files) like below :
 ```javascript
 {
     "sanitizers": [
@@ -65,7 +65,7 @@ Optional properties :
 - $obj_context->inputs->setSinks($file_sinks);
 - $obj_context->inputs->getSinks();
 
-Where *$file_sinks* is a json file like below :
+Where *$file_sinks* is a json file (or an array of json files) like below :
 ```javascript
 {
     "sinks": [
@@ -91,7 +91,7 @@ Optional properties :
 - $obj_context->inputs->setValidators($file_validators);
 - $obj_context->inputs->getValidators();
 
-Where *$file_validators* is a json file like below :
+Where *$file_validators* is a json file (or an array of json files) like below :
 ```javascript
 {
     "validators": [
