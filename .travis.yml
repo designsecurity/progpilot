@@ -6,7 +6,7 @@ php:
  
 before_install:
  - sudo apt-get update
- - sudo apt-get install g++ cpp libxml2-dev build-essential curl git python libglib2.0-dev patchelf -y
+ - sudo apt-get install g++ cpp libxml2-dev build-essential curl git python libglib2.0-dev -y
  - git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
  - export PATH=`pwd`/depot_tools:"$PATH"
  - fetch v8
@@ -18,7 +18,6 @@ before_install:
  - sudo mkdir -p /opt/v8/{lib,include}
  - sudo cp out.gn/x64.release/lib*.so out.gn/x64.release/*_blob.bin out.gn/x64.release/icudtl.dat /opt/v8/lib/
  - sudo cp -R include/* /opt/v8/include/
- - for A in /opt/v8/lib/*.so; do sudo patchelf --set-rpath '$ORIGIN' $A; done
  - printf "\n" | pecl install v8js-2.1.0
  - phpenv config-add travis.php.ini
  - travis_retry composer self-update
