@@ -16,7 +16,6 @@
         {"name": "odbc_result_all", "parameters": [{"id": 2}], "language": "php", "attack": "xss", "cwe": "CWE_79"},
         {"name": "ovrimos_result_all", "parameters": [{"id": 2}], "language": "php", "attack": "xss", "cwe": "CWE_79"},
         {"name": "ifx_htmltbl_result", "parameters": [{"id": 2}], "language": "php", "attack": "xss", "cwe": "CWE_79"},
-        {"name": "write", "instanceof": "document", "language": "js", "attack": "xss", "cwe": "CWE_79"},
         
         {"name": "include", "parameters": [{"id": 1}], "language": "php", "attack": "file_inclusion", "cwe": "CWE_98", "comment" : "contains require and include/require_once"},
         {"name": "parsekit_compile_file", "parameters": [{"id": 1}], "language": "php", "attack": "file_inclusion", "cwe": "CWE_98"},

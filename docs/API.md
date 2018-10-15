@@ -73,9 +73,9 @@ print the number of files analyzed (it does not count the included files (with *
 ## Options
 ***
 - $obj_context->setLimitDefs($nb);  
-to prevent memory exhaustion you could limit the number of definitions by file during the data flow analysis (default is *3000*)
+to prevent memory exhaustion you could limit the number of definitions by file during the analysis (default is *3000*)
 - $obj_context->setLimitTime($time_sec);  
-max execution time by file for the first steps of the analysis, the analysis may take much longer in the last steps, so it's recommanded to specify a low value (default is *10 seconds*)
+max execution time by file for some steps of the analysis (default is *10 seconds*)
 - $obj_context->setLimitSize($size_bytes);  
 do not analyze file that are larger than this defined size (default is 500 000 bytes)
 - $obj_context->setPrintFile($bool);  

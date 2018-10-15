@@ -4,10 +4,7 @@
     "description": "",
     "license": "MIT",
     "dependencies": {
-        "ds": "^1.4.2",
         "esprima": "^4.0.0",
-        "fs": "^0.0.1-security",
-        "http": "^0.0.0",
         "esgraph": "^0.3.0"
     }
 }

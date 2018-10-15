@@ -79,8 +79,16 @@ class RunAllTest extends TestCase
         $tabcus = include("customtest.php");
         $tabvulntest = include("testvulntestsuite.php");
         $tabwander = include("phpwandertest.php");
-        $tabtwig = include("twigtest.php");
         $tabframeworks = include("frameworkstest.php");
+        
+        if(extension_loaded("v8js")) {
+            $tabtwig = include("twigtest.php");
+            $tabjavascript = include("javascripttest.php");
+        }
+        else {
+            $tabtwig = [];
+            $tabjavascript = [];
+        }
         
         $tab = array_merge(
             $taboop,
@@ -93,8 +101,9 @@ class RunAllTest extends TestCase
             $tabcus,
             $tabvulntest,
             $tabwander,
+            $tabframeworks,
             $tabtwig,
-            $tabframeworks
+            $tabjavascript
         );
         
         return $tab;

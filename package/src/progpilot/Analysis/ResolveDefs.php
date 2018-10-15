@@ -48,6 +48,85 @@ class ResolveDefs
         }
     }
 
+    public static function propertyClass($context, $data, $mydef)
+    {
+        $i = 0;
+        $classStackName = [];
+        $currentFunc = $context->getCurrentFunc();
+        
+        if ($mydef->isType(MyDefinition::TYPE_PROPERTY)) {
+        
+            $properties = $mydef->property->getProperties();
+            $tmpProperties = [];
+
+            while (true) {
+                $propValue = [];
+
+                $myDefTmp = new MyDefinition(
+                    $mydef->getLine(),
+                    $mydef->getColumn(),
+                    $mydef->getName()
+                );
+                $myDefTmp->setBlockId($mydef->getBlockId());
+                $myDefTmp->setSourceMyFile($mydef->getSourceMyFile());
+                $myDefTmp->property->setProperties($tmpProperties);
+                $myDefTmp->addType(MyDefinition::TYPE_PROPERTY);
+                $myDefTmp->setId($mydef->getId());
+                
+                $classStackName[$i] = [];
+                if ($i === 0) {
+                    $instances = ResolveDefs::selectInstances(
+                        $context,
+                        $data->getOutMinusKill($mydef->getBlockId()),
+                        $myDefTmp
+                    );
+                } else {
+                    $instances = ResolveDefs::selectProperties(
+                        $context,
+                        $data->getOutMinusKill($mydef->getBlockId()),
+                        $myDefTmp
+                    );
+                }
+                
+                // if we have document.url but document hasn't been defined
+                // we use the original name of the instance (document)
+                if(count($instances) === 0) {
+                    $classStackName[$i][] = $mydef;
+                }
+                else {
+                    foreach ($instances as $instance) {
+                        if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
+                            $objectId = $instance->getObjectId();
+                            $myClass = $context->getObjects()->getMyClassFromObject($objectId);
+                            
+                            if(!is_null($myClass) && isset($properties[$i])) {
+                                $property = $myClass->getProperty($properties[$i]);
+
+                                // if property doesn't exist by default it's a public property
+                                if (is_null($property) || (!is_null($property)
+                                    && (ResolveDefs::getVisibility($myDefTmp, $property, $currentFunc))))
+                                    $classStackName[$i][] = $myClass;
+                            }
+                        }
+                    }
+                }
+
+                if (!isset($properties[$i])) {
+                    break;
+                }
+
+                $tmpProperties[] = $properties[$i];
+
+                $i ++;
+
+                if (!isset($properties[$i])) {
+                    break;
+                }
+            }
+        }
+
+        return $classStackName;
+    }
 
     public static function funccallClass($context, $data, $myFuncCall)
     {
@@ -501,7 +580,6 @@ class ResolveDefs
 
         foreach ($defsFoundGood as $blockDefs) {
             $nearestDef = null;
-
             foreach ($blockDefs as $blockId => $defLast) {
                 if (!$bypassIsNearest) {
                     if (ResolveDefs::isNearest($context, $searchedDed, $defLast)) {
@@ -642,7 +720,7 @@ class ResolveDefs
                                         if (!is_null($tmpMyClass)) {
                                             $prop = $myProperties[$i];
                                             $property = $tmpMyClass->getProperty($prop);
-
+                                            
                                             if (!is_null($property)
                                                 && (ResolveDefs::getVisibility(
                                                     $tempDefaProp,

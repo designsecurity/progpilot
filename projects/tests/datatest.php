@@ -123,6 +123,10 @@
                         [["\$row[1]", "11", "xss"]]
                 ],
                 [
+                    "./tests/data/source19.php",
+                        [["\$var1", "10", "xss"]]
+                ],
+                [
                     "./tests/data/sanitizer1.php",
                         [["\$var7safe", "5", "xss"]]
                 ],

@@ -92,6 +92,7 @@ class VisitorAnalysis
 
     public function analyze($myCode, $myFuncCalled = null)
     {
+        $startTime = microtime(true);
         $index = $myCode->getStart();
         $code = $myCode->getCodes();
         
@@ -103,6 +104,11 @@ class VisitorAnalysis
         do {
             if (isset($code[$index])) {
                 $instruction = $code[$index];
+                
+                if ((microtime(true) - $startTime) > $this->context->getLimitTime()) {
+                    Utils::printWarning($this->context, Lang::MAX_TIME_EXCEEDED);
+                    return;
+                }
 
                 switch ($instruction->getOpcode()) {
                     case Opcodes::ENTER_BLOCK:
@@ -262,17 +268,39 @@ class VisitorAnalysis
                                     $defAssignMyExpr->getArrayValue()
                                 );
                             }
-
+                            
                             $tainted = false;
-                            if (!is_null($this->context->inputs->getSourceByName(
-                                null,
-                                $tempDefa,
-                                false,
-                                false,
-                                $tempDefa->getArrayValue()
-                            ))) {
-                                $tainted = true;
+                            
+                            if($tempDefa->isType(MyDefinition::TYPE_PROPERTY)) {
+                            
+                                $stackClass = ResolveDefs::propertyClass($this->context, $this->defs, $tempDefa);
+                                $classOfTempDefArr = $stackClass[count($stackClass) - 1];
+                                
+                                foreach ($classOfTempDefArr as $classOfTempDef) {
+                                    if (!is_null($this->context->inputs->getSourceByName(
+                                        $stackClass,
+                                        $tempDefa,
+                                        false,
+                                        $classOfTempDef->getName(),
+                                        $tempDefa->getArrayValue()
+                                    ))) {
+                                        $tainted = true;
+                                    }
+                                }
+                                
                             }
+                            else {
+                                if (!is_null($this->context->inputs->getSourceByName(
+                                    null,
+                                    $tempDefa,
+                                    false,
+                                    false,
+                                    $tempDefa->getArrayValue()
+                                ))) {
+                                    $tainted = true;
+                                }
+                            }
+                            
                             $tempDefa->setTainted($tainted);
 
                             $defs = ResolveDefs::temporarySimple(
@@ -296,6 +324,7 @@ class VisitorAnalysis
                                     $def,
                                     $tempDefa
                                 );
+                                
                                 $visibility = ResolveDefs::getVisibilityFromInstances(
                                     $this->context,
                                     $this->defs->getOutMinusKill($def->getBlockId()),
@@ -342,6 +371,7 @@ class VisitorAnalysis
                                                 $myDefTemp,
                                                 true
                                             );
+                                            
                                             foreach ($defsFound as $defFound) {
                                                 if ($defFound->isType(MyDefinition::TYPE_COPY_ARRAY)) {
                                                     $property->setCopyArrays($defFound->getCopyArrays());

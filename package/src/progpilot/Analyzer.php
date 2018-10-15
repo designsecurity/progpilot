@@ -105,7 +105,7 @@ class Analyzer
     {
         if (!is_null($myFunc) && !$myFunc->isAnalyzed()) {
             $myFunc->setIsAnalyzed(true);
-
+            
             $myFunc->getMyCode()->setStart(0);
             $myFunc->getMyCode()->setEnd(count($myFunc->getMyCode()->getCodes()));
             
@@ -166,6 +166,11 @@ class Analyzer
             } else {
                 foreach ($contextFunctions as $myFunc) {
                     $this->runInternalFunction($context, $myFunc);
+                    
+                    if ((microtime(true) - $startTime) > $context->getLimitTime()) {
+                        Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
+                        return;
+                    }
                 }
             }
             
@@ -183,6 +188,8 @@ class Analyzer
     
     public function runInternalPhp($context, $includedDefs = null, $transform = true)
     {
+        // check if it is PHP language ????? LIKE myJavascriptFile
+
         $startTime = microtime(true);
         
         // free memory
@@ -229,6 +236,11 @@ class Analyzer
             gc_mem_caches();
         }
             
+        if (!extension_loaded("v8js")) {
+            Utils::printWarning($context, Lang::V8JS_NOTLOADED);
+            return;
+        }
+            
         if ($context->getCurrentNbDefs() > $context->getLimitDefs()) {
             Utils::printWarning($context, Lang::MAX_DEFS_EXCEEDED);
             return;
@@ -242,17 +254,22 @@ class Analyzer
                 $context->resetInternalValues();
                 $context->outputs->setResults($pastResults);
                 
+                /*
                 $cmd = "node ".__DIR__."/Transformations/Js/Transform.js ".$context->inputs->getFile();
                 exec($cmd, $return, $returnValue);
-                
+                */
                 if ((microtime(true) - $startTime) > $context->getLimitTime()) {
                     Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
                     return;
                 }
-                
+                /*
                 $myJavascriptFile = new MyFile($context->inputs->getFile(), 0, 0);
                 MyCode::readCode($context, $return, $myJavascriptFile);
-                
+                */
+                $transformvisitor = new \progpilot\Transformations\Js\Transform();
+                $transformvisitor->setContext($context);
+                $transformvisitor->v8jsExecute();
+            
                 if ((microtime(true) - $startTime) > $context->getLimitTime()) {
                     Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
                     return;

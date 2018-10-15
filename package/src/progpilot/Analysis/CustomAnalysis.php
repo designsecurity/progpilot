@@ -62,7 +62,10 @@ class CustomAnalysis
                     
                     if (!is_null($functionDefinition) && $functionDefinition->getName() === $myFunc->getName()) {
                         if ($functionDefinition->isInstance()) {
-                            $propertiesRule = explode("->", $functionDefinition->getInstanceOfName());
+                            if($functionDefinition->getLanguage() === "php")
+                                $propertiesRule = explode("->", $functionDefinition->getInstanceOfName());
+                            elseif($functionDefinition->getLanguage() === "js")
+                                $propertiesRule = explode(".", $functionDefinition->getInstanceOfName());
 
                             if (is_array($propertiesRule)) {
                                 $myRuleInstanceName = $propertiesRule[0];

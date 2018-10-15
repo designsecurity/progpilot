@@ -1,0 +1,5 @@
+{
+    "validators": [
+        {"name": "empty",  "language": "js", "parameters": [{"id": 1, "conditions": "valid"}]}
+		]
+}

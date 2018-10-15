@@ -59,3 +59,30 @@ good test nikic :
 /home/eric/dev/perso/designsecurity/progpilot/.git/
 PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 20480 bytes) in /home/eric/dev/perso/designsecurity/progpilot/projects/example_config/vendor/nikic/php-parser/lib/PhpParser/Parser/Php5.php on line 2237
 
+
+
+
+
+======================
+last version of drupal and phpmyadmin 15/10/2018
+======================
+WITH MEMORY_LIMIT PHP = 512M
+======================
+
+new good tests TWIG (very low) :
+/srv/www/htdocs/phpMyAdmin/vendor/twig/
+and
+/home/eric/Téléchargements/drupal-8.6.1/vendor/easyrdf/easyrdf/lib/EasyRdf/Parser/Turtle.php
+
+
+progpilot 0.4.1
+/srv/www/htdocs/phpMyAdmin/
+real    8m39,357s
+user    6m24,374s
+sys     0m2,285s
+
+
+/home/eric/Téléchargements/drupal-8.6.1/
+real    19m29,446s
+user    11m53,642s
+sys     0m5,072s

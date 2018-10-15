@@ -1,0 +1,5 @@
+{
+    "sanitizers": [
+        {"name": "md5", "language": "js", "prevent": ["ALL"]}
+        ]
+}

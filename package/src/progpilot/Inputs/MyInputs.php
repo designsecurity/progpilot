@@ -13,6 +13,7 @@ namespace progpilot\Inputs;
 use progpilot\Lang;
 use progpilot\Utils;
 use progpilot\Objects\MyFunction;
+use progpilot\Objects\MyDefinition;
 
 class MyInputs
 {
@@ -249,7 +250,10 @@ class MyInputs
                         return $myValidator;
                     }
 
-                    $propertiesValidator = explode("->", $myValidator->getInstanceOfName());
+                    if($myValidator->getLanguage() === "php")
+                        $propertiesValidator = explode("->", $myValidator->getInstanceOfName());
+                    elseif($myValidator->getLanguage() === "js")
+                        $propertiesValidator = explode(".", $myValidator->getInstanceOfName());
 
                     if (is_array($propertiesValidator)) {
                         $myValidatorInstanceName = $propertiesValidator[0];
@@ -294,7 +298,10 @@ class MyInputs
                         return $mySanitizer;
                     }
 
-                    $propertiesSanitizer = explode("->", $mySanitizer->getInstanceOfName());
+                    if($mySanitizer->getLanguage() === "php")
+                        $propertiesSanitizer = explode("->", $mySanitizer->getInstanceOfName());
+                    elseif($mySanitizer->getLanguage() === "js")
+                        $propertiesSanitizer = explode(".", $mySanitizer->getInstanceOfName());
 
                     if (is_array($propertiesSanitizer)) {
                         $mySanitizerInstanceName = $propertiesSanitizer[0];
@@ -339,7 +346,10 @@ class MyInputs
                         return $mySink;
                     }
 
-                    $propertiesSink = explode("->", $mySink->getInstanceOfName());
+                    if($mySink->getLanguage() === "php")
+                        $propertiesSink = explode("->", $mySink->getInstanceOfName());
+                    elseif($mySink->getLanguage() === "js")
+                        $propertiesSink = explode(".", $mySink->getInstanceOfName());
 
                     if (is_array($propertiesSink)) {
                         $mySinkInstanceName = $propertiesSink[0];
@@ -393,7 +403,18 @@ class MyInputs
         $arrValue = false
     ) {
         foreach ($this->sources as $mySource) {
-            if (($mySource->getName() === $myFuncOrDef->getName())) {
+        
+            $checkName = false;
+            if(!$isFunction && $myFuncOrDef->isType(MyDefinition::TYPE_PROPERTY)) {
+                $properties = $myFuncOrDef->property->getProperties();
+                if(is_array($properties)) {
+                    $lastproperty = $properties[count($properties) - 1];
+                    if($lastproperty === $mySource->getName())
+                        $checkName = true;
+                }
+            }
+        
+            if (($mySource->getName() === $myFuncOrDef->getName()) || $checkName) {
                 $checkFunction = false;
                 $checkArray = false;
                 $checkInstance = false;
@@ -407,7 +428,10 @@ class MyInputs
                         $checkInstance = true;
                     }
 
-                    $propertiesSource = explode("->", $mySource->getInstanceOfName());
+                    if($mySource->getLanguage() === "php")
+                        $propertiesSource = explode("->", $mySource->getInstanceOfName());
+                    elseif($mySource->getLanguage() === "js")
+                        $propertiesSource = explode(".", $mySource->getInstanceOfName());
 
                     if (is_array($propertiesSource)) {
                         $mySourceInstanceName = $propertiesSource[0];
@@ -692,6 +716,7 @@ class MyInputs
     {
         if (is_null($this->sanitizersFile)) {
             $this->readSanitizersFile(__DIR__."/../../uptodate_data/php/sanitizers.json");
+            $this->readSanitizersFile(__DIR__."/../../uptodate_data/js/sanitizers.json");
         } else {
             if (is_array($this->sanitizersFile)) {
                 foreach ($this->sanitizersFile as $file) {
@@ -778,6 +803,7 @@ class MyInputs
     {
         if (is_null($this->sinksFile)) {
             $this->readSinksFile(__DIR__."/../../uptodate_data/php/sinks.json");
+            $this->readSinksFile(__DIR__."/../../uptodate_data/js/sinks.json");
         } else {
             if (is_array($this->sinksFile)) {
                 foreach ($this->sinksFile as $file) {
@@ -852,6 +878,7 @@ class MyInputs
     {
         if (is_null($this->sourcesFile)) {
             $this->readSourcesFile(__DIR__."/../../uptodate_data/php/sources.json");
+            $this->readSourcesFile(__DIR__."/../../uptodate_data/js/sources.json");
         } else {
             if (is_array($this->sourcesFile)) {
                 foreach ($this->sourcesFile as $file) {
@@ -946,6 +973,7 @@ class MyInputs
     {
         if (is_null($this->validatorsFile)) {
             $this->readValidatorsFile(__DIR__."/../../uptodate_data/php/validators.json");
+            $this->readValidatorsFile(__DIR__."/../../uptodate_data/js/validators.json");
         } else {
             if (is_array($this->validatorsFile)) {
                 foreach ($this->validatorsFile as $file) {
