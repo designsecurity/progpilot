@@ -55,12 +55,10 @@ class ResolveDefs
         $currentFunc = $context->getCurrentFunc();
         
         if ($mydef->isType(MyDefinition::TYPE_PROPERTY)) {
-        
             $properties = $mydef->property->getProperties();
             $tmpProperties = [];
 
             while (true) {
-                $propValue = [];
 
                 $myDefTmp = new MyDefinition(
                     $mydef->getLine(),
@@ -90,22 +88,43 @@ class ResolveDefs
                 
                 // if we have document.url but document hasn't been defined
                 // we use the original name of the instance (document)
-                if(count($instances) === 0) {
-                    $classStackName[$i][] = $mydef;
-                }
-                else {
+                if (count($instances) === 0) {
+                    $myClassNew = \progpilot\Analysis\CustomAnalysis::defineObject(
+                        $context,
+                        $mydef,
+                        $classStackName
+                    );
+                    
+                    if(!is_null($myClassNew))
+                        $classStackName[$i][] = $myClassNew;
+                    else
+                        $classStackName[$i][] = $mydef;
+                        
+                } else {
                     foreach ($instances as $instance) {
                         if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
                             $objectId = $instance->getObjectId();
                             $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                             
-                            if(!is_null($myClass) && isset($properties[$i])) {
+                            if (!is_null($myClass) && isset($properties[$i])) {
                                 $property = $myClass->getProperty($properties[$i]);
 
                                 // if property doesn't exist by default it's a public property
                                 if (is_null($property) || (!is_null($property)
-                                    && (ResolveDefs::getVisibility($myDefTmp, $property, $currentFunc))))
-                                    $classStackName[$i][] = $myClass;
+                                    && (ResolveDefs::getVisibility($myDefTmp, $property, $currentFunc)))) {
+                                    
+                                    
+                                    $myClassNew = \progpilot\Analysis\CustomAnalysis::defineObject(
+                                        $context,
+                                        $myClass,
+                                        $classStackName
+                                    );
+                    
+                                    if(!is_null($myClassNew))
+                                        $classStackName[$i][] = $myClassNew;
+                                    else
+                                        $classStackName[$i][] = $myClass;
+                                }
                             }
                         }
                     }

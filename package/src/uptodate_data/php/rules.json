@@ -1,6 +1,9 @@
 {
     "custom_rules": [
-        {"name": "rules_#3", "function_name": "setcookie", "parameters": 
+        {
+            "name": "setcookie", 
+            "is_function": true,
+            "parameters": 
             [
                 {"id": 6, "values": 
                     [ 
@@ -12,10 +15,16 @@
                     ]}
             ], 
             "description": "cookie set without secure or httponly flags",
-            "language": "php", "action": "MUST_VERIFY_DEFINITION",
-            "attack": "security misconfiguration", "cwe": "CWE_1004"
+            "language": "php", 
+            "action": "MUST_VERIFY_DEFINITION",
+            "attack": "security misconfiguration", 
+            "cwe": "CWE_1004"
         },
-        {"name": "rules_#5", "function_name": "__construct", "instanceof": "Twig_Environment", "parameters": 
+        {
+            "name": "__construct",  
+            "is_function": true,
+            "instanceof": "Twig_Environment", 
+            "parameters": 
             [
                 {"id": 2, "values": 
                     [ 
@@ -23,29 +32,27 @@
                     ]}
             ], 
             "description": "Twig_Environment autoescaping should be set to true",
-            "language": "php", "action": "MUST_NOT_VERIFY_DEFINITION",
-            "attack": "security misconfiguration", "cwe": "CWE_1004"
+            "language": "php", 
+            "action": "MUST_NOT_VERIFY_DEFINITION",
+            "attack": "security misconfiguration", 
+            "cwe": "CWE_1004"
         },
         {
-            "name": "rule_object_return simplexml_load_file", 
-            "function_name": "simplexml_load_file", 
+            "name": "simplexml_load_file", 
+            "is_function": true,
             "description": "Result of simplexml_load_file as new sources",
             "language": "php", 
-            "action": "RETURN_OBJECT", 
-            "extra": "simplexml_load_file",
-            "attack": "XXX", 
-            "cwe": "XXX"
+            "action": "DEFINE_OBJECT", 
+            "extra": "simplexml_load_file"
         },
         {
-            "name": "rule_object_return mysqli query", 
-            "function_name": "query", 
+            "name": "query", 
+            "is_function": true,
             "instanceof": "mysqli", 
             "description": "Result of mysqli::query as new sources",
             "language": "php", 
-            "action": "RETURN_OBJECT", 
-            "extra": "mysqli_result",
-            "attack": "XXX", 
-            "cwe": "XXX"
+            "action": "DEFINE_OBJECT", 
+            "extra": "mysqli_result"
         }
 		]
 }

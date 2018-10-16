@@ -1,5 +1,5 @@
 {
     "sources": [
-        {"name": "url", "instanceof": "document", "language": "js"}
+        {"name": "url", "instanceof": "HTMLDocument", "language": "js"}
 		]
 }

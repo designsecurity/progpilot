@@ -21,9 +21,84 @@ use progpilot\Utils;
 
 class CustomAnalysis
 {
-    public static function returnObjectCreateObject($context, $exprReturn, $customRule, $myFunc)
+    public static function defineObject($context, $myFuncorDef, $stackClass)
+    { 
+        $customRules = $context->inputs->getCustomRules();
+        foreach ($customRules as $customRule) {
+            if ($customRule->getType() === MyCustomRule::TYPE_VARIABLE
+                && $customRule->getAction() === "DEFINE_OBJECT"
+                    && !is_null($customRule->getExtra())) {
+                
+                $myClassNew = new MyClass(
+                    $myFuncorDef->getLine(),
+                    $myFuncorDef->getColumn(),
+                    $customRule->getExtra()
+                );
+                
+                $definition = $customRule->getDefinition();
+                $checkName = false;
+                if ($myFuncorDef->isType(MyDefinition::TYPE_PROPERTY)) {
+                    $properties = $myFuncorDef->property->getProperties();
+                    if (is_array($properties)) {
+                        $lastproperty = $properties[count($properties) - 1];
+                        if ($lastproperty === $definition->getName()) {
+                            $checkName = true;
+                        }
+                    }
+                }
+                    
+                if (!is_null($definition) && ($definition->getName() === $myFuncorDef->getName()) || $checkName) {
+                    if ($definition->isInstance() && !is_null($stackClass)) {
+                        if ($definition->getLanguage() === "php") {
+                            $propertiesRule = explode("->", $definition->getInstanceOfName());
+                        } elseif ($definition->getLanguage() === "js") {
+                            $propertiesRule = explode(".", $definition->getInstanceOfName());
+                        }
+
+                        if (is_array($propertiesRule)) {
+                            $i = 0;
+                            foreach($propertiesRule as $propertyName) {
+                            
+                                $foundProperty = false;
+                                
+                                if(isset($stackClass[$i])) {
+                                    
+                                    foreach($stackClass[$i] as $propClass) {
+                                        $objectId = $propClass->getObjectId();
+                                        $myClass = $context->getObjects()->getMyClassFromObject($objectId);
+                                    
+                                        if (!is_null($myClass)
+                                            && ($myClass->getName() === $propertyName
+                                                || $myClass->getExtendsOf() === $propertyName)) {
+                                            $foundProperty = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                
+                                if(!$foundProperty)
+                                    break;
+                            
+                                $i ++;
+                            }
+                            
+                            if($foundProperty)
+                                return $myClassNew;
+                        }
+                        
+                    } elseif (!$definition->isInstance()) {
+                        return $myClassNew;    
+                    }
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    public static function returnObjectCreateObject($context, $myExpr, $customRule, $myFuncorDef)
     {
-        $defAssign = $exprReturn->getAssignDef();
+        $defAssign = $myExpr->getAssignDef();
                 
         $objectId = $context->getObjects()->addObject();
                 
@@ -41,31 +116,32 @@ class CustomAnalysis
         }
 
         $context->getObjects()->addMyclassToObject($objectId, $myClass);
-        $myBackDef = $myFunc->getBackDef();
         
+        $myBackDef = $myFuncorDef->getBackDef();
         if (!is_null($myBackDef)) {
             $objectId = $myBackDef->getObjectId();
             $context->getObjects()->addMyclassToObject($objectId, $myClass);
         }
     }
     
-    public static function returnObject($context, $myFunc, $myClass, $stackClass, $instruction)
-    {
-        $exprReturn = $instruction->getProperty(MyInstruction::EXPR);
-        if (!is_null($exprReturn) && $exprReturn->isAssign()) {
+    public static function returnObject($context, $myFuncorDef, $stackClass, $myExpr)
+    { 
+        if (!is_null($myExpr) && $myExpr->isAssign()) {
             $customRules = $context->inputs->getCustomRules();
             foreach ($customRules as $customRule) {
                 if ($customRule->getType() === MyCustomRule::TYPE_FUNCTION
-                    && $customRule->getAction() === "RETURN_OBJECT"
+                    && $customRule->getAction() === "DEFINE_OBJECT"
                         && !is_null($customRule->getExtra())) {
-                    $functionDefinition = $customRule->getFunctionDefinition();
+                        
+                    $definition = $customRule->getDefinition();
                     
-                    if (!is_null($functionDefinition) && $functionDefinition->getName() === $myFunc->getName()) {
-                        if ($functionDefinition->isInstance()) {
-                            if($functionDefinition->getLanguage() === "php")
-                                $propertiesRule = explode("->", $functionDefinition->getInstanceOfName());
-                            elseif($functionDefinition->getLanguage() === "js")
-                                $propertiesRule = explode(".", $functionDefinition->getInstanceOfName());
+                    if (!is_null($definition) && $definition->getName() === $myFuncorDef->getName()) {
+                        if ($definition->isInstance() && !is_null($stackClass)) {
+                            if ($definition->getLanguage() === "php") {
+                                $propertiesRule = explode("->", $definition->getInstanceOfName());
+                            } elseif ($definition->getLanguage() === "js") {
+                                $propertiesRule = explode(".", $definition->getInstanceOfName());
+                            }
 
                             if (is_array($propertiesRule)) {
                                 $myRuleInstanceName = $propertiesRule[0];
@@ -85,22 +161,21 @@ class CustomAnalysis
                                                 || $myClass->getExtendsOf() === $myRuleInstanceName)) {
                                             CustomAnalysis::returnObjectCreateObject(
                                                 $context,
-                                                $exprReturn,
+                                                $myExpr,
                                                 $customRule,
-                                                $myFunc
+                                                $myFuncorDef
                                             );
                                         }
                                     }
                                 }
                             }
-                        } elseif ($functionDefinition->getName() === $myFunc->getName()
-                            && !$functionDefinition->isInstance()
-                                && is_null($myFunc->getMyClass())) {
+                        } elseif (!$definition->isInstance()/*
+                                && is_null($myFuncorDef->getMyClass())*/) {
                             CustomAnalysis::returnObjectCreateObject(
                                 $context,
-                                $exprReturn,
+                                $myExpr,
                                 $customRule,
-                                $myFunc
+                                $myFuncorDef
                             );
                         }
                     }
@@ -116,7 +191,7 @@ class CustomAnalysis
             if ($customRule->getType() === MyCustomRule::TYPE_FUNCTION
                 && ($customRule->getAction() === "MUST_VERIFY_DEFINITION"
                     || $customRule->getAction() === "MUST_NOT_VERIFY_DEFINITION")) {
-                $functionDefinition = $customRule->getFunctionDefinition();
+                $functionDefinition = $customRule->getDefinition();
 
                 if (!is_null($functionDefinition)) {
                     if ($functionDefinition->getName() === $myFunc->getName()
@@ -190,10 +265,10 @@ class CustomAnalysis
 
                         if (!$isGlobalValid) {
                             $hashedValue = $myFunc->getLine();
-                            $hashedValue.= "-".$customRule->getName()."-".$myFunc->getSourceMyFile()->getName();
+                            $hashedValue.= "-".$customRule->getAction()."-".$myFunc->getSourceMyFile()->getName();
                             $idVuln = hash("sha256", $hashedValue);
 
-                            $temp["vuln_rule"] = Utils::encodeCharacters($customRule->getName());
+                            $temp["vuln_rule"] = Utils::encodeCharacters($customRule->getAction());
                             $temp["vuln_name"] = Utils::encodeCharacters($customRule->getAttack());
                             $temp["vuln_line"] = $myFunc->getLine();
                             $temp["vuln_column"] = $myFunc->getColumn();

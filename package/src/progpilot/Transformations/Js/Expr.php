@@ -25,7 +25,7 @@ use progpilot\Transformations\Js\Transform;
 class Expr
 {
 
-    public static function Assignment($op, $context, $myExpr)
+    public static function assignment($op, $context, $myExpr)
     {
         $typeright = Common::getTypeDefinition($op->right);
         $nameright = Common::getNameDefinition($op->right);
@@ -33,8 +33,7 @@ class Expr
         $myright = new MyDefinition($op->right->loc->start->line, $op->right->loc->start->column, $nameright);
         $myright->setExpr($myExpr);
             
-        if($typeright === "MemberExpression") {
-        
+        if ($typeright === "MemberExpression") {
             $propertyName = Common::getNameProperty($op->right);
             $myright->addType(MyDefinition::TYPE_PROPERTY);
             $myright->property->setProperties($propertyName);

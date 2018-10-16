@@ -269,10 +269,37 @@ class VisitorAnalysis
                                 );
                             }
                             
+                            // stackclass is null
+                            // so if we have document a object HTMLDocument is created
+                            $myClassNew = \progpilot\Analysis\CustomAnalysis::defineObject(
+                                $this->context,
+                                $tempDefa,
+                                null
+                            );
+                            
+                            if(!is_null($myClassNew)) {
+                                $objectId = $this->context->getObjects()->addObject();
+                                        
+                                $tempDefa->addType(MyDefinition::TYPE_INSTANCE);
+                                $tempDefa->setObjectId($objectId);
+                                                
+                                $myClass = $this->context->getClasses()->getMyClass($myClassNew->getName());
+                                                        
+                                if (is_null($myClass)) {
+                                    $myClass = new MyClass(
+                                        $tempDefa->getLine(),
+                                        $tempDefa->getColumn(),
+                                        $myClassNew->getName()
+                                    );
+                                }
+
+                                $this->context->getObjects()->addMyclassToObject($objectId, $myClass);
+                            }
+                            /////////////////////////////////////////////////////////////
+                            
                             $tainted = false;
                             
-                            if($tempDefa->isType(MyDefinition::TYPE_PROPERTY)) {
-                            
+                            if ($tempDefa->isType(MyDefinition::TYPE_PROPERTY)) {
                                 $stackClass = ResolveDefs::propertyClass($this->context, $this->defs, $tempDefa);
                                 $classOfTempDefArr = $stackClass[count($stackClass) - 1];
                                 
@@ -287,9 +314,7 @@ class VisitorAnalysis
                                         $tainted = true;
                                     }
                                 }
-                                
-                            }
-                            else {
+                            } else {
                                 if (!is_null($this->context->inputs->getSourceByName(
                                     null,
                                     $tempDefa,
@@ -324,7 +349,7 @@ class VisitorAnalysis
                                     $def,
                                     $tempDefa
                                 );
-                                
+                            
                                 $visibility = ResolveDefs::getVisibilityFromInstances(
                                     $this->context,
                                     $this->defs->getOutMinusKill($def->getBlockId()),
@@ -344,7 +369,7 @@ class VisitorAnalysis
                                 }
 
                                 // vérifier s'il y a pas de concat
-                                // mis a jour de l'object
+                                // mise a jour de l'object
                                 if ($def->isType(MyDefinition::TYPE_INSTANCE)) {
                                     $defAssignMyExpr->addType(MyDefinition::TYPE_INSTANCE);
                                     $defAssignMyExpr->setObjectId($def->getObjectId());

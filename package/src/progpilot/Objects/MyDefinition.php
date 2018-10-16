@@ -130,7 +130,7 @@ class MyDefinition extends MyOp
         }
 
         if ($this->isType(MyDefinition::TYPE_PROPERTY) || $this->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
-            echo "property : ".Utils::printProperties($this->property->getProperties())."\n";
+            echo "property : ".Utils::printProperties("php", $this->property->getProperties())."\n";
             echo "class_name : ".htmlentities($this->getClassName(), ENT_QUOTES, 'UTF-8')."\n";
             echo "visibility : ".htmlentities($this->property->getVisibility(), ENT_QUOTES, 'UTF-8')."\n";
         }

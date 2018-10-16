@@ -46,7 +46,7 @@ class Utils
         throw new \Exception($message);
     }
 
-    public static function printStaticProperties($props)
+    public static function printStaticProperties($language, $props)
     {
         $propertyName = "";
 
@@ -59,29 +59,37 @@ class Utils
         return $propertyName;
     }
 
-    public static function printProperties($props)
+    public static function printProperties($language, $props)
     {
+        $separator = "->";
+        if($language === "js") 
+            $separator = ".";
+        
         $propertyName = "";
 
         if (is_array($props)) {
             foreach ($props as $prop) {
-                $propertyName .= "->".Utils::encodeCharacters($prop);
+                $propertyName .= "$separator".Utils::encodeCharacters($prop);
             }
         }
 
         return $propertyName;
     }
 
-    public static function printDefinition($def)
+    public static function printDefinition($language, $def)
     {
+        $prefix = "\$";
+        if($language === "js") 
+            $prefix = "";
+            
         if ($def->isType(MyDefinition::TYPE_PROPERTY)) {
-            $defName = "\$".Utils::encodeCharacters($def->getName()).
-                Utils::printProperties($def->property->getProperties());
+            $defName = "$prefix".Utils::encodeCharacters($def->getName()).
+                Utils::printProperties($language, $def->property->getProperties());
         } elseif ($def->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
             $defName = Utils::encodeCharacters($def->getName()).
-                Utils::printStaticProperties($def->property->getProperties());
+                Utils::printStaticProperties($language, $def->property->getProperties());
         } else {
-            $defName = "\$".Utils::encodeCharacters($def->getName());
+            $defName = "$prefix".Utils::encodeCharacters($def->getName());
         }
 
         $nameArray = "";

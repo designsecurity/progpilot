@@ -1,6 +1,0 @@
-{
-    "exclude_folders":
-    [
-        "/srv/www/htdocs/phpMyAdmin/vendor/twig/"
-    ]
-}

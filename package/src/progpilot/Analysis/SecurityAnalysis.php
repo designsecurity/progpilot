@@ -202,7 +202,7 @@ class SecurityAnalysis
     {
         $resultTaintedFlow = [];
 
-        $idFlow = \progpilot\Utils::printDefinition($defExprFlow);
+        $idFlow = \progpilot\Utils::printDefinition($mySink->getLanguage(), $defExprFlow);
 
         while ($defExprFlow->getTaintedByExpr() !== null) {
             $taintedFlowExpr = $defExprFlow->getTaintedByExpr();
@@ -210,7 +210,7 @@ class SecurityAnalysis
 
             foreach ($defsExprTainted as $defExprFlowFrom) {
                 if (!SecurityAnalysis::isSafe($indexParameter, $defExprFlowFrom, $mySink, true)) {
-                    $oneTainted["flow_name"] = \progpilot\Utils::printDefinition($defExprFlowFrom);
+                    $oneTainted["flow_name"] = \progpilot\Utils::printDefinition($mySink->getLanguage(), $defExprFlowFrom);
                     $oneTainted["flow_line"] = $defExprFlowFrom->getLine();
                     $oneTainted["flow_column"] = $defExprFlowFrom->getColumn();
                     $oneTainted["flow_file"] = \progpilot\Utils::encodeCharacters(
@@ -224,7 +224,7 @@ class SecurityAnalysis
                         
                     $resultTaintedFlow[] = $oneTainted;
 
-                    $idFlow .= \progpilot\Utils::printDefinition($defExprFlowFrom);
+                    $idFlow .= \progpilot\Utils::printDefinition($mySink->getLanguage(), $defExprFlowFrom);
                     $idFlow .= "-".$defExprFlowFrom->getSourceMyFile()->getName();
                     $defExprFlow = $defExprFlowFrom;
                     break;
@@ -261,7 +261,7 @@ class SecurityAnalysis
 
             foreach ($defsExpr as $defExpr) {
                 if (!SecurityAnalysis::isSafe($indexParameter, $defExpr, $mySink)) {
-                    $sourceName = \progpilot\Utils::printDefinition($defExpr);
+                    $sourceName = \progpilot\Utils::printDefinition($mySink->getLanguage(), $defExpr);
                     $sourceLine = $defExpr->getLine();
                     $sourceColumn = $defExpr->getColumn();
                     $sourceFile = \progpilot\Utils::encodeCharacters($defExpr->getSourceMyFile()->getName());

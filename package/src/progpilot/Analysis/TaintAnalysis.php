@@ -44,9 +44,8 @@ class TaintAnalysis
         \progpilot\Analysis\CustomAnalysis::returnObject(
             $context,
             $myFuncCall,
-            $myClass,
             $stackClass,
-            $instruction
+            $instruction->getProperty(MyInstruction::EXPR)
         );
 
         TaintAnalysis::funccallValidator($stackClass, $context, $data, $myClass, $instruction, $myCode, $index);

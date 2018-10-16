@@ -42,13 +42,13 @@ class DFSVisitor
 
                     if (($rule->getCurrentOrderNumber() % $mod)
                                 !== ($sequence->getOrderNumberExpected() % $mod)) {
-                        $hashIdVuln = hash("sha256", $node->getLine()."-".$rule->getName()."-".$node->getFile());
+                        $hashIdVuln = hash("sha256", $node->getLine()."-".$rule->getAction()."-".$node->getFile());
 
-                        $temp["vuln_rule"] = \progpilot\Utils::encodeCharacters($rule->getName());
+                        $temp["vuln_rule"] = \progpilot\Utils::encodeCharacters($rule->getAction());
                         $temp["vuln_line"] = $node->getLine();
                         $temp["vuln_column"] = $node->getColumn();
                         $temp["vuln_file"] = \progpilot\Utils::encodeCharacters($node->getFile());
-                        $temp["vuln_description"] = \progpilot\Utils::encodeCharacters($rule->getName());
+                        $temp["vuln_description"] = \progpilot\Utils::encodeCharacters($rule->getDescription());
                         $temp["vuln_name"] = \progpilot\Utils::encodeCharacters($rule->getAttack());
                         $temp["vuln_cwe"] = \progpilot\Utils::encodeCharacters($rule->getCwe());
                         $temp["vuln_id"] = $hashIdVuln;

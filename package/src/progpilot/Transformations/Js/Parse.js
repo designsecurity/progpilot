@@ -6,8 +6,10 @@ var esgraph = require('esgraph');
 var ast = esprima.parse(PHP.code, {loc: true, range: true});
 var cfg = esgraph(ast);
 
+var i = 0;
 cfg[2].forEach(function(flowNode) {
-    flowNode.id = Math.random();
+    flowNode.id = i;
+    i ++;
 });
 
 cfg;

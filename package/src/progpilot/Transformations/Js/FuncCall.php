@@ -60,7 +60,7 @@ class FuncCall
         $myargumenttype = $arg->type;
         $myargumentvalue = "";
         
-        switch($myargumenttype) {
+        switch ($myargumenttype) {
             case 'Identifier':
                 $myargumentvalue = $arg->name;
                 break;
@@ -68,10 +68,20 @@ class FuncCall
             case 'Literal':
                 $myargumentvalue = $arg->value;
                 break;
+            
+            case 'MemberExpression':
+                $myargumentvalue = $arg->object->name;
+                break;
         }
             
         $mytemp = new MyDefinition($op->loc->start->line, $op->loc->start->column, $myargumentvalue);
         $mytemp->setExpr($myExprparam);
+        
+        if($myargumenttype === 'MemberExpression') {
+            $propertyName = Common::getNameProperty($arg);
+            $mytemp->addType(MyDefinition::TYPE_PROPERTY);
+            $mytemp->property->setProperties($propertyName);
+        }
             
         $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
         $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $mytemp);
@@ -119,7 +129,11 @@ class FuncCall
                 $myFunctionCall->addType(MyFunction::TYPE_FUNC_METHOD);
                 $myFunctionCall->setNameInstance($instance_name);
                 
-                $mybackdef = new MyDefinition($mycallee->loc->start->line, $mycallee->loc->start->column, $instance_name);
+                $mybackdef = new MyDefinition(
+                    $mycallee->loc->start->line,
+                    $mycallee->loc->start->column,
+                    $instance_name
+                );
                 $mybackdef->addType(MyDefinition::TYPE_INSTANCE);
                 $mybackdef->setClassName($instance_name);
 /*

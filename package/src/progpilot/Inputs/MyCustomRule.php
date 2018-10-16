@@ -13,12 +13,12 @@ namespace progpilot\Inputs;
 class MyCustomRule
 {
     const TYPE_FUNCTION = "function";
+    const TYPE_VARIABLE = "variable";
     const TYPE_SEQUENCE = "sequence";
 
     private $action;
     private $type;
-    private $functionDefinition;
-    private $nameRule;
+    private $definition;
     private $attack;
     private $cwe;
     private $descriptionRule;
@@ -26,15 +26,14 @@ class MyCustomRule
     private $currentOrderNumber;
     private $extra;
 
-    public function __construct($nameRule, $descriptionRule)
+    public function __construct($descriptionRule)
     {
         $this->action = null;
         $this->type = MyCustomRule::TYPE_FUNCTION;
-        $this->nameRule = $nameRule;
         $this->descriptionRule = $descriptionRule;
         $this->sequenceRule = [];
         $this->currentOrderNumber = 0;
-        $this->functionDefinition = null;
+        $this->definition = null;
         $this->attack = null;
         $this->cwe = null;
         $this->extra = null;
@@ -80,24 +79,14 @@ class MyCustomRule
         $this->type = $type;
     }
 
-    public function getFunctionDefinition()
+    public function getDefinition()
     {
-        return $this->functionDefinition;
+        return $this->definition;
     }
 
-    public function setFunctionDefinition($functionDefinition)
+    public function setDefinition($definition)
     {
-        $this->functionDefinition = $functionDefinition;
-    }
-
-    public function getName()
-    {
-        return $this->nameRule;
-    }
-
-    public function setName($nameRule)
-    {
-        $this->nameRule = $nameRule;
+        $this->definition = $definition;
     }
 
     public function getDescription()
@@ -147,9 +136,17 @@ class MyCustomRule
     public function addFunctionDefinition($functionName, $language)
     {
         $myCustomFunction = new MyCustomFunction($functionName, $language);
-        $this->functionDefinition = $myCustomFunction;
+        $this->definition = $myCustomFunction;
 
         return $myCustomFunction;
+    }
+
+    public function addVariableDefinition($variableName, $language)
+    {
+        $myCustomVariable = new MyCustomVariable($variableName, $language);
+        $this->definition = $myCustomVariable;
+
+        return $myCustomVariable;
     }
 
     public function getAction()

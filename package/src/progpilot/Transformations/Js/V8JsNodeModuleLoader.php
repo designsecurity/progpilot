@@ -26,22 +26,24 @@ class V8JsNodeModuleLoader
      */
     private $overrides = array();
     
-    function __construct() {
+    public function __construct()
+    {
     }
 
-    function normalisePath(array $parts) {
+    public function normalisePath(array $parts)
+    {
         $normalisedParts = array();
-        array_walk($parts, function($part) use(&$normalisedParts) {
-            switch($part) {
-            case '..':
-                if(!empty($normalisedParts)) {
-                    array_pop($normalisedParts);
-                }
-                break;
-            case '.':
-                break;
-            default:
-                array_push($normalisedParts, $part);
+        array_walk($parts, function ($part) use (&$normalisedParts) {
+            switch ($part) {
+                case '..':
+                    if (!empty($normalisedParts)) {
+                        array_pop($normalisedParts);
+                    }
+                    break;
+                case '.':
+                    break;
+                default:
+                    array_push($normalisedParts, $part);
             }
         });
         return $normalisedParts;
@@ -55,10 +57,12 @@ class V8JsNodeModuleLoader
      * @access public
      * @return string[]
      */
-    function normaliseIdentifier($base, $module_name) {
-        if(isset($this->overrides[$module_name])) {
+    public function normaliseIdentifier($base, $module_name)
+    {
+        if (isset($this->overrides[$module_name])) {
             $normalisedParts = $this->normalisePath(
-                explode('/', $this->overrides[$module_name]));
+                explode('/', $this->overrides[$module_name])
+            );
             $moduleName = array_pop($normalisedParts);
             $normalisedPath = implode('/', $normalisedParts);
 
@@ -68,12 +72,11 @@ class V8JsNodeModuleLoader
         $baseParts = explode('/', $base);
         $parts = explode('/', $module_name);
 
-        if($parts[0] == '.' or $parts[0] == '..') {
+        if ($parts[0] == '.' or $parts[0] == '..') {
             // relative path, prepend base path
             $parts = array_merge($baseParts, $parts);
             return $this->handleRelativeLoad($parts);
-        }
-        else {
+        } else {
             return $this->handleModuleLoad($baseParts, $parts);
         }
     }
@@ -85,7 +88,8 @@ class V8JsNodeModuleLoader
      * @access public
      * @return string|object
      */
-    function loadModule($moduleName) {
+    public function loadModule($moduleName)
+    {
         $filePath = null;
 
         foreach (array('', '.js', '.json') as $extension) {
@@ -118,17 +122,20 @@ class V8JsNodeModuleLoader
      * @param mixed $to
      * @access public
      */
-    function addOverride($from, $to) {
+    public function addOverride($from, $to)
+    {
         $this->overrides[$from] = $to;
     }
 
-    private function handleRelativeLoad(array $parts) {
+    private function handleRelativeLoad(array $parts)
+    {
         $normalisedParts = $this->normalisePath($parts);
         $normalisedId = implode('/', $normalisedParts);
 
-        if(isset($this->overrides[$normalisedId])) {
+        if (isset($this->overrides[$normalisedId])) {
             $normalisedParts = $this->normalisePath(
-                explode('/', $this->overrides[$normalisedId]));
+                explode('/', $this->overrides[$normalisedId])
+            );
             $moduleName = array_pop($normalisedParts);
             $normalisedPath = implode('/', $normalisedParts);
 
@@ -137,7 +144,7 @@ class V8JsNodeModuleLoader
 
         $sourcePath = implode('/', $normalisedParts);
 
-        if(file_exists(__DIR__.'/'.$sourcePath) ||
+        if (file_exists(__DIR__.'/'.$sourcePath) ||
            file_exists(__DIR__.'/'.$sourcePath.'.js') ||
            file_exists(__DIR__.'/'.$sourcePath.'.json')) {
             $moduleName = array_pop($normalisedParts);
@@ -149,15 +156,15 @@ class V8JsNodeModuleLoader
         throw new \Exception('File not found: '.$sourcePath);
     }
 
-    private function handleModuleLoad(array $baseParts, array $parts) {
+    private function handleModuleLoad(array $baseParts, array $parts)
+    {
         $moduleName = array_shift($parts);
 
         $baseModules = array_keys($baseParts, 'node_modules');
 
-        if(empty($baseModules)) {
+        if (empty($baseModules)) {
             $moduleParts = array();
-        }
-        else {
+        } else {
             $moduleParts = array_slice($baseParts, 0, end($baseModules) + 2);
         }
 
@@ -166,41 +173,41 @@ class V8JsNodeModuleLoader
 
         $moduleDir = implode('/', $moduleParts);
 
-        if(!file_exists(__DIR__.'/'.$moduleDir)) {
+        if (!file_exists(__DIR__.'/'.$moduleDir)) {
             throw new \Exception('Module not found: ' . $moduleName.' dir :'.__DIR__.'/'.$moduleDir);
         }
 
         $moduleDir .= '/';
 
-        if(empty($parts)) {
+        if (empty($parts)) {
             $packageJsonPath = $moduleDir.'package.json';
 
-            if(!file_exists(__DIR__.'/'.$packageJsonPath)) {
+            if (!file_exists(__DIR__.'/'.$packageJsonPath)) {
                 throw new \Exception('File not exists: '.__DIR__.'/'.$packageJsonPath);
             }
 
             $packageJson = json_decode(file_get_contents(__DIR__.'/'.$packageJsonPath));
 
-            if(!isset($packageJson->main)) {
+            if (!isset($packageJson->main)) {
                 throw new \Exception('package.json does not declare main');
             }
 
             $normalisedParts = $this->normalisePath(
-                array_merge($moduleParts, explode('/', $packageJson->main)));
-        }
-        else {
+                array_merge($moduleParts, explode('/', $packageJson->main))
+            );
+        } else {
             $normalisedParts = $this->normalisePath(
-                array_merge($moduleParts, $parts));
+                array_merge($moduleParts, $parts)
+            );
         }
 
         $moduleName = array_pop($normalisedParts);
         $normalisedPath = implode('/', $normalisedParts);
 
-        if(substr($moduleName, -3) == '.js') {
+        if (substr($moduleName, -3) == '.js') {
             $moduleName = substr($moduleName, 0, -3);
         }
 
         return array($normalisedPath, $moduleName);
     }
 }
- 

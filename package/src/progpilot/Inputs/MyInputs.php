@@ -250,10 +250,11 @@ class MyInputs
                         return $myValidator;
                     }
 
-                    if($myValidator->getLanguage() === "php")
+                    if ($myValidator->getLanguage() === "php") {
                         $propertiesValidator = explode("->", $myValidator->getInstanceOfName());
-                    elseif($myValidator->getLanguage() === "js")
+                    } elseif ($myValidator->getLanguage() === "js") {
                         $propertiesValidator = explode(".", $myValidator->getInstanceOfName());
+                    }
 
                     if (is_array($propertiesValidator)) {
                         $myValidatorInstanceName = $propertiesValidator[0];
@@ -298,10 +299,11 @@ class MyInputs
                         return $mySanitizer;
                     }
 
-                    if($mySanitizer->getLanguage() === "php")
+                    if ($mySanitizer->getLanguage() === "php") {
                         $propertiesSanitizer = explode("->", $mySanitizer->getInstanceOfName());
-                    elseif($mySanitizer->getLanguage() === "js")
+                    } elseif ($mySanitizer->getLanguage() === "js") {
                         $propertiesSanitizer = explode(".", $mySanitizer->getInstanceOfName());
+                    }
 
                     if (is_array($propertiesSanitizer)) {
                         $mySanitizerInstanceName = $propertiesSanitizer[0];
@@ -346,10 +348,11 @@ class MyInputs
                         return $mySink;
                     }
 
-                    if($mySink->getLanguage() === "php")
+                    if ($mySink->getLanguage() === "php") {
                         $propertiesSink = explode("->", $mySink->getInstanceOfName());
-                    elseif($mySink->getLanguage() === "js")
+                    } elseif ($mySink->getLanguage() === "js") {
                         $propertiesSink = explode(".", $mySink->getInstanceOfName());
+                    }
 
                     if (is_array($propertiesSink)) {
                         $mySinkInstanceName = $propertiesSink[0];
@@ -403,14 +406,14 @@ class MyInputs
         $arrValue = false
     ) {
         foreach ($this->sources as $mySource) {
-        
             $checkName = false;
-            if(!$isFunction && $myFuncOrDef->isType(MyDefinition::TYPE_PROPERTY)) {
+            if (!$isFunction && $myFuncOrDef->isType(MyDefinition::TYPE_PROPERTY)) {
                 $properties = $myFuncOrDef->property->getProperties();
-                if(is_array($properties)) {
+                if (is_array($properties)) {
                     $lastproperty = $properties[count($properties) - 1];
-                    if($lastproperty === $mySource->getName())
+                    if ($lastproperty === $mySource->getName()) {
                         $checkName = true;
+                    }
                 }
             }
         
@@ -428,10 +431,11 @@ class MyInputs
                         $checkInstance = true;
                     }
 
-                    if($mySource->getLanguage() === "php")
+                    if ($mySource->getLanguage() === "php") {
                         $propertiesSource = explode("->", $mySource->getInstanceOfName());
-                    elseif($mySource->getLanguage() === "js")
+                    } elseif ($mySource->getLanguage() === "js") {
                         $propertiesSource = explode(".", $mySource->getInstanceOfName());
+                    }
 
                     if (is_array($propertiesSource)) {
                         $mySourceInstanceName = $propertiesSource[0];
@@ -1187,6 +1191,7 @@ class MyInputs
     {
         if (is_null($this->customFile)) {
             $this->readCustomFile(__DIR__."/../../uptodate_data/php/rules.json");
+            $this->readCustomFile(__DIR__."/../../uptodate_data/js/rules.json");
         } else {
             if (is_array($this->customFile)) {
                 foreach ($this->customFile as $file) {
@@ -1213,11 +1218,15 @@ class MyInputs
             if (isset($parsedJson-> {'custom_rules'})) {
                 $customRules = $parsedJson-> {'custom_rules'};
                 foreach ($customRules as $customRule) {
-                    if (isset($customRule-> {'name'})
-                        && isset($customRule-> {'description'})
-                            && isset($customRule-> {'cwe'})
-                                && isset($customRule-> {'attack'})) {
-                        $myCustom = new MyCustomRule($customRule-> {'name'}, $customRule-> {'description'});
+                    if (isset($customRule-> {'description'})) {
+                        $myCustom = new MyCustomRule($customRule-> {'description'});
+                        
+                        if(!isset($customRule-> {'cwe'}))
+                            $customRule-> {'cwe'} = "";
+                            
+                        if(!isset($customRule-> {'attack'}))
+                            $customRule-> {'attack'} = "";
+                            
                         $myCustom->setCwe($customRule-> {'cwe'});
                         $myCustom->setAttack($customRule-> {'attack'});
                         if (isset($customRule-> {'extra'})) {
@@ -1258,13 +1267,15 @@ class MyInputs
                                     }
                                 }
                             }
-                        } elseif (isset($customRule-> {'function_name'})
+                        } elseif (isset($customRule-> {'name'})
                                      && isset($customRule-> {'language'})
-                                     && isset($customRule-> {'action'})) {
+                                     && isset($customRule-> {'action'})
+                                     && isset($customRule-> {'is_function'})
+                                     && $customRule-> {'is_function'} === true) {
                             $myCustom->setType(MyCustomRule::TYPE_FUNCTION);
                             $myCustom->setAction($customRule-> {'action'});
                             $myCustomFunction = $myCustom->addFunctionDefinition(
-                                $customRule-> {'function_name'},
+                                $customRule-> {'name'},
                                 $customRule-> {'language'}
                             );
 
@@ -1287,6 +1298,22 @@ class MyInputs
                             if (isset($customRule-> {'instanceof'})) {
                                 $myCustomFunction->setIsInstance(true);
                                 $myCustomFunction->setInstanceOfName($customRule-> {'instanceof'});
+                            }
+                        } elseif (isset($customRule-> {'name'})
+                                     && isset($customRule-> {'language'})
+                                     && isset($customRule-> {'action'})
+                                     && (!isset($customRule-> {'is_function'})
+                                     || $customRule-> {'is_function'} !== true)) {
+                            $myCustom->setType(MyCustomRule::TYPE_VARIABLE);
+                            $myCustom->setAction($customRule-> {'action'});
+                            $myCustomVariable = $myCustom->addVariableDefinition(
+                                $customRule-> {'name'},
+                                $customRule-> {'language'}
+                            );
+
+                            if (isset($customRule-> {'instanceof'})) {
+                                $myCustomVariable->setIsInstance(true);
+                                $myCustomVariable->setInstanceOfName($customRule-> {'instanceof'});
                             }
                         }
 
