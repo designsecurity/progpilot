@@ -77,7 +77,7 @@ class FuncCall
         $mytemp = new MyDefinition($op->loc->start->line, $op->loc->start->column, $myargumentvalue);
         $mytemp->setExpr($myExprparam);
         
-        if($myargumenttype === 'MemberExpression') {
+        if ($myargumenttype === 'MemberExpression') {
             $propertyName = Common::getNameProperty($arg);
             $mytemp->addType(MyDefinition::TYPE_PROPERTY);
             $mytemp->property->setProperties($propertyName);

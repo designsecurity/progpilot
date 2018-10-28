@@ -72,7 +72,7 @@ array(1) {
   [0]=>
   array(9) {
     ["vuln_rule"]=>
-    string(8) "rules_#5"
+    string(8) "MUST_NOT_VERIFY_DEFINITION"
     ["vuln_name"]=>
     string(25) "security misconfiguration"
     ["vuln_line"]=>

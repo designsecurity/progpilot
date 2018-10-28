@@ -92,7 +92,7 @@ The return of a function could be a custom object of a class name defined with t
 
 ```javascript
         {
-            "function_name": "query", 
+            "name": "query", 
             "is_function": true,
             "instanceof": "CI_Model->db", 
             "description": "Result of db queries as new sources",

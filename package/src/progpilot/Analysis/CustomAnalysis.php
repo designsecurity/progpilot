@@ -22,13 +22,12 @@ use progpilot\Utils;
 class CustomAnalysis
 {
     public static function defineObject($context, $myFuncorDef, $stackClass)
-    { 
+    {
         $customRules = $context->inputs->getCustomRules();
         foreach ($customRules as $customRule) {
             if ($customRule->getType() === MyCustomRule::TYPE_VARIABLE
                 && $customRule->getAction() === "DEFINE_OBJECT"
                     && !is_null($customRule->getExtra())) {
-                
                 $myClassNew = new MyClass(
                     $myFuncorDef->getLine(),
                     $myFuncorDef->getColumn(),
@@ -57,13 +56,11 @@ class CustomAnalysis
 
                         if (is_array($propertiesRule)) {
                             $i = 0;
-                            foreach($propertiesRule as $propertyName) {
-                            
+                            foreach ($propertiesRule as $propertyName) {
                                 $foundProperty = false;
                                 
-                                if(isset($stackClass[$i])) {
-                                    
-                                    foreach($stackClass[$i] as $propClass) {
+                                if (isset($stackClass[$i])) {
+                                    foreach ($stackClass[$i] as $propClass) {
                                         $objectId = $propClass->getObjectId();
                                         $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                     
@@ -76,18 +73,19 @@ class CustomAnalysis
                                     }
                                 }
                                 
-                                if(!$foundProperty)
+                                if (!$foundProperty) {
                                     break;
+                                }
                             
                                 $i ++;
                             }
                             
-                            if($foundProperty)
+                            if ($foundProperty) {
                                 return $myClassNew;
+                            }
                         }
-                        
                     } elseif (!$definition->isInstance()) {
-                        return $myClassNew;    
+                        return $myClassNew;
                     }
                 }
             }
@@ -125,14 +123,13 @@ class CustomAnalysis
     }
     
     public static function returnObject($context, $myFuncorDef, $stackClass, $myExpr)
-    { 
+    {
         if (!is_null($myExpr) && $myExpr->isAssign()) {
             $customRules = $context->inputs->getCustomRules();
             foreach ($customRules as $customRule) {
                 if ($customRule->getType() === MyCustomRule::TYPE_FUNCTION
                     && $customRule->getAction() === "DEFINE_OBJECT"
                         && !is_null($customRule->getExtra())) {
-                        
                     $definition = $customRule->getDefinition();
                     
                     if (!is_null($definition) && $definition->getName() === $myFuncorDef->getName()) {

@@ -14,7 +14,7 @@
                         {"value" : "true"} 
                     ]}
             ], 
-            "description": "cookie set without secure or httponly flags",
+            "description": "cookie setted without secure or httponly flags",
             "language": "php", 
             "action": "MUST_VERIFY_DEFINITION",
             "attack": "security misconfiguration", 

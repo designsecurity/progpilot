@@ -59,7 +59,6 @@ class ResolveDefs
             $tmpProperties = [];
 
             while (true) {
-
                 $myDefTmp = new MyDefinition(
                     $mydef->getLine(),
                     $mydef->getColumn(),
@@ -95,11 +94,11 @@ class ResolveDefs
                         $classStackName
                     );
                     
-                    if(!is_null($myClassNew))
+                    if (!is_null($myClassNew)) {
                         $classStackName[$i][] = $myClassNew;
-                    else
+                    } else {
                         $classStackName[$i][] = $mydef;
-                        
+                    }
                 } else {
                     foreach ($instances as $instance) {
                         if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
@@ -112,18 +111,17 @@ class ResolveDefs
                                 // if property doesn't exist by default it's a public property
                                 if (is_null($property) || (!is_null($property)
                                     && (ResolveDefs::getVisibility($myDefTmp, $property, $currentFunc)))) {
-                                    
-                                    
                                     $myClassNew = \progpilot\Analysis\CustomAnalysis::defineObject(
                                         $context,
                                         $myClass,
                                         $classStackName
                                     );
                     
-                                    if(!is_null($myClassNew))
+                                    if (!is_null($myClassNew)) {
                                         $classStackName[$i][] = $myClassNew;
-                                    else
+                                    } else {
                                         $classStackName[$i][] = $myClass;
+                                    }
                                 }
                             }
                         }

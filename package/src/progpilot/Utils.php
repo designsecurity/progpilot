@@ -62,8 +62,9 @@ class Utils
     public static function printProperties($language, $props)
     {
         $separator = "->";
-        if($language === "js") 
+        if ($language === "js") {
             $separator = ".";
+        }
         
         $propertyName = "";
 
@@ -79,8 +80,9 @@ class Utils
     public static function printDefinition($language, $def)
     {
         $prefix = "\$";
-        if($language === "js") 
+        if ($language === "js") {
             $prefix = "";
+        }
             
         if ($def->isType(MyDefinition::TYPE_PROPERTY)) {
             $defName = "$prefix".Utils::encodeCharacters($def->getName()).

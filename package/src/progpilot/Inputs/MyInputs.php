@@ -1221,11 +1221,13 @@ class MyInputs
                     if (isset($customRule-> {'description'})) {
                         $myCustom = new MyCustomRule($customRule-> {'description'});
                         
-                        if(!isset($customRule-> {'cwe'}))
+                        if (!isset($customRule-> {'cwe'})) {
                             $customRule-> {'cwe'} = "";
+                        }
                             
-                        if(!isset($customRule-> {'attack'}))
+                        if (!isset($customRule-> {'attack'})) {
                             $customRule-> {'attack'} = "";
+                        }
                             
                         $myCustom->setCwe($customRule-> {'cwe'});
                         $myCustom->setAttack($customRule-> {'attack'});

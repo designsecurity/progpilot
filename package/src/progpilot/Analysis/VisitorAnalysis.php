@@ -277,7 +277,7 @@ class VisitorAnalysis
                                 null
                             );
                             
-                            if(!is_null($myClassNew)) {
+                            if (!is_null($myClassNew)) {
                                 $objectId = $this->context->getObjects()->addObject();
                                         
                                 $tempDefa->addType(MyDefinition::TYPE_INSTANCE);

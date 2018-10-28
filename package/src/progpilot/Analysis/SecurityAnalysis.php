@@ -210,7 +210,8 @@ class SecurityAnalysis
 
             foreach ($defsExprTainted as $defExprFlowFrom) {
                 if (!SecurityAnalysis::isSafe($indexParameter, $defExprFlowFrom, $mySink, true)) {
-                    $oneTainted["flow_name"] = \progpilot\Utils::printDefinition($mySink->getLanguage(), $defExprFlowFrom);
+                    $tmpname = \progpilot\Utils::printDefinition($mySink->getLanguage(), $defExprFlowFrom);
+                    $oneTainted["flow_name"] = $tmpname;
                     $oneTainted["flow_line"] = $defExprFlowFrom->getLine();
                     $oneTainted["flow_column"] = $defExprFlowFrom->getColumn();
                     $oneTainted["flow_file"] = \progpilot\Utils::encodeCharacters(
