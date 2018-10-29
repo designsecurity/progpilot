@@ -8,8 +8,8 @@ try {
         $analyzer = new \progpilot\Analyzer;
         $context->inputs->setFile($argv[1]);
         $context->inputs->setDev(true);
-        $context->inputs->setLanguages(["php", "js"]);
-        $context->inputs->setFrameworks(["suitecrm", "codeigniter"]);
+        $context->inputs->setLanguages(["php"]);
+        $context->inputs->setFrameworks(["suitecrm", "codeigniter", "wordpress"]);
         
         $context->setAnalyzeHardrules(true);
         $context->setAnalyzeFunctions(false);

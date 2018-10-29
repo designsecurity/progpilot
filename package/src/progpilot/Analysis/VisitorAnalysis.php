@@ -433,6 +433,8 @@ class VisitorAnalysis
                         $arrFuncCall = $instruction->getProperty(MyInstruction::ARR);
                         $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
                         
+                        $hasSources = false;
+                        
                         $listMyFunc = [];
                         IncludeAnalysis::funccall(
                             $this->context,
@@ -479,7 +481,7 @@ class VisitorAnalysis
                                     
                                     $listMyFunc[] = [$objectId, $myClass, $method, $visibility];
 
-                                    TaintAnalysis::funccallSpecifyAnalysis(
+                                    $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
                                         $method,
                                         $stackClass,
                                         $this->context,
@@ -497,7 +499,7 @@ class VisitorAnalysis
                             // we didn't resolve any class so the class of method is unknown (undefined)
                             // but we authorize to specify method of unknown class during the configuration of sinks ...
                             if (count($classOfFuncCallArr) === 0) {
-                                TaintAnalysis::funccallSpecifyAnalysis(
+                                $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
                                     null,
                                     $stackClass,
                                     $this->context,
@@ -531,7 +533,7 @@ class VisitorAnalysis
 
                                 $stackClass[0][0] = $myClassStatic;
 
-                                TaintAnalysis::funccallSpecifyAnalysis(
+                                $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
                                     $method,
                                     $stackClass,
                                     $this->context,
@@ -546,7 +548,7 @@ class VisitorAnalysis
                             }
                         } else {
                             $myFunc = $this->context->getFunctions()->getFunction($funcName);
-                            TaintAnalysis::funccallSpecifyAnalysis(
+                            $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
                                 $myFunc,
                                 null,
                                 $this->context,
@@ -609,16 +611,18 @@ class VisitorAnalysis
                                 $myFuncCall,
                                 $myClass
                             );
-
-                            FuncAnalysis::funccallAfter(
-                                $this->context,
-                                $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
-                                $myFuncCall,
-                                $myFunc,
-                                $arrFuncCall,
-                                $instruction,
-                                $code[$index + 3]
-                            );
+                            
+                            if(!$hasSources) {
+                                FuncAnalysis::funccallAfter(
+                                    $this->context,
+                                    $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
+                                    $myFuncCall,
+                                    $myFunc,
+                                    $arrFuncCall,
+                                    $instruction,
+                                    $code[$index + 3]
+                                );
+                            }
 
                             $classOfFuncCall = null;
                             if (is_null($myFunc)) {
@@ -670,7 +674,7 @@ class VisitorAnalysis
                                 $visibility
                             );
                             
-                            TaintAnalysis::funccallSpecifyAnalysis(
+                            $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
                                 $myFunc,
                                 $stackClass,
                                 $this->context,

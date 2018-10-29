@@ -3,8 +3,7 @@
         return [
                 [
                     "./tests/custom/custom1.php",
-                        [["13", "154", "bypass access control"],
-                        ["13", "154", "bypass access control"]]
+                        [["13", "154", "bypass access control"]]
                 ],
                 [
                     "./tests/custom/custom2.php",

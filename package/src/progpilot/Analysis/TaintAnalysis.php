@@ -60,7 +60,7 @@ class TaintAnalysis
             $index
         );
         
-        TaintAnalysis::funccallSource($stackClass, $context, $data, $myClass, $instruction);
+        $hasSources = TaintAnalysis::funccallSource($stackClass, $context, $data, $myClass, $instruction);
 
         // for example for document.write
         if (is_null($myClass) && $myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
@@ -72,6 +72,8 @@ class TaintAnalysis
         }
         
         SecurityAnalysis::funccall($stackClass, $context, $instruction, $myClass);
+        
+        return $hasSources;
     }
 
     public static function funccallValidator($stackClass, $context, $data, $myClass, $instruction, $myCode, $index)
@@ -345,6 +347,8 @@ class TaintAnalysis
 
     public static function funccallSource($stackClass, $context, $data, $myClass, $instruction)
     {
+        $hasSources = false;
+        
         $funcName = $instruction->getProperty(MyInstruction::FUNCNAME);
         $arrFuncCall = $instruction->getProperty(MyInstruction::ARR);
         $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
@@ -356,6 +360,7 @@ class TaintAnalysis
         
         $mySource = $context->inputs->getSourceByName($stackClass, $myFuncCall, true, $className, false);
         if (!is_null($mySource)) {
+            $hasSources = true;
             if ($mySource->hasParameters()) {
                 $nbParams = 0;
                 while (true) {
@@ -458,6 +463,8 @@ class TaintAnalysis
                 }
             }
         }
+        
+        return $hasSources;
     }
 
     public static function setTainted($tainted, $defAssign, $expr)

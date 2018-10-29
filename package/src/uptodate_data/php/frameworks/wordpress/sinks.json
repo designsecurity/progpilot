@@ -1,0 +1,5 @@
+{
+    "sinks": [
+        {"name": "query", "instanceof": "wpdb", "parameters": [{"id": 1, "conditions": "QUOTES"}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"}
+        ]
+}

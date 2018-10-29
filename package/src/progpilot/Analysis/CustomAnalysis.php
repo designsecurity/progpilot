@@ -38,7 +38,7 @@ class CustomAnalysis
                 $checkName = false;
                 if ($myFuncorDef->isType(MyDefinition::TYPE_PROPERTY)) {
                     $properties = $myFuncorDef->property->getProperties();
-                    if (is_array($properties)) {
+                    if (is_array($properties) && isset($properties[count($properties) - 1])) {
                         $lastproperty = $properties[count($properties) - 1];
                         if ($lastproperty === $definition->getName()) {
                             $checkName = true;

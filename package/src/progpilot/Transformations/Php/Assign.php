@@ -46,6 +46,9 @@ class Assign
             $type = Common::getTypeDefinition($context->getCurrentOp());
             $typeArray = Common::getTypeIsArray($context->getCurrentOp());
             $typeInstance = Common::getTypeIsInstance($context->getCurrentOp());
+            
+            if(empty($name)) 
+                $name = "empty_".rand();
 
             $exprOp = $context->getCurrentOp()->expr;
         }
