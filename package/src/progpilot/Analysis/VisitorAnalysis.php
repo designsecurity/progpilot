@@ -54,7 +54,7 @@ class VisitorAnalysis
         $this->blocks = null;
     }
     
-    public function FuncCall(
+    public function funcCall(
         $myCode,
         $instruction,
         $code,
@@ -63,261 +63,260 @@ class VisitorAnalysis
         $arrFuncCall,
         $myFuncCall
     ) {
-    
-                        $hasSources = false;
+        $hasSources = false;
                         
-                        $listMyFunc = [];
-                        IncludeAnalysis::funccall(
-                            $this->context,
-                            $this->defs,
-                            $this->blocks,
-                            $instruction,
-                            $code,
-                            $index
-                        );
+        $listMyFunc = [];
+        IncludeAnalysis::funccall(
+            $this->context,
+            $this->defs,
+            $this->blocks,
+            $instruction,
+            $code,
+            $index
+        );
 
-                        $stackClass = null;
-                        if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                            $stackClass = ResolveDefs::funccallClass(
-                                $this->context,
-                                $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
-                                $myFuncCall
-                            );
+        $stackClass = null;
+        if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
+            $stackClass = ResolveDefs::funccallClass(
+                $this->context,
+                $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
+                $myFuncCall
+            );
 
-                            $classOfFuncCallArr = $stackClass[count($stackClass) - 1];
-                            foreach ($classOfFuncCallArr as $classOfFuncCall) {
-                                $objectId = $classOfFuncCall->getObjectId();
-                                $myClass = $this->context->getObjects()->getMyClassFromObject($objectId);
-                                if (!is_null($myClass)) {
-                                    $visibility = true;
+            $classOfFuncCallArr = $stackClass[count($stackClass) - 1];
+            foreach ($classOfFuncCallArr as $classOfFuncCall) {
+                $objectId = $classOfFuncCall->getObjectId();
+                $myClass = $this->context->getObjects()->getMyClassFromObject($objectId);
+                if (!is_null($myClass)) {
+                    $visibility = true;
                                     
-                                    $method = $myClass->getMethod($funcName);
-                                    if (!ResolveDefs::getVisibilityMethod($myFuncCall->getNameInstance(), $method)) {
-                                        $method = null;
-                                        $visibility = false;
-                                    }
+                    $method = $myClass->getMethod($funcName);
+                    if (!ResolveDefs::getVisibilityMethod($myFuncCall->getNameInstance(), $method)) {
+                        $method = null;
+                        $visibility = false;
+                    }
 
-                                    if (!is_null($method)) {
-                                        $method->getThisDef()->setObjectId($objectId);
-                                    }
+                    if (!is_null($method)) {
+                        $method->getThisDef()->setObjectId($objectId);
+                    }
 
-                                    // twig analysis
-                                    if ($this->context->inputs->isLanguage(Analyzer::JS)) {
-                                        if (!is_null($myClass) && $myClass->getName() === "Twig_Environment") {
-                                            if ($funcName === "render") {
-                                                TwigAnalysis::funccall($this->context, $myFuncCall, $instruction);
-                                            }
-                                        }
-                                    }
-                                    
-                                    $listMyFunc[] = [$objectId, $myClass, $method, $visibility];
-
-                                    $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
-                                        $method,
-                                        $stackClass,
-                                        $this->context,
-                                        $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
-                                        $myClass,
-                                        $myFuncCall,
-                                        $arrFuncCall,
-                                        $instruction,
-                                        $myCode,
-                                        $index
-                                    );
-                                }
+                    // twig analysis
+                    if ($this->context->inputs->isLanguage(Analyzer::JS)) {
+                        if (!is_null($myClass) && $myClass->getName() === "Twig_Environment") {
+                            if ($funcName === "render") {
+                                TwigAnalysis::funccall($this->context, $myFuncCall, $instruction);
                             }
-
-                            // we didn't resolve any class so the class of method is unknown (undefined)
-                            // but we authorize to specify method of unknown class during the configuration of sinks ...
-                            if (count($classOfFuncCallArr) === 0) {
-                                $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
-                                    null,
-                                    $stackClass,
-                                    $this->context,
-                                    $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
-                                    null,
-                                    $myFuncCall,
-                                    $arrFuncCall,
-                                    $instruction,
-                                    $myCode,
-                                    $index
-                                );
-                            }
-                        } elseif ($myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC)) {
-                            $myClassStatic = $this->context->getClasses()->getMyClass(
-                                $myFuncCall->getNameInstance()
-                            );
-
-                            if (!is_null($myClassStatic)) {
-                                $visibility = true;
-                                $method = $myClassStatic->getMethod($funcName);
-
-                                if (!ResolveDefs::getVisibilityMethod(
-                                    $myFuncCall->getNameInstance(),
-                                    $method
-                                )) {
-                                    $method = null;
-                                    $visibility = false;
-                                }
-
-                                $listMyFunc[] = [0, $myClassStatic, $method, $visibility];
-
-                                $stackClass[0][0] = $myClassStatic;
-
-                                $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
-                                    $method,
-                                    $stackClass,
-                                    $this->context,
-                                    $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
-                                    $myClassStatic,
-                                    $myFuncCall,
-                                    $arrFuncCall,
-                                    $instruction,
-                                    $myCode,
-                                    $index
-                                );
-                            }
-                        } else {
-                            $myFunc = $this->context->getFunctions()->getFunction($funcName);
-                            $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
-                                $myFunc,
-                                null,
-                                $this->context,
-                                $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
-                                null,
-                                $myFuncCall,
-                                $arrFuncCall,
-                                $instruction,
-                                $myCode,
-                                $index
-                            );
-
-                            $listMyFunc[] = [0, null, $myFunc, true];
                         }
-
-                        foreach ($listMyFunc as $list) {
-                            $objectId = $list[0];
-                            $myClass = $list[1];
-                            $myFunc = $list[2];
-                            $visibility = $list[3];
-
-                            ResolveDefs::instanceBuildThis(
-                                $this->context,
-                                $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
-                                $objectId,
-                                $myClass,
-                                $myFunc,
-                                $myFuncCall
-                            );
-
-                            if (!is_null($myFunc) && !$this->inCallStack($myFunc)) {
-                                // the called function is a method and this method exists in the class
-                                if (($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)
-                                    || $myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC))
-                                        && $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)
-                                            || ((!$myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)
-                                                && !$myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC))
-                                                    && !$myFunc->isType(MyFunction::TYPE_FUNC_METHOD))) {
-                                    FuncAnalysis::funccallBefore(
-                                        $this->context,
-                                        $this->defs,
-                                        $myFunc,
-                                        $myFuncCall,
-                                        $instruction,
-                                        $this->context->getClasses()
-                                    );
-
-                                    $myCodefunction = new MyCode;
-                                    $myCodefunction->setCodes($myFunc->getMyCode()->getCodes());
-                                    $myCodefunction->setStart(0);
-                                    $myCodefunction->setEnd(count($myFunc->getMyCode()->getCodes()));
+                    }
                                     
-                                    $this->analyze($myCodefunction, $myFuncCall);
-                                }
-                            }
+                    $listMyFunc[] = [$objectId, $myClass, $method, $visibility];
 
-                            \progpilot\Analysis\CustomAnalysis::mustVerifyDefinition(
-                                $this->context,
-                                $instruction,
-                                $myFuncCall,
-                                $myClass
-                            );
+                    $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
+                        $method,
+                        $stackClass,
+                        $this->context,
+                        $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
+                        $myClass,
+                        $myFuncCall,
+                        $arrFuncCall,
+                        $instruction,
+                        $myCode,
+                        $index
+                    );
+                }
+            }
+
+            // we didn't resolve any class so the class of method is unknown (undefined)
+            // but we authorize to specify method of unknown class during the configuration of sinks ...
+            if (count($classOfFuncCallArr) === 0) {
+                $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
+                    null,
+                    $stackClass,
+                    $this->context,
+                    $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
+                    null,
+                    $myFuncCall,
+                    $arrFuncCall,
+                    $instruction,
+                    $myCode,
+                    $index
+                );
+            }
+        } elseif ($myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC)) {
+            $myClassStatic = $this->context->getClasses()->getMyClass(
+                $myFuncCall->getNameInstance()
+            );
+
+            if (!is_null($myClassStatic)) {
+                $visibility = true;
+                $method = $myClassStatic->getMethod($funcName);
+
+                if (!ResolveDefs::getVisibilityMethod(
+                    $myFuncCall->getNameInstance(),
+                    $method
+                )) {
+                    $method = null;
+                    $visibility = false;
+                }
+
+                $listMyFunc[] = [0, $myClassStatic, $method, $visibility];
+
+                $stackClass[0][0] = $myClassStatic;
+
+                $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
+                    $method,
+                    $stackClass,
+                    $this->context,
+                    $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
+                    $myClassStatic,
+                    $myFuncCall,
+                    $arrFuncCall,
+                    $instruction,
+                    $myCode,
+                    $index
+                );
+            }
+        } else {
+            $myFunc = $this->context->getFunctions()->getFunction($funcName);
+            $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
+                $myFunc,
+                null,
+                $this->context,
+                $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
+                null,
+                $myFuncCall,
+                $arrFuncCall,
+                $instruction,
+                $myCode,
+                $index
+            );
+
+            $listMyFunc[] = [0, null, $myFunc, true];
+        }
+
+        foreach ($listMyFunc as $list) {
+            $objectId = $list[0];
+            $myClass = $list[1];
+            $myFunc = $list[2];
+            $visibility = $list[3];
+
+            ResolveDefs::instanceBuildThis(
+                $this->context,
+                $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
+                $objectId,
+                $myClass,
+                $myFunc,
+                $myFuncCall
+            );
+
+            if (!is_null($myFunc) && !$this->inCallStack($myFunc)) {
+                // the called function is a method and this method exists in the class
+                if (($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)
+                    || $myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC))
+                        && $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)
+                            || ((!$myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)
+                                && !$myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC))
+                                    && !$myFunc->isType(MyFunction::TYPE_FUNC_METHOD))) {
+                    FuncAnalysis::funccallBefore(
+                        $this->context,
+                        $this->defs,
+                        $myFunc,
+                        $myFuncCall,
+                        $instruction,
+                        $this->context->getClasses()
+                    );
+
+                    $myCodefunction = new MyCode;
+                    $myCodefunction->setCodes($myFunc->getMyCode()->getCodes());
+                    $myCodefunction->setStart(0);
+                    $myCodefunction->setEnd(count($myFunc->getMyCode()->getCodes()));
+                                    
+                    $this->analyze($myCodefunction, $myFuncCall);
+                }
+            }
+
+            \progpilot\Analysis\CustomAnalysis::mustVerifyDefinition(
+                $this->context,
+                $instruction,
+                $myFuncCall,
+                $myClass
+            );
                             
-                            if (!$hasSources) {
-                                FuncAnalysis::funccallAfter(
-                                    $this->context,
-                                    $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
-                                    $myFuncCall,
-                                    $myFunc,
-                                    $arrFuncCall,
-                                    $instruction,
-                                    $code[$index + 3]
-                                );
-                            }
+            if (!$hasSources) {
+                FuncAnalysis::funccallAfter(
+                    $this->context,
+                    $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
+                    $myFuncCall,
+                    $myFunc,
+                    $arrFuncCall,
+                    $instruction,
+                    $code[$index + 3]
+                );
+            }
 
-                            $classOfFuncCall = null;
-                            if (is_null($myFunc)) {
-                                ResolveDefs::funccallReturnValues(
-                                    $this->context,
-                                    $myFuncCall,
-                                    $instruction,
-                                    $myCode,
-                                    $index
-                                );
+            $classOfFuncCall = null;
+            if (is_null($myFunc)) {
+                ResolveDefs::funccallReturnValues(
+                    $this->context,
+                    $myFuncCall,
+                    $instruction,
+                    $myCode,
+                    $index
+                );
 
-                                // representations start
-                                $this->context->outputs->callgraph->addFuncCall(
-                                    $this->currentMyBlock,
-                                    $myFuncCall,
-                                    $myClass
-                                );
-                            // representations end
-                            } else {
-                                $classOfFuncCall = $myFunc->getMyClass();
+                // representations start
+                $this->context->outputs->callgraph->addFuncCall(
+                    $this->currentMyBlock,
+                    $myFuncCall,
+                    $myClass
+                );
+            // representations end
+            } else {
+                $classOfFuncCall = $myFunc->getMyClass();
 
-                                // representations start
-                                foreach ($myFunc->getBlocks() as $myBlock) {
-                                    $this->context->outputs->callgraph->addChild(
-                                        $this->currentMyBlock,
-                                        $myBlock
-                                    );
-                                    $this->context->outputs->cfg->addEdge(
-                                        $this->currentMyBlock,
-                                        $myBlock
-                                    );
-                                    break;
-                                }
+                // representations start
+                foreach ($myFunc->getBlocks() as $myBlock) {
+                    $this->context->outputs->callgraph->addChild(
+                        $this->currentMyBlock,
+                        $myBlock
+                    );
+                    $this->context->outputs->cfg->addEdge(
+                        $this->currentMyBlock,
+                        $myBlock
+                    );
+                    break;
+                }
 
-                                $this->context->outputs->callgraph->addFuncCall(
-                                    $this->currentMyBlock,
-                                    $myFuncCall,
-                                    $myClass
-                                );
-                                // representations end
-                            }
+                $this->context->outputs->callgraph->addFuncCall(
+                    $this->currentMyBlock,
+                    $myFuncCall,
+                    $myClass
+                );
+                // representations end
+            }
 
-                            ResolveDefs::instanceBuildBack(
-                                $this->context,
-                                $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
-                                $myFunc,
-                                $myClass,
-                                $myFuncCall,
-                                $visibility
-                            );
+            ResolveDefs::instanceBuildBack(
+                $this->context,
+                $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
+                $myFunc,
+                $myClass,
+                $myFuncCall,
+                $visibility
+            );
                             
-                            $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
-                                $myFunc,
-                                $stackClass,
-                                $this->context,
-                                $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
-                                $classOfFuncCall,
-                                $myFuncCall,
-                                $arrFuncCall,
-                                $instruction,
-                                $myCode,
-                                $index
-                            );
-                        }
+            $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
+                $myFunc,
+                $stackClass,
+                $this->context,
+                $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
+                $classOfFuncCall,
+                $myFuncCall,
+                $arrFuncCall,
+                $instruction,
+                $myCode,
+                $index
+            );
+        }
     }
 
     public function inCallStack($curFunc)
@@ -700,7 +699,7 @@ class VisitorAnalysis
                         $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
                         $myExpr = $instruction->getProperty(MyInstruction::EXPR);
                         
-                        if($funcName === "call_user_func" || $funcName === "call_user_func_array") {
+                        if ($funcName === "call_user_func" || $funcName === "call_user_func_array") {
                             if ($instruction->isPropertyExist("argdef0")) {
                                 $defArg = $instruction->getProperty("argdef0");
                                 
@@ -711,9 +710,8 @@ class VisitorAnalysis
                                 $myFunctionCall->setColumn($myFuncCall->getColumn());
                                 $myFunctionCall->setSourceMyFile($myFuncCall->getSourceMyFile());
                                     
-                                if($funcName === "call_user_func") {
-                                    for($nbParams = 1; $nbParams < $myFuncCall->getNbParams(); $nbParams ++) {
-                                        
+                                if ($funcName === "call_user_func") {
+                                    for ($nbParams = 1; $nbParams < $myFuncCall->getNbParams(); $nbParams ++) {
                                         $oldDefArg = $instruction->getProperty("argdef$nbParams");
                                         $oldExprArg = $instruction->getProperty("argexpr$nbParams");
                                         
@@ -723,16 +721,13 @@ class VisitorAnalysis
                                     }
                                     
                                     $myFunctionCall->setNbParams($myFuncCall->getNbParams() - 1);
-                                }
-                                else {
+                                } else {
                                     if ($instruction->isPropertyExist("argdef1")) {
                                         $defArgParam = $instruction->getProperty("argdef1");
                                         
-                                        if($defArgParam->isType(MyDefinition::TYPE_COPY_ARRAY)) {
-                                            
+                                        if ($defArgParam->isType(MyDefinition::TYPE_COPY_ARRAY)) {
                                             $newNbParams = 0;
                                             foreach ($defArgParam->getCopyArrays() as $copyArray) {
-                                                
                                                 $newInst->addProperty("argdef$newNbParams", $copyArray[1]);
                                                 $newInst->addProperty("argexpr$newNbParams", $copyArray[1]->getExpr());
                                                 
@@ -748,11 +743,11 @@ class VisitorAnalysis
                                 $newInst->addProperty(MyInstruction::EXPR, $myExpr);
                                 $newInst->addProperty(MyInstruction::ARR, $arrFuncCall);
                                     
-                                foreach($defArg->getLastKnownValues() as $lastValue) {
+                                foreach ($defArg->getLastKnownValues() as $lastValue) {
                                     $myFunctionCall->setName($lastValue);
                                     $newInst->addProperty(MyInstruction::FUNCNAME, $lastValue);
 
-                                    $this->FuncCall(
+                                    $this->funcCall(
                                         $myCode,
                                         $newInst,
                                         $code,
@@ -760,12 +755,11 @@ class VisitorAnalysis
                                         $lastValue,
                                         $arrFuncCall,
                                         $myFunctionCall
-                                    ); 
+                                    );
                                 }
                             }
-                        }
-                        else
-                            $this->FuncCall(
+                        } else {
+                            $this->funcCall(
                                 $myCode,
                                 $instruction,
                                 $code,
@@ -773,7 +767,8 @@ class VisitorAnalysis
                                 $funcName,
                                 $arrFuncCall,
                                 $myFuncCall
-                            );  
+                            );
+                        }
 
                         break;
                 }
