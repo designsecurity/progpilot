@@ -127,6 +127,10 @@
                         [["\$var1", "10", "xss"]]
                 ],
                 [
+                    "./tests/data/source20.php",
+                        [["\$comment->ddd", "23", "xss"]]
+                ],
+                [
                     "./tests/data/sanitizer1.php",
                         [["\$var7safe", "5", "xss"]]
                 ],

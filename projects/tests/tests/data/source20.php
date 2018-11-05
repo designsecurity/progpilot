@@ -20,7 +20,6 @@ if ($comments) {
         // associated with this comment's post:
         get_post_custom($comment->comment_post_ID);
         
-        echo $comments->ddd;
         echo $comment->ddd;
     }
 }

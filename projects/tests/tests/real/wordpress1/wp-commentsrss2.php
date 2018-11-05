@@ -30,8 +30,6 @@
 				// Some plugins may need to know the metadata
 				// associated with this comment's post:
 				get_post_custom($comment->comment_post_ID);
-				
-				echo $comment->ddd;
 ?>
 	<item>
 		<title><?php if ( ! (is_single() || is_page()) ) {

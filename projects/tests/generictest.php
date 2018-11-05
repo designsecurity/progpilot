@@ -301,6 +301,22 @@
                 [
                     "./tests/generic/namespace2.php",
                         [["\$_GET[\"p\"]", "7", "xss"]]
+                ],
+                [
+                    "./tests/generic/calluserfunc1.php",
+                        [["\$a", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/calluserfunc2.php",
+                        [["\$a", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/calluserfunc3.php",
+                        [["\$a", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/calluserfunc4.php",
+                        [["\$a", "3", "xss"]]
                 ]
                 
         ];
