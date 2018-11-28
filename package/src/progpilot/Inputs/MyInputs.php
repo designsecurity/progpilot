@@ -1163,10 +1163,9 @@ class MyInputs
     public function readFalsePositives()
     {
         if (!is_null($this->falsePositives)) {
-            if(is_string($this->falsePositives)) 
+            if (is_string($this->falsePositives)) {
                 $this->readFalsePositivesFile($this->falsePositives);
-                
-            else if (is_array($this->falsePositives)) {
+            } elseif (is_array($this->falsePositives)) {
                 foreach ($this->falsePositives as $falsePositive) {
                     if (!isset($falsePositive["vuln_id"])) {
                         Utils::printError(Lang::FORMAT_FALSE_POSITIVES);
@@ -1216,10 +1215,9 @@ class MyInputs
     public function readExcludes()
     {
         if (!is_null($this->excludes)) {
-            if(is_string($this->excludes))
+            if (is_string($this->excludes)) {
                 $this->readExcludesFile($this->excludes);
-            
-            else if(is_array($this->excludes)) {
+            } elseif (is_array($this->excludes)) {
                 if (isset($this->excludes["exclude_files"])) {
                     $excludeFiles = $this->excludes["exclude_files"];
                     foreach ($excludeFiles as $excludeFile) {
@@ -1308,11 +1306,9 @@ class MyInputs
     public function readIncludes()
     {
         if (!is_null($this->includes)) {
-
-            if(is_string($this->includes)) 
+            if (is_string($this->includes)) {
                 $this->readIncludesFile($this->includes);
-            
-            else if(is_array($this->includes)) {
+            } elseif (is_array($this->includes)) {
                 if (isset($this->includes["include_files"])) {
                     $includeFiles = $this->includes["include_files"];
                     foreach ($includeFiles as $includeFile) {

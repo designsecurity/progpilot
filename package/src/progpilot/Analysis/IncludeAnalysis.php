@@ -174,7 +174,7 @@ class IncludeAnalysis
                                             $defsMainReturn =
                                                 $mainInclude->getDefs()->getDefRefByName("{main}_return");
                                             
-                                            if(is_array($defsMainReturn)) {
+                                            if (is_array($defsMainReturn)) {
                                                 foreach ($defsMainReturn as $defMainReturn) {
                                                     $defsOutputIncluded = $mainInclude->getDefs()->getOutMinusKill(
                                                         $defMainReturn->getBlockId()

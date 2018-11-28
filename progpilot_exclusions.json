@@ -1,8 +1,0 @@
-{
-    "exclude_folders":
-    [
-        "./projects/",
-        ".git/",
-        "./package/src/progpilot/Transformations/Js/"
-    ]
-}

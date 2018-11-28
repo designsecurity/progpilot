@@ -51,7 +51,7 @@ These functions are explained in the chapter about [**handling false positives**
 ***
 - $obj_context->inputs->setIncludes($mixed);  
 - $obj_context->inputs->setExcludes($mixed);  
-For include or exclude files and folders during the analysis with a json file configuration, see a file [**example here**](./../projects/tests/exclude_files.json) and a PHP array [**example here**](./../projects/tests/run_exclude_files.php).
+For include or exclude files and folders during the analysis, see an [**example here**](./../projects/tests/exclude_files.json) with a json file configuration and an [**example here**](./../projects/tests/run_exclude_files.php) with a php array.
 ***
 
 ## Outputs
