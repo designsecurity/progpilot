@@ -40,9 +40,8 @@ class ArrayExpr
                 if (isset($op->ops[0]->keys[$nbArrayExpr]->value)) {
                     $indexValue = $op->ops[0]->keys[$nbArrayExpr]->value;
                     $buildingArr = array($indexValue => $arr);
-                }
-                // const arr(CONST => "value")
-                else if (isset($op->ops[0]->keys[$nbArrayExpr]->ops[0]->name->value)) {
+                } elseif (isset($op->ops[0]->keys[$nbArrayExpr]->ops[0]->name->value)) {
+                    // const arr(CONST => "value")
                     $indexValue = $op->ops[0]->keys[$nbArrayExpr]->ops[0]->name->value;
                     $buildingArr = array($indexValue => $arr);
                 } else {

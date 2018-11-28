@@ -10,7 +10,6 @@
                         {"value" : "TRUE", "is_array": true, "array_index": "CURLOPT_SSL_VERIFYPEER"} 
                     ]}
             ], 
-            "all_parameters_valid": true,
             "description": "curl must verify that the certificate is trusted",
             "language": "php", 
             "action": "MUST_VERIFY_DEFINITION",
@@ -32,7 +31,6 @@
                         {"value" : "TRUE"}
                     ]}
             ], 
-            "all_parameters_valid": true,
             "description": "curl must verify that the certificate is trusted",
             "language": "php", 
             "action": "MUST_VERIFY_DEFINITION",
@@ -49,7 +47,6 @@
                         {"value" : "2", "is_array": true, "array_index": "CURLOPT_SSL_VERIFYHOST"} 
                     ]}
             ], 
-            "all_parameters_valid": true,
             "description": "curl must verify that the common name of the certificate matches with the hostname provided",
             "language": "php", 
             "action": "MUST_VERIFY_DEFINITION",
@@ -70,7 +67,6 @@
                         {"value" : "2"} 
                     ]}
             ], 
-            "all_parameters_valid": true,
             "description": "curl must verify that the common name of the certificate matches with the hostname provided",
             "language": "php", 
             "action": "MUST_VERIFY_DEFINITION",

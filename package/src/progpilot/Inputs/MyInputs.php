@@ -21,27 +21,26 @@ class MyInputs
     private $frameworks;
     
     private $customRules;
-    private $resolvedIncludes;
 
     private $sanitizers;
     private $sinks;
     private $sources;
     private $validators;
-    private $falsePositives;
+    private $falsePositivesAnalysis;
     private $excludesFilesAnalysis;
     private $includesFilesAnalysis;
     private $excludesFoldersAnalysis;
     private $includesFoldersAnalysis;
 
     private $customFile;
-    private $resolvedIncludesFile;
-    private $falsePositivesFile;
+    private $resolvedIncludes;
+    private $falsePositives;
     private $sourcesFile;
     private $sinksFile;
     private $sanitizersFile;
     private $validatorsFile;
-    private $excludesFile;
-    private $includesFile;
+    private $includes;
+    private $excludes;
 
     private $file;
     private $code;
@@ -54,26 +53,26 @@ class MyInputs
         $this->frameworks = ["suitecrm", "codeigniter", "wordpress"];
         
         $this->customRules = [];
-        $this->resolvedIncludes = [];
+        $this->resolvedIncludesAnalysis = [];
         $this->sanitizers = [];
         $this->sinks = [];
         $this->sources = [];
         $this->validators = [];
-        $this->falsePositives = [];
+        $this->falsePositivesAnalysis = [];
         $this->excludesFilesAnalysis = [];
         $this->includesFilesAnalysis = [];
         $this->excludesFoldersAnalysis = [];
         $this->includesFoldersAnalysis = [];
 
         $this->customFile = null;
-        $this->falsePositivesFile = null;
-        $this->resolvedIncludesFile = null;
+        $this->falsePositives= null;
+        $this->resolvedIncludes = null;
         $this->sanitizersFile = null;
         $this->sinksFile = null;
         $this->sourcesFile = null;
         $this->validatorsFile = null;
-        $this->excludesFile = null;
-        $this->includesFile = null;
+        $this->excludes = null;
+        $this->includes = null;
 
         $this->file = null;
         $this->code = null;
@@ -224,7 +223,7 @@ class MyInputs
 
     public function getIncludeByLocation($line, $column, $sourceFile)
     {
-        foreach ($this->resolvedIncludes as $myInclude) {
+        foreach ($this->resolvedIncludesAnalysis as $myInclude) {
             if ($myInclude->getLine() === $line
                 && $myInclude->getColumn() === $column
                     && $myInclude->getSourceFile() === $sourceFile) {
@@ -496,7 +495,7 @@ class MyInputs
 
     public function getFalsePositiveById($id)
     {
-        foreach ($this->falsePositives as $falsePositive) {
+        foreach ($this->falsePositivesAnalysis as $falsePositive) {
             if ($falsePositive->getId() === $id) {
                 return $falsePositive;
             }
@@ -532,17 +531,17 @@ class MyInputs
 
     public function getFalsePositives()
     {
-        return $this->falsePositivesFile;
+        return $this->falsePositives;
     }
 
-    public function getExcludeFiles()
+    public function getIncludes()
     {
-        return $this->excludesFiles;
+        return $this->includes;
     }
 
-    public function getIncludeFiles()
+    public function getExcludes()
     {
-        return $this->includesFiles;
+        return $this->excludes;
     }
 
     public function getDev()
@@ -570,19 +569,24 @@ class MyInputs
         $this->includesFile = $file;
     }
 
-    public function setExcludeFiles($file)
+    public function setExcludes($arr)
     {
-        $this->excludesFile = $file;
+        $this->excludes = $arr;
     }
 
-    public function setFalsePositives($file)
+    public function setIncludes($arr)
     {
-        $this->falsePositivesFile = $file;
+        $this->includes = $arr;
     }
 
-    public function setResolvedIncludes($file)
+    public function setFalsePositives($arr)
     {
-        $this->resolvedIncludesFile = $file;
+        $this->falsePositives = $arr;
+    }
+
+    public function setResolvedIncludes($arr)
+    {
+        $this->resolvedIncludes = $arr;
     }
 
     public function setSources($file)
@@ -627,9 +631,9 @@ class MyInputs
 
     public function readFrameworks()
     {
-        if (in_array("suitecrm", $this->frameworks, true)) {
+        if (is_array($this->frameworks) && in_array("suitecrm", $this->frameworks, true)) {
             $sanitizersfile = __DIR__."/../../uptodate_data/php/frameworks/suitecrm/sanitizers.json";
-            
+
             if (is_array($this->sanitizersFile)) {
                 if (!in_array($sanitizersfile, $this->sanitizersFile, true)) {
                     $this->readSanitizersFile($sanitizersfile);
@@ -653,7 +657,7 @@ class MyInputs
             }
         }
         
-        if (in_array("codeigniter", $this->frameworks, true)) {
+        if (is_array($this->frameworks) && in_array("codeigniter", $this->frameworks, true)) {
             $sanitizersfile = __DIR__."/../../uptodate_data/php/frameworks/codeigniter/sanitizers.json";
             
             if (is_array($this->sanitizersFile)) {
@@ -716,7 +720,7 @@ class MyInputs
         }
         
         
-        if (in_array("wordpress", $this->frameworks, true)) {
+        if (is_array($this->frameworks) && in_array("wordpress", $this->frameworks, true)) {
             $sanitizersfile = __DIR__."/../../uptodate_data/php/frameworks/wordpress/sanitizers.json";
             
             if (is_array($this->sanitizersFile)) {
@@ -1120,14 +1124,14 @@ class MyInputs
 
     public function readResolvedIncludes()
     {
-        if (!is_null($this->resolvedIncludesFile)) {
-            if (!file_exists($this->resolvedIncludesFile)) {
+        if (!is_null($this->resolvedIncludes)) {
+            if (!file_exists($this->resolvedIncludes)) {
                 Utils::printError(
-                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->resolvedIncludesFile).")"
+                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->resolvedIncludes).")"
                 );
             }
 
-            $outputJson = file_get_contents($this->resolvedIncludesFile);
+            $outputJson = file_get_contents($this->resolvedIncludes);
             $parsedJson = json_decode($outputJson);
 
             if (isset($parsedJson-> {'includes'})) {
@@ -1147,7 +1151,7 @@ class MyInputs
                         $value = $include-> {'value'};
 
                         $myInclude = new MyInclude($line, $column, $sourceFile, $value);
-                        $this->resolvedIncludes[] = $myInclude;
+                        $this->resolvedIncludesAnalysis[] = $myInclude;
                     }
                 }
             } else {
@@ -1155,17 +1159,40 @@ class MyInputs
             }
         }
     }
-
+    
     public function readFalsePositives()
     {
-        if (!is_null($this->falsePositivesFile)) {
-            if (!file_exists($this->falsePositivesFile)) {
+        if (!is_null($this->falsePositives)) {
+            if(is_string($this->falsePositives)) 
+                $this->readFalsePositivesFile($this->falsePositives);
+                
+            else if (is_array($this->falsePositives)) {
+                foreach ($this->falsePositives as $falsePositive) {
+                    if (!isset($falsePositive["vuln_id"])) {
+                        Utils::printError(Lang::FORMAT_FALSE_POSITIVES);
+                    }
+
+                    $vulnId = $falsePositive["vuln_id"];
+
+                    $myVuln = new MyVuln($vulnId);
+                    $this->falsePositivesAnalysis[] = $myVuln;
+                }
+            } else {
+                Utils::printError(Lang::FORMAT_FALSE_POSITIVES);
+            }
+        }
+    }
+
+    public function readFalsePositivesFile($file)
+    {
+        if (!is_null($file)) {
+            if (!file_exists($file)) {
                 Utils::printError(
-                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->falsePositivesFile).")"
+                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($file).")"
                 );
             }
 
-            $outputJson = file_get_contents($this->falsePositivesFile);
+            $outputJson = file_get_contents($file);
             $parsedJson = json_decode($outputJson);
 
             if (isset($parsedJson-> {'false_positives'})) {
@@ -1178,7 +1205,7 @@ class MyInputs
                     $vulnId = $falsePositive-> {'vuln_id'};
 
                     $myVuln = new MyVuln($vulnId);
-                    $this->falsePositives[] = $myVuln;
+                    $this->falsePositivesAnalysis[] = $myVuln;
                 }
             } else {
                 Utils::printError(Lang::FORMAT_FALSE_POSITIVES);
@@ -1186,16 +1213,44 @@ class MyInputs
         }
     }
 
-    public function readExcludesFile()
+    public function readExcludes()
     {
-        if (!is_null($this->excludesFile)) {
-            if (!file_exists($this->excludesFile)) {
+        if (!is_null($this->excludes)) {
+            if(is_string($this->excludes))
+                $this->readExcludesFile($this->excludes);
+            
+            else if(is_array($this->excludes)) {
+                if (isset($this->excludes["exclude_files"])) {
+                    $excludeFiles = $this->excludes["exclude_files"];
+                    foreach ($excludeFiles as $excludeFile) {
+                        if (realpath($excludeFile)) {
+                            $this->excludesFilesAnalysis[] = realpath($excludeFile);
+                        }
+                    }
+                }
+
+                if (isset($this->excludes["exclude_folders"])) {
+                    $excludeFolders = $this->excludes["exclude_folders"];
+                    foreach ($excludeFolders as $excludeFolder) {
+                        if (realpath($excludeFolder)) {
+                            $this->excludesFoldersAnalysis[] = realpath($excludeFolder);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public function readExcludesFile($file)
+    {
+        if (!is_null($file)) {
+            if (!file_exists($file)) {
                 Utils::printError(
-                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->excludesFile).")"
+                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($file).")"
                 );
             }
 
-            $outputJson = file_get_contents($this->excludesFile);
+            $outputJson = file_get_contents($file);
             $parsedJson = json_decode($outputJson);
 
             if (isset($parsedJson-> {'exclude_files'})) {
@@ -1218,16 +1273,16 @@ class MyInputs
         }
     }
 
-    public function readIncludesFile()
+    public function readIncludesFile($file)
     {
-        if (!is_null($this->includesFile)) {
-            if (!file_exists($this->includesFile)) {
+        if (!is_null($file)) {
+            if (!file_exists($file)) {
                 Utils::printError(
-                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->includesFile).")"
+                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($file).")"
                 );
             }
 
-            $outputJson = file_get_contents($this->includesFile);
+            $outputJson = file_get_contents($file);
             $parsedJson = json_decode($outputJson);
 
             if (isset($parsedJson-> {'include_files'})) {
@@ -1244,6 +1299,35 @@ class MyInputs
                 foreach ($includeFolders as $includeFolder) {
                     if (realpath($includeFolder)) {
                         $this->includesFoldersAnalysis[] = realpath($includeFolder);
+                    }
+                }
+            }
+        }
+    }
+
+    public function readIncludes()
+    {
+        if (!is_null($this->includes)) {
+
+            if(is_string($this->includes)) 
+                $this->readIncludesFile($this->includes);
+            
+            else if(is_array($this->includes)) {
+                if (isset($this->includes["include_files"])) {
+                    $includeFiles = $this->includes["include_files"];
+                    foreach ($includeFiles as $includeFile) {
+                        if (realpath($includeFile)) {
+                            $this->includesFilesAnalysis[] = realpath($includeFile);
+                        }
+                    }
+                }
+
+                if (isset($this->includes["include_folders"])) {
+                    $includeFolders = $this->includes["include_folders"];
+                    foreach ($includeFolders as $includeFolder) {
+                        if (realpath($includeFolder)) {
+                            $this->includesFoldersAnalysis[] = realpath($includeFolder);
+                        }
                     }
                 }
             }
@@ -1314,23 +1398,24 @@ class MyInputs
                                         $parameters = $seq-> {'parameters'};
                                         foreach ($parameters as $parameter) {
                                             if (isset($parameter-> {'id'}) && isset($parameter-> {'values'})) {
-                                            
                                                 $validbydefault = false;
-                                                if(isset($parameter-> {'valid_by_default'})
-                                                    && $parameter-> {'valid_by_default'})
+                                                if (isset($parameter-> {'valid_by_default'})
+                                                    && $parameter-> {'valid_by_default'}) {
                                                     $validbydefault = true;
+                                                }
                                                     
                                                 $fixed = false;
-                                                if(isset($parameter-> {'fixed'})
-                                                    && $parameter-> {'fixed'})
+                                                if (isset($parameter-> {'fixed'})
+                                                    && $parameter-> {'fixed'}) {
                                                     $fixed = true;
+                                                }
                                                     
                                                 if (is_int($parameter-> {'id'})) {
                                                     $myCustomFunction->addParameter(
                                                         $parameter-> {'id'},
-                                                        $parameter-> {'values'},
                                                         $validbydefault,
-                                                        $fixed
+                                                        $fixed,
+                                                        $parameter-> {'values'}
                                                     );
                                                 }
                                             }
@@ -1361,35 +1446,30 @@ class MyInputs
                                 $parameters = $customRule-> {'parameters'};
                                 foreach ($parameters as $parameter) {
                                     if (isset($parameter-> {'id'}) && isset($parameter-> {'values'})) {
-                                                    
                                         if (is_int($parameter-> {'id'})) {
-                                        
                                             $fixed = false;
-                                            if(isset($parameter-> {'fixed'})
-                                                && $parameter-> {'fixed'})
+                                            if (isset($parameter-> {'fixed'})
+                                                && $parameter-> {'fixed'}) {
                                                 $fixed = true;
+                                            }
                                         
                                             $validbydefault = false;
-                                            if(isset($parameter-> {'valid_by_default'})
-                                                && $parameter-> {'valid_by_default'})
+                                            if (isset($parameter-> {'valid_by_default'})
+                                                && $parameter-> {'valid_by_default'}) {
                                                 $validbydefault = true;
+                                            }
                                                     
                                             $myCustomFunction->addParameter(
                                                 $parameter-> {'id'},
-                                                $parameter-> {'values'},
                                                 $validbydefault,
-                                                $fixed
+                                                $fixed,
+                                                $parameter-> {'values'}
                                             );
                                         }
                                     }
                                 }
 
                                 $myCustomFunction->setHasParameters(true);
-                            }
-                            
-                            if(isset($customRule-> {'all_parameters_valid'})) {
-                                $allparameters = $customRule-> {'all_parameters_valid'};
-                                $myCustomFunction->setAllParametersValid($allparameters);
                             }
 
                             if (isset($customRule-> {'instanceof'})) {

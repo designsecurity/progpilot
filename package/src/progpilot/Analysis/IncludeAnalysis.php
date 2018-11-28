@@ -173,18 +173,21 @@ class IncludeAnalysis
                                         if (!is_null($mainInclude->getDefs())) {
                                             $defsMainReturn =
                                                 $mainInclude->getDefs()->getDefRefByName("{main}_return");
-                                            foreach ($defsMainReturn as $defMainReturn) {
-                                                $defsOutputIncluded = $mainInclude->getDefs()->getOutMinusKill(
-                                                    $defMainReturn->getBlockId()
-                                                );
-                                                if (!is_null($defsOutputIncluded)) {
-                                                    foreach ($defsOutputIncluded as $defOutputIncluded) {
-                                                        if (!in_array(
-                                                            $defOutputIncluded,
-                                                            $defsOutputIncludedFinal,
-                                                            true
-                                                        )) {
-                                                            $defsOutputIncludedFinal[] = $defOutputIncluded;
+                                            
+                                            if(is_array($defsMainReturn)) {
+                                                foreach ($defsMainReturn as $defMainReturn) {
+                                                    $defsOutputIncluded = $mainInclude->getDefs()->getOutMinusKill(
+                                                        $defMainReturn->getBlockId()
+                                                    );
+                                                    if (!is_null($defsOutputIncluded)) {
+                                                        foreach ($defsOutputIncluded as $defOutputIncluded) {
+                                                            if (!in_array(
+                                                                $defOutputIncluded,
+                                                                $defsOutputIncludedFinal,
+                                                                true
+                                                            )) {
+                                                                $defsOutputIncludedFinal[] = $defOutputIncluded;
+                                                            }
                                                         }
                                                     }
                                                 }

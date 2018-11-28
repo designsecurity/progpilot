@@ -17,9 +17,14 @@ class RunExcludeFilesTest extends TestCase
         $context->setAnalyzeFunctions(false);
         $context->outputs->taintedFlow(true);
         
+        $arr = array(
+            "exclude_files" => ["./tests/folders/folder2/mix3.php"],
+            "exclude_folders" => ["./tests/folders/folder2/sub_folder1/sub_folder2"]
+        );
+
         $nbVulns = 0;
         $context->inputs->setDev(true);
-        $context->inputs->setExcludeFiles("exclude_files.json");
+        $context->inputs->setExcludes($arr);
         $context->inputs->setFolder($folder);
         
         try {

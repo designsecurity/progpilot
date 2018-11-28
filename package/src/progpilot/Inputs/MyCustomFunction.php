@@ -14,7 +14,6 @@ class MyCustomFunction extends MySpecify
 {
     private $parameters;
     private $hasParameters;
-    private $allParametersValid;
     
     private $action;
     private $orderNumberExpected;
@@ -28,11 +27,10 @@ class MyCustomFunction extends MySpecify
         $this->orderNumberReal = -1;
 
         $this->hasParameters = false;
-        $this->allParametersValid = false;
         $this->parameters = [];
     }
 
-    public function addParameter($parameter, $values = null, $validbydefault, $fixed)
+    public function addParameter($parameter, $validbydefault, $fixed, $values = null)
     {
         $this->parameters[] = [$parameter, $values, $validbydefault, $fixed];
     }
@@ -40,16 +38,6 @@ class MyCustomFunction extends MySpecify
     public function getParameters()
     {
         return $this->parameters;
-    }
-
-    public function allParametersValid()
-    {
-        return $this->allParametersValid;
-    }
-
-    public function setAllParametersValid($allParametersValid)
-    {
-        $this->allParametersValid = $allParametersValid;
     }
 
     public function hasParameters()

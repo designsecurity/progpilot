@@ -400,12 +400,12 @@ class Context
                                 $this->inputs->setSanitizers($value["inputs"]["setSanitizers"]);
                             }
 
-                            if (isset($value["inputs"]["setIncludeFiles"])) {
-                                $this->inputs->setIncludeFiles($value["inputs"]["setIncludeFiles"]);
+                            if (isset($value["inputs"]["setIncludes"])) {
+                                $this->inputs->setIncludes($value["inputs"]["setIncludes"]);
                             }
 
-                            if (isset($value["inputs"]["setExcludeFiles"])) {
-                                $this->inputs->setExcludeFiles($value["inputs"]["setExcludeFiles"]);
+                            if (isset($value["inputs"]["setExcludes"])) {
+                                $this->inputs->setExcludes($value["inputs"]["setExcludes"]);
                             }
 
                             if (isset($value["inputs"]["setFolder"])) {

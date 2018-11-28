@@ -79,8 +79,7 @@ class BuildArrays
                     $ind = 0;
                     if (isset($op->dim->value)) {
                         $ind = $op->dim->value;
-                    }
-                    else if(isset($op->dim->ops[0]->name->value)) {
+                    } elseif (isset($op->dim->ops[0]->name->value)) {
                         $ind = $op->dim->ops[0]->name->value;
                     }
 

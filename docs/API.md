@@ -42,16 +42,16 @@ If a file (sources, sinks, sanitizers, validators, custom rules) is not specifie
 ***
 
 ***
-- $obj_context->inputs->setResolvedIncludes($file_includes);  
+- $obj_context->inputs->setResolvedIncludes($mixed);  
 This function is explained in the chapter about [**included files**](./INCLUDES.md)
-- $obj_context->inputs->setFalsePositives($file_false_positives);  
-This function is explained in the chapter about [**handling false positives**](./FALSE_POSITIVES.md)
+- $obj_context->inputs->setFalsePositives($mixed);  
+These functions are explained in the chapter about [**handling false positives**](./FALSE_POSITIVES.md)
 ***
 
 ***
-- $obj_context->inputs->setIncludeFiles($file);  
-- $obj_context->inputs->setExcludeFiles($file);  
-For include or exclude files and folders during the analysis, see an [**example here**](./../projects/tests/exclude_files.json).
+- $obj_context->inputs->setIncludes($mixed);  
+- $obj_context->inputs->setExcludes($mixed);  
+For include or exclude files and folders during the analysis with a json file configuration, see a file [**example here**](./../projects/tests/exclude_files.json) and a PHP array [**example here**](./../projects/tests/run_exclude_files.php).
 ***
 
 ## Outputs

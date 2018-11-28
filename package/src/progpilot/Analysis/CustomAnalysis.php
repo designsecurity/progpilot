@@ -197,8 +197,7 @@ class CustomAnalysis
                                 && $functionDefinition->getInstanceOfName() === $myClass->getName()))) {
                         $isValid = false;
                         $params = $functionDefinition->getParameters();
-                        foreach($params as $param) {
-                            
+                        foreach ($params as $param) {
                             $isValid = false;
 
                             $idParam = $param[0] - 1;
@@ -207,7 +206,6 @@ class CustomAnalysis
                             $isParameterFixed = $param[3];
                             
                             if (!is_null($valuesParameter)) {
-                            
                                 if (!$instruction->isPropertyExist("argdef$idParam")) {
                                     $isValid = $validbydefault;
                                     break;
@@ -221,7 +219,6 @@ class CustomAnalysis
                                     if (isset($valueParameter->is_array)
                                         && $valueParameter->is_array === true
                                             && isset($valueParameter->array_index)) {
-                          
                                         $arrayfound = false;
                                         if ($defArg->isType(MyDefinition::TYPE_COPY_ARRAY)) {
                                             $copyArrays = $defArg->getCopyArrays();
@@ -237,20 +234,19 @@ class CustomAnalysis
                                             }
                                         }
                                         
-                                        if(!$arrayfound) {
+                                        if (!$arrayfound) {
                                             $isValid = $validbydefault;
                                             break;
                                         }
-                                        
                                     } else {
                                         $defLastKnownValues = $defArg->getLastKnownValues();
                                     }
                                     
-                                    if(count($defLastKnownValues) === 0) {
+                                    if (count($defLastKnownValues) === 0) {
                                         $isValid = false;
                                     }
                    
-                                    foreach ($defLastKnownValues as $lastKnownValue) {                     
+                                    foreach ($defLastKnownValues as $lastKnownValue) {
                                         if ($valueParameter->value === $lastKnownValue) {
                                             $isValid = true;
                                             break 2;
@@ -262,17 +258,16 @@ class CustomAnalysis
                                     $isValid = !$isValid;
                                     break;
                                 }
-
-                                // one parameter is not valid
-                                if (!$isValid && !$functionDefinition->allParametersValid()) {
-                                    break;
-                                }
                                 
                                 // one parameter is not valid and required
-                                if (!$isValid 
-                                    && $isParameterFixed
-                                        && $functionDefinition->allParametersValid()) {
+                                if (!$isValid
+                                    && $isParameterFixed) {
                                     $isValid = true;
+                                    break;
+                                }
+
+                                // one parameter is not valid
+                                if (!$isValid) {
                                     break;
                                 }
                             }

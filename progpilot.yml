@@ -1,30 +1,38 @@
 inputs:
     setDev: false
-    setLanguages: ["php"]
-    setFrameworks: []
-    setSources: ./package/src/uptodate_data/php/sources.json
-    setSinks: ./package/src/uptodate_data/php/sinks.json
-    setValidators: ./package/src/uptodate_data/php/validators.json
-    setSanitizers: ./package/src/uptodate_data/php/sanitizers.json
-    setCustomRules: ./package/src/uptodate_data/php/rules.json
-    setIncludeFiles: 
-    setExcludeFiles: progpilot_exclusions.json
-    setFolder: 
-    setFile: 
-    setCode:
-    setResolvedIncludes:
-    setFalsePositives:
+    setLanguages: 
+        - php
+    setFrameworks: 
+        - suitecrm
+        - codeigniter
+        - wordpress
+    setSources: ~
+    setSinks: ~
+    setValidators: ~
+    setSanitizers: ~
+    setCustomRules: ~
+    setIncludes: ~
+    setExcludes: 
+        exclude_folders: 
+            - "./projects/"
+            - ".git/"
+            - "./package/src/progpilot/Transformations/Js/"
+    setFolder: ~
+    setFile: ~
+    setCode: ~
+    setResolvedIncludes: ~
+    setFalsePositives: ~
     
 outputs:
     taintedFlow: false
     resolveIncludes: false
-    resolveIncludesFile:
+    resolveIncludesFile: ~
     
 options:
     setAnalyzeIncludes: true
     setAnalyzeFunctions: true
     setAnalyzeHardRules: true
-    setPrintFile: true
+    setPrintFile: false
     setPrintWarning: false
     setPrettyPrint: true
     setLimitTime: 10

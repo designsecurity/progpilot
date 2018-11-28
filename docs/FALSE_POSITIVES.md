@@ -16,8 +16,16 @@ Produce a json file that contains all your false positives with **vuln_id** for 
         ]
 }
 ```
+Or use an array that contains all your false positives with **vuln_id** for each element :
+```php
+$arr = [
+        array("vuln_id" => "f31cec392303e924f666116fd67d897c92e8a59a5e8ca93a65091701ca9db558")
+    ];
+```
 
 And pass it to this function :
-- $context->inputs->setFalsePositives("./false_positives.json");
+```php
+$context->inputs->setFalsePositives($arr_or_file);
+```
 
 The analyzer will not consider the vulnerabilities with these hashs.

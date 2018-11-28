@@ -325,8 +325,8 @@ class Analyzer
         $files = [];
 
         $context->readConfiguration();
-        $context->inputs->readIncludesFile();
-        $context->inputs->readExcludesFile();
+        $context->inputs->readExcludes();
+        $context->inputs->readIncludes();
 
         $context->inputs->readDev();
         $context->inputs->readFrameworks();
