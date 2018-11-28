@@ -1,5 +1,82 @@
 {
-    "custom_rules": [
+    "custom_rules": [{
+            "name": "curl_setopt_array", 
+            "is_function": true,
+            "parameters": 
+            [
+                {"id": 2, "valid_by_default": true, "values": 
+                    [ 
+                        {"value" : "true", "is_array": true, "array_index": "CURLOPT_SSL_VERIFYPEER"},
+                        {"value" : "TRUE", "is_array": true, "array_index": "CURLOPT_SSL_VERIFYPEER"} 
+                    ]}
+            ], 
+            "all_parameters_valid": true,
+            "description": "curl must verify that the certificate is trusted",
+            "language": "php", 
+            "action": "MUST_VERIFY_DEFINITION",
+            "attack": "security misconfiguration", 
+            "cwe": "CWE_295"
+        },
+        {
+            "name": "curl_setopt", 
+            "is_function": true,
+            "parameters": 
+            [
+                {"id": 2, "fixed": true, "valid_by_default": true, "values": 
+                    [ 
+                        {"value" : "CURLOPT_SSL_VERIFYPEER"} 
+                    ]},
+                {"id": 3, "valid_by_default": true, "values": 
+                    [ 
+                        {"value" : "true"}, 
+                        {"value" : "TRUE"}
+                    ]}
+            ], 
+            "all_parameters_valid": true,
+            "description": "curl must verify that the certificate is trusted",
+            "language": "php", 
+            "action": "MUST_VERIFY_DEFINITION",
+            "attack": "security misconfiguration", 
+            "cwe": "CWE_295"
+        },
+        {
+            "name": "curl_setopt_array", 
+            "is_function": true,
+            "parameters": 
+            [
+                {"id": 2, "valid_by_default": true, "values": 
+                    [ 
+                        {"value" : "2", "is_array": true, "array_index": "CURLOPT_SSL_VERIFYHOST"} 
+                    ]}
+            ], 
+            "all_parameters_valid": true,
+            "description": "curl must verify that the common name of the certificate matches with the hostname provided",
+            "language": "php", 
+            "action": "MUST_VERIFY_DEFINITION",
+            "attack": "security misconfiguration", 
+            "cwe": "CWE_295"
+        },
+        {
+            "name": "curl_setopt", 
+            "is_function": true,
+            "parameters": 
+            [
+                {"id": 2, "fixed": true, "valid_by_default": true, "values": 
+                    [ 
+                        {"value" : "CURLOPT_SSL_VERIFYHOST"} 
+                    ]},
+                {"id": 3, "valid_by_default": true, "values": 
+                    [ 
+                        {"value" : "2"} 
+                    ]}
+            ], 
+            "all_parameters_valid": true,
+            "description": "curl must verify that the common name of the certificate matches with the hostname provided",
+            "language": "php", 
+            "action": "MUST_VERIFY_DEFINITION",
+            "attack": "security misconfiguration", 
+            "cwe": "CWE_295"
+        },
         {
             "name": "setcookie", 
             "is_function": true,
@@ -7,11 +84,13 @@
             [
                 {"id": 6, "values": 
                     [ 
-                        {"value" : "true"} 
+                        {"value" : "true"},
+                        {"value" : "TRUE"} 
                     ]},
                 {"id": 7, "values": 
                     [ 
-                        {"value" : "true"} 
+                        {"value" : "true"},
+                        {"value" : "TRUE"} 
                     ]}
             ], 
             "description": "cookie setted without secure or httponly flags",
@@ -26,9 +105,10 @@
             "instanceof": "Twig_Environment", 
             "parameters": 
             [
-                {"id": 2, "values": 
+                {"id": 2, "valid_by_default": true, "values": 
                     [ 
-                        {"value" : "false", "is_array": true, "array_index": "autoescape"} 
+                        {"value" : "false", "is_array": true, "array_index": "autoescape"},
+                        {"value" : "FALSE", "is_array": true, "array_index": "autoescape"}
                     ]}
             ], 
             "description": "Twig_Environment autoescaping should be set to true",

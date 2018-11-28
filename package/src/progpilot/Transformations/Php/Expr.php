@@ -113,7 +113,7 @@ class Expr
             if (is_null($name)) {
                 $name = mt_rand();
             }
-
+    
             $arr = BuildArrays::buildArrayFromOps($op, false);
 
             $column = $context->getCurrentColumn();

@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "php": ">=7.0.25",
+        "php": "^7.0.25",
         "progpilot/package": "@dev",
         "ircmaxell/php-cfg": "@dev"
     },

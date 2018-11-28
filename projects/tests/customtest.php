@@ -18,5 +18,33 @@
                 [
                     "./tests/custom/custom4.php",
                         [["3", "7", "security misconfiguration"]]
+                ],
+                [
+                    "./tests/custom/cert1.php",
+                        [["3", "7", "security misconfiguration"],
+                        ["5", "59", "security misconfiguration"],
+                        ["7", "111", "security misconfiguration"]]
+                ],
+                [
+                    "./tests/custom/cert2.php",
+                        [["15", "603", "security misconfiguration"],
+                        ["30", "1244", "security misconfiguration"]]
+                ],
+                [
+                    "./tests/custom/cert3.php",
+                        [["3", "7", "security misconfiguration"],
+                        ["7", "111", "security misconfiguration"]]
+                ],
+                [
+                    "./tests/custom/cert4.php",
+                        [["15", "603", "security misconfiguration"],
+                        ["30", "1244", "security misconfiguration"]]
+                ],
+                [
+                    "./tests/custom/cert5.php",
+                        [["16", "672", "security misconfiguration"],
+                        ["16", "672", "security misconfiguration"],
+                        ["32", "1346", "security misconfiguration"],
+                        ["47", "2018", "security misconfiguration"]]
                 ]
             ];

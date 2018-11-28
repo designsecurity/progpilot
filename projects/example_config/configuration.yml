@@ -8,8 +8,8 @@ inputs:
     setSanitizers: ../../package/src/uptodate_data/php/sanitizers.json
     setCustomRules: ../../package/src/uptodate_data/php/rules.json
     setIncludeFiles: 
-    setExcludeFiles: 
-    setFolder: /srv/www/htdocs/phpMyAdmin/
+    setExcludeFiles: exclude_files.json
+    setFolder: /home/eric/Téléchargements/prestashop/
     setFile: 
     setCode:
     setResolvedIncludes:

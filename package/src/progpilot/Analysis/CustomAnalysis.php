@@ -195,72 +195,90 @@ class CustomAnalysis
                         && ((!$functionDefinition->isInstance() && is_null($myClass))
                             || (!is_null($myClass) && $functionDefinition->isInstance()
                                 && $functionDefinition->getInstanceOfName() === $myClass->getName()))) {
-                        $nbParams = 0;
-                        $isGlobalValid = true;
+                        $isValid = false;
+                        $params = $functionDefinition->getParameters();
+                        foreach($params as $param) {
+                            
+                            $isValid = false;
 
-                        while (true) {
-                            if (!$instruction->isPropertyExist("argdef$nbParams")) {
-                                break;
-                            }
-
-                            $defArg = $instruction->getProperty("argdef$nbParams");
-                            $valuesParameter = $functionDefinition->getParameterValues($nbParams + 1);
-
+                            $idParam = $param[0] - 1;
+                            $valuesParameter = $param[1];
+                            $validbydefault = $param[2];
+                            $isParameterFixed = $param[3];
+                            
                             if (!is_null($valuesParameter)) {
-                                $isGlobalValid = false;
-
+                            
+                                if (!$instruction->isPropertyExist("argdef$idParam")) {
+                                    $isValid = $validbydefault;
+                                    break;
+                                }
+                                
+                                $defArg = $instruction->getProperty("argdef$idParam");
+                      
                                 foreach ($valuesParameter as $valueParameter) {
-                                    $isValid = true;
                                     $defLastKnownValues = [];
 
                                     if (isset($valueParameter->is_array)
                                         && $valueParameter->is_array === true
                                             && isset($valueParameter->array_index)) {
+                          
+                                        $arrayfound = false;
                                         if ($defArg->isType(MyDefinition::TYPE_COPY_ARRAY)) {
                                             $copyArrays = $defArg->getCopyArrays();
                                             foreach ($copyArrays as $copyArray) {
                                                 foreach ($copyArray[0] as $copyIndex => $copyValue) {
                                                     if ($copyIndex === $valueParameter->array_index) {
                                                         $defLastKnownValues = $copyArray[1]->getLastKnownValues();
+                                                        $arrayfound = true;
 
                                                         break 2;
                                                     }
                                                 }
                                             }
                                         }
+                                        
+                                        if(!$arrayfound) {
+                                            $isValid = $validbydefault;
+                                            break;
+                                        }
+                                        
                                     } else {
                                         $defLastKnownValues = $defArg->getLastKnownValues();
                                     }
-
-                                    foreach ($defLastKnownValues as $lastKnownValue) {
-                                        if (($valueParameter->value !== $lastKnownValue
-                                            && $customRule->getAction() === "MUST_VERIFY_DEFINITION")
-                                                || ($valueParameter->value === $lastKnownValue
-                                                    && $customRule->getAction() === "MUST_NOT_VERIFY_DEFINITION")) {
-                                            $isValid = false;
-                                            break;
+                                    
+                                    if(count($defLastKnownValues) === 0) {
+                                        $isValid = false;
+                                    }
+                   
+                                    foreach ($defLastKnownValues as $lastKnownValue) {                     
+                                        if ($valueParameter->value === $lastKnownValue) {
+                                            $isValid = true;
+                                            break 2;
                                         }
                                     }
-
-                                    $isGlobalValid = $isValid;
-
-                                    // if for one defined parameter value
-                                    // all last know values are valid parameter is verified
-                                    if ($isValid) {
-                                        break;
-                                    }
+                                }
+                                // one parameter is valid but MUST_NOT_VERIFY_DEFINITION
+                                if ($customRule->getAction() === "MUST_NOT_VERIFY_DEFINITION") {
+                                    $isValid = !$isValid;
+                                    break;
                                 }
 
-                                // of one parameter is not valid
-                                if (!$isGlobalValid) {
+                                // one parameter is not valid
+                                if (!$isValid && !$functionDefinition->allParametersValid()) {
+                                    break;
+                                }
+                                
+                                // one parameter is not valid and required
+                                if (!$isValid 
+                                    && $isParameterFixed
+                                        && $functionDefinition->allParametersValid()) {
+                                    $isValid = true;
                                     break;
                                 }
                             }
-
-                            $nbParams ++;
                         }
-
-                        if (!$isGlobalValid) {
+                        
+                        if (!$isValid) {
                             $hashedValue = $myFunc->getLine();
                             $hashedValue.= "-".$customRule->getAction()."-".$myFunc->getSourceMyFile()->getName();
                             $idVuln = hash("sha256", $hashedValue);

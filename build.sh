@@ -28,7 +28,7 @@ then
     mv ./rogpilot.phar ../../builds/${newfile}.phar
 
     rm composer.lock
-    rm -rd ./vendor/
+    rm -rf ./vendor/
 else
 
 echo ""

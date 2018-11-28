@@ -14,7 +14,8 @@ class MyCustomFunction extends MySpecify
 {
     private $parameters;
     private $hasParameters;
-
+    private $allParametersValid;
+    
     private $action;
     private $orderNumberExpected;
     private $orderNumberReal;
@@ -27,17 +28,28 @@ class MyCustomFunction extends MySpecify
         $this->orderNumberReal = -1;
 
         $this->hasParameters = false;
+        $this->allParametersValid = false;
         $this->parameters = [];
     }
 
-    public function addParameter($parameter, $values = null)
+    public function addParameter($parameter, $values = null, $validbydefault, $fixed)
     {
-        $this->parameters[] = [$parameter, $values];
+        $this->parameters[] = [$parameter, $values, $validbydefault, $fixed];
     }
 
     public function getParameters()
     {
         return $this->parameters;
+    }
+
+    public function allParametersValid()
+    {
+        return $this->allParametersValid;
+    }
+
+    public function setAllParametersValid($allParametersValid)
+    {
+        $this->allParametersValid = $allParametersValid;
     }
 
     public function hasParameters()
@@ -48,6 +60,37 @@ class MyCustomFunction extends MySpecify
     public function setHasParameters($hasParameters)
     {
         $this->hasParameters = $hasParameters;
+    }
+
+    public function isParameterFixed($i)
+    {
+        foreach ($this->parameters as $parameter) {
+            $index = $parameter[0];
+            $values = $parameter[1];
+            $validbydefault = $parameter[2];
+            $fixed = $parameter[3];
+
+            if ($index === $i) {
+                return $fixed;
+            }
+        }
+
+        return false;
+    }
+
+    public function isParameterValidByDefault($i)
+    {
+        foreach ($this->parameters as $parameter) {
+            $index = $parameter[0];
+            $values = $parameter[1];
+            $validbydefault = $parameter[2];
+
+            if ($index === $i) {
+                return $validbydefault;
+            }
+        }
+
+        return false;
     }
 
     public function getParameterValues($i)

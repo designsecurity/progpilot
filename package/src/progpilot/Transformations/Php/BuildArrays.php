@@ -80,6 +80,9 @@ class BuildArrays
                     if (isset($op->dim->value)) {
                         $ind = $op->dim->value;
                     }
+                    else if(isset($op->dim->ops[0]->name->value)) {
+                        $ind = $op->dim->ops[0]->name->value;
+                    }
 
                     $arr = array($ind => $arr);
                     $arr = BuildArrays::buildArrayFromOps($op->var, $arr);

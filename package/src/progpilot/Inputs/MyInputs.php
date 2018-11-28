@@ -1314,10 +1314,23 @@ class MyInputs
                                         $parameters = $seq-> {'parameters'};
                                         foreach ($parameters as $parameter) {
                                             if (isset($parameter-> {'id'}) && isset($parameter-> {'values'})) {
+                                            
+                                                $validbydefault = false;
+                                                if(isset($parameter-> {'valid_by_default'})
+                                                    && $parameter-> {'valid_by_default'})
+                                                    $validbydefault = true;
+                                                    
+                                                $fixed = false;
+                                                if(isset($parameter-> {'fixed'})
+                                                    && $parameter-> {'fixed'})
+                                                    $fixed = true;
+                                                    
                                                 if (is_int($parameter-> {'id'})) {
                                                     $myCustomFunction->addParameter(
                                                         $parameter-> {'id'},
-                                                        $parameter-> {'values'}
+                                                        $parameter-> {'values'},
+                                                        $validbydefault,
+                                                        $fixed
                                                     );
                                                 }
                                             }
@@ -1348,16 +1361,35 @@ class MyInputs
                                 $parameters = $customRule-> {'parameters'};
                                 foreach ($parameters as $parameter) {
                                     if (isset($parameter-> {'id'}) && isset($parameter-> {'values'})) {
+                                                    
                                         if (is_int($parameter-> {'id'})) {
+                                        
+                                            $fixed = false;
+                                            if(isset($parameter-> {'fixed'})
+                                                && $parameter-> {'fixed'})
+                                                $fixed = true;
+                                        
+                                            $validbydefault = false;
+                                            if(isset($parameter-> {'valid_by_default'})
+                                                && $parameter-> {'valid_by_default'})
+                                                $validbydefault = true;
+                                                    
                                             $myCustomFunction->addParameter(
                                                 $parameter-> {'id'},
-                                                $parameter-> {'values'}
+                                                $parameter-> {'values'},
+                                                $validbydefault,
+                                                $fixed
                                             );
                                         }
                                     }
                                 }
 
                                 $myCustomFunction->setHasParameters(true);
+                            }
+                            
+                            if(isset($customRule-> {'all_parameters_valid'})) {
+                                $allparameters = $customRule-> {'all_parameters_valid'};
+                                $myCustomFunction->setAllParametersValid($allparameters);
                             }
 
                             if (isset($customRule-> {'instanceof'})) {

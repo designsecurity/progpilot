@@ -40,6 +40,11 @@ class ArrayExpr
                 if (isset($op->ops[0]->keys[$nbArrayExpr]->value)) {
                     $indexValue = $op->ops[0]->keys[$nbArrayExpr]->value;
                     $buildingArr = array($indexValue => $arr);
+                }
+                // const arr(CONST => "value")
+                else if (isset($op->ops[0]->keys[$nbArrayExpr]->ops[0]->name->value)) {
+                    $indexValue = $op->ops[0]->keys[$nbArrayExpr]->ops[0]->name->value;
+                    $buildingArr = array($indexValue => $arr);
                 } else {
                     $buildingArr = array($nbArrayExpr => $arr);
                 }
@@ -72,6 +77,7 @@ class ArrayExpr
 
                     // we reverse the arr
                     $arrtrans = BuildArrays::buildArrayFromArr($buildingArr, false);
+                    
                     $myDef->addType(MyDefinition::TYPE_ARRAY);
                     $myDef->setArrayValue($arrtrans);
 

@@ -5,6 +5,8 @@
     ],
     "exclude_folders":
     [
-        "/srv/www/htdocs//phpMyAdmin/libraries/tcpdf/fonts/"
+        "/srv/www/htdocs//phpMyAdmin/libraries/tcpdf/fonts/",
+        "/home/eric/Téléchargements/prestashop/vendor/",
+        "/home/eric/Téléchargements/prestashop/localization/"
     ]
 }
