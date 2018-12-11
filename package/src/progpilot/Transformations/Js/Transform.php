@@ -83,7 +83,6 @@ class Transform
                 foreach ($cfg[2] as $FlowNode) {
                     $astNode = $FlowNode->astNode;
                     
-                    
                     if (isset($astNode->type)) {
                         if ($astNode->type !== "exit") {
                             $myBlock = new MyBlock;
@@ -104,107 +103,16 @@ class Transform
                             
                             switch ($astNode->type) {
                                 case 'AssignmentExpression':
-                                    $myExpr = new MyExpr(
-                                        $astNode->right->loc->start->line,
-                                        $astNode->right->loc->start->column
-                                    );
-                                    
-                                    $this->context->getCurrentMycode()->addCode(
-                                        new MyInstruction(Opcodes::START_ASSIGN)
-                                    );
-                                    $this->context->getCurrentMycode()->addCode(
-                                        new MyInstruction(Opcodes::START_EXPRESSION)
-                                    );
-                                    
-                                    $backDef = Expr::assignment($astNode, $this->context, $myExpr);
-                                    
-                                    $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);
-                                    $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
-                                    $this->context->getCurrentMycode()->addCode($instEndExpr);
-
-                                    $this->context->getCurrentMycode()->addCode(
-                                        new MyInstruction(Opcodes::END_ASSIGN)
-                                    );
-                                    
-                                    $name = Common::getNameDefinition($astNode->left);
-                                    
-                                    $myDef = new MyDefinition(
-                                        $astNode->left->loc->start->line,
-                                        $astNode->left->loc->start->column,
-                                        $name
-                                    );
-                                    $myExpr->setAssign(true);
-                                    $myExpr->setAssignDef($myDef);
-
-                                    $instDef = new MyInstruction(Opcodes::DEFINITION);
-                                    $instDef->addProperty(MyInstruction::DEF, $myDef);
-                                    $this->context->getCurrentMycode()->addCode($instDef);
-                                    
+                                    Assign::instruction($this->context, $astNode->right, $astNode->left);
                                     break;
                             
                                 case 'VariableDeclaration':
                                     foreach ($astNode->declarations as $VariableDeclarator) {
                                         $myinit = $VariableDeclarator->init;
                                         if ($myinit != null) {
-                                            $myExpr = new MyExpr(
-                                                $VariableDeclarator->id->loc->start->line,
-                                                $VariableDeclarator->id->loc->start->column
-                                            );
-                                    
-                                            $this->context->getCurrentMycode()->addCode(
-                                                new MyInstruction(Opcodes::START_ASSIGN)
-                                            );
-                                            $this->context->getCurrentMycode()->addCode(
-                                                new MyInstruction(Opcodes::START_EXPRESSION)
-                                            );
-                                            
                                             /* var identifier = */
                                             /* = init */
-                                            $mydef = new MyDefinition(
-                                                $VariableDeclarator->id->loc->start->line,
-                                                $VariableDeclarator->id->loc->start->column,
-                                                $VariableDeclarator->id->name
-                                            );
-                                            
-                                            switch ($myinit->type) {
-                                                case 'CallExpression':
-                                                    FuncCall::instruction($this->context, $myExpr, $myinit);
-                                                    break;
-
-                                                default:
-                                                    $name = Common::getNameDefinition($myinit);
-                                                    $type = Common::getTypeDefinition($myinit);
-                                                    $mytemp = new MyDefinition(
-                                                        $myinit->loc->start->line,
-                                                        $myinit->loc->start->column,
-                                                        $name
-                                                    );
-                                                        
-                                                    $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
-                                                    $instTemporarySimple->addProperty(
-                                                        MyInstruction::TEMPORARY,
-                                                        $mytemp
-                                                    );
-                                                    $this->context->getCurrentMycode()->addCode($instTemporarySimple);
-                                                    $mytemp->setExpr($myExpr);
-                                                
-                                                    break;
-                                            }
-                                                
-                                            $myExpr->setAssign(true);
-                                            $myExpr->setAssignDef($mydef);
-                                            
-                                            $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);
-                                            $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
-                                            $this->context->getCurrentMycode()->addCode($instEndExpr);
-
-                                            $this->context->getCurrentMycode()->addCode(
-                                                new MyInstruction(Opcodes::END_ASSIGN)
-                                            );
-                                                
-                                            $instDef = new MyInstruction(Opcodes::DEFINITION);
-                                            $instDef->addProperty(MyInstruction::DEF, $mydef);
-                                            $this->context->getCurrentMycode()->addCode($instDef);
+                                            Assign::instruction($this->context, $myinit, $VariableDeclarator->id);
                                         }
                                     }
                                     

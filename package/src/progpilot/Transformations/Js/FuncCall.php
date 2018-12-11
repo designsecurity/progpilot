@@ -108,14 +108,24 @@ class FuncCall
         $op
     ) {
     
+        $type = Common::getTypeDefinition($op);
         $mycallee = $op->callee;
     
-        if ($mycallee->type == "MemberExpression") {
-            $object = $mycallee->object;
-            $property = $mycallee->property;
-            
-            $instance_name = $object->name;
-            $method_name = $property->name;
+        if ($mycallee->type === "MemberExpression" || $mycallee->type === "Identifier") {
+        
+            if ($mycallee->type === "MemberExpression") {
+                $object = $mycallee->object;
+                $property = $mycallee->property;
+                
+                $instance_name = $object->name;
+                $method_name = $property->name;
+                $isMethod = true;
+            }
+            else if($mycallee->type === "Identifier" && $type === "NewExpression") {
+                $method_name = "__construct";
+                $instance_name = $mycallee->name;
+                $isMethod = true;
+            }
             
             $instFuncCallMain = new MyInstruction(Opcodes::FUNC_CALL);
             $instFuncCallMain->addProperty(MyInstruction::FUNCNAME, $method_name);
@@ -125,7 +135,7 @@ class FuncCall
             $myFunctionCall->setLine($mycallee->loc->start->line);
             $myFunctionCall->setColumn($mycallee->loc->start->column);
             
-            //if ($isMethod) {
+            if ($isMethod) {
                 $myFunctionCall->addType(MyFunction::TYPE_FUNC_METHOD);
                 $myFunctionCall->setNameInstance($instance_name);
                 
@@ -136,7 +146,7 @@ class FuncCall
                 );
                 $mybackdef->addType(MyDefinition::TYPE_INSTANCE);
                 $mybackdef->setClassName($instance_name);
-/*
+                /*
                 if ($propertyName !== "" && count($propertyName) > 0) {
                     $mybackdef->addType(MyDefinition::TYPE_PROPERTY);
                     $mybackdef->property->setProperties($propertyName);
@@ -144,7 +154,7 @@ class FuncCall
 
                 $myFunctionCall->setBackDef($mybackdef);
                 
-            //}
+            }
             
             $myarguments = $op->arguments;
 

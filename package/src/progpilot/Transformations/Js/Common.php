@@ -48,20 +48,10 @@ class Common
                 break;
 
             case 'Literal':
-                return "temporary_".rand();
+                return $op->value;
                 break;
 
             case 'MemberExpression':
-            /*
-                    var myobject = mydata.object;
-                this.isobject = true;
-                this.objecttype = myobject.type;
-                this.var_name = myobject.name;
-
-                var myproperty = mydata.property;
-                this.propertytype = myproperty.type;
-                this.var_name = myproperty.name;
-                */
                 return $op->object->name;
                 break;
         }

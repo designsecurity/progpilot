@@ -79,6 +79,7 @@ class Analyzer
                         $script = $this->parser->parse($context->inputs->getCode(), "");
                     //}
                 }
+                        
             } catch (\PhpParser\Error $e) {
             }
         }
@@ -189,7 +190,6 @@ class Analyzer
     public function runInternalPhp($context, $includedDefs = null, $transform = true)
     {
         // check if it is PHP language ????? LIKE myJavascriptFile
-
         $startTime = microtime(true);
         
         // free memory
