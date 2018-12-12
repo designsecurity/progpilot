@@ -190,6 +190,7 @@ class ValueAnalysis
     {
         $defAssign->setIsEmbeddedByChars($def->getIsEmbeddedByChars(), true);
         $defAssign->setCast($def->getCast());
+        $defAssign->setLabel($def->getLabel());
         
         if ($def->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED") {
             $defAssign->setArrayValue("PROGPILOT_ALL_INDEX_TAINTED");

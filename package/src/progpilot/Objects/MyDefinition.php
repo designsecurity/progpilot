@@ -30,6 +30,9 @@ class MyDefinition extends MyOp
     const TYPE_GLOBAL = 0x0080;
     const TYPE_STATIC_PROPERTY = 0x0100;
 
+    const SECURITY_HIGH = 1;
+    const SECURITY_LOW = 2;
+    
     private $isCopyArray;
     private $objectId;
     private $blockId;
@@ -52,6 +55,7 @@ class MyDefinition extends MyOp
     private $isProperty;
     private $isInstance;
     private $isEmbeddedByChar;
+    private $label;
 
     public $property;
 
@@ -76,6 +80,7 @@ class MyDefinition extends MyOp
         $this->theExpr = null;
         $this->taintedByExpr = null;
         $this->className = "";
+        $this->label = MyDefinition::SECURITY_LOW;
 
         $this->isSanitized = false;
         $this->typeSanitized = [];
@@ -100,6 +105,7 @@ class MyDefinition extends MyOp
         name = ".htmlentities($this->getName(), ENT_QUOTES, 'UTF-8')." :: \
         line = ".$this->getLine()." :: column = ".$this->getColumn()." :: \
         tainted = ".$this->isTainted()." :: \
+        label = ".$this->getLabel()." :: \
         ref = ".$this->isType(MyDefinition::TYPE_REFERENCE)." :: \
         is_property = ".$this->isType(MyDefinition::TYPE_PROPERTY)." :: \
         is_static_property = ".$this->isType(MyDefinition::TYPE_STATIC_PROPERTY)." :: \
@@ -189,6 +195,16 @@ class MyDefinition extends MyOp
         }
 
         return false;
+    }
+
+    public function setLabel($label)
+    {
+        $this->label = $label;
+    }
+
+    public function getLabel()
+    {
+        return $this->label;
     }
 
     public function setCast($cast)

@@ -112,7 +112,6 @@ class FuncCall
         $mycallee = $op->callee;
     
         if ($mycallee->type === "MemberExpression" || $mycallee->type === "Identifier") {
-        
             if ($mycallee->type === "MemberExpression") {
                 $object = $mycallee->object;
                 $property = $mycallee->property;
@@ -120,8 +119,7 @@ class FuncCall
                 $instance_name = $object->name;
                 $method_name = $property->name;
                 $isMethod = true;
-            }
-            else if($mycallee->type === "Identifier" && $type === "NewExpression") {
+            } elseif ($mycallee->type === "Identifier" && $type === "NewExpression") {
                 $method_name = "__construct";
                 $instance_name = $mycallee->name;
                 $isMethod = true;
@@ -153,7 +151,6 @@ class FuncCall
                 }*/
 
                 $myFunctionCall->setBackDef($mybackdef);
-                
             }
             
             $myarguments = $op->arguments;
@@ -169,6 +166,8 @@ class FuncCall
             $instFuncCallMain->addProperty(MyInstruction::EXPR, $myExpr);
             $instFuncCallMain->addProperty(MyInstruction::ARR, false);
             $context->getCurrentMycode()->addCode($instFuncCallMain);
+            
+            return $mybackdef;
         }
     }
 }

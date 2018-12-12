@@ -37,8 +37,7 @@ class Expr
         $typeright = Common::getTypeDefinition($op);
         $nameright = Common::getNameDefinition($op);
         
-        if($typeright === "Identifier" || $typeright === "Literal" || $typeright === "MemberExpression") {
-        
+        if ($typeright === "Identifier" || $typeright === "Literal" || $typeright === "MemberExpression") {
             $myright = new MyDefinition($op->loc->start->line, $op->loc->start->column, $nameright);
             $myright->setExpr($myExpr);
             
@@ -48,7 +47,7 @@ class Expr
                 $myright->property->setProperties($propertyName);
             }
             
-            if($typeright === "Literal") {
+            if ($typeright === "Literal") {
                 $myright->addLastKnownValue($nameright);
             }
         
@@ -59,7 +58,7 @@ class Expr
             return $myright;
         }
     
-        if($typeright === "BinaryExpression") {
+        if ($typeright === "BinaryExpression") {
             $myExpr->setIsConcat(true);
         
             $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::CONCAT_LEFT));
@@ -67,12 +66,10 @@ class Expr
 
             $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::CONCAT_RIGHT));
             Expr::instructionInternal($op->right, $context, $myExpr);
-        }
-        else if($typeright === "CallExpression") {
-            FuncCall::instruction($context, $myExpr, $op);
-        }
-        else if($typeright === "NewExpression") {
-            FuncCall::instruction($context, $myExpr, $op);
+        } elseif ($typeright === "CallExpression") {
+            $myTempDef = FuncCall::instruction($context, $myExpr, $op);
+        } elseif ($typeright === "NewExpression") {
+            $myTempDef = FuncCall::instruction($context, $myExpr, $op);
         }
 
         return $myTempDef;

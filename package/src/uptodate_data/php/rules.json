@@ -10,7 +10,7 @@
                         {"value" : "TRUE", "is_array": true, "array_index": "CURLOPT_SSL_VERIFYPEER"} 
                     ]}
             ], 
-            "description": "curl must verify that the certificate is trusted",
+            "description": "curl must verify that the certificate is trusted (CURLOPT_SSL_VERIFYPEER set to true)",
             "language": "php", 
             "action": "MUST_VERIFY_DEFINITION",
             "attack": "security misconfiguration", 
@@ -31,7 +31,7 @@
                         {"value" : "TRUE"}
                     ]}
             ], 
-            "description": "curl must verify that the certificate is trusted",
+            "description": "curl must verify that the certificate is trusted (CURLOPT_SSL_VERIFYPEER set to true)",
             "language": "php", 
             "action": "MUST_VERIFY_DEFINITION",
             "attack": "security misconfiguration", 
@@ -47,7 +47,7 @@
                         {"value" : "2", "is_array": true, "array_index": "CURLOPT_SSL_VERIFYHOST"} 
                     ]}
             ], 
-            "description": "curl must verify that the common name of the certificate matches with the hostname provided",
+            "description": "curl must verify that the common name of the certificate matches with the hostname provided (CURLOPT_SSL_VERIFYHOST set to 2)",
             "language": "php", 
             "action": "MUST_VERIFY_DEFINITION",
             "attack": "security misconfiguration", 
@@ -67,7 +67,7 @@
                         {"value" : "2"} 
                     ]}
             ], 
-            "description": "curl must verify that the common name of the certificate matches with the hostname provided",
+            "description": "curl must verify that the common name of the certificate matches with the hostname provided (CURLOPT_SSL_VERIFYHOST set to 2)",
             "language": "php", 
             "action": "MUST_VERIFY_DEFINITION",
             "attack": "security misconfiguration", 

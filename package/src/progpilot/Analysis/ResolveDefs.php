@@ -95,10 +95,14 @@ class ResolveDefs
                     );
                     
                     if (!is_null($myClassNew)) {
-                        $classStackName[$i][] = $myClassNew;
-                    } else {
-                        $classStackName[$i][] = $mydef;
-                    }
+                        $mydef->addType(MyDefinition::TYPE_INSTANCE);
+                        $idObject = $context->getObjects()->addObject();
+                        $mydef->setObjectId($idObject);
+                        $context->getObjects()->addMyclassToObject($idObject, $myClassNew);
+                    } 
+                    
+                    $classStackName[$i][] = $mydef;
+                    
                 } else {
                     foreach ($instances as $instance) {
                         if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
@@ -111,6 +115,7 @@ class ResolveDefs
                                 // if property doesn't exist by default it's a public property
                                 if (is_null($property) || (!is_null($property)
                                     && (ResolveDefs::getVisibility($myDefTmp, $property, $currentFunc)))) {
+                                    
                                     $myClassNew = \progpilot\Analysis\CustomAnalysis::defineObject(
                                         $context,
                                         $myClass,
@@ -118,11 +123,16 @@ class ResolveDefs
                                     );
                     
                                     if (!is_null($myClassNew)) {
-                                        $classStackName[$i][] = $myClassNew;
-                                    } else {
-                                        $classStackName[$i][] = $myClass;
+                                        $idObject = $context->getObjects()->addObject();
+                                        $instance->setObjectId($idObject);
+                                        $context->getObjects()->addMyclassToObject($idObject, $myClassNew);
                                     }
+                                    
+                                    $classStackName[$i][] = $instance;
                                 }
+                            }
+                            else {
+                                $classStackName[$i][] = $instance;
                             }
                         }
                     }
@@ -520,7 +530,7 @@ class ResolveDefs
                 if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
                     $idObject = $instance->getObjectId();
                     $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
-
+                    
                     if (!is_null($tmpMyClass)) {
                         $property = $tmpMyClass->getProperty($prop);
 
@@ -529,13 +539,20 @@ class ResolveDefs
                             $visibilityFinal = true;
                             break;
                         }
+                        else if(is_null($property)) {
+                            $visibilityFinal = true; // property doesn't exist
+                        }
                     }
+                    else
+                        $visibilityFinal = true; // class not defined
                 }
             }
-
+/*
             if (count($instances) === 0) {
                 $visibilityFinal = true;
             }
+            */
+            
         } elseif ($defAssign->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
             $visibilityFinal = false;
             $myClass = $context->getClasses()->getMyClass($defAssign->getName());

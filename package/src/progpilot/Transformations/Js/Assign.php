@@ -26,6 +26,7 @@ class Assign
 {
     public static function instruction($context, $opExpr, $opDef)
     {
+        $name = Common::getNameDefinition($opDef);
         $context->getCurrentMycode()->addCode(
             new MyInstruction(Opcodes::START_ASSIGN)
         );
@@ -48,13 +49,33 @@ class Assign
             new MyInstruction(Opcodes::END_ASSIGN)
         );
                                     
-        $name = Common::getNameDefinition($opDef);
-                                    
         $myDef = new MyDefinition(
             $opDef->loc->start->line,
             $opDef->loc->start->column,
             $name
         );
+        
+        if($opDef->type === "MemberExpression") {
+            $myDef->addType(MyDefinition::TYPE_PROPERTY);
+            $propertyName = Common::getNameProperty($opDef);
+            $myDef->property->setProperties($propertyName);
+        }
+        
+        if (isset($opExpr->type) && $opExpr->type === "NewExpression") {
+            // it's the class name not instance name
+            if (isset($opExpr->callee->name)) {
+                $nameClass = $opExpr->callee->name;
+                $myDef->addType(MyDefinition::TYPE_INSTANCE);
+                $myDef->setClassName($nameClass);
+
+                // ou bien créer backdef ici
+                if (!is_null($backDef)) {
+                    $backDef->setId($myDef->getId() + 1);
+                    $backDef->setName($name);
+                }
+            }
+        }
+        
         $myDef->setExpr($myExpr);
         $myExpr->setAssign(true);
         $myExpr->setAssignDef($myDef);

@@ -515,12 +515,14 @@ class VisitorAnalysis
                             $tempDefaMyExpr = $tempDefa->getExpr();
                             $defAssignMyExpr = $tempDefaMyExpr->getAssignDef();
                             
-                            // if we use directly echo $_GET["b"];
-                            if (!is_null($this->context->inputs->getSourceArrayByName(
+                            $sourceArr = $this->context->inputs->getSourceArrayByName(
                                 $tempDefa,
                                 $tempDefa->getArrayValue()
-                            ))) {
+                            );
+                            // if we use directly echo $_GET["b"];
+                            if (!is_null($sourceArr)) {
                                 $tempDefa->setArrayValue("PROGPILOT_ALL_INDEX_TAINTED");
+                                $tempDefa->setLabel($sourceArr->getLabel());
                             }
                             
                             if ($tempDefaMyExpr->isAssign() && !$tempDefaMyExpr->isAssignIterator()) {
@@ -563,31 +565,44 @@ class VisitorAnalysis
                             /////////////////////////////////////////////////////////////
                             
                             $tainted = false;
+                            $stackClass = null;
                             
                             if ($tempDefa->isType(MyDefinition::TYPE_PROPERTY)) {
                                 $stackClass = ResolveDefs::propertyClass($this->context, $this->defs, $tempDefa);
                                 $classOfTempDefArr = $stackClass[count($stackClass) - 1];
                                 
                                 foreach ($classOfTempDefArr as $classOfTempDef) {
-                                    if (!is_null($this->context->inputs->getSourceByName(
-                                        $stackClass,
-                                        $tempDefa,
-                                        false,
-                                        $classOfTempDef->getName(),
-                                        $tempDefa->getArrayValue()
-                                    ))) {
-                                        $tainted = true;
+                                    
+                                    $objectIdTmp = $classOfTempDef->getObjectId();
+                                    $myClassFromObject = $this->context->getObjects()->getMyClassFromObject($objectIdTmp);
+                                
+                                    if(!is_null($myClassFromObject)) {
+                                        $sourceTmp = $this->context->inputs->getSourceByName(
+                                            $stackClass,
+                                            $tempDefa,
+                                            false,
+                                            $myClassFromObject->getName(),
+                                            $tempDefa->getArrayValue()
+                                        );
+                                    
+                                        if (!is_null($sourceTmp)) {
+                                            $tainted = true;
+                                            $tempDefa->setLabel($sourceTmp->getLabel());
+                                        }
                                     }
                                 }
                             } else {
-                                if (!is_null($this->context->inputs->getSourceByName(
+                                $sourceTmp = $this->context->inputs->getSourceByName(
                                     null,
                                     $tempDefa,
                                     false,
                                     false,
                                     $tempDefa->getArrayValue()
-                                ))) {
+                                );
+                                
+                                if (!is_null($sourceTmp)) {
                                     $tainted = true;
+                                    $tempDefa->setLabel($sourceTmp->getLabel());
                                 }
                             }
                             
@@ -607,6 +622,7 @@ class VisitorAnalysis
                             $storageKnownValues = ValueAnalysis::$exprsKnownValues[$tempDefaMyExpr];
                             
                             foreach ($defs as $def) {
+                            
                                 $safe = AssertionAnalysis::temporarySimple(
                                     $this->context,
                                     $this->defs,
@@ -631,6 +647,12 @@ class VisitorAnalysis
                                 if ($visibility && !$safe) {
                                     TaintAnalysis::setTainted($def->isTainted(), $defAssignMyExpr, $tempDefaMyExpr);
                                     ValueAnalysis::copyValues($def, $defAssignMyExpr);
+                                    
+                                    if($def->getLabel() === MyDefinition::SECURITY_HIGH) {
+                                        \progpilot\Analysis\CustomAnalysis::disclosureOfInformation(
+                                            $this->context, $this->defs, $defAssignMyExpr
+                                        );
+                                    }
                                 }
 
                                 // vérifier s'il y a pas de concat

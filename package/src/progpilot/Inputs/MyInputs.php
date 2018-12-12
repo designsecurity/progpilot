@@ -1011,6 +1011,14 @@ class MyInputs
                         $mySource->setReturnArrayValue($source-> {'return_array_index'});
                     }
 
+                    if (isset($source-> {'label'})) {
+                        $label = MyDefinition::SECURITY_LOW;
+                        if($source-> {'label'} === "high")
+                            $label = MyDefinition::SECURITY_HIGH;
+                            
+                        $mySource->setLabel($label);
+                    }
+
                     if (isset($source-> {'parameters'})) {
                         $parameters = $source-> {'parameters'};
                         foreach ($parameters as $parameter) {

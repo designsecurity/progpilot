@@ -21,6 +21,90 @@ use progpilot\Utils;
 
 class CustomAnalysis
 {
+    public static function disclosureOfInformation($context, $defs, $defassign)
+    {
+        $customRules = $context->inputs->getCustomRules();
+        foreach ($customRules as $customRule) {
+            if ($customRule->getType() === MyCustomRule::TYPE_VARIABLE
+                && $customRule->getAction() === "ASSIGNMENT_DISCLOSE_HIGH_VALUE") {
+                $definition = $customRule->getDefinition();
+                $checkName = false;
+                if ($defassign->isType(MyDefinition::TYPE_PROPERTY)) {
+                    $properties = $defassign->property->getProperties();
+                    if (is_array($properties) && isset($properties[count($properties) - 1])) {
+                        $lastproperty = $properties[count($properties) - 1];
+                        if ($lastproperty === $definition->getName()) {
+                            $checkName = true;
+                        }
+                    }
+                }
+                    
+                $checkInstance = false;
+                if (!is_null($definition) && ($definition->getName() === $defassign->getName()) || $checkName) {
+                    $checkName = true;
+                    
+                    $stackClass = ResolveDefs::propertyClass($context, $defs, $defassign);
+                                
+                    if ($definition->isInstance() && !is_null($stackClass)) {
+                        if ($definition->getLanguage() === "php") {
+                            $propertiesRule = explode("->", $definition->getInstanceOfName());
+                        } elseif ($definition->getLanguage() === "js") {
+                            $propertiesRule = explode(".", $definition->getInstanceOfName());
+                        }
+                        
+                        $checkInstance = true;
+                        if (is_array($propertiesRule)) {
+                            $i = 0;
+                            foreach ($propertiesRule as $propertyName) {
+                                $foundProperty = false;
+                                
+                                if (isset($stackClass[$i])) {
+                                    foreach ($stackClass[$i] as $propClass) {
+                                        $objectId = $propClass->getObjectId();
+                                        $myClass = $context->getObjects()->getMyClassFromObject($objectId);
+                                    
+                                        if (!is_null($myClass)
+                                            && ($myClass->getName() === $propertyName
+                                                || $myClass->getExtendsOf() === $propertyName)) {
+                                            $foundProperty = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                
+                                if (!$foundProperty) {
+                                    $checkInstance = false;
+                                    break;
+                                }
+                            
+                                $i ++;
+                            }
+                        }
+                    } 
+                }
+                
+                if($checkInstance && $checkName) {
+                    $hashedValue = $defassign->getLine();
+                    $hashedValue.= "-".$customRule->getAction()."-".$defassign->getSourceMyFile()->getName();
+                    $idVuln = hash("sha256", $hashedValue);
+
+                    $temp["vuln_rule"] = Utils::encodeCharacters($customRule->getAction());
+                    $temp["vuln_name"] = Utils::encodeCharacters($customRule->getAttack());
+                    $temp["vuln_line"] = $defassign->getLine();
+                    $temp["vuln_column"] = $defassign->getColumn();
+                    $temp["vuln_file"] = Utils::encodeCharacters($defassign->getSourceMyFile()->getName());
+                    $temp["vuln_description"] = Utils::encodeCharacters($customRule->getDescription());
+                    $temp["vuln_cwe"] = Utils::encodeCharacters($customRule->getCwe());
+                    $temp["vuln_id"] = $idVuln;
+                    $temp["vuln_type"] = "custom";
+                    $context->outputs->addResult($temp);
+                }
+            }
+        }
+        
+        return null;
+    }
+    
     public static function defineObject($context, $myFuncorDef, $stackClass)
     {
         $customRules = $context->inputs->getCustomRules();

@@ -14,6 +14,15 @@
             "language": "js", 
             "action": "DEFINE_OBJECT", 
             "extra": "HTMLDocument"
+        },
+        {
+            "name": "src",  
+            "instanceof": "Image", 
+            "description": "Information disclosure of a high value security definition to an Image",
+            "language": "js", 
+            "action": "ASSIGNMENT_DISCLOSE_HIGH_VALUE",
+            "attack": "Information disclosure", 
+            "cwe": "CWE_200"
         }
 		]
 }

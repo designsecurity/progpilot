@@ -19,7 +19,7 @@ inputs:
             - "/srv/www/htdocs/phpMyAdmin/themes/original/"
             - "/home/eric/Téléchargements/prestashop/vendor/"
             - "/home/eric/Téléchargements/prestashop/localization/"
-    setFolder: "/home/eric/Téléchargements/prestashop/"
+    setFolder: "/home/eric/Téléchargements/drupal-8.6.1/"
     setFile: ~
     setCode: ~
     setResolvedIncludes: ~
@@ -34,7 +34,7 @@ options:
     setAnalyzeIncludes: true
     setAnalyzeFunctions: true
     setAnalyzeHardRules: true
-    setPrintFile: false
+    setPrintFile: true
     setPrintWarning: false
     setPrettyPrint: true
     setLimitTime: 10

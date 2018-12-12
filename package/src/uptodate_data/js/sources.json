@@ -1,5 +1,6 @@
 {
     "sources": [
-        {"name": "url", "instanceof": "HTMLDocument", "language": "js"}
+        {"name": "url", "instanceof": "HTMLDocument", "language": "js"},
+        {"name": "cookie", "instanceof": "HTMLDocument", "language": "js", "label": "high"}
 		]
 }

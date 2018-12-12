@@ -79,7 +79,6 @@ class Analyzer
                         $script = $this->parser->parse($context->inputs->getCode(), "");
                     //}
                 }
-                        
             } catch (\PhpParser\Error $e) {
             }
         }

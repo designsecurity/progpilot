@@ -9,6 +9,7 @@
 
 
 namespace progpilot\Inputs;
+use progpilot\Objects\MyDefinition;
 
 class MySource extends MySpecify
 {
@@ -21,6 +22,7 @@ class MySource extends MySpecify
     private $parameters;
     private $conditionsParameters;
     private $hasParameters;
+    private $label;
 
     const CONDITION_ARRAY = "condition_array";
 
@@ -37,6 +39,7 @@ class MySource extends MySpecify
         $this->hasParameters = false;
         $this->parameters = [];
         $this->conditionsParameters = [];
+        $this->label = MyDefinition::SECURITY_LOW;
     }
 
     public function getIsReturnArray()
@@ -57,6 +60,16 @@ class MySource extends MySpecify
     public function getReturnArrayValue()
     {
         return $this->returnArrayValue;
+    }
+
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    public function setLabel($label)
+    {
+        $this->label = $label;
     }
 
     public function getIsObject()
