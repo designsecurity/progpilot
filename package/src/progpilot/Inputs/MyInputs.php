@@ -1013,8 +1013,9 @@ class MyInputs
 
                     if (isset($source-> {'label'})) {
                         $label = MyDefinition::SECURITY_LOW;
-                        if($source-> {'label'} === "high")
+                        if ($source-> {'label'} === "high") {
                             $label = MyDefinition::SECURITY_HIGH;
+                        }
                             
                         $mySource->setLabel($label);
                     }

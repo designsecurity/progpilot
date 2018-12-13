@@ -55,7 +55,7 @@ class Assign
             $name
         );
         
-        if($opDef->type === "MemberExpression") {
+        if ($opDef->type === "MemberExpression") {
             $myDef->addType(MyDefinition::TYPE_PROPERTY);
             $propertyName = Common::getNameProperty($opDef);
             $myDef->property->setProperties($propertyName);

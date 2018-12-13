@@ -18,6 +18,7 @@ use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyClass;
 use progpilot\Code\MyInstruction;
 use progpilot\Utils;
+use progpilot\AbstractLayer\Analysis as AbstractAnalysis;
 
 class CustomAnalysis
 {
@@ -27,63 +28,10 @@ class CustomAnalysis
         foreach ($customRules as $customRule) {
             if ($customRule->getType() === MyCustomRule::TYPE_VARIABLE
                 && $customRule->getAction() === "ASSIGNMENT_DISCLOSE_HIGH_VALUE") {
-                $definition = $customRule->getDefinition();
-                $checkName = false;
-                if ($defassign->isType(MyDefinition::TYPE_PROPERTY)) {
-                    $properties = $defassign->property->getProperties();
-                    if (is_array($properties) && isset($properties[count($properties) - 1])) {
-                        $lastproperty = $properties[count($properties) - 1];
-                        if ($lastproperty === $definition->getName()) {
-                            $checkName = true;
-                        }
-                    }
-                }
-                    
-                $checkInstance = false;
-                if (!is_null($definition) && ($definition->getName() === $defassign->getName()) || $checkName) {
-                    $checkName = true;
-                    
-                    $stackClass = ResolveDefs::propertyClass($context, $defs, $defassign);
-                                
-                    if ($definition->isInstance() && !is_null($stackClass)) {
-                        if ($definition->getLanguage() === "php") {
-                            $propertiesRule = explode("->", $definition->getInstanceOfName());
-                        } elseif ($definition->getLanguage() === "js") {
-                            $propertiesRule = explode(".", $definition->getInstanceOfName());
-                        }
-                        
-                        $checkInstance = true;
-                        if (is_array($propertiesRule)) {
-                            $i = 0;
-                            foreach ($propertiesRule as $propertyName) {
-                                $foundProperty = false;
-                                
-                                if (isset($stackClass[$i])) {
-                                    foreach ($stackClass[$i] as $propClass) {
-                                        $objectId = $propClass->getObjectId();
-                                        $myClass = $context->getObjects()->getMyClassFromObject($objectId);
-                                    
-                                        if (!is_null($myClass)
-                                            && ($myClass->getName() === $propertyName
-                                                || $myClass->getExtendsOf() === $propertyName)) {
-                                            $foundProperty = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                
-                                if (!$foundProperty) {
-                                    $checkInstance = false;
-                                    break;
-                                }
-                            
-                                $i ++;
-                            }
-                        }
-                    } 
-                }
                 
-                if($checkInstance && $checkName) {
+                $result = AbstractAnalysis::checkIfDefEqualDefRule($context, $defs, $customRule, $defassign);
+                                        
+                if ($result) {
                     $hashedValue = $defassign->getLine();
                     $hashedValue.= "-".$customRule->getAction()."-".$defassign->getSourceMyFile()->getName();
                     $idVuln = hash("sha256", $hashedValue);
@@ -112,65 +60,17 @@ class CustomAnalysis
             if ($customRule->getType() === MyCustomRule::TYPE_VARIABLE
                 && $customRule->getAction() === "DEFINE_OBJECT"
                     && !is_null($customRule->getExtra())) {
-                $myClassNew = new MyClass(
-                    $myFuncorDef->getLine(),
-                    $myFuncorDef->getColumn(),
-                    $customRule->getExtra()
-                );
-                
-                $definition = $customRule->getDefinition();
-                $checkName = false;
-                if ($myFuncorDef->isType(MyDefinition::TYPE_PROPERTY)) {
-                    $properties = $myFuncorDef->property->getProperties();
-                    if (is_array($properties) && isset($properties[count($properties) - 1])) {
-                        $lastproperty = $properties[count($properties) - 1];
-                        if ($lastproperty === $definition->getName()) {
-                            $checkName = true;
-                        }
-                    }
-                }
                     
-                if (!is_null($definition) && ($definition->getName() === $myFuncorDef->getName()) || $checkName) {
-                    if ($definition->isInstance() && !is_null($stackClass)) {
-                        if ($definition->getLanguage() === "php") {
-                            $propertiesRule = explode("->", $definition->getInstanceOfName());
-                        } elseif ($definition->getLanguage() === "js") {
-                            $propertiesRule = explode(".", $definition->getInstanceOfName());
-                        }
-
-                        if (is_array($propertiesRule)) {
-                            $i = 0;
-                            foreach ($propertiesRule as $propertyName) {
-                                $foundProperty = false;
-                                
-                                if (isset($stackClass[$i])) {
-                                    foreach ($stackClass[$i] as $propClass) {
-                                        $objectId = $propClass->getObjectId();
-                                        $myClass = $context->getObjects()->getMyClassFromObject($objectId);
-                                    
-                                        if (!is_null($myClass)
-                                            && ($myClass->getName() === $propertyName
-                                                || $myClass->getExtendsOf() === $propertyName)) {
-                                            $foundProperty = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                
-                                if (!$foundProperty) {
-                                    break;
-                                }
-                            
-                                $i ++;
-                            }
-                            
-                            if ($foundProperty) {
-                                return $myClassNew;
-                            }
-                        }
-                    } elseif (!$definition->isInstance()) {
-                        return $myClassNew;
-                    }
+                $result = AbstractAnalysis::checkIfDefEqualDefRule($context, null, $customRule, $myFuncorDef, $stackClass);
+                if($result) {  
+                
+                    $myClassNew = new MyClass(
+                        $myFuncorDef->getLine(),
+                        $myFuncorDef->getColumn(),
+                        $customRule->getExtra()
+                    );
+                    
+                    return $myClassNew;
                 }
             }
         }
@@ -214,51 +114,15 @@ class CustomAnalysis
                 if ($customRule->getType() === MyCustomRule::TYPE_FUNCTION
                     && $customRule->getAction() === "DEFINE_OBJECT"
                         && !is_null($customRule->getExtra())) {
-                    $definition = $customRule->getDefinition();
-                    
-                    if (!is_null($definition) && $definition->getName() === $myFuncorDef->getName()) {
-                        if ($definition->isInstance() && !is_null($stackClass)) {
-                            if ($definition->getLanguage() === "php") {
-                                $propertiesRule = explode("->", $definition->getInstanceOfName());
-                            } elseif ($definition->getLanguage() === "js") {
-                                $propertiesRule = explode(".", $definition->getInstanceOfName());
-                            }
-
-                            if (is_array($propertiesRule)) {
-                                $myRuleInstanceName = $propertiesRule[0];
-                                $myRuleNumberOfProperties = count($propertiesRule);
-                                $stackNumberOfProperties = count($stackClass);
-
-                                if ($stackNumberOfProperties >= $myRuleNumberOfProperties) {
-                                    $knownProperties =
-                                        $stackClass[$stackNumberOfProperties - $myRuleNumberOfProperties];
-
-                                    foreach ($knownProperties as $propClass) {
-                                        $objectId = $propClass->getObjectId();
-                                        $myClass = $context->getObjects()->getMyClassFromObject($objectId);
-                                        
-                                        if (!is_null($myClass)
-                                            && ($myClass->getName() === $myRuleInstanceName
-                                                || $myClass->getExtendsOf() === $myRuleInstanceName)) {
-                                            CustomAnalysis::returnObjectCreateObject(
-                                                $context,
-                                                $myExpr,
-                                                $customRule,
-                                                $myFuncorDef
-                                            );
-                                        }
-                                    }
-                                }
-                            }
-                        } elseif (!$definition->isInstance()/*
-                                && is_null($myFuncorDef->getMyClass())*/) {
-                            CustomAnalysis::returnObjectCreateObject(
-                                $context,
-                                $myExpr,
-                                $customRule,
-                                $myFuncorDef
-                            );
-                        }
+                        
+                    $result = AbstractAnalysis::checkIfDefEqualDefRule($context, null, $customRule, $myFuncorDef, $stackClass);
+                    if($result) {  
+                        CustomAnalysis::returnObjectCreateObject(
+                            $context,
+                            $myExpr,
+                            $customRule,
+                            $myFuncorDef
+                        );
                     }
                 }
             }

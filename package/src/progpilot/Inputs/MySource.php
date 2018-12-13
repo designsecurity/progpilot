@@ -9,6 +9,7 @@
 
 
 namespace progpilot\Inputs;
+
 use progpilot\Objects\MyDefinition;
 
 class MySource extends MySpecify

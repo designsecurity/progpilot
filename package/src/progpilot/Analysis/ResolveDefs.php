@@ -99,10 +99,9 @@ class ResolveDefs
                         $idObject = $context->getObjects()->addObject();
                         $mydef->setObjectId($idObject);
                         $context->getObjects()->addMyclassToObject($idObject, $myClassNew);
-                    } 
+                    }
                     
                     $classStackName[$i][] = $mydef;
-                    
                 } else {
                     foreach ($instances as $instance) {
                         if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
@@ -115,7 +114,6 @@ class ResolveDefs
                                 // if property doesn't exist by default it's a public property
                                 if (is_null($property) || (!is_null($property)
                                     && (ResolveDefs::getVisibility($myDefTmp, $property, $currentFunc)))) {
-                                    
                                     $myClassNew = \progpilot\Analysis\CustomAnalysis::defineObject(
                                         $context,
                                         $myClass,
@@ -130,8 +128,7 @@ class ResolveDefs
                                     
                                     $classStackName[$i][] = $instance;
                                 }
-                            }
-                            else {
+                            } else {
                                 $classStackName[$i][] = $instance;
                             }
                         }
@@ -538,13 +535,12 @@ class ResolveDefs
                             && (ResolveDefs::getVisibility($copyDefAssign, $property, $currentFunc))) {
                             $visibilityFinal = true;
                             break;
-                        }
-                        else if(is_null($property)) {
+                        } elseif (is_null($property)) {
                             $visibilityFinal = true; // property doesn't exist
                         }
-                    }
-                    else
+                    } else {
                         $visibilityFinal = true; // class not defined
+                    }
                 }
             }
 /*
@@ -552,7 +548,6 @@ class ResolveDefs
                 $visibilityFinal = true;
             }
             */
-            
         } elseif ($defAssign->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
             $visibilityFinal = false;
             $myClass = $context->getClasses()->getMyClass($defAssign->getName());

@@ -10,6 +10,9 @@
 
 namespace progpilot\AbstractLayer;
 
+use progpilot\Objects\MyDefinition;
+use progpilot\Analysis\ResolveDefs;
+
 class Analysis
 {
     public static function forAllobjects($context, $func, $myClass)
@@ -32,5 +35,72 @@ class Analysis
                 }
             }
         }
+    }
+    
+    public static function checkIfDefEqualDefRule($context, $defs, $rule, $def, $stackClass = null) {
+    
+        $definition = $rule->getDefinition();
+        $checkName = false;
+        if ($def->isType(MyDefinition::TYPE_PROPERTY)) {
+            $properties = $def->property->getProperties();
+            if (is_array($properties) && isset($properties[count($properties) - 1])) {
+                $lastproperty = $properties[count($properties) - 1];
+                if ($lastproperty === $definition->getName()) {
+                    $checkName = true;
+                }
+            }
+        }
+                    
+        $checkInstance = false;
+        if (!is_null($definition) && ($definition->getName() === $def->getName()) || $checkName) {
+            $checkName = true;
+            $checkInstance = true;
+                    
+            if(is_null($stackClass) && !is_null($defs))
+                $stackClass = ResolveDefs::propertyClass($context, $defs, $def);
+                                
+            if ($definition->isInstance() && !is_null($stackClass)) {
+                if ($definition->getLanguage() === "php") {
+                    $propertiesRule = explode("->", $definition->getInstanceOfName());
+                } elseif ($definition->getLanguage() === "js") {
+                    $propertiesRule = explode(".", $definition->getInstanceOfName());
+                }
+                        
+                if (is_array($propertiesRule)) {
+                    $i = 0;
+                    foreach ($propertiesRule as $propertyName) {
+                    
+                        // if(!isset($stackClass[$i])) && count() == 0 =>
+                        //$test = new ClassInconnu;
+                        //$test->db->call() (db has no known instance)
+                        $foundProperty = true;
+                        
+                        if (isset($stackClass[$i]) && count($stackClass[$i]) > 0) {
+                            $foundProperty = false;
+                            foreach ($stackClass[$i] as $propClass) {
+                                $objectId = $propClass->getObjectId();
+                                $myClass = $context->getObjects()->getMyClassFromObject($objectId);
+                                    
+                                if (!is_null($myClass)
+                                    && ($myClass->getName() === $propertyName
+                                        || $myClass->getExtendsOf() === $propertyName)) {
+                                    $foundProperty = true;
+                                    break;
+                                }
+                            }
+                        }
+                                
+                        if (!$foundProperty) {
+                            $checkInstance = false;
+                            break;
+                        }
+                            
+                        $i ++;
+                    }
+                }
+            }
+        }
+        
+        return $checkInstance & $checkName;
     }
 }

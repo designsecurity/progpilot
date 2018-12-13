@@ -572,11 +572,11 @@ class VisitorAnalysis
                                 $classOfTempDefArr = $stackClass[count($stackClass) - 1];
                                 
                                 foreach ($classOfTempDefArr as $classOfTempDef) {
-                                    
                                     $objectIdTmp = $classOfTempDef->getObjectId();
-                                    $myClassFromObject = $this->context->getObjects()->getMyClassFromObject($objectIdTmp);
+                                    $myClassFromObject =
+                                        $this->context->getObjects()->getMyClassFromObject($objectIdTmp);
                                 
-                                    if(!is_null($myClassFromObject)) {
+                                    if (!is_null($myClassFromObject)) {
                                         $sourceTmp = $this->context->inputs->getSourceByName(
                                             $stackClass,
                                             $tempDefa,
@@ -622,7 +622,6 @@ class VisitorAnalysis
                             $storageKnownValues = ValueAnalysis::$exprsKnownValues[$tempDefaMyExpr];
                             
                             foreach ($defs as $def) {
-                            
                                 $safe = AssertionAnalysis::temporarySimple(
                                     $this->context,
                                     $this->defs,
@@ -648,9 +647,11 @@ class VisitorAnalysis
                                     TaintAnalysis::setTainted($def->isTainted(), $defAssignMyExpr, $tempDefaMyExpr);
                                     ValueAnalysis::copyValues($def, $defAssignMyExpr);
                                     
-                                    if($def->getLabel() === MyDefinition::SECURITY_HIGH) {
+                                    if ($def->getLabel() === MyDefinition::SECURITY_HIGH) {
                                         \progpilot\Analysis\CustomAnalysis::disclosureOfInformation(
-                                            $this->context, $this->defs, $defAssignMyExpr
+                                            $this->context,
+                                            $this->defs,
+                                            $defAssignMyExpr
                                         );
                                     }
                                 }
