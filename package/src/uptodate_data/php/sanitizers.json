@@ -80,6 +80,7 @@
         {"name": "md5_file", "language": "php", "prevent": ["ALL"]},
         {"name": "sha1", "language": "php", "prevent": ["ALL"]},
         {"name": "sha1_file", "language": "php", "prevent": ["ALL"]},
+        {"name": "filesize", "language": "php", "prevent": ["ALL"]},
         {"name": "crypt", "language": "php", "prevent": ["ALL"]},
         {"name": "crc32", "language": "php", "prevent": ["ALL"]},
         {"name": "hash", "language": "php", "prevent": ["ALL"]},

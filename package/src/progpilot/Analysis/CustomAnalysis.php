@@ -28,7 +28,6 @@ class CustomAnalysis
         foreach ($customRules as $customRule) {
             if ($customRule->getType() === MyCustomRule::TYPE_VARIABLE
                 && $customRule->getAction() === "ASSIGNMENT_DISCLOSE_HIGH_VALUE") {
-                
                 $result = AbstractAnalysis::checkIfDefEqualDefRule($context, $defs, $customRule, $defassign);
                                         
                 if ($result) {
@@ -60,10 +59,15 @@ class CustomAnalysis
             if ($customRule->getType() === MyCustomRule::TYPE_VARIABLE
                 && $customRule->getAction() === "DEFINE_OBJECT"
                     && !is_null($customRule->getExtra())) {
-                    
-                $result = AbstractAnalysis::checkIfDefEqualDefRule($context, null, $customRule, $myFuncorDef, $stackClass);
-                if($result) {  
+                $result = AbstractAnalysis::checkIfDefEqualDefRule(
+                    $context,
+                    null,
+                    $customRule,
+                    $myFuncorDef,
+                    $stackClass
+                );
                 
+                if ($result) {
                     $myClassNew = new MyClass(
                         $myFuncorDef->getLine(),
                         $myFuncorDef->getColumn(),
@@ -114,9 +118,14 @@ class CustomAnalysis
                 if ($customRule->getType() === MyCustomRule::TYPE_FUNCTION
                     && $customRule->getAction() === "DEFINE_OBJECT"
                         && !is_null($customRule->getExtra())) {
-                        
-                    $result = AbstractAnalysis::checkIfDefEqualDefRule($context, null, $customRule, $myFuncorDef, $stackClass);
-                    if($result) {  
+                    $result = AbstractAnalysis::checkIfDefEqualDefRule(
+                        $context,
+                        null,
+                        $customRule,
+                        $myFuncorDef,
+                        $stackClass
+                    );
+                    if ($result) {
                         CustomAnalysis::returnObjectCreateObject(
                             $context,
                             $myExpr,

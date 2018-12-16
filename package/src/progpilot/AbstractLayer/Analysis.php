@@ -37,7 +37,8 @@ class Analysis
         }
     }
     
-    public static function checkIfDefEqualDefRule($context, $defs, $rule, $def, $stackClass = null) {
+    public static function checkIfDefEqualDefRule($context, $defs, $rule, $def, $stackClass = null)
+    {
     
         $definition = $rule->getDefinition();
         $checkName = false;
@@ -56,8 +57,9 @@ class Analysis
             $checkName = true;
             $checkInstance = true;
                     
-            if(is_null($stackClass) && !is_null($defs))
+            if (is_null($stackClass) && !is_null($defs)) {
                 $stackClass = ResolveDefs::propertyClass($context, $defs, $def);
+            }
                                 
             if ($definition->isInstance() && !is_null($stackClass)) {
                 if ($definition->getLanguage() === "php") {
@@ -69,7 +71,6 @@ class Analysis
                 if (is_array($propertiesRule)) {
                     $i = 0;
                     foreach ($propertiesRule as $propertyName) {
-                    
                         // if(!isset($stackClass[$i])) && count() == 0 =>
                         //$test = new ClassInconnu;
                         //$test->db->call() (db has no known instance)

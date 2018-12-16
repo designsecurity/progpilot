@@ -408,7 +408,7 @@ class MyInputs
             $checkName = false;
             if (!$isFunction && $myFuncOrDef->isType(MyDefinition::TYPE_PROPERTY)) {
                 $properties = $myFuncOrDef->property->getProperties();
-                if (is_array($properties)) {
+                if (is_array($properties) && count($properties) > 0) {
                     $lastproperty = $properties[count($properties) - 1];
                     if ($lastproperty === $mySource->getName()) {
                         $checkName = true;
