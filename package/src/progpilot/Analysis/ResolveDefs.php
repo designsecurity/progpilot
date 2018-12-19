@@ -483,8 +483,9 @@ class ResolveDefs
             return true;
         }
         
-        if (is_null($method))
+        if (is_null($method)) {
             return true;
+        }
 
         return false;
     }

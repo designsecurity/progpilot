@@ -51,7 +51,7 @@
                 [
                     "./tests/data/sink9.php",
                         [["\$sql", "8", "sql_injection"],
-                        ["\$sql", "8", "sql_injection"],]
+                        ["\$sql", "18", "sql_injection"],]
                 ],
                 [
                     "./tests/data/source1.php",
