@@ -243,7 +243,6 @@ class SecurityAnalysis
     public static function call($indexParameter, $myFuncCall, $context, $mySink, $myDef, $myExpr)
     {
         //$results = &$context->outputs->getResults();
-
         $hashIdVuln = "";
 
         $temp["source_name"] = [];

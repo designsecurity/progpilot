@@ -49,6 +49,11 @@
                         [["\$query", "3", "xml_injection"]]
                 ],
                 [
+                    "./tests/data/sink9.php",
+                        [["\$sql", "8", "sql_injection"],
+                        ["\$sql", "8", "sql_injection"],]
+                ],
+                [
                     "./tests/data/source1.php",
                         [["\$var7", "3", "xss"]]
                 ],

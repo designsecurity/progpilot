@@ -34,6 +34,7 @@
         {"name": "pg_escape_identifier", "language": "php", "prevent": ["sql_injection", "ldap_injection", "command_injection", "QUOTES"]},
         {"name": "pg_escape_bytea", "language": "php", "prevent": ["sql_injection", "ldap_injection", "command_injection", "QUOTES"]},
         {"name": "mysql_real_escape_string", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
+        {"name": "escapeString", "instanceof": "SQLite3", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
         {"name": "filter_var",  "language": "php", "parameters": 
             [
                 {"id": 2, "conditions": "equals", "values": 

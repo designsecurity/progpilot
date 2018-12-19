@@ -129,6 +129,24 @@
             "language": "php", 
             "action": "DEFINE_OBJECT", 
             "extra": "mysqli_result"
+        },
+        {
+            "name": "query", 
+            "is_function": true,
+            "instanceof": "SQLite3", 
+            "description": "Result of SQLite3::query as new sources",
+            "language": "php", 
+            "action": "DEFINE_OBJECT", 
+            "extra": "SQLite3Result"
+        },
+        {
+            "name": "prepare", 
+            "is_function": true,
+            "instanceof": "maxdb", 
+            "description": "Result of maxdb::prepare as new sources",
+            "language": "php", 
+            "action": "DEFINE_OBJECT", 
+            "extra": "maxdb_result"
         }
 		]
 }

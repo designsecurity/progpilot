@@ -87,6 +87,7 @@ class VisitorAnalysis
             foreach ($classOfFuncCallArr as $classOfFuncCall) {
                 $objectId = $classOfFuncCall->getObjectId();
                 $myClass = $this->context->getObjects()->getMyClassFromObject($objectId);
+                
                 if (!is_null($myClass)) {
                     $visibility = true;
                                     

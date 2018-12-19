@@ -304,7 +304,6 @@ class ResolveDefs
         
             // backdef instance should be update with the correct object
             // $row = $query->result();
-            
             $myBackDef = $myFuncCall->getBackDef();
             $myClassTmp = $context->getClasses()->getMyClass($myClass->getName());
                 
@@ -483,6 +482,9 @@ class ResolveDefs
                 && $method->getVisibility() === "public") {
             return true;
         }
+        
+        if (is_null($method))
+            return true;
 
         return false;
     }
