@@ -17,4 +17,12 @@ if ($argc > 1) {
 
     $dumper = new NodeDumper;
     echo $dumper->dump($ast) . "\n";
+
+    
+    $parser = new PHPCfg\Parser(
+    (new PhpParser\ParserFactory)->create(PhpParser\ParserFactory::PREFER_PHP7)
+    );    
+    
+    $script = $parser->parse(file_get_contents($argv[1]), $argv[1]);
 }
+
