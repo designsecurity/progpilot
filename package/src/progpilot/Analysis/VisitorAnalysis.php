@@ -162,7 +162,12 @@ class VisitorAnalysis
 
                 $listMyFunc[] = [0, $myClassStatic, $method, $visibility];
 
-                $stackClass[0][0] = $myClassStatic;
+                $myDefStatic = new MyDefinition($myFuncCall->getLine(), $myFuncCall->getColumn(), "static");
+                $idObjectTmp = $this->context->getObjects()->addObject();
+                $myDefStatic->setObjectId($idObjectTmp);
+                $this->context->getObjects()->addMyclassToObject($idObjectTmp, $myClassStatic);
+                                
+                $stackClass[0][0] = $myDefStatic;
 
                 $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
                     $method,
@@ -194,6 +199,13 @@ class VisitorAnalysis
 
             $listMyFunc[] = [0, null, $myFunc, true];
         }
+        
+        \progpilot\Analysis\CustomAnalysis::mustVerifyDefinition(
+            $this->context,
+            $instruction,
+            $myFuncCall,
+            $stackClass
+        );
 
         foreach ($listMyFunc as $list) {
             $objectId = $list[0];
@@ -235,14 +247,7 @@ class VisitorAnalysis
                     $this->analyze($myCodefunction, $myFuncCall);
                 }
             }
-
-            \progpilot\Analysis\CustomAnalysis::mustVerifyDefinition(
-                $this->context,
-                $instruction,
-                $myFuncCall,
-                $myClass
-            );
-                            
+            
             if (!$hasSources) {
                 FuncAnalysis::funccallAfter(
                     $this->context,

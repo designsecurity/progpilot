@@ -138,7 +138,7 @@ class CustomAnalysis
         }
     }
 
-    public static function mustVerifyDefinition($context, $instruction, $myFunc, $myClass)
+    public static function mustVerifyDefinition($context, $instruction, $myFunc, $stackClass = null)
     {
         $customRules = $context->inputs->getCustomRules();
         foreach ($customRules as $customRule) {
@@ -146,12 +146,11 @@ class CustomAnalysis
                 && ($customRule->getAction() === "MUST_VERIFY_DEFINITION"
                     || $customRule->getAction() === "MUST_NOT_VERIFY_DEFINITION")) {
                 $functionDefinition = $customRule->getDefinition();
+                
+                $result = AbstractAnalysis::checkIfFuncEqualMySpecify($context, $functionDefinition, $myFunc, $stackClass);
 
                 if (!is_null($functionDefinition)) {
-                    if ($functionDefinition->getName() === $myFunc->getName()
-                        && ((!$functionDefinition->isInstance() && is_null($myClass))
-                            || (!is_null($myClass) && $functionDefinition->isInstance()
-                                && $functionDefinition->getInstanceOfName() === $myClass->getName()))) {
+                    if ($result) {
                         $isValid = false;
                         $params = $functionDefinition->getParameters();
                         foreach ($params as $param) {

@@ -10,6 +10,7 @@
 
 namespace progpilot\AbstractLayer;
 
+use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
 use progpilot\Analysis\ResolveDefs;
 
@@ -37,9 +38,72 @@ class Analysis
         }
     }
     
+    public static function checkIfFuncEqualMySpecify($context, $mySpecify, $myFunc, $stackClass = null)
+    {
+        $checkName = false;
+        if ($myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
+            $properties = $myFunc->property->getProperties();
+            if (is_array($properties) && isset($properties[count($properties) - 1])) {
+                $lastproperty = $properties[count($properties) - 1];
+                if ($lastproperty === $mySpecify->getName()) {
+                    $checkName = true;
+                }
+            }
+        }
+                
+        $checkInstance = false;
+        if (($mySpecify->getName() === $myFunc->getName()) || $checkName) {
+            $checkName = true;
+            $checkInstance = true;
+            
+            if ($mySpecify->isInstance() && !is_null($stackClass)) {
+                if ($mySpecify->getLanguage() === "php") {
+                    $propertiesRule = explode("->", $mySpecify->getInstanceOfName());
+                } elseif ($mySpecify->getLanguage() === "js") {
+                    $propertiesRule = explode(".", $mySpecify->getInstanceOfName());
+                }
+                        
+                if (is_array($propertiesRule)) {
+                    $i = 0;
+                    foreach ($propertiesRule as $propertyName) {
+                        // if(!isset($stackClass[$i])) && count() == 0 =>
+                        //$test = new ClassInconnu;
+                        //$test->db->call() (db has no known instance)
+                        $foundProperty = true;
+                        
+                        if (isset($stackClass[$i]) && count($stackClass[$i]) > 0) {
+                            $foundProperty = false;
+                            foreach ($stackClass[$i] as $propClass) {
+                                $objectId = $propClass->getObjectId();
+                                $myClass = $context->getObjects()->getMyClassFromObject($objectId);
+                                        
+                                if (!is_null($myClass)
+                                    && ($myClass->getName() === $propertyName
+                                        || $myClass->getExtendsOf() === $propertyName)) {
+                                    $foundProperty = true;
+                                    break;
+                                }
+                            }
+                        }
+                                
+                        if (!$foundProperty) {
+                            $checkInstance = false;
+                            break;
+                        }
+                            
+                        $i ++;
+                    }
+                }
+            }
+            else if ($mySpecify->isInstance() && is_null($stackClass))
+                $checkInstance = false; 
+        }
+        
+        return $checkInstance & $checkName;
+    }
+    
     public static function checkIfDefEqualDefRule($context, $defs, $rule, $def, $stackClass = null)
     {
-    
         $definition = $rule->getDefinition();
         $checkName = false;
         if ($def->isType(MyDefinition::TYPE_PROPERTY)) {

@@ -6,6 +6,8 @@ inputs:
         - suitecrm
         - codeigniter
         - wordpress
+        - prestashop
+        - symfony
     setSources: ~
     setSinks: ~
     setValidators: ~
@@ -19,7 +21,7 @@ inputs:
             - "/srv/www/htdocs/phpMyAdmin/themes/original/"
             - "/home/eric/Téléchargements/prestashop/vendor/"
             - "/home/eric/Téléchargements/prestashop/localization/"
-    setFolder: "/srv/www/htdocs/phpMyAdmin/"
+    setFolder: "/home/eric/Téléchargements/drupal-8.6.1/"
     setFile: ~
     setCode: ~
     setResolvedIncludes: ~

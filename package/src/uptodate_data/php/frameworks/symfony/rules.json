@@ -1,0 +1,42 @@
+{
+    "custom_rules": [{
+            "name": "set",  
+            "is_function": true,
+            "instanceof": "Symfony\\Component\\HttpFoundation\\Response->headers", 
+            "parameters": 
+            [
+                {"id": 1, "fixed": true, "valid_by_default": true, "values": 
+                    [ 
+                        {"value" : "Access-Control-Allow-Origin"} 
+                    ]},
+                {"id": 2, "valid_by_default": true, "values": 
+                    [ 
+                        {"value" : "*"} 
+                    ]}
+            ], 
+            "description": "CORS should not be allowed on all origins",
+            "language": "php", 
+            "action": "MUST_NOT_VERIFY_DEFINITION",
+            "attack": "security misconfiguration", 
+            "cwe": "CWE_346"
+        },
+        {
+            "name": "__construct",  
+            "is_function": true,
+            "instanceof": "Symfony\\Component\\HttpFoundation\\Response", 
+            "parameters": 
+            [
+                {"id": 3, "fixed": true, "valid_by_default": true, "values": 
+                    [ 
+                        {"value" : "*", "is_array": true, "array_index": "Access-Control-Allow-Origin"} 
+                    ]}
+            ], 
+            "description": "CORS should not be allowed on all origins",
+            "language": "php", 
+            "action": "MUST_NOT_VERIFY_DEFINITION",
+            "attack": "security misconfiguration", 
+            "cwe": "CWE_346"
+        }
+		]
+}
+

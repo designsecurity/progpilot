@@ -304,21 +304,22 @@ class Analyzer
     
     public static function getTypeOfLanguage($lookfor, $content)
     {
-        if($lookfor === Analyzer::PHP && !empty($content)) {
+        if ($lookfor === Analyzer::PHP && !empty($content)) {
             if (strpos($content, "<?") !== false
                 || strpos($content, "<?php") !== false) {
                 return true;
             }
         }
 
-        if($lookfor === Analyzer::JS && !empty($content)) {
+        if ($lookfor === Analyzer::JS && !empty($content)) {
             if (strpos($content, "var") !== false
                 || strpos($content, "int") !== false
                     || strpos($content, "this") !== false
                         || strpos($content, "let") !== false
                             || strpos($content, "export") !== false
-                                || strpos($content, "import") !== false)
+                                || strpos($content, "import") !== false) {
                 return true;
+            }
         }
         
         return false;

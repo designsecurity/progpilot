@@ -9,7 +9,7 @@ try {
         $context->inputs->setFile($argv[1]);
         $context->inputs->setDev(true);
         $context->inputs->setLanguages(["php", "js"]);
-        $context->inputs->setFrameworks(["suitecrm", "codeigniter", "wordpress"]);
+        $context->inputs->setFrameworks(["suitecrm", "codeigniter", "wordpress", "prestashop", "symfony"]);
         
         $context->setAnalyzeHardrules(true);
         $context->setAnalyzeFunctions(false);
