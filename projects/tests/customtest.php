@@ -20,6 +20,10 @@
                         [["3", "7", "security misconfiguration"]]
                 ],
                 [
+                    "./tests/custom/custom5.php",
+                        [["3", "7", "security misconfiguration"]]
+                ],
+                [
                     "./tests/custom/cert1.php",
                         [["3", "7", "security misconfiguration"],
                         ["5", "59", "security misconfiguration"],

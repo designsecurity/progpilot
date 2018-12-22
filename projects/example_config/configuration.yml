@@ -19,7 +19,7 @@ inputs:
             - "/srv/www/htdocs/phpMyAdmin/themes/original/"
             - "/home/eric/Téléchargements/prestashop/vendor/"
             - "/home/eric/Téléchargements/prestashop/localization/"
-    setFolder: "/home/eric/Téléchargements/prestashop/"
+    setFolder: "/srv/www/htdocs/phpMyAdmin/"
     setFile: ~
     setCode: ~
     setResolvedIncludes: ~

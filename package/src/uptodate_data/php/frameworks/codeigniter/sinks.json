@@ -2,6 +2,9 @@
     "sinks": [
         {"name": "view", "parameters": [{"id": 2, "conditions": ["QUOTES_HTML", "array_tainted"]}], "instanceof": "CI_Controller->load", "language": "php", "attack": "xss", "cwe": "CWE_79"},
         {"name": "query", "parameters": [{"id": 1, "conditions": "QUOTES"}], "instanceof": "CI_Model->db", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
-        {"name": "simple_query", "parameters": [{"id": 1, "conditions": "QUOTES"}], "instanceof": "CI_Model->db", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"}
+        {"name": "simple_query", "parameters": [{"id": 1, "conditions": "QUOTES"}], "instanceof": "CI_Model->db", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "select", "parameters": [{"id": 1, "conditions": "QUOTES"}], "instanceof": "CI_Model->db", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "from", "parameters": [{"id": 1, "conditions": "QUOTES"}], "instanceof": "CI_Model->db", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "where", "parameters": [{"id": 1, "conditions": "QUOTES"}], "instanceof": "CI_Model->db", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"}
         ]
 }

@@ -114,6 +114,22 @@
             "cwe": "CWE_1004"
         },
         {
+            "name": "header",  
+            "is_function": true,
+            "parameters": 
+            [
+                {"id": 1, "valid_by_default": true, "values": 
+                    [ 
+                        {"value" : "Access-Control-Allow-Origin: *"}
+                    ]}
+            ], 
+            "description": "CORS should not be allowed on all origins",
+            "language": "php", 
+            "action": "MUST_NOT_VERIFY_DEFINITION",
+            "attack": "security misconfiguration", 
+            "cwe": "CWE_346"
+        },
+        {
             "name": "simplexml_load_file", 
             "is_function": true,
             "description": "Result of simplexml_load_file as new sources",

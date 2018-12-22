@@ -69,15 +69,15 @@ class Analyzer
             try {
                 if (is_null($context->inputs->getCode())) {
                     $fileContent = file_get_contents($context->inputs->getFile());
-                    //if (Analyzer::getTypeOfLanguage($fileContent) === Analyzer::PHP) {
+                    if (Analyzer::getTypeOfLanguage(Analyzer::PHP, $fileContent)) {
                         $context->inputs->setCode($fileContent);
                         $context->setPath(dirname($context->inputs->getFile()));
                         $script = $this->parser->parse($context->inputs->getCode(), $context->inputs->getFile());
-                    //}
+                    }
                 } else {
-                    //if (Analyzer::getTypeOfLanguage($context->inputs->getCode()) === Analyzer::PHP) {
+                    if (Analyzer::getTypeOfLanguage(Analyzer::PHP, $context->inputs->getCode())) {
                         $script = $this->parser->parse($context->inputs->getCode(), "");
-                    //}
+                    }
                 }
             } catch (\PhpParser\Error $e) {
             }
@@ -248,23 +248,16 @@ class Analyzer
         if (!is_null($context->inputs->getFile()) && $transform) {
             $content = file_get_contents($context->inputs->getFile());
             
-            if (Analyzer::getTypeOfLanguage($content) === Analyzer::JS) {
+            if (Analyzer::getTypeOfLanguage(Analyzer::JS, $content)) {
                 $pastResults = &$context->outputs->getResults();
                 $context->resetInternalValues();
                 $context->outputs->setResults($pastResults);
                 
-                /*
-                $cmd = "node ".__DIR__."/Transformations/Js/Transform.js ".$context->inputs->getFile();
-                exec($cmd, $return, $returnValue);
-                */
                 if ((microtime(true) - $startTime) > $context->getLimitTime()) {
                     Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
                     return;
                 }
-                /*
-                $myJavascriptFile = new MyFile($context->inputs->getFile(), 0, 0);
-                MyCode::readCode($context, $return, $myJavascriptFile);
-                */
+                
                 $transformvisitor = new \progpilot\Transformations\Js\Transform();
                 $transformvisitor->setContext($context);
                 $transformvisitor->v8jsExecute();
@@ -309,14 +302,26 @@ class Analyzer
         }
     }
     
-    public static function getTypeOfLanguage($content)
+    public static function getTypeOfLanguage($lookfor, $content)
     {
-        if (substr(ltrim($content), 0, 2) === "<?"
-            || substr(ltrim($content), 0, 5) === "<?php") {
-            return Analyzer::PHP;
+        if($lookfor === Analyzer::PHP && !empty($content)) {
+            if (strpos($content, "<?") !== false
+                || strpos($content, "<?php") !== false) {
+                return true;
+            }
         }
 
-        return Analyzer::JS;
+        if($lookfor === Analyzer::JS && !empty($content)) {
+            if (strpos($content, "var") !== false
+                || strpos($content, "int") !== false
+                    || strpos($content, "this") !== false
+                        || strpos($content, "let") !== false
+                            || strpos($content, "export") !== false
+                                || strpos($content, "import") !== false)
+                return true;
+        }
+        
+        return false;
     }
     
     public function run($context, $cmdFiles = null)
