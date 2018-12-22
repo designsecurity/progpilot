@@ -147,7 +147,12 @@ class CustomAnalysis
                     || $customRule->getAction() === "MUST_NOT_VERIFY_DEFINITION")) {
                 $functionDefinition = $customRule->getDefinition();
                 
-                $result = AbstractAnalysis::checkIfFuncEqualMySpecify($context, $functionDefinition, $myFunc, $stackClass);
+                $result = AbstractAnalysis::checkIfFuncEqualMySpecify(
+                    $context,
+                    $functionDefinition,
+                    $myFunc,
+                    $stackClass
+                );
 
                 if (!is_null($functionDefinition)) {
                     if ($result) {

@@ -94,9 +94,9 @@ class Analysis
                         $i ++;
                     }
                 }
+            } elseif ($mySpecify->isInstance() && is_null($stackClass)) {
+                $checkInstance = false;
             }
-            else if ($mySpecify->isInstance() && is_null($stackClass))
-                $checkInstance = false; 
         }
         
         return $checkInstance & $checkName;
