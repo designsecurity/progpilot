@@ -1,5 +1,5 @@
 parameters:
-  bin_dir: "../../../vendor/bin"
+  bin_dir: "../../../.config/composer/vendor/bin"
   git_dir: "."
   process_timeout: 120
   tasks:

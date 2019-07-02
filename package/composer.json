@@ -9,8 +9,8 @@
         }
     ],
     "require": {
-        "php": "^7.0.25",
-        "ircmaxell/php-cfg": "dev-master",
+        "php": "^7.0",
+        "ircmaxell/php-cfg": "^0.5",
         "symfony/yaml": ">=3.3.6",
         "symfony/console": ">=3.3.5"
     },
