@@ -17,7 +17,7 @@ use progpilot\Lang;
 class Application extends BaseApplication
 {
     const NAME = 'progpilot';
-    const VERSION = '0.5.0';
+    const VERSION = '0.6.0';
 
     public function __construct()
     {

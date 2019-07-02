@@ -24,8 +24,7 @@ Your composer.json looks like this one :
     "name": "Example",
     "description": "Example of use of Progpilot",
     "require": {
-        "designsecurity/progpilot": "@dev",
-        "ircmaxell/php-cfg": "@dev"
+        "designsecurity/progpilot": "^0.6"
     }
 } 
 ```
