@@ -9,7 +9,8 @@ This project would not have been possible without these dependencies :
 
 ## Tests
 
-We are using more than 2400 tests cases from [PHP Vulnerability test suite](https://github.com/stivalet/PHP-Vulnerability-test-suite) for testing our tool.
+We are using more than 2400 tests cases from [PHP Vulnerability test suite](https://github.com/stivalet/PHP-Vulnerability-test-suite) for testing our tool.  
+To run the tests suite go to ./projects/tests folder and execute phpunit
 
 ## License
 

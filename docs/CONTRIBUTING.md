@@ -15,6 +15,22 @@ That will allow the ability of contributors to reproduce the bug.
 ### Style
 All php code must adhere to [PSR-2 standard](https://www.php-fig.org/psr/psr-2/) (except for tests).
 
+### GrumPHP
+Progpilot can use [GrumPHP](https://github.com/phpro/grumphp/) to ensure each commit reaches code style (phpcs) and security (progpilot itself) requirements.  
+Install GrumPHP globally or in the progpilot repository:
+```shell
+composer install --dev phpro/grumphp
+```
+Install the [required tasks](../grumphp.yml) for progpilot.
+```shell
+composer install --dev squizlabs/php_codesniffer
+composer install --dev designsecurity/progpilot
+```
+In your shell configure the following environment variable to instruct where GrumPHP can locate progpilot and phpcs executables:
+```shell
+export GRUMPHP_BIN_DIR="/path/to/vendor/bin"
+```
+
 ### Frameworks support
 Most of the time the analysis of progpilot can be extended simply with adding the corresponding [sources, sinks, validators and sanitizers](./SPECIFY_ANALYSIS.md) : look at how it was done for [current frameworks](https://github.com/designsecurity/progpilot/tree/master/package/src/uptodate_data/php/frameworks).
 
