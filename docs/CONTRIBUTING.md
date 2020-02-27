@@ -21,12 +21,12 @@ Install GrumPHP globally or in the progpilot repository:
 ```shell
 composer install --dev phpro/grumphp
 ```
-Install the [required tasks](../grumphp.yml) for progpilot.
+Install the [required tasks](../grumphp.yml) for Progpilot:
 ```shell
 composer install --dev squizlabs/php_codesniffer
 composer install --dev designsecurity/progpilot
 ```
-In your shell configure the following environment variable to instruct where GrumPHP can locate progpilot and phpcs executables:
+Configure the following env variable to instruct GrumPHP where it should locate tasks executables:
 ```shell
 export GRUMPHP_BIN_DIR="/path/to/vendor/bin"
 ```
