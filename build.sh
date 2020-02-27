@@ -25,7 +25,7 @@ then
     echo "generating phar"
 
     php -d phar.readonly=off ${composertool} build .
-    mv ./rogpilot.phar ../../builds/${newfile}.phar
+    mv ./Progpilot.phar ../../builds/${newfile}.phar
 
     rm composer.lock
     rm -rf ./vendor/
