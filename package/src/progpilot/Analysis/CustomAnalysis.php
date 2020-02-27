@@ -35,16 +35,18 @@ class CustomAnalysis
                     $hashedValue.= "-".$customRule->getAction()."-".$defassign->getSourceMyFile()->getName();
                     $idVuln = hash("sha256", $hashedValue);
 
-                    $temp["vuln_rule"] = Utils::encodeCharacters($customRule->getAction());
-                    $temp["vuln_name"] = Utils::encodeCharacters($customRule->getAttack());
-                    $temp["vuln_line"] = $defassign->getLine();
-                    $temp["vuln_column"] = $defassign->getColumn();
-                    $temp["vuln_file"] = Utils::encodeCharacters($defassign->getSourceMyFile()->getName());
-                    $temp["vuln_description"] = Utils::encodeCharacters($customRule->getDescription());
-                    $temp["vuln_cwe"] = Utils::encodeCharacters($customRule->getCwe());
-                    $temp["vuln_id"] = $idVuln;
-                    $temp["vuln_type"] = "custom";
-                    $context->outputs->addResult($temp);
+                    if(is_null($context->inputs->getFalsePositiveById($idVuln))) {
+                        $temp["vuln_rule"] = Utils::encodeCharacters($customRule->getAction());
+                        $temp["vuln_name"] = Utils::encodeCharacters($customRule->getAttack());
+                        $temp["vuln_line"] = $defassign->getLine();
+                        $temp["vuln_column"] = $defassign->getColumn();
+                        $temp["vuln_file"] = Utils::encodeCharacters($defassign->getSourceMyFile()->getName());
+                        $temp["vuln_description"] = Utils::encodeCharacters($customRule->getDescription());
+                        $temp["vuln_cwe"] = Utils::encodeCharacters($customRule->getCwe());
+                        $temp["vuln_id"] = $idVuln;
+                        $temp["vuln_type"] = "custom";
+                        $context->outputs->addResult($temp);
+                    }
                 }
             }
         }

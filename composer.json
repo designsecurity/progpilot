@@ -15,7 +15,8 @@
         "symfony/console": ">=3.3.5"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.0"
+        "phpunit/phpunit": "^6.0",
+        "phpro/grumphp": "^0.18.0"
     },
     "bin": ["projects/phar/progpilot"],
     "autoload": {
