@@ -44,7 +44,7 @@ class DFSVisitor
                                 !== ($sequence->getOrderNumberExpected() % $mod)) {
                         $hashIdVuln = hash("sha256", $node->getLine()."-".$rule->getAction()."-".$node->getFile());
 
-                        if(is_null($this->context->inputs->getFalsePositiveById($hashIdVuln))) {
+                        if (is_null($this->context->inputs->getFalsePositiveById($hashIdVuln))) {
                             $temp["vuln_rule"] = \progpilot\Utils::encodeCharacters($rule->getAction());
                             $temp["vuln_line"] = $node->getLine();
                             $temp["vuln_column"] = $node->getColumn();

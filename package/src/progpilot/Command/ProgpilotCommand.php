@@ -72,5 +72,7 @@ class ProgpilotCommand extends Command
         } catch (Exception $e) {
             echo Lang::GLOBAL_ERROR.$e->getMessage()." file : ".$e->getFile()." line : ".$e->getLine()."\n";
         }
+        
+        return 0;
     }
 }
