@@ -7,4 +7,6 @@ projects/example_config/vendor
 projects/example_config/composer.lock
 projects/phar/vendor
 projects/phar/composer.lock
+vendor/
+composer.lock
 indent.sh
