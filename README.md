@@ -21,7 +21,7 @@ Use [getcomposer](https://getcomposer.org/) to install progpilot.
 Your composer.json looks like this one :
 ```javascript
 {
-    "name": "Example",
+    "name": "progpilot/example",
     "description": "Example of use of Progpilot",
     "require": {
         "designsecurity/progpilot": "^0.8"
