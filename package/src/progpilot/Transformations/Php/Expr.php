@@ -26,22 +26,24 @@ class Expr
 {
     public static function setChars($myExpr, $myTemp, $string, $arrayChars)
     {
-        $nbChars = [];
-        foreach ($arrayChars as $char) {
-            $nbChars[$char] = 0;
-        }
-
-        for ($i = 0; $i < strlen($string); $i++) {
+        if(is_string($string)) {
+            $nbChars = [];
             foreach ($arrayChars as $char) {
-                if ($string[$i] === $char) {
-                    $nbChars[$char] ++;
+                $nbChars[$char] = 0;
+            }
+            
+            for ($i = 0; $i < strlen($string); $i++) {
+                foreach ($arrayChars as $char) {
+                    if ($string[$i] === $char) {
+                        $nbChars[$char] ++;
+                    }
                 }
             }
-        }
 
-        foreach ($arrayChars as $char) {
-            $myExpr->setNbChars($char, $myExpr->getNbChars($char) + $nbChars[$char]);
-            $myTemp->setIsEmbeddedByChar($char, $myExpr->getNbChars($char));
+            foreach ($arrayChars as $char) {
+                $myExpr->setNbChars($char, $myExpr->getNbChars($char) + $nbChars[$char]);
+                $myTemp->setIsEmbeddedByChar($char, $myExpr->getNbChars($char));
+            }
         }
     }
 

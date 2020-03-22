@@ -10,7 +10,7 @@
     ],
     "require": {
         "php": "^7.0",
-        "ircmaxell/php-cfg": "^0.5",
+        "ircmaxell/php-cfg": "1.0.x-dev",
         "symfony/yaml": ">=3.3.6",
         "symfony/console": ">=3.3.5"
     },

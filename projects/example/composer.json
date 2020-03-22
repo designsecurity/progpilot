@@ -1,5 +1,5 @@
 {
-    "name": "Example",
+    "name": "progpilot/example",
     "description": "Example of use of Progpilot",
     "require": {
         "php": "^7.0.25",

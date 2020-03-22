@@ -241,7 +241,7 @@ class CustomAnalysis
                             $hashedValue.= "-".$customRule->getAction()."-".$myFunc->getSourceMyFile()->getName();
                             $idVuln = hash("sha256", $hashedValue);
                             
-                            if(is_null($context->inputs->getFalsePositiveById($idVuln))) {
+                            if (is_null($context->inputs->getFalsePositiveById($idVuln))) {
                                 $temp["vuln_rule"] = Utils::encodeCharacters($customRule->getAction());
                                 $temp["vuln_name"] = Utils::encodeCharacters($customRule->getAttack());
                                 $temp["vuln_line"] = $myFunc->getLine();

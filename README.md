@@ -24,7 +24,7 @@ Your composer.json looks like this one :
     "name": "Example",
     "description": "Example of use of Progpilot",
     "require": {
-        "designsecurity/progpilot": "^0.7"
+        "designsecurity/progpilot": "^0.8"
     }
 } 
 ```
