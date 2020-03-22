@@ -158,80 +158,89 @@ class CustomAnalysis
 
                 if (!is_null($functionDefinition)) {
                     if ($result) {
-                        $isValid = false;
                         $params = $functionDefinition->getParameters();
-                        foreach ($params as $param) {
+                        
+                        if($myFunc->getNbParams() < $functionDefinition->getMinNbArgs()
+                            || $myFunc->getNbParams() > $functionDefinition->getMaxNbArgs()) {
+                            $isValid = true;
+                        }
+                        else {
                             $isValid = false;
+                            $params = $functionDefinition->getParameters();
+                            foreach ($params as $param) {
+                                $isValid = false;
 
-                            $idParam = $param[0] - 1;
-                            $valuesParameter = $param[1];
-                            $validbydefault = $param[2];
-                            $isParameterFixed = $param[3];
-                            
-                            if (!is_null($valuesParameter)) {
-                                if (!$instruction->isPropertyExist("argdef$idParam")) {
-                                    $isValid = $validbydefault;
-                                    break;
-                                }
+                                $idParam = $param[0] - 1;
+                                $valuesParameter = $param[1];
+                                $validbydefault = $customRule->getAction() === "MUST_NOT_VERIFY_DEFINITION" ? !$param[2] : $param[2];
+                                $isParameterFixed = $param[3];
                                 
-                                $defArg = $instruction->getProperty("argdef$idParam");
-                      
-                                foreach ($valuesParameter as $valueParameter) {
-                                    $defLastKnownValues = [];
+                                if (!is_null($valuesParameter)) {
+                                    if (!$instruction->isPropertyExist("argdef$idParam")) {
+                                        $isValid = $validbydefault;
+                                        break;
+                                    }
+                                    
+                                    $defArg = $instruction->getProperty("argdef$idParam");
+                        
+                                    foreach ($valuesParameter as $valueParameter) {
+                                        $defLastKnownValues = [];
 
-                                    if (isset($valueParameter->is_array)
-                                        && $valueParameter->is_array === true
-                                            && isset($valueParameter->array_index)) {
-                                        $arrayfound = false;
-                                        if ($defArg->isType(MyDefinition::TYPE_COPY_ARRAY)) {
-                                            $copyArrays = $defArg->getCopyArrays();
-                                            foreach ($copyArrays as $copyArray) {
-                                                foreach ($copyArray[0] as $copyIndex => $copyValue) {
-                                                    if ($copyIndex === $valueParameter->array_index) {
-                                                        $defLastKnownValues = $copyArray[1]->getLastKnownValues();
-                                                        $arrayfound = true;
+                                        if (isset($valueParameter->is_array)
+                                            && $valueParameter->is_array === true
+                                                && isset($valueParameter->array_index)) {
+                                                
+                                            $arrayfound = false;
+                                            if ($defArg->isType(MyDefinition::TYPE_COPY_ARRAY)) {
+                                                $copyArrays = $defArg->getCopyArrays();
+                                                foreach ($copyArrays as $copyArray) {
+                                                    foreach ($copyArray[0] as $copyIndex => $copyValue) {
+                                                        if ($copyIndex === $valueParameter->array_index) {
+                                                            $defLastKnownValues = $copyArray[1]->getLastKnownValues();
+                                                            $arrayfound = true;
 
-                                                        break 2;
+                                                            break 2;
+                                                        }
                                                     }
                                                 }
                                             }
+                                            
+                                            if (!$arrayfound) {
+                                                $isValid = $validbydefault;
+                                                break;
+                                            }
+                                        } else {
+                                            $defLastKnownValues = $defArg->getLastKnownValues();
                                         }
                                         
-                                        if (!$arrayfound) {
-                                            $isValid = $validbydefault;
-                                            break;
+                                        if (count($defLastKnownValues) === 0) {
+                                            $isValid = false;
                                         }
-                                    } else {
-                                        $defLastKnownValues = $defArg->getLastKnownValues();
+                    
+                                        foreach ($defLastKnownValues as $lastKnownValue) {
+                                            if ($valueParameter->value === $lastKnownValue) {
+                                                $isValid = true;
+                                                break 2;
+                                            }
+                                        }
+                                    }
+                                    // one parameter is valid but MUST_NOT_VERIFY_DEFINITION
+                                    if ($customRule->getAction() === "MUST_NOT_VERIFY_DEFINITION") {
+                                        $isValid = !$isValid;
+                                        break;
                                     }
                                     
-                                    if (count($defLastKnownValues) === 0) {
-                                        $isValid = false;
+                                    // one parameter is not valid and required
+                                    if (!$isValid
+                                        && $isParameterFixed) {
+                                        $isValid = true;
+                                        break;
                                     }
-                   
-                                    foreach ($defLastKnownValues as $lastKnownValue) {
-                                        if ($valueParameter->value === $lastKnownValue) {
-                                            $isValid = true;
-                                            break 2;
-                                        }
-                                    }
-                                }
-                                // one parameter is valid but MUST_NOT_VERIFY_DEFINITION
-                                if ($customRule->getAction() === "MUST_NOT_VERIFY_DEFINITION") {
-                                    $isValid = !$isValid;
-                                    break;
-                                }
-                                
-                                // one parameter is not valid and required
-                                if (!$isValid
-                                    && $isParameterFixed) {
-                                    $isValid = true;
-                                    break;
-                                }
 
-                                // one parameter is not valid
-                                if (!$isValid) {
-                                    break;
+                                    // one parameter is not valid
+                                    if (!$isValid) {
+                                        break;
+                                    }
                                 }
                             }
                         }

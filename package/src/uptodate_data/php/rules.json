@@ -76,20 +76,74 @@
         {
             "name": "setcookie", 
             "is_function": true,
+            "max_nb_args": 3,
+            "parameters": 
+            [
+                {"id": 3, "valid_by_default": false, "values": 
+                    [ 
+                        {"value" : "FALSE", "is_array": true, "array_index": "secure"},
+                        {"value" : "false", "is_array": true, "array_index": "secure"}
+                    ]
+                }
+            ], 
+            "description": "cookie options set without secure flag",
+            "language": "php", 
+            "action": "MUST_NOT_VERIFY_DEFINITION",
+            "attack": "security misconfiguration", 
+            "cwe": "CWE_1004"
+        },
+        {
+            "name": "setcookie", 
+            "is_function": true,
+            "max_nb_args": 3,
+            "parameters": 
+            [
+                {"id": 3, "valid_by_default": false, "values": 
+                    [ 
+                        {"value" : "FALSE", "is_array": true, "array_index": "httponly"},
+                        {"value" : "false", "is_array": true, "array_index": "httponly"}
+                    ]
+                }
+            ], 
+            "description": "cookie options set without httponly flag",
+            "language": "php", 
+            "action": "MUST_NOT_VERIFY_DEFINITION",
+            "attack": "security misconfiguration", 
+            "cwe": "CWE_1004"
+        },
+        {
+            "name": "setcookie", 
+            "is_function": true,
+            "min_nb_args": 4,
+            "parameters": 
+            [
+                {"id": 7, "values": 
+                    [ 
+                        {"value" : "true"},
+                        {"value" : "TRUE"} 
+                    ]
+                }
+            ], 
+            "description": "cookie set without httponly flag",
+            "language": "php", 
+            "action": "MUST_VERIFY_DEFINITION",
+            "attack": "security misconfiguration", 
+            "cwe": "CWE_1004"
+        },
+        {
+            "name": "setcookie", 
+            "is_function": true,
+            "min_nb_args": 4,
             "parameters": 
             [
                 {"id": 6, "values": 
                     [ 
                         {"value" : "true"},
                         {"value" : "TRUE"} 
-                    ]},
-                {"id": 7, "values": 
-                    [ 
-                        {"value" : "true"},
-                        {"value" : "TRUE"} 
-                    ]}
+                    ]
+                }
             ], 
-            "description": "cookie setted without secure or httponly flags",
+            "description": "cookie set without secure flag",
             "language": "php", 
             "action": "MUST_VERIFY_DEFINITION",
             "attack": "security misconfiguration", 
@@ -99,6 +153,7 @@
             "name": "__construct",  
             "is_function": true,
             "instanceof": "Twig_Environment", 
+            "min_nb_args": 2,
             "parameters": 
             [
                 {"id": 2, "valid_by_default": true, "values": 

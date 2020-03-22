@@ -1643,6 +1643,14 @@ class MyInputs
                                 $myCustomFunction->setIsInstance(true);
                                 $myCustomFunction->setInstanceOfName($customRule-> {'instanceof'});
                             }
+
+                            if (isset($customRule-> {'min_nb_args'})) {
+                                $myCustomFunction->setMinNbArgs($customRule-> {'min_nb_args'});
+                            }
+
+                            if (isset($customRule-> {'max_nb_args'})) {
+                                $myCustomFunction->setMaxNbArgs($customRule-> {'max_nb_args'});
+                            }
                         } elseif (isset($customRule-> {'name'})
                                      && isset($customRule-> {'language'})
                                      && isset($customRule-> {'action'})

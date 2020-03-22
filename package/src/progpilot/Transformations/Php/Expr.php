@@ -26,7 +26,7 @@ class Expr
 {
     public static function setChars($myExpr, $myTemp, $string, $arrayChars)
     {
-        if(is_string($string)) {
+        if (is_string($string)) {
             $nbChars = [];
             foreach ($arrayChars as $char) {
                 $nbChars[$char] = 0;

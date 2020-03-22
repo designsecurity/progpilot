@@ -54,7 +54,7 @@ There is one path that does not verify the rule #1 :
 
 ## Restricted function calls
 
-You could also check the function calls comply the conditions you have defined,  
+You can also check if a function call comply with defined conditions,  
 for example with this rule you want to check that Twig auto escaping strategy is enabled :
 
 ```javascript

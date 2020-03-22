@@ -18,6 +18,9 @@ class MyCustomFunction extends MySpecify
     private $action;
     private $orderNumberExpected;
     private $orderNumberReal;
+    
+    private $minNbArgs;
+    private $maxNbArgs;
 
     public function __construct($name, $language, $orderNumberExpected = 0)
     {
@@ -26,6 +29,9 @@ class MyCustomFunction extends MySpecify
         $this->orderNumberExpected = $orderNumberExpected;
         $this->orderNumberReal = -1;
 
+        $this->minNbArgs = 0;
+        $this->maxNbArgs = PHP_INT_MAX;
+        
         $this->hasParameters = false;
         $this->parameters = [];
     }
@@ -123,5 +129,25 @@ class MyCustomFunction extends MySpecify
     public function setAction($action)
     {
         return $this->action = $action;
+    }
+
+    public function setMinNbArgs($minNbArgs)
+    {
+        return $this->minNbArgs = $minNbArgs;
+    }
+
+    public function getMinNbArgs()
+    {
+        return $this->minNbArgs;
+    }
+
+    public function setMaxNbArgs($maxNbArgs)
+    {
+        return $this->maxNbArgs = $maxNbArgs;
+    }
+
+    public function getMaxNbArgs()
+    {
+        return $this->maxNbArgs;
     }
 }

@@ -8,8 +8,14 @@
                 [
                     "./tests/custom/custom2.php",
                         [["5", "75", "security misconfiguration"],
-                        ["7", "144", "security misconfiguration"],
-                        ["9", "213", "security misconfiguration"]]
+                         ["7", "144", "security misconfiguration"],
+                         ["9", "213", "security misconfiguration"],
+                         ["9", "213", "security misconfiguration"],
+                         ["11", "283", "security misconfiguration"],
+                         ["13", "345", "security misconfiguration"],
+                         ["13", "345", "security misconfiguration"],
+                         ["15", "408", "security misconfiguration"],
+                         ["15", "408", "security misconfiguration"]]
                 ],
                 [
                     "./tests/custom/custom3.php",
@@ -22,6 +28,14 @@
                 [
                     "./tests/custom/custom5.php",
                         [["3", "7", "security misconfiguration"]]
+                ],
+                [
+                    "./tests/custom/custom5.php",
+                        [["3", "7", "security misconfiguration"]]
+                ],
+                [
+                    "./tests/custom/customcookieoptions.php",
+                        [["12", "176", "security misconfiguration"]]
                 ],
                 [
                     "./tests/custom/cert1.php",
