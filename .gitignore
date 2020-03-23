@@ -1,4 +1,5 @@
 articles/
+builds/*.phar
 projects/tests/vendor
 projects/tests/composer.lock
 projects/example/vendor
