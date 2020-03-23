@@ -29,4 +29,5 @@ cp -R ../../package/* ./vendor/progpilot/package
 
 echo "Generating phar..."
 php -d phar.readonly=off "$(command -v phar-composer.phar)" build .
+chmod -v +x ./build.phar
 mv -v ./build.phar ../../builds/"${newfile}".phar
