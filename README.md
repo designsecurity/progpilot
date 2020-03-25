@@ -43,7 +43,7 @@ To fine tune your analysis, you can use a configuration file in yaml. See [examp
 
 Optional: use the up-to-date security files configuration in [package/src/uptodate_data](./package/src/uptodate_data) folder.
 
-## Running the analysis
+## Usage
 
 Start the analysis by providing progpilot the path to the files and folders you would like to analyze, or your configuration file, or both.
 
