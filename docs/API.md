@@ -11,7 +11,7 @@ where *file* is the path to file which exists on the disk, example *./myfile.php
 where *code* is the contents/code of a file, for example *$code = file_get_contents("./myfile.php");*  
 if both options are set when the analyze is launched the priority is given to analyze the $file.  
 if all options are set when the analyze is launched the priority is given to analyze the $folder.  
-To retrieve the value of $file, $code and $folder use these methods :
+To retrieve the value of $file, $code and $folder use these methods:
 - $obj_context->inputs->getFile();
 - $obj_context->inputs->getCode();
 - $obj_context->inputs->getFolder();
@@ -63,7 +63,7 @@ These functions are explained in the chapter about [**included files**](./INCLUD
 - $obj_context->outputs->getCfg();
 - $obj_context->outputs->getCallGraph();
 - $obj_context->outputs->taintedFlow($bool);  
-*true* or *false* if you want to print the complete flow of assignments that taints a variable used by a sink function (default is *false* : only the last tainted variable is printed).
+*true* or *false* if you want to print the complete flow of assignments that taints a variable used by a sink function (default is *false*: only the last tainted variable is printed).
 - $obj_context->outputs->setOnAddResult($func);  
 for each vulnerability found by progpilot the function *func* will be called with the vulnerability as argument.
 - $obj_context->outputs->getCountAnalyzedFiles();  

@@ -2,14 +2,14 @@
 
 ## Dependencies
 
-This project would not have been possible without these dependencies :
+This project would not have been possible without these dependencies:
 
 - [ircmaxell/php-cfg](https://github.com/ircmaxell/php-cfg/)
 - [nikic/php-parser](https://github.com/nikic/php-parser/)
 
 ## Tests
 
-We are using more than 2400 tests cases from [PHP Vulnerability test suite](https://github.com/stivalet/PHP-Vulnerability-test-suite) for testing our tool.  
+More than 2400 tests cases from [PHP Vulnerability test suite](https://github.com/stivalet/PHP-Vulnerability-test-suite) are used to test progpilot.  
 To run the tests suite go to [./projects/tests](../projects/tests/) folder and execute [phpunit](https://phpunit.de/).
 
 ## License
@@ -28,7 +28,7 @@ If you want to contribute to this project see [the contributing rules](./CONTRIB
 
 ## Roadmap
 
-There is a lot of tasks to do :
+There is a lot of tasks to do:
 - Passing by reference
 - Pushing elements into array (like array[] = ele; or push_array())
 - Property of an object is an object

@@ -1,17 +1,17 @@
-# Specify an analysis
+# Specifying a taint analysis configuration
 
-You can specify the way of vulnerabilities are detected by playing with sources, sinks, sanitizers and validators :
+To specify the way vulnerabilities are detected customize sources, sinks, sanitizers and validators:
 
-- **sources** : the untrusted variables that will be initially tainted during the analysis.
-- **sinks** : the sensitives functions that could lead to vulnerabilities.
-- **sanitizers** : the functions that transform tainted values into safe values.
-- **validators** : the functions that valid tainted values without transforming them into safe value.
+- **sources**: the untrusted variables that will be initially tainted during the analysis.
+- **sinks**: the sensitives functions that could lead to vulnerabilities.
+- **sanitizers**: the functions that transform tainted values into safe values.
+- **validators**: the functions that valid tainted values without transforming them into safe value.
 
 ## Configure sources
 - $obj_context->inputs->setSources($files_sources);
 - $obj_context->inputs->getSources();
 
-Where *$file_sources* is a json file (or an array of json files) like below :
+Where *$file_sources* is a json file (or an array of json files) like below:
 ```javascript
 {
     "sources": [
@@ -24,17 +24,17 @@ Where *$file_sources* is a json file (or an array of json files) like below :
         ]
 }
 ```
-Mandatory properties :
+Mandatory properties:
 - [Name](#name-property), language
 
-Optional properties :
+Optional properties:
 - [instanceof](#instanceof-property), [prevent](#prevent-property), [parameters](#parameters-property), [is_object](#is_object-property), [is_array](#is_array-property), [array_index](#array_index-property), [is_function](#is_function-property)
 
 ## Configure sanitizers
 - $obj_context->inputs->setSanitizers($file_sanitizers);
 - $obj_context->inputs->getSanitizers();
 
-Where *$file_sanitizers* is a json file (or an array of json files) like below :
+Where *$file_sanitizers* is a json file (or an array of json files) like below:
 ```javascript
 {
     "sanitizers": [
@@ -55,17 +55,17 @@ Where *$file_sanitizers* is a json file (or an array of json files) like below :
         ]
 }
 ```
-Mandatory properties :
+Mandatory properties:
 - [Name](#name-property), language
 
-Optional properties :
+Optional properties:
 - [instanceof](#instanceof-property), [prevent](#prevent-property), [parameters](#parameters-property)
 
 ## Configure sinks
 - $obj_context->inputs->setSinks($file_sinks);
 - $obj_context->inputs->getSinks();
 
-Where *$file_sinks* is a json file (or an array of json files) like below :
+Where *$file_sinks* is a json file (or an array of json files) like below:
 ```javascript
 {
     "sinks": [
@@ -81,17 +81,17 @@ Where *$file_sinks* is a json file (or an array of json files) like below :
         ]
 }
 ```
-Mandatory properties :
+Mandatory properties:
 - [Name](#name-property), language, attack
 
-Optional properties :
+Optional properties:
 - [instanceof](#instanceof-property), [prevent](#prevent-property), [parameters](#parameters-property)
 
 ## Configure validators
 - $obj_context->inputs->setValidators($file_validators);
 - $obj_context->inputs->getValidators();
 
-Where *$file_validators* is a json file (or an array of json files) like below :
+Where *$file_validators* is a json file (or an array of json files) like below:
 ```javascript
 {
     "validators": [
@@ -123,10 +123,10 @@ Where *$file_validators* is a json file (or an array of json files) like below :
         ]
 }
 ```
-Mandatory properties :
+Mandatory properties:
 - [Name](#name-property), language
 
-Optional properties :
+Optional properties:
 - [instanceof](#instanceof-property), [prevent](#prevent-property), [parameters](#parameters-property)
 
 ***
@@ -157,17 +157,17 @@ You can define a return function or a method as a source when *is_function* prop
 
 ### instanceof property
 #### sinks, validators, sanitizers and sources
-If you know the class name of your object just type it like below :
+If you know the class name of your object just type it like below:
 ```javascript
 {"name": "prepare", "instanceof": "mysql_connect", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"}
 ```
-Instead of using the class name (or if you don't known it) use the name of the property :
+Instead of using the class name (or if you don't known it) use the name of the property:
 ```javascript
 {"name": "isValidNumber", "instanceof": "ESAPI->validator", "language": "php"}
 ```
 Here *ESAPI->validator->isValidNumber()* is a validation function but we don't know the object assigned to *validator* property.  
 
-Instanceof property works with object heritage and you can define the parent object as an instance of a sink like below :
+Instanceof property works with object heritage and you can define the parent object as an instance of a sink like below:
 ```javascript
 {"name": "query", "instanceof": "SomeClass1", "language": "php"}
 ```
@@ -187,7 +187,7 @@ class SomeClass2 extends SomeClass1
 $a = new SomeClass2;
 $a->query($_GET["p"]);
 ```
-and instanceof property continue to works when the class is not defined :
+and instanceof property continue to works when the class is not defined:
 ```javascript
 {"name": "query", "instanceof": "VulnerableClass", "language": "php"}
 ```
@@ -202,7 +202,7 @@ $a->query($_GET["p"]);
 ### prevent property
 #### sanitizers
 The value of *prevent* property should match an *attack* defined in the sinks file.  
-*Prevent* properties could be assigned to the main object or to the value object or the both :
+*Prevent* properties could be assigned to the main object or to the value object or the both:
 ```javascript
 {"name": "htmlentities", "language": "php", "prevent": ["xss"], "parameters": 
     [
@@ -215,41 +215,41 @@ The value of *prevent* property should match an *attack* defined in the sinks fi
 ```
 If the analyzer finds a *$safe = htmlentites($tainted)* function with no second parameter defined, the *safe* variable will not lead to xss vulnerabilities.
 Otherwise if it finds *$safe = htmlentites($tainted, ENT_QUOTES)*, the *prevent* property of the correct value object condition overwrite the main *prevent* property, so *safe* variable will not lead to xss and command_injection vulnerabilites.
-*Prevent* properties could take also these predefined values :
+*Prevent* properties could take also these predefined values:
 - *ALL* which prevent all vulnerabilities
 - *QUOTES* which indicates that quotes are encoded
 
 ### parameters property
 #### sinks
-the sink is vulnerable if : 
+the sink is vulnerable if: 
 - no parameters are specified and at least one argument is tainted.
 - parameters are specified and all the arguments must be tainted.
 
-The *parameter* object could take a *conditions* parameter with these values :
-- **QUOTES** : the tainted variable must be embedded into quotes if not it's a vulnerability otherwise the variable must be sanitized with a function that encode quotes.  
-- **array_tainted** : the parameter is vulnerable if the argument is an array with at least one tainted value.  
-- **variable_tainted** : the parameter is vulnerable if the argument is a tainted variable.  
-- **object_tainted** : the parameter is vulnerable if the argument is an object with at least one tainted property.  
+The *parameter* object could take a *conditions* parameter with these values:
+- **QUOTES**: the tainted variable must be embedded into quotes if not it's a vulnerability otherwise the variable must be sanitized with a function that encode quotes.  
+- **array_tainted**: the parameter is vulnerable if the argument is an array with at least one tainted value.  
+- **variable_tainted**: the parameter is vulnerable if the argument is a tainted variable.  
+- **object_tainted**: the parameter is vulnerable if the argument is an object with at least one tainted property.  
 
-Global conditions could be applied on all parameters :
-- **QUOTES_HTML** : if the tainted variable is inside an html tag it's a vulnerability if the variable is embedded into quotes and quotes are not sanitized or if the variable is not embedded into quotes.
+Global conditions could be applied on all parameters:
+- **QUOTES_HTML**: if the tainted variable is inside an html tag it's a vulnerability if the variable is embedded into quotes and quotes are not sanitized or if the variable is not embedded into quotes.
 
 #### sanitizers
-The *parameter* object could take a *conditions* parameter with these values :
-- **taint** : the corresponding argument will be considered as the expected tainted variable. During the analysis, if this argument is tainted the return of the function will be tainted and sanitized, without specifying  a *taint* property the return of the function will be tainted and sanitized if any of the arguments is tainted.
-- **equals** : the argument must be equals to the specified string.
+The *parameter* object could take a *conditions* parameter with these values:
+- **taint**: the corresponding argument will be considered as the expected tainted variable. During the analysis, if this argument is tainted the return of the function will be tainted and sanitized, without specifying  a *taint* property the return of the function will be tainted and sanitized if any of the arguments is tainted.
+- **equals**: the argument must be equals to the specified string.
 
 #### sources
 If you want to define one parameter of a function as a source use *parameters* property.
 
 #### validators
-The *parameter* object could take a *conditions* parameter with these values :
-- **valid** : the corresponding argument will be considered as safe if others conditions are respected.
-- **not_tainted** : the argument is not tainted.
-- **array_not_tainted** : the argument is an array that not contains any tainted values.
-- **equals** : the argument must be equals to the specified string.
+The *parameter* object could take a *conditions* parameter with these values:
+- **valid**: the corresponding argument will be considered as safe if others conditions are respected.
+- **not_tainted**: the argument is not tainted.
+- **array_not_tainted**: the argument is an array that not contains any tainted values.
+- **equals**: the argument must be equals to the specified string.
 
-For the following *in_array* call : 
+For the following *in_array* call: 
 ```php
 $tainted = $_GET["p"];
 

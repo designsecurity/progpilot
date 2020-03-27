@@ -1,6 +1,6 @@
 # Examples
 
-#### How can I use my own security files configuration ?
+#### How can I customize the analysis?
 ```php
 <?php
 
@@ -24,11 +24,11 @@ var_dump($results);
 
 ?>
 ```
-You can find the updated security files configuration of Progpilot in [package/src/uptodate_data](../package/src/uptodate_data) folder.
+The up-to-date taint analysis specification and custom rules files are located in [package/src/uptodate_data](../package/src/uptodate_data) folder.
 
-#### How can I display the vulnerabilites when they are detected ?
+#### How can I display the vulnerabilites when they are detected?
 
-You can use *setOnAddResult* method :
+Use *setOnAddResult* method:
 
 ```php
 <?php

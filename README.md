@@ -17,17 +17,9 @@ chmod +x progpilot_vX.Y.Z.phar
 sudo mv progpilot_vX.Y.Z.phar /usr/local/bin/progpilot
 ```
 
-### Option 2: use composer
+### Option 2: build phar from source code
 
-Use [Composer](https://getcomposer.org/) to install progpilot:
-
-```shell
-composer require --dev designsecurity/progpilot
-```
-
-### Option 3: build phar from source code
-
-You need to have [phar-composer.phar](https://github.com/clue/phar-composer/releases) in your `$PATH` before starting the build.
+[phar-composer.phar](https://github.com/clue/phar-composer/releases) should be located in a directory listed in the `$PATH` environment variable before starting the build.
 
 ```shell
 git clone https://github.com/designsecurity/progpilot
@@ -35,25 +27,27 @@ cd progpilot
 ./build.sh
 ```
 
-The resulting phar archive can be found in the `builds` folder.
+The resulting phar archive will be located at the root folder of this project.
+
+### Option 3: use composer
+
+Use [Composer](https://getcomposer.org/) to install progpilot:
+
+```shell
+composer require --dev designsecurity/progpilot
+```
 
 ## Configuration (optional)
 
-To fine tune your analysis, you can use a configuration file in yaml. See [example configuration.yml](./projects/example_config/configuration.yml).
-
-Optional: use the up-to-date security files configuration in [package/src/uptodate_data](./package/src/uptodate_data) folder.
+To configure and customize the analysis, it's possible to use a yaml configuration file (see [example configuration.yml](./projects/example_config/configuration.yml)) otherwise the default configuration will be used with, in particular the standard [taint configuration data](./package/src/uptodate_data).
 
 ## Usage
 
-Start the analysis by providing progpilot the path to the files and folders you would like to analyze, or your configuration file, or both.
-
-If you do not provide a configuration file, the default configuration will be used.
-
-Example:
+progpilot command takes as arguments the path to the files and folders to analyze and optionally a configuration file:
 
 ```shell
 # without config file
-progpilot src/ example2.php
+progpilot example1.php example2.php folder1/ folder2/
 # with a config file
 progpilot --configuration configuration.yml example1.php example2.php folder1/ folder2/
 ```
@@ -61,7 +55,7 @@ If you installed it with `composer`, the program will be located at `vendor/bin/
 
 ## Library example
 
-It is also possible to use progpilot from your PHP code. For more information look at the [chapter about API explanation](./docs/API.md)
+It is also possible to use progpilot inside PHP code. For more information look at the [documentation about progpilot API](./docs/API.md).
 
 Use this code to analyze *source_code1.php*:
 
@@ -80,7 +74,7 @@ $results = $context->outputs->getResults();
 var_dump($results);
 ```
 
-When source_code1.php contains this code :
+When source_code1.php contains this code:
 
 ```php
 <?php
@@ -115,11 +109,10 @@ array(1) {
 }
 ```
 All files (composer.json, example1.php, source_code1.php) used in this example are in the [projects/example](./projects/example) folder.
-For more examples look at this [page](./docs/EXAMPLES.md).
+For more examples look also at this [page](./docs/EXAMPLES.md).
 
 ## Specify an analysis
-You can configure an analysis (the definitions of sinks, sources, sanitizers and validators) according to your own context.
-You can define traditional variables like *_GET*, *_POST* or *_COOKIE* as untrusted and for example the return of the function *shell_exec()* too, like in the following configuration:
+It is strongly recommended to customize the taint analysis configuration (the definitions of sinks, sources, sanitizers and validators) according to the context of the application to be analyzed. In the following specification, superglobals variables *_GET*, *_POST* or *_COOKIE* are defined as untrusted and also the return of the *shell_exec()* function:
 ```json
 {
     "sources": [
@@ -130,7 +123,8 @@ You can define traditional variables like *_GET*, *_POST* or *_COOKIE* as untrus
     ]
 }
 ```
-See available options in the [corresponding chapter about specifying an analysis](./docs/SPECIFY_ANALYSIS.md).
+See available settings in the [corresponding chapter about specifying an analysis](./docs/SPECIFY_ANALYSIS.md).  
+Custom rules can be also created, see the [corresponding chapter about custom rules](./docs/CUSTOM_ANALYSIS.md).
 
 ## Development
 [Learn more](./docs/DEV.md) about the development of Progpilot.
