@@ -1,6 +1,6 @@
 # Specifying a taint analysis configuration
 
-To specify the way vulnerabilities are detected customize sources, sinks, sanitizers and validators:
+To specify the way vulnerabilities are detected, customize the sources, sinks, sanitizers and validators:
 
 - **sources**: the untrusted variables that will be initially tainted during the analysis.
 - **sinks**: the sensitives functions that could lead to vulnerabilities.

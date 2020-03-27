@@ -62,7 +62,7 @@ array(1) {
 }
 ```
 
-- *source_name*, *source_line*, *source_column* are arrays because we could have more than one tainted source for the same sink.  
+- *source_name*, *source_line*, *source_column* are arrays because it can exist many tainted sources for the same sink.  
 - *tainted_flow* is also an array: each element of it is the tainted flow from the corresponding source.  
 - *sink_name*, *vuln_name*, *vuln_cwe* are defined in [**sinks.json**](./SPECIFY_ANALYSIS.md) data file  
 
@@ -94,4 +94,4 @@ array(1) {
 ```
 - *vuln_rule*, *vuln_description*, *vuln_name*, *vuln_cwe* are defined in [**rules.json**](./CUSTOM_ANALYSIS.md) data file  
 
-You could use *vuln_type* element which takes the value *custom* or *taint-style* to distinguish the kind of vulnerability.
+Use *vuln_type* element (which takes the value *custom* or *taint-style*) to distinguish the kind of vulnerability.

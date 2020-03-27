@@ -16,7 +16,7 @@ That will allow the ability of contributors to reproduce the bug.
 All php code must adhere to [PSR-2 standard](https://www.php-fig.org/psr/psr-2/) (except for tests).
 
 ### GrumPHP
-Progpilot can use [GrumPHP](https://github.com/phpro/grumphp/) to ensure each commit reaches code style (phpcs) and security (progpilot itself) requirements.  
+Developers can use [GrumPHP](https://github.com/phpro/grumphp/) to ensure each progpilot commit reaches code style (phpcs) and security (progpilot itself) requirements.  
 Install GrumPHP globally or in the progpilot repository:
 ```shell
 composer install --dev phpro/grumphp

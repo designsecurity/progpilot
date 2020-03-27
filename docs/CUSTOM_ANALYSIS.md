@@ -4,7 +4,7 @@ In addition to the [**specification of taint analysis**](./SPECIFY_ANALYSIS.md) 
 
 ## Call graph checking
 
-To verify that your program meets a given specification it's possible to use the below kind of rule (MUST_VERIFY_CALL_FLOW action) which will traverse the call graph (only from the main function) of a program to check if a user is authenticated and has the permission before retrieving a possible secret.
+To verify that your program meets a given specification it's possible to use the below kind of rule (`MUST_VERIFY_CALL_FLOW` action) which will traverse the call graph (only from the main function) of a program to check if a user is authenticated and has the permission before retrieving a possible secret.
 
 ```javascript
 {
@@ -54,7 +54,7 @@ has one path that does not verify the above rule #1, thus this last will be rais
 
 ## Restricted function calls
 
-To verify if a function call comply with defined conditions use this kind of rule (MUST_NOT_VERIFY_DEFINITION and MUST_VERIFY_DEFINITION actions), in this example Twig auto escaping stategy is checked:
+To verify if a function call comply with defined conditions use this kind of rule (`MUST_NOT_VERIFY_DEFINITION` and `MUST_VERIFY_DEFINITION` actions), in this example Twig auto escaping stategy is checked:
 
 ```javascript
 {

@@ -19,7 +19,7 @@ sudo mv progpilot_vX.Y.Z.phar /usr/local/bin/progpilot
 
 ### Option 2: build phar from source code
 
-[phar-composer.phar](https://github.com/clue/phar-composer/releases) should be located in a directory listed in the `$PATH` environment variable before starting the build.
+[phar-composer.phar](https://github.com/clue/phar-composer/releases) should be located in a directory listed in the `$PATH` environment variable before starting the build:
 
 ```shell
 git clone https://github.com/designsecurity/progpilot
@@ -37,13 +37,14 @@ Use [Composer](https://getcomposer.org/) to install progpilot:
 composer require --dev designsecurity/progpilot
 ```
 
-## Configuration (optional)
+## Configuration
 
-To configure and customize the analysis, it's possible to use a yaml configuration file (see [example configuration.yml](./projects/example_config/configuration.yml)) otherwise the default configuration will be used with, in particular the standard [taint configuration data](./package/src/uptodate_data).
+Use a yaml configuration file (look at [this example](./projects/example_config/configuration.yml)) to configure and customize the progpilot analysis otherwise the default configuration will be used with, in particular the standard [taint configuration data](./package/src/uptodate_data).
 
 ## Usage
+### CLI example
 
-progpilot command takes as arguments the path to the files and folders to analyze and optionally a configuration file:
+The progpilot command takes as arguments the path to the files and folders to be analyzed and optionally a configuration file:
 
 ```shell
 # without config file
@@ -53,9 +54,9 @@ progpilot --configuration configuration.yml example1.php example2.php folder1/ f
 ```
 If you installed it with `composer`, the program will be located at `vendor/bin/progpilot`.
 
-## Library example
+### Library example
 
-It is also possible to use progpilot inside PHP code. For more information look at the [documentation about progpilot API](./docs/API.md).
+It is also possible to use progpilot inside PHP code. For more information look at the [API documentation](./docs/API.md).
 
 Use this code to analyze *source_code1.php*:
 
@@ -124,7 +125,7 @@ It is strongly recommended to customize the taint analysis configuration (the de
 }
 ```
 See available settings in the [corresponding chapter about specifying an analysis](./docs/SPECIFY_ANALYSIS.md).  
-Custom rules can be also created, see the [corresponding chapter about custom rules](./docs/CUSTOM_ANALYSIS.md).
+Custom rules can be created too, see the [corresponding chapter about custom rules](./docs/CUSTOM_ANALYSIS.md).
 
 ## Development
 [Learn more](./docs/DEV.md) about the development of Progpilot.

@@ -26,7 +26,7 @@ var_dump($results);
 ```
 The up-to-date taint analysis specification and custom rules files are located in [package/src/uptodate_data](../package/src/uptodate_data) folder.
 
-#### How can I display the vulnerabilites when they are detected?
+#### How can I display the vulnerabilities when they are detected?
 
 Use *setOnAddResult* method:
 
