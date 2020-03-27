@@ -27,7 +27,7 @@ cd progpilot
 ./build.sh
 ```
 
-The resulting phar archive will be located at the root folder of this project.
+The resulting phar archive will be located in the `builds` folder of root of this project.
 
 ### Option 3: use composer
 
