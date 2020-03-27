@@ -22,7 +22,7 @@ $results = $context->outputs->getResults();
 
 var_dump($results);
 
-?>
+
 ```
 The up-to-date taint analysis specification and custom rules files are located in [package/src/uptodate_data](../package/src/uptodate_data) folder.
 

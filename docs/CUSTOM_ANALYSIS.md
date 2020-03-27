@@ -4,7 +4,7 @@ In addition to the [**specification of taint analysis**](./SPECIFY_ANALYSIS.md) 
 
 ## Call graph checking
 
-To verify that your program meets a given specification it's possible to use the below kind of rule (`MUST_VERIFY_CALL_FLOW` action) which will traverse the call graph (only from the main function) of a program to check if a user is authenticated and has the permission before retrieving a possible secret.
+To verify that your program meets a given specification use the below kind of rule (`MUST_VERIFY_CALL_FLOW` action) which will traverse the call graph (only from the main function) of a program to check, in this exemple, if a user is authenticated and has the permission before retrieving a possible secret.
 
 ```javascript
 {
@@ -44,7 +44,6 @@ function secret()
 
 secret();
 
-?>
 ```
 
 has one path that does not verify the above rule #1, thus this last will be raised:  
@@ -54,7 +53,7 @@ has one path that does not verify the above rule #1, thus this last will be rais
 
 ## Restricted function calls
 
-To verify if a function call comply with defined conditions use this kind of rule (`MUST_NOT_VERIFY_DEFINITION` and `MUST_VERIFY_DEFINITION` actions), in this example Twig auto escaping stategy is checked:
+To verify if a function call comply with defined conditions use this kind of rule (`MUST_NOT_VERIFY_DEFINITION` and `MUST_VERIFY_DEFINITION` actions), in this example Twig auto escaping strategy is verified:
 
 ```javascript
 {
@@ -82,7 +81,7 @@ In the below code the conditions of the custom rule set on the `Twig_Environment
 
 $a = new Twig_Environment($loader, array("autoescape" => false));
 
-?>
+
 ```
 
 ## Create an object
@@ -102,4 +101,4 @@ The return of a function could be a custom object of a class name defined in the
 }
 ```
 
-Thus it's possible to use this class name as sources, sinks, sanitizers or validators.
+Thus it's possible to use this class name when [defining sources, sinks, sanitizers or validators](./SPECIFY_ANALYSIS.md).
