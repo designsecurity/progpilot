@@ -1,4 +1,4 @@
-parameters:
+grumphp:
   process_timeout: 120
   tasks:
       phpcs:
