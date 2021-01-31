@@ -44,6 +44,7 @@ class MyInstruction
     const ARR = "arr";
     const TEMPORARY = "temporary";
     const PHI = "phi";
+    const CHAINED_DEF = "chained_def";
 
     private $properties;
     private $opcode;

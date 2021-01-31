@@ -41,6 +41,7 @@ class MyFunction extends MyOp
 
     private $isAnalyzed;
     private $isDataAnalyzed;
+    private $isChainedMethod;
 
     private $myCode;
     private $castReturn;
@@ -67,6 +68,8 @@ class MyFunction extends MyOp
 
         $this->isAnalyzed = false;
         $this->isDataAnalyzed = false;
+        $this->isChainedMethod = false;
+        $this->chainedMethod = null;
 
         $this->property = new MyProperty;
         $this->defs = new Definitions;
@@ -81,6 +84,26 @@ class MyFunction extends MyOp
         $this->property = clone $this->property;
         $this->blocks = clone $this->blocks;
         $this->defs = clone $this->defs;
+    }
+
+    public function setIsChainedMethod($isChainedMethod)
+    {
+        $this->isChainedMethod = $isChainedMethod;
+    }
+
+    public function isChainedMethod()
+    {
+        return $this->isChainedMethod;
+    }
+
+    public function setChainedMethod($chainedMethod)
+    {
+        $this->chainedMethod = $chainedMethod;
+    }
+
+    public function getChainedMethod()
+    {
+        return $this->chainedMethod;
     }
 
     public function setIsDataAnalyzed($isDataAnalyzed)

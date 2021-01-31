@@ -253,6 +253,7 @@ class VisitorDataflow
                             $mybackdef->setObjectId($idObject);
                             
                             if (!empty($mybackdef->getClassName())) {
+                            
                                 $className = $mybackdef->getClassName();
                                 $myClass = $context->getClasses()->getMyClass($className);
                                 

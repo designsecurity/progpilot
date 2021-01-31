@@ -52,6 +52,11 @@ class FuncAnalysis
                             $defAssign->getArrayValue()
                         );
                     }
+
+                    if ($opAfter->isPropertyExist(MyInstruction::CHAINED_DEF)) {
+                        $def = $opAfter->getProperty(MyInstruction::CHAINED_DEF);
+                        $def->setObjectId($defReturn->getObjectId());
+                    }
                 }
             }
 

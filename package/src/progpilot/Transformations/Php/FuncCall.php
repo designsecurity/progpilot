@@ -103,7 +103,19 @@ class FuncCall
 
         // instance_name = new obj; instance_name->method_name()
         if ($isMethod) {
+            $chainedMethod = Common::getChainedMethod($context->getCurrentOp());
+            if(!empty($chainedMethod)) {
+                $chainedMethodDef = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), "chained_".$chainedMethod);
+                $chainedMethodDef->addType(MyDefinition::TYPE_INSTANCE);
+
+                $instDefChained = new MyInstruction(Opcodes::DEFINITION);
+                $instDefChained->addProperty(MyInstruction::DEF, $chainedMethodDef);
+                $instDefChained->addProperty(MyInstruction::CHAINED_DEF, $chainedMethodDef);
+                $context->getCurrentMycode()->addCode($instDefChained);
+            }
+
             $instanceName = Common::getNameDefinition($context->getCurrentOp()->var);
+            
             if (isset($context->getCurrentOp()->var->ops[0])) {
                 $propertyName = Common::getNameProperty($context->getCurrentOp()->var->ops[0]);
             }
@@ -164,7 +176,7 @@ class FuncCall
         if ($isMethod) {
             $myFunctionCall->addType(MyFunction::TYPE_FUNC_METHOD);
             $myFunctionCall->setNameInstance($instanceName);
-
+        
             $mybackdef = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), $instanceName);
             $mybackdef->addType(MyDefinition::TYPE_INSTANCE);
             $mybackdef->setClassName($className);
@@ -199,10 +211,17 @@ class FuncCall
         }
 
         $myFunctionCall->setNbParams($nbparams);
+        if (!empty($chainedMethod)) {
+            $myFunctionCall->setIsChainedMethod(true);
+            $myFunctionCall->setChainedMethod($chainedMethodDef);
+        }
+
         $instFuncCallMain->addProperty(MyInstruction::MYFUNC_CALL, $myFunctionCall);
         $instFuncCallMain->addProperty(MyInstruction::EXPR, $myExpr);
         $instFuncCallMain->addProperty(MyInstruction::ARR, $funcCallArr);
         $context->getCurrentMycode()->addCode($instFuncCallMain);
+
+
         
         return $mybackdef;
     }
