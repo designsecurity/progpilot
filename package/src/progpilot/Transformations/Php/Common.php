@@ -146,7 +146,7 @@ class Common
         if (isset($ops->name->value)) {
             return $ops->name->value;
         }
-
+        
         // arrayexpr
         if (isset($ops->value)) {
             return $ops->value;
@@ -179,39 +179,55 @@ class Common
                 return "public";
         }
     }
+    public static function getChainedMethod($op) 
+    {
+      if(isset($op->var->ops[0]) && $op->var->ops[0] instanceof Op\Expr\MethodCall) {
+        return $op->var->ops[0]->name->value;
+      }
+      
+      return "";
+    }
 
     public static function isFuncCallWithoutReturn($op)
     {
-        if (!(isset($op->result->usages[0])) || (
-                        // funccall()[0]
-                        !(isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\ArrayDimFetch) &&
-                        // test = funccall() // funcccall(funccall())
-                        !(isset($op->result->usages[0])
-                          && (
-                              $op->result->usages[0] instanceof Op\Terminal\Echo_
-                              || $op->result->usages[0] instanceof Op\Terminal\Return_
-                              || $op->result->usages[0] instanceof Op\Expr\Print_
-                              || $op->result->usages[0] instanceof Op\Expr\StaticCall
-                              || $op->result->usages[0] instanceof Op\Expr\MethodCall
-                              || $op->result->usages[0] instanceof Op\Expr\NsFuncCall
-                              || $op->result->usages[0] instanceof Op\Expr\FuncCall
-                              || $op->result->usages[0] instanceof Op\Expr\Assign
-                              || $op->result->usages[0] instanceof Op\Expr\BinaryOp\Concat
-                              || $op->result->usages[0] instanceof Op\Expr\Array_
-                              || $op->result->usages[0] instanceof Op\Expr\Include_
-                              || $op->result->usages[0] instanceof Op\Expr\Eval_
-                              
-                              || $op->result->usages[0] instanceof Op\Expr\Cast\Int_
-                              || $op->result->usages[0] instanceof Op\Expr\Cast\Array_
-                              || $op->result->usages[0] instanceof Op\Expr\Cast\Bool_
-                              || $op->result->usages[0] instanceof Op\Expr\Cast\Double_
-                              || $op->result->usages[0] instanceof Op\Expr\Cast\Object_
-                              || $op->result->usages[0] instanceof Op\Expr\Cast\String_
-                              
-                              || $op->result->usages[0] instanceof Op\Iterator\Reset
-                          ))
-            )) {
-            return true;
+        if(isset($op->var->ops[0]) && $op->var->ops[0] instanceof Op\Expr\MethodCall) {
+          return true;
+        }
+        else if(isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\MethodCall) {
+          return true;
+        }
+        else {
+          if (!(isset($op->result->usages[0])) || (
+                          // funccall()[0]
+                          !(isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\ArrayDimFetch) &&
+                          // test = funccall() // funcccall(funccall())
+                          !(isset($op->result->usages[0])
+                            && (
+                                $op->result->usages[0] instanceof Op\Terminal\Echo_
+                                || $op->result->usages[0] instanceof Op\Terminal\Return_
+                                || $op->result->usages[0] instanceof Op\Expr\Print_
+                                || $op->result->usages[0] instanceof Op\Expr\StaticCall
+                                || $op->result->usages[0] instanceof Op\Expr\MethodCall
+                                || $op->result->usages[0] instanceof Op\Expr\NsFuncCall
+                                || $op->result->usages[0] instanceof Op\Expr\FuncCall
+                                || $op->result->usages[0] instanceof Op\Expr\Assign
+                                || $op->result->usages[0] instanceof Op\Expr\BinaryOp\Concat
+                                || $op->result->usages[0] instanceof Op\Expr\Array_
+                                || $op->result->usages[0] instanceof Op\Expr\Include_
+                                || $op->result->usages[0] instanceof Op\Expr\Eval_
+                                
+                                || $op->result->usages[0] instanceof Op\Expr\Cast\Int_
+                                || $op->result->usages[0] instanceof Op\Expr\Cast\Array_
+                                || $op->result->usages[0] instanceof Op\Expr\Cast\Bool_
+                                || $op->result->usages[0] instanceof Op\Expr\Cast\Double_
+                                || $op->result->usages[0] instanceof Op\Expr\Cast\Object_
+                                || $op->result->usages[0] instanceof Op\Expr\Cast\String_
+                                
+                                || $op->result->usages[0] instanceof Op\Iterator\Reset
+                            ))
+              )) {
+              return true;
+          }
         }
 
         return false;

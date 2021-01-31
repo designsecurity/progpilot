@@ -77,6 +77,7 @@ class VisitorAnalysis
 
         $stackClass = null;
         if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
+        
             $stackClass = ResolveDefs::funccallClass(
                 $this->context,
                 $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
@@ -84,6 +85,7 @@ class VisitorAnalysis
             );
 
             $classOfFuncCallArr = $stackClass[count($stackClass) - 1];
+
             foreach ($classOfFuncCallArr as $classOfFuncCall) {
                 $objectId = $classOfFuncCall->getObjectId();
                 $myClass = $this->context->getObjects()->getMyClassFromObject($objectId);
