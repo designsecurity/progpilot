@@ -136,6 +136,10 @@
                 [
                     "./tests/oop/simple32.php",
                         [["testa::\$stavar", "9", "xss"]]
+                ],
+                [
+                    "./tests/oop/simple33.php",
+                        [["\$tainted", "31", "xss"]]
                 ]
                 
         ];

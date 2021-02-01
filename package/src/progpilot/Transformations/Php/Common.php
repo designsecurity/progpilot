@@ -179,25 +179,23 @@ class Common
                 return "public";
         }
     }
-    public static function getChainedMethod($op) 
+    public static function getChainedMethod($op)
     {
-      if(isset($op->var->ops[0]) && $op->var->ops[0] instanceof Op\Expr\MethodCall) {
-        return $op->var->ops[0]->name->value;
-      }
+        if (isset($op->var->ops[0]) && $op->var->ops[0] instanceof Op\Expr\MethodCall) {
+            return $op->var->ops[0]->name->value;
+        }
       
-      return "";
+        return "";
     }
 
     public static function isFuncCallWithoutReturn($op)
     {
-        if(isset($op->var->ops[0]) && $op->var->ops[0] instanceof Op\Expr\MethodCall) {
-          return true;
-        }
-        else if(isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\MethodCall) {
-          return true;
-        }
-        else {
-          if (!(isset($op->result->usages[0])) || (
+        if (isset($op->var->ops[0]) && $op->var->ops[0] instanceof Op\Expr\MethodCall) {
+            return true;
+        } elseif (isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\MethodCall) {
+            return true;
+        } else {
+            if (!(isset($op->result->usages[0])) || (
                           // funccall()[0]
                           !(isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\ArrayDimFetch) &&
                           // test = funccall() // funcccall(funccall())
@@ -226,8 +224,8 @@ class Common
                                 || $op->result->usages[0] instanceof Op\Iterator\Reset
                             ))
               )) {
-              return true;
-          }
+                return true;
+            }
         }
 
         return false;

@@ -5,7 +5,7 @@
         {"name": "_COOKIE", "is_array": true, "language": "php"},
         {"name": "_REQUEST", "is_array": true, "language": "php"},
         {"name": "_FILES", "is_array": true, "language": "php"},
-        {"name": "_SERVER", "is_array": true, "language": "php"},
+        {"name": "_SERVER", "is_array": true, "array_index": ["QUERY_STRING", "HTTP_ACCEPT", "HTTP_ACCEPT_CHARSET", "HTTP_ACCEPT_ENCODING", "HTTP_ACCEPT_LANGUAGE", "HTTP_CONNECTION", "HTTP_HOST", "HTTP_REFERER", "HTTP_USER_AGENT"], "language": "php"},
         {"name": "HTTP_GET_VARS", "is_array": true, "language": "php"},
         {"name": "HTTP_POST_VARS", "is_array": true, "language": "php"},
         {"name": "HTTP_COOKIE_VARS", "is_array": true, "language": "php"},

@@ -45,7 +45,6 @@
                     "./tests/includes/simple9.php",
                         [["158", "3442", "security misconfiguration"],
                         ["159", "3521", "security misconfiguration"],
-                        ["\$pLocation", "505", "header_injection"],
                         ["\$page[\"body\"]", "51", "xss"]]
                 ],
                 [

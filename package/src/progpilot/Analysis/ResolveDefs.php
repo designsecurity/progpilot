@@ -167,27 +167,26 @@ class ResolveDefs
             while (true) {
                 $propValue = [];
 
-            if(!$myFuncCall->isChainedMethod()) {
-                $myDefTmp = new MyDefinition(
-                    $myFuncCall->getLine(),
-                    $myFuncCall->getColumn(),
-                    $myFuncCall->getNameInstance()
-                );
-            }
-            else {
-                $myDefTmp = new MyDefinition(
-                    $myFuncCall->getLine(),
-                    $myFuncCall->getColumn(),
-                    $myFuncCall->getChainedMethod()->getName()
-                );
-            }
+                if (!$myFuncCall->isChainedMethod()) {
+                    $myDefTmp = new MyDefinition(
+                        $myFuncCall->getLine(),
+                        $myFuncCall->getColumn(),
+                        $myFuncCall->getNameInstance()
+                    );
+                } else {
+                    $myDefTmp = new MyDefinition(
+                        $myFuncCall->getLine(),
+                        $myFuncCall->getColumn(),
+                        $myFuncCall->getChainedMethod()->getName()
+                    );
+                }
 
-            $myDefTmp->setBlockId($myFuncCall->getBlockId());
-            $myDefTmp->setSourceMyFile($myFuncCall->getSourceMyFile());
-            $myDefTmp->property->setProperties($tmpProperties);
-            $myDefTmp->addType(MyDefinition::TYPE_PROPERTY);
-            $myDefTmp->setId($myFuncCall->getBackDef()->getId() - 1);
-             // we don't want the backdef but the original instance
+                $myDefTmp->setBlockId($myFuncCall->getBlockId());
+                $myDefTmp->setSourceMyFile($myFuncCall->getSourceMyFile());
+                $myDefTmp->property->setProperties($tmpProperties);
+                $myDefTmp->addType(MyDefinition::TYPE_PROPERTY);
+                $myDefTmp->setId($myFuncCall->getBackDef()->getId() - 1);
+                // we don't want the backdef but the original instance
 
             
                 $classStackName[$i] = [];
@@ -197,7 +196,7 @@ class ResolveDefs
                         $data,
                         $myDefTmp
                     );
-                } else if(!$myFuncCall->isChainedMethod()) {
+                } elseif (!$myFuncCall->isChainedMethod()) {
                     $instances = ResolveDefs::selectProperties($context, $data, $myDefTmp);
                 }
 
@@ -224,7 +223,6 @@ class ResolveDefs
     {
         if (!is_null($myFunc) && $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
             if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
-    
                 $myBackDef = $myFuncCall->getBackDef();
                 //$myClass = $myFunc->getMyClass();
                 $method = $myClass->getMethod($myFuncCall->getName());

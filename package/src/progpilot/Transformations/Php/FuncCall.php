@@ -104,8 +104,13 @@ class FuncCall
         // instance_name = new obj; instance_name->method_name()
         if ($isMethod) {
             $chainedMethod = Common::getChainedMethod($context->getCurrentOp());
-            if(!empty($chainedMethod)) {
-                $chainedMethodDef = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), "chained_".$chainedMethod);
+            if (!empty($chainedMethod)) {
+                $chainedMethodDef = new MyDefinition(
+                    $context->getCurrentLine(),
+                    $context->getCurrentColumn(),
+                    "chained_".$chainedMethod
+                );
+
                 $chainedMethodDef->addType(MyDefinition::TYPE_INSTANCE);
 
                 $instDefChained = new MyInstruction(Opcodes::DEFINITION);
