@@ -7,7 +7,8 @@ try {
     $analyzer = new \progpilot\Analyzer;
 
     $context->inputs->setDev(true);
-    $context->inputs->setIncludeFiles("include_files.json");
+    $context->setPrintFile(true);
+    $context->inputs->setIncludes("include_files.json");
 
     try {
         $analyzer->run($context);

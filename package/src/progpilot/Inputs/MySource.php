@@ -35,7 +35,7 @@ class MySource extends MySpecify
         $this->isFunction = false;
         $this->returnArrayValue = null;
         $this->isReturnArray = false;
-        $this->arrayValue = null;
+        $this->arrayValue = [];
         $this->isArray = false;
         $this->hasParameters = false;
         $this->parameters = [];
@@ -91,6 +91,17 @@ class MySource extends MySpecify
     public function setIsArray($isArray)
     {
         $this->isArray = $isArray;
+    }
+
+    public function isAnArrayValue($arr)
+    {
+        foreach ($arr as $key => $value) {
+            if (isset($this->arrayValue[$key])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getArrayValue()

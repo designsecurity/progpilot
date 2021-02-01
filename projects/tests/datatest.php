@@ -133,7 +133,7 @@
                 ],
                 [
                     "./tests/data/source20.php",
-                        [["\$comment->ddd", "23", "xss"]]
+                        [["\$b", "4", "xss"]]
                 ],
                 [
                     "./tests/data/sanitizer1.php",

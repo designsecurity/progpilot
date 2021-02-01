@@ -77,7 +77,6 @@ class VisitorAnalysis
 
         $stackClass = null;
         if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
-        
             $stackClass = ResolveDefs::funccallClass(
                 $this->context,
                 $this->defs->getOutMinusKill($myFuncCall->getBlockId()),
@@ -527,6 +526,7 @@ class VisitorAnalysis
                                 $tempDefa,
                                 $tempDefa->getArrayValue()
                             );
+
                             // if we use directly echo $_GET["b"];
                             if (!is_null($sourceArr)) {
                                 $tempDefa->setArrayValue("PROGPILOT_ALL_INDEX_TAINTED");

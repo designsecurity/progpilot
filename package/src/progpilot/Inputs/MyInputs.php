@@ -415,7 +415,7 @@ class MyInputs
                     }
                 }
             }
-        
+
             if (($mySource->getName() === $myFuncOrDef->getName()) || $checkName) {
                 $checkFunction = false;
                 $checkArray = false;
@@ -463,7 +463,7 @@ class MyInputs
                 // and array nots equals (like $_GET["p"])
                 if (($arrValue !== false && $arrValue !== "PROGPILOT_ALL_INDEX_TAINTED"
                     && $mySource->getIsArray()
-                        && is_null($mySource->getArrayValue()))
+                        && empty($mySource->getArrayValue()))
                             // or we don't request an array
                             // and the source is not an array (echo $hardcoded_tainted)
                             || (!$arrValue && !$mySource->getIsArray())
@@ -479,8 +479,8 @@ class MyInputs
                 // if we request an array the source must be an array and array value equals
                 if (($arrValue !== false && $arrValue !== "PROGPILOT_ALL_INDEX_TAINTED"
                     && $mySource->getIsArray()
-                        && !is_null($mySource->getArrayValue())
-                            && $mySource->getArrayValue() === $arrValue)) {
+                        && !empty($mySource->getArrayValue())
+                            && $mySource->isAnArrayValue($arrValue))) {
                     $checkArray = true;
                 }
 
@@ -1158,8 +1158,13 @@ class MyInputs
                         $mySource->setIsObject(true);
                     }
 
-                    if (isset($source-> {'array_index'})) {
-                        $arr = array($source-> {'array_index'} => false);
+                    if (isset($source-> {'array_index'}) && is_array($source-> {'array_index'})) {
+                        $arr = [];
+                        foreach($source-> {'array_index'} as $array_index) {
+                            $arr[$array_index] = false;
+                        }
+
+                        //$arr = array($source-> {'array_index'} => false);
                         $mySource->setArrayValue($arr);
                     }
 
