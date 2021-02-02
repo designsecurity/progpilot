@@ -121,7 +121,7 @@ class TaintAnalysis
                     if ($defArg->isTainted()) {
                         $conditionsRespected = false;
                     }
-                } elseif ($conditions === "equals") {
+                } elseif ($conditions === "equals" || $conditions === "notequals") {
                     $conditionsRespectedEquals = false;
                     $values = $myValidator->getParameterValues($nbParams + 1);
 
@@ -130,7 +130,10 @@ class TaintAnalysis
                         if (count($theDefsArgs) > 0) {
                             foreach ($values as $value) {
                                 foreach ($theDefsArgs[0]->getLastKnownValues() as $lastKnownValue) {
-                                    if ($value->value === $lastKnownValue) {
+                                    if ($value->value === $lastKnownValue && $conditions === "equals" ) {
+                                        $conditionsRespectedEquals = true;
+                                    }
+                                    else if ($value->value !== $lastKnownValue && $conditions === "notequals" ) {
                                         $conditionsRespectedEquals = true;
                                     }
                                 }
@@ -249,7 +252,7 @@ class TaintAnalysis
             if (!is_null($mySanitizer)) {
                 $conditions = $mySanitizer->getParameterconditions($nbParams + 1);
 
-                if ($conditions === "equals") {
+                if ($conditions === "equals" || $conditions === "notequals") {
                     $conditionsRespected = false;
                     $values = $mySanitizer->getParameterValues($nbParams + 1);
 
@@ -258,7 +261,8 @@ class TaintAnalysis
                         if (count($theDefsArgs) > 0) {
                             foreach ($values as $value) {
                                 foreach ($theDefsArgs[0]->getLastKnownValues() as $lastKnownValue) {
-                                    if ($value->value === $lastKnownValue) {
+                                    if (($value->value === $lastKnownValue && $conditions === "equals")
+                                        || ($value->value !== $lastKnownValue && $conditions === "notequals")) {
                                         $conditionsRespected = true;
 
                                         if (isset($value->prevent)) {

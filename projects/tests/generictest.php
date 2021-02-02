@@ -254,6 +254,10 @@
                         [["\$testf1_param0_line10_column65_progpilot[\"test\"]", "10", "xss"]]
                 ],
                 [
+                    "./tests/generic/functions20.php",
+                        [["\$thisfunctionexistandreturn_return", "23", "xss"]]
+                ],
+                [
                     "./tests/generic/functionsrec1.php",
                         [["\$var", "10", "xss"]]
                 ],

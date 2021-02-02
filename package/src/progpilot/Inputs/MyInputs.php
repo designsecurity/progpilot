@@ -1001,9 +1001,10 @@ class MyInputs
                             if (isset($parameter-> {'id'}) && isset($parameter-> {'conditions'})) {
                                 if (is_int($parameter-> {'id'})
                                             && ($parameter-> {'conditions'} === "equals"
-                                                    || $parameter-> {'conditions'} === "taint"
+                                                    || $parameter-> {'conditions'} === "notequals"
+                                                        || $parameter-> {'conditions'} === "taint"
                                                             || $parameter-> {'conditions'} === "sanitize")) {
-                                    if ($parameter-> {'conditions'} === "equals") {
+                                    if ($parameter-> {'conditions'} === "equals" || $parameter-> {'conditions'} === "notequals") {
                                         if (isset($parameter-> {'values'})) {
                                             $mySanitizer->addParameter(
                                                 $parameter-> {'id'},
@@ -1160,11 +1161,10 @@ class MyInputs
 
                     if (isset($source-> {'array_index'}) && is_array($source-> {'array_index'})) {
                         $arr = [];
-                        foreach($source-> {'array_index'} as $array_index) {
+                        foreach ($source-> {'array_index'} as $array_index) {
                             $arr[$array_index] = false;
                         }
 
-                        //$arr = array($source-> {'array_index'} => false);
                         $mySource->setArrayValue($arr);
                     }
 
@@ -1263,8 +1263,9 @@ class MyInputs
                                             && ($parameter-> {'conditions'} === "not_tainted"
                                                     || $parameter-> {'conditions'} === "array_not_tainted"
                                                             || $parameter-> {'conditions'} === "valid"
-                                                                    || $parameter-> {'conditions'} === "equals")) {
-                                    if ($parameter-> {'conditions'} === "equals") {
+                                                                    || $parameter-> {'conditions'} === "equals"
+                                                                    || $parameter-> {'conditions'} === "notequals")) {
+                                    if ($parameter-> {'conditions'} === "equals" || $parameter-> {'conditions'} === "notequals") {
                                         if (isset($parameter-> {'values'})) {
                                             $myValidator->addParameter(
                                                 $parameter-> {'id'},
@@ -1272,7 +1273,7 @@ class MyInputs
                                                 $parameter-> {'values'}
                                             );
                                         }
-                                    } else {
+                                    }  else {
                                         $myValidator->addParameter(
                                             $parameter-> {'id'},
                                             $parameter-> {'conditions'}
@@ -1582,11 +1583,26 @@ class MyInputs
                                                     $fixed = true;
                                                 }
                                                     
+                                                    
+                                                $sufficient = false;
+                                                if (isset($parameter-> {'sufficient'})
+                                                    && $parameter-> {'sufficient'}) {
+                                                    $sufficient = true;
+                                                }
+
+                                                $fail_if_not_verified = true;
+                                                if (isset($parameter-> {'fail_if_not_verified'})
+                                                    && !$parameter-> {'fail_if_not_verified'}) {
+                                                    $fail_if_not_verified = false;
+                                                }
+
                                                 if (is_int($parameter-> {'id'})) {
                                                     $myCustomFunction->addParameter(
                                                         $parameter-> {'id'},
                                                         $validbydefault,
                                                         $fixed,
+                                                        $sufficient,
+                                                        $fail_if_not_verified,
                                                         $parameter-> {'values'}
                                                     );
                                                 }
@@ -1630,11 +1646,25 @@ class MyInputs
                                                 && $parameter-> {'valid_by_default'}) {
                                                 $validbydefault = true;
                                             }
+
+                                            $sufficient = false;
+                                            if (isset($parameter-> {'sufficient'})
+                                                && $parameter-> {'sufficient'}) {
+                                                $sufficient = true;
+                                            }
+
+                                            $fail_if_not_verified = true;
+                                            if (isset($parameter-> {'fail_if_not_verified'})
+                                                && !$parameter-> {'fail_if_not_verified'}) {
+                                                $fail_if_not_verified = false;
+                                            }
                                                     
                                             $myCustomFunction->addParameter(
                                                 $parameter-> {'id'},
                                                 $validbydefault,
                                                 $fixed,
+                                                $sufficient,
+                                                $fail_if_not_verified,
                                                 $parameter-> {'values'}
                                             );
                                         }

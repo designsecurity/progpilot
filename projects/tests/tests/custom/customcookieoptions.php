@@ -9,5 +9,4 @@ $options = array(
     'samesite' => 'Lax'
 );
 
-setcookie("token", $token, $options);
-
+setcookie("token", "123", $options);

@@ -93,171 +93,171 @@
                 ],
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__GET__func_preg_replace__fopen.php",
-                        [["\$tainted", "48", "idor"]]
+                        [["\$tainted", "48", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__GET__no_sanitizing__fopen.php",
-                        [["\$tainted", "46", "idor"]]
+                        [["\$tainted", "46", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__POST__func_preg_replace__fopen.php",
-                        [["\$tainted", "48", "idor"]]
+                        [["\$tainted", "48", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__POST__no_sanitizing__fopen.php",
-                        [["\$tainted", "46", "idor"]]
+                        [["\$tainted", "46", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__backticks__func_preg_replace__fopen.php",
-                       [["\$tainted", "48", "idor"]]
+                       [["\$tainted", "48", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__backticks__no_sanitizing__fopen.php",
-                        [["\$tainted", "46", "idor"]]
+                        [["\$tainted", "46", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__exec__func_preg_replace__fopen.php",
-                        [["\$tainted", "51", "idor"]]
+                        [["\$tainted", "51", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__exec__no_sanitizing__fopen.php",
-                        [["\$tainted", "49", "idor"]]
+                        [["\$tainted", "49", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__fopen__func_preg_replace__fopen.php",
-                        [["\$tainted", "57", "idor"]]
+                        [["\$tainted", "57", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__fopen__no_sanitizing__fopen.php",
-                        [["\$tainted", "49", "idor"]]
+                        [["\$tainted", "49", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__object-Array__func_preg_replace__fopen.php",
-                        [["\$tainted", "66", "idor"]]
+                        [["\$tainted", "66", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__object-Array__no_sanitizing__fopen.php",
-                        [["\$tainted", "64", "idor"]]
+                        [["\$tainted", "64", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__object-classicGet__func_preg_replace__fopen.php",
-                        [["\$tainted", "63", "idor"]]
+                        [["\$tainted", "63", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__object-classicGet__no_sanitizing__fopen.php",
-                        [["\$tainted", "61", "idor"]]
+                        [["\$tainted", "61", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__object-directGet__func_preg_replace__fopen.php",
-                        [["\$tainted", "57", "idor"]]
+                        [["\$tainted", "57", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__object-directGet__no_sanitizing__fopen.php",
-                        [["\$tainted", "55", "idor"]]
+                        [["\$tainted", "55", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__object-indexArray__func_preg_replace__fopen.php",
-                        [["\$tainted", "66", "idor"]]
+                        [["\$tainted", "66", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__object-indexArray__no_sanitizing__fopen.php",
-                        [["\$tainted", "64", "idor"]]
+                        [["\$tainted", "64", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__popen__func_preg_replace__fopen.php",
-                        [["\$tainted", "50", "idor"]]
+                        [["\$tainted", "50", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__popen__no_sanitizing__fopen.php",
-                        [["\$tainted", "47", "idor"]]
+                        [["\$tainted", "47", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__proc_open__func_preg_replace__fopen.php",
-                        [["\$tainted", "60", "idor"]]
+                        [["\$tainted", "60", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__proc_open__no_sanitizing__fopen.php",
-                        [["\$tainted", "55", "idor"]]
+                        [["\$tainted", "55", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__shell_exec__func_preg_replace__fopen.php",
-                        [["\$tainted", "48", "idor"]]
+                        [["\$tainted", "48", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__shell_exec__no_sanitizing__fopen.php",
-                        [["\$tainted", "46", "idor"]]
+                        [["\$tainted", "46", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__system__func_preg_replace__fopen.php",
-                        [["\$tainted", "48", "idor"]]
+                        [["\$tainted", "48", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__system__no_sanitizing__fopen.php",
-                        [["\$tainted", "46", "idor"]]
+                        [["\$tainted", "46", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__unserialize__func_preg_replace__fopen.php",
                         [["\$string", "46", "code_injection"],
-                        ["\$tainted", "50", "idor"]]
+                        ["\$tainted", "50", "path_traversal"]]
                 ],
 
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__unserialize__no_sanitizing__fopen.php",
                         [["\$string", "46", "code_injection"],
-                        ["\$tainted", "47", "idor"]]
+                        ["\$tainted", "47", "path_traversal"]]
                 ],
 
 
