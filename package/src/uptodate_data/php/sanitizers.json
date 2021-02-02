@@ -103,6 +103,7 @@
         {"name": "decoct", "language": "php", "prevent": ["ALL"]},
         {"name": "hexdec", "language": "php", "prevent": ["ALL"]},
         {"name": "rand", "language": "php", "prevent": ["ALL"]},
+        {"name": "realpath", "language": "php", "prevent": ["ALL"]},
         {"name": "max", "language": "php", "prevent": ["ALL"]},
         {"name": "min", "language": "php", "prevent": ["ALL"]},
         {"name": "metaphone", "language": "php", "prevent": ["ALL"]},

@@ -36,9 +36,9 @@ class MyCustomFunction extends MySpecify
         $this->parameters = [];
     }
 
-    public function addParameter($parameter, $validbydefault, $fixed, $values = null)
+    public function addParameter($parameter, $validbydefault, $fixed, $sufficient, $fail_if_not_verified, $values = null)
     {
-        $this->parameters[] = [$parameter, $values, $validbydefault, $fixed];
+        $this->parameters[] = [$parameter, $values, $validbydefault, $fixed, $sufficient, $fail_if_not_verified];
     }
 
     public function getParameters()
@@ -56,12 +56,24 @@ class MyCustomFunction extends MySpecify
         $this->hasParameters = $hasParameters;
     }
 
+    public function isParameterSufficient($i)
+    {
+        foreach ($this->parameters as $parameter) {
+            $index = $parameter[0];
+            $sufficient = $parameter[4];
+
+            if ($index === $i) {
+                return $sufficient;
+            }
+        }
+
+        return false;
+    }
+
     public function isParameterFixed($i)
     {
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
-            $values = $parameter[1];
-            $validbydefault = $parameter[2];
             $fixed = $parameter[3];
 
             if ($index === $i) {
@@ -76,7 +88,6 @@ class MyCustomFunction extends MySpecify
     {
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
-            $values = $parameter[1];
             $validbydefault = $parameter[2];
 
             if ($index === $i) {

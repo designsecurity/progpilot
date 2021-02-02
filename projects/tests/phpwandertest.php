@@ -3,9 +3,9 @@
         return [
                 [
                     "./tests/phpwander/test0.php",
-                        [["\$id_return", "4", "file_disclosure"],
-                        ["\$return_basename", "9", "file_disclosure"],
-                        ["\$_GET[\"f\"]", "11", "file_disclosure"],
+                        [["\$id_return", "4", "path_traversal"],
+                        ["\$return_basename", "9", "path_traversal"],
+                        ["\$_GET[\"f\"]", "11", "path_traversal"],
                         ["\$b", "9", "xss"],
                         ["\$c", "11", "xss"]]
                 ],

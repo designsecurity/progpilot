@@ -64,5 +64,14 @@
                         ["16", "672", "security misconfiguration"],
                         ["32", "1346", "security misconfiguration"],
                         ["47", "2018", "security misconfiguration"]]
-                ]
+                ],
+                [
+                    "./tests/custom/unsetcookies.php",
+                        [["6", "121", "security misconfiguration"],
+                        ["6", "121", "security misconfiguration"],
+                        ["12", "270", "security misconfiguration"],
+                        ["12", "270", "security misconfiguration"]]
+                ],
             ];
+
+            

@@ -167,6 +167,8 @@ class CustomAnalysis
                         else {
                             $isValid = false;
                             $params = $functionDefinition->getParameters();
+                            
+                            // if one parameter is not valid all the rule is not valid
                             foreach ($params as $param) {
                                 $isValid = false;
 
@@ -174,6 +176,8 @@ class CustomAnalysis
                                 $valuesParameter = $param[1];
                                 $validbydefault = $customRule->getAction() === "MUST_NOT_VERIFY_DEFINITION" ? !$param[2] : $param[2];
                                 $isParameterFixed = $param[3];
+                                $isParameterSufficient = $param[4];
+                                $isParameterFailIfNotVerifed = $param[5];
                                 
                                 if (!is_null($valuesParameter)) {
                                     if (!$instruction->isPropertyExist("argdef$idParam")) {
@@ -216,25 +220,71 @@ class CustomAnalysis
                                         if (count($defLastKnownValues) === 0) {
                                             $isValid = false;
                                         }
-                    
+
+                                        $notequals = false;
+                                        if (isset($valueParameter->notequals)) {
+                                            $notequals = $valueParameter->notequals;
+                                        }
+
+                                        // we check all the values of a param
+                                        $validForAllValues = false;
                                         foreach ($defLastKnownValues as $lastKnownValue) {
-                                            if ($valueParameter->value === $lastKnownValue) {
-                                                $isValid = true;
-                                                break 2;
+                                            // if it's valid we continue
+                                            if (($valueParameter->value === $lastKnownValue && !$notequals) 
+                                                || ($valueParameter->value !== $lastKnownValue && $notequals)) {
+                                                $validForAllValues = true;
+                                            } 
+                                            else {
+                                                // it's not  valid we can break
+                                                $validForAllValues = false;
+                                                break;
                                             }
                                         }
+
+                                        $isValid = $validForAllValues;
+                                        // we found a value of the param valid, we don't need to continue on
+                                        // other possible values of the rule
+                                        if($isValid) {
+                                            break;
+                                        }
                                     }
-                                    // one parameter is valid but MUST_NOT_VERIFY_DEFINITION
-                                    if ($customRule->getAction() === "MUST_NOT_VERIFY_DEFINITION") {
-                                        $isValid = !$isValid;
-                                        break;
-                                    }
-                                    
+
+                                    // for must_verify definition 
+                                    //   * if one parameter is valid (respect conditions):
+                                    //      * it can be enough (if sufficient) to valid the rule (no issue)
+                                    //   * if one parameter is not valid:
+                                    //      * the rule is not valid except if raise_if_not_verified set to false
+                                    //      * the rule is valid if fixed (required) option is set
+
+                                    // for must_not_verify definition 
+                                    //   * if one parameter is valid (respect conditions):
+                                    //      * the rule is not valid  except if raise_if_not_verified set to false
+                                    //      * the rule is vali  except if fixed (required) option is set
+                                    //   * if one parameter is not valid (doesn't respect conditions):
+                                    //      * it can be enough (if sufficient) to valid the rule (no issue)
+
                                     // one parameter is not valid and required
                                     if (!$isValid
                                         && $isParameterFixed) {
                                         $isValid = true;
                                         break;
+                                    }
+
+                                    if ($customRule->getAction() === "MUST_NOT_VERIFY_DEFINITION") {
+                                        $isValid = !$isValid;
+                                    }
+
+                                    // one parameter is valid and enough
+                                    if ($isValid
+                                        && $isParameterSufficient) {
+                                        $isValid = true;
+                                        break;
+                                    }
+
+                                    // one parameter is not valid but should not fail and continue with other params
+                                    if (!$isValid
+                                        && !$isParameterFailIfNotVerifed) {
+                                        $isValid = true;
                                     }
 
                                     // one parameter is not valid
