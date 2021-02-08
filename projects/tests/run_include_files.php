@@ -7,8 +7,18 @@ try {
     $analyzer = new \progpilot\Analyzer;
 
     $context->inputs->setDev(true);
+    $context->outputs->taintedFlow(true);
     $context->setPrintFile(true);
+    $context->setPrintWarning(true);
+    $context->setAnalyzeHardrules(true);
+    $context->setLimitTime(300);
     $context->inputs->setIncludes("include_files.json");
+
+    $var = function($result) {
+        echo "a result:\n";
+        var_dump($result);
+    };
+    $context->outputs->setOnAddResult($var);
 
     try {
         $analyzer->run($context);

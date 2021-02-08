@@ -1,12 +1,15 @@
 <?php
 
 $tainted = $_GET["p"];
-$errors = false;
 
-if(!is_email($tainted)) {
-  $errors = true;
+$errors = true;
+if(is_email($tainted)) {
+  $errors = false;
 }
 
-if(!$errors) {
+if($errors) {
+  echo $tainted;
+}
+else {
   echo $tainted;
 }

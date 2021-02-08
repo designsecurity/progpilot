@@ -77,7 +77,7 @@ class Transform
                 $this->context->getCurrentMycode()->addCode($instFunc);
                 
                 // because when we call (funccall) a function by name, it can be undefined
-                $this->context->getFunctions()->addFunction($myFunction->getName(), $myFunction);
+                $this->context->getFunctions()->addFunction("file.js", "function", $myFunction->getName(), $myFunction);
                 $this->context->setCurrentFunc($myFunction);
             
                 foreach ($cfg[2] as $FlowNode) {

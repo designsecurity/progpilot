@@ -39,6 +39,7 @@ class MyFunction extends MyOp
     private $lastColumn;
     private $lastBlockId;
 
+    private $isAnalyzedAsEntryPoint;
     private $isAnalyzed;
     private $isDataAnalyzed;
     private $isChainedMethod;
@@ -66,6 +67,7 @@ class MyFunction extends MyOp
         $this->lastColumn = 0;
         $this->lastBlockId = 0;
 
+        $this->isAnalyzedAsEntryPoint = false;
         $this->isAnalyzed = false;
         $this->isDataAnalyzed = false;
         $this->isChainedMethod = false;
@@ -124,6 +126,16 @@ class MyFunction extends MyOp
     public function isAnalyzed()
     {
         return $this->isAnalyzed;
+    }
+
+    public function setIsAnalyzedAsEntryPoint($isAnalyzedAsEntryPoint)
+    {
+        $this->isAnalyzedAsEntryPoint = $isAnalyzedAsEntryPoint;
+    }
+
+    public function isAnalyzedAsEntryPoint()
+    {
+        return $this->isAnalyzedAsEntryPoint;
     }
 
     public function setMyCode($myCode)

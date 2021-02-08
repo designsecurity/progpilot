@@ -79,9 +79,11 @@
             "max_nb_args": 3,
             "parameters": 
             [
-                {"id": 2, "sufficient": true, "fail_if_not_verified": false, "values": 
+                {"id": 2, "sufficient": true, "fail_if_not_verified": false, "notequals": true, "values": 
                     [ 
-                        {"value" : "", "notequals": true}
+                        {"value" : ""},
+                        {"value" : "null"},
+                        {"value" : "NULL"}
                     ]
                 },
                 {"id": 3, "valid_by_default": false, "values": 
@@ -103,9 +105,11 @@
             "max_nb_args": 3,
             "parameters": 
             [
-                {"id": 2, "sufficient": true, "fail_if_not_verified": false, "values": 
+                {"id": 2, "sufficient": true, "fail_if_not_verified": false, "notequals": true, "values": 
                     [ 
-                        {"value" : "", "notequals": true}
+                        {"value" : ""},
+                        {"value" : "null"},
+                        {"value" : "NULL"}
                     ]
                 },
                 {"id": 3, "valid_by_default": false, "values": 
@@ -129,7 +133,8 @@
             [
                 {"id": 2, "sufficient": true, "fail_if_not_verified": false, "values": 
                     [ 
-                        {"value" : ""}
+                        {"value" : ""},
+                        {"value" : "null"}
                     ]
                 },
                 {"id": 7, "values": 
@@ -153,7 +158,8 @@
             [
                 {"id": 2, "sufficient": true, "fail_if_not_verified": false, "values": 
                     [ 
-                        {"value" : ""}
+                        {"value" : ""},
+                        {"value" : "null"}
                     ]
                 },
                 {"id": 6, "values": 

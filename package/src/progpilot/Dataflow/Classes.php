@@ -26,10 +26,15 @@ class Classes
 
     public function addMyclass($newMyClass)
     {
+        if(!isset($this->listClasses[$newMyClass->getName()])) {
+            $this->listClasses[$newMyClass->getName()] = $newMyClass;
+        }
+
+
         /*
             if (!in_array($myClass, $this->listClasses, true))
                 $this->listClasses[] = $myClass;
-        */
+        
 
         $continue = true;
         foreach ($this->listClasses as $myClass) {
@@ -42,16 +47,21 @@ class Classes
         if ($continue) {
             $this->listClasses[] = $newMyClass;
         }
+        */
     }
 
     public function getMyClass($name)
     {
+        if(isset($this->listClasses[$name])) {
+            return $this->listClasses[$name];
+        }
+        /*
         foreach ($this->listClasses as $myClass) {
             if ($myClass->getName() === $name) {
                 return $myClass;
             }
         }
-
+*/
         return null;
     }
 }

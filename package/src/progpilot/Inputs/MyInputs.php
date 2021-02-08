@@ -367,9 +367,10 @@ class MyInputs
                                 $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                 
-                                if (!is_null($myClass)
-                                    && ($myClass->getName() === $mySinkInstanceName
-                                        || $myClass->getExtendsOf() === $mySinkInstanceName)) {
+                                if ((is_null($myClass) && $mySinkInstanceName === $propClass->getName()) 
+                                    || (!is_null($myClass)
+                                        && ($myClass->getName() === $mySinkInstanceName
+                                            || $myClass->getExtendsOf() === $mySinkInstanceName))) {
                                     return $mySink;
                                 }
                             }
@@ -1004,7 +1005,8 @@ class MyInputs
                                                     || $parameter-> {'conditions'} === "notequals"
                                                         || $parameter-> {'conditions'} === "taint"
                                                             || $parameter-> {'conditions'} === "sanitize")) {
-                                    if ($parameter-> {'conditions'} === "equals" || $parameter-> {'conditions'} === "notequals") {
+                                    if ($parameter-> {'conditions'} === "equals"
+                                        || $parameter-> {'conditions'} === "notequals") {
                                         if (isset($parameter-> {'values'})) {
                                             $mySanitizer->addParameter(
                                                 $parameter-> {'id'},
@@ -1253,7 +1255,12 @@ class MyInputs
                     $name = $validator-> {'name'};
                     $language = $validator-> {'language'};
 
-                    $myValidator = new MyValidator($name, $language);
+                    $validWhenReturning = true;
+                    if(isset($validator-> {'valid_when_returning'})) {
+                        $validWhenReturning = $validator-> {'valid_when_returning'};
+                    }
+
+                    $myValidator = new MyValidator($name, $language, $validWhenReturning);
 
                     if (isset($validator-> {'parameters'})) {
                         $parameters = $validator-> {'parameters'};
@@ -1265,7 +1272,8 @@ class MyInputs
                                                             || $parameter-> {'conditions'} === "valid"
                                                                     || $parameter-> {'conditions'} === "equals"
                                                                     || $parameter-> {'conditions'} === "notequals")) {
-                                    if ($parameter-> {'conditions'} === "equals" || $parameter-> {'conditions'} === "notequals") {
+                                    if ($parameter-> {'conditions'} === "equals"
+                                        || $parameter-> {'conditions'} === "notequals") {
                                         if (isset($parameter-> {'values'})) {
                                             $myValidator->addParameter(
                                                 $parameter-> {'id'},
@@ -1273,7 +1281,7 @@ class MyInputs
                                                 $parameter-> {'values'}
                                             );
                                         }
-                                    }  else {
+                                    } else {
                                         $myValidator->addParameter(
                                             $parameter-> {'id'},
                                             $parameter-> {'conditions'}
@@ -1583,7 +1591,6 @@ class MyInputs
                                                     $fixed = true;
                                                 }
                                                     
-                                                    
                                                 $sufficient = false;
                                                 if (isset($parameter-> {'sufficient'})
                                                     && $parameter-> {'sufficient'}) {
@@ -1596,6 +1603,12 @@ class MyInputs
                                                     $fail_if_not_verified = false;
                                                 }
 
+                                                $notequals = false;
+                                                if (isset($parameter-> {'notequals'})
+                                                    && $parameter-> {'notequals'}) {
+                                                    $notequals = true;
+                                                }
+
                                                 if (is_int($parameter-> {'id'})) {
                                                     $myCustomFunction->addParameter(
                                                         $parameter-> {'id'},
@@ -1603,6 +1616,7 @@ class MyInputs
                                                         $fixed,
                                                         $sufficient,
                                                         $fail_if_not_verified,
+                                                        $notequals,
                                                         $parameter-> {'values'}
                                                     );
                                                 }
@@ -1658,6 +1672,12 @@ class MyInputs
                                                 && !$parameter-> {'fail_if_not_verified'}) {
                                                 $fail_if_not_verified = false;
                                             }
+
+                                            $notequals = false;
+                                            if (isset($parameter-> {'notequals'})
+                                                && $parameter-> {'notequals'}) {
+                                                $notequals = true;
+                                            }
                                                     
                                             $myCustomFunction->addParameter(
                                                 $parameter-> {'id'},
@@ -1665,6 +1685,7 @@ class MyInputs
                                                 $fixed,
                                                 $sufficient,
                                                 $fail_if_not_verified,
+                                                $notequals,
                                                 $parameter-> {'values'}
                                             );
                                         }

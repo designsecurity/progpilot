@@ -93,7 +93,7 @@ class FuncAnalysis
                 $param->setType($newParam->getType());
 
                 $expr = $param->getExpr();
-                    
+
                 if ($defArg->isTainted()) {
                     // useful just for inside the function
                     TaintAnalysis::setTainted($defArg->isTainted(), $param, $exprArg);

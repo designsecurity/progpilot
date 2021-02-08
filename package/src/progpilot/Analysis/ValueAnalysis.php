@@ -56,6 +56,53 @@ class ValueAnalysis
             $knownValues = ValueAnalysis::$exprsKnownValues[$expr];
             $finalDefValues = [];
 
+            if(count($knownValues) === 1) {
+                $keys = array_keys($knownValues);
+                $values = $knownValues[$keys[0]];
+
+                foreach ($values as $value) {
+                    if (isset($value[0])) {
+                        if (Common::validLastKnownValue($value[0])) {
+                            $defAssign->addLastKnownValue($value[0]);
+                        }
+                    }
+                }
+            }
+            else if(count($knownValues) === 2) {
+                $keys = array_keys($knownValues);
+
+                if (isset($knownValues[$keys[0]][0][0])
+                    && isset($knownValues[$keys[1]][0][0])) {
+
+                    $prefix = $knownValues[$keys[0]][0][0];
+                    $middle = $knownValues[$keys[1]][0][0];
+                    $value = $prefix.$middle;
+
+                    if (Common::validLastKnownValue($value)) {
+                        $defAssign->addLastKnownValue($value);
+                    }
+                }
+            }
+            else if(count($knownValues) === 3) {
+                $keys = array_keys($knownValues);
+
+                if (isset($knownValues[$keys[0]][0][0])
+                    && isset($knownValues[$keys[1]][0][0])
+                        && isset($knownValues[$keys[2]][0][0])) {
+
+                        $prefix = $knownValues[$keys[0]][0][0];
+                        $middle = $knownValues[$keys[1]][0][0];
+                        $suffix = $knownValues[$keys[2]][0][0];
+                        $value = $prefix.$middle.$suffix;
+
+                        if (Common::validLastKnownValue($value)) {
+                            $defAssign->addLastKnownValue($value);
+                        }
+                }
+            }
+
+
+            /*
             // we dont want to compute values with more than 3 concat :
             // $def = $val1.$val2.$val3; (too much possibilities)
             if (count($knownValues) < 4) {
@@ -99,6 +146,7 @@ class ValueAnalysis
                     $defAssign->addLastKnownValue($finalDefValue);
                 }
             }
+            */
         }
     }
 

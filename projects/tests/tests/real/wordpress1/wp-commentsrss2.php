@@ -24,6 +24,7 @@
 			AND $wpdb->comments.comment_approved = '1' AND post_date_gmt < '" . gmdate("Y-m-d H:i:s") . "'  
 			ORDER BY comment_date_gmt DESC LIMIT " . get_settings('posts_per_rss') );
 		}
+		echo "dd".$comments->comment_post_ID;
 	// this line is WordPress' motor, do not delete it.
 		if ($comments) {
 			foreach ($comments as $comment) {
@@ -33,6 +34,7 @@
 ?>
 	<item>
 		<title><?php if ( ! (is_single() || is_page()) ) {
+		echo "dd".$comment->comment_post_ID;
 			$title = get_the_title($comment->comment_post_ID);
 			$title = apply_filters('the_title', $title);
 			$title = apply_filters('the_title_rss', $title);

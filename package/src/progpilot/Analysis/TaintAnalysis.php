@@ -48,7 +48,7 @@ class TaintAnalysis
             $instruction->getProperty(MyInstruction::EXPR)
         );
 
-        TaintAnalysis::funccallValidator($stackClass, $context, $data, $myClass, $instruction, $myCode, $index);
+        TaintAnalysis::funccallValidator($stackClass, $context, $data, $myFunc, $myClass, $instruction, $myCode, $index);
         TaintAnalysis::funccallSanitizer(
             $myFunc,
             $stackClass,
@@ -76,7 +76,7 @@ class TaintAnalysis
         return $hasSources;
     }
 
-    public static function funccallValidator($stackClass, $context, $data, $myClass, $instruction, $myCode, $index)
+    public static function funccallValidator($stackClass, $context, $data, $myFunc, $myClass, $instruction, $myCode, $index)
     {
         $funcName = $instruction->getProperty(MyInstruction::FUNCNAME);
         $arrFuncCall = $instruction->getProperty(MyInstruction::ARR);
@@ -88,14 +88,22 @@ class TaintAnalysis
 
         $myValidator = $context->inputs->getValidatorByName($context, $stackClass, $myFuncCall, $myClass);
         if (!is_null($myValidator)) {
-            while (true) {
-                if (!$instruction->isPropertyExist("argdef$nbParams")) {
-                    break;
-                }
+            $validwhenreturning = $myValidator->getValidWhenReturning();
+        }
+        else {
+            $validwhenreturning = true;
+        }
 
-                $defArg = $instruction->getProperty("argdef$nbParams");
-                $exprArg = $instruction->getProperty("argexpr$nbParams");
+        while (true) {
+            if (!$instruction->isPropertyExist("argdef$nbParams")
+                || !$instruction->isPropertyExist("argexpr$nbParams")) {
+                break;
+            }
 
+            $defArg = $instruction->getProperty("argdef$nbParams");
+            $exprArg = $instruction->getProperty("argexpr$nbParams");
+
+            if (!is_null($myValidator)) {
                 $conditions = $myValidator->getParameterconditions($nbParams + 1);
                 if ($conditions === "valid" && !$exprArg->getIsConcat()) {
                     $theDefsArgs = $exprArg->getDefs();
@@ -130,10 +138,9 @@ class TaintAnalysis
                         if (count($theDefsArgs) > 0) {
                             foreach ($values as $value) {
                                 foreach ($theDefsArgs[0]->getLastKnownValues() as $lastKnownValue) {
-                                    if ($value->value === $lastKnownValue && $conditions === "equals" ) {
+                                    if ($value->value === $lastKnownValue && $conditions === "equals") {
                                         $conditionsRespectedEquals = true;
-                                    }
-                                    else if ($value->value !== $lastKnownValue && $conditions === "notequals" ) {
+                                    } elseif ($value->value !== $lastKnownValue && $conditions === "notequals") {
                                         $conditionsRespectedEquals = true;
                                     }
                                 }
@@ -145,10 +152,58 @@ class TaintAnalysis
                         $conditionsRespected = false;
                     }
                 }
+            } else {
+                if (!is_null($myFunc)) {
+                    $ambiguous = true;
 
-                $nbParams ++;
+                    foreach ($myFunc->getReturnDefs() as $returnDef) {
+                        $ambiguous = false;
+
+                        // we have a return def from a known validator
+                        if ($returnDef->getReturnedFromValidator()) {
+                            $returnTrue = false;
+                            $returnFalse = false;
+
+                            // we overwrite the value for below
+                            $validwhenreturning = $returnDef->getValidWhenReturning();
+                            $validNotBoolean = $returnDef->getValidNotBoolean();
+
+                            foreach ($returnDef->getLastKnownValues() as $lastKnownValue) {
+                                if ($lastKnownValue === "true" 
+                                    || $lastKnownValue === "TRUE" 
+                                        || (is_numeric($lastKnownValue) && $lastKnownValue > 0)) {
+                                    $returnTrue = true;
+                                } elseif ($lastKnownValue === "false" 
+                                    || $lastKnownValue === "FALSE" 
+                                        || (is_numeric($lastKnownValue) && $lastKnownValue <= 0)) {
+                                    $returnFalse = true;
+                                } else {
+                                    $ambiguous = true;
+                                    break 2;
+                                }
+                            }
+
+                            // ambiguous
+                            if($returnTrue && $returnFalse) {
+                                $ambiguous = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    // all the returns are true OR all the returns are false
+                    if (!$ambiguous) {
+                        $theDefsArgs = $exprArg->getDefs();
+                        foreach ($theDefsArgs as $theDefsArg) {
+                            $defsValid[] = $theDefsArg;
+                        }
+                    }
+                }
             }
+
+            $nbParams ++;
         }
+        
 
         if (count($defsValid) > 0) {
             if ($conditionsRespected) {
@@ -160,15 +215,23 @@ class TaintAnalysis
                         $myBlockIf = $instructionIf->getProperty(MyInstruction::MYBLOCK_IF);
                         $myBlockElse = $instructionIf->getProperty(MyInstruction::MYBLOCK_ELSE);
 
-                        foreach ($defsValid as $defValid) {
-                            $type = "valid";
-                            $myAssertion = new MyAssertion($defValid, $type);
+                        if ($instructionIf->isPropertyExist(MyInstruction::NOT_BOOLEAN)) {
+                            $block = $validwhenreturning ? $myBlockElse : $myBlockIf;
+                            $notboolean = true;
+                        } else {
+                            $block = $validwhenreturning ? $myBlockIf : $myBlockElse;
+                            $notboolean = false;
+                        }
 
-                            if ($instructionIf->isPropertyExist(MyInstruction::NOT_BOOLEAN)) {
-                                $myBlockElse->addAssertion($myAssertion);
-                            } else {
-                                $myBlockIf->addAssertion($myAssertion);
-                            }
+                        foreach ($defsValid as $defValid) {
+                            $myAssertion = new MyAssertion($defValid, "valid");
+                            $block->addAssertion($myAssertion);
+                        }
+
+                        foreach ($block->getReturnDefs() as $defReturn) {
+                            $defReturn->setReturnedFromValidator(true);
+                            $defReturn->setValidWhenReturning($validwhenreturning);
+                            $defReturn->setValidNotBoolean($notboolean);
                         }
                     }
                 }

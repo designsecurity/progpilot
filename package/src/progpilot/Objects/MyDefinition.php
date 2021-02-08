@@ -56,6 +56,9 @@ class MyDefinition extends MyOp
     private $isInstance;
     private $isEmbeddedByChar;
     private $label;
+    private $returnedFromValidator;
+    private $validWhenReturning;
+    private $validNotBoolean;
 
     public $property;
 
@@ -92,6 +95,9 @@ class MyDefinition extends MyOp
 
         $this->isProperty = false;
         $this->isInstance = false;
+        $this->returnedFromValidator = false;
+        $this->validWhenReturning = false;
+        $this->validNotBoolean = false;
     }
 
     public function __clone()
@@ -161,6 +167,30 @@ class MyDefinition extends MyOp
             echo "copyarray end =================\n";
         }
         echo "__________________________________________\n\n\n";
+    }
+
+    public function setValidWhenReturning($value) {
+        $this->validWhenReturning = $value;
+    }
+
+    public function getValidWhenReturning() {
+        return $this->validWhenReturning;
+    }
+
+    public function setValidNotBoolean($value) {
+        $this->validNotBoolean = $value;
+    }
+
+    public function getValidNotBoolean() {
+        return $this->validNotBoolean;
+    }
+
+    public function setReturnedFromValidator($value) {
+        $this->returnedFromValidator = $value;
+    }
+
+    public function getReturnedFromValidator() {
+        return $this->returnedFromValidator;
     }
 
     public function setIsEmbeddedByChars($chars, $control)
