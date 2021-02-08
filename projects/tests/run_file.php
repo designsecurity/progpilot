@@ -13,8 +13,12 @@ try {
         
         $context->setAnalyzeHardrules(true);
         $context->setAnalyzeFunctions(false);
+        $context->setPrintWarning(true);
         $context->outputs->taintedFlow(true);
-
+        /*
+        $context->outputs->resolveIncludes(true);
+        $context->outputs->resolveIncludesFile("tmpresolvedincludes.json");
+        */
         try {
             $analyzer->run($context);
         } catch (Exception $e) {

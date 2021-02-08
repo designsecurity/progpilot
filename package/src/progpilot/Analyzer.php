@@ -127,7 +127,7 @@ class Analyzer
         
         // analyze
         if (!is_null($context)) {
-            $contextFunctions = [];
+            $contextFunctions = [];/*
             if (!is_null($context->getFunctions()->getFunctions())) {
                 foreach ($context->getFunctions()->getFunctions() as $functionsName) {
                     if (!is_null($functionsName)) {
@@ -136,16 +136,29 @@ class Analyzer
                         }
                     }
                 }
-            }
+            }*/
     
+            $fileNameHash = hash("sha256", $context->getCurrentMyfile()->getName());
+            $functionsTmp = $context->getFunctions()->getFunctions();
+            if (isset($functionsTmp[$fileNameHash])) {
+                $functionsFile = $functionsTmp[$fileNameHash];
+                foreach ($functionsFile as $functionsmethod) {
+                    foreach ($functionsmethod as $myFunc) {
+                        $contextFunctions[] = $myFunc;
+                    }
+                }
+            }
+
             foreach ($context->getClasses()->getListClasses() as $myClass) {
                 $contextFunctions = array_merge($contextFunctions, $myClass->getMethods());
             }
                 
             $visitordataflow = new \progpilot\Dataflow\VisitorDataflow();
 
+            echo "analyzer '$fileNameHash' '".$context->getCurrentMyfile()->getName()."'\n";
             foreach ($contextFunctions as $myFunc) {
                 if (!is_null($myFunc) && !$myFunc->isDataAnalyzed()) {
+                    echo "analyzer '".$myFunc->getName()."' to be data analyzed\n";
                     $myFunc->setIsDataAnalyzed(true);
                     $visitordataflow->analyze($context, $myFunc, $includedDefs);
                 }
@@ -162,7 +175,8 @@ class Analyzer
             }
 
             if (!$context->getAnalyzeFunctions()) {
-                $this->runInternalFunction($context, $context->getFunctions()->getFunction("{main}"));
+                echo "analyzer '{main}' to be analyzed\n";
+                $this->runInternalFunction($context, $context->getFunctions()->getFunction("{main}", "function", $fileNameHash));
             } else {
                 foreach ($contextFunctions as $myFunc) {
                     $this->runInternalFunction($context, $myFunc);
@@ -409,3 +423,4 @@ class Analyzer
         }
     }
 }
+

@@ -160,11 +160,10 @@ class CustomAnalysis
                     if ($result) {
                         $params = $functionDefinition->getParameters();
                         
-                        if($myFunc->getNbParams() < $functionDefinition->getMinNbArgs()
+                        if ($myFunc->getNbParams() < $functionDefinition->getMinNbArgs()
                             || $myFunc->getNbParams() > $functionDefinition->getMaxNbArgs()) {
                             $isValid = true;
-                        }
-                        else {
+                        } else {
                             $isValid = false;
                             $params = $functionDefinition->getParameters();
                             
@@ -174,10 +173,11 @@ class CustomAnalysis
 
                                 $idParam = $param[0] - 1;
                                 $valuesParameter = $param[1];
-                                $validbydefault = $customRule->getAction() === "MUST_NOT_VERIFY_DEFINITION" ? !$param[2] : $param[2];
+                                $validbydefault = $param[2];
                                 $isParameterFixed = $param[3];
                                 $isParameterSufficient = $param[4];
                                 $isParameterFailIfNotVerifed = $param[5];
+                                $isParameterNotEquals = $param[6];
                                 
                                 if (!is_null($valuesParameter)) {
                                     if (!$instruction->isPropertyExist("argdef$idParam")) {
@@ -193,7 +193,6 @@ class CustomAnalysis
                                         if (isset($valueParameter->is_array)
                                             && $valueParameter->is_array === true
                                                 && isset($valueParameter->array_index)) {
-                                                
                                             $arrayfound = false;
                                             if ($defArg->isType(MyDefinition::TYPE_COPY_ARRAY)) {
                                                 $copyArrays = $defArg->getCopyArrays();
@@ -211,7 +210,7 @@ class CustomAnalysis
                                             
                                             if (!$arrayfound) {
                                                 $isValid = $validbydefault;
-                                                break;
+                                                break 2;
                                             }
                                         } else {
                                             $defLastKnownValues = $defArg->getLastKnownValues();
@@ -221,42 +220,45 @@ class CustomAnalysis
                                             $isValid = false;
                                         }
 
-                                        $notequals = false;
-                                        if (isset($valueParameter->notequals)) {
-                                            $notequals = $valueParameter->notequals;
-                                        }
-
                                         // we check all the values of a param
                                         $validForAllValues = false;
                                         foreach ($defLastKnownValues as $lastKnownValue) {
+                                            echo "lastKnownValue '$lastKnownValue'\n";
                                             // if it's valid we continue
-                                            if (($valueParameter->value === $lastKnownValue && !$notequals) 
-                                                || ($valueParameter->value !== $lastKnownValue && $notequals)) {
+                                            if (($valueParameter->value === $lastKnownValue && !$isParameterNotEquals)
+                                                || ($valueParameter->value !== $lastKnownValue && $isParameterNotEquals)) {
                                                 $validForAllValues = true;
                                             } 
                                             else {
-                                                // it's not  valid we can break
+                                                // it's not valid we can break
                                                 $validForAllValues = false;
-                                                break;
+
+                                                // we just need to found one parameter that is equals
+                                                if ($isParameterNotEquals) {
+                                                    break 2;
+                                                }
+                                                else {
+                                                    break;
+                                                }
                                             }
                                         }
 
                                         $isValid = $validForAllValues;
                                         // we found a value of the param valid, we don't need to continue on
                                         // other possible values of the rule
-                                        if($isValid) {
+                                        if ($isValid) {
                                             break;
                                         }
                                     }
 
-                                    // for must_verify definition 
+                                    // for must_verify definition
                                     //   * if one parameter is valid (respect conditions):
                                     //      * it can be enough (if sufficient) to valid the rule (no issue)
                                     //   * if one parameter is not valid:
                                     //      * the rule is not valid except if raise_if_not_verified set to false
                                     //      * the rule is valid if fixed (required) option is set
 
-                                    // for must_not_verify definition 
+                                    // for must_not_verify definition
                                     //   * if one parameter is valid (respect conditions):
                                     //      * the rule is not valid  except if raise_if_not_verified set to false
                                     //      * the rule is vali  except if fixed (required) option is set
@@ -338,7 +340,8 @@ class CustomAnalysis
                 }
             }
 
-            $function = $context->getFunctions()->getFunction("{main}");
+            $fileNameHash = hash("sha256", $context->getCurrentMyfile()->getName());
+            $function = $context->getFunctions()->getFunction("{main}", "function", $fileNameHash);
             if (!is_null($function)) {
                 $context->outputs->callgraph->addNode($function, null);
 

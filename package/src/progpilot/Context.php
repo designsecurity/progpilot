@@ -56,9 +56,9 @@ class Context
         $this->printFileUnderAnalysis = false;
         $this->printWarning = false;
         $this->prettyPrint = true;
-        $this->limitTime = 10;
-        $this->limitDefs = 3000;
-        $this->limitSize = 500000;
+        $this->limitTime = 30;
+        $this->limitDefs = 100000;
+        $this->limitSize = 1000000;
         $this->currentNbDefs = 0;
 
         $this->inputs = new \progpilot\Inputs\MyInputs;

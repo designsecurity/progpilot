@@ -72,7 +72,7 @@ class MyCode
     {
         $myFunction = new MyFunction("{main}");
         $context->setCurrentMycode($myFunction->getMyCode());
-        $context->getFunctions()->addFunction($myFunction->getName(), $myFunction);
+        $context->getFunctions()->addFunction("file.js", "function", $myFunction->getName(), $myFunction);
 
         $instFunc = new MyInstruction(Opcodes::ENTER_FUNCTION);
         $instFunc->addProperty(MyInstruction::MYFUNC, $myFunction);

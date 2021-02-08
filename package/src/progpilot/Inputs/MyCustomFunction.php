@@ -36,9 +36,16 @@ class MyCustomFunction extends MySpecify
         $this->parameters = [];
     }
 
-    public function addParameter($parameter, $validbydefault, $fixed, $sufficient, $fail_if_not_verified, $values = null)
-    {
-        $this->parameters[] = [$parameter, $values, $validbydefault, $fixed, $sufficient, $fail_if_not_verified];
+    public function addParameter(
+        $parameter,
+        $validbydefault,
+        $fixed,
+        $sufficient,
+        $failifnotverified,
+        $notequals,
+        $values = null
+    ) {
+        $this->parameters[] = [$parameter, $values, $validbydefault, $fixed, $sufficient, $failifnotverified, $notequals];
     }
 
     public function getParameters()

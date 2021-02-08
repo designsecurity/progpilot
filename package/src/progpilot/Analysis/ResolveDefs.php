@@ -187,7 +187,6 @@ class ResolveDefs
                 $myDefTmp->addType(MyDefinition::TYPE_PROPERTY);
                 $myDefTmp->setId($myFuncCall->getBackDef()->getId() - 1);
                 // we don't want the backdef but the original instance
-
             
                 $classStackName[$i] = [];
                 if ($i === 0) {
@@ -587,6 +586,7 @@ class ResolveDefs
         foreach ($data as $def) {
             if (Definitions::defEquality($def, $searchedDed, $bypassIsNearest)
                         && ResolveDefs::isNearest($context, $searchedDed, $def)) {
+
                 // CA SERT A QUOI ICI REDONDANT AVEC LE DERNIER ?
                 if ($def->isType(MyDefinition::TYPE_INSTANCE)
                     && $searchedDed->isType(MyDefinition::TYPE_INSTANCE)) {

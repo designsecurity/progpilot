@@ -12,6 +12,7 @@ namespace progpilot\Objects;
 
 class MyBlock extends MyOp
 {
+    private $returnDefs;
     private $startAddressBlock;
     private $endAddressBlock;
     private $id;
@@ -24,6 +25,7 @@ class MyBlock extends MyOp
     {
         parent::__construct("", 0, 0);
 
+        $this->returnDefs = [];
         $this->startAddressBlock = -1;
         $this->endAddressBlock = -1;
         $this->assertions = [];
@@ -34,6 +36,16 @@ class MyBlock extends MyOp
     public function addParent($parent)
     {
         $this->parents[] = $parent;
+    }
+
+    public function addReturnDef($def)
+    {
+        $this->returnDefs[] = $def;
+    }
+
+    public function getReturnDefs()
+    {
+        return $this->returnDefs;
     }
 
     public function addAssertion($myassertion)

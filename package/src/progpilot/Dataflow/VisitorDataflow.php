@@ -28,6 +28,7 @@ class VisitorDataflow
 {
     private $defs;
     private $blocks;
+    private $currentBlock;
     private $currentBlockId;
     private $currentClass;
 
@@ -91,8 +92,6 @@ class VisitorDataflow
 
                         $objectId = $context->getObjects()->addObject();
                         $myClass->setObjectIdThis($objectId);
-                        
-                        
                         $this->currentClass = $myClass;
 
                         break;
@@ -154,6 +153,7 @@ class VisitorDataflow
 
                         array_push($blocksStackId, $blockId);
                         $this->currentBlockId = $blockId;
+                        $this->currentBlock = $myBlock;
 
                         if ($blockId !== hash("sha256", "0-".$context->getCurrentMyfile()->getName())) {
                             $this->defs->createBlock($blockId);

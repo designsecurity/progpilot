@@ -25,7 +25,7 @@ use progpilot\Transformations\Php\OpTr;
 
 class Assign
 {
-    public static function instruction($context, $isReturnDef = false, $isDefine = false)
+    public static function instruction($context, $isReturnDef = false, $isDefine = false, $myblock = null)
     {
         if ($isDefine) {
             $name = "const_".rand();
@@ -106,6 +106,7 @@ class Assign
 
             if ($isReturnDef) {
                 $context->getCurrentFunc()->addReturnDef($myDef);
+                $myblock->addReturnDef($myDef);
             }
 
             $myExpr->setAssignDef($myDef);

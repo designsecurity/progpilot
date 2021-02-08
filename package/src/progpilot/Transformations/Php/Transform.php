@@ -166,6 +166,8 @@ class Transform implements Visitor
         $instFunc->addProperty(MyInstruction::MYFUNC, $myFunction);
         $this->context->getCurrentMycode()->addCode($instFunc);
 
+        // by default it's a function, not a method
+        $className = "function";
         if (!is_null($func->class)) {
             $className = $func->class->value;
             // at this moment class is defined
@@ -209,7 +211,8 @@ class Transform implements Visitor
         }
 
         // because when we call (funccall) a function by name, it can be undefined
-        $this->context->getFunctions()->addFunction($myFunction->getName(), $myFunction);
+        $fileNameHash = hash("sha256", $this->context->getCurrentMyfile()->getName());
+        $this->context->getFunctions()->addFunction($fileNameHash, $className, $myFunction->getName(), $myFunction);
         $this->context->setCurrentFunc($myFunction);
     }
 
@@ -236,6 +239,7 @@ class Transform implements Visitor
             $className = $func->class->value;
         }
 
+        $fileNameHash = hash("sha256", $this->context->getCurrentMyfile()->getName());
         $myFunction = $this->context->getFunctions()->getFunction($func->name, $className);
 
         if (!is_null($myFunction)) {
@@ -318,11 +322,13 @@ class Transform implements Visitor
             $instDef->addProperty(MyInstruction::DEF, $myDefGlobal);
             $this->context->getCurrentMycode()->addCode($instDef);
         } elseif ($op instanceof Op\Terminal\Return_) {
-            Assign::instruction($this->context, true);
+            $myBlock = $this->sBlocks[$this->context->getCurrentBlock()];
+            Assign::instruction($this->context, true, false, $myBlock);
 
             $inst = new MyInstruction(Opcodes::RETURN_FUNCTION);
             $inst->addProperty(MyInstruction::RETURN_DEFS, $this->context->getCurrentFunc()->getReturnDefs());
             $this->context->getCurrentMycode()->addCode($inst);
+
         } elseif ($op instanceof Op\Expr\Eval_) {
             if (Common::isFuncCallWithoutReturn($op)) {
                 // expr of type "assign" to have a defined return
