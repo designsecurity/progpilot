@@ -155,10 +155,8 @@ class Analyzer
                 
             $visitordataflow = new \progpilot\Dataflow\VisitorDataflow();
 
-            echo "analyzer '$fileNameHash' '".$context->getCurrentMyfile()->getName()."'\n";
             foreach ($contextFunctions as $myFunc) {
                 if (!is_null($myFunc) && !$myFunc->isDataAnalyzed()) {
-                    echo "analyzer '".$myFunc->getName()."' to be data analyzed\n";
                     $myFunc->setIsDataAnalyzed(true);
                     $visitordataflow->analyze($context, $myFunc, $includedDefs);
                 }
@@ -175,8 +173,11 @@ class Analyzer
             }
 
             if (!$context->getAnalyzeFunctions()) {
-                echo "analyzer '{main}' to be analyzed\n";
-                $this->runInternalFunction($context, $context->getFunctions()->getFunction("{main}", "function", $fileNameHash));
+                $this->runInternalFunction($context, $context->getFunctions()->getFunction(
+                    "{main}",
+                    "function",
+                    $fileNameHash
+                ));
             } else {
                 foreach ($contextFunctions as $myFunc) {
                     $this->runInternalFunction($context, $myFunc);
@@ -423,4 +424,3 @@ class Analyzer
         }
     }
 }
-

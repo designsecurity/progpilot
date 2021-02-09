@@ -87,5 +87,20 @@
                 [
                     "./tests/includes/simple17.php",
                         [["\$var", "3", "xss"]]
+                ],
+
+                [
+                    "./tests/includes/simple18.php",
+                        [["\$_GET[\"p\"]", "3", "xss"]]
+                ],
+
+                [
+                    "./tests/includes/simple19.php",
+                        [["\$_GET[\"p\"]", "3", "xss"]]
+                ],
+
+                [
+                    "./tests/includes/simple20.php",
+                        [["\$comments->post", "6", "xss"]]
                 ]
             ];

@@ -75,8 +75,6 @@ class VisitorAnalysis
             $index
         );
 
-        echo "visitoranalysis funcall name = '$funcName'\n";
-
         $stackClass = null;
         if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
             $stackClass = ResolveDefs::funccallClass(
@@ -127,8 +125,7 @@ class VisitorAnalysis
                         $myCode,
                         $index
                     );
-                }
-                else {
+                } else {
                     $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
                         null,
                         $stackClass,
@@ -140,7 +137,7 @@ class VisitorAnalysis
                         $instruction,
                         $myCode,
                         $index
-                    ); 
+                    );
                 }
             }
 
@@ -200,7 +197,6 @@ class VisitorAnalysis
                 );
             }
         } else {
-            echo "visitoranalysis here2\n";
             $myFunc = $this->context->getFunctions()->getFunction($funcName);
 
             // needed?? because below it's also called

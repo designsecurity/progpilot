@@ -169,27 +169,33 @@ class MyDefinition extends MyOp
         echo "__________________________________________\n\n\n";
     }
 
-    public function setValidWhenReturning($value) {
+    public function setValidWhenReturning($value)
+    {
         $this->validWhenReturning = $value;
     }
 
-    public function getValidWhenReturning() {
+    public function getValidWhenReturning()
+    {
         return $this->validWhenReturning;
     }
 
-    public function setValidNotBoolean($value) {
+    public function setValidNotBoolean($value)
+    {
         $this->validNotBoolean = $value;
     }
 
-    public function getValidNotBoolean() {
+    public function getValidNotBoolean()
+    {
         return $this->validNotBoolean;
     }
 
-    public function setReturnedFromValidator($value) {
+    public function setReturnedFromValidator($value)
+    {
         $this->returnedFromValidator = $value;
     }
 
-    public function getReturnedFromValidator() {
+    public function getReturnedFromValidator()
+    {
         return $this->returnedFromValidator;
     }
 

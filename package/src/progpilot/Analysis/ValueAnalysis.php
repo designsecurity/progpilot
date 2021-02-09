@@ -56,48 +56,46 @@ class ValueAnalysis
             $knownValues = ValueAnalysis::$exprsKnownValues[$expr];
             $finalDefValues = [];
 
-            if(count($knownValues) === 1) {
+            if (count($knownValues) === 1) {
                 $keys = array_keys($knownValues);
                 $values = $knownValues[$keys[0]];
 
-                foreach ($values as $value) {
-                    if (isset($value[0])) {
-                        if (Common::validLastKnownValue($value[0])) {
-                            $defAssign->addLastKnownValue($value[0]);
+                for ($i = 0; $i < count($values); $i++) {
+                    if (isset($values[$i][0])) {
+                        if (Common::validLastKnownValue($values[$i][0])) {
+                            $defAssign->addLastKnownValue($values[$i][0]);
                         }
                     }
                 }
-            }
-            else if(count($knownValues) === 2) {
+            } elseif (count($knownValues) === 2) {
                 $keys = array_keys($knownValues);
+                $prefixValues = $knownValues[$keys[0]];
+                $middleValues = $knownValues[$keys[1]];
 
-                if (isset($knownValues[$keys[0]][0][0])
-                    && isset($knownValues[$keys[1]][0][0])) {
-
-                    $prefix = $knownValues[$keys[0]][0][0];
-                    $middle = $knownValues[$keys[1]][0][0];
-                    $value = $prefix.$middle;
-
-                    if (Common::validLastKnownValue($value)) {
-                        $defAssign->addLastKnownValue($value);
+                for ($i = 0; $i < count($prefixValues); $i++) {
+                    if (isset($prefixValues[$i][0]) && isset($middleValues[$i][0])) {
+                        $value = $prefixValues[$i][0].$middleValues[$i][0];
+                        if (Common::validLastKnownValue($value)) {
+                            $defAssign->addLastKnownValue($value);
+                        }
                     }
                 }
-            }
-            else if(count($knownValues) === 3) {
+            } elseif (count($knownValues) === 3) {
                 $keys = array_keys($knownValues);
+                $prefixValues = $knownValues[$keys[0]];
+                $middleValues = $knownValues[$keys[1]];
+                $suffixValues = $knownValues[$keys[2]];
 
-                if (isset($knownValues[$keys[0]][0][0])
-                    && isset($knownValues[$keys[1]][0][0])
-                        && isset($knownValues[$keys[2]][0][0])) {
-
-                        $prefix = $knownValues[$keys[0]][0][0];
-                        $middle = $knownValues[$keys[1]][0][0];
-                        $suffix = $knownValues[$keys[2]][0][0];
-                        $value = $prefix.$middle.$suffix;
+                for ($i = 0; $i < count($prefixValues); $i++) {
+                    if (isset($prefixValues[$i][0]) 
+                        && isset($middleValues[$i][0]) 
+                            && isset($suffixValues[$i][0])) {
+                        $value = $prefixValues[$i][0].$middleValues[$i][0].$suffixValues[$i][0];
 
                         if (Common::validLastKnownValue($value)) {
                             $defAssign->addLastKnownValue($value);
                         }
+                    }
                 }
             }
 

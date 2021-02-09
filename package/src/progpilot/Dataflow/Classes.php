@@ -26,7 +26,7 @@ class Classes
 
     public function addMyclass($newMyClass)
     {
-        if(!isset($this->listClasses[$newMyClass->getName()])) {
+        if (!isset($this->listClasses[$newMyClass->getName()])) {
             $this->listClasses[$newMyClass->getName()] = $newMyClass;
         }
 
@@ -34,7 +34,7 @@ class Classes
         /*
             if (!in_array($myClass, $this->listClasses, true))
                 $this->listClasses[] = $myClass;
-        
+
 
         $continue = true;
         foreach ($this->listClasses as $myClass) {
@@ -52,7 +52,7 @@ class Classes
 
     public function getMyClass($name)
     {
-        if(isset($this->listClasses[$name])) {
+        if (isset($this->listClasses[$name])) {
             return $this->listClasses[$name];
         }
         /*

@@ -328,7 +328,6 @@ class Transform implements Visitor
             $inst = new MyInstruction(Opcodes::RETURN_FUNCTION);
             $inst->addProperty(MyInstruction::RETURN_DEFS, $this->context->getCurrentFunc()->getReturnDefs());
             $this->context->getCurrentMycode()->addCode($inst);
-
         } elseif ($op instanceof Op\Expr\Eval_) {
             if (Common::isFuncCallWithoutReturn($op)) {
                 // expr of type "assign" to have a defined return

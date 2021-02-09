@@ -19,21 +19,17 @@ class Functions
 
     public function getFunction($funcname, $className = null, $specificFile = null)
     {
-        if(is_null($className)) {
+        if (is_null($className)) {
             $className = "function";
         }
 
         if (!is_null($specificFile)) {
-            echo "specific file 1\n";
-            if(isset($this->functions[$specificFile][$className][$funcname])) {
-                echo "specific file 2\n";
+            if (isset($this->functions[$specificFile][$className][$funcname])) {
                 return $this->functions[$specificFile][$className][$funcname];
             }
-        }
-        else {
+        } else {
             foreach ($this->functions as $id => $functionsFile) {
                 if (isset($functionsFile[$className][$funcname])) {
-                    echo "getfunction = '$className' '$funcname' '$id'\n";
                     return $functionsFile[$className][$funcname];
                 }
             }
@@ -54,8 +50,6 @@ class Functions
                 }
             }
         }*/
-
-        echo "no functions found\n";
         
         return null;
     }
@@ -69,7 +63,7 @@ class Functions
     {
         // we can have many functions/methods with the same name
         
-        if(!isset($this->functions[$filenamehash][$classname][$funcname])) {
+        if (!isset($this->functions[$filenamehash][$classname][$funcname])) {
             $this->functions[$filenamehash][$classname][$funcname] = $func;
         }
 
@@ -93,7 +87,7 @@ class Functions
         
         $save = null;
 
-        if(isset($this->functions[$filenamehash][$classname][$funcname])) {
+        if (isset($this->functions[$filenamehash][$classname][$funcname])) {
             $save = $this->functions[$filenamehash][$classname][$funcname];
             $this->functions[$filenamehash][$classname][$funcname] = null;
             //unset($this->functions[$filenamehash][$classname][$funcname]);

@@ -223,21 +223,20 @@ class CustomAnalysis
                                         // we check all the values of a param
                                         $validForAllValues = false;
                                         foreach ($defLastKnownValues as $lastKnownValue) {
-                                            echo "lastKnownValue '$lastKnownValue'\n";
                                             // if it's valid we continue
-                                            if (($valueParameter->value === $lastKnownValue && !$isParameterNotEquals)
-                                                || ($valueParameter->value !== $lastKnownValue && $isParameterNotEquals)) {
+                                            if (($valueParameter->value === $lastKnownValue
+                                                && !$isParameterNotEquals)
+                                                || ($valueParameter->value !== $lastKnownValue
+                                                && $isParameterNotEquals)) {
                                                 $validForAllValues = true;
-                                            } 
-                                            else {
+                                            } else {
                                                 // it's not valid we can break
                                                 $validForAllValues = false;
 
                                                 // we just need to found one parameter that is equals
                                                 if ($isParameterNotEquals) {
                                                     break 2;
-                                                }
-                                                else {
+                                                } else {
                                                     break;
                                                 }
                                             }
