@@ -367,7 +367,7 @@ class MyInputs
                                 $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                 
-                                if ((is_null($myClass) && $mySinkInstanceName === $propClass->getName()) 
+                                if ((is_null($myClass) && $mySinkInstanceName === $propClass->getName())
                                     || (!is_null($myClass)
                                         && ($myClass->getName() === $mySinkInstanceName
                                             || $myClass->getExtendsOf() === $mySinkInstanceName))) {
@@ -1256,7 +1256,7 @@ class MyInputs
                     $language = $validator-> {'language'};
 
                     $validWhenReturning = true;
-                    if(isset($validator-> {'valid_when_returning'})) {
+                    if (isset($validator-> {'valid_when_returning'})) {
                         $validWhenReturning = $validator-> {'valid_when_returning'};
                     }
 

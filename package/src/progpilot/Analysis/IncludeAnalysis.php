@@ -54,7 +54,6 @@ class IncludeAnalysis
 
         // require, require_once ... already handled in transform Expr/include_
         if ($myFuncCall->getName() === "include" && $context->getAnalyzeIncludes()) {
-            echo "include 0\n";
             $typeInclude = $instruction->getProperty(MyInstruction::TYPE_INCLUDE);
             $nbParams = $myFuncCall->getNbParams();
             if ($nbParams > 0) {
@@ -62,12 +61,10 @@ class IncludeAnalysis
 
                 $myDefArg = $instruction->getProperty("argdef0");
 
-                echo "include 1\n";
                 if (count($myDefArg->getLastKnownValues()) !== 0) {
                     foreach ($myDefArg->getLastKnownValues() as $lastKnownValue) {
                         $realFile = false;
 
-                        echo "include $lastKnownValue lastKnownValue\n";
                         // else it's maybe a relative path
                         $file = $context->getPath()."/".$lastKnownValue;
                         $realFile = realpath($file);
@@ -93,7 +90,6 @@ class IncludeAnalysis
                                     $continueInclude = true;
                                 }
                             }
-
                         } else {
                             $continueInclude = true;
                             $nameIncludedFile = $realFile;
@@ -138,9 +134,19 @@ class IncludeAnalysis
                                     $contextInclude->outputs->resetRepresentations();
 
                                     $oldFileNameHash = hash("sha256", $context->getCurrentMyfile()->getName());
-                                    $mainFunctionSave = $context->getFunctions()->getFunction("{main}", "function", $oldFileNameHash);
-                                    $saveMain = $contextInclude->getFunctions()->delFunction($oldFileNameHash, "function", "{main}");
-
+                                    $mainFunctionSave = $context->getFunctions()->getFunction(
+                                        "{main}",
+                                        "function",
+                                        $oldFileNameHash
+                                    );
+                                    /*
+                                    TO DO AT THE END OF THE ANALYSIS OF THE SCRIPT
+                                    $saveMain = $contextInclude->getFunctions()->delFunction(
+                                        $oldFileNameHash,
+                                        "function",
+                                        "{main}"
+                                    );
+*/
                                     $analyzerInclude = new \progpilot\Analyzer;
                                     $analyzerInclude->runInternalPhp(
                                         $contextInclude,
@@ -162,9 +168,12 @@ class IncludeAnalysis
                                     $context->setCurrentNbDefs($contextInclude->getCurrentNbDefs());
 
                                     $fileNameHash = hash("sha256", $contextInclude->getCurrentMyfile()->getName());
-                                    $mainInclude = $contextInclude->getFunctions()->getFunction("{main}", "function", $fileNameHash);
+                                    $mainInclude = $contextInclude->getFunctions()->getFunction(
+                                        "{main}",
+                                        "function",
+                                        $fileNameHash
+                                    );
 
-                                    echo "include 4\n";
                                     $defsOutputIncludedFinal = [];
                                     if (!is_null($mainInclude)) {
                                         FuncAnalysis::funccallAfter(
@@ -177,16 +186,12 @@ class IncludeAnalysis
                                             $code[$index + 3]
                                         );
 
-                                        echo "include 5\n";
                                         if (!is_null($mainInclude->getDefs())) {
-                                            echo "include 6\n";
                                             $defsMainReturn =
                                                 $mainInclude->getDefs()->getDefRefByName("{main}_return");
                                             
                                             if (is_array($defsMainReturn)) {
-                                                echo "include 7\n";
                                                 foreach ($defsMainReturn as $defMainReturn) {
-                                                    echo "include 8\n";
                                                     $defsOutputIncluded = $mainInclude->getDefs()->getOutMinusKill(
                                                         $defMainReturn->getBlockId()
                                                     );
@@ -215,7 +220,6 @@ class IncludeAnalysis
 
                                     $newDefs = false;
                                     if (count($defsOutputIncludedFinal) > 0) {
-                                        echo "include 9\n";
                                         foreach ($defsOutputIncludedFinal as $defOutputIncludedFinal) {
                                             $ret1 = $defs->addDef(
                                                 $defOutputIncludedFinal->getName(),

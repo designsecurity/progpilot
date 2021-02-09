@@ -72,6 +72,17 @@
                         ["13", "275", "security misconfiguration"],
                         ["13", "275", "security misconfiguration"]]
                 ],
+                [
+                    "./tests/custom/conditionalvalues.php",
+                        [["9", "113", "security misconfiguration"]]
+                ],
+                [
+                    "./tests/custom/cookies1.php",
+                        [["8", "102", "security misconfiguration"],
+                        ["8", "102", "security misconfiguration"],
+                        ["9", "177", "security misconfiguration"],
+                        ["9", "177", "security misconfiguration"]]
+                ],
             ];
 
             

@@ -19,5 +19,20 @@
                     "./tests/flows/flow3.php",
                         [["\$var1", "3"],
                         ["\$_GET[\"p1\"]", "3"]]
+                ],
+                [
+                    "./tests/flows/flow4.php",
+                        [["\$plugin_basename_return", "6"],
+                        ["\$file", "5"],
+                        ["\$return_preg_replace", "5"],
+                        ["\$preg_replace_param2_line5_column93_progpilot", "5"],
+                        ["\$file", "4"],
+                        ["\$return_preg_replace", "4"],
+                        ["\$preg_replace_param2_line4_column43_progpilot", "4"],
+                        ["\$file", "3"],
+                        ["\$plugin_page", "20"],
+                        ["\$return_stripslashes", "20"],
+                        ["\$stripslashes_param0_line20_column402_progpilot", "20"],
+                        ["\$_GET[\"page\"]", "20"]]
                 ]
             ];

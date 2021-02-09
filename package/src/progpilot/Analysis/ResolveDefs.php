@@ -34,6 +34,21 @@ class ResolveDefs
     {
         if ($myFuncCall->getName() === "dirname") {
             $codes = $myCode->getCodes();
+
+            $suffix = "";
+            if (isset($codes[$index + 1]) && $codes[$index + 1]->getOpcode() === Opcodes::CONCAT_RIGHT) {
+                if (isset($codes[$index + 2]) && $codes[$index + 2]->getOpcode() === Opcodes::TEMPORARY) {
+                    $tempInstruction = $codes[$index + 2];
+                    $myTemp = $tempInstruction->getProperty(MyInstruction::TEMPORARY);
+
+                    if (isset($myTemp->getLastKnownValues()[0])) {
+                        $suffix = $myTemp->getLastKnownValues()[0];
+                    }
+                }
+
+               $index = $index + 2;
+            }
+            
             if (isset($codes[$index + 2]) && $codes[$index + 2]->getOpcode() === Opcodes::END_ASSIGN) {
                 $instructionDef = $codes[$index + 3];
                 $myDefReturn = $instructionDef->getProperty(MyInstruction::DEF);
@@ -41,7 +56,7 @@ class ResolveDefs
                 if ($instruction->isPropertyExist("argdef0")) {
                     $defarg = $instruction->getProperty("argdef0");
                     foreach ($defarg->getLastKnownValues() as $knownValue) {
-                        $myDefReturn->addLastKnownValue(dirname($knownValue));
+                        $myDefReturn->addLastKnownValue(dirname($knownValue).$suffix);
                     }
                 }
             }
@@ -586,7 +601,6 @@ class ResolveDefs
         foreach ($data as $def) {
             if (Definitions::defEquality($def, $searchedDed, $bypassIsNearest)
                         && ResolveDefs::isNearest($context, $searchedDed, $def)) {
-
                 // CA SERT A QUOI ICI REDONDANT AVEC LE DERNIER ?
                 if ($def->isType(MyDefinition::TYPE_INSTANCE)
                     && $searchedDed->isType(MyDefinition::TYPE_INSTANCE)) {

@@ -48,7 +48,17 @@ class TaintAnalysis
             $instruction->getProperty(MyInstruction::EXPR)
         );
 
-        TaintAnalysis::funccallValidator($stackClass, $context, $data, $myFunc, $myClass, $instruction, $myCode, $index);
+        TaintAnalysis::funccallValidator(
+            $stackClass,
+            $context,
+            $data,
+            $myFunc,
+            $myClass,
+            $instruction,
+            $myCode,
+            $index
+        );
+
         TaintAnalysis::funccallSanitizer(
             $myFunc,
             $stackClass,
@@ -76,8 +86,16 @@ class TaintAnalysis
         return $hasSources;
     }
 
-    public static function funccallValidator($stackClass, $context, $data, $myFunc, $myClass, $instruction, $myCode, $index)
-    {
+    public static function funccallValidator(
+        $stackClass,
+        $context,
+        $data,
+        $myFunc,
+        $myClass,
+        $instruction,
+        $myCode,
+        $index
+    ) {
         $funcName = $instruction->getProperty(MyInstruction::FUNCNAME);
         $arrFuncCall = $instruction->getProperty(MyInstruction::ARR);
         $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
@@ -89,8 +107,7 @@ class TaintAnalysis
         $myValidator = $context->inputs->getValidatorByName($context, $stackClass, $myFuncCall, $myClass);
         if (!is_null($myValidator)) {
             $validwhenreturning = $myValidator->getValidWhenReturning();
-        }
-        else {
+        } else {
             $validwhenreturning = true;
         }
 
@@ -169,12 +186,12 @@ class TaintAnalysis
                             $validNotBoolean = $returnDef->getValidNotBoolean();
 
                             foreach ($returnDef->getLastKnownValues() as $lastKnownValue) {
-                                if ($lastKnownValue === "true" 
-                                    || $lastKnownValue === "TRUE" 
+                                if ($lastKnownValue === "true"
+                                    || $lastKnownValue === "TRUE"
                                         || (is_numeric($lastKnownValue) && $lastKnownValue > 0)) {
                                     $returnTrue = true;
-                                } elseif ($lastKnownValue === "false" 
-                                    || $lastKnownValue === "FALSE" 
+                                } elseif ($lastKnownValue === "false"
+                                    || $lastKnownValue === "FALSE"
                                         || (is_numeric($lastKnownValue) && $lastKnownValue <= 0)) {
                                     $returnFalse = true;
                                 } else {
@@ -184,7 +201,7 @@ class TaintAnalysis
                             }
 
                             // ambiguous
-                            if($returnTrue && $returnFalse) {
+                            if ($returnTrue && $returnFalse) {
                                 $ambiguous = true;
                                 break;
                             }

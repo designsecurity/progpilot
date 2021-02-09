@@ -179,5 +179,43 @@
                     "./tests/data/validator1.php",
                         [["\$tainted3", "19", "xss"]]
                 ]
-                */
+                */,
+                [
+                    "./tests/data/validator2.php",
+                        [["\$tainted", "3", "xss"],
+                        ["\$tainted", "3", "xss"]]
+                ],
+                [
+                    "./tests/data/validator3.php",
+                        [["\$tainted", "3", "xss"],
+                        ["\$tainted", "3", "xss"]]
+                ],
+                [
+                    "./tests/data/validator4.php",
+                        [["\$tainted", "3", "xss"]]
+                ],
+                [
+                    "./tests/data/validator5.php",
+                        [["\$tainted", "3", "xss"]]
+                ],
+                [
+                    "./tests/data/validator6.php",
+                        [["\$show_updated", "3", "xss"]]
+                ],
+                [
+                    "./tests/data/customvalidator1.php",
+                        [["\$a", "25", "file_inclusion"]]
+                ],
+                [
+                    "./tests/data/customvalidator2.php",
+                        [["\$a", "14", "file_inclusion"]]
+                ],
+                [
+                    "./tests/data/customvalidator3.php",
+                        [["\$a", "16", "file_inclusion"]]
+                ],
+                [
+                    "./tests/data/customvalidator4.php",
+                        [["\$a", "16", "file_inclusion"]]
+                ]
             ]; 

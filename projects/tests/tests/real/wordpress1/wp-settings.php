@@ -1,16 +1,19 @@
 <?php
 
 // For an advanced caching plugin to use, static because you would only want one
+/*
 if ( defined('WP_CACHE') )
 	require (ABSPATH . 'wp-content/advanced-cache.php');
-
+*/
 define('WPINC', 'wp-includes');
+
 require_once (ABSPATH . WPINC . '/wp-db.php');
 
 
+/*
 require (ABSPATH . WPINC . '/functions.php');
 require (ABSPATH . WPINC . '/default-filters.php');
-
+*/
 /*
 
 require (ABSPATH . WPINC . '/functions-formatting.php');
@@ -23,7 +26,7 @@ require (ABSPATH . WPINC . '/template-functions-author.php');
 require (ABSPATH . WPINC . '/template-functions-post.php');
 require (ABSPATH . WPINC . '/template-functions-category.php');
 */
-require (ABSPATH . WPINC . '/comment-functions.php');
+//require (ABSPATH . WPINC . '/comment-functions.php');
 /*
 require (ABSPATH . WPINC . '/feed-functions.php');
 require (ABSPATH . WPINC . '/links.php');
