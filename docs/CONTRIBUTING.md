@@ -19,12 +19,13 @@ All php code must adhere to [PSR-2 standard](https://www.php-fig.org/psr/psr-2/)
 Developers can use [GrumPHP](https://github.com/phpro/grumphp/) to ensure each progpilot commit reaches code style (phpcs) and security (progpilot itself) requirements.  
 Install GrumPHP globally or in the progpilot repository:
 ```shell
-composer install --dev phpro/grumphp
+composer require --dev phpro/grumphp
 ```
 Install the [required tasks](../grumphp.yml) for Progpilot:
 ```shell
-composer install --dev squizlabs/php_codesniffer
-composer install --dev designsecurity/progpilot
+composer config minimum-stability dev
+composer require --dev squizlabs/php_codesniffer
+composer require --dev designsecurity/progpilot
 ```
 Configure the following env variable to instruct GrumPHP to locate tasks executables:
 ```shell

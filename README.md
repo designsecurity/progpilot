@@ -69,7 +69,12 @@ $analyzer = new \progpilot\Analyzer;
 
 $context->inputs->setFile("source_code1.php");
 
-$analyzer->run($context);
+try {
+  $analyzer->run($context);
+} catch (Exception $e) {
+   echo "Exception : ".$e->getMessage()."\n";
+}  
+  
 $results = $context->outputs->getResults();
 
 var_dump($results);
