@@ -172,16 +172,20 @@ class IncludeAnalysis
                                     $saveMyFile = [];
                                     $defsIncluded = [];
                                     if (!is_null($mainInclude)) {
-                                        if (!empty($defs->getOutMinusKill($myFuncCall->getBlockId()))) {
-                                            foreach ($defs->getOutMinusKill($myFuncCall->getBlockId()) as $defToInclude) {
+                                        $currentFileDefs = $defs->getOutMinusKill($myFuncCall->getBlockId());
+                                        if (!empty($currentFileDefs)) {
+                                            foreach ($currentFileDefs as $defToInclude) {
                                                 if ($defToInclude->getLine() < $myFuncCall->getLine()
                                                     || ($defToInclude->getLine() === $myFuncCall->getLine()
                                                         && $defToInclude->getColumn() < $myFuncCall->getColumn())) {
-                                                    $saveMyFile[$defToInclude->getId()] = $defToInclude->getSourceMyFile()->getIncludedToMyfile();
+                                                    $saveMyFile[$defToInclude->getId()]
+                                                        = $defToInclude->getSourceMyFile()->getIncludedToMyfile();
                                                     $defsIncluded[] = $defToInclude;
                                                     //$defToInclude->setSourceMyFile($myFileIncluded);
 
-                                                    $defToInclude->getSourceMyFile()->setIncludedToMyfile($myFileIncluded);
+                                                    $defToInclude->getSourceMyFile()->setIncludedToMyfile(
+                                                        $myFileIncluded
+                                                    );
 
                                                     //$defToInclude->setSourceMyFile($myFileIncluded);
 
@@ -196,7 +200,10 @@ class IncludeAnalysis
                                                 }
                                             }
 
-                                            $mainInclude->getDefs()->computeKill($context, $mainInclude->getFirstBlockId());
+                                            $mainInclude->getDefs()->computeKill(
+                                                $context,
+                                                $mainInclude->getFirstBlockId()
+                                            );
                                             $mainInclude->getDefs()->reachingDefs($mainInclude->getBlocks());
                                         }
                                     
@@ -207,7 +214,9 @@ class IncludeAnalysis
                                         $analyzerInclude->runFunctionAnalysis($context, $mainInclude, false);
 
                                         foreach ($defsIncluded as $defIncluded) {
-                                            $defIncluded->getSourceMyFile()->setIncludedToMyfile($saveMyFile[$defIncluded->getId()]);
+                                            $defIncluded->getSourceMyFile()->setIncludedToMyfile(
+                                                $saveMyFile[$defIncluded->getId()]
+                                            );
                                         }
                                     
                                         $defsOutputIncludedFinal = [];
@@ -276,15 +285,7 @@ class IncludeAnalysis
                                             $defs->reachingDefs($blocks);
                                         }
                                     }
-/*
-                                    if ($typeInclude === 2) {
-                                        array_pop($arrayIncludes);
-                                    }
 
-                                    if ($typeInclude === 4) {
-                                        array_pop($arrayRequires);
-                                    }
-*/
                                     $context->setCurrentMyfile($saveCurrentMyfile);
                                 }
                             }

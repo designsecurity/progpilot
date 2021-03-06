@@ -365,7 +365,7 @@ class ResolveDefs
                 $myDef->setId($myFuncCall->getId());
 
                 $defsFound = ResolveDefs::selectProperties($context, $data, $myDef, true);
-                if(!empty($defsFound)) {
+                if (!empty($defsFound)) {
                     $myFunc->setThisHasBeenUpdated(true);
                 }
 

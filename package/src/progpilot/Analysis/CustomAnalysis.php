@@ -335,7 +335,7 @@ class CustomAnalysis
                     $customRule->setCurrentOrderNumber(0);
                     $rulesVerifyCallFlow[] = $customRule;
 
-                    if(is_array($sequence) && !empty($sequence)) {
+                    if (is_array($sequence) && !empty($sequence)) {
                         $firstCustomFunctions[] = $sequence[0];
                         foreach ($sequence as $customFunction) {
                             $customFunction->setOrderNumberReal(-1);
