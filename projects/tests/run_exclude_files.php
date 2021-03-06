@@ -14,7 +14,6 @@ class RunExcludeFilesTest extends TestCase
         $analyzer = new \progpilot\Analyzer;
 
         $context->setAnalyzeHardrules(true);
-        $context->setAnalyzeFunctions(false);
         $context->outputs->taintedFlow(true);
         
         $arr = array(

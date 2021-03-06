@@ -110,7 +110,7 @@ class Expr
             
             $instTemporarySimple->addProperty(MyInstruction::PHI, $nbvars);
             $context->getCurrentMycode()->addCode($instTemporarySimple);
-            // end of expression
+        // end of expression
         } elseif (!is_null($type) && $type !== MyOp::TYPE_FUNCCALL_ARRAY) {
             if (is_null($name)) {
                 $name = mt_rand();
@@ -123,6 +123,10 @@ class Expr
                 $column = $op->getAttribute("startFilePos", -1);
             }
 
+            if ($name === "GLOBALS") {
+                $context->getCurrentFunc()->setHasGlobalVariables(true);
+            }
+            
             $myTemp = new MyDefinition($context->getCurrentLine(), $column, $name);
             if ($type === MyOp::TYPE_CONST || $type === MyOp::TYPE_LITERAL) {
                 $myTemp->addLastKnownValue($name);

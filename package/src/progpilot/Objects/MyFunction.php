@@ -24,11 +24,13 @@ class MyFunction extends MyOp
     private $nbParams;
     private $params;
     private $returnDefs;
+    private $initialReturnDefs;
     private $defs;
     private $blocks;
     private $visibility;
     private $myClass;
     private $instance;
+    private $firstBlockId;
     private $blockId;
     private $nameInstance;
     
@@ -39,8 +41,9 @@ class MyFunction extends MyOp
     private $lastColumn;
     private $lastBlockId;
 
-    private $isAnalyzedAsEntryPoint;
-    private $isAnalyzed;
+    private $thisHasBeenUpdated;
+    private $initialAnalysis;
+    private $isVisited;
     private $isDataAnalyzed;
     private $isChainedMethod;
 
@@ -48,12 +51,14 @@ class MyFunction extends MyOp
     private $castReturn;
 
     public $property;
-    
+
     public function __construct($name)
     {
         parent::__construct($name, 0, 0);
 
+        $this->args = [];
         $this->params = [];
+        $this->initialReturnDefs = [];
         $this->returnDefs = [];
         $this->visibility = "public";
         $this->myclass = null;
@@ -61,17 +66,20 @@ class MyFunction extends MyOp
         $this->thisDef = null;
         $this->backDef = null;
         $this->blockId = 0;
+        $this->firstBlockId = 0;
         $this->nbParams = 0;
 
         $this->lastLine = 0;
         $this->lastColumn = 0;
         $this->lastBlockId = 0;
 
-        $this->isAnalyzedAsEntryPoint = false;
-        $this->isAnalyzed = false;
+        $this->thisHasBeenUpdated = false;
+        $this->initialAnalysis = false;
+        $this->isVisited = false;
         $this->isDataAnalyzed = false;
         $this->isChainedMethod = false;
         $this->chainedMethod = null;
+        $this->hasGlobalVariables = false;
 
         $this->property = new MyProperty;
         $this->defs = new Definitions;
@@ -86,6 +94,26 @@ class MyFunction extends MyOp
         $this->property = clone $this->property;
         $this->blocks = clone $this->blocks;
         $this->defs = clone $this->defs;
+    }
+
+    public function setThisHasBeenUpdated($thisHasBeenUpdated)
+    {
+        $this->thisHasBeenUpdated = $thisHasBeenUpdated;
+    }
+
+    public function thisHasBeenUpdated()
+    {
+        return $this->thisHasBeenUpdated;
+    }
+
+    public function setHasGlobalVariables($hasGlobalVariables)
+    {
+        $this->hasGlobalVariables = $hasGlobalVariables;
+    }
+
+    public function hasGlobalVariables()
+    {
+        return $this->hasGlobalVariables;
     }
 
     public function setIsChainedMethod($isChainedMethod)
@@ -118,24 +146,24 @@ class MyFunction extends MyOp
         return $this->isDataAnalyzed;
     }
 
-    public function setIsAnalyzed($isAnalyzed)
+    public function setInitialAnalysis($initialAnalysis)
     {
-        $this->isAnalyzed = $isAnalyzed;
+        $this->initialAnalysis = $initialAnalysis;
     }
 
-    public function isAnalyzed()
+    public function isInitialAnalysis()
     {
-        return $this->isAnalyzed;
+        return $this->initialAnalysis;
     }
 
-    public function setIsAnalyzedAsEntryPoint($isAnalyzedAsEntryPoint)
+    public function setIsVisited($isVisited)
     {
-        $this->isAnalyzedAsEntryPoint = $isAnalyzedAsEntryPoint;
+        $this->isVisited = $isVisited;
     }
 
-    public function isAnalyzedAsEntryPoint()
+    public function isVisited()
     {
-        return $this->isAnalyzedAsEntryPoint;
+        return $this->isVisited;
     }
 
     public function setMyCode($myCode)
@@ -248,6 +276,16 @@ class MyFunction extends MyOp
         return $this->defs;
     }
 
+    public function getPastArguments()
+    {
+        return $this->args;
+    }
+
+    public function addPastArgument($nbparam, $arg)
+    {
+        $this->args[$nbparam][] = $arg;
+    }
+
     public function addParam($param)
     {
         $this->params[] = $param;
@@ -285,6 +323,36 @@ class MyFunction extends MyOp
     public function addReturnDef($return_def)
     {
         $this->returnDefs[] = $return_def;
+    }
+
+    public function setReturnDefs($returndefs)
+    {
+        $this->returnDefs = $returndefs;
+    }
+
+    public function getInitialReturnDefs()
+    {
+        return $this->initialReturnDefs;
+    }
+
+    public function addInitialReturnDef($returnDef)
+    {
+        $this->initialReturnDefs[] = $returnDef;
+    }
+
+    public function setInitialReturnDefs($returndefs)
+    {
+        $this->initialReturnDefs = $returndefs;
+    }
+
+    public function getFirstBlockId()
+    {
+        return $this->firstBlockId;
+    }
+
+    public function setFirstBlockId($blockId)
+    {
+        $this->firstBlockId = $blockId;
     }
 
     public function getBlockId()

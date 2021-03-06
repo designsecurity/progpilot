@@ -33,7 +33,6 @@ class Context
     private $functions;
     private $path;
     private $analyzeHardRules;
-    private $analyzeFunctions;
     private $analyzeIncludes;
     private $printFileUnderAnalysis;
     private $configurationFile;
@@ -43,6 +42,9 @@ class Context
     private $limitDefs;
     private $limitSize;
     private $limitValues;
+    private $defsMain;
+
+    private $analyzedFiles;
 
     public $inputs;
     public $outputs;
@@ -51,7 +53,6 @@ class Context
     {
         $this->configurationFile = null;
         $this->analyzeHardRules = false;
-        $this->analyzeFunctions = true;
         $this->analyzeIncludes = true;
         $this->printFileUnderAnalysis = false;
         $this->printWarning = false;
@@ -74,6 +75,29 @@ class Context
         $this->myfiles = [];
         $this->arrayIncludes = [];
         $this->arrayRequires = [];
+        $this->analyzedFiles = [];
+
+        $this->defsMain = [];
+    }
+
+    public function addAnalyzedFile($file)
+    {
+        $this->analyzedFiles[] = $file;
+    }
+
+    public function isFileAnalyzed($file)
+    {
+        return in_array($file, $this->analyzedFiles);
+    }
+
+    public function getDefsMain()
+    {
+        return $this->defsMain;
+    }
+
+    public function setDefsMain($defsMain)
+    {
+        $this->defsMain = $defsMain;
     }
 
     public function getCurrentNbDefs()
@@ -104,9 +128,6 @@ class Context
         unset($this->currentMyCode);
 
         $this->inputs->setCode(null);
-        // representations (cfg, ast ...) are deleted to avoid memory grown
-        //$this->outputs = new \progpilot\Outputs\MyOutputs;
-        $this->outputs->resetRepresentations();
     }
 
     public function resetDataflow()
@@ -130,12 +151,12 @@ class Context
         $this->arrayRequires = $arrayRequires;
     }
 
-    public function getArrayIncludes()
+    public function &getArrayIncludes()
     {
         return $this->arrayIncludes;
     }
 
-    public function getArrayRequires()
+    public function &getArrayRequires()
     {
         return $this->arrayRequires;
     }
@@ -208,16 +229,6 @@ class Context
     public function setAnalyzeIncludes($analyzeIncludes)
     {
         $this->analyzeIncludes = $analyzeIncludes;
-    }
-
-    public function setAnalyzeFunctions($analyzeFunctions)
-    {
-        $this->analyzeFunctions = $analyzeFunctions;
-    }
-
-    public function getAnalyzeFunctions()
-    {
-        return $this->analyzeFunctions;
     }
 
     public function getCurrentMycode()
@@ -466,10 +477,6 @@ class Context
 
                             if (isset($value["options"]["setAnalyzeIncludes"])) {
                                 $this->setAnalyzeIncludes($value["options"]["setAnalyzeIncludes"]);
-                            }
-
-                            if (isset($value["options"]["setAnalyzeFunctions"])) {
-                                $this->setAnalyzeFunctions($value["options"]["setAnalyzeFunctions"]);
                             }
 
                             if (isset($value["options"]["setPrintFile"])) {

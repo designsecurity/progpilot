@@ -11,7 +11,6 @@ try {
     $context->setPrintFile(true);
     $context->setPrintWarning(true);
     $context->setAnalyzeHardrules(true);
-    $context->setLimitTime(300);
     $context->inputs->setIncludes("include_files.json");
 
     $var = function($result) {

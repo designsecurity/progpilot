@@ -10,6 +10,8 @@
 
 namespace progpilot\Analysis;
 
+use function DeepCopy\deep_copy;
+
 use progpilot\Objects\MyFile;
 use progpilot\Objects\MyOp;
 use progpilot\Objects\ArrayStatic;
@@ -21,6 +23,8 @@ use progpilot\Objects\MyFunction;
 use progpilot\Code\MyCode;
 use progpilot\Code\Opcodes;
 use progpilot\Code\MyInstruction;
+
+use progpilot\AbstractLayer\Analysis as AbstractAnalysis;
 
 use progpilot\Lang;
 use progpilot\Utils;
@@ -64,7 +68,7 @@ class VisitorAnalysis
         $myFuncCall
     ) {
         $hasSources = false;
-                        
+                 
         $listMyFunc = [];
         IncludeAnalysis::funccall(
             $this->context,
@@ -93,6 +97,7 @@ class VisitorAnalysis
                     $visibility = true;
                                     
                     $method = $myClass->getMethod($funcName);
+                    
                     if (!ResolveDefs::getVisibilityMethod($myFuncCall->getNameInstance(), $method)) {
                         $method = null;
                         $visibility = false;
@@ -246,21 +251,72 @@ class VisitorAnalysis
                             || ((!$myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)
                                 && !$myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC))
                                     && !$myFunc->isType(MyFunction::TYPE_FUNC_METHOD))) {
+
+                    if (!$myFunc->isVisited()/* && $myFunc->getName() !== "{main}"*/) {
+                        // the function has never been analyzed
+                        // we visit it a first time with default parameters/no arguments
+                        $myFunc->setIsVisited(true);
+
+                        $myCodefunction = new MyCode;
+                        $myCodefunction->setCodes($myFunc->getMyCode()->getCodes());
+                        $myCodefunction->setStart(0);
+                        $myCodefunction->setEnd(count($myFunc->getMyCode()->getCodes()));
+
+                        $this->analyze($myCodefunction, $myFuncCall);
+
+                        foreach ($myFunc->getReturnDefs() as $returnDef) {
+                            $returnDefCopy = deep_copy($returnDef);
+                            $myFunc->addInitialReturnDef($returnDefCopy);
+                        }
+                    }
+
+                    // we clean all the param of the function
+                    // except return defs see functions21.php test case
+                    $funcCallBack = "Callbacks::cleanTaintedDef";
+                    AbstractAnalysis::forAllDefsOfFunctionExceptReturnDefs($funcCallBack, $myFunc);
+
+                    // we propagate the taint to the params
                     FuncAnalysis::funccallBefore(
                         $this->context,
-                        $this->defs,
+                        $myFunc->getDefs(),
                         $myFunc,
                         $myFuncCall,
                         $instruction,
                         $this->context->getClasses()
                     );
 
-                    $myCodefunction = new MyCode;
-                    $myCodefunction->setCodes($myFunc->getMyCode()->getCodes());
-                    $myCodefunction->setStart(0);
-                    $myCodefunction->setEnd(count($myFunc->getMyCode()->getCodes()));
-                                    
-                    $this->analyze($myCodefunction, $myFuncCall);
+                    if (AbstractAnalysis::checkIfOneFunctionArgumentIsNew($myFunc, $instruction)
+                        || !$myFunc->isVisited()
+                            || $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)
+                                || $myFunc->hasGlobalVariables()
+                                    || $myFunc->getName() === "{main}") {
+                        // we clean all the param of the function
+                        // except return defs see functions21.php test case
+                        $funcCallBack = "Callbacks::addDefAsAPastArgument";
+                        AbstractAnalysis::forAllArgumentsOfFunction($funcCallBack, $myFunc, $instruction);
+
+                        $myFunc->setIsVisited(true);
+
+                        $myCodefunction = new MyCode;
+                        $myCodefunction->setCodes($myFunc->getMyCode()->getCodes());
+                        $myCodefunction->setStart(0);
+                        $myCodefunction->setEnd(count($myFunc->getMyCode()->getCodes()));
+                            
+                        $this->analyze($myCodefunction, $myFuncCall);
+
+                        if($myFunc->hasGlobalVariables()) {
+                            // we don't want to visit it a second time, it's an approximation for performance
+                            $myFunc->setHasGlobalVariables(false);
+
+                            foreach ($myFunc->getReturnDefs() as $returnDef) {
+                                $returnDefCopy = deep_copy($returnDef);
+                                $myFunc->addInitialReturnDef($returnDefCopy);
+                            }
+                        }
+                    } else {
+                        $funcCallBack = "Callbacks::addAttributesOfInitialReturnDefs";
+                        AbstractAnalysis::forAllReturnDefsOfFunction($funcCallBack, $myFunc);
+                    }
                 }
             }
             
@@ -287,7 +343,8 @@ class VisitorAnalysis
                 );
 
                 // representations start
-                $this->context->outputs->callgraph->addFuncCall(
+                $this->context->outputs->callgraphAddFuncCall(
+                    $this->currentMyFunc,
                     $this->currentMyBlock,
                     $myFuncCall,
                     $myClass
@@ -295,21 +352,24 @@ class VisitorAnalysis
             // representations end
             } else {
                 $classOfFuncCall = $myFunc->getMyClass();
-
+                
                 // representations start
                 foreach ($myFunc->getBlocks() as $myBlock) {
-                    $this->context->outputs->callgraph->addChild(
+                    $this->context->outputs->callgraphAddChild(
+                        $this->currentMyFunc,
                         $this->currentMyBlock,
                         $myBlock
                     );
-                    $this->context->outputs->cfg->addEdge(
+                    $this->context->outputs->cfgAddEdge(
+                        $this->currentMyFunc,
                         $this->currentMyBlock,
                         $myBlock
                     );
                     break;
                 }
 
-                $this->context->outputs->callgraph->addFuncCall(
+                $this->context->outputs->callgraphAddFuncCall(
+                    $this->currentMyFunc,
                     $this->currentMyBlock,
                     $myFuncCall,
                     $myClass
@@ -393,6 +453,7 @@ class VisitorAnalysis
                 $instruction = $code[$index];
                 
                 if ((microtime(true) - $startTime) > $this->context->getLimitTime()) {
+                    $diff = microtime(true) - $startTime;
                     Utils::printWarning($this->context, Lang::MAX_TIME_EXCEEDED);
                     return;
                 }
@@ -458,6 +519,8 @@ class VisitorAnalysis
                         $myFunc = $instruction->getProperty(MyInstruction::MYFUNC);
 
                         if ($myFunc->getName() === "{main}") {
+                            // free memory
+                            unset($myFunc);
                             return;
                         }
 
@@ -643,7 +706,7 @@ class VisitorAnalysis
                             ValueAnalysis::updateStorageToExpr($tempDefaMyExpr);
                             $storageCast = ValueAnalysis::$exprsCast[$tempDefaMyExpr];
                             $storageKnownValues = ValueAnalysis::$exprsKnownValues[$tempDefaMyExpr];
-                            
+
                             foreach ($defs as $def) {
                                 $safe = AssertionAnalysis::temporarySimple(
                                     $this->context,

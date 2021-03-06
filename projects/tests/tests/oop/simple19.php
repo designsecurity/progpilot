@@ -28,7 +28,7 @@ $testc1->object1 = new testc2;
 
 $testc1->object1->object2 = $_GET["p"];
 
-echo $testc1->object1->object2;
+echo $testc1->object1->object2; // NOT OK
 
 
 
@@ -36,17 +36,14 @@ $newtestc1 = new testc1;
 
 $newtestc1->object1 = $_GET["p"];
 
-echo $newtestc1->object1;
+echo $newtestc1->object1; // NOT OK
 
 
 $newsettestc1 = new testc1;
 
 $newsettestc1->set_object1($_GET["p"]);
 
-echo $newsettestc1->object1;
-
-
-
+echo $newsettestc1->object1; // NOT OK (FN)
 
 
 
@@ -56,7 +53,7 @@ $testc1_encore->object1->object2 = $_GET["p"];
 
 $testc1_encore->object1 = new testc2;
 
-echo $testc1_encore->object1->object2;
+echo $testc1_encore->object1->object2; // OK
 
 
 
@@ -66,6 +63,11 @@ $testc1_encore2->member1 = $_GET["p"];
 
 $val = $testc1_encore2->member1;
 
-echo $testc1_encore2->member1;
+echo $testc1_encore2->member1; // OK
 
-echo $val;
+echo $val; // OK
+
+
+
+
+

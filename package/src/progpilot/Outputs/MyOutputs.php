@@ -41,97 +41,165 @@ class MyOutputs
         $this->onAddResult = null;
         $this->countfilesanalyzed = 0;
         
-        $this->resetRepresentations();
+        $this->cfg = [];
+        $this->callgraph = [];
+        $this->ast = [];
     }
 
-    public function resetRepresentations()
+    public function createRepresentationsForFunction($myFunc)
     {
-        //$this->results = [];
-        $this->cfg = new ControlFlowGraph;
-        $this->callgraph = new Callgraph;
-        $this->ast = new AbstractSyntaxTree;
+        if (!is_null($myFunc)) {
+            $this->cfg[$myFunc->getId()] = new ControlFlowGraph;
+            $this->callgraph[$myFunc->getId()] = new Callgraph;
+            $this->ast[$myFunc->getId()] = new AbstractSyntaxTree;
+        }
+    }
+    
+    // cfg accessors
+    public function cfgAddTextOfMyBlock($myFunc, $id, $text)
+    {
+        if (!is_null($myFunc) && isset($this->cfg[$myFunc->getId()])) {
+            $tmpCfg = $this->cfg[$myFunc->getId()];
+            $tmpCfg->addTextOfMyBlock($id, $text);
+        }
     }
 
-    public function getAst()
+    public function cfgAddNode($myFunc, $id, $block)
+    {
+        if (!is_null($myFunc) && isset($this->cfg[$myFunc->getId()])) {
+            $tmpCfg = $this->cfg[$myFunc->getId()];
+            $tmpCfg->addNode($id, $text);
+        }
+    }
+
+    public function cfgAddEdge($myFunc, $caller, $callee)
+    {
+        if (!is_null($myFunc) && isset($this->cfg[$myFunc->getId()])) {
+            $tmpCfg = $this->cfg[$myFunc->getId()];
+            $tmpCfg->addEdge($caller, $callee);
+        }
+    }
+
+    // callgraph accessors
+    public function callgraphAddNode($myFunc, $myFunccall, $myClass)
+    {
+        if (!is_null($myFunc) && isset($this->callgraph[$myFunc->getId()])) {
+            $tmpCallgraph = $this->callgraph[$myFunc->getId()];
+            $tmpCallgraph->addNode($myFunccall, $myClass);
+        }
+    }
+
+    public function callgraphAddEdge($myFunc, $myFuncCaller, $myClassCaller, $myFuncCallee, $myClassCallee)
+    {
+        if (!is_null($myFunc) && isset($this->callgraph[$myFunc->getId()])) {
+            $tmpCallgraph = $this->callgraph[$myFunc->getId()];
+            $tmpCallgraph->addEdge($myFuncCaller, $myClassCaller, $myFuncCallee, $myClassCallee);
+        }
+    }
+
+    public function callgraphAddFuncCall($myFunc, $myBlock, $myFunccall, $myClass)
+    {
+        if (!is_null($myFunc) && isset($this->callgraph[$myFunc->getId()])) {
+            $tmpCallgraph = $this->callgraph[$myFunc->getId()];
+            $tmpCallgraph->addFuncCall($myBlock, $myFunccall, $myClass);
+        }
+    }
+
+    public function callgraphAddChild($myFunc, $myBlockParent, $myBlockChild)
+    {
+        if (!is_null($myFunc) && isset($this->callgraph[$myFunc->getId()])) {
+            $tmpCallgraph = $this->callgraph[$myFunc->getId()];
+            $tmpCallgraph->addChild($myBlockParent, $myBlockChild);
+        }
+    }
+
+    public function getAst($myFunc)
     {
         $nodesjson = [];
         $linksjson = [];
 
-        foreach ($this->ast->getNodes() as $node) {
-            $hash = spl_object_hash($node);
+        if (!is_null($myFunc) && isset($this->ast[$myFunc->getId()])) {
+            $tmpAst = $this->ast[$myFunc->getId()];
 
-            $nodesjson[] = array('name' => get_class($node), 'id' => $hash);
-        }
+            foreach ($tmpAst->getNodes() as $node) {
+                $hash = spl_object_hash($node);
 
-        foreach ($this->ast->getEdges() as $edge) {
-            $caller = $edge[0];
-            $callee = $edge[1];
-
-            $hashcaller = spl_object_hash($caller);
-            $hashcallee = spl_object_hash($callee);
-
-            if ($hashcaller !== $hashcallee) {
-                $linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
+                $nodesjson[] = array('name' => get_class($node), 'id' => $hash);
             }
-        }
 
-        $outputjson = array('nodes' => $nodesjson, 'links' => $linksjson);
+            foreach ($tmpAst->getEdges() as $edge) {
+                $caller = $edge[0];
+                $callee = $edge[1];
 
-        return $outputjson;
-    }
+                $hashcaller = spl_object_hash($caller);
+                $hashcallee = spl_object_hash($callee);
 
-    public function getCfg()
-    {
-        $nodesjson = [];
-        $linksjson = [];
-        $realNodes = [];
-
-        foreach ($this->cfg->getNodes() as $id => $node) {
-            $realNodes[] = $id;
-            $nodesjson[] = array('name' => $this->cfg->getTextOfMyBlock($id), 'id' => $id);
-        }
-
-        foreach ($this->cfg->getEdges() as $edge) {
-            $callerId = $this->cfg->getIdOfNode($edge[0]);
-            $calleeId = $this->cfg->getIdOfNode($edge[1]);
-
-            if ($callerId !== $calleeId
-                && in_array($callerId, $realNodes, true)
-                    && in_array($calleeId, $realNodes, true)) {
-                $linksjson[] = array('source' => $callerId, 'target' => $calleeId);
-            }
-        }
-
-        $outputjson = array('nodes' => $nodesjson, 'links' => $linksjson);
-        return $outputjson;
-    }
-
-    public function getCallGraph()
-    {
-        $nodesjson = [];
-        $linksjson = [];
-        $realNodes = [];
-
-        $nodes = $this->callgraph->getNodes();
-
-        foreach ($nodes as $nodeCaller) {
-            $realNodes[] = $nodeCaller->getId();
-            $nodesjson[] = array('name' => $nodeCaller->getName(), 'id' => $nodeCaller->getId());
-        }
-
-        foreach ($nodes as $key => $nodeCaller) {
-            foreach ($nodeCaller->getChildren() as $key => $nodeCalleeId) {
-                $nodeCallee = $nodes[$nodeCalleeId];
-                if ($nodeCaller->getId() !== $nodeCallee->getId()
-                                                    && in_array($nodeCaller->getId(), $realNodes, true)
-                                                    && in_array($nodeCallee->getId(), $realNodes, true)) {
-                    $linksjson[] = array('source' => $nodeCaller->getId(), 'target' => $nodeCallee->getId());
+                if ($hashcaller !== $hashcallee) {
+                    $linksjson[] = array('target' => $hashcallee, 'source' => $hashcaller);
                 }
             }
         }
 
-        $outputjson = array('nodes' => $nodesjson, 'links' => $linksjson);
-        return $outputjson;
+        return array('nodes' => $nodesjson, 'links' => $linksjson);
+    }
+
+    public function getCfg($myFunc)
+    {
+        $nodesjson = [];
+        $linksjson = [];
+        $realNodes = [];
+
+        if (!is_null($myFunc) && isset($this->cfg[$myFunc->getId()])) {
+            $tmpCfg = $this->cfg[$myFunc->getId()];
+
+            foreach ($tmpCfg->getNodes() as $id => $node) {
+                $realNodes[] = $id;
+                $nodesjson[] = array('name' => $tmpCfg->getTextOfMyBlock($id), 'id' => $id);
+            }
+
+            foreach ($tmpCfg->getEdges() as $edge) {
+                $callerId = $tmpCfg->getIdOfNode($edge[0]);
+                $calleeId = $tmpCfg->getIdOfNode($edge[1]);
+
+                if ($callerId !== $calleeId
+                    && in_array($callerId, $realNodes, true)
+                        && in_array($calleeId, $realNodes, true)) {
+                    $linksjson[] = array('source' => $callerId, 'target' => $calleeId);
+                }
+            }
+        }
+
+        return array('nodes' => $nodesjson, 'links' => $linksjson);
+    }
+
+    public function getCallGraph($myFunc)
+    {
+        $nodesjson = [];
+        $linksjson = [];
+        $realNodes = [];
+
+        if (!is_null($myFunc) && isset($this->callgraph[$myFunc->getId()])) {
+            $tmpCallgraph = $this->callgraph[$myFunc->getId()];
+            $nodes = $tmpCallgraph->getNodes();
+
+            foreach ($nodes as $nodeCaller) {
+                $realNodes[] = $nodeCaller->getId();
+                $nodesjson[] = array('name' => $nodeCaller->getName(), 'id' => $nodeCaller->getId());
+            }
+
+            foreach ($nodes as $key => $nodeCaller) {
+                foreach ($nodeCaller->getChildren() as $key => $nodeCalleeId) {
+                    $nodeCallee = $nodes[$nodeCalleeId];
+                    if ($nodeCaller->getId() !== $nodeCallee->getId()
+                                                        && in_array($nodeCaller->getId(), $realNodes, true)
+                                                        && in_array($nodeCallee->getId(), $realNodes, true)) {
+                        $linksjson[] = array('source' => $nodeCaller->getId(), 'target' => $nodeCallee->getId());
+                    }
+                }
+            }
+        }
+
+        return array('nodes' => $nodesjson, 'links' => $linksjson);
     }
     
     public function setOnAddResult($func)

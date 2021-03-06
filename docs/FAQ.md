@@ -20,4 +20,3 @@ And by increasing the maximum memory amount for a script (*memory_limit*) in the
 At this moment, these frameworks are supported:
 - suiteCRM
 - codeIgniter
-- wordpress

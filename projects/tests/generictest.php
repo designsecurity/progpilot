@@ -183,7 +183,7 @@
                 ],
                 [
                     "./tests/generic/functions2.php",
-                        [["\$safea", "8", "xss"]]
+                        [["\$testf_return[0]", "5", "xss"]]
                 ],
                 [
                     "./tests/generic/functions3.php",
@@ -199,7 +199,9 @@
                 ],
                 [
                     "./tests/generic/functions6.php",
-                        [["\$_GET[\"p\"]", "15", "xss"]]
+                        [["\$_GET[\"p\"]", "5", "xss"],
+                        ["\$_GET[\"p\"]", "10", "xss"],
+                        ["\$_GET[\"p\"]", "15", "xss"]]
                 ],
                 [
                     "./tests/generic/functions7.php",
@@ -258,8 +260,21 @@
                         [["\$thisfunctionexistandreturn_return", "23", "xss"]]
                 ],
                 [
+                    "./tests/generic/functions21.php",
+                        [["\$ret", "16", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions22.php",
+                        [["\$ret1", "10", "xss"],
+                        ["\$ret2", "14", "xss"]]
+                ],
+                [
+                    "./tests/generic/functions23.php",
+                        [["\$b", "19", "xss"]]
+                ],
+                [
                     "./tests/generic/functionsrec1.php",
-                        [["\$var", "10", "xss"]]
+                        [["\$var", "15", "xss"]]
                 ],
                 [
                     "./tests/generic/strings1.php",
@@ -292,12 +307,12 @@
                     "./tests/generic/global2.php",
                         [["\$myvar1", "4", "xss"]]
                 ],
-
+/* // removed because optimizations
                 [
                     "./tests/generic/global3.php",
                         [["\$myvar1", "3", "xss"]]
                 ],
-
+*/
                 [
                     "./tests/generic/namespace1.php",
                         [["\$_GET[\"p\"]", "9", "xss"]]

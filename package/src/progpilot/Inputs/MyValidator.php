@@ -30,7 +30,7 @@ class MyValidator extends MySpecify
         return $this->validWhenReturning;
     }
 
-    public function setValidWhenReturning($validWhenReturning)
+    public function setValidWhenReturning($validWhenReturning, $validwhenreturning, $notboolean)
     {
         $this->validWhenReturning = $validWhenReturning;
     }

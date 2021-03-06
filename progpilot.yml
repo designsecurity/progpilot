@@ -30,11 +30,10 @@ outputs:
     
 options:
     setAnalyzeIncludes: true
-    setAnalyzeFunctions: true
     setAnalyzeHardRules: true
     setPrintFile: false
     setPrintWarning: false
     setPrettyPrint: true
-    setLimitTime: 10
-    setLimitDefs: 3000
-    setLimitSize: 500000
+    setLimitTime: 30
+    setLimitDefs: 100000
+    setLimitSize: 1000000

@@ -109,8 +109,8 @@
                 ],
                 [
                     "./tests/oop/simple26.php",
-                        [["\$_GET[\"t\"]", "17", "xss"],
-                        ["\$_GET[\"p\"]", "8", "xss"]]
+                        [["\$_GET[\"p\"]", "8", "xss"],
+                        ["\$_GET[\"t\"]", "17", "xss"]]
                 ],
                 [
                     "./tests/oop/simple27.php",
@@ -140,6 +140,10 @@
                 [
                     "./tests/oop/simple33.php",
                         [["\$tainted", "31", "xss"]]
+                ],
+                [
+                    "./tests/oop/simple34.php",
+                        [["\$tainted", "16", "xss"]]
                 ]
                 
         ];

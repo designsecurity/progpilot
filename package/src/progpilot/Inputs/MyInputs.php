@@ -50,7 +50,7 @@ class MyInputs
     {
         $this->dev = false;
         $this->languages = ["php"];
-        $this->frameworks = ["suitecrm", "codeigniter", "wordpress", "prestashop", "symfony"];
+        $this->frameworks = ["suitecrm", "codeigniter", "prestashop", "symfony"];
         
         $this->customRules = [];
         $this->resolvedIncludesAnalysis = [];
@@ -744,69 +744,6 @@ class MyInputs
             }
             
             $rulesfile = __DIR__."/../../uptodate_data/php/frameworks/codeigniter/rules.json";
-            
-            if (is_array($this->customFile)) {
-                if (!in_array($rulesfile, $this->customFile, true)) {
-                    $this->readCustomFile($rulesfile);
-                }
-            } else {
-                if ($this->customFile !== $rulesfile) {
-                    $this->readCustomFile($rulesfile);
-                }
-            }
-        }
-        
-        
-        if (is_array($this->frameworks) && in_array("wordpress", $this->frameworks, true)) {
-            $sanitizersfile = __DIR__."/../../uptodate_data/php/frameworks/wordpress/sanitizers.json";
-            
-            if (is_array($this->sanitizersFile)) {
-                if (!in_array($sanitizersfile, $this->sanitizersFile, true)) {
-                    $this->readSanitizersFile($sanitizersfile);
-                }
-            } else {
-                if ($this->sanitizersFile !== $sanitizersfile) {
-                    $this->readSanitizersFile($sanitizersfile);
-                }
-            }
-            
-            $sinksfile = __DIR__."/../../uptodate_data/php/frameworks/wordpress/sinks.json";
-            
-            if (is_array($this->sinksFile)) {
-                if (!in_array($sinksfile, $this->sinksFile, true)) {
-                    $this->readSinksFile($sinksfile);
-                }
-            } else {
-                if ($this->sinksFile !== $sinksfile) {
-                    $this->readSinksFile($sinksfile);
-                }
-            }
-            
-            $sourcesfile = __DIR__."/../../uptodate_data/php/frameworks/wordpress/sources.json";
-            
-            if (is_array($this->sourcesFile)) {
-                if (!in_array($sourcesfile, $this->sourcesFile, true)) {
-                    $this->readSourcesFile($sourcesfile);
-                }
-            } else {
-                if ($this->sourcesFile !== $sourcesfile) {
-                    $this->readSourcesFile($sourcesfile);
-                }
-            }
-            
-            $validatorsfile = __DIR__."/../../uptodate_data/php/frameworks/wordpress/validators.json";
-            
-            if (is_array($this->validatorsFile)) {
-                if (!in_array($validatorsfile, $this->validatorsFile, true)) {
-                    $this->readValidatorsFile($validatorsfile);
-                }
-            } else {
-                if ($this->validatorsFile !== $validatorsfile) {
-                    $this->readValidatorsFile($validatorsfile);
-                }
-            }
-            
-            $rulesfile = __DIR__."/../../uptodate_data/php/frameworks/wordpress/rules.json";
             
             if (is_array($this->customFile)) {
                 if (!in_array($rulesfile, $this->customFile, true)) {
