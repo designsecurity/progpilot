@@ -251,7 +251,6 @@ class VisitorAnalysis
                             || ((!$myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)
                                 && !$myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC))
                                     && !$myFunc->isType(MyFunction::TYPE_FUNC_METHOD))) {
-
                     if (!$myFunc->isVisited()/* && $myFunc->getName() !== "{main}"*/) {
                         // the function has never been analyzed
                         // we visit it a first time with default parameters/no arguments
@@ -304,7 +303,7 @@ class VisitorAnalysis
                             
                         $this->analyze($myCodefunction, $myFuncCall);
 
-                        if($myFunc->hasGlobalVariables()) {
+                        if ($myFunc->hasGlobalVariables()) {
                             // we don't want to visit it a second time, it's an approximation for performance
                             $myFunc->setHasGlobalVariables(false);
 

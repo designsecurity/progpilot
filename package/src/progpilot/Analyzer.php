@@ -319,8 +319,9 @@ class Analyzer
         foreach ($context->getFunctions()->getFunctions() as $functionsFile) {
             foreach ($functionsFile as $functionsmethod) {
                 foreach ($functionsmethod as $myFunc) {
-                    if ($myFunc->isDataAnalyzed() 
-                        && !$myFunc->hasGlobalVariables() // func with global variables except to be analyzed/called from a main
+                    if ($myFunc->isDataAnalyzed()
+                        // func with global variables except to be analyzed/called from a main
+                        && !$myFunc->hasGlobalVariables()
                             && $myFunc->getName() !== "{main}") {
                         $contextFunctions[] = $myFunc;
                     }

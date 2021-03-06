@@ -30,12 +30,12 @@ class Callbacks
         }
     }
 
-    public static function addDefAsAPastArgument($myfunc, $nbparam, $arg) 
+    public static function addDefAsAPastArgument($myfunc, $nbparam, $arg)
     {
         $myfunc->addPastArgument($nbparam, $arg);
     }
 
-    public static function addAttributesOfInitialReturnDefs($returnDef, $initialReturnDef) 
+    public static function addAttributesOfInitialReturnDefs($returnDef, $initialReturnDef)
     {
         $returnDef->setTainted($initialReturnDef->isTainted());
     }

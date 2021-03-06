@@ -71,14 +71,22 @@ class VisitorDataflow
                     case Opcodes::START_EXPRESSION:
                         // representations start
                         $idCfg = hash("sha256", $this->currentFunc->getName()."-".$this->currentBlockId);
-                        $context->outputs->cfgAddTextOfMyBlock($this->currentFunc, $idCfg, Opcodes::START_EXPRESSION."\n");
+                        $context->outputs->cfgAddTextOfMyBlock(
+                            $this->currentFunc,
+                            $idCfg,
+                            Opcodes::START_EXPRESSION."\n"
+                        );
                         // representations end
                         break;
 
                     case Opcodes::END_EXPRESSION:
                         // representations start
                         $idCfg = hash("sha256", $this->currentFunc->getName()."-".$this->currentBlockId);
-                        $context->outputs->cfgAddTextOfMyBlock($this->currentFunc, $idCfg, Opcodes::END_EXPRESSION."\n");
+                        $context->outputs->cfgAddTextOfMyBlock(
+                            $this->currentFunc,
+                            $idCfg,
+                            Opcodes::END_EXPRESSION."\n"
+                        );
                         // representations end
                         break;
 
@@ -238,7 +246,11 @@ class VisitorDataflow
 
                         // representations start
                         $idCfg = hash("sha256", $this->currentFunc->getName()."-".$this->currentBlockId);
-                        $context->outputs->cfgAddTextOfMyBlock($this->currentFunc, $idCfg, Opcodes::LEAVE_FUNCTION."\n");
+                        $context->outputs->cfgAddTextOfMyBlock(
+                            $this->currentFunc,
+                            $idCfg,
+                            Opcodes::LEAVE_FUNCTION."\n"
+                        );
                         // representations end
 
                         break;

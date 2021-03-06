@@ -109,7 +109,6 @@ class Analysis
                 // if it's not a method and empty params,
                 // then we can't have additional tainted return
                 return false;
-                
             }
 
             for ($i = 0; $i < count($params); $i++) {

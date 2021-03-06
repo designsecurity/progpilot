@@ -91,7 +91,7 @@ class ValueAnalysis
 
                 for ($i = 0; $i < count($max); $i++) {
 
-                    $prefixValue = 
+                    $prefixValue =
                     if (isset($prefixValues[$i][0])
                         && isset($middleValues[$i][0])
                             && isset($suffixValues[$i][0])) {
@@ -149,7 +149,6 @@ class ValueAnalysis
                     $defAssign->addLastKnownValue($finalDefValue);
                 }
             }
-            
         }
     }
 
