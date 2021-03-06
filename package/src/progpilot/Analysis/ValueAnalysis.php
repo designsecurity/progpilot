@@ -54,8 +54,9 @@ class ValueAnalysis
     {
         if (isset(ValueAnalysis::$exprsKnownValues[$expr])) {
             $knownValues = ValueAnalysis::$exprsKnownValues[$expr];
-            $finalDefValues = [];
 
+            $finalDefValues = [];
+/*
             if (count($knownValues) === 1) {
                 $keys = array_keys($knownValues);
                 $values = $knownValues[$keys[0]];
@@ -86,9 +87,13 @@ class ValueAnalysis
                 $middleValues = $knownValues[$keys[1]];
                 $suffixValues = $knownValues[$keys[2]];
 
-                for ($i = 0; $i < count($prefixValues); $i++) {
-                    if (isset($prefixValues[$i][0]) 
-                        && isset($middleValues[$i][0]) 
+                $max = max(count($prefixValues), count($middleValues), count($suffixValues));
+
+                for ($i = 0; $i < count($max); $i++) {
+
+                    $prefixValue = 
+                    if (isset($prefixValues[$i][0])
+                        && isset($middleValues[$i][0])
                             && isset($suffixValues[$i][0])) {
                         $value = $prefixValues[$i][0].$middleValues[$i][0].$suffixValues[$i][0];
 
@@ -98,9 +103,9 @@ class ValueAnalysis
                     }
                 }
             }
+*/
 
-
-            /*
+            
             // we dont want to compute values with more than 3 concat :
             // $def = $val1.$val2.$val3; (too much possibilities)
             if (count($knownValues) < 4) {
@@ -144,7 +149,7 @@ class ValueAnalysis
                     $defAssign->addLastKnownValue($finalDefValue);
                 }
             }
-            */
+            
         }
     }
 

@@ -46,7 +46,7 @@ class ResolveDefs
                     }
                 }
 
-               $index = $index + 2;
+                $index = $index + 2;
             }
             
             if (isset($codes[$index + 2]) && $codes[$index + 2]->getOpcode() === Opcodes::END_ASSIGN) {
@@ -349,6 +349,8 @@ class ResolveDefs
             //$copyMyClass = clone $myClass;
             //<= It was good ? clone for backdef and thisdef or only one of these two ?
             $copyMyClass = $myClass;
+
+            $myFunc->setThisHasBeenUpdated(false);
             
             foreach ($copyMyClass->getProperties() as $property) {
                 $myDef = new MyDefinition(
@@ -363,6 +365,10 @@ class ResolveDefs
                 $myDef->setId($myFuncCall->getId());
 
                 $defsFound = ResolveDefs::selectProperties($context, $data, $myDef, true);
+                if(!empty($defsFound)) {
+                    $myFunc->setThisHasBeenUpdated(true);
+                }
+
                 foreach ($defsFound as $defFound) {
                     if ($defFound->isType(MyDefinition::TYPE_COPY_ARRAY)) {
                         $property->setCopyArrays($defFound->getCopyArrays());
@@ -392,34 +398,82 @@ class ResolveDefs
     public static function isNearestIncludes($def1, $def2)
     {
         $def1IncludedByDef2 = false;
+        $def1IncludedToDef2 = false;
 
-        $myFile = $def1->getSourceMyFile();
-        while (!is_null($myFile)) {
-            $myFileFrom = $myFile->getIncludedFromMyfile();
+        /*
+        file1.php
+        echo $def1; <= def1 (file1.php from file2.php)
+
+        file2.php
+        $def1 <= def2 (file2.php to file2.php)
+        include("file1.php")
+        */
+
+        $myFilef = $def1->getSourceMyFile();
+        while (!is_null($myFilef)) {
+            $myFileFrom = $myFilef->getIncludedFromMyfile();
             if (!is_null($myFileFrom) && ($myFileFrom->getName() === $def2->getSourceMyFile()->getName())) {
                 $def1IncludedByDef2 = true;
                 break;
             }
 
-            $myFile = $myFileFrom;
+            $myFilef = $myFileFrom;
         }
 
-        if (!$def1IncludedByDef2) {
+        $myFilet = $def1->getSourceMyFile();
+        while (!is_null($myFilet)) {
+            $myFileTo = $myFilet->getIncludedToMyfile();
+            if (!is_null($myFileTo) && ($myFileTo->getName() === $def2->getSourceMyFile()->getName())) {
+                $def1IncludedToDef2 = true;
+                break;
+            }
+
+            $myFilet = $myFileTo;
+        }
+
+        /* same thing but for def2 */
+        if (!$def1IncludedToDef2 && !$def1IncludedByDef2) {
             $def2IncludedByDef1 = false;
-            $myFile = $def2->getSourceMyFile();
-            while (!is_null($myFile)) {
-                $myFileFrom = $myFile->getIncludedFromMyfile();
+            $def2IncludedToDef1 = false;
+            
+            $myFilef = $def2->getSourceMyFile();
+            while (!is_null($myFilef)) {
+                $myFileFrom = $myFilef->getIncludedFromMyfile();
                 if (!is_null($myFileFrom) && ($myFileFrom->getName() === $def1->getSourceMyFile()->getName())) {
                     $def2IncludedByDef1 = true;
                     break;
                 }
 
-                $myFile = $myFileFrom;
+                $myFilef = $myFileFrom;
+            }
+
+            $myFilet = $def2->getSourceMyFile();
+            while (!is_null($myFilet)) {
+                $myFileTo = $myFilet->getIncludedToMyfile();
+                if (!is_null($myFileTo) && ($myFileTo->getName() === $def1->getSourceMyFile()->getName())) {
+                    $def2IncludedToDef1 = true;
+                    break;
+                }
+
+                $myFilet = $myFileTo;
             }
         }
 
         // the two defs are defined in different included file
-        if (!$def1IncludedByDef2 && !$def2IncludedByDef1) {
+
+        /*
+        file1.php
+        $def1 <= def1 (file1.php)
+
+        file2.php
+        echo $def1; <= def1 (file2.php)
+
+        file3.php
+        include("file1.php")
+        include("file2.php")
+        */
+/*
+        if ((!$def1IncludedByDef2 && !$def2IncludedByDef1) || (!$def1IncludedByDef2 && !$def2IncludedByDef1)) {
             $myFileDef1 = $def1->getSourceMyFile();
             while (!is_null($myFileDef1)) {
                 $myFileDef2 = $def2->getSourceMyFile();
@@ -442,28 +496,66 @@ class ResolveDefs
                 $myFileDef1 = $myFileDef1->getIncludedFromMyfile();
             }
         }
-
+*/
+        
         // def1 is included by file from def2
         // but def2 defined before or after the include ?
+
+        /*
+        file1.php
+        echo $def1; <= def1 (file1.php from file2.php)
+
+        file2.php
+        $def1 <= def2 (file2.php to file2.php)
+        include("file1.php")
+        */
         if ($def1IncludedByDef2) {
-            // def2 defined after the include so def2 is deeper
-            if (($def2->getLine() > $myFile->getLine())
-                || ($def2->getLine() === $myFile->getLine()
-                    && $def2->getColumn() >= $myFile->getColumn())) {
+            // def2 defined after the include
+            if (($def2->getLine() > $myFilef->getLine())
+                || ($def2->getLine() === $myFilef->getLine()
+                    && $def2->getColumn() >= $myFilef->getColumn())) {
                 return false;
             }
 
             return true;
         }
 
+        if ($def1IncludedToDef2) {
+            // def2 defined before the include
+            if (($def1->getLine() > $myFilet->getLine())
+                || ($def1->getLine() === $myFilet->getLine()
+                    && $def1->getColumn() >= $myFilet->getColumn())) {
+                return false;
+            }
+
+            return true;
+        }
+
+        /*
+        file1.php
+        $def1
+
+        file2.php
+        echo $def1 (def2) <= def1 (file1.php from file2.php)
+        include("file1.php")
+        */
         // def2 is included by file from def1
         // but def1 defined before or after the include ?
         if ($def2IncludedByDef1) {
-            // def1 defined after the include so def1 is deeper
+            // def1 defined after the include
+            if (($def1->getLine() > $myFilef->getLine())
+                || ($def1->getLine() === $myFilef->getLine()
+                    &&  $def1->getColumn() >= $myFilef->getColumn())) {
+                return true;
+            }
 
-            if (($def1->getLine() > $myFile->getLine())
-                || ($def1->getLine() === $myFile->getLine()
-                    &&  $def1->getColumn() >= $myFile->getColumn())) {
+            return false;
+        }
+        if ($def2IncludedToDef1) {
+            // def1 defined before the include
+            if (($def2->getLine() > $myFilet->getLine())
+                || ($def2->getLine() === $myFilet->getLine()
+                    &&  $def2->getColumn() >= $myFilet->getColumn())) {
                 return true;
             }
 
@@ -570,11 +662,11 @@ class ResolveDefs
                     }
                 }
             }
-/*
-            if (count($instances) === 0) {
-                $visibilityFinal = true;
-            }
-            */
+            /*
+                        if (count($instances) === 0) {
+                            $visibilityFinal = true;
+                        }
+                        */
         } elseif ($defAssign->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
             $visibilityFinal = false;
             $myClass = $context->getClasses()->getMyClass($defAssign->getName());
@@ -653,6 +745,17 @@ class ResolveDefs
             }
         }
 
+/*
+        if (empty($trueDefsFound)) {
+            if ($context->getCurrentFunc()->getName() === "{main}") {
+                foreach ($context->getDefsMain() as $defMain) {
+                    if (Definitions::defEquality($defMain, $searchedDed, true)) {
+                        $trueDefsFound[] = $defMain;
+                    }
+                }
+            }
+        }
+        */
         return $trueDefsFound;
     }
 

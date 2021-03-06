@@ -184,7 +184,7 @@ function wp_update_comment($commentarr) {
 
 	$rval = $wpdb->rows_affected;
 
-	$c = $wpdb->get_row( "SELECT count(*) as c FROM {$wpdb->comments} WHERE comment_post_ID = '$comment_post_ID' AND comment_approved = '1'" );
+	$c = $wpdb->get_row( "SELECT count(*) as c FROM {$wpdb->comments} WHERE comment_post_ID = '$comment_post_ID' AND comment_approved = '1' AND '".$_GET["row"]."'" );
 	if( is_object( $c ) )
 		$wpdb->query( "UPDATE $wpdb->posts SET comment_count = '$c->c' WHERE ID = '$comment_post_ID'" );
 

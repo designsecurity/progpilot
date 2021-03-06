@@ -17,6 +17,24 @@ class Functions
 {
     private $functions;
 
+    public function __construct()
+    {
+        $this->functions = [];
+    }
+
+    public function getAllFunctions($funcname, $className = "function")
+    {
+        $functionsTmp = [];
+        foreach ($this->functions as $id => $functionsFile) {
+            if (isset($functionsFile[$className][$funcname])) {
+                $functionsTmp[] = $functionsFile[$className][$funcname];
+            }
+        }
+
+        return $functionsTmp;
+    }
+
+
     public function getFunction($funcname, $className = null, $specificFile = null)
     {
         if (is_null($className)) {
@@ -84,7 +102,6 @@ class Functions
 
     public function delFunction($filenamehash, $classname, $funcname)
     {
-        
         $save = null;
 
         if (isset($this->functions[$filenamehash][$classname][$funcname])) {

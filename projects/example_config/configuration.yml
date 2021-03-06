@@ -34,7 +34,6 @@ outputs:
     
 options:
     setAnalyzeIncludes: true
-    setAnalyzeFunctions: true
     setAnalyzeHardRules: true
     setPrintFile: true
     setPrintWarning: false

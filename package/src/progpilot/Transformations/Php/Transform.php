@@ -321,6 +321,9 @@ class Transform implements Visitor
             $instDef = new MyInstruction(Opcodes::DEFINITION);
             $instDef->addProperty(MyInstruction::DEF, $myDefGlobal);
             $this->context->getCurrentMycode()->addCode($instDef);
+
+            $this->context->getCurrentFunc()->setHasGlobalVariables(true);
+
         } elseif ($op instanceof Op\Terminal\Return_) {
             $myBlock = $this->sBlocks[$this->context->getCurrentBlock()];
             Assign::instruction($this->context, true, false, $myBlock);

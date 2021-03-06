@@ -43,10 +43,10 @@
 
                 [
                     "./tests/includes/simple9.php",
-                        [["158", "3442", "security misconfiguration"],
-                        ["158", "3442", "security misconfiguration"],
-                        ["159", "3521", "security misconfiguration"],
-                        ["159", "3521", "security misconfiguration"],
+                        [["158", "3599", "security misconfiguration"],
+                        ["158", "3599", "security misconfiguration"],
+                        ["159", "3679", "security misconfiguration"],
+                        ["159", "3679", "security misconfiguration"],
                         ["\$page[\"body\"]", "51", "xss"]]
                 ],
                 [

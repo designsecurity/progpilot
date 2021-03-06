@@ -13,6 +13,8 @@ use progpilot\Utils;
 use progpilot\Code\MyCode;
 use progpilot\Objects\MyFile;
 
+use function DeepCopy\deep_copy;
+
 class Analyzer
 {
     const PHP = "php";
@@ -101,10 +103,11 @@ class Analyzer
         }
     }
 
-    public function runInternalFunction($context, $myFunc)
+    public function runFunctionAnalysis($context, $myFunc, $updatemyfile = true)
     {
-        if (!is_null($myFunc) && !$myFunc->isAnalyzed()) {
-            $myFunc->setIsAnalyzed(true);
+        if (!is_null($myFunc) && !$myFunc->isVisited()) {
+            $myFunc->setIsVisited(true);
+            $myFunc->setInitialAnalysis(true);
             
             $myFunc->getMyCode()->setStart(0);
             $myFunc->getMyCode()->setEnd(count($myFunc->getMyCode()->getCodes()));
@@ -112,8 +115,23 @@ class Analyzer
             \progpilot\Analysis\ValueAnalysis::buildStorage();
             
             $visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
+
+            if ($updatemyfile) {
+                $file = $myFunc->getSourceMyFile()->getName();
+                $myFile = new MyFile($file, 0, 0);
+                $context->inputs->setFile($file);
+                $context->setCurrentMyfile($myFile);
+            }
+
             $visitoranalyzer->setContext($context);
             $visitoranalyzer->analyze($myFunc->getMyCode());
+
+            foreach ($myFunc->getReturnDefs() as $returnDef) {
+                $returnDefCopy = deep_copy($returnDef);
+                $myFunc->addInitialReturnDef($returnDefCopy);
+            }
+                
+            $myFunc->setInitialAnalysis(false);
 
             unset($visitoranalyzer);
         } else {
@@ -121,22 +139,11 @@ class Analyzer
         }
     }
     
-    public function runInternalAnalysis($context, $includedDefs = null)
+    public function visitDataFlow($context)
     {
-        $startTime = microtime(true);
-        
         // analyze
         if (!is_null($context)) {
-            $contextFunctions = [];/*
-            if (!is_null($context->getFunctions()->getFunctions())) {
-                foreach ($context->getFunctions()->getFunctions() as $functionsName) {
-                    if (!is_null($functionsName)) {
-                        foreach ($functionsName as $myFunc) {
-                            $contextFunctions[] = $myFunc;
-                        }
-                    }
-                }
-            }*/
+            $visitordataflow = new \progpilot\Dataflow\VisitorDataflow();
     
             $fileNameHash = hash("sha256", $context->getCurrentMyfile()->getName());
             $functionsTmp = $context->getFunctions()->getFunctions();
@@ -144,64 +151,27 @@ class Analyzer
                 $functionsFile = $functionsTmp[$fileNameHash];
                 foreach ($functionsFile as $functionsmethod) {
                     foreach ($functionsmethod as $myFunc) {
-                        $contextFunctions[] = $myFunc;
+                        if (!is_null($myFunc) && !$myFunc->isDataAnalyzed()) {
+                            $myFunc->setIsDataAnalyzed(true);
+                            $visitordataflow->analyze($context, $myFunc);
+                        }
                     }
                 }
             }
 
-            foreach ($context->getClasses()->getListClasses() as $myClass) {
-                $contextFunctions = array_merge($contextFunctions, $myClass->getMethods());
-            }
-                
-            $visitordataflow = new \progpilot\Dataflow\VisitorDataflow();
-
-            foreach ($contextFunctions as $myFunc) {
-                if (!is_null($myFunc) && !$myFunc->isDataAnalyzed()) {
-                    $myFunc->setIsDataAnalyzed(true);
-                    $visitordataflow->analyze($context, $myFunc, $includedDefs);
+            // we merge all defs of "main" functions into one
+            $defsMain = [];
+            foreach ($context->getFunctions()->getAllFunctions("{main}") as $function) {
+                foreach ($function->getDefs()->getDefs() as $defs) {
+                    $defsMain = array_merge($defsMain, $defs);
                 }
             }
 
-            if ($context->getCurrentNbDefs() > $context->getLimitDefs()) {
-                Utils::printWarning($context, Lang::MAX_DEFS_EXCEEDED);
-                return;
-            }
-
-            if ((microtime(true) - $startTime) > $context->getLimitTime()) {
-                Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
-                return;
-            }
-
-            if (!$context->getAnalyzeFunctions()) {
-                $this->runInternalFunction($context, $context->getFunctions()->getFunction(
-                    "{main}",
-                    "function",
-                    $fileNameHash
-                ));
-            } else {
-                foreach ($contextFunctions as $myFunc) {
-                    $this->runInternalFunction($context, $myFunc);
-                    
-                    if ((microtime(true) - $startTime) > $context->getLimitTime()) {
-                        Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
-                        return;
-                    }
-                }
-            }
-            
-            if ($context->getCurrentNbDefs() > $context->getLimitDefs()) {
-                Utils::printWarning($context, Lang::MAX_DEFS_EXCEEDED);
-                return;
-            }
-            
-            $context->outputs->callgraph->computeCallGraph();
-            \progpilot\Analysis\CustomAnalysis::mustVerifyCallFlow($context);
-
-            unset($visitordataflow);
+            $context->setDefsMain($defsMain);
         }
     }
     
-    public function runInternalPhp($context, $includedDefs = null, $transform = true)
+    public function computeDataFlowPhp($context)
     {
         // check if it is PHP language ????? LIKE myJavascriptFile
         $startTime = microtime(true);
@@ -216,32 +186,30 @@ class Analyzer
             return;
         }
 
-        if ($transform) {
-            $pastResults = &$context->outputs->getResults();
-            $context->resetInternalValues();
-            $context->outputs->setResults($pastResults);
+        $pastResults = &$context->outputs->getResults();
+        $context->resetInternalValues();
+        $context->outputs->setResults($pastResults);
 
-            $script = $this->parsePhp($context);
+        $script = $this->parsePhp($context);
 
-            if ((microtime(true) - $startTime) > $context->getLimitTime()) {
-                Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
-                return;
-            }
-
-            $this->transformPhp($context, $script);
-
-            unset($script);
-            
-            if ((microtime(true) - $startTime) > $context->getLimitTime()) {
-                Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
-                return;
-            }
-        
-            $this->runInternalAnalysis($context, $includedDefs);
+        if ((microtime(true) - $startTime) > $context->getLimitTime()) {
+            Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
+            return;
         }
+
+        $this->transformPhp($context, $script);
+
+        unset($script);
+            
+        if ((microtime(true) - $startTime) > $context->getLimitTime()) {
+            Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
+            return;
+        }
+        
+        $this->visitDataFlow($context);
     }
     
-    public function runInternalJs($context, $includedDefs = null, $transform = true)
+    public function computeDataFlowJs($context)
     {
         $startTime = microtime(true);
         
@@ -260,7 +228,7 @@ class Analyzer
             return;
         }
         
-        if (!is_null($context->inputs->getFile()) && $transform) {
+        if (!is_null($context->inputs->getFile())) {
             $content = file_get_contents($context->inputs->getFile());
             
             if (Analyzer::getTypeOfLanguage(Analyzer::JS, $content)) {
@@ -282,36 +250,40 @@ class Analyzer
                     return;
                 }
                 
-                $this->runInternalAnalysis($context, $includedDefs);
+                $this->visitDataFlow($context);
             }
         }
     }
     
-    public function runAllInternal($context)
+    public function computeDataFlow($context)
     {
-        if (!file_exists($context->inputs->getFile()) && is_null($context->inputs->getCode())) {
+        $filename = $context->inputs->getFile();
+
+        if (!file_exists($filename) && is_null($context->inputs->getCode())) {
             Utils::printWarning(
                 $context,
-                Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($context->inputs->getFile()).")"
+                Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($filename).")"
             );
-        } elseif (is_null($context->inputs->getFile()) && is_null($context->inputs->getCode())) {
+        } elseif (is_null($filename) && is_null($context->inputs->getCode())) {
             Utils::printWarning($context, Lang::FILE_AND_CODE_ARE_NULL);
         } else {
             if (is_null($context->inputs->getCode())
-                && filesize($context->inputs->getFile()) > $context->getLimitSize()) {
+                && filesize($filename) > $context->getLimitSize()) {
                 Utils::printWarning(
                     $context,
-                    Lang::MAX_SIZE_EXCEEDED." (".Utils::encodeCharacters($context->inputs->getFile()).")"
+                    Lang::MAX_SIZE_EXCEEDED." (".Utils::encodeCharacters($filename).")"
                 );
             } else {
-                if ($context->inputs->isLanguage(Analyzer::PHP)) {
-                    $context->resetDataflow();
-                    $this->runInternalPhp($context);
-                }
-                
-                if ($context->inputs->isLanguage(Analyzer::JS)) {
-                    $context->resetDataflow();
-                    $this->runInternalJs($context);
+                if (!$context->isFileAnalyzed($filename)) {
+                    $context->addAnalyzedFile($filename);
+
+                    if ($context->inputs->isLanguage(Analyzer::PHP)) {
+                        $this->computeDataFlowPhp($context);
+                    }
+                    
+                    if ($context->inputs->isLanguage(Analyzer::JS)) {
+                        $this->computeDataFlowJs($context);
+                    }
                 }
             }
         }
@@ -338,6 +310,46 @@ class Analyzer
         }
         
         return false;
+    }
+
+    public function runAnalysis($context)
+    {
+        $contextFunctions = [];
+        // we take all function except mains
+        foreach ($context->getFunctions()->getFunctions() as $functionsFile) {
+            foreach ($functionsFile as $functionsmethod) {
+                foreach ($functionsmethod as $myFunc) {
+                    if ($myFunc->isDataAnalyzed() 
+                        && !$myFunc->hasGlobalVariables() // func with global variables except to be analyzed/called from a main
+                            && $myFunc->getName() !== "{main}") {
+                        $contextFunctions[] = $myFunc;
+                    }
+                }
+            }
+        }
+
+        $contextFunctionsMain = [];
+        foreach ($context->getFunctions()->getAllFunctions("{main}") as $myFunc) {
+            $contextFunctionsMain[] = $myFunc;
+            // we put the main functions at the end (we be analyzed at the end)
+            $contextFunctions[] = $myFunc;
+        }
+
+        foreach ($contextFunctions as $myFunc) {
+            // cfg, ast, callgraph initialization
+            $context->outputs->createRepresentationsForFunction($myFunc);
+            // include once/require once reset each time
+            $context->setArrayIncludes([]);
+            $context->setArrayRequires([]);
+
+
+            $this->runFunctionAnalysis($context, $myFunc);
+        
+            $tmpCallgraph = $context->outputs->callgraph[$myFunc->getId()];
+            $tmpCallgraph->computeCallGraph();
+
+            \progpilot\Analysis\CustomAnalysis::mustVerifyCallFlow($context, $tmpCallgraph);
+        }
     }
     
     public function run($context, $cmdFiles = null)
@@ -411,13 +423,16 @@ class Analyzer
             $myFile = new MyFile($file, 0, 0);
             $context->inputs->setFile($file);
             $context->setCurrentMyfile($myFile);
-            $this->runAllInternal($context);
+            $this->computeDataFlow($context);
             $context->inputs->setCode(null);
         }
 
-        if (count($files) === 0 && !is_null($context->inputs->getCode())) {
-            $this->runAllInternal($context);
+        // if no files try to read code
+        if (empty($files) && !is_null($context->inputs->getCode())) {
+            $this->computeDataFlow($context);
         }
+
+        $this->runAnalysis($context);
 
         if ($context->outputs->getResolveIncludes()) {
             $context->outputs->writeIncludesFile();

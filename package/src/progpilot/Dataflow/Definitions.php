@@ -18,6 +18,8 @@ use progpilot\Objects\MyOp;
 use progpilot\Objects\MyDefinition;
 use progpilot\Transformations\Php\BuildArrays;
 
+use function DeepCopy\deep_copy;
+
 class Definitions
 {
     private $in;
@@ -34,6 +36,7 @@ class Definitions
     {
         $this->currentFunc = null;
         $this->nbDefs = 0;
+        $this->defs = [];
     }
 
     public function setNbDefs($nbDefs)
@@ -108,6 +111,15 @@ class Definitions
         return $this->defs;
     }
 
+    public function getOriginalDef($id)
+    {
+        if (isset($this->originalDefs[$id])) {
+            return $this->originalDefs[$id];
+        }
+
+        return null;
+    }
+
     public function addDef($name, $def)
     {
         $continue = true;
@@ -121,6 +133,7 @@ class Definitions
         if ($continue) {
             $this->nbDefs ++;
             $this->defs[$name][] = $def;
+            $this->originalDefs[$def->getId()] = clone $def;
         }
 
         return $continue;

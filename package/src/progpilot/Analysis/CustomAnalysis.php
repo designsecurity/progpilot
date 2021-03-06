@@ -320,9 +320,11 @@ class CustomAnalysis
         }
     }
 
-    public static function mustVerifyCallFlow($context)
+    public static function mustVerifyCallFlow($context, $callgraph)
     {
+
         if ($context->getAnalyzeHardrules()) {
+            $firstCustomFunctions = [];
             $rulesVerifyCallFlow = [];
             $customRules = $context->inputs->getCustomRules();
             foreach ($customRules as $customRule) {
@@ -333,43 +335,49 @@ class CustomAnalysis
                     $customRule->setCurrentOrderNumber(0);
                     $rulesVerifyCallFlow[] = $customRule;
 
-                    foreach ($sequence as $customFunction) {
-                        $customFunction->setOrderNumberReal(-1);
+                    if(is_array($sequence) && !empty($sequence)) {
+                        $firstCustomFunctions[] = $sequence[0];
+                        foreach ($sequence as $customFunction) {
+                            $customFunction->setOrderNumberReal(-1);
+                        }
                     }
                 }
             }
 
-            $fileNameHash = hash("sha256", $context->getCurrentMyfile()->getName());
-            $function = $context->getFunctions()->getFunction("{main}", "function", $fileNameHash);
-            if (!is_null($function)) {
-                $context->outputs->callgraph->addNode($function, null);
+            foreach ($firstCustomFunctions as $firstCustomFunction) {
+                $functions = $context->getFunctions()->getAllFunctions($firstCustomFunction->getName());
+                foreach ($functions as $function) {
+                    if (!is_null($function)) {
+                        $callgraph->addNode($function, null);
 
-                foreach ($function->getBlocks() as $firstMyBlock) {
-                    $calls = $context->outputs->callgraph->getCalls($firstMyBlock);
-                    if (!is_null($calls)) {
-                        foreach ($calls as $call) {
-                            $context->outputs->callgraph->addEdge($function, null, $call[0], $call[1]);
+                        foreach ($function->getBlocks() as $firstMyBlock) {
+                            $calls = $callgraph->getCalls($firstMyBlock);
+                            if (!is_null($calls)) {
+                                foreach ($calls as $call) {
+                                    $callgraph->addEdge($function, null, $call[0], $call[1]);
+                                }
+                            }
+
+                            break;
+                        }
+
+                        $NodeCG = new NodeCG(
+                            $function->getName(),
+                            $function->getLine(),
+                            $function->getColumn(),
+                            $function->getSourceMyFile()->getName(),
+                            null
+                        );
+                        $nodes = $callgraph->getNodes();
+
+                        if (array_key_exists($NodeCG->getId(), $nodes)) {
+                            $depthFirstSearch = new DepthFirstSearch(
+                                $nodes,
+                                new DFSVisitor($context, $rulesVerifyCallFlow)
+                            );
+                            $depthFirstSearch->init($nodes[$NodeCG->getId()]);
                         }
                     }
-
-                    break;
-                }
-
-                $NodeCG = new NodeCG(
-                    $function->getName(),
-                    $function->getLine(),
-                    $function->getColumn(),
-                    $function->getSourceMyFile()->getName(),
-                    null
-                );
-                $nodes = $context->outputs->callgraph->getNodes();
-
-                if (array_key_exists($NodeCG->getId(), $nodes)) {
-                    $depthFirstSearch = new DepthFirstSearch(
-                        $nodes,
-                        new DFSVisitor($context, $rulesVerifyCallFlow)
-                    );
-                    $depthFirstSearch->init($nodes[$NodeCG->getId()]);
                 }
             }
         }

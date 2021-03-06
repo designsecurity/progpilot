@@ -70,8 +70,8 @@ class Callgraph
         );
 
         if (array_key_exists($NodeCGCaller->getId(), $this->nodes)
-                    && array_key_exists($NodeCGCallee->getId(), $this->nodes)
-                    && $NodeCGCaller->getId() !== $NodeCGCallee->getId()) {
+            && array_key_exists($NodeCGCallee->getId(), $this->nodes)
+                && $NodeCGCaller->getId() !== $NodeCGCallee->getId()) {
             if (!in_array($NodeCGCallee->getId(), $this->nodes[$NodeCGCaller->getId()]->getChildren(), true)) {
                 $storage = $this->nodes[$NodeCGCaller->getId()]->getChildren();
                 $storage[] = $NodeCGCallee->getId();

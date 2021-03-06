@@ -37,7 +37,7 @@ class Utils
     public static function printWarning($context, $message)
     {
         if ($context->getPrintWarning()) {
-            fwrite(STDERR, "progpilot warning : $message\n");
+            fwrite(STDERR, "progpilot warning : $message (file: '".$context->getCurrentMyFile()->getName()."')\n");
         }
     }
 

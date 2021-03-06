@@ -130,7 +130,7 @@ class SecurityAnalysis
         
                         $myDefArg = $instruction->getProperty("argdef$i");
                         $taintedExpr = $myDefArg->getTaintedByExpr();
-                            
+
                         if ($myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
                             && $mySink->isParameterCondition($i + 1, "array_tainted")) {
                             foreach ($myDefArg->getCopyArrays() as $copyarray) {

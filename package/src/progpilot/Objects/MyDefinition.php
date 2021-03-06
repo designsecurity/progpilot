@@ -33,20 +33,14 @@ class MyDefinition extends MyOp
     const SECURITY_HIGH = 1;
     const SECURITY_LOW = 2;
     
-    private $isCopyArray;
     private $objectId;
     private $blockId;
     private $isTainted;
-    private $isConst;
-    private $isRef;
     private $refName;
-    private $isRefArr;
     private $refArrValue;
     private $theArrays;
     private $theExpr;
-    private $theExprs;
     private $taintedByExpr;
-    private $instance;
     private $className;
     private $isSanitized;
     private $typeSanitized;
@@ -68,17 +62,12 @@ class MyDefinition extends MyOp
 
         $this->isEmbeddedByChar = [];
 
-        $this->isCopyArray = false;
         $this->valueFromDef = null;
 
         $this->objectId = -1;
         $this->blockId = -1;
         $this->isTainted = false;
-        $this->isConst = false;
-        $this->isRef = false;
-        $this->isRefArr = false;
         $this->refArrValue = null;
-        $this->instance = false;
         $this->theArrays = [];
         $this->theExpr = null;
         $this->taintedByExpr = null;
@@ -119,6 +108,8 @@ class MyDefinition extends MyOp
         is_const = ".$this->isType(MyDefinition::TYPE_CONSTANTE)." :: \
         blockid = ".$this->getBlockId()." :: \
         cast = ".$this->getCast()."\n";
+
+        $this->getSourceMyFile()->printStdout();
 
         echo "last_known_value :\n";
         var_dump($this->lastKnownValue);
@@ -169,6 +160,26 @@ class MyDefinition extends MyOp
         echo "__________________________________________\n\n\n";
     }
 
+    public function setIsInstance($value)
+    {
+        $this->isInstance = $value;
+    }
+
+    public function getIsInstance()
+    {
+        return $this->isInstance;
+    }
+
+    public function setIsProperty($value)
+    {
+        $this->isProperty = $value;
+    }
+
+    public function getIsProperty()
+    {
+        return $this->isProperty;
+    }
+
     public function setValidWhenReturning($value)
     {
         $this->validWhenReturning = $value;
@@ -217,6 +228,11 @@ class MyDefinition extends MyOp
     public function getIsEmbeddedByChars()
     {
         return $this->isEmbeddedByChar;
+    }
+
+    public function setEmbeddedByChar($value)
+    {
+        $this->isEmbeddedByChar = $value;
     }
 
     public function setIsEmbeddedByChar($char, $bool)

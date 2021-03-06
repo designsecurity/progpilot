@@ -37,6 +37,104 @@ class Analysis
             }
         }
     }
+
+    public static function forAllDefsOfFunctionExceptReturnDefs($func, $myFunc)
+    {
+        $returnDefs = $myFunc->getReturnDefs();
+        foreach ($myFunc->getDefs()->getDefs() as $defnames) {
+            if (is_array($defnames)) {
+                foreach ($defnames as $def) {
+                    if (!in_array($def, $returnDefs, true)) {
+                        $params = array($def, $myFunc->getDefs());
+                        call_user_func_array(__NAMESPACE__ ."\\$func", $params);
+                    }
+                }
+            }
+        }
+    }
+
+    public static function forAllReturnDefsOfFunction($func, $myFunc)
+    {
+        $initialReturnDefs = $myFunc->getInitialReturnDefs();
+        $returnDefs = $myFunc->getReturnDefs();
+        $i = 0;
+        foreach ($returnDefs as $returnDef) {
+            if (isset($initialReturnDefs[$i])) {
+                $params = array($returnDef, $initialReturnDefs[$i]);
+                call_user_func_array(__NAMESPACE__ ."\\$func", $params);
+            }
+
+            $i ++;
+        }
+    }
+
+    public static function forAllDefsOfFunction($func, $myFunc)
+    {
+        foreach ($myFunc->getDefs()->getDefs() as $defnames) {
+            if (is_array($defnames)) {
+                foreach ($defnames as $def) {
+                    $params = array($def);
+                    call_user_func_array(__NAMESPACE__ ."\\$func", $params);
+                }
+            }
+        }
+    }
+
+    public static function forAllArgumentsOfFunction($func, $myfunc, $instruction)
+    {
+        $params = $myfunc->getParams();
+
+        for ($i = 0; $i < count($params); $i++) {
+            if ($instruction->isPropertyExist("argdef$i")) { // myfunccall
+                $defArg = $instruction->getProperty("argdef$i");
+                $params = array($myfunc, $i, $defArg);
+                call_user_func_array(__NAMESPACE__ ."\\$func", $params);
+            }
+        }
+    }
+
+    public static function checkIfOneFunctionArgumentIsNew($myFunc, $instruction)
+    {
+        if (!is_null($myFunc)) {
+            $params = $myFunc->getParams();
+
+            if (empty($params)) {
+                /*
+                if ($myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
+                    if (!$myFunc->thisHasBeenUpdated()) {
+                        echo "has not been updated\n";
+                        return false;
+                    }
+                }*/
+                // if it's not a method and empty params,
+                // then we can't have additional tainted return
+                return false;
+                
+            }
+
+            for ($i = 0; $i < count($params); $i++) {
+                if ($instruction->isPropertyExist("argdef$i")) {
+                    $defArg = $instruction->getProperty("argdef$i");
+
+                    $pastArgs = $myFunc->getPastArguments();
+                    if (isset($pastArgs[$i]) && is_array($pastArgs[$i])) {
+                        foreach ($pastArgs[$i] as $pastArg) {
+                            if (!$defArg->isTainted()
+                                && $defArg->getLastKnownValues() === $pastArg->getLastKnownValues()
+                                    && $defArg->getType() === $pastArg->getType()
+                                        && $defArg->getArrayValue() === $pastArg->getArrayValue()) {
+                                return false;
+                            }
+                        }
+                    } else {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
     
     public static function checkIfFuncEqualMySpecify($context, $mySpecify, $myFunc, $stackClass = null)
     {
