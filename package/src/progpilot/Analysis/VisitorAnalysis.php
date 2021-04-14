@@ -459,6 +459,7 @@ class VisitorAnalysis
 
                 switch ($instruction->getOpcode()) {
                     case Opcodes::ENTER_BLOCK:
+
                         $myBlock = $instruction->getProperty(MyInstruction::MYBLOCK);
 
                         if ($this->currentStorageMyBlocks->contains($myBlock)) {
@@ -478,15 +479,14 @@ class VisitorAnalysis
 
                         $this->currentStorageMyBlocks->attach($myBlock);
                         
-                        
                         // we remove this parent because it's a loop while(block1) block2
                         // and block1 must be analysis before block2
                         if (!$myBlock->getIsLoop()) {
                             foreach ($myBlock->parents as $blockParent) {
-                                $addrStart = $blockParent->getStartAddressBlock();
-                                $addrEnd = $blockParent->getEndAddressBlock();
-                                
                                 if (!$this->currentStorageMyBlocks->contains($blockParent)) {
+                                    $addrStart = $blockParent->getStartAddressBlock();
+                                    $addrEnd = $blockParent->getEndAddressBlock();
+
                                     $oldIndexStart = $myCode->getStart();
                                     $oldIndexEnd = $myCode->getEnd();
 

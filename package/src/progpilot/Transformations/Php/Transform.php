@@ -366,7 +366,7 @@ class Transform implements Visitor
                 $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
                 $this->context->getCurrentMycode()->addCode($instEndExpr);
             }
-        } elseif ($op instanceof Op\Expr\Exit_) {
+        } elseif ($op instanceof Op\Expr\Exit_ || $op instanceof Op\Terminal\Exit_) {
             if (Common::isFuncCallWithoutReturn($op)) {
                 // expr of type "assign" to have a defined return
                 $myExpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
@@ -437,7 +437,7 @@ class Transform implements Visitor
                 // if($property instanceof Op\Stmt\ClassMethod)
                 if ($property instanceof Op\Stmt\Property) {
                     $propertyName = Common::getNameDefinition($property);
-                    $visibility = Common::getTypeVisibility($property->visiblity);
+                    $visibility = Common::getTypeVisibility($property->visibility);
 
                     $myDef = new MyDefinition(
                         $property->getLine(),

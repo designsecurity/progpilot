@@ -382,7 +382,7 @@ class MyCode
                     case Opcodes::END_EXPRESSION:
                         echo Opcodes::END_EXPRESSION."\n";
                         $myExpr = $instruction->getProperty(MyInstruction::EXPR);
-                        echo "expression et tainted = ".$myExpr->isTainted()."\n";
+                        echo "expression tainted = ".$myExpr->isTainted()."\n";
                         break;
 
                     case Opcodes::CONCAT_LIST:
@@ -419,18 +419,8 @@ class MyCode
 
                     case Opcodes::TEMPORARY:
                         echo Opcodes::TEMPORARY."\n";
-                        $listOfMyTemp = [];
-                        if ($instruction->isPropertyExist(MyInstruction::PHI)) {
-                            for ($i = 0; $i < $instruction->getProperty(MyInstruction::PHI); $i++) {
-                                $listOfMyTemp[] = $instruction->getProperty("temp_".$i);
-                            }
-                        } else {
-                            $listOfMyTemp[] = $instruction->getProperty(MyInstruction::TEMPORARY);
-                        }
-                            
-                        foreach ($listOfMyTemp as $def) {
-                            $def->printStdout();
-                        }
+                        $def = $instruction->getProperty(MyInstruction::TEMPORARY);
+                        $def->printStdout();
 
                         break;
 

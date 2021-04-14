@@ -44,6 +44,7 @@ class MyDefinition extends MyOp
     private $className;
     private $isSanitized;
     private $typeSanitized;
+    private $lastKnownValue;
     private $valueFromDef;
     private $cast;
     private $isProperty;

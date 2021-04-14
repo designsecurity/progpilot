@@ -27,6 +27,8 @@ class Assign
 {
     public static function instruction($context, $isReturnDef = false, $isDefine = false, $myblock = null)
     {
+        $backDef = null;
+
         if ($isDefine) {
             $name = "const_".rand();
             if (isset($context->getCurrentOp()->args[0]->value)) {
@@ -72,12 +74,34 @@ class Assign
             if ($context->getCurrentOp() instanceof Op\Expr\AssignRef) {
                 $isRef = true;
             }
+            
+            $fromPhi = false;
+            // currently we disable analysis of phi
+            /*
+            if (isset($context->getCurrentOp()->expr->ops[0])
+                && $context->getCurrentOp()->expr->ops[0] instanceof Op\Phi) {
 
-            $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_ASSIGN));
+                $tmpDefsFromPhi = [];
+                $fromPhi = true;
+
+                // normally there is only two cars for a phi => phi(var1,var2)
+                $phi = $context->getCurrentOp()->expr->ops[0];
+                foreach ($phi->vars as $phivar) {
+                    if (isset($phivar->ops[0]) && $phivar->ops[0] instanceof Op\Expr\Assign) {
+                        $oldOp = $context->getCurrentOp();
+                        $context->setCurrentOp($phivar->ops[0]);
+                        $tmpDefsFromPhi[] = Assign::instruction($context);
+                        $context->setCurrentOp($oldOp);
+                    }
+                }
+            }
+            */
 
             // it's an expression which will define a definition
             $myExpr = new MyExpr($context->getCurrentLine(), $context->getCurrentColumn());
             $myExpr->setAssign(true);
+
+            $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_ASSIGN));
 
             if (isset($context->getCurrentOp()->expr->ops[0])
                         && $context->getCurrentOp()->expr->ops[0] instanceof Op\Iterator\Value) {
@@ -86,12 +110,28 @@ class Assign
 
             $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
                 
-            $backDef = Expr::instruction($exprOp, $context, $myExpr);
+            if ($fromPhi) {
+                $myTemp = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), "phi_".rand());
+                $myTemp->setExpr($myExpr);
+                $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
+                $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
+                $instTemporarySimple->addProperty(MyInstruction::PHI, count($tmpDefsFromPhi));
+
+                $nbvars = 0;
+                foreach($tmpDefsFromPhi as $defFromPhi) {
+                    $defFromPhi->setExpr($myExpr);
+                    $instTemporarySimple->addProperty("temp_".$nbvars, $defFromPhi);
+                    $nbvars ++;
+                }
+
+                $context->getCurrentMycode()->addCode($instTemporarySimple);
+            } else {
+                $backDef = Expr::instruction($exprOp, $context, $myExpr);
+            }
 
             $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);
             $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
             $context->getCurrentMycode()->addCode($instEndExpr);
-
             $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::END_ASSIGN));
 
             $myDef = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), $name);
@@ -164,5 +204,7 @@ class Assign
                 }
             }
         }
+
+        return $backDef;
     }
 }
