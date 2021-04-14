@@ -118,7 +118,7 @@ class Assign
                 $instTemporarySimple->addProperty(MyInstruction::PHI, count($tmpDefsFromPhi));
 
                 $nbvars = 0;
-                foreach($tmpDefsFromPhi as $defFromPhi) {
+                foreach ($tmpDefsFromPhi as $defFromPhi) {
                     $defFromPhi->setExpr($myExpr);
                     $instTemporarySimple->addProperty("temp_".$nbvars, $defFromPhi);
                     $nbvars ++;
