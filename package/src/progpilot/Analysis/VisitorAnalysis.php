@@ -459,7 +459,6 @@ class VisitorAnalysis
 
                 switch ($instruction->getOpcode()) {
                     case Opcodes::ENTER_BLOCK:
-
                         $myBlock = $instruction->getProperty(MyInstruction::MYBLOCK);
 
                         if ($this->currentStorageMyBlocks->contains($myBlock)) {
