@@ -60,14 +60,22 @@ class Transform implements Visitor
     public function leaveScript(Script $script)
     {
         // creating edges for myblocks structure as block structure
+
+        echo "leaveScript 1\n";
         foreach ($this->sBlocks as $block) {
+            echo "leaveScript 2\n";
             $myBlock = $this->sBlocks[$block];
             foreach ($block->parents as $block_parent) {
+                echo "leaveScript 3\n";
                 if ($this->sBlocks->contains($block_parent)) {
+                    echo "leaveScript 4\n";
                     $myBlockParent = $this->sBlocks[$block_parent];
                     $myBlock->addParent($myBlockParent);
                 }
             }
+
+            echo "leaveScript 5\n";
+            var_dump($myBlock);
         }
 
         foreach ($this->blockIfToBeResolved as $blockResolved) {
@@ -166,8 +174,6 @@ class Transform implements Visitor
         $instFunc->addProperty(MyInstruction::MYFUNC, $myFunction);
         $this->context->getCurrentMycode()->addCode($instFunc);
 
-        // by default it's a function, not a method
-        $className = "function";
         if (!is_null($func->class)) {
             $className = $func->class->value;
             // at this moment class is defined
@@ -211,9 +217,14 @@ class Transform implements Visitor
         }
 
         // because when we call (funccall) a function by name, it can be undefined
+        /*
         $fileNameHash = hash("sha256", $this->context->getCurrentMyfile()->getName());
         $this->context->getFunctions()->addFunction($fileNameHash, $className, $myFunction->getName(), $myFunction);
+        */
         $this->context->setCurrentFunc($myFunction);
+
+        echo "enter function\n";
+        var_dump($myFunction);
     }
 
     public function leaveFunc(Func $func)
@@ -234,13 +245,19 @@ class Transform implements Visitor
             }
         }
 
-        $className = null;
+        // by default it's a function, not a method
+        $className = "function";
         if (!is_null($func->class)) {
             $className = $func->class->value;
         }
-
+/*
         $fileNameHash = hash("sha256", $this->context->getCurrentMyfile()->getName());
         $myFunction = $this->context->getFunctions()->getFunction($func->name, $className);
+*/
+        $myFunction = $this->context->getCurrentFunc();
+
+        echo "leave function\n";
+        var_dump($myFunction);
 
         if (!is_null($myFunction)) {
             $myFunction->setLastLine($this->context->getCurrentLine());
@@ -251,6 +268,9 @@ class Transform implements Visitor
             $instFunc->addProperty(MyInstruction::MYFUNC, $myFunction);
             $this->context->getCurrentMycode()->addCode($instFunc);
         }
+
+        $fileNameHash = hash("sha256", $this->context->getCurrentMyfile()->getName());
+        $this->context->getFunctions()->addFunction($fileNameHash, $className, $myFunction->getName(), $myFunction);
     }
 
     public function parseconditions($instStartIf, $cond)

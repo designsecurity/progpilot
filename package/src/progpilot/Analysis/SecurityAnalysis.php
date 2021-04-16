@@ -38,15 +38,15 @@ class SecurityAnalysis
         return false;
     }
 
-    public static function isSafe($indexParameter, $myDef, $mySink, $isFlow = false)
+    public static function isSafe($indexParameter, $myDef, $myEndDef, $mySink, $isFlow = false)
     {
         $possibleConditions = ["QUOTES", "object_tainted", "array_tainted", "variable_tainted", null];
         
         foreach ($possibleConditions as $possibleCondition) {
             if ($mySink->isParameterCondition($indexParameter, $possibleCondition)) {
                 if (!SecurityAnalysis::isSafeCondition(
-                    $indexParameter,
                     $myDef,
+                    $myEndDef, 
                     $mySink,
                     $possibleCondition,
                     $isFlow
@@ -60,10 +60,11 @@ class SecurityAnalysis
         return true;
     }
 
-    public static function isSafeCondition($indexParameter, $myDef, $mySink, $condition, $isFlow)
+    public static function isSafeCondition($myDef, $myEndDef, $mySink, $condition, $isFlow)
     {
         if ($myDef->isTainted()
-            && $myDef->getCast() === MyDefinition::CAST_NOT_SAFE
+            && ($myDef->getCast() === MyDefinition::CAST_NOT_SAFE 
+                && $myEndDef->getCast() === MyDefinition::CAST_NOT_SAFE)
                 && $myDef->getArrayValue() !== "PROGPILOT_ALL_INDEX_TAINTED"
                     && !$myDef->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
             if ($myDef->isSanitized()) {
@@ -118,7 +119,7 @@ class SecurityAnalysis
         if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
             $nameInstance = $myFuncCall->getNameInstance();
         }
-        
+
         $mySink = $context->inputs->getSinkByName($context, $stackClass, $myFuncCall, $myClass);
         if (!is_null($mySink)) {
             $nbParams = $myFuncCall->getNbParams();
@@ -134,7 +135,7 @@ class SecurityAnalysis
                         if ($myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
                             && $mySink->isParameterCondition($i + 1, "array_tainted")) {
                             foreach ($myDefArg->getCopyArrays() as $copyarray) {
-                                if (!SecurityAnalysis::isSafe($i + 1, $copyarray[1], $mySink)) {
+                                if (!SecurityAnalysis::isSafe($i + 1, $copyarray[1], $myDefArg,  $mySink)) {
                                     $conditionRespected = true;
                                 }
                             }
@@ -144,7 +145,7 @@ class SecurityAnalysis
                             if (!is_null($taintedExpr)) {
                                 $defsExpr = $taintedExpr->getDefs();
                                 foreach ($defsExpr as $defExpr) {
-                                    if (!SecurityAnalysis::isSafe($i + 1, $defExpr, $mySink)) {
+                                    if (!SecurityAnalysis::isSafe($i + 1, $defExpr, $myDefArg, $mySink)) {
                                         $conditionRespected = true;
                                     }
                                 }
@@ -178,8 +179,7 @@ class SecurityAnalysis
                                     $myFuncCall,
                                     $context,
                                     $mySink,
-                                    $copyarray[1],
-                                    $myDefExpr
+                                    $copyarray[1]
                                 );
                             }
                         } else {
@@ -188,8 +188,7 @@ class SecurityAnalysis
                                 $myFuncCall,
                                 $context,
                                 $mySink,
-                                $myDefArg,
-                                $myDefExpr
+                                $myDefArg
                             );
                         }
                     }
@@ -198,7 +197,7 @@ class SecurityAnalysis
         }
     }
 
-    public static function taintedFlow($indexParameter, $context, $defExprFlow, $mySink)
+    public static function taintedFlow($indexParameter, $defExprFlow, $myEndDef, $mySink)
     {
         $resultTaintedFlow = [];
 
@@ -209,7 +208,7 @@ class SecurityAnalysis
             $defsExprTainted = $taintedFlowExpr->getDefs();
 
             foreach ($defsExprTainted as $defExprFlowFrom) {
-                if (!SecurityAnalysis::isSafe($indexParameter, $defExprFlowFrom, $mySink, true)) {
+                if (!SecurityAnalysis::isSafe($indexParameter, $defExprFlowFrom, $myEndDef, $mySink, true)) {
                     $tmpname = \progpilot\Utils::printDefinition($mySink->getLanguage(), $defExprFlowFrom);
                     $oneTainted["flow_name"] = $tmpname;
                     $oneTainted["flow_line"] = $defExprFlowFrom->getLine();
@@ -240,7 +239,7 @@ class SecurityAnalysis
         return [$resultTaintedFlow, $idFlow];
     }
 
-    public static function call($indexParameter, $myFuncCall, $context, $mySink, $myDef, $myExpr)
+    public static function call($indexParameter, $myFuncCall, $context, $mySink, $myDef)
     {
         //$results = &$context->outputs->getResults();
         $hashIdVuln = "";
@@ -258,9 +257,8 @@ class SecurityAnalysis
         $taintedExpr = $myDef->getTaintedByExpr();
         if (!is_null($taintedExpr)) {
             $defsExpr = $taintedExpr->getDefs();
-
             foreach ($defsExpr as $defExpr) {
-                if (!SecurityAnalysis::isSafe($indexParameter, $defExpr, $mySink)) {
+                if (!SecurityAnalysis::isSafe($indexParameter, $defExpr, $myDef, $mySink)) {
                     $sourceName = \progpilot\Utils::printDefinition($mySink->getLanguage(), $defExpr);
                     $sourceLine = $defExpr->getLine();
                     $sourceColumn = $defExpr->getColumn();
@@ -273,7 +271,7 @@ class SecurityAnalysis
                         $sourceColumn,
                         $sourceFile
                     )) {
-                        $resultsFlow = SecurityAnalysis::taintedFlow($indexParameter, $context, $defExpr, $mySink);
+                        $resultsFlow = SecurityAnalysis::taintedFlow($indexParameter, $defExpr, $myDef, $mySink);
                         $resultTaintedFlow = $resultsFlow[0];
                         $hashIdVuln .= $resultsFlow[1];
 

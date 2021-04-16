@@ -70,6 +70,10 @@ class Lang
         Lang::GLOBAL_ERROR.
         Lang::GLOBAL_CHECK_CONFIG.
         "Unable to parse the YAML file configuration";
+
+    const UNABLE_TO_CREATE_WORKSPACE =
+            Lang::GLOBAL_ERROR.
+            "Unable to create the workspace directory, do you have the correct permissions on filesystem?";
         
     const COMMAND_LINE_ARG =
         "Usage of progpilot : php progpilot.phar [--configuration path_to_config_file.yml] ".

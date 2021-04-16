@@ -12,6 +12,7 @@ namespace progpilot\Dataflow;
 
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyOp;
+use progpilot\Utils;
 
 class Functions
 {
@@ -25,6 +26,7 @@ class Functions
     public function getAllFunctions($funcname, $className = "function")
     {
         $functionsTmp = [];
+
         foreach ($this->functions as $id => $functionsFile) {
             if (isset($functionsFile[$className][$funcname])) {
                 $functionsTmp[] = $functionsFile[$className][$funcname];
@@ -77,13 +79,23 @@ class Functions
         return $this->functions;
     }
 
-    public function addFunction($filenamehash, $classname, $funcname, $func)
+    public function updateFunction($filenamehash, $classname, $funcname, $myFunc)
+    {
+        $this->addFunction($filenamehash, $classname, $funcname, $myFunc);
+    }
+
+    public function addFunction($filenamehash, $classname, $funcname, $myFunc)
     {
         // we can have many functions/methods with the same name
         
-        if (!isset($this->functions[$filenamehash][$classname][$funcname])) {
-            $this->functions[$filenamehash][$classname][$funcname] = $func;
-        }
+        //if (!isset($this->functions[$filenamehash][$classname][$funcname])) {
+            //$this->functions[$filenamehash][$classname][$funcname] = $func;
+            $signature = hash("sha256", "$filenamehash"."$classname"."$funcname");
+            echo "before serializing\n";
+            var_dump($myFunc);
+            Utils::serializeFunc($myFunc, $signature);
+            $this->functions[$filenamehash][$classname][$funcname] = $signature;
+        //}
 
         /*
         $continue = true;
