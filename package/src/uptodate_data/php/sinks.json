@@ -1,7 +1,7 @@
 {
     "sinks": [
-        {"name": "setcookie", "parameters": [{"id": 2}], "language": "php", "attack": "session_fixation", "cwe": "CWE_384"},
-        {"name": "setrawcookie", "parameters": [{"id": 2}], "language": "php", "attack": "session_fixation", "cwe": "CWE_384"},
+        {"name": "setcookie", "parameters": [{"id": 1}], "language": "php", "attack": "session_fixation", "cwe": "CWE_384"},
+        {"name": "setrawcookie", "parameters": [{"id": 1}], "language": "php", "attack": "session_fixation", "cwe": "CWE_384"},
         {"name": "session_id", "parameters": [{"id": 1}], "language": "php", "attack": "session_fixation", "cwe": "CWE_384"},
         
         {"name": "echo", "conditions": "QUOTES_HTML", "language": "php", "attack": "xss", "cwe": "CWE_79"},

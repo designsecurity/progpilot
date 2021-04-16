@@ -164,7 +164,7 @@ class ValueAnalysis
                 }
             }
 
-            if ($nbCastSafe === count($castValues)) {
+            if ($nbCastSafe === count($castValues) && $nbCastSafe > 0) {
                 $defAssign->setCast(MyDefinition::CAST_SAFE);
             } else {
                 $defAssign->setCast(MyDefinition::CAST_NOT_SAFE);

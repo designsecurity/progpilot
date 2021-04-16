@@ -202,7 +202,8 @@ class VisitorAnalysis
                 );
             }
         } else {
-            $myFunc = $this->context->getFunctions()->getFunction($funcName);
+            $signFunc = $this->context->getFunctions()->getFunction($funcName);
+            $myFunc = Utils::unserializeFunc($signFunc);
 
             // needed?? because below it's also called
             $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
@@ -441,6 +442,9 @@ class VisitorAnalysis
         $startTime = microtime(true);
         $index = $myCode->getStart();
         $code = $myCode->getCodes();
+
+        echo "analyze $index\n";
+        $myCode->printStdout();
         
         if ($this->context->getCurrentNbDefs() > $this->context->getLimitDefs()) {
             Utils::printWarning($this->context, Lang::MAX_DEFS_EXCEEDED);
@@ -459,7 +463,10 @@ class VisitorAnalysis
 
                 switch ($instruction->getOpcode()) {
                     case Opcodes::ENTER_BLOCK:
+                        echo "ENTER_BLOCK 1\n";
                         $myBlock = $instruction->getProperty(MyInstruction::MYBLOCK);
+                        var_dump($myBlock);
+
 
                         if ($this->currentStorageMyBlocks->contains($myBlock)) {
                             array_pop($this->myBlockStack);
@@ -477,14 +484,21 @@ class VisitorAnalysis
                         array_push($this->myBlockStack, $this->currentMyBlock);
 
                         $this->currentStorageMyBlocks->attach($myBlock);
+
+                        echo "ENTER_BLOCK 2\n";
                         
                         // we remove this parent because it's a loop while(block1) block2
                         // and block1 must be analysis before block2
                         if (!$myBlock->getIsLoop()) {
+                            echo "ENTER_BLOCK 3\n";
                             foreach ($myBlock->parents as $blockParent) {
+                                echo "ENTER_BLOCK 4\n";
                                 if (!$this->currentStorageMyBlocks->contains($blockParent)) {
+                                    echo "ENTER_BLOCK 5\n";
                                     $addrStart = $blockParent->getStartAddressBlock();
                                     $addrEnd = $blockParent->getEndAddressBlock();
+
+                                    echo "ENTER_BLOCK addrStart = '$addrStart' addrEnd = '$addrEnd'\n";
 
                                     $oldIndexStart = $myCode->getStart();
                                     $oldIndexEnd = $myCode->getEnd();
@@ -594,6 +608,7 @@ class VisitorAnalysis
                             $listOfMyTemp[] = $instruction->getProperty(MyInstruction::TEMPORARY);
                         }
                           
+                        echo "TEMPORARY 1\n";
                         foreach ($listOfMyTemp as $tempDefa) {
                             $tempDefaMyExpr = $tempDefa->getExpr();
                             $defAssignMyExpr = $tempDefaMyExpr->getAssignDef();
@@ -705,7 +720,12 @@ class VisitorAnalysis
                             $storageCast = ValueAnalysis::$exprsCast[$tempDefaMyExpr];
                             $storageKnownValues = ValueAnalysis::$exprsKnownValues[$tempDefaMyExpr];
 
+                            echo "TEMPORARY 2\n";
+                            $tempDefa->printStdout();
+
                             foreach ($defs as $def) {
+                            echo "TEMPORARY 3\n";
+                            $def->printStdout();
                                 $safe = AssertionAnalysis::temporarySimple(
                                     $this->context,
                                     $this->defs,
@@ -723,14 +743,13 @@ class VisitorAnalysis
                                 if ($visibility) {
                                     $storageCast[] = $tempDefa->getCast();
                                     $storageKnownValues["".$tempDefa->getId().""][] = $def->getLastKnownValues();
-
                                     $def->setIsEmbeddedByChars($tempDefa->getIsEmbeddedByChars(), true);
                                 }
 
                                 if ($visibility && !$safe) {
                                     TaintAnalysis::setTainted($def->isTainted(), $defAssignMyExpr, $tempDefaMyExpr);
                                     ValueAnalysis::copyValues($def, $defAssignMyExpr);
-                                    
+
                                     if ($def->getLabel() === MyDefinition::SECURITY_HIGH) {
                                         \progpilot\Analysis\CustomAnalysis::disclosureOfInformation(
                                             $this->context,
@@ -849,7 +868,7 @@ class VisitorAnalysis
                                 $newInst->addProperty(MyInstruction::MYFUNC_CALL, $myFunctionCall);
                                 $newInst->addProperty(MyInstruction::EXPR, $myExpr);
                                 $newInst->addProperty(MyInstruction::ARR, $arrFuncCall);
-                                    
+                                 
                                 foreach ($defArg->getLastKnownValues() as $lastValue) {
                                     $myFunctionCall->setName($lastValue);
                                     $newInst->addProperty(MyInstruction::FUNCNAME, $lastValue);
