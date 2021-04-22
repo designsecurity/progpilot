@@ -39,7 +39,8 @@ class ResolveDefs
             if (isset($codes[$index + 1]) && $codes[$index + 1]->getOpcode() === Opcodes::CONCAT_RIGHT) {
                 if (isset($codes[$index + 2]) && $codes[$index + 2]->getOpcode() === Opcodes::TEMPORARY) {
                     $tempInstruction = $codes[$index + 2];
-                    $myTemp = $context->getSymbols()->getRawDef($tempInstruction->getProperty(MyInstruction::TEMPORARY));
+                    $myTempId = $tempInstruction->getProperty(MyInstruction::TEMPORARY);
+                    $myTemp = $context->getSymbols()->getRawDef($myTempId);
 
                     if (isset($myTemp->getLastKnownValues()[0])) {
                         $suffix = $myTemp->getLastKnownValues()[0];
@@ -175,7 +176,6 @@ class ResolveDefs
         if ($myFuncCall->getName() === "__construct") {
             $classStackName[$i][] = $myFuncCall->getBackDef();
         } elseif ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
-
             $backdef = $context->getSymbols()->getRawDef($myFuncCall->getBackDef());
             $properties = $backdef->property->getProperties();
 

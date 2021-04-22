@@ -38,7 +38,8 @@ class Symbols
         return null;
     }
     
-    public function getFreeDefId() {
+    public function getFreeDefId()
+    {
         
         $id = rand();
         while (isset($this->rawDefs[$id])) {
@@ -48,7 +49,7 @@ class Symbols
         return $id;
     }
 
-    public function addValue($value) 
+    public function addValue($value)
     {
         $key = array_search($value, $this->values);
 
@@ -60,7 +61,7 @@ class Symbols
         return $key;
     }
 /*
-    public function addMyFile($myFile) 
+    public function addMyFile($myFile)
     {
         $exist = false;
         foreach($this->myFiles as $file) {
@@ -78,18 +79,18 @@ class Symbols
         return $key;
     }
 
-    public function getMyFile($id) 
+    public function getMyFile($id)
     {
         if(isset($this->myFiles[$id])) {
             return $this->myFiles[$id];
         }
-        
+
         return null;
     }
 */
-    public function getValue($id) 
+    public function getValue($id)
     {
-        if(isset($this->values[$id])) {
+        if (isset($this->values[$id])) {
             return $this->values[$id];
         }
         

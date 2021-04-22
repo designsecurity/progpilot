@@ -187,7 +187,8 @@ class CustomAnalysis
                                         break;
                                     }
                                     
-                                    $defArg = $context->getSymbols()->getRawDef($instruction->getProperty("argdef$idParam"));
+                                    $defArgId = $instruction->getProperty("argdef$idParam");
+                                    $defArg = $context->getSymbols()->getRawDef($defArgId);
                         
                                     foreach ($valuesParameter as $valueParameter) {
                                         $defLastKnownValues = [];

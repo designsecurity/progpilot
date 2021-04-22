@@ -597,10 +597,12 @@ class VisitorAnalysis
                         $listOfMyTemp = [];
                         if ($instruction->isPropertyExist(MyInstruction::PHI)) {
                             for ($i = 0; $i < $instruction->getProperty(MyInstruction::PHI); $i++) {
-                                $listOfMyTemp[] = $this->context->getSymbols()->getRawDef($instruction->getProperty("temp_".$i));
+                                $tempId = $instruction->getProperty("temp_".$i);
+                                $listOfMyTemp[] = $this->context->getSymbols()->getRawDef($tempId);
                             }
                         } else {
-                            $listOfMyTemp[] = $this->context->getSymbols()->getRawDef($instruction->getProperty(MyInstruction::TEMPORARY));
+                            $tempId = $instruction->getProperty(MyInstruction::TEMPORARY);
+                            $listOfMyTemp[] = $this->context->getSymbols()->getRawDef($tempId);
                         }
                         
                         foreach ($listOfMyTemp as $tempDefa) {
@@ -831,7 +833,8 @@ class VisitorAnalysis
                                     
                                 if ($funcName === "call_user_func") {
                                     for ($nbParams = 1; $nbParams < $myFuncCall->getNbParams(); $nbParams ++) {
-                                        $oldDefArg = $this->context->getSymbols()->getRawDef($instruction->getProperty("argdef$nbParams"));
+                                        $oldDefArgId = $instruction->getProperty("argdef$nbParams");
+                                        $oldDefArg = $this->context->getSymbols()->getRawDef($oldDefArgId);
                                         $oldExprArg = $instruction->getProperty("argexpr$nbParams");
                                         
                                         $newNbParams = $nbParams - 1;
@@ -842,7 +845,8 @@ class VisitorAnalysis
                                     $myFunctionCall->setNbParams($myFuncCall->getNbParams() - 1);
                                 } else {
                                     if ($instruction->isPropertyExist("argdef1")) {
-                                        $defArgParam = $this->context->getSymbols()->getRawDef($instruction->getProperty("argdef1"));
+                                        $defArgParamId = $instruction->getProperty("argdef1");
+                                        $defArgParam = $this->context->getSymbols()->getRawDef($defArgParamId);
                                         
                                         if ($defArgParam->isType(MyDefinition::TYPE_COPY_ARRAY)) {
                                             $newNbParams = 0;
