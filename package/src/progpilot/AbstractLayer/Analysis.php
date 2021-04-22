@@ -38,13 +38,14 @@ class Analysis
         }
     }
 
-    public static function forAllDefsOfFunctionExceptReturnDefs($func, $myFunc)
+    public static function forAllDefsOfFunctionExceptReturnDefs($context, $func, $myFunc)
     {
-        $returnDefs = $myFunc->getReturnDefs();
+        $returnDefIds = $myFunc->getReturnDefs();
         foreach ($myFunc->getDefs()->getDefs() as $defnames) {
             if (is_array($defnames)) {
-                foreach ($defnames as $def) {
-                    if (!in_array($def, $returnDefs, true)) {
+                foreach ($defnames as $defId) {
+                    $def = $context->getSymbols()->getRawDef($defId);
+                    if (!in_array($def->getId(), $returnDefIds, true)) {
                         $params = array($def, $myFunc->getDefs());
                         call_user_func_array(__NAMESPACE__ ."\\$func", $params);
                     }
@@ -53,14 +54,16 @@ class Analysis
         }
     }
 
-    public static function forAllReturnDefsOfFunction($func, $myFunc)
+    public static function forAllReturnDefsOfFunction($context, $func, $myFunc)
     {
         $initialReturnDefs = $myFunc->getInitialReturnDefs();
         $returnDefs = $myFunc->getReturnDefs();
         $i = 0;
-        foreach ($returnDefs as $returnDef) {
+        foreach ($returnDefs as $returnDefId) {
+            $returnDef = $context->getSymbols()->getRawDef($returnDefId);
             if (isset($initialReturnDefs[$i])) {
-                $params = array($returnDef, $initialReturnDefs[$i]);
+                $InitialreturnDef = $context->getSymbols()->getRawDef($initialReturnDefs[$i]);
+                $params = array($returnDef, $InitialreturnDef);
                 call_user_func_array(__NAMESPACE__ ."\\$func", $params);
             }
 
@@ -93,7 +96,7 @@ class Analysis
         }
     }
 
-    public static function checkIfOneFunctionArgumentIsNew($myFunc, $instruction)
+    public static function checkIfOneFunctionArgumentIsNew($context, $myFunc, $instruction)
     {
         if (!is_null($myFunc)) {
             $params = $myFunc->getParams();
@@ -113,11 +116,14 @@ class Analysis
 
             for ($i = 0; $i < count($params); $i++) {
                 if ($instruction->isPropertyExist("argdef$i")) {
-                    $defArg = $instruction->getProperty("argdef$i");
+                    $defArgId = $instruction->getProperty("argdef$i");
+                    $defArg = $context->getSymbols()->getRawDef($defArgId);
 
                     $pastArgs = $myFunc->getPastArguments();
                     if (isset($pastArgs[$i]) && is_array($pastArgs[$i])) {
-                        foreach ($pastArgs[$i] as $pastArg) {
+                        foreach ($pastArgs[$i] as $pastArgId) {
+                            $pastArg = $context->getSymbols()->getRawDef($pastArgId);
+
                             if (!$defArg->isTainted()
                                 && $defArg->getLastKnownValues() === $pastArg->getLastKnownValues()
                                     && $defArg->getType() === $pastArg->getType()
@@ -170,7 +176,8 @@ class Analysis
                         
                         if (isset($stackClass[$i]) && count($stackClass[$i]) > 0) {
                             $foundProperty = false;
-                            foreach ($stackClass[$i] as $propClass) {
+                            foreach ($stackClass[$i] as $propClassId) {
+                                $propClass = $context->getSymbols()->getRawDef($propClassId);
                                 $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                         
@@ -239,7 +246,8 @@ class Analysis
                         
                         if (isset($stackClass[$i]) && count($stackClass[$i]) > 0) {
                             $foundProperty = false;
-                            foreach ($stackClass[$i] as $propClass) {
+                            foreach ($stackClass[$i] as $propClassId) {
+                                $propClass = $context->getSymbols()->getRawDef($propClassId);
                                 $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                     

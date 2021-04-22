@@ -12,9 +12,7 @@ namespace progpilot\Objects;
 
 class MyAssertion
 {
-    private $arr;
     private $typeAssertion;
-
     private $myDef;
 
     public function __construct($myDef, $typeAssertion)

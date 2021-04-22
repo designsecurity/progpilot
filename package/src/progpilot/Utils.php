@@ -27,7 +27,7 @@ class Utils
         $funcWorkSpace = $workSpace."/".$signature.".ser";
         
         if (file_exists($funcWorkSpace)) {
-            $content = base64_decode(file_get_contents($funcWorkSpace));
+            $content = file_get_contents($funcWorkSpace);
             $myFunc = unserialize($content);
             if (!is_null($myFunc)) {
                 return $myFunc;
@@ -42,7 +42,7 @@ class Utils
         $workSpace = Utils::getWorkSpace();
         $funcWorkSpace = $workSpace."/".$signature.".ser";
         
-        $ser = base64_encode(serialize($myFunc));
+        $ser = serialize($myFunc);
         file_put_contents($funcWorkSpace, $ser);
     }
 

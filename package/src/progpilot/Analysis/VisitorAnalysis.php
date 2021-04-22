@@ -70,6 +70,7 @@ class VisitorAnalysis
         $hasSources = false;
                  
         $listMyFunc = [];
+
         IncludeAnalysis::funccall(
             $this->context,
             $this->defs,
@@ -89,7 +90,8 @@ class VisitorAnalysis
 
             $classOfFuncCallArr = $stackClass[count($stackClass) - 1];
 
-            foreach ($classOfFuncCallArr as $classOfFuncCall) {
+            foreach ($classOfFuncCallArr as $classOfFuncCallId) {
+                $classOfFuncCall = $this->context->getSymbols()->getRawDef($classOfFuncCallId);
                 $objectId = $classOfFuncCall->getObjectId();
                 $myClass = $this->context->getObjects()->getMyClassFromObject($objectId);
                 
@@ -104,7 +106,8 @@ class VisitorAnalysis
                     }
 
                     if (!is_null($method)) {
-                        $method->getThisDef()->setObjectId($objectId);
+                        $thisdef = $this->context->getSymbols()->getRawDef($method->getThisDef());
+                        $thisdef->setObjectId($objectId);
                     }
 
                     // twig analysis
@@ -119,6 +122,7 @@ class VisitorAnalysis
                     $listMyFunc[] = [$objectId, $myClass, $method, $visibility];
 
                     $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
+                        $this->currentContextCall,
                         $method,
                         $stackClass,
                         $this->context,
@@ -132,6 +136,7 @@ class VisitorAnalysis
                     );
                 } else {
                     $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
+                        $this->currentContextCall,
                         null,
                         $stackClass,
                         $this->context,
@@ -150,6 +155,7 @@ class VisitorAnalysis
             // but we authorize to specify method of unknown class during the configuration of sinks ...
             if (count($classOfFuncCallArr) === 0) {
                 $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
+                    $this->currentContextCall,
                     null,
                     $stackClass,
                     $this->context,
@@ -189,6 +195,7 @@ class VisitorAnalysis
                 $stackClass[0][0] = $myDefStatic;
 
                 $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
+                    $this->currentContextCall,
                     $method,
                     $stackClass,
                     $this->context,
@@ -202,11 +209,11 @@ class VisitorAnalysis
                 );
             }
         } else {
-            $signFunc = $this->context->getFunctions()->getFunction($funcName);
-            $myFunc = Utils::unserializeFunc($signFunc);
-
+            $myFunc = $this->context->getFunctions()->getFunction($funcName);
+            //$myFunc = Utils::unserializeFunc($signFunc);
             // needed?? because below it's also called
             $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
+                $this->currentContextCall,
                 $myFunc,
                 null,
                 $this->context,
@@ -273,7 +280,7 @@ class VisitorAnalysis
                     // we clean all the param of the function
                     // except return defs see functions21.php test case
                     $funcCallBack = "Callbacks::cleanTaintedDef";
-                    AbstractAnalysis::forAllDefsOfFunctionExceptReturnDefs($funcCallBack, $myFunc);
+                    AbstractAnalysis::forAllDefsOfFunctionExceptReturnDefs($this->context, $funcCallBack, $myFunc);
 
                     // we propagate the taint to the params
                     FuncAnalysis::funccallBefore(
@@ -285,7 +292,7 @@ class VisitorAnalysis
                         $this->context->getClasses()
                     );
 
-                    if (AbstractAnalysis::checkIfOneFunctionArgumentIsNew($myFunc, $instruction)
+                    if (AbstractAnalysis::checkIfOneFunctionArgumentIsNew($this->context, $myFunc, $instruction)
                         || !$myFunc->isVisited()
                             || $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)
                                 || $myFunc->hasGlobalVariables()
@@ -315,7 +322,7 @@ class VisitorAnalysis
                         }
                     } else {
                         $funcCallBack = "Callbacks::addAttributesOfInitialReturnDefs";
-                        AbstractAnalysis::forAllReturnDefsOfFunction($funcCallBack, $myFunc);
+                        AbstractAnalysis::forAllReturnDefsOfFunction($this->context, $funcCallBack, $myFunc);
                     }
                 }
             }
@@ -385,8 +392,9 @@ class VisitorAnalysis
                 $myFuncCall,
                 $visibility
             );
-                            
+                        
             $hasSources = TaintAnalysis::funccallSpecifyAnalysis(
+                $this->currentContextCall,
                 $myFunc,
                 $stackClass,
                 $this->context,
@@ -442,9 +450,6 @@ class VisitorAnalysis
         $startTime = microtime(true);
         $index = $myCode->getStart();
         $code = $myCode->getCodes();
-
-        echo "analyze $index\n";
-        $myCode->printStdout();
         
         if ($this->context->getCurrentNbDefs() > $this->context->getLimitDefs()) {
             Utils::printWarning($this->context, Lang::MAX_DEFS_EXCEEDED);
@@ -463,10 +468,7 @@ class VisitorAnalysis
 
                 switch ($instruction->getOpcode()) {
                     case Opcodes::ENTER_BLOCK:
-                        echo "ENTER_BLOCK 1\n";
                         $myBlock = $instruction->getProperty(MyInstruction::MYBLOCK);
-                        var_dump($myBlock);
-
 
                         if ($this->currentStorageMyBlocks->contains($myBlock)) {
                             array_pop($this->myBlockStack);
@@ -484,21 +486,14 @@ class VisitorAnalysis
                         array_push($this->myBlockStack, $this->currentMyBlock);
 
                         $this->currentStorageMyBlocks->attach($myBlock);
-
-                        echo "ENTER_BLOCK 2\n";
                         
                         // we remove this parent because it's a loop while(block1) block2
                         // and block1 must be analysis before block2
                         if (!$myBlock->getIsLoop()) {
-                            echo "ENTER_BLOCK 3\n";
                             foreach ($myBlock->parents as $blockParent) {
-                                echo "ENTER_BLOCK 4\n";
                                 if (!$this->currentStorageMyBlocks->contains($blockParent)) {
-                                    echo "ENTER_BLOCK 5\n";
                                     $addrStart = $blockParent->getStartAddressBlock();
                                     $addrEnd = $blockParent->getEndAddressBlock();
-
-                                    echo "ENTER_BLOCK addrStart = '$addrStart' addrEnd = '$addrEnd'\n";
 
                                     $oldIndexStart = $myCode->getStart();
                                     $oldIndexEnd = $myCode->getEnd();
@@ -579,8 +574,8 @@ class VisitorAnalysis
                         $expr = $instruction->getProperty(MyInstruction::EXPR);
 
                         if ($expr->isAssign()) {
-                            $defAssign = $expr->getAssignDef();
-
+                            $defAssign = $this->context->getSymbols()->getRawDef($expr->getAssignDef());
+                            
                             /*
                              * we have all the resolved defs so maybe when we have two def for one tempdef
                              * that could lead to abuse the compute of embedded chars for example
@@ -602,16 +597,15 @@ class VisitorAnalysis
                         $listOfMyTemp = [];
                         if ($instruction->isPropertyExist(MyInstruction::PHI)) {
                             for ($i = 0; $i < $instruction->getProperty(MyInstruction::PHI); $i++) {
-                                $listOfMyTemp[] = $instruction->getProperty("temp_".$i);
+                                $listOfMyTemp[] = $this->context->getSymbols()->getRawDef($instruction->getProperty("temp_".$i));
                             }
                         } else {
-                            $listOfMyTemp[] = $instruction->getProperty(MyInstruction::TEMPORARY);
+                            $listOfMyTemp[] = $this->context->getSymbols()->getRawDef($instruction->getProperty(MyInstruction::TEMPORARY));
                         }
-                          
-                        echo "TEMPORARY 1\n";
+                        
                         foreach ($listOfMyTemp as $tempDefa) {
                             $tempDefaMyExpr = $tempDefa->getExpr();
-                            $defAssignMyExpr = $tempDefaMyExpr->getAssignDef();
+                            $defAssignMyExpr = $this->context->getSymbols()->getRawDef($tempDefaMyExpr->getAssignDef());
                             
                             $sourceArr = $this->context->inputs->getSourceArrayByName(
                                 $tempDefa,
@@ -670,13 +664,15 @@ class VisitorAnalysis
                                 $stackClass = ResolveDefs::propertyClass($this->context, $this->defs, $tempDefa);
                                 $classOfTempDefArr = $stackClass[count($stackClass) - 1];
                                 
-                                foreach ($classOfTempDefArr as $classOfTempDef) {
+                                foreach ($classOfTempDefArr as $classOfTempDefId) {
+                                    $classOfTempDef = $this->context->getSymbols()->getRawDef($classOfTempDefId);
                                     $objectIdTmp = $classOfTempDef->getObjectId();
                                     $myClassFromObject =
                                         $this->context->getObjects()->getMyClassFromObject($objectIdTmp);
                                 
                                     if (!is_null($myClassFromObject)) {
                                         $sourceTmp = $this->context->inputs->getSourceByName(
+                                            $this->context,
                                             $stackClass,
                                             $tempDefa,
                                             false,
@@ -692,6 +688,7 @@ class VisitorAnalysis
                                 }
                             } else {
                                 $sourceTmp = $this->context->inputs->getSourceByName(
+                                    $this->context,
                                     null,
                                     $tempDefa,
                                     false,
@@ -720,12 +717,7 @@ class VisitorAnalysis
                             $storageCast = ValueAnalysis::$exprsCast[$tempDefaMyExpr];
                             $storageKnownValues = ValueAnalysis::$exprsKnownValues[$tempDefaMyExpr];
 
-                            echo "TEMPORARY 2\n";
-                            $tempDefa->printStdout();
-
                             foreach ($defs as $def) {
-                            echo "TEMPORARY 3\n";
-                            $def->printStdout();
                                 $safe = AssertionAnalysis::temporarySimple(
                                     $this->context,
                                     $this->defs,
@@ -769,7 +761,8 @@ class VisitorAnalysis
                                         $def->getObjectId()
                                     );
                                     if (!is_null($tmpMyClass)) {
-                                        foreach ($tmpMyClass->getProperties() as $property) {
+                                        foreach ($tmpMyClass->getProperties() as $propertyId) {
+                                            $property = $this->context->getSymbols()->getRawDef($propertyId);
                                             $myDefTemp = new MyDefinition(
                                                 $tempDefa->getLine(),
                                                 $tempDefa->getColumn(),
@@ -827,7 +820,7 @@ class VisitorAnalysis
                         
                         if ($funcName === "call_user_func" || $funcName === "call_user_func_array") {
                             if ($instruction->isPropertyExist("argdef0")) {
-                                $defArg = $instruction->getProperty("argdef0");
+                                $defArg = $this->context->getSymbols()->getRawDef($instruction->getProperty("argdef0"));
                                 
                                 $newInst = new MyInstruction(Opcodes::FUNC_CALL);
                         
@@ -838,23 +831,23 @@ class VisitorAnalysis
                                     
                                 if ($funcName === "call_user_func") {
                                     for ($nbParams = 1; $nbParams < $myFuncCall->getNbParams(); $nbParams ++) {
-                                        $oldDefArg = $instruction->getProperty("argdef$nbParams");
+                                        $oldDefArg = $this->context->getSymbols()->getRawDef($instruction->getProperty("argdef$nbParams"));
                                         $oldExprArg = $instruction->getProperty("argexpr$nbParams");
                                         
                                         $newNbParams = $nbParams - 1;
-                                        $newInst->addProperty("argdef$newNbParams", $oldDefArg);
+                                        $newInst->addProperty("argdef$newNbParams", $oldDefArg->getId());
                                         $newInst->addProperty("argexpr$newNbParams", $oldExprArg);
                                     }
                                     
                                     $myFunctionCall->setNbParams($myFuncCall->getNbParams() - 1);
                                 } else {
                                     if ($instruction->isPropertyExist("argdef1")) {
-                                        $defArgParam = $instruction->getProperty("argdef1");
+                                        $defArgParam = $this->context->getSymbols()->getRawDef($instruction->getProperty("argdef1"));
                                         
                                         if ($defArgParam->isType(MyDefinition::TYPE_COPY_ARRAY)) {
                                             $newNbParams = 0;
                                             foreach ($defArgParam->getCopyArrays() as $copyArray) {
-                                                $newInst->addProperty("argdef$newNbParams", $copyArray[1]);
+                                                $newInst->addProperty("argdef$newNbParams", $copyArray[1]->getId());
                                                 $newInst->addProperty("argexpr$newNbParams", $copyArray[1]->getExpr());
                                                 
                                                 $newNbParams ++;

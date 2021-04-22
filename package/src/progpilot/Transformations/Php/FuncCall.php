@@ -40,15 +40,16 @@ class FuncCall
         $typeArray = Common::getTypeIsArray($arg);
 
         $myDef = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), $defName);
+        $context->getSymbols()->addRawDef($myDef);
 
         $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_ASSIGN));
         $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
 
         $myExprparam = new MyExpr($context->getCurrentLine(), $context->getCurrentColumn());
         $myExprparam->setAssign(true);
-        $myExprparam->setAssignDef($myDef);
+        $myExprparam->setAssignDef($myDef->getId());
 
-        $instFuncCallMain->addProperty("argdef$numParam", $myDef);
+        $instFuncCallMain->addProperty("argdef$numParam", $myDef->getId());
         $instFuncCallMain->addProperty("argexpr$numParam", $myExprparam);
 
         // if we have funccall($arg, array("test"=>false)); for example
@@ -58,15 +59,16 @@ class FuncCall
             $myTemp = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), $defName);
             //$myTemp->addLastKnownValue($defName);
             $myTemp->setExpr($myExprparam);
+            $context->getSymbols()->addRawDef($myTemp);
 
             $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
-            $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
+            $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp->getId());
             $context->getCurrentMycode()->addCode($instTemporarySimple);
         } else {
             $myTemp = Expr::instruction($arg, $context, $myExprparam);
 
             if (!is_null($myTemp)) {
-                $myDef->setValueFromDef($myTemp);
+                $myDef->setValueFromDef($myTemp->getId());
             }
         }
 
@@ -77,7 +79,7 @@ class FuncCall
         $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::END_ASSIGN));
 
         $instDef = new MyInstruction(Opcodes::DEFINITION);
-        $instDef->addProperty(MyInstruction::DEF, $myDef);
+        $instDef->addProperty(MyInstruction::DEF, $myDef->getId());
         $context->getCurrentMycode()->addCode($instDef);
 
         unset($myExprparam);
@@ -112,10 +114,11 @@ class FuncCall
                 );
 
                 $chainedMethodDef->addType(MyDefinition::TYPE_INSTANCE);
+                $context->getSymbols()->addRawDef($chainedMethodDef);
 
                 $instDefChained = new MyInstruction(Opcodes::DEFINITION);
-                $instDefChained->addProperty(MyInstruction::DEF, $chainedMethodDef);
-                $instDefChained->addProperty(MyInstruction::CHAINED_DEF, $chainedMethodDef);
+                $instDefChained->addProperty(MyInstruction::DEF, $chainedMethodDef->getId());
+                $instDefChained->addProperty(MyInstruction::CHAINED_DEF, $chainedMethodDef->getId());
                 $context->getCurrentMycode()->addCode($instDefChained);
             }
 
@@ -192,7 +195,8 @@ class FuncCall
                 $mybackdef->property->setProperties($propertyName);
             }
 
-            $myFunctionCall->setBackDef($mybackdef);
+            $context->getSymbols()->addRawDef($mybackdef);
+            $myFunctionCall->setBackDef($mybackdef->getId());
         }
 
         $listArgs = [];
@@ -220,7 +224,7 @@ class FuncCall
         $myFunctionCall->setNbParams($nbparams);
         if (!empty($chainedMethod)) {
             $myFunctionCall->setIsChainedMethod(true);
-            $myFunctionCall->setChainedMethod($chainedMethodDef);
+            $myFunctionCall->setChainedMethod($chainedMethodDef->getId());
         }
 
         $instFuncCallMain->addProperty(MyInstruction::MYFUNC_CALL, $myFunctionCall);

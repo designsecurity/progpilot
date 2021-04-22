@@ -46,7 +46,7 @@ class SecurityAnalysis
             if ($mySink->isParameterCondition($indexParameter, $possibleCondition)) {
                 if (!SecurityAnalysis::isSafeCondition(
                     $myDef,
-                    $myEndDef, 
+                    $myEndDef,
                     $mySink,
                     $possibleCondition,
                     $isFlow
@@ -63,7 +63,7 @@ class SecurityAnalysis
     public static function isSafeCondition($myDef, $myEndDef, $mySink, $condition, $isFlow)
     {
         if ($myDef->isTainted()
-            && ($myDef->getCast() === MyDefinition::CAST_NOT_SAFE 
+            && ($myDef->getCast() === MyDefinition::CAST_NOT_SAFE
                 && $myEndDef->getCast() === MyDefinition::CAST_NOT_SAFE)
                 && $myDef->getArrayValue() !== "PROGPILOT_ALL_INDEX_TAINTED"
                     && !$myDef->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
@@ -129,13 +129,13 @@ class SecurityAnalysis
                     if ($mySink->isParameter($i + 1)) {
                         $conditionRespected = false;
         
-                        $myDefArg = $instruction->getProperty("argdef$i");
+                        $myDefArg = $context->getSymbols()->getRawDef($instruction->getProperty("argdef$i"));
                         $taintedExpr = $myDefArg->getTaintedByExpr();
 
                         if ($myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
                             && $mySink->isParameterCondition($i + 1, "array_tainted")) {
                             foreach ($myDefArg->getCopyArrays() as $copyarray) {
-                                if (!SecurityAnalysis::isSafe($i + 1, $copyarray[1], $myDefArg,  $mySink)) {
+                                if (!SecurityAnalysis::isSafe($i + 1, $copyarray[1], $myDefArg, $mySink)) {
                                     $conditionRespected = true;
                                 }
                             }
@@ -167,7 +167,7 @@ class SecurityAnalysis
 
             if ($conditionRespected) {
                 for ($i = 0; $i < $nbParams; $i ++) {
-                    $myDefArg = $instruction->getProperty("argdef$i");
+                    $myDefArg = $context->getSymbols()->getRawDef($instruction->getProperty("argdef$i"));
                     $myDefExpr = $instruction->getProperty("argexpr$i");
 
                     if (!$mySink->hasParameters() || ($mySink->hasParameters() && $mySink->isParameter($i + 1))) {

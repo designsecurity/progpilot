@@ -86,7 +86,8 @@ class CustomAnalysis
     
     public static function returnObjectCreateObject($context, $myExpr, $customRule, $myFuncorDef)
     {
-        $defAssign = $myExpr->getAssignDef();
+        $defAssignId = $myExpr->getAssignDef();
+        $defAssign = $context->getSymbols()->getRawDef($defAssignId);
                 
         $objectId = $context->getObjects()->addObject();
                 
@@ -105,7 +106,8 @@ class CustomAnalysis
 
         $context->getObjects()->addMyclassToObject($objectId, $myClass);
         
-        $myBackDef = $myFuncorDef->getBackDef();
+        $myBackDefId = $myFuncorDef->getBackDef();
+        $myBackDef = $context->getSymbols()->getRawDef($myBackDefId);
         if (!is_null($myBackDef)) {
             $objectId = $myBackDef->getObjectId();
             $context->getObjects()->addMyclassToObject($objectId, $myClass);
@@ -185,7 +187,7 @@ class CustomAnalysis
                                         break;
                                     }
                                     
-                                    $defArg = $instruction->getProperty("argdef$idParam");
+                                    $defArg = $context->getSymbols()->getRawDef($instruction->getProperty("argdef$idParam"));
                         
                                     foreach ($valuesParameter as $valueParameter) {
                                         $defLastKnownValues = [];
@@ -345,8 +347,9 @@ class CustomAnalysis
             }
 
             foreach ($firstCustomFunctions as $firstCustomFunction) {
-                $functions = $context->getFunctions()->getAllFunctions($firstCustomFunction->getName());
-                foreach ($functions as $function) {
+                $functionsSign = $context->getFunctions()->getAllFunctions($firstCustomFunction->getName());
+                foreach ($functionsSign as $function) {
+                    //$function = Utils::unserializeFunc($functionSign);
                     if (!is_null($function)) {
                         $callgraph->addNode($function, null);
 

@@ -172,6 +172,14 @@
                 [
                     "./tests/data/sanitizer9.php",
                         [["\$tainted3", "19", "xss"]]
+                ],
+                [
+                    "./tests/data/sanitizer10.php",
+                        []
+                ],
+                [
+                    "./tests/data/sanitizer11.php",
+                        []
                 ]
                 /*,
                 // need support of proper validator propagation

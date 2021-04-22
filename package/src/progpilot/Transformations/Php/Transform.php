@@ -17,6 +17,7 @@ use PHPCfg\Script;
 use PHPCfg\Visitor;
 use PHPCfg\Printer;
 
+use progpilot\Symbols;
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyBlock;
 use progpilot\Objects\MyDefinition;
@@ -60,22 +61,14 @@ class Transform implements Visitor
     public function leaveScript(Script $script)
     {
         // creating edges for myblocks structure as block structure
-
-        echo "leaveScript 1\n";
         foreach ($this->sBlocks as $block) {
-            echo "leaveScript 2\n";
             $myBlock = $this->sBlocks[$block];
             foreach ($block->parents as $block_parent) {
-                echo "leaveScript 3\n";
                 if ($this->sBlocks->contains($block_parent)) {
-                    echo "leaveScript 4\n";
                     $myBlockParent = $this->sBlocks[$block_parent];
                     $myBlock->addParent($myBlockParent);
                 }
             }
-
-            echo "leaveScript 5\n";
-            var_dump($myBlock);
         }
 
         foreach ($this->blockIfToBeResolved as $blockResolved) {
@@ -102,8 +95,13 @@ class Transform implements Visitor
                         $methodFather->setMyClass($myClass);
                     }
                                     
-                    foreach ($myClassFather->getProperties() as $propertyFather) {
-                        $myClass->addProperty(clone $propertyFather);
+                    foreach ($myClassFather->getProperties() as $propertyFatherId) {
+                        $propertyFather = $this->context->getSymbols()->getRawDef($propertyFatherId);
+                        $propertyFatherClone = clone $propertyFather;
+                        $propertyFatherClone->setId($this->context->getSymbols()->getFreeDefId());
+                        $this->context->getSymbols()->addRawDef($propertyFatherClone);
+                        
+                        $myClass->addProperty($this->context, $propertyFatherClone->getId());
                     }
                 }
             }
@@ -193,7 +191,9 @@ class Transform implements Visitor
                 $mythisdef = new MyDefinition(0, 0, "this");
                 $mythisdef->setBlockId(0);
                 $mythisdef->addType(MyDefinition::TYPE_INSTANCE);
-                $myFunction->setThisDef($mythisdef);
+
+                $this->context->getSymbols()->addRawDef($mythisdef);
+                $myFunction->setThisDef($mythisdef->getId());
             }
         }
 
@@ -207,10 +207,12 @@ class Transform implements Visitor
                 $myDef->addType(MyDefinition::TYPE_REFERENCE);
             }
 
-            $myFunction->addParam($myDef);
+            $this->context->getSymbols()->addRawDef($myDef);
+
+            $myFunction->addParam($myDef->getId());
 
             $instDef = new MyInstruction(Opcodes::DEFINITION);
-            $instDef->addProperty(MyInstruction::DEF, $myDef);
+            $instDef->addProperty(MyInstruction::DEF, $myDef->getId());
             $this->context->getCurrentMycode()->addCode($instDef);
 
             unset($myDef);
@@ -222,9 +224,6 @@ class Transform implements Visitor
         $this->context->getFunctions()->addFunction($fileNameHash, $className, $myFunction->getName(), $myFunction);
         */
         $this->context->setCurrentFunc($myFunction);
-
-        echo "enter function\n";
-        var_dump($myFunction);
     }
 
     public function leaveFunc(Func $func)
@@ -255,10 +254,7 @@ class Transform implements Visitor
         $myFunction = $this->context->getFunctions()->getFunction($func->name, $className);
 */
         $myFunction = $this->context->getCurrentFunc();
-
-        echo "leave function\n";
-        var_dump($myFunction);
-
+        
         if (!is_null($myFunction)) {
             $myFunction->setLastLine($this->context->getCurrentLine());
             $myFunction->setLastColumn($this->context->getCurrentColumn());
@@ -270,7 +266,8 @@ class Transform implements Visitor
         }
 
         $fileNameHash = hash("sha256", $this->context->getCurrentMyfile()->getName());
-        $this->context->getFunctions()->addFunction($fileNameHash, $className, $myFunction->getName(), $myFunction);
+        $this->context->addTmpFunctions($myFunction);
+        //$this->context->getFunctions()->addFunction($fileNameHash, $className, $myFunction->getName(), $myFunction);
     }
 
     public function parseconditions($instStartIf, $cond)
@@ -337,9 +334,10 @@ class Transform implements Visitor
                 $nameGlobal
             );
             $myDefGlobal->setType(MyDefinition::TYPE_GLOBAL);
+            $this->context->getSymbols()->addRawDef($myDefGlobal);
 
             $instDef = new MyInstruction(Opcodes::DEFINITION);
-            $instDef->addProperty(MyInstruction::DEF, $myDefGlobal);
+            $instDef->addProperty(MyInstruction::DEF, $myDefGlobal->getId());
             $this->context->getCurrentMycode()->addCode($instDef);
 
             $this->context->getCurrentFunc()->setHasGlobalVariables(true);
@@ -476,7 +474,8 @@ class Transform implements Visitor
                         $myDef->addType(MyDefinition::TYPE_PROPERTY);
                     }
                         
-                    $myClass->addProperty($myDef);
+                    $this->context->getSymbols()->addRawDef($myDef);
+                    $myClass->addProperty($this->context, $myDef->getId());
                 }
             }
 

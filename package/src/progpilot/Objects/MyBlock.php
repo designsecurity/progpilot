@@ -15,7 +15,6 @@ class MyBlock extends MyOp
     private $returnDefs;
     private $startAddressBlock;
     private $endAddressBlock;
-    private $id;
     private $loop;
 
     public $parents;
@@ -76,16 +75,6 @@ class MyBlock extends MyOp
     public function getEndAddressBlock()
     {
         return $this->endAddressBlock;
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     public function setIsLoop($loop)

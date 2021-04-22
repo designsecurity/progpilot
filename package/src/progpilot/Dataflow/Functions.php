@@ -89,12 +89,13 @@ class Functions
         // we can have many functions/methods with the same name
         
         //if (!isset($this->functions[$filenamehash][$classname][$funcname])) {
-            //$this->functions[$filenamehash][$classname][$funcname] = $func;
+            $this->functions[$filenamehash][$classname][$funcname] = $myFunc;
+            
             $signature = hash("sha256", "$filenamehash"."$classname"."$funcname");
-            echo "before serializing\n";
-            var_dump($myFunc);
-            Utils::serializeFunc($myFunc, $signature);
+            Utils::serializeFunc($myFunc, "$filenamehash"."$classname"."$funcname");
+            /*
             $this->functions[$filenamehash][$classname][$funcname] = $signature;
+            */
         //}
 
         /*
