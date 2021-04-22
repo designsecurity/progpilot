@@ -182,7 +182,6 @@ class IncludeAnalysis
                                                 if ($defToInclude->getLine() < $myFuncCall->getLine()
                                                     || ($defToInclude->getLine() === $myFuncCall->getLine()
                                                         && $defToInclude->getColumn() < $myFuncCall->getColumn())) {
-
                                                     $saveMyFile[$defToInclude->getId()]
                                                         = $defToInclude->getSourceMyFile()->getIncludedToMyfile();
                                                     $defsIncluded[] = $defToInclude;
@@ -219,7 +218,7 @@ class IncludeAnalysis
                                         $analyzerInclude->runFunctionAnalysis($context, $mainInclude, false);
 
                                         foreach ($defsIncluded as $defIncluded) {
-                                            if(!is_null($saveMyFile[$defIncluded->getId()])) {
+                                            if (!is_null($saveMyFile[$defIncluded->getId()])) {
                                                 $tmp = clone $defIncluded->getSourceMyFile();
                                                 $tmp->setIncludedToMyfile($saveMyFile[$defIncluded->getId()]);
                                                 $defIncluded->setSourceMyFile($tmp);
@@ -243,7 +242,8 @@ class IncludeAnalysis
                                             
                                             if (is_array($defsMainReturn)) {
                                                 foreach ($defsMainReturn as $defMainReturnId) {
-                                                    $defMainReturn = $context->getSymbols()->getRawDef($defMainReturnId);
+                                                    $defMainReturn =
+                                                        $context->getSymbols()->getRawDef($defMainReturnId);
                                                     $defsOutputIncluded = $mainInclude->getDefs()->getOutMinusKill(
                                                         $defMainReturn->getBlockId()
                                                     );
@@ -272,7 +272,8 @@ class IncludeAnalysis
                                         $newDefs = false;
                                         if (count($defsOutputIncludedFinal) > 0) {
                                             foreach ($defsOutputIncludedFinal as $defOutputIncludedFinalId) {
-                                                $defOutputIncludedFinal = $context->getSymbols()->getRawDef($defOutputIncludedFinalId);
+                                                $defOutputIncludedFinal =
+                                                    $context->getSymbols()->getRawDef($defOutputIncludedFinalId);
                                                 $ret1 = $defs->addDef(
                                                     $defOutputIncludedFinal->getName(),
                                                     $defOutputIncludedFinalId

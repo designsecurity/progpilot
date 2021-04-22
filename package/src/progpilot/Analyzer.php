@@ -153,7 +153,7 @@ class Analyzer
 
                     // we explicitely update the func (ie we serialize again and store it on the disk)
                     $className = "function";
-                    if(!is_null($myFunc->getMyclass())) {
+                    if (!is_null($myFunc->getMyclass())) {
                         $className = $myFunc->getMyclass()->getName();
                     }
 

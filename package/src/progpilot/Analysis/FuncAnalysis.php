@@ -23,7 +23,6 @@ class FuncAnalysis
         if (!is_null($myFunc)) {
             $defsReturn = $myFunc->getReturnDefs();
             foreach ($defsReturn as $defReturnId) {
-
                 $defReturn = $context->getSymbols()->getRawDef($defReturnId);
                 if (($arrFuncCall !== false
                     && $defReturn->isType(MyDefinition::TYPE_ARRAY)

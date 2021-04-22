@@ -302,7 +302,8 @@ class VisitorDataflow
                                         break;
                                     }
 
-                                    $defarg = $context->getSymbols()->getRawDef($instruction->getProperty("argdef$nbparams"));
+                                    $defargId = $instruction->getProperty("argdef$nbparams");
+                                    $defarg = $context->getSymbols()->getRawDef($defargId);
 
                                     if ($mySource->isParameter($nbparams + 1)) {
                                         $deffrom = $context->getSymbols()->getRawDef($defarg->getValueFromDef());
