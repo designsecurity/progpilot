@@ -105,9 +105,7 @@ class Analyzer
 
     public function runFunctionAnalysis($context, $myFunc, $updatemyfile = true)
     {
-        echo "runFunctionAnalysis 1\n";
         if (!is_null($myFunc) && !$myFunc->isVisited()) {
-            echo "runFunctionAnalysis 2\n";
             $myFunc->setIsVisited(true);
             $myFunc->setInitialAnalysis(true);
             
@@ -148,6 +146,24 @@ class Analyzer
             $visitordataflow = new \progpilot\Dataflow\VisitorDataflow();
     
             $fileNameHash = hash("sha256", $context->getCurrentMyfile()->getName());
+            foreach ($context->getTmpFunctions() as $myFunc) {
+                if (!is_null($myFunc) && !$myFunc->isDataAnalyzed()) {
+                    $myFunc->setIsDataAnalyzed(true);
+                    $visitordataflow->analyze($context, $myFunc);
+
+                    // we explicitely update the func (ie we serialize again and store it on the disk)
+                    $className = "function";
+                    if(!is_null($myFunc->getMyclass())) {
+                        $className = $myFunc->getMyclass()->getName();
+                    }
+
+                    $context->getFunctions()->addFunction($fileNameHash, $className, $myFunc->getName(), $myFunc);
+                }
+            }
+
+            $context->clearTmpFunctions();
+            /*
+            $fileNameHash = hash("sha256", $context->getCurrentMyfile()->getName());
             $functionsTmp = $context->getFunctions()->getFunctions();
             if (isset($functionsTmp[$fileNameHash])) {
                 $functionsFile = $functionsTmp[$fileNameHash];
@@ -177,6 +193,7 @@ class Analyzer
             }
 
             $context->setDefsMain($defsMain);
+            */
         }
     }
     
@@ -327,8 +344,8 @@ class Analyzer
         // we take all function except mains
         foreach ($context->getFunctions()->getFunctions() as $functionsFile) {
             foreach ($functionsFile as $functionsmethod) {
-                foreach ($functionsmethod as $signFunc) {
-                    $myFunc = Utils::unserializeFunc($signFunc);
+                foreach ($functionsmethod as $myFunc) {
+                    //$myFunc = Utils::unserializeFunc($signFunc);
                     if ($myFunc->isDataAnalyzed()
                         // func with global variables except to be analyzed/called from a main
                         && !$myFunc->hasGlobalVariables()
@@ -339,15 +356,13 @@ class Analyzer
             }
         }
 
-        echo "runanalysis1\n";
-        foreach ($context->getFunctions()->getAllFunctions("{main}") as $signFunc) {
-            echo "runanalysis2\n";
+        foreach ($context->getFunctions()->getAllFunctions("{main}") as $myFunc) {
             // we put the main functions at the end (we be analyzed at the end)
-            $contextFunctions[] = Utils::unserializeFunc($signFunc);
+            //$contextFunctions[] = Utils::unserializeFunc($signFunc);
+            $contextFunctions[] = $myFunc;
         }
 
         foreach ($contextFunctions as $myFunc) {
-            echo "runanalysis3\n";
             // cfg, ast, callgraph initialization
             $context->outputs->createRepresentationsForFunction($myFunc);
             // include once/require once reset each time

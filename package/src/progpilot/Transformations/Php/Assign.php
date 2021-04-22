@@ -113,8 +113,9 @@ class Assign
             if ($fromPhi) {
                 $myTemp = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), "phi_".rand());
                 $myTemp->setExpr($myExpr);
+                $context->getSymbols()->addRawDef($myTemp);
                 $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
-                $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
+                $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp->getId());
                 $instTemporarySimple->addProperty(MyInstruction::PHI, count($tmpDefsFromPhi));
 
                 $nbvars = 0;
@@ -144,15 +145,17 @@ class Assign
                 $myDef->addType(MyDefinition::TYPE_CONSTANTE);
             }
 
+            $context->getSymbols()->addRawDef($myDef);
+
             if ($isReturnDef) {
-                $context->getCurrentFunc()->addReturnDef($myDef);
-                $myblock->addReturnDef($myDef);
+                $context->getCurrentFunc()->addReturnDef($myDef->getId());
+                $myblock->addReturnDef($myDef->getId());
             }
 
-            $myExpr->setAssignDef($myDef);
+            $myExpr->setAssignDef($myDef->getId());
 
             $instDef = new MyInstruction(Opcodes::DEFINITION);
-            $instDef->addProperty(MyInstruction::DEF, $myDef);
+            $instDef->addProperty(MyInstruction::DEF, $myDef->getId());
             $context->getCurrentMycode()->addCode($instDef);
 
             // $array[09][098] = expr;
@@ -187,6 +190,7 @@ class Assign
                     // ou bien créer backdef ici
                     if (!is_null($backDef)) {
                         $backDef->setId($myDef->getId() + 1);
+                        $context->getSymbols()->addRawDef($backDef);
                     }
                 }
             }

@@ -92,7 +92,9 @@ class VisitorDataflow
 
                     case Opcodes::CLASSE:
                         $myClass = $instruction->getProperty(MyInstruction::MYCLASS);
-                        foreach ($myClass->getProperties() as $property) {
+                        foreach ($myClass->getProperties() as $propertyId) {
+                            $property = $context->getSymbols()->getRawDef($propertyId);
+
                             if (is_null($property->getSourceMyFile())) {
                                 $property->setSourceMyFile($context->getCurrentMyfile());
                             }
@@ -122,16 +124,17 @@ class VisitorDataflow
 
                         $this->currentBlockId = $blockIdZero;
                         $this->currentFunc = $myFunc;
+                        $context->setCurrentFunc($myFunc);
 
                         if ($myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                            $thisdef = $myFunc->getThisDef();
+                            $thisdef = $context->getSymbols()->getRawDef($myFunc->getThisDef());
                             $thisdef->setSourceMyFile($context->getCurrentMyfile());
 
                             $thisdef->setObjectId($this->currentClass->getObjectIdThis());
                             $thisdef->setBlockId($blockIdZero);
 
-                            $this->defs->addDef($thisdef->getName(), $thisdef);
-                            $this->defs->addGen($thisdef->getBlockId(), $thisdef);
+                            $this->defs->addDef($thisdef->getName(), $thisdef->getId());
+                            $this->defs->addGen($thisdef->getBlockId(), $thisdef->getId());
 
                             $context->getObjects()->addMyclassToObject(
                                 $this->currentClass->getObjectIdThis(),
@@ -163,7 +166,6 @@ class VisitorDataflow
                         array_push($blocksStackId, $blockId);
                         $this->currentBlockId = $blockId;
                         $this->currentBlock = $myBlock;
-                        
 
                         if ($blockId !== hash("sha256", "0-".$context->getCurrentMyfile()->getName())) {
                             $this->defs->createBlock($blockId);
@@ -171,7 +173,7 @@ class VisitorDataflow
 
                         $assertions = $myBlock->getAssertions();
                         foreach ($assertions as $assertion) {
-                            $myDef = $assertion->getDef();
+                            $myDef = $context->getSymbols()->getRawDef($assertion->getDef());
                             $myDef->setBlockId($blockId);
                         }
 
@@ -264,7 +266,7 @@ class VisitorDataflow
                         }
 
                         if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                            $mybackdef = $myFuncCall->getBackDef();
+                            $mybackdef = $context->getSymbols()->getRawDef($myFuncCall->getBackDef());
                             $mybackdef->setBlockId($this->currentBlockId);
                             $mybackdef->addType(MyDefinition::TYPE_INSTANCE);
                             $mybackdef->setSourceMyFile($context->getCurrentMyfile());
@@ -287,11 +289,11 @@ class VisitorDataflow
                                 $context->getObjects()->addMyclassToObject($idObject, $myClass);
                             }
 
-                            $this->defs->addDef($mybackdef->getName(), $mybackdef);
-                            $this->defs->addGen($mybackdef->getBlockId(), $mybackdef);
+                            $this->defs->addDef($mybackdef->getName(), $mybackdef->getId());
+                            $this->defs->addGen($mybackdef->getBlockId(), $mybackdef->getId());
                         }
 
-                        $mySource = $context->inputs->getSourceByName(null, $myFuncCall, true, false, false);
+                        $mySource = $context->inputs->getSourceByName($context, null, $myFuncCall, true, false, false);
                         if (!is_null($mySource)) {
                             if ($mySource->hasParameters()) {
                                 $nbparams = 0;
@@ -300,13 +302,13 @@ class VisitorDataflow
                                         break;
                                     }
 
-                                    $defarg = $instruction->getProperty("argdef$nbparams");
+                                    $defarg = $context->getSymbols()->getRawDef($instruction->getProperty("argdef$nbparams"));
 
                                     if ($mySource->isParameter($nbparams + 1)) {
-                                        $deffrom = $defarg->getValueFromDef();
+                                        $deffrom = $context->getSymbols()->getRawDef($defarg->getValueFromDef());
                                         if (!is_null($deffrom)) {
-                                            $this->defs->addDef($deffrom->getName(), $deffrom);
-                                            $this->defs->addGen($deffrom->getBlockId(), $deffrom);
+                                            $this->defs->addDef($deffrom->getName(), $deffrom->getId());
+                                            $this->defs->addGen($deffrom->getBlockId(), $deffrom->getId());
                                         }
                                     }
 
@@ -327,7 +329,7 @@ class VisitorDataflow
                         break;
 
                     case Opcodes::TEMPORARY:
-                        $myDef = $instruction->getProperty(MyInstruction::TEMPORARY);
+                        $myDef = $context->getSymbols()->getRawDef($instruction->getProperty(MyInstruction::TEMPORARY));
                         $myDef->setBlockId($this->currentBlockId);
 
                         if (is_null($myDef->getSourceMyFile())) {
@@ -342,15 +344,15 @@ class VisitorDataflow
                         break;
 
                     case Opcodes::DEFINITION:
-                        $myDef = $instruction->getProperty(MyInstruction::DEF);
+                        $myDef = $context->getSymbols()->getRawDef($instruction->getProperty(MyInstruction::DEF));
                         $myDef->setBlockId($this->currentBlockId);
 
                         if (is_null($myDef->getSourceMyFile())) {
                             $myDef->setSourceMyFile($context->getCurrentMyfile());
                         }
-                        
-                        $this->defs->addDef($myDef->getName(), $myDef);
-                        $this->defs->addGen($myDef->getBlockId(), $myDef);
+
+                        $this->defs->addDef($myDef->getName(), $myDef->getId());
+                        $this->defs->addGen($myDef->getBlockId(), $myDef->getId());
 
                         // representations start
                         $idCfg = hash("sha256", $this->currentFunc->getName()."-".$this->currentBlockId);

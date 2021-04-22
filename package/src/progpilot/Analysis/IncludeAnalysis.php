@@ -61,7 +61,7 @@ class IncludeAnalysis
             if ($nbParams > 0) {
                 $atLeastOneIncludeResolved = false;
 
-                $myDefArg = $instruction->getProperty("argdef0");
+                $myDefArg = $context->getSymbols()->getRawDef($instruction->getProperty("argdef0"));
 
                 if (count($myDefArg->getLastKnownValues()) !== 0) {
                     foreach ($myDefArg->getLastKnownValues() as $lastKnownValue) {
@@ -132,16 +132,14 @@ class IncludeAnalysis
                                     }
 
                                     $analyzerInclude = new \progpilot\Analyzer;
-                                    $saveCurrentMyfile = clone $context->getCurrentMyfile();
+                                    $saveCurrentMyfile = $context->getCurrentMyfile();
                                     $context->setCurrentMyfile($myFileIncluded);
 
                                     if (!$context->isFileAnalyzed($nameIncludedFile)) {
                                         $context->inputs->setFile($nameIncludedFile);
-                                        //$context->setCurrentMyfile($myFileIncluded);
                                         $analyzerInclude->computeDataFlow($context);
 
-                                        //$context->setCurrentMyfile($myFile);
-                                        $currentFile = $myFuncCall->getSourceMyFile()->getName();
+                                        $currentFile =  $myFuncCall->getSourceMyFile()->getName();
                                         $context->inputs->setFile($currentFile);
                                         $context->setPath(dirname($currentFile));
                                     } else {
@@ -152,9 +150,12 @@ class IncludeAnalysis
                                             $fileNameHash
                                         );
 
+                                        //$mainInclude = Utils::unserializeFunc($signMainInclude);
+
                                         if (isset($mainInclude)) {
                                             foreach ($mainInclude->getDefs()->getDefs() as $defOfMainArray) {
-                                                foreach ($defOfMainArray as $defOfMain) {
+                                                foreach ($defOfMainArray as $defOfMainId) {
+                                                    $defOfMain = $context->getSymbols()->getRawDef($defOfMainId);
                                                     $defOfMain->setSourceMyFile($myFileIncluded);
                                                 }
                                             }
@@ -168,34 +169,35 @@ class IncludeAnalysis
                                         $fileNameHash
                                     );
 
+                                    //$mainInclude = Utils::unserializeFunc($signMainInclude);
+
                                     // we include defs of the current file to the included file
                                     $saveMyFile = [];
                                     $defsIncluded = [];
                                     if (!is_null($mainInclude)) {
                                         $currentFileDefs = $defs->getOutMinusKill($myFuncCall->getBlockId());
                                         if (!empty($currentFileDefs)) {
-                                            foreach ($currentFileDefs as $defToInclude) {
+                                            foreach ($currentFileDefs as $defToIncludeId) {
+                                                $defToInclude = $context->getSymbols()->getRawDef($defToIncludeId);
                                                 if ($defToInclude->getLine() < $myFuncCall->getLine()
                                                     || ($defToInclude->getLine() === $myFuncCall->getLine()
                                                         && $defToInclude->getColumn() < $myFuncCall->getColumn())) {
+
                                                     $saveMyFile[$defToInclude->getId()]
                                                         = $defToInclude->getSourceMyFile()->getIncludedToMyfile();
                                                     $defsIncluded[] = $defToInclude;
-                                                    //$defToInclude->setSourceMyFile($myFileIncluded);
 
-                                                    $defToInclude->getSourceMyFile()->setIncludedToMyfile(
-                                                        $myFileIncluded
-                                                    );
-
-                                                    //$defToInclude->setSourceMyFile($myFileIncluded);
+                                                    $tmp = clone $defToInclude->getSourceMyFile();
+                                                    $tmp->setIncludedToMyfile($myFileIncluded);
+                                                    $defToInclude->setSourceMyFile($tmp);
 
                                                     $mainInclude->getDefs()->addDef(
                                                         $defToInclude->getName(),
-                                                        $defToInclude
+                                                        $defToIncludeId
                                                     );
                                                     $mainInclude->getDefs()->addGen(
                                                         $mainInclude->getFirstBlockId(),
-                                                        $defToInclude
+                                                        $defToIncludeId
                                                     );
                                                 }
                                             }
@@ -211,12 +213,17 @@ class IncludeAnalysis
 
                                         // we analyze the main of the function
                                         $mainInclude->setIsVisited(false);
+
+                                        //Utils::serializeFunc($mainInclude, $signMainInclude);
+
                                         $analyzerInclude->runFunctionAnalysis($context, $mainInclude, false);
 
                                         foreach ($defsIncluded as $defIncluded) {
-                                            $defIncluded->getSourceMyFile()->setIncludedToMyfile(
-                                                $saveMyFile[$defIncluded->getId()]
-                                            );
+                                            if(!is_null($saveMyFile[$defIncluded->getId()])) {
+                                                $tmp = clone $defIncluded->getSourceMyFile();
+                                                $tmp->setIncludedToMyfile($saveMyFile[$defIncluded->getId()]);
+                                                $defIncluded->setSourceMyFile($tmp);
+                                            }
                                         }
                                     
                                         $defsOutputIncludedFinal = [];
@@ -235,18 +242,19 @@ class IncludeAnalysis
                                                 $mainInclude->getDefs()->getDefRefByName("{main}_return");
                                             
                                             if (is_array($defsMainReturn)) {
-                                                foreach ($defsMainReturn as $defMainReturn) {
+                                                foreach ($defsMainReturn as $defMainReturnId) {
+                                                    $defMainReturn = $context->getSymbols()->getRawDef($defMainReturnId);
                                                     $defsOutputIncluded = $mainInclude->getDefs()->getOutMinusKill(
                                                         $defMainReturn->getBlockId()
                                                     );
                                                     if (!is_null($defsOutputIncluded)) {
-                                                        foreach ($defsOutputIncluded as $defOutputIncluded) {
+                                                        foreach ($defsOutputIncluded as $defOutputIncludedId) {
                                                             if (!in_array(
-                                                                $defOutputIncluded,
+                                                                $defOutputIncludedId,
                                                                 $defsOutputIncludedFinal,
                                                                 true
-                                                            ) && !in_array($defOutputIncluded, $defsIncluded, true)) {
-                                                                $defsOutputIncludedFinal[] = $defOutputIncluded;
+                                                            ) && !in_array($defOutputIncludedId, $defsIncluded, true)) {
+                                                                $defsOutputIncludedFinal[] = $defOutputIncludedId;
                                                             }
                                                         }
                                                     }
@@ -263,17 +271,15 @@ class IncludeAnalysis
 
                                         $newDefs = false;
                                         if (count($defsOutputIncludedFinal) > 0) {
-                                            foreach ($defsOutputIncludedFinal as $defOutputIncludedFinal) {
-                                                //$defOutputIncludedFinal->setSourceMyFile($myFileIncluded);
-                                                //$defOutputIncludedFinal->getSourceMyFile()->setIncludedFromMyfile($myFilePerformingInclude);
-
+                                            foreach ($defsOutputIncludedFinal as $defOutputIncludedFinalId) {
+                                                $defOutputIncludedFinal = $context->getSymbols()->getRawDef($defOutputIncludedFinalId);
                                                 $ret1 = $defs->addDef(
                                                     $defOutputIncludedFinal->getName(),
-                                                    $defOutputIncludedFinal
+                                                    $defOutputIncludedFinalId
                                                 );
                                                 $ret2 = $defs->addGen(
                                                     $myFuncCall->getBlockId(),
-                                                    $defOutputIncludedFinal
+                                                    $defOutputIncludedFinalId
                                                 );
 
                                                 $newDefs = true;
@@ -284,6 +290,8 @@ class IncludeAnalysis
                                             $defs->computeKill($context, $myFuncCall->getBlockId());
                                             $defs->reachingDefs($blocks);
                                         }
+
+                                        //Utils::serializeFunc($mainInclude, $signMainInclude);
                                     }
 
                                     $context->setCurrentMyfile($saveCurrentMyfile);

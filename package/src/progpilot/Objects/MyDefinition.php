@@ -17,8 +17,8 @@ use progpilot\Transformations\Php\Common;
 
 class MyDefinition extends MyOp
 {
-    const CAST_SAFE = "cast_int";
-    const CAST_NOT_SAFE = "cast_string";
+    const CAST_SAFE = 1;
+    const CAST_NOT_SAFE = 2;
 
     const TYPE_PROPERTY = 0x0001;
     const TYPE_ARRAY = 0x0002;
@@ -110,7 +110,9 @@ class MyDefinition extends MyOp
         blockid = ".$this->getBlockId()." :: \
         cast = ".$this->getCast()."\n";
 
-        $this->getSourceMyFile()->printStdout();
+        if (!is_null($this->getSourceMyFile())) {
+            $this->getSourceMyFile()->printStdout();
+        }
 
         echo "last_known_value :\n";
         var_dump($this->lastKnownValue);

@@ -13,6 +13,7 @@ namespace progpilot;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser;
 use progpilot\Utils;
+use progpilot\Dataflow;
 
 class Context
 {
@@ -41,8 +42,8 @@ class Context
     private $limitTime;
     private $limitDefs;
     private $limitSize;
-    private $limitValues;
     private $defsMain;
+    private $symbols;
 
     private $analyzedFiles;
 
@@ -71,6 +72,7 @@ class Context
 
         $this->resetInternalValues();
 
+        $this->currentFunc = null;
         $this->currentMyFile = null;
         $this->myfiles = [];
         $this->arrayIncludes = [];
@@ -78,6 +80,28 @@ class Context
         $this->analyzedFiles = [];
 
         $this->defsMain = [];
+        $this->tmpfunctions = [];
+        $this->symbols = new Dataflow\Symbols;
+    }
+    
+    public function getSymbols()
+    {
+        return $this->symbols;
+    }
+    
+    public function addTmpFunctions($myfunc)
+    {
+        $this->tmpfunctions[] = $myfunc;
+    }
+    
+    public function clearTmpFunctions()
+    {
+        $this->tmpfunctions = [];
+    }
+    
+    public function getTmpFunctions()
+    {
+        return $this->tmpfunctions;
     }
 
     public function addAnalyzedFile($file)

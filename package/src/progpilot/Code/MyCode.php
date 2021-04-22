@@ -140,6 +140,7 @@ class MyCode
                         $defColumn = (int) $codeInput[$nbInst ++];
 
                         $myDef = new MyDefinition($defLine, $defColumn, $defName);
+                        
                         $myDef->setSourceMyFile($myJavascriptFile);
                         $arrayDefinitions[] = $myDef;
 
@@ -322,6 +323,7 @@ class MyCode
     public function printStdout()
     {
         $index = 0;
+        $currentFunc = null;
 
         do {
             if (isset($this->code[$index])) {
@@ -329,21 +331,22 @@ class MyCode
                 echo "[$index] ";
                 switch ($instruction->getOpcode()) {
                     case Opcodes::ENTER_FUNCTION:
-                        echo Opcodes::ENTER_FUNCTION."\n";
+                        echo "Opcodes::ENTER_FUNCTION\n";
 
                         $myFunc = $instruction->getProperty(MyInstruction::MYFUNC);
+                        $currentFunc = $myFunc;
                         echo "name = ".htmlentities($myFunc->getName(), ENT_QUOTES, 'UTF-8')."\n";
                         break;
 
                     case Opcodes::CLASSE:
-                        echo Opcodes::CLASSE."\n";
+                        echo "Opcodes::CLASSE\n";
 
                         $myClass = $instruction->getProperty(MyInstruction::MYCLASS);
                         echo "name = ".htmlentities($myClass->getName(), ENT_QUOTES, 'UTF-8')."\n";
                         break;
 
                     case Opcodes::ENTER_BLOCK:
-                        echo Opcodes::ENTER_BLOCK."\n";
+                        echo "Opcodes::ENTER_BLOCK\n";
 
                         $myBlock = $instruction->getProperty(MyInstruction::MYBLOCK);
                         echo "id = ".$myBlock->getId()."\n";
@@ -351,7 +354,7 @@ class MyCode
                         break;
 
                     case Opcodes::LEAVE_BLOCK:
-                        echo Opcodes::LEAVE_BLOCK."\n";
+                        echo "Opcodes::LEAVE_BLOCK\n";
 
                         $myBlock = $instruction->getProperty(MyInstruction::MYBLOCK);
                         echo "id = ".$myBlock->getId()."\n";
@@ -359,13 +362,13 @@ class MyCode
                         break;
 
                     case Opcodes::LEAVE_FUNCTION:
-                        echo Opcodes::LEAVE_FUNCTION."\n";
+                        echo "Opcodes::LEAVE_FUNCTION\n";
 
                         break;
                     
 
                     case Opcodes::FUNC_CALL:
-                        echo Opcodes::FUNC_CALL."\n";
+                        echo "Opcodes::FUNC_CALL\n";
 
                         $funcname = htmlentities(
                             $instruction->getProperty(MyInstruction::FUNCNAME),
@@ -376,58 +379,54 @@ class MyCode
                         break;
 
                     case Opcodes::START_EXPRESSION:
-                        echo Opcodes::START_EXPRESSION."\n";
+                        echo "Opcodes::START_EXPRESSION\n";
                         break;
 
                     case Opcodes::END_EXPRESSION:
-                        echo Opcodes::END_EXPRESSION."\n";
+                        echo "Opcodes::END_EXPRESSION\n";
                         $myExpr = $instruction->getProperty(MyInstruction::EXPR);
                         echo "expression tainted = ".$myExpr->isTainted()."\n";
                         break;
 
                     case Opcodes::CONCAT_LIST:
-                        echo Opcodes::CONCAT_LIST."\n";
+                        echo "Opcodes::CONCAT_LIST\n";
                         break;
 
                     case Opcodes::CONCAT_LEFT:
-                        echo Opcodes::CONCAT_LEFT."\n";
+                        echo "Opcodes::CONCAT_LEFT\n";
                         break;
 
                     case Opcodes::CONCAT_RIGHT:
-                        echo Opcodes::CONCAT_RIGHT."\n";
+                        echo "Opcodes::CONCAT_RIGHT\n";
                         break;
 
                     case Opcodes::RETURN_FUNCTION:
-                        echo Opcodes::RETURN_FUNCTION."\n";
+                        echo "Opcodes::RETURN_FUNCTION\n";
                         break;
 
                     case Opcodes::START_ASSIGN:
-                        echo Opcodes::START_ASSIGN."\n";
+                        echo "Opcodes::START_ASSIGN\n";
                         break;
 
                     case Opcodes::END_ASSIGN:
-                        echo Opcodes::END_ASSIGN."\n";
+                        echo "Opcodes::END_ASSIGN\n";
                         break;
 
                     case Opcodes::COND_BOOLEAN_NOT:
-                        echo Opcodes::COND_BOOLEAN_NOT."\n";
+                        echo "Opcodes::COND_BOOLEAN_NOT\n";
                         break;
 
                     case Opcodes::COND_START_IF:
-                        echo Opcodes::COND_START_IF."\n";
+                        echo "Opcodes::COND_START_IF\n";
                         break;
 
                     case Opcodes::TEMPORARY:
-                        echo Opcodes::TEMPORARY."\n";
-                        $def = $instruction->getProperty(MyInstruction::TEMPORARY);
-                        $def->printStdout();
+                        echo "Opcodes::TEMPORARY\n";
 
                         break;
 
                     case Opcodes::DEFINITION:
-                        echo Opcodes::DEFINITION."\n";
-                        $def = $instruction->getProperty(MyInstruction::DEF);
-                        $def->printStdout();
+                        echo "Opcodes::DEFINITION\n";
 
                         break;
                 }

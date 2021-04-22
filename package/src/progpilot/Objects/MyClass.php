@@ -30,11 +30,11 @@ class MyClass extends MyOp
     public function __clone()
     {
         for ($i = 0; $i < count($this->properties); $i++) {
-            $this->properties[$i] = clone $this->properties[$i];
+            $this->properties[$i] = $this->properties[$i];
         }
 
         for ($i = 0; $i < count($this->methods); $i++) {
-            $this->methods[$i] = clone $this->methods[$i];
+            $this->methods[$i] = $this->methods[$i];
         }
     }
 
@@ -74,10 +74,12 @@ class MyClass extends MyOp
         return $this->properties;
     }
 
-    public function addProperty($property)
+    public function addProperty($context, $propertyId)
     {
         $exist = false;
-        foreach ($this->properties as $propertyClass) {
+        $property = $context->getSymbols()->getRawDef($propertyId);
+        foreach ($this->properties as $propertyClassId) {
+            $propertyClass = $context->getSymbols()->getRawDef($propertyClassId);
             if ($propertyClass->property->getProperties() === $property->property->getProperties()) {
                 $exist = true;
                 break;
@@ -85,13 +87,14 @@ class MyClass extends MyOp
         }
 
         if (!$exist) {
-            $this->properties[] = $property;
+            $this->properties[] = $propertyId;
         }
     }
 
-    public function getProperty($name)
+    public function getProperty($context, $name)
     {
-        foreach ($this->properties as $property) {
+        foreach ($this->properties as $propertyId) {
+            $property = $context->getSymbols()->getRawDef($propertyId);
             // we don't check if it's STATIC property or NOT
             if ($property->property->getProperties()[0] === $name) {
                 return $property;

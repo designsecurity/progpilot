@@ -11,7 +11,7 @@
                 ],
                 [
                     "./tests/flows/flow2.php",
-                        [["\$this->object1", "6"],
+                        [["\$newsettestc1->object1", "6"],
                         ["\$val", "8"],
                         ["\$_GET[\"p\"]", "21"]]
                 ],

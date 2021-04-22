@@ -29,7 +29,6 @@ class MyFunction extends MyOp
     private $blocks;
     private $visibility;
     private $myClass;
-    private $instance;
     private $firstBlockId;
     private $blockId;
     private $nameInstance;

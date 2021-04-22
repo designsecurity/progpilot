@@ -22,7 +22,6 @@
                     "./tests/real/wordpress3",
                         [["\$query", "131", "sql_injection"],
                         ["\$this->last_query", "20", "xss"],
-                        ["\$this->last_query", "20", "xss"],
                         ["\$title", "60", "xss"],
                         ["\$query", "131", "sql_injection"],
                         ["\$this->last_query", "20", "xss"]]

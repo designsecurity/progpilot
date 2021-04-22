@@ -265,7 +265,8 @@ class MyInputs
                             $knownProperties =
                                 $stackClass[$stackNumberOfProperties - $myValidatorNumberOfProperties];
 
-                            foreach ($knownProperties as $propClass) {
+                            foreach ($knownProperties as $propClassId) {
+                                $propClass = $context->getSymbols()->getRawDef($propClassId);
                                 $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                 
@@ -314,7 +315,8 @@ class MyInputs
                             $knownProperties =
                             $stackClass[$stackNumberOfProperties - $mySanitizerNumberOfProperties];
 
-                            foreach ($knownProperties as $propClass) {
+                            foreach ($knownProperties as $propClassId) {
+                                $propClass = $context->getSymbols()->getRawDef($propClassId);
                                 $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                 
@@ -363,7 +365,8 @@ class MyInputs
                             $knownProperties =
                             $stackClass[$stackNumberOfProperties - $mySinkNumberOfProperties];
 
-                            foreach ($knownProperties as $propClass) {
+                            foreach ($knownProperties as $propClassId) {
+                                $propClass = $context->getSymbols()->getRawDef($propClassId);
                                 $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                 
@@ -399,6 +402,7 @@ class MyInputs
     }
     
     public function getSourceByName(
+        $context,
         $stackClass,
         $myFuncOrDef,
         $isFunction = false,
@@ -447,7 +451,8 @@ class MyInputs
                             $knownProperties =
                                 $stackClass[$stackNumberOfProperties - $mySourceNumberOfProperties];
 
-                            foreach ($knownProperties as $propClass) {
+                            foreach ($knownProperties as $propClassId) {
+                                $propClass = $context->getSymbols()->getRawDef($propClassId);
                                 if ($propClass->getName() === $mySourceInstanceName) {
                                     $checkInstance = true;
                                 }

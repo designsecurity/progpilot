@@ -123,6 +123,7 @@ class Definitions
     public function addDef($name, $def)
     {
         $continue = true;
+        
         if (isset($this->defs[$name])) {
             $continue = false;
             if (!in_array($def, $this->defs[$name], true)) {
@@ -133,10 +134,8 @@ class Definitions
         if ($continue) {
             $this->nbDefs ++;
             $this->defs[$name][] = $def;
-            $this->originalDefs[$def->getId()] = clone $def;
+            //$this->originalDefs[$def->getId()] = clone $def;
         }
-
-        return $continue;
     }
 
     public function addIn($block, $def)
@@ -159,10 +158,10 @@ class Definitions
         return false;
     }
 
-    public function addGen($block, $def)
+    public function addGen($block, $defid)
     {
-        if (isset($this->gen[$block]) && !in_array($def, $this->gen[$block], true)) {
-            $this->gen[$block][] = $def;
+        if (isset($this->gen[$block]) && !in_array($defid, $this->gen[$block], true)) {
+            $this->gen[$block][] = $defid;
             return true;
         }
 
@@ -297,13 +296,15 @@ class Definitions
     // $this->data["gen"][$blockId]
     public function computeKill($context, $blockId)
     {
-        foreach ($this->gen[$blockId] as $gen) {
+        foreach ($this->gen[$blockId] as $genid) {
+            $gen = $context->getSymbols()->getRawDef($genid);
             $tmpdefs = $this->getDefRefByName($gen->getName());
             if (!is_null($tmpdefs)) {
-                foreach ($tmpdefs as $def) {
+                foreach ($tmpdefs as $defid) {
+                    $def = $context->getSymbols()->getRawDef($defid);
                     if ($this->defEquality($def, $gen)) {
-                        if ($def !== $gen && !in_array($def, $this->kill[$blockId], true)) {
-                            $this->kill[$blockId][] = $def;
+                        if ($def !== $gen && !in_array($def->getId(), $this->kill[$blockId], true)) {
+                            $this->kill[$blockId][] = $def->getId();
                         }
                     }
                 }

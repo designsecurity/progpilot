@@ -121,7 +121,7 @@ class MyOp
 
     public function setSourceMyFile($sourceMyFile)
     {
-        $this->sourceMyFile = clone $sourceMyFile;
+        $this->sourceMyFile = $sourceMyFile;
     }
 
     public function setName($varName)

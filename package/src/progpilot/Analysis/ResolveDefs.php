@@ -39,7 +39,7 @@ class ResolveDefs
             if (isset($codes[$index + 1]) && $codes[$index + 1]->getOpcode() === Opcodes::CONCAT_RIGHT) {
                 if (isset($codes[$index + 2]) && $codes[$index + 2]->getOpcode() === Opcodes::TEMPORARY) {
                     $tempInstruction = $codes[$index + 2];
-                    $myTemp = $tempInstruction->getProperty(MyInstruction::TEMPORARY);
+                    $myTemp = $context->getSymbols()->getRawDef($tempInstruction->getProperty(MyInstruction::TEMPORARY));
 
                     if (isset($myTemp->getLastKnownValues()[0])) {
                         $suffix = $myTemp->getLastKnownValues()[0];
@@ -51,10 +51,10 @@ class ResolveDefs
             
             if (isset($codes[$index + 2]) && $codes[$index + 2]->getOpcode() === Opcodes::END_ASSIGN) {
                 $instructionDef = $codes[$index + 3];
-                $myDefReturn = $instructionDef->getProperty(MyInstruction::DEF);
+                $myDefReturn = $context->getSymbols()->getRawDef($instructionDef->getProperty(MyInstruction::DEF));
 
                 if ($instruction->isPropertyExist("argdef0")) {
-                    $defarg = $instruction->getProperty("argdef0");
+                    $defarg = $context->getSymbols()->getRawDef($instruction->getProperty("argdef0"));
                     foreach ($defarg->getLastKnownValues() as $knownValue) {
                         $myDefReturn->addLastKnownValue(dirname($knownValue).$suffix);
                     }
@@ -116,7 +116,7 @@ class ResolveDefs
                         $context->getObjects()->addMyclassToObject($idObject, $myClassNew);
                     }
                     
-                    $classStackName[$i][] = $mydef;
+                    $classStackName[$i][] = $mydef->getId();
                 } else {
                     foreach ($instances as $instance) {
                         if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
@@ -124,7 +124,7 @@ class ResolveDefs
                             $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                             
                             if (!is_null($myClass) && isset($properties[$i])) {
-                                $property = $myClass->getProperty($properties[$i]);
+                                $property = $myClass->getProperty($context, $properties[$i]);
 
                                 // if property doesn't exist by default it's a public property
                                 if (is_null($property) || (!is_null($property)
@@ -141,10 +141,10 @@ class ResolveDefs
                                         $context->getObjects()->addMyclassToObject($idObject, $myClassNew);
                                     }
                                     
-                                    $classStackName[$i][] = $instance;
+                                    $classStackName[$i][] = $instance->getId();
                                 }
                             } else {
-                                $classStackName[$i][] = $instance;
+                                $classStackName[$i][] = $instance->getId();
                             }
                         }
                     }
@@ -175,7 +175,9 @@ class ResolveDefs
         if ($myFuncCall->getName() === "__construct") {
             $classStackName[$i][] = $myFuncCall->getBackDef();
         } elseif ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
-            $properties = $myFuncCall->getBackDef()->property->getProperties();
+
+            $backdef = $context->getSymbols()->getRawDef($myFuncCall->getBackDef());
+            $properties = $backdef->property->getProperties();
 
             $tmpProperties = [];
 
@@ -189,10 +191,11 @@ class ResolveDefs
                         $myFuncCall->getNameInstance()
                     );
                 } else {
+                    $chainedDef = $context->getSymbols()->getRawDef($myFuncCall->getChainedMethod());
                     $myDefTmp = new MyDefinition(
                         $myFuncCall->getLine(),
                         $myFuncCall->getColumn(),
-                        $myFuncCall->getChainedMethod()->getName()
+                        $chainedDef->getName()
                     );
                 }
 
@@ -200,7 +203,7 @@ class ResolveDefs
                 $myDefTmp->setSourceMyFile($myFuncCall->getSourceMyFile());
                 $myDefTmp->property->setProperties($tmpProperties);
                 $myDefTmp->addType(MyDefinition::TYPE_PROPERTY);
-                $myDefTmp->setId($myFuncCall->getBackDef()->getId() - 1);
+                $myDefTmp->setId($backdef->getId() - 1);
                 // we don't want the backdef but the original instance
             
                 $classStackName[$i] = [];
@@ -216,7 +219,7 @@ class ResolveDefs
 
                 foreach ($instances as $instance) {
                     if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
-                        $classStackName[$i][] = $instance;
+                        $classStackName[$i][] = $instance->getId();
                     }
                 }
 
@@ -237,7 +240,7 @@ class ResolveDefs
     {
         if (!is_null($myFunc) && $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
             if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                $myBackDef = $myFuncCall->getBackDef();
+                $myBackDef = $context->getSymbols()->getRawDef($myFuncCall->getBackDef());
                 //$myClass = $myFunc->getMyClass();
                 $method = $myClass->getMethod($myFuncCall->getName());
                 $newMyBackMyClass = $context->getObjects()->getMyClassFromObject($myBackDef->getObjectId());
@@ -256,7 +259,8 @@ class ResolveDefs
                 
                 $copyMyClass = clone $myClass;
                 
-                foreach ($copyMyClass->getProperties() as $property) {
+                foreach ($copyMyClass->getProperties() as $propertyId) {
+                    $property = $context->getSymbols()->getRawDef($propertyId);
                     $myDef = new MyDefinition($myFunc->getLastLine() + 1, $myFunc->getLastColumn(), "this");
 
                     $myDef->addType(MyDefinition::TYPE_PROPERTY);
@@ -264,9 +268,9 @@ class ResolveDefs
                     $myDef->setBlockId($myFunc->getLastBlockId());
                     $myDef->setSourceMyFile($myBackDef->getSourceMyFile());
 
-                    $newProperty = $newMyBackMyClass->getProperty($property->property->getProperties()[0]);
+                    $newProperty = $newMyBackMyClass->getProperty($context, $property->property->getProperties()[0]);
                     if (is_null($newProperty)) {
-                        $newMyBackMyClass->addProperty($property);
+                        $newMyBackMyClass->addProperty($context, $propertyId);
                         $newProperty = $property;
                     }
 
@@ -328,7 +332,7 @@ class ResolveDefs
         
             // backdef instance should be update with the correct object
             // $row = $query->result();
-            $myBackDef = $myFuncCall->getBackDef();
+            $myBackDef = $context->getSymbols()->getRawDef($myFuncCall->getBackDef());
             $myClassTmp = $context->getClasses()->getMyClass($myClass->getName());
                 
             if (is_null($myClassTmp)) {
@@ -352,7 +356,9 @@ class ResolveDefs
 
             $myFunc->setThisHasBeenUpdated(false);
             
-            foreach ($copyMyClass->getProperties() as $property) {
+            foreach ($copyMyClass->getProperties() as $propertyId) {
+                $property = $context->getSymbols()->getRawDef($propertyId);
+
                 $myDef = new MyDefinition(
                     $myFuncCall->getLine(),
                     $myFuncCall->getColumn(),
@@ -472,31 +478,31 @@ class ResolveDefs
         include("file1.php")
         include("file2.php")
         */
-/*
-        if ((!$def1IncludedByDef2 && !$def2IncludedByDef1) || (!$def1IncludedByDef2 && !$def2IncludedByDef1)) {
-            $myFileDef1 = $def1->getSourceMyFile();
-            while (!is_null($myFileDef1)) {
-                $myFileDef2 = $def2->getSourceMyFile();
-                while (!is_null($myFileDef2)) {
-                    // we found the file from where the include chain start
-                    if ($myFileDef1->getName() === $myFileDef2->getName()) {
-                        // if the file of def1 is included later so def1 is deeper
-                        if (($myFileDef1->getLine() > $myFileDef2->getLine())
-                            || ($myFileDef1->getLine() === $myFileDef2->getLine()
-                                && $myFileDef1->getColumn() >= $myFileDef2->getColumn())) {
-                            return true;
-                        } else {
-                            return false;
+        /*
+                if ((!$def1IncludedByDef2 && !$def2IncludedByDef1) || (!$def1IncludedByDef2 && !$def2IncludedByDef1)) {
+                    $myFileDef1 = $def1->getSourceMyFile();
+                    while (!is_null($myFileDef1)) {
+                        $myFileDef2 = $def2->getSourceMyFile();
+                        while (!is_null($myFileDef2)) {
+                            // we found the file from where the include chain start
+                            if ($myFileDef1->getName() === $myFileDef2->getName()) {
+                                // if the file of def1 is included later so def1 is deeper
+                                if (($myFileDef1->getLine() > $myFileDef2->getLine())
+                                    || ($myFileDef1->getLine() === $myFileDef2->getLine()
+                                        && $myFileDef1->getColumn() >= $myFileDef2->getColumn())) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+
+                            $myFileDef2 = $myFileDef2->getIncludedFromMyfile();
                         }
+
+                        $myFileDef1 = $myFileDef1->getIncludedFromMyfile();
                     }
-
-                    $myFileDef2 = $myFileDef2->getIncludedFromMyfile();
                 }
-
-                $myFileDef1 = $myFileDef1->getIncludedFromMyfile();
-            }
-        }
-*/
+        */
         
         // def1 is included by file from def2
         // but def2 defined before or after the include ?
@@ -648,7 +654,7 @@ class ResolveDefs
                     $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
                     
                     if (!is_null($tmpMyClass)) {
-                        $property = $tmpMyClass->getProperty($prop);
+                        $property = $tmpMyClass->getProperty($context, $prop);
 
                         if (!is_null($property)
                             && (ResolveDefs::getVisibility($copyDefAssign, $property, $currentFunc))) {
@@ -672,7 +678,7 @@ class ResolveDefs
             $myClass = $context->getClasses()->getMyClass($defAssign->getName());
             
             if (!is_null($myClass)) {
-                $property = $myClass->getProperty($defAssign->property->getProperties()[0]);
+                $property = $myClass->getProperty($context, $defAssign->property->getProperties()[0]);
                 if (!is_null($property)
                     && (ResolveDefs::getVisibility($defAssign, $property, $currentFunc))) {
                     $visibilityFinal = true;
@@ -690,7 +696,8 @@ class ResolveDefs
             return $defsFound;
         }
 
-        foreach ($data as $def) {
+        foreach ($data as $defid) {
+            $def = $context->getSymbols()->getRawDef($defid);
             if (Definitions::defEquality($def, $searchedDed, $bypassIsNearest)
                         && ResolveDefs::isNearest($context, $searchedDed, $def)) {
                 // CA SERT A QUOI ICI REDONDANT AVEC LE DERNIER ?
@@ -745,17 +752,17 @@ class ResolveDefs
             }
         }
 
-/*
-        if (empty($trueDefsFound)) {
-            if ($context->getCurrentFunc()->getName() === "{main}") {
-                foreach ($context->getDefsMain() as $defMain) {
-                    if (Definitions::defEquality($defMain, $searchedDed, true)) {
-                        $trueDefsFound[] = $defMain;
+        /*
+                if (empty($trueDefsFound)) {
+                    if ($context->getCurrentFunc()->getName() === "{main}") {
+                        foreach ($context->getDefsMain() as $defMain) {
+                            if (Definitions::defEquality($defMain, $searchedDed, true)) {
+                                $trueDefsFound[] = $defMain;
+                            }
+                        }
                     }
                 }
-            }
-        }
-        */
+                */
         return $trueDefsFound;
     }
 
@@ -829,7 +836,7 @@ class ResolveDefs
                                     $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
 
                                     if (!is_null($tmpMyClass)) {
-                                        $property = $tmpMyClass->getProperty($prop);
+                                        $property = $tmpMyClass->getProperty($context, $prop);
 
                                         if (!is_null($property)
                                             && (ResolveDefs::getVisibility($defa, $property, $currentFunc)
@@ -878,7 +885,7 @@ class ResolveDefs
 
                                         if (!is_null($tmpMyClass)) {
                                             $prop = $myProperties[$i];
-                                            $property = $tmpMyClass->getProperty($prop);
+                                            $property = $tmpMyClass->getProperty($context, $prop);
                                             
                                             if (!is_null($property)
                                                 && (ResolveDefs::getVisibility(

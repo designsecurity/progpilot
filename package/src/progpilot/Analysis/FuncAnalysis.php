@@ -22,7 +22,9 @@ class FuncAnalysis
 
         if (!is_null($myFunc)) {
             $defsReturn = $myFunc->getReturnDefs();
-            foreach ($defsReturn as $defReturn) {
+            foreach ($defsReturn as $defReturnId) {
+
+                $defReturn = $context->getSymbols()->getRawDef($defReturnId);
                 if (($arrFuncCall !== false
                     && $defReturn->isType(MyDefinition::TYPE_ARRAY)
                         && $defReturn->getArrayValue() === $arrFuncCall)
@@ -37,7 +39,7 @@ class FuncAnalysis
                     
                     $expr = $copyDefReturn->getExpr();
                     if ($expr->isAssign()) {
-                        $defAssign = $expr->getAssignDef();
+                        $defAssign = $context->getSymbols()->getRawDef($expr->getAssignDef());
                         //TaintAnalysis::setTainted($copyDefReturn, $defAssign, $expr);
 
                         if (ResolveDefs::getVisibilityFromInstances($context, $data, $defAssign)) {
@@ -54,18 +56,20 @@ class FuncAnalysis
                     }
 
                     if ($opAfter->isPropertyExist(MyInstruction::CHAINED_DEF)) {
-                        $def = $opAfter->getProperty(MyInstruction::CHAINED_DEF);
+                        $defId = $opAfter->getProperty(MyInstruction::CHAINED_DEF);
+                        $def = $context->getSymbols()->getRawDef($defId);
                         $def->setObjectId($defReturn->getObjectId());
                     }
                 }
             }
 
             if ($opAfter->getOpcode() === Opcodes::DEFINITION) {
-                $copyTab = $opAfter->getProperty(MyInstruction::DEF);
+                $copyTab = $context->getSymbols()->getRawDef($opAfter->getProperty(MyInstruction::DEF));
 
                 $originalTabs = $myFunc->getReturnDefs();
 
-                foreach ($originalTabs as $originalTab) {
+                foreach ($originalTabs as $originalTabId) {
+                    $originalTab = $context->getSymbols()->getRawDef($originalTabId);
                     ArrayAnalysis::copyArrayFromDef($originalTab, $arrFuncCall, $copyTab, $copyTab->getArrayValue());
                 }
             }
@@ -77,9 +81,10 @@ class FuncAnalysis
         $nbParams = 0;
         $params = $myFunc->getParams();
 
-        foreach ($params as $param) {
+        foreach ($params as $paramid) {
             if ($instruction->isPropertyExist("argdef$nbParams")) {
-                $defArg = $instruction->getProperty("argdef$nbParams");
+                $param = $context->getSymbols()->getRawDef($paramid);
+                $defArg = $context->getSymbols()->getRawDef($instruction->getProperty("argdef$nbParams"));
                 $exprArg = $instruction->getProperty("argexpr$nbParams");
 
                 $newParam = clone $param;
