@@ -11,7 +11,6 @@ header( 'Content-Type: ' . get_bloginfo('html_type') . '; charset=' . get_blogin
 switch( $action ) {
 
 case 'register':
-
 	$user_login = sanitize_user( $_POST['user_login'] );
 	$user_email = $_POST['user_email'];
 	

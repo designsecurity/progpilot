@@ -40,16 +40,15 @@ class FuncCall
         $typeArray = Common::getTypeIsArray($arg);
 
         $myDef = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), $defName);
-        $context->getSymbols()->addRawDef($myDef);
 
         $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_ASSIGN));
         $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
 
         $myExprparam = new MyExpr($context->getCurrentLine(), $context->getCurrentColumn());
         $myExprparam->setAssign(true);
-        $myExprparam->setAssignDef($myDef->getId());
+        $myExprparam->setAssignDef($myDef);
 
-        $instFuncCallMain->addProperty("argdef$numParam", $myDef->getId());
+        $instFuncCallMain->addProperty("argdef$numParam", $myDef);
         $instFuncCallMain->addProperty("argexpr$numParam", $myExprparam);
 
         // if we have funccall($arg, array("test"=>false)); for example
@@ -59,16 +58,15 @@ class FuncCall
             $myTemp = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), $defName);
             //$myTemp->addLastKnownValue($defName);
             $myTemp->setExpr($myExprparam);
-            $context->getSymbols()->addRawDef($myTemp);
 
             $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
-            $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp->getId());
+            $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
             $context->getCurrentMycode()->addCode($instTemporarySimple);
         } else {
             $myTemp = Expr::instruction($arg, $context, $myExprparam);
 
             if (!is_null($myTemp)) {
-                $myDef->setValueFromDef($myTemp->getId());
+                $myDef->setValueFromDef($myTemp);
             }
         }
 
@@ -79,7 +77,7 @@ class FuncCall
         $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::END_ASSIGN));
 
         $instDef = new MyInstruction(Opcodes::DEFINITION);
-        $instDef->addProperty(MyInstruction::DEF, $myDef->getId());
+        $instDef->addProperty(MyInstruction::DEF, $myDef);
         $context->getCurrentMycode()->addCode($instDef);
 
         unset($myExprparam);
@@ -114,11 +112,10 @@ class FuncCall
                 );
 
                 $chainedMethodDef->addType(MyDefinition::TYPE_INSTANCE);
-                $context->getSymbols()->addRawDef($chainedMethodDef);
 
                 $instDefChained = new MyInstruction(Opcodes::DEFINITION);
-                $instDefChained->addProperty(MyInstruction::DEF, $chainedMethodDef->getId());
-                $instDefChained->addProperty(MyInstruction::CHAINED_DEF, $chainedMethodDef->getId());
+                $instDefChained->addProperty(MyInstruction::DEF, $chainedMethodDef);
+                $instDefChained->addProperty(MyInstruction::CHAINED_DEF, $chainedMethodDef);
                 $context->getCurrentMycode()->addCode($instDefChained);
             }
 
@@ -132,7 +129,6 @@ class FuncCall
         $funcCallName = "";
         if ($context->getCurrentOp() instanceof Op\Expr\New_) {
             $funcCallName = "__construct";
-            // we have the class name
 
             if (isset($context->getCurrentOp()->class->value)) {
                 $className = $context->getCurrentOp()->class->value;
@@ -175,7 +171,6 @@ class FuncCall
         $myFunctionCall->setLine($context->getCurrentLine());
         $myFunctionCall->setColumn($context->getCurrentColumn());
 
-
         if ($isStatic && isset($context->getCurrentOp()->class->value)) {
             $nameClass = $context->getCurrentOp()->class->value;
             $myFunctionCall->addType(MyFunction::TYPE_FUNC_STATIC);
@@ -195,8 +190,7 @@ class FuncCall
                 $mybackdef->property->setProperties($propertyName);
             }
 
-            $context->getSymbols()->addRawDef($mybackdef);
-            $myFunctionCall->setBackDef($mybackdef->getId());
+            $myFunctionCall->setBackDef($mybackdef);
         }
 
         $listArgs = [];
@@ -224,7 +218,7 @@ class FuncCall
         $myFunctionCall->setNbParams($nbparams);
         if (!empty($chainedMethod)) {
             $myFunctionCall->setIsChainedMethod(true);
-            $myFunctionCall->setChainedMethod($chainedMethodDef->getId());
+            $myFunctionCall->setChainedMethod($chainedMethodDef);
         }
 
         $instFuncCallMain->addProperty(MyInstruction::MYFUNC_CALL, $myFunctionCall);
@@ -232,8 +226,6 @@ class FuncCall
         $instFuncCallMain->addProperty(MyInstruction::ARR, $funcCallArr);
         $context->getCurrentMycode()->addCode($instFuncCallMain);
 
-
-        
         return $mybackdef;
     }
 }

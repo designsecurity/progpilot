@@ -13,6 +13,7 @@ namespace progpilot\Analysis;
 use progpilot\Objects\MyDefinition;
 use progpilot\Code\Opcodes;
 use progpilot\Code\MyInstruction;
+use progpilot\AbstractLayer\Analysis as AbstractAnalysis;
 
 class FuncAnalysis
 {
@@ -20,10 +21,11 @@ class FuncAnalysis
     {
         $exprReturn = $instruction->getProperty(MyInstruction::EXPR);
 
+        $i = 0;
+
         if (!is_null($myFunc)) {
             $defsReturn = $myFunc->getReturnDefs();
-            foreach ($defsReturn as $defReturnId) {
-                $defReturn = $context->getSymbols()->getRawDef($defReturnId);
+            foreach ($defsReturn as $defReturn) {
                 if (($arrFuncCall !== false
                     && $defReturn->isType(MyDefinition::TYPE_ARRAY)
                         && $defReturn->getArrayValue() === $arrFuncCall)
@@ -38,7 +40,7 @@ class FuncAnalysis
                     
                     $expr = $copyDefReturn->getExpr();
                     if ($expr->isAssign()) {
-                        $defAssign = $context->getSymbols()->getRawDef($expr->getAssignDef());
+                        $defAssign = $expr->getAssignDef();
                         //TaintAnalysis::setTainted($copyDefReturn, $defAssign, $expr);
 
                         if (ResolveDefs::getVisibilityFromInstances($context, $data, $defAssign)) {
@@ -55,20 +57,17 @@ class FuncAnalysis
                     }
 
                     if ($opAfter->isPropertyExist(MyInstruction::CHAINED_DEF)) {
-                        $defId = $opAfter->getProperty(MyInstruction::CHAINED_DEF);
-                        $def = $context->getSymbols()->getRawDef($defId);
+                        $def = $opAfter->getProperty(MyInstruction::CHAINED_DEF);
                         $def->setObjectId($defReturn->getObjectId());
                     }
                 }
             }
 
             if ($opAfter->getOpcode() === Opcodes::DEFINITION) {
-                $copyTab = $context->getSymbols()->getRawDef($opAfter->getProperty(MyInstruction::DEF));
-
+                $copyTab = $opAfter->getProperty(MyInstruction::DEF);
                 $originalTabs = $myFunc->getReturnDefs();
 
-                foreach ($originalTabs as $originalTabId) {
-                    $originalTab = $context->getSymbols()->getRawDef($originalTabId);
+                foreach ($originalTabs as $originalTab) {
                     ArrayAnalysis::copyArrayFromDef($originalTab, $arrFuncCall, $copyTab, $copyTab->getArrayValue());
                 }
             }
@@ -80,46 +79,16 @@ class FuncAnalysis
         $nbParams = 0;
         $params = $myFunc->getParams();
 
-        foreach ($params as $paramid) {
+        foreach ($params as $param) {
             if ($instruction->isPropertyExist("argdef$nbParams")) {
-                $param = $context->getSymbols()->getRawDef($paramid);
-                $defArg = $context->getSymbols()->getRawDef($instruction->getProperty("argdef$nbParams"));
+                $defArg = $instruction->getProperty("argdef$nbParams");
                 $exprArg = $instruction->getProperty("argexpr$nbParams");
 
-                $newParam = clone $param;
-                $myFuncCall->addParam($newParam);
-
-                $newParam->setLastKnownValues($defArg->getLastKnownValues());
-                ArrayAnalysis::copyArrayFromDef($defArg, $defArg->getArrayValue(), $newParam, false);
-
-                $param->setCopyArrays($newParam->getCopyArrays());
-                $param->setLastKnownValues($newParam->getLastKnownValues());
-                $param->setType($newParam->getType());
-
-                $expr = $param->getExpr();
-
-                if ($defArg->isTainted()) {
-                    // useful just for inside the function
-                    TaintAnalysis::setTainted($defArg->isTainted(), $param, $exprArg);
-
-                    if (!is_null($expr) && $expr->isAssign()) {
-                        $defAssign = $expr->getAssignDef();
-
-                        if (ResolveDefs::getVisibilityFromInstances($context, $data, $defAssign)) {
-                            TaintAnalysis::setTainted($defArg->isTainted(), $defAssign, $expr);
-                            ValueAnalysis::copyValues($defArg, $defAssign);
-                        }
-                    }
-                }
+                $param->setParamToArg($defArg);
+                $defArg->setArgToParam($param);
                 
-                // useful for copy all tainted array progpilot
-                ValueAnalysis::copyValues($defArg, $param);
-
                 $nbParams ++;
-                unset($defArg);
             }
         }
-
-        unset($params);
     }
 }

@@ -12,6 +12,8 @@ try {
         $context->inputs->setFrameworks(["suitecrm", "codeigniter", "prestashop", "symfony"]);
         $context->setAnalyzeHardrules(true);
         $context->setPrintWarning(true);
+        $context->setPrintFile(true);
+        $context->outputs->taintedFlow(true);
         
         try {
             $analyzer->run($context);

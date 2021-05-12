@@ -46,6 +46,13 @@ class MyOutputs
         $this->ast = [];
     }
 
+    public function resetRepresentationsForAllFunctions()
+    {
+        $this->cfg = [];
+        $this->callgraph = [];
+        $this->ast = [];
+    }
+
     public function createRepresentationsForFunction($myFunc)
     {
         if (!is_null($myFunc)) {

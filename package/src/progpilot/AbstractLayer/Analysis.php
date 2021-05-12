@@ -38,14 +38,13 @@ class Analysis
         }
     }
 
-    public static function forAllDefsOfFunctionExceptReturnDefs($context, $func, $myFunc)
+    public static function forAllDefsOfFunctionExceptReturnDefs($func, $myFunc)
     {
-        $returnDefIds = $myFunc->getReturnDefs();
+        $returnDefs = $myFunc->getReturnDefs();
         foreach ($myFunc->getDefs()->getDefs() as $defnames) {
             if (is_array($defnames)) {
-                foreach ($defnames as $defId) {
-                    $def = $context->getSymbols()->getRawDef($defId);
-                    if (!in_array($def->getId(), $returnDefIds, true)) {
+                foreach ($defnames as $def) {
+                    if (!in_array($def, $returnDefs, true)) {
                         $params = array($def, $myFunc->getDefs());
                         call_user_func_array(__NAMESPACE__ ."\\$func", $params);
                     }
@@ -54,16 +53,14 @@ class Analysis
         }
     }
 
-    public static function forAllReturnDefsOfFunction($context, $func, $myFunc)
+    public static function forAllReturnDefsOfFunction($func, $myFunc)
     {
         $initialReturnDefs = $myFunc->getInitialReturnDefs();
         $returnDefs = $myFunc->getReturnDefs();
         $i = 0;
-        foreach ($returnDefs as $returnDefId) {
-            $returnDef = $context->getSymbols()->getRawDef($returnDefId);
+        foreach ($returnDefs as $returnDef) {
             if (isset($initialReturnDefs[$i])) {
-                $InitialreturnDef = $context->getSymbols()->getRawDef($initialReturnDefs[$i]);
-                $params = array($returnDef, $InitialreturnDef);
+                $params = array($returnDef, $initialReturnDefs[$i]);
                 call_user_func_array(__NAMESPACE__ ."\\$func", $params);
             }
 
@@ -76,7 +73,7 @@ class Analysis
         foreach ($myFunc->getDefs()->getDefs() as $defnames) {
             if (is_array($defnames)) {
                 foreach ($defnames as $def) {
-                    $params = array($def);
+                    $params = array($def, $myFunc->getDefs());
                     call_user_func_array(__NAMESPACE__ ."\\$func", $params);
                 }
             }
@@ -96,19 +93,27 @@ class Analysis
         }
     }
 
-    public static function checkIfOneFunctionArgumentIsNew($context, $myFunc, $instruction)
+    public static function checkIfTimeExecutionIsAcceptable($context, $myFunc)
+    {
+        $threshold1 = $context->getLimitTime() / 4; // 7.5 seconds by default
+        $threshold2 = $context->getLimitTime() / 15; // 2 seconds by defaults
+        $lastExecutionTime = $myFunc->getLastExecutionTime();
+        $nbExecutions = $myFunc->getNbExecutions();
+
+        if(($nbExecutions === 1 && $lastExecutionTime >= $threshold1) 
+            || ($nbExecutions > 4 && $lastExecutionTime >= $threshold2)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function checkIfOneFunctionArgumentIsNew($myFunc, $instruction)
     {
         if (!is_null($myFunc)) {
             $params = $myFunc->getParams();
 
             if (empty($params)) {
-                /*
-                if ($myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                    if (!$myFunc->thisHasBeenUpdated()) {
-                        echo "has not been updated\n";
-                        return false;
-                    }
-                }*/
                 // if it's not a method and empty params,
                 // then we can't have additional tainted return
                 return false;
@@ -116,14 +121,11 @@ class Analysis
 
             for ($i = 0; $i < count($params); $i++) {
                 if ($instruction->isPropertyExist("argdef$i")) {
-                    $defArgId = $instruction->getProperty("argdef$i");
-                    $defArg = $context->getSymbols()->getRawDef($defArgId);
+                    $defArg = $instruction->getProperty("argdef$i");
 
                     $pastArgs = $myFunc->getPastArguments();
                     if (isset($pastArgs[$i]) && is_array($pastArgs[$i])) {
-                        foreach ($pastArgs[$i] as $pastArgId) {
-                            $pastArg = $context->getSymbols()->getRawDef($pastArgId);
-
+                        foreach ($pastArgs[$i] as $pastArg) {
                             if (!$defArg->isTainted()
                                 && $defArg->getLastKnownValues() === $pastArg->getLastKnownValues()
                                     && $defArg->getType() === $pastArg->getType()
@@ -176,8 +178,7 @@ class Analysis
                         
                         if (isset($stackClass[$i]) && count($stackClass[$i]) > 0) {
                             $foundProperty = false;
-                            foreach ($stackClass[$i] as $propClassId) {
-                                $propClass = $context->getSymbols()->getRawDef($propClassId);
+                            foreach ($stackClass[$i] as $propClass) {
                                 $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                         
@@ -246,8 +247,7 @@ class Analysis
                         
                         if (isset($stackClass[$i]) && count($stackClass[$i]) > 0) {
                             $foundProperty = false;
-                            foreach ($stackClass[$i] as $propClassId) {
-                                $propClass = $context->getSymbols()->getRawDef($propClassId);
+                            foreach ($stackClass[$i] as $propClass) {
                                 $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                     

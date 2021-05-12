@@ -14,6 +14,7 @@ use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser;
 use progpilot\Utils;
 use progpilot\Dataflow;
+use progpilot\Objects\MyFunction;
 
 class Context
 {
@@ -28,7 +29,6 @@ class Context
     private $currentFunc;
     private $currentMyFile;
     private $currentNbDefs;
-    private $myFiles;
     private $classes;
     private $objects;
     private $functions;
@@ -44,8 +44,9 @@ class Context
     private $limitSize;
     private $defsMain;
     private $symbols;
+    private $callStack;
 
-    private $analyzedFiles;
+    private $analyzedDataFiles;
 
     public $inputs;
     public $outputs;
@@ -59,9 +60,8 @@ class Context
         $this->printWarning = false;
         $this->prettyPrint = true;
         $this->limitTime = 30;
-        $this->limitDefs = 100000;
+        $this->limitDefs = 500;
         $this->limitSize = 1000000;
-        $this->currentNbDefs = 0;
 
         $this->inputs = new \progpilot\Inputs\MyInputs;
         $this->outputs = new \progpilot\Outputs\MyOutputs;
@@ -74,16 +74,71 @@ class Context
 
         $this->currentFunc = null;
         $this->currentMyFile = null;
-        $this->myfiles = [];
         $this->arrayIncludes = [];
         $this->arrayRequires = [];
-        $this->analyzedFiles = [];
+        $this->analyzedDataFiles = [];
 
         $this->defsMain = [];
         $this->tmpfunctions = [];
         $this->symbols = new Dataflow\Symbols;
+        $this->callStack = [];
     }
     
+
+    public function pushToCallStack($val)
+    {
+        array_push($this->callStack, $val);
+    }
+
+    public function popFromCallStack()
+    {
+        return array_pop($this->callStack);
+    }
+
+    public function setCallStack($callStack)
+    {
+        $this->callStack = $callStack;
+    }
+
+    public function getCallStack()
+    {
+        return $this->callStack;
+    }
+
+    public function inCallStack($curFunc)
+    {
+        foreach ($this->callStack as $call) {
+            $callFunc = $call[0];
+
+            if ($callFunc->getName() === $curFunc->getName()
+                && !$callFunc->isType(MyFunction::TYPE_FUNC_METHOD)
+                    && !$curFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
+                return true;
+            }
+
+            if ($callFunc->getName() === $curFunc->getName()
+                && $callFunc->isType(MyFunction::TYPE_FUNC_METHOD)
+                    && $curFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
+                $curClass = $curFunc->getMyClass();
+                $callClass = $callFunc->getMyClass();
+
+                if ($curClass->getName() === $callClass->getName()) {
+                    return true;
+                }
+                
+                $curClassExtends = $curClass->getExtendsOf();
+                $callClassExtends = $callClass->getExtendsOf();
+
+                if(isset($curClassExtends) && isset($callClassExtends)
+                    && $curClassExtends === $callClassExtends) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public function getSymbols()
     {
         return $this->symbols;
@@ -104,14 +159,16 @@ class Context
         return $this->tmpfunctions;
     }
 
-    public function addAnalyzedFile($file)
+    public function addDataAnalyzedFile($file)
     {
-        $this->analyzedFiles[] = $file;
+        if (!in_array($file, $this->analyzedDataFiles)) {
+            $this->analyzedDataFiles[] = $file;
+        }
     }
 
-    public function isFileAnalyzed($file)
+    public function isFileDataAnalyzed($file)
     {
-        return in_array($file, $this->analyzedFiles);
+        return in_array($file, $this->analyzedDataFiles);
     }
 
     public function getDefsMain()
@@ -124,14 +181,38 @@ class Context
         $this->defsMain = $defsMain;
     }
 
-    public function getCurrentNbDefs()
+    public function addFileandNamepace($file, $namespace)
     {
-        return $this->currentNbDefs;
+        $this->namespaces["$namespace"] = $file;
     }
 
-    public function setCurrentNbDefs($currentNbDefs)
+    public function getFileFromNamespace($namespace)
     {
-        $this->currentNbDefs = $currentNbDefs;
+        if (isset($this->namespaces["$namespace"])) {
+            return $this->namespaces["$namespace"];
+        }
+
+        return null;
+    }
+
+    public function addCallToNamespace($namespace)
+    {
+        if (!isset($this->calltonamespaces["".$this->currentMyFile->getName().""])) {
+            $this->calltonamespaces["".$this->currentMyFile->getName().""] = [];
+        }
+
+        if (!in_array($namespace, $this->calltonamespaces["".$this->currentMyFile->getName().""], true)) {
+            $this->calltonamespaces["".$this->currentMyFile->getName().""][] = $namespace;
+        }
+    }
+    
+    public function getCallsToNamespace($file)
+    {
+        if (isset($this->calltonamespaces["$file"])) {
+            return $this->calltonamespaces["$file"];
+        }
+
+        return null;
     }
 
     public function resetInternalLowvalues()
@@ -142,24 +223,29 @@ class Context
         $this->currentColumn = -1;
         $this->currentFunc = null;
         $this->currentMyCode = null;
-        $this->path = null;
     }
 
     public function resetInternalValues()
     {
         $this->resetInternalLowvalues();
-        
-        unset($this->currentMyCode);
 
         $this->inputs->setCode(null);
     }
 
+    public function resetCallStack()
+    {
+        $this->callStack = [];
+    }
+
+    public function resetIncludedFiles()
+    {
+        $this->arrayIncludes = [];
+        $this->arrayRequires = [];
+    }
+
     public function resetDataflow()
     {
-        unset($this->objects);
-        unset($this->classes);
-        unset($this->functions);
-
+        $this->analyzedDataFiles = [];
         $this->objects = new \progpilot\Dataflow\Objects;
         $this->classes = new \progpilot\Dataflow\Classes;
         $this->functions = new \progpilot\Dataflow\Functions;

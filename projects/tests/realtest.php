@@ -6,8 +6,7 @@
                 ],
                 [
                     "./tests/real/mutliplecall_memory.php",
-                        [["\$var", "6", "xss"],
-                        ["\$var", "6", "xss"]]
+                        [["\$var", "6", "xss"]]
                 ],
                 [
                     "./tests/real/composer/index.php",

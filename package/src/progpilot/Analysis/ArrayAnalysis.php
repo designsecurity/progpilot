@@ -116,8 +116,6 @@ class ArrayAnalysis
                         $copyTab->removeType(MyDefinition::TYPE_ARRAY);
                     }
                     $copyTab->setArrayValue(false);
-
-                    unset($defArr);
                 }
             }
         } elseif ($originalTab->getArrayValue() !== "PROGPILOT_ALL_INDEX_TAINTED") {

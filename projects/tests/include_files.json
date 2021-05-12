@@ -4,6 +4,6 @@
     ],
     "include_folders":
     [
-        "./tests/real/wordpress/"
+        "/home/eric/dev/perso/mark/wordpress-latest/wordpress/"
     ]
 }

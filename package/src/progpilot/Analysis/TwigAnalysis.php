@@ -31,8 +31,8 @@ class TwigAnalysis
 
         // !!! Ca peut être 1 aussi quand on passe pas de variables
         if ($nbParams === 2) {
-            $template = $context->getSymbols()->getRawDef($instruction->getProperty("argdef0"));
-            $variable = $context->getSymbols()->getRawDef($instruction->getProperty("argdef1"));
+            $template = $instruction->getProperty("argdef0");
+            $variable = $instruction->getProperty("argdef1");
 
             $file = $path."/".$template->getLastKnownValues()[0];
             $myJavascriptFile = new MyFile($file, $myFuncCall->getLine(), $myFuncCall->getColumn());

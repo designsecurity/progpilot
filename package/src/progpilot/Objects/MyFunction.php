@@ -27,6 +27,7 @@ class MyFunction extends MyOp
     private $initialReturnDefs;
     private $defs;
     private $blocks;
+    private $exprs;
     private $visibility;
     private $myClass;
     private $firstBlockId;
@@ -41,9 +42,8 @@ class MyFunction extends MyOp
     private $lastBlockId;
 
     private $thisHasBeenUpdated;
-    private $initialAnalysis;
     private $isVisited;
-    private $isDataAnalyzed;
+    private $isVisitedFromInclude;
     private $isChainedMethod;
 
     private $myCode;
@@ -71,11 +71,13 @@ class MyFunction extends MyOp
         $this->lastLine = 0;
         $this->lastColumn = 0;
         $this->lastBlockId = 0;
+        $this->lastExecutionTime = 0;
+        $this->startExecutionTime = 0;
+        $this->nbExecutions = 0;
 
         $this->thisHasBeenUpdated = false;
-        $this->initialAnalysis = false;
         $this->isVisited = false;
-        $this->isDataAnalyzed = false;
+        $this->isVisitedFromInclude = false;
         $this->isChainedMethod = false;
         $this->chainedMethod = null;
         $this->hasGlobalVariables = false;
@@ -83,6 +85,7 @@ class MyFunction extends MyOp
         $this->property = new MyProperty;
         $this->defs = new Definitions;
         $this->blocks = new \SplObjectStorage;
+        $this->exprs = [];
 
         $this->myCode = new \progpilot\Code\MyCode;
         $this->castReturn = MyDefinition::CAST_NOT_SAFE;
@@ -93,6 +96,36 @@ class MyFunction extends MyOp
         $this->property = clone $this->property;
         $this->blocks = clone $this->blocks;
         $this->defs = clone $this->defs;
+    }
+
+    public function setNbExecutions($nbExecutions)
+    {
+        $this->nbExecutions = $nbExecutions;
+    }
+
+    public function getNbExecutions()
+    {
+        return $this->nbExecutions;
+    }
+
+    public function setStartExecutionTime($startExecutionTime)
+    {
+        $this->startExecutionTime = $startExecutionTime;
+    }
+
+    public function getStartExecutionTime()
+    {
+        return $this->startExecutionTime;
+    }
+
+    public function setLastExecutionTime($lastExecutionTime)
+    {
+        $this->lastExecutionTime = $lastExecutionTime;
+    }
+
+    public function getLastExecutionTime()
+    {
+        return $this->lastExecutionTime;
     }
 
     public function setThisHasBeenUpdated($thisHasBeenUpdated)
@@ -135,24 +168,14 @@ class MyFunction extends MyOp
         return $this->chainedMethod;
     }
 
-    public function setIsDataAnalyzed($isDataAnalyzed)
+    public function setIsVisitedFromInclude($isVisited)
     {
-        $this->isDataAnalyzed = $isDataAnalyzed;
+        $this->isVisitedFromInclude = $isVisited;
     }
 
-    public function isDataAnalyzed()
+    public function isVisitedFromInclude()
     {
-        return $this->isDataAnalyzed;
-    }
-
-    public function setInitialAnalysis($initialAnalysis)
-    {
-        $this->initialAnalysis = $initialAnalysis;
-    }
-
-    public function isInitialAnalysis()
-    {
-        return $this->initialAnalysis;
+        return $this->isVisitedFromInclude;
     }
 
     public function setIsVisited($isVisited)
@@ -273,6 +296,21 @@ class MyFunction extends MyOp
     public function getDefs()
     {
         return $this->defs;
+    }
+
+    public function addExpr($expr)
+    {
+        $this->exprs[] = $expr;
+    }
+
+    public function setExprs($exprs)
+    {
+        $this->exprs = $exprs;
+    }
+
+    public function getExprs()
+    {
+        return $this->exprs;
     }
 
     public function getPastArguments()

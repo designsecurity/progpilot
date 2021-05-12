@@ -55,6 +55,9 @@ class MyDefinition extends MyOp
     private $validWhenReturning;
     private $validNotBoolean;
 
+    private $paramToArg;
+    private $argToParam;
+
     public $property;
 
     public function __construct($varLine, $varColumn, $varName)
@@ -88,6 +91,9 @@ class MyDefinition extends MyOp
         $this->returnedFromValidator = false;
         $this->validWhenReturning = false;
         $this->validNotBoolean = false;
+
+        $this->paramToArg = null;
+        $this->argToParam = null;
     }
 
     public function __clone()
@@ -106,9 +112,15 @@ class MyDefinition extends MyOp
         is_property = ".$this->isType(MyDefinition::TYPE_PROPERTY)." :: \
         is_static_property = ".$this->isType(MyDefinition::TYPE_STATIC_PROPERTY)." :: \
         isInstance = ".$this->isType(MyDefinition::TYPE_INSTANCE)." :: \
+        isArray = ".$this->isType(MyDefinition::TYPE_ARRAY)." :: \
+        isCopyArray = ".$this->isType(MyDefinition::TYPE_COPY_ARRAY)." :: \
         is_const = ".$this->isType(MyDefinition::TYPE_CONSTANTE)." :: \
         blockid = ".$this->getBlockId()." :: \
         cast = ".$this->getCast()."\n";
+        
+        if (!is_null($this->getParamToArg())) {
+            echo "it's a param (to arg possibility)\n";
+        }
 
         if (!is_null($this->getSourceMyFile())) {
             $this->getSourceMyFile()->printStdout();
@@ -161,6 +173,26 @@ class MyDefinition extends MyOp
             echo "copyarray end =================\n";
         }
         echo "__________________________________________\n\n\n";
+    }
+
+    public function setArgToParam($def)
+    {
+        $this->argToParam = $def;
+    }
+
+    public function getArgToParam()
+    {
+        return $this->argToParam;
+    }
+
+    public function setParamToArg($def)
+    {
+        $this->paramToArg = $def;
+    }
+
+    public function getParamToArg()
+    {
+        return $this->paramToArg;
     }
 
     public function setIsInstance($value)
@@ -341,9 +373,9 @@ class MyDefinition extends MyOp
         $this->isTainted = $tainted;
     }
 
-    public function setTaintedByExpr($expr)
+    public function setTaintedByExpr($taintedByExpr)
     {
-        $this->taintedByExpr = $expr;
+        $this->taintedByExpr = $taintedByExpr;
     }
 
     public function getTaintedByExpr()
