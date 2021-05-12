@@ -271,7 +271,7 @@ class Analyzer
         return false;
     }
 
-    public function get_namespace($context, $file)
+    public function getNamespace($context, $file)
     {
         try {
             if (@filesize($file) <= $context->getLimitSize()) {
@@ -428,7 +428,7 @@ class Analyzer
                 $context->inputs->setFile($file);
                 $context->setCurrentMyfile($myFile);
 
-                $this->get_namespace($context, $file);
+                $this->getNamespace($context, $file);
             }
         }
 

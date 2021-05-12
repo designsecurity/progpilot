@@ -153,7 +153,6 @@ class IncludeAnalysis
                                     $saveMyFile = [];
                                     $defsIncluded = [];
                                     if (!is_null($mainInclude)) {
-
                                         // we change the source of defs nevermind the file is really analyzed or nor
                                         foreach ($mainInclude->getDefs()->getDefs() as $defOfMainArray) {
                                             foreach ($defOfMainArray as $defOfMain) {

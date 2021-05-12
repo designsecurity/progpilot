@@ -129,7 +129,7 @@ class Context
                 $curClassExtends = $curClass->getExtendsOf();
                 $callClassExtends = $callClass->getExtendsOf();
 
-                if(isset($curClassExtends) && isset($callClassExtends)
+                if (isset($curClassExtends) && isset($callClassExtends)
                     && $curClassExtends === $callClassExtends) {
                     return true;
                 }

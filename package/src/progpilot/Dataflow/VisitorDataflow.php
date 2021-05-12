@@ -345,8 +345,7 @@ class VisitorDataflow
                         if ($this->currentFunc->getDefs()->getNbDefs() < $context->getLimitDefs()) {
                             $this->defs->addDef($myDef->getName(), $myDef);
                             $this->defs->addGen($myDef->getBlockId(), $myDef);
-                        }
-                        else {
+                        } else {
                             if (!$alreadyWarned) {
                                 Utils::printWarning($context, Lang::MAX_DEFS_EXCEEDED);
                                 $alreadyWarned = true;

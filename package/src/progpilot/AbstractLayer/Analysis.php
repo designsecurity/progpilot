@@ -100,7 +100,7 @@ class Analysis
         $lastExecutionTime = $myFunc->getLastExecutionTime();
         $nbExecutions = $myFunc->getNbExecutions();
 
-        if(($nbExecutions === 1 && $lastExecutionTime >= $threshold1) 
+        if (($nbExecutions === 1 && $lastExecutionTime >= $threshold1)
             || ($nbExecutions > 4 && $lastExecutionTime >= $threshold2)) {
             return false;
         }
