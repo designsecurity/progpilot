@@ -69,11 +69,10 @@ class ArrayExpr
                     $myDef = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), $defName);
 
                     if ($isReturnDef) {
-                        $context->getCurrentFunc()->addReturnDef($myDef->getId());
+                        $context->getCurrentFunc()->addReturnDef($myDef);
                     }
 
-                    $context->getSymbols()->addRawDef($myDef);
-                    $myExpr->setAssignDef($myDef->getId());
+                    $myExpr->setAssignDef($myDef);
 
                     // we reverse the arr
                     $arrtrans = BuildArrays::buildArrayFromArr($buildingArr, false);
@@ -82,7 +81,7 @@ class ArrayExpr
                     $myDef->setArrayValue($arrtrans);
 
                     $instDef = new MyInstruction(Opcodes::DEFINITION);
-                    $instDef->addProperty(MyInstruction::DEF, $myDef->getId());
+                    $instDef->addProperty(MyInstruction::DEF, $myDef);
                     $context->getCurrentMycode()->addCode($instDef);
 
                     unset($myExpr);

@@ -35,6 +35,8 @@ use progpilot\Transformations\Php\Assign;
 use progpilot\Transformations\Php\Common;
 use progpilot\Transformations\Php\Context;
 
+use function DeepCopy\deep_copy;
+
 class Transform implements Visitor
 {
     private $sBlocks;
@@ -95,13 +97,8 @@ class Transform implements Visitor
                         $methodFather->setMyClass($myClass);
                     }
                                     
-                    foreach ($myClassFather->getProperties() as $propertyFatherId) {
-                        $propertyFather = $this->context->getSymbols()->getRawDef($propertyFatherId);
-                        $propertyFatherClone = clone $propertyFather;
-                        $propertyFatherClone->setId($this->context->getSymbols()->getFreeDefId());
-                        $this->context->getSymbols()->addRawDef($propertyFatherClone);
-                        
-                        $myClass->addProperty($this->context, $propertyFatherClone->getId());
+                    foreach ($myClassFather->getProperties() as $propertyFather) {
+                        $myClass->addProperty(clone $propertyFather);
                     }
                 }
             }
@@ -192,8 +189,7 @@ class Transform implements Visitor
                 $mythisdef->setBlockId(0);
                 $mythisdef->addType(MyDefinition::TYPE_INSTANCE);
 
-                $this->context->getSymbols()->addRawDef($mythisdef);
-                $myFunction->setThisDef($mythisdef->getId());
+                $myFunction->setThisDef($mythisdef);
             }
         }
 
@@ -207,22 +203,15 @@ class Transform implements Visitor
                 $myDef->addType(MyDefinition::TYPE_REFERENCE);
             }
 
-            $this->context->getSymbols()->addRawDef($myDef);
-
-            $myFunction->addParam($myDef->getId());
+            $myFunction->addParam($myDef);
 
             $instDef = new MyInstruction(Opcodes::DEFINITION);
-            $instDef->addProperty(MyInstruction::DEF, $myDef->getId());
+            $instDef->addProperty(MyInstruction::DEF, $myDef);
             $this->context->getCurrentMycode()->addCode($instDef);
 
             unset($myDef);
         }
 
-        // because when we call (funccall) a function by name, it can be undefined
-        /*
-        $fileNameHash = hash("sha256", $this->context->getCurrentMyfile()->getName());
-        $this->context->getFunctions()->addFunction($fileNameHash, $className, $myFunction->getName(), $myFunction);
-        */
         $this->context->setCurrentFunc($myFunction);
     }
 
@@ -244,17 +233,9 @@ class Transform implements Visitor
             }
         }
 
-        // by default it's a function, not a method
-        $className = "function";
-        if (!is_null($func->class)) {
-            $className = $func->class->value;
-        }
-/*
-        $fileNameHash = hash("sha256", $this->context->getCurrentMyfile()->getName());
-        $myFunction = $this->context->getFunctions()->getFunction($func->name, $className);
-*/
         $myFunction = $this->context->getCurrentFunc();
         
+        // can't be null?
         if (!is_null($myFunction)) {
             $myFunction->setLastLine($this->context->getCurrentLine());
             $myFunction->setLastColumn($this->context->getCurrentColumn());
@@ -265,9 +246,7 @@ class Transform implements Visitor
             $this->context->getCurrentMycode()->addCode($instFunc);
         }
 
-        $fileNameHash = hash("sha256", $this->context->getCurrentMyfile()->getName());
         $this->context->addTmpFunctions($myFunction);
-        //$this->context->getFunctions()->addFunction($fileNameHash, $className, $myFunction->getName(), $myFunction);
     }
 
     public function parseconditions($instStartIf, $cond)
@@ -334,10 +313,9 @@ class Transform implements Visitor
                 $nameGlobal
             );
             $myDefGlobal->setType(MyDefinition::TYPE_GLOBAL);
-            $this->context->getSymbols()->addRawDef($myDefGlobal);
 
             $instDef = new MyInstruction(Opcodes::DEFINITION);
-            $instDef->addProperty(MyInstruction::DEF, $myDefGlobal->getId());
+            $instDef->addProperty(MyInstruction::DEF, $myDefGlobal);
             $this->context->getCurrentMycode()->addCode($instDef);
 
             $this->context->getCurrentFunc()->setHasGlobalVariables(true);
@@ -474,8 +452,7 @@ class Transform implements Visitor
                         $myDef->addType(MyDefinition::TYPE_PROPERTY);
                     }
                         
-                    $this->context->getSymbols()->addRawDef($myDef);
-                    $myClass->addProperty($this->context, $myDef->getId());
+                    $myClass->addProperty($myDef);
                 }
             }
 

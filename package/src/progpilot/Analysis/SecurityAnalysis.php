@@ -129,7 +129,7 @@ class SecurityAnalysis
                     if ($mySink->isParameter($i + 1)) {
                         $conditionRespected = false;
         
-                        $myDefArg = $context->getSymbols()->getRawDef($instruction->getProperty("argdef$i"));
+                        $myDefArg = $instruction->getProperty("argdef$i");
                         $taintedExpr = $myDefArg->getTaintedByExpr();
 
                         if ($myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
@@ -167,7 +167,7 @@ class SecurityAnalysis
 
             if ($conditionRespected) {
                 for ($i = 0; $i < $nbParams; $i ++) {
-                    $myDefArg = $context->getSymbols()->getRawDef($instruction->getProperty("argdef$i"));
+                    $myDefArg = $instruction->getProperty("argdef$i");
                     $myDefExpr = $instruction->getProperty("argexpr$i");
 
                     if (!$mySink->hasParameters() || ($mySink->hasParameters() && $mySink->isParameter($i + 1))) {
@@ -200,6 +200,7 @@ class SecurityAnalysis
     public static function taintedFlow($indexParameter, $defExprFlow, $myEndDef, $mySink)
     {
         $resultTaintedFlow = [];
+        $exprTaintedTmp = [];
 
         $idFlow = \progpilot\Utils::printDefinition($mySink->getLanguage(), $defExprFlow);
 
@@ -209,19 +210,33 @@ class SecurityAnalysis
 
             foreach ($defsExprTainted as $defExprFlowFrom) {
                 if (!SecurityAnalysis::isSafe($indexParameter, $defExprFlowFrom, $myEndDef, $mySink, true)) {
-                    $tmpname = \progpilot\Utils::printDefinition($mySink->getLanguage(), $defExprFlowFrom);
-                    $oneTainted["flow_name"] = $tmpname;
-                    $oneTainted["flow_line"] = $defExprFlowFrom->getLine();
-                    $oneTainted["flow_column"] = $defExprFlowFrom->getColumn();
-                    $oneTainted["flow_file"] = \progpilot\Utils::encodeCharacters(
-                        $defExprFlowFrom->getSourceMyFile()->getName()
-                    );
+
                     
+                    if(!is_null($defExprFlowFrom->getArgToParam())) {
+                        $param = $defExprFlowFrom->getArgToParam();
+
+                        $sourceName = \progpilot\Utils::printDefinition($mySink->getLanguage(), $param);
+                        $sourceLine = $param->getLine();
+                        $sourceColumn = $param->getColumn();
+                        $sourceFile = \progpilot\Utils::encodeCharacters($param->getSourceMyFile()->getName());
+                    }
+                    else {
+                        $sourceName = \progpilot\Utils::printDefinition($mySink->getLanguage(), $defExprFlowFrom);
+                        $sourceLine = $defExprFlowFrom->getLine();
+                        $sourceColumn = $defExprFlowFrom->getColumn();
+                        $sourceFile = \progpilot\Utils::encodeCharacters($defExprFlowFrom->getSourceMyFile()->getName());
+                    }
+
+                    $oneTainted["flow_name"] = $sourceName;
+                    $oneTainted["flow_line"] = $sourceLine;
+                    $oneTainted["flow_column"] = $sourceColumn;
+                    $oneTainted["flow_file"] = $sourceFile;
+
                     // just in case
                     if (in_array($oneTainted, $resultTaintedFlow, true)) {
                         break 2;
                     }
-                        
+
                     $resultTaintedFlow[] = $oneTainted;
 
                     $idFlow .= \progpilot\Utils::printDefinition($mySink->getLanguage(), $defExprFlowFrom);
@@ -235,6 +250,7 @@ class SecurityAnalysis
                 break;
             }
         }
+        
 
         return [$resultTaintedFlow, $idFlow];
     }
@@ -259,10 +275,19 @@ class SecurityAnalysis
             $defsExpr = $taintedExpr->getDefs();
             foreach ($defsExpr as $defExpr) {
                 if (!SecurityAnalysis::isSafe($indexParameter, $defExpr, $myDef, $mySink)) {
-                    $sourceName = \progpilot\Utils::printDefinition($mySink->getLanguage(), $defExpr);
-                    $sourceLine = $defExpr->getLine();
-                    $sourceColumn = $defExpr->getColumn();
-                    $sourceFile = \progpilot\Utils::encodeCharacters($defExpr->getSourceMyFile()->getName());
+                    if(!is_null($defExpr->getArgToParam())) {
+                        $param = $defExpr->getArgToParam();
+                        $sourceName = \progpilot\Utils::printDefinition($mySink->getLanguage(), $param);
+                        $sourceLine = $param->getLine();
+                        $sourceColumn = $param->getColumn();
+                        $sourceFile = \progpilot\Utils::encodeCharacters($param->getSourceMyFile()->getName());
+                    }
+                    else {
+                        $sourceName = \progpilot\Utils::printDefinition($mySink->getLanguage(), $defExpr);
+                        $sourceLine = $defExpr->getLine();
+                        $sourceColumn = $defExpr->getColumn();
+                        $sourceFile = \progpilot\Utils::encodeCharacters($defExpr->getSourceMyFile()->getName());
+                    }
 
                     if (!SecurityAnalysis::inArraySource(
                         $temp,
@@ -290,7 +315,7 @@ class SecurityAnalysis
                 }
             }
         }
-
+        
         $hashedValue = $hashIdVuln."-".$mySink->getName()."-".$myFuncCall->getSourceMyFile()->getName();
         $hashIdVuln = hash("sha256", $hashedValue);
 
@@ -305,8 +330,6 @@ class SecurityAnalysis
             $temp["vuln_type"] = "taint-style";
 
             $context->outputs->addResult($temp);
-            //if (!in_array($temp, $results, true))
-                // $results[] = $temp;
         }
     }
 }

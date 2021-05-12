@@ -150,11 +150,9 @@ class Expr
                 $myTemp->property->setProperties($propertyName);
             }
 
-            $context->getSymbols()->addRawDef($myTemp);
-
             if (!$phi) {
                 $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
-                $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp->getId());
+                $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
                 $context->getCurrentMycode()->addCode($instTemporarySimple);
             }
             

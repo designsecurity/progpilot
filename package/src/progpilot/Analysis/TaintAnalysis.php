@@ -28,7 +28,6 @@ use progpilot\Inputs\MySource;
 class TaintAnalysis
 {
     public static function funccallSpecifyAnalysis(
-        $currentContextCall,
         $myFunc,
         $stackClass,
         $context,
@@ -61,7 +60,6 @@ class TaintAnalysis
         );
 
         TaintAnalysis::funccallSanitizer(
-            $currentContextCall,
             $myFunc,
             $stackClass,
             $context,
@@ -119,7 +117,7 @@ class TaintAnalysis
                 break;
             }
 
-            $defArg = $context->getSymbols()->getRawDef($instruction->getProperty("argdef$nbParams"));
+            $defArg = $instruction->getProperty("argdef$nbParams");
             $exprArg = $instruction->getProperty("argexpr$nbParams");
 
             if (!is_null($myValidator)) {
@@ -175,11 +173,8 @@ class TaintAnalysis
                 if (!is_null($myFunc)) {
                     $ambiguous = true;
 
-                    foreach ($myFunc->getReturnDefs() as $returnDefId) {
+                    foreach ($myFunc->getReturnDefs() as $returnDef) {
                         $ambiguous = false;
-
-                        $returnDef = $context->getSymbols()->getRawDef($returnDefId);
-
                         // we have a return def from a known validator
                         if ($returnDef->getReturnedFromValidator()) {
                             $returnTrue = false;
@@ -249,8 +244,7 @@ class TaintAnalysis
                             $block->addAssertion($myAssertion);
                         }
 
-                        foreach ($block->getReturnDefs() as $defReturnId) {
-                            $defReturn = $context->getSymbols()->getRawDef($defReturnId);
+                        foreach ($block->getReturnDefs() as $defReturn) {
                             $defReturn->setReturnedFromValidator(true);
                             $defReturn->setValidWhenReturning($validwhenreturning);
                             $defReturn->setValidNotBoolean($notboolean);
@@ -262,7 +256,6 @@ class TaintAnalysis
     }
 
     public static function funccallSanitizer(
-        $currentContextCall,
         $myFunc,
         $stackClass,
         $context,
@@ -314,7 +307,7 @@ class TaintAnalysis
                 break;
             }
 
-            $defArg = $context->getSymbols()->getRawDef($instruction->getProperty("argdef$nbParams"));
+            $defArg = $instruction->getProperty("argdef$nbParams");
             $exprArg = $instruction->getProperty("argexpr$nbParams");
 
             if (is_null($myFunc) || !is_null($mySanitizer)) {
@@ -383,7 +376,7 @@ class TaintAnalysis
         $codes = $myCode->getCodes();
         if (isset($codes[$index + 2]) && $codes[$index + 2]->getOpcode() === Opcodes::END_ASSIGN) {
             $instructionDef = $codes[$index + 3];
-            $myDefReturn = $context->getSymbols()->getRawDef($instructionDef->getProperty(MyInstruction::DEF));
+            $myDefReturn = $instructionDef->getProperty(MyInstruction::DEF);
             $returnSanitizer = true;
         }
         
@@ -458,11 +451,10 @@ class TaintAnalysis
                         break;
                     }
 
-                    $defArg = $context->getSymbols()->getRawDef($instruction->getProperty("argdef$nbParams"));
+                    $defArg = $instruction->getProperty("argdef$nbParams");
 
                     if ($mySource->isParameter($nbParams + 1)) {
-                        $defFromId = $defArg->getValueFromDef();
-                        $defFrom = $context->getSymbols()->getRawDef($defFromId);
+                        $defFrom = $defArg->getValueFromDef();
                         
                         if (!is_null($defFrom)) {
                             $arrayIndex = $mySource->getconditionsParameter($nbParams + 1, MySource::CONDITION_ARRAY);
@@ -484,7 +476,7 @@ class TaintAnalysis
             $exprReturn = $instruction->getProperty(MyInstruction::EXPR);
 
             if ($exprReturn->isAssign()) {
-                $defAssign = $context->getSymbols()->getRawDef($exprReturn->getAssignDef());
+                $defAssign = $exprReturn->getAssignDef();
                 
                 // sanitizers are deleted
                 $defAssign->setSanitized(false);
@@ -560,6 +552,7 @@ class TaintAnalysis
 
     public static function setTainted($tainted, $defAssign, $expr)
     {
+        // we don't want to override the original flow (see )
         if ($tainted) {
             $defAssign->setTainted(true);
             $defAssign->setTaintedByExpr($expr);

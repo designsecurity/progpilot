@@ -144,7 +144,8 @@
                     [
                         {"value" : "/'/", "prevent" : ["command_injection", "ldap_injection", "sql_injection", "QUOTES"]},
                         {"value" : "/\\W/si", "prevent" : ["command_injection", "ldap_injection", "sql_injection", "QUOTES"]},
-                        {"value" : "/[^a-zA-Z0-9_\\ -]/", "prevent" : ["command_injection", "ldap_injection", "sql_injection", "QUOTES"]}
+                        {"value" : "/[^a-zA-Z0-9_\\ -]/", "prevent" : ["command_injection", "ldap_injection", "sql_injection", "QUOTES"]},
+                        {"value" : "|a-z0-d9 _.-|i", "prevent" : ["ALL"]}
                     ]}
             ]
         }

@@ -86,8 +86,7 @@ class CustomAnalysis
     
     public static function returnObjectCreateObject($context, $myExpr, $customRule, $myFuncorDef)
     {
-        $defAssignId = $myExpr->getAssignDef();
-        $defAssign = $context->getSymbols()->getRawDef($defAssignId);
+        $defAssign = $myExpr->getAssignDef();
                 
         $objectId = $context->getObjects()->addObject();
                 
@@ -106,8 +105,7 @@ class CustomAnalysis
 
         $context->getObjects()->addMyclassToObject($objectId, $myClass);
         
-        $myBackDefId = $myFuncorDef->getBackDef();
-        $myBackDef = $context->getSymbols()->getRawDef($myBackDefId);
+        $myBackDef = $myFuncorDef->getBackDef();
         if (!is_null($myBackDef)) {
             $objectId = $myBackDef->getObjectId();
             $context->getObjects()->addMyclassToObject($objectId, $myClass);
@@ -160,8 +158,6 @@ class CustomAnalysis
 
                 if (!is_null($functionDefinition)) {
                     if ($result) {
-                        $params = $functionDefinition->getParameters();
-                        
                         if ($myFunc->getNbParams() < $functionDefinition->getMinNbArgs()
                             || $myFunc->getNbParams() > $functionDefinition->getMaxNbArgs()) {
                             $isValid = true;
@@ -187,8 +183,7 @@ class CustomAnalysis
                                         break;
                                     }
                                     
-                                    $defArgId = $instruction->getProperty("argdef$idParam");
-                                    $defArg = $context->getSymbols()->getRawDef($defArgId);
+                                    $defArg = $instruction->getProperty("argdef$idParam");
                         
                                     foreach ($valuesParameter as $valueParameter) {
                                         $defLastKnownValues = [];
@@ -348,9 +343,8 @@ class CustomAnalysis
             }
 
             foreach ($firstCustomFunctions as $firstCustomFunction) {
-                $functionsSign = $context->getFunctions()->getAllFunctions($firstCustomFunction->getName());
-                foreach ($functionsSign as $function) {
-                    //$function = Utils::unserializeFunc($functionSign);
+                $functions = $context->getFunctions()->getAllFunctions($firstCustomFunction->getName());
+                foreach ($functions as $function) {
                     if (!is_null($function)) {
                         $callgraph->addNode($function, null);
 

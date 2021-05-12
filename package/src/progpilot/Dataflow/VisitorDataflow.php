@@ -63,6 +63,7 @@ class VisitorDataflow
         $blocksStackId = [];
         $lastBlockId = 0;
         $firstBlock = true;
+        $alreadyWarned = false;
 
         do {
             if (isset($code[$index])) {
@@ -88,13 +89,15 @@ class VisitorDataflow
                             Opcodes::END_EXPRESSION."\n"
                         );
                         // representations end
+
+                        $myExpr = $instruction->getProperty(MyInstruction::EXPR);
+                        $context->getCurrentFunc()->addExpr($myExpr);
+                        
                         break;
 
                     case Opcodes::CLASSE:
                         $myClass = $instruction->getProperty(MyInstruction::MYCLASS);
-                        foreach ($myClass->getProperties() as $propertyId) {
-                            $property = $context->getSymbols()->getRawDef($propertyId);
-
+                        foreach ($myClass->getProperties() as $property) {
                             if (is_null($property->getSourceMyFile())) {
                                 $property->setSourceMyFile($context->getCurrentMyfile());
                             }
@@ -107,6 +110,7 @@ class VisitorDataflow
                         break;
 
                     case Opcodes::ENTER_FUNCTION:
+                        $alreadyWarned = false;
                         $blockIdZero = hash("sha256", "0-".$context->getCurrentMyfile()->getName());
 
                         $myFunc = $instruction->getProperty(MyInstruction::MYFUNC);
@@ -127,14 +131,14 @@ class VisitorDataflow
                         $context->setCurrentFunc($myFunc);
 
                         if ($myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                            $thisdef = $context->getSymbols()->getRawDef($myFunc->getThisDef());
+                            $thisdef = $myFunc->getThisDef();
                             $thisdef->setSourceMyFile($context->getCurrentMyfile());
 
                             $thisdef->setObjectId($this->currentClass->getObjectIdThis());
                             $thisdef->setBlockId($blockIdZero);
 
-                            $this->defs->addDef($thisdef->getName(), $thisdef->getId());
-                            $this->defs->addGen($thisdef->getBlockId(), $thisdef->getId());
+                            $this->defs->addDef($thisdef->getName(), $thisdef);
+                            $this->defs->addGen($thisdef->getBlockId(), $thisdef);
 
                             $context->getObjects()->addMyclassToObject(
                                 $this->currentClass->getObjectIdThis(),
@@ -173,7 +177,7 @@ class VisitorDataflow
 
                         $assertions = $myBlock->getAssertions();
                         foreach ($assertions as $assertion) {
-                            $myDef = $context->getSymbols()->getRawDef($assertion->getDef());
+                            $myDef = $assertion->getDef();
                             $myDef->setBlockId($blockId);
                         }
 
@@ -215,13 +219,7 @@ class VisitorDataflow
                             $this->currentBlockId = $blocksStackId[count($blocksStackId) - 1];
                         }
 
-                        if (($this->currentFunc->getDefs()->getNbDefs() > $context->getLimitDefs()) ||
-                        ($context->getCurrentNbDefs() > $context->getLimitDefs())) {
-                            Utils::printWarning($context, Lang::MAX_DEFS_EXCEEDED);
-                            return;
-                        }
-
-                        $this->defs->computeKill($context, $blockId);
+                        $this->defs->computeKill($blockId);
                         $lastBlockId = $blockId;
 
                         // representations start
@@ -234,13 +232,6 @@ class VisitorDataflow
 
                     case Opcodes::LEAVE_FUNCTION:
                         $myFunc = $instruction->getProperty(MyInstruction::MYFUNC);
-
-                        $context->setCurrentNbDefs($context->getCurrentNbDefs() + $myFunc->getDefs()->getNbDefs());
-
-                        if ($context->getCurrentNbDefs() > $context->getLimitDefs()) {
-                            Utils::printWarning($context, Lang::MAX_DEFS_EXCEEDED);
-                            return;
-                        }
 
                         $this->defs->reachingDefs($this->blocks);
 
@@ -266,14 +257,14 @@ class VisitorDataflow
                         }
 
                         if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                            $mybackdef = $context->getSymbols()->getRawDef($myFuncCall->getBackDef());
+                            $mybackdef = $myFuncCall->getBackDef();
                             $mybackdef->setBlockId($this->currentBlockId);
                             $mybackdef->addType(MyDefinition::TYPE_INSTANCE);
                             $mybackdef->setSourceMyFile($context->getCurrentMyfile());
 
                             $idObject = $context->getObjects()->addObject();
                             $mybackdef->setObjectId($idObject);
-                            
+
                             if (!empty($mybackdef->getClassName())) {
                                 $className = $mybackdef->getClassName();
                                 $myClass = $context->getClasses()->getMyClass($className);
@@ -289,8 +280,8 @@ class VisitorDataflow
                                 $context->getObjects()->addMyclassToObject($idObject, $myClass);
                             }
 
-                            $this->defs->addDef($mybackdef->getName(), $mybackdef->getId());
-                            $this->defs->addGen($mybackdef->getBlockId(), $mybackdef->getId());
+                            $this->defs->addDef($mybackdef->getName(), $mybackdef);
+                            $this->defs->addGen($mybackdef->getBlockId(), $mybackdef);
                         }
 
                         $mySource = $context->inputs->getSourceByName($context, null, $myFuncCall, true, false, false);
@@ -302,14 +293,13 @@ class VisitorDataflow
                                         break;
                                     }
 
-                                    $defargId = $instruction->getProperty("argdef$nbparams");
-                                    $defarg = $context->getSymbols()->getRawDef($defargId);
+                                    $defarg = $instruction->getProperty("argdef$nbparams");
 
                                     if ($mySource->isParameter($nbparams + 1)) {
-                                        $deffrom = $context->getSymbols()->getRawDef($defarg->getValueFromDef());
+                                        $deffrom = $defarg->getValueFromDef();
                                         if (!is_null($deffrom)) {
-                                            $this->defs->addDef($deffrom->getName(), $deffrom->getId());
-                                            $this->defs->addGen($deffrom->getBlockId(), $deffrom->getId());
+                                            $this->defs->addDef($deffrom->getName(), $deffrom);
+                                            $this->defs->addGen($deffrom->getBlockId(), $deffrom);
                                         }
                                     }
 
@@ -330,7 +320,7 @@ class VisitorDataflow
                         break;
 
                     case Opcodes::TEMPORARY:
-                        $myDef = $context->getSymbols()->getRawDef($instruction->getProperty(MyInstruction::TEMPORARY));
+                        $myDef = $instruction->getProperty(MyInstruction::TEMPORARY);
                         $myDef->setBlockId($this->currentBlockId);
 
                         if (is_null($myDef->getSourceMyFile())) {
@@ -345,15 +335,23 @@ class VisitorDataflow
                         break;
 
                     case Opcodes::DEFINITION:
-                        $myDef = $context->getSymbols()->getRawDef($instruction->getProperty(MyInstruction::DEF));
+                        $myDef = $instruction->getProperty(MyInstruction::DEF);
                         $myDef->setBlockId($this->currentBlockId);
 
                         if (is_null($myDef->getSourceMyFile())) {
                             $myDef->setSourceMyFile($context->getCurrentMyfile());
                         }
 
-                        $this->defs->addDef($myDef->getName(), $myDef->getId());
-                        $this->defs->addGen($myDef->getBlockId(), $myDef->getId());
+                        if ($this->currentFunc->getDefs()->getNbDefs() < $context->getLimitDefs()) {
+                            $this->defs->addDef($myDef->getName(), $myDef);
+                            $this->defs->addGen($myDef->getBlockId(), $myDef);
+                        }
+                        else {
+                            if (!$alreadyWarned) {
+                                Utils::printWarning($context, Lang::MAX_DEFS_EXCEEDED);
+                                $alreadyWarned = true;
+                            }
+                        }
 
                         // representations start
                         $idCfg = hash("sha256", $this->currentFunc->getName()."-".$this->currentBlockId);

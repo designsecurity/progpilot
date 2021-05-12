@@ -18,8 +18,6 @@ use progpilot\Objects\MyOp;
 use progpilot\Objects\MyDefinition;
 use progpilot\Transformations\Php\BuildArrays;
 
-use function DeepCopy\deep_copy;
-
 class Definitions
 {
     private $in;
@@ -134,7 +132,7 @@ class Definitions
         if ($continue) {
             $this->nbDefs ++;
             $this->defs[$name][] = $def;
-            //$this->originalDefs[$def->getId()] = clone $def;
+            $this->originalDefs[$def->getId()] = clone $def;
         }
     }
 
@@ -158,10 +156,10 @@ class Definitions
         return false;
     }
 
-    public function addGen($block, $defid)
+    public function addGen($block, $def)
     {
-        if (isset($this->gen[$block]) && !in_array($defid, $this->gen[$block], true)) {
-            $this->gen[$block][] = $defid;
+        if (isset($this->gen[$block]) && !in_array($def, $this->gen[$block], true)) {
+            $this->gen[$block][] = $def;
             return true;
         }
 
@@ -294,17 +292,15 @@ class Definitions
     }
 
     // $this->data["gen"][$blockId]
-    public function computeKill($context, $blockId)
+    public function computeKill($blockId)
     {
-        foreach ($this->gen[$blockId] as $genid) {
-            $gen = $context->getSymbols()->getRawDef($genid);
+        foreach ($this->gen[$blockId] as $gen) {
             $tmpdefs = $this->getDefRefByName($gen->getName());
             if (!is_null($tmpdefs)) {
-                foreach ($tmpdefs as $defid) {
-                    $def = $context->getSymbols()->getRawDef($defid);
+                foreach ($tmpdefs as $def) {
                     if ($this->defEquality($def, $gen)) {
-                        if ($def !== $gen && !in_array($def->getId(), $this->kill[$blockId], true)) {
-                            $this->kill[$blockId][] = $def->getId();
+                        if ($def !== $gen && !in_array($def, $this->kill[$blockId], true)) {
+                            $this->kill[$blockId][] = $def;
                         }
                     }
                 }

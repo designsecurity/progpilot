@@ -79,20 +79,12 @@ class Functions
         return $this->functions;
     }
 
-    public function updateFunction($filenamehash, $classname, $funcname, $myFunc)
-    {
-        $this->addFunction($filenamehash, $classname, $funcname, $myFunc);
-    }
-
     public function addFunction($filenamehash, $classname, $funcname, $myFunc)
     {
         // we can have many functions/methods with the same name
         
         //if (!isset($this->functions[$filenamehash][$classname][$funcname])) {
             $this->functions[$filenamehash][$classname][$funcname] = $myFunc;
-            
-            $signature = hash("sha256", "$filenamehash"."$classname"."$funcname");
-            Utils::serializeFunc($myFunc, "$filenamehash"."$classname"."$funcname");
             /*
             $this->functions[$filenamehash][$classname][$funcname] = $signature;
             */

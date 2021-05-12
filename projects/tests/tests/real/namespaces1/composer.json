@@ -1,0 +1,7 @@
+{
+    "name": "namespaces1/fake",
+    "description": "namespaces1",
+    "autoload": {
+        "psr-4": { "testnsfirstlevel1\\": "src/" }
+    }
+} 

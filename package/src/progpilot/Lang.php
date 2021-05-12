@@ -88,5 +88,6 @@ class Lang
         "\$context->setLimitDefs())";
     const MAX_SIZE_EXCEEDED = "Max size of file exceeded (you can increase the value with ".
         "\$context->setLimitSize())";
+    const MAX_MEMORY_EXCEEDED = "1GB memory threshold reached, some references will be released (increasing execution time)";
     const V8JS_NOTLOADED = "extension v8js must be loaded to analyze js files";
 }

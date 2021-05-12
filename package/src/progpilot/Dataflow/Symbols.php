@@ -18,7 +18,7 @@ class Symbols
         $this->myFiles = [];
         $this->rawDefs = [];
     }
-
+/*
     public function addRawDef($def)
     {
         $this->rawDefs[$def->getId()] = $def;
@@ -48,7 +48,7 @@ class Symbols
 
         return $id;
     }
-
+*/
     public function addValue($value)
     {
         $key = array_search($value, $this->values);
