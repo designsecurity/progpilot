@@ -246,8 +246,6 @@ class VisitorAnalysis
                             || ((!$myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)
                                 && !$myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC))
                                     && !$myFunc->isType(MyFunction::TYPE_FUNC_METHOD))) {
-                            
-
                     // we don't visit twice function with a long execution time
                     if (AbstractAnalysis::checkIfTimeExecutionIsAcceptable($this->context, $myFunc)
                         // other checks
@@ -256,7 +254,6 @@ class VisitorAnalysis
                                 || $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)
                                     || $myFunc->hasGlobalVariables()
                                         || $myFunc->getName() === "{main}")) {
-                                            
                         // we clean all the param of the function
                         $funcCallBack = "Callbacks::cleanTaintedDef";
                         AbstractAnalysis::forAllDefsOfFunction($funcCallBack, $myFunc);
@@ -485,7 +482,6 @@ class VisitorAnalysis
                     
 
                     case Opcodes::ENTER_FUNCTION:
-
                         $startTime = microtime(true);
 
                         $this->currentContextCall = new \stdClass;

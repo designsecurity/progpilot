@@ -210,21 +210,20 @@ class SecurityAnalysis
 
             foreach ($defsExprTainted as $defExprFlowFrom) {
                 if (!SecurityAnalysis::isSafe($indexParameter, $defExprFlowFrom, $myEndDef, $mySink, true)) {
-
-                    
-                    if(!is_null($defExprFlowFrom->getArgToParam())) {
+                    if (!is_null($defExprFlowFrom->getArgToParam())) {
                         $param = $defExprFlowFrom->getArgToParam();
 
                         $sourceName = \progpilot\Utils::printDefinition($mySink->getLanguage(), $param);
                         $sourceLine = $param->getLine();
                         $sourceColumn = $param->getColumn();
                         $sourceFile = \progpilot\Utils::encodeCharacters($param->getSourceMyFile()->getName());
-                    }
-                    else {
+                    } else {
                         $sourceName = \progpilot\Utils::printDefinition($mySink->getLanguage(), $defExprFlowFrom);
                         $sourceLine = $defExprFlowFrom->getLine();
                         $sourceColumn = $defExprFlowFrom->getColumn();
-                        $sourceFile = \progpilot\Utils::encodeCharacters($defExprFlowFrom->getSourceMyFile()->getName());
+                        $sourceFile = \progpilot\Utils::encodeCharacters(
+                            $defExprFlowFrom->getSourceMyFile()->getName()
+                        );
                     }
 
                     $oneTainted["flow_name"] = $sourceName;
@@ -275,14 +274,13 @@ class SecurityAnalysis
             $defsExpr = $taintedExpr->getDefs();
             foreach ($defsExpr as $defExpr) {
                 if (!SecurityAnalysis::isSafe($indexParameter, $defExpr, $myDef, $mySink)) {
-                    if(!is_null($defExpr->getArgToParam())) {
+                    if (!is_null($defExpr->getArgToParam())) {
                         $param = $defExpr->getArgToParam();
                         $sourceName = \progpilot\Utils::printDefinition($mySink->getLanguage(), $param);
                         $sourceLine = $param->getLine();
                         $sourceColumn = $param->getColumn();
                         $sourceFile = \progpilot\Utils::encodeCharacters($param->getSourceMyFile()->getName());
-                    }
-                    else {
+                    } else {
                         $sourceName = \progpilot\Utils::printDefinition($mySink->getLanguage(), $defExpr);
                         $sourceLine = $defExpr->getLine();
                         $sourceColumn = $defExpr->getColumn();

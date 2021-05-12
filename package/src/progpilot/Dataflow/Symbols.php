@@ -37,10 +37,10 @@ class Symbols
 
         return null;
     }
-    
+
     public function getFreeDefId()
     {
-        
+
         $id = rand();
         while (isset($this->rawDefs[$id])) {
             $id = rand();
