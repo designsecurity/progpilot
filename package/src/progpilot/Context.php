@@ -553,10 +553,6 @@ class Context
                                 $this->inputs->setLanguages($value["inputs"]["setLanguages"]);
                             }
                             
-                            if (isset($value["inputs"]["setFrameworks"])) {
-                                $this->inputs->setFrameworks($value["inputs"]["setFrameworks"]);
-                            }
-                            
                             if (isset($value["inputs"]["setDev"])) {
                                 $this->inputs->setDev($value["inputs"]["setDev"]);
                             }

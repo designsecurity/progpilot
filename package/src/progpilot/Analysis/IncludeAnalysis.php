@@ -105,9 +105,10 @@ class IncludeAnalysis
                             $arrayIncludes = &$context->getArrayIncludes();
                             $arrayRequires = &$context->getArrayRequires();
         
-                            if ((!in_array($nameIncludedFile, $arrayIncludes, true) && $typeInclude === 2)
+                            if (!$context->inputs->isExcludedFile($nameIncludedFile)
+                                && ((!in_array($nameIncludedFile, $arrayIncludes, true) && $typeInclude === 2)
                                 || (!in_array($nameIncludedFile, $arrayRequires, true) && $typeInclude === 4)
-                                    || ($typeInclude === 1 || $typeInclude === 3)) {
+                                    || ($typeInclude === 1 || $typeInclude === 3))) {
                                 $myFileIncluded = new MyFile(
                                     $nameIncludedFile,
                                     $myFuncCall->getLine(),

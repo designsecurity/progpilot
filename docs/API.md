@@ -20,17 +20,20 @@ To retrieve the value of $file, $code and $folder use these methods:
 ***
 - $obj_context->inputs->setLanguages($array);  
 Languages you want to analyze (["php", "js"] but js is in development), default is *["php"]*
-- $obj_context->inputs->setFrameworks($array);  
-Frameworks you want to analyze (default is *["suitecrm", "codeigniter"]*)
 - $obj_context->inputs->setDev($bool);  
 If you want to use security data relative to development of progpilot (default is *false*)
 ***
 
 ***
+- $obj_context->inputs->addSources($files_sources);
 - $obj_context->inputs->setSources($files_sources);
+- $obj_context->inputs->addSinks($files_sinks);
 - $obj_context->inputs->setSinks($files_sinks);
+- $obj_context->inputs->addSanitizers($files_sanitizers);
 - $obj_context->inputs->setSanitizers($files_sanitizers);
+- $obj_context->inputs->addValidators($files_validators);
 - $obj_context->inputs->setValidators($files_validators);
+- $obj_context->inputs->addCustomRules($files_custom);
 - $obj_context->inputs->setCustomRules($files_custom);
 - $obj_context->inputs->getCustomRules();
 - $obj_context->inputs->getSources();
@@ -49,8 +52,8 @@ These functions are explained in the chapter about [**handling false positives**
 ***
 
 ***
-- $obj_context->inputs->setIncludes($mixed);  
-- $obj_context->inputs->setExcludes($mixed);  
+- $obj_context->inputs->setInclusions($mixed);  
+- $obj_context->inputs->setExclusions($mixed);  
 For include or exclude files and folders during the analysis, see an [**example here**](./../projects/tests/exclude_files.json) with a json file configuration and an [**example here**](./../projects/tests/run_exclude_files.php) with a php array.
 ***
 

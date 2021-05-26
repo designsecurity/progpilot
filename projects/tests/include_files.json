@@ -1,9 +1,6 @@
 {
-    "include_files":
+    "inclusions":
     [
-    ],
-    "include_folders":
-    [
-        "/home/eric/dev/perso/mark/wordpress-latest/wordpress/"
+        "./tests/real/wordpress/"
     ]
 }

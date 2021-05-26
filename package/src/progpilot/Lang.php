@@ -79,6 +79,7 @@ class Lang
         "Usage of progpilot : php progpilot.phar [--configuration path_to_config_file.yml] ".
         "[files and folders (file1.php file2.php ...)]";
         
+    const PARSER_ERROR = "Exception raised during parsing.\nMessage: ";
     const PROGPILOT_ARG_DESC = "Progpilot a static analysis tool for security purposes";
     const FILES_ARG_DESC = "Files to be analyzed";
     const CONFIG_ARG_DESC = "Read configuration from config file";
