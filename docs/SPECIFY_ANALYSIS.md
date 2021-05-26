@@ -9,6 +9,7 @@ To specify the way vulnerabilities are detected, customize the sources, sinks, s
 
 ## Configure sources
 - $obj_context->inputs->setSources($files_sources);
+- $obj_context->inputs->addSources($files_sources);
 - $obj_context->inputs->getSources();
 
 Where *$file_sources* is a json file (or an array of json files) like below:
@@ -32,6 +33,7 @@ Optional properties:
 
 ## Configure sanitizers
 - $obj_context->inputs->setSanitizers($file_sanitizers);
+- $obj_context->inputs->addSanitizers($file_sanitizers);
 - $obj_context->inputs->getSanitizers();
 
 Where *$file_sanitizers* is a json file (or an array of json files) like below:
@@ -63,6 +65,7 @@ Optional properties:
 
 ## Configure sinks
 - $obj_context->inputs->setSinks($file_sinks);
+- $obj_context->inputs->addSinks($file_sinks);
 - $obj_context->inputs->getSinks();
 
 Where *$file_sinks* is a json file (or an array of json files) like below:
@@ -88,6 +91,7 @@ Optional properties:
 - [instanceof](#instanceof-property), [prevent](#prevent-property), [parameters](#parameters-property)
 
 ## Configure validators
+- $obj_context->inputs->addValidators($file_validators);
 - $obj_context->inputs->setValidators($file_validators);
 - $obj_context->inputs->getValidators();
 

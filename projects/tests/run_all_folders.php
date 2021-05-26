@@ -20,11 +20,7 @@ class RunAllFoldersTest extends TestCase
         $context->inputs->setDev(true);
         $context->inputs->setFolder($folder);
         
-        try {
-            $analyzer->run($context);
-        } catch (Exception $e) {
-            echo 'Exception : ',  $e->getMessage(), "\n";
-        }
+        $analyzer->run($context);
 
         $results = $context->outputs->getResults();
 

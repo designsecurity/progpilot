@@ -1,9 +1,0 @@
-{
-    "validators": [
-        {"name": "is_email", "language": "php", "parameters": 
-            [
-                {"id": 1, "conditions": "valid"}
-            ]
-        }
-		]
-}

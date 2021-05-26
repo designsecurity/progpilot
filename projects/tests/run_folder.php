@@ -2,27 +2,24 @@
 
 require_once './vendor/autoload.php';
 
-try {
-    if ($argc > 1) {
-        $context = new \progpilot\Context;
-        $analyzer = new \progpilot\Analyzer;
-        $context->inputs->setFolder($argv[1]);
-        $context->inputs->setDev(true);
-        $context->inputs->setLanguages(["php", "js"]);
-        $context->inputs->setFrameworks(["suitecrm", "codeigniter", "prestashop", "symfony"]);
-        $context->setAnalyzeHardrules(true);
-        $context->setPrintWarning(true);
-        $context->setPrintFile(true);
-        $context->outputs->taintedFlow(true);
+if ($argc > 1) {
+    $context = new \progpilot\Context;
+    $analyzer = new \progpilot\Analyzer;
+    $context->inputs->setFolder($argv[1]);
+    $context->inputs->setDev(true);
+    $context->inputs->setLanguages(["php", "js"]);
+    $context->setAnalyzeHardrules(true);
+    $context->setPrintWarning(true);
+    $context->setPrintFile(true);
+    $context->outputs->taintedFlow(true);
         
-        try {
-            $analyzer->run($context);
-        } catch (Exception $e) {
-            echo 'Exception : ',  $e->getMessage(), "\n";
-        }
+    $exclusions = [
+        "./tests/folders/folder2/mix3.php",
+        "./tests/folders/folder2/sub_folder1/sub_folder2"
+    ];
 
-        var_dump($context->outputs->getResults());
-    }
-} catch (\RuntimeException $e) {
-    $result = $e->getMessage();
+    $context->inputs->setExcludes($exclusions);
+    $analyzer->run($context);
+
+    var_dump($context->outputs->getResults());
 }

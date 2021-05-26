@@ -88,12 +88,12 @@ class Utils
     public static function printWarning($context, $message)
     {
         if ($context->getPrintWarning()) {
-            fwrite(STDERR, "progpilot warning : $message\n");
-            fwrite(STDERR, "file : '".$context->getCurrentMyFile()->getName()."'\n");
+            fwrite(STDERR, "progpilot warning: $message\n");
+            fwrite(STDERR, "file: '".$context->getCurrentMyFile()->getName()."'\n");
 
             // sometimes it's called outside of function context
             if (!is_null($context->getCurrentFunc())) {
-                fwrite(STDERR, "function : '".$context->getCurrentFunc()->getName()."'\n");
+                fwrite(STDERR, "function: '".$context->getCurrentFunc()->getName()."'\n");
             }
         }
     }

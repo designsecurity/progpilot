@@ -37,7 +37,7 @@ class Analyzer
 
     public function getFilesOfDir($context, $dir, &$files)
     {
-        if (is_dir($dir) && !$context->inputs->isExcludedFolder($dir)) {
+        if (is_dir($dir) && !$context->inputs->isExcludedFile($dir)) {
             $filesanddirs = @scandir($dir);
 
             if ($filesanddirs !== false) {
@@ -46,13 +46,12 @@ class Analyzer
                         $folderorfile = $dir."/".$filedir;
                         
                         if (is_dir($folderorfile)) {
-                            if (!$context->inputs->isExcludedFolder($folderorfile)) {
-                                $this->getFilesOfDir($context, $folderorfile, $files);
-                            }
+                            $this->getFilesOfDir($context, $folderorfile, $files);
                         } else {
                             if (!$context->inputs->isExcludedFile($folderorfile)) {
                                 if (!in_array($folderorfile, $files, true) && realpath($folderorfile)) {
-                                    $files[] = realpath($folderorfile);
+                                    $fileToAdd = realpath($folderorfile);
+                                    $files[] = $fileToAdd;
                                 }
                             }
                         }
@@ -81,7 +80,8 @@ class Analyzer
                         $script = $this->parser->parse($context->inputs->getCode(), "");
                     }
                 }
-            } catch (\PhpParser\Error $e) {
+            } catch (\Exception $e) {
+                Utils::printWarning($context, Lang::PARSER_ERROR.$e->getMessage());
             }
         }
 
@@ -289,7 +289,8 @@ class Analyzer
                 $traverser->addVisitor($callvisitor);
                 $traverser->traverse($script);
             }
-        } catch (\PhpParser\Error $e) {
+        } catch (\Exception $e) {
+            Utils::printWarning($context, Lang::PARSER_ERROR.$e->getMessage());
         }
     }
 
@@ -369,21 +370,18 @@ class Analyzer
         $files = [];
 
         $context->readConfiguration();
-        $context->inputs->readExcludes();
-        $context->inputs->readIncludes();
+        // try to resolve incorrect included/excluded file paths
+        $context->inputs->resolvePaths();
 
-        $context->inputs->readDev();
+        // add all configurations inside frameworks folders except if overwritten
         $context->inputs->readFrameworks();
-        $context->inputs->readSanitizers();
-        $context->inputs->readSinks();
-        $context->inputs->readSources();
-        $context->inputs->readResolvedIncludes();
-        $context->inputs->readValidators();
-        $context->inputs->readFalsePositives();
-        $context->inputs->readCustomRules();
 
-        $includedFiles = $context->inputs->getIncludedFiles();
-        $includedFolders = $context->inputs->getIncludedFolders();
+        // add common configuration except if overwritten
+        $context->inputs->readDefaultSanitizers();
+        $context->inputs->readDefaultSinks();
+        $context->inputs->readDefaultSources();
+        $context->inputs->readDefaultValidators();
+        $context->inputs->readDefaultCustomRules();
 
         if ($cmdFiles !== null) {
             foreach ($cmdFiles as $cmdFile) {
@@ -398,15 +396,17 @@ class Analyzer
             }
         }
 
-        foreach ($includedFiles as $includedFile) {
-            if (!in_array($includedFile, $files, true)
-                        && !$context->inputs->isExcludedFile($includedFile)) {
-                $files[] = $includedFile;
-            }
-        }
+        $includedFiles = $context->inputs->getInclusions();
 
-        foreach ($includedFolders as $includedFolder) {
-            $this->getFilesOfDir($context, $includedFolder, $files);
+        foreach ($includedFiles as $includedFile) {
+            if (is_dir($includedFile)) {
+                $this->getFilesOfDir($context, $includedFile, $files);
+            } else {
+                if (!in_array($includedFile, $files, true)
+                        && !$context->inputs->isExcludedFile($includedFile)) {
+                    $files[] = $includedFile;
+                }
+            }
         }
 
         if (!is_null($context->inputs->getFolder())) {

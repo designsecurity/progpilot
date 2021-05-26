@@ -2,6 +2,15 @@
 
         return [
                 [
+                    "./tests/folders/excludedbydefault1",
+                        [["\$_GET[\"p0\"]", '3', "xss"]]
+                ],
+                [
+                    "./tests/folders/excludedbydefault2",
+                        [["\$_GET[\"p1\"]", '3', "xss"],
+                        ["\$_GET[\"p0\"]", '3', "xss"]]
+                ],
+                [
                     "./tests/folders/folder1",
                         [["\$var1[0]", '4', "xss"],
                         ["\$var1", '6', "xss"],

@@ -57,20 +57,16 @@ class ProgpilotCommand extends Command
         }
 
         $cmdFiles = $this->input->getArgument('files');
-        try {
-            $analyzer->run($context, $cmdFiles);
+        $analyzer->run($context, $cmdFiles);
 
-            if ($context->getPrettyPrint()) {
-                echo json_encode($context->outputs->getResults(), JSON_PRETTY_PRINT);
-            } else {
-                echo json_encode($context->outputs->getResults());
-            }
+        if ($context->getPrettyPrint()) {
+            echo json_encode($context->outputs->getResults(), JSON_PRETTY_PRINT);
+        } else {
+            echo json_encode($context->outputs->getResults());
+        }
 
-            if (count($context->outputs->getResults()) > 0) {
-                return 1;
-            }
-        } catch (Exception $e) {
-            echo Lang::GLOBAL_ERROR.$e->getMessage()." file : ".$e->getFile()." line : ".$e->getLine()."\n";
+        if (count($context->outputs->getResults()) > 0) {
+            return 1;
         }
         
         return 0;

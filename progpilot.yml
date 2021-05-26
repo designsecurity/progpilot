@@ -2,10 +2,6 @@ inputs:
     setDev: false
     setLanguages: 
         - php
-    setFrameworks: 
-        - suitecrm
-        - codeigniter
-        - wordpress
     setSources: ~
     setSinks: ~
     setValidators: ~
@@ -13,10 +9,9 @@ inputs:
     setCustomRules: ~
     setIncludes: ~
     setExcludes: 
-        exclude_folders: 
-            - "./projects/"
-            - ".git/"
-            - "./package/src/progpilot/Transformations/Js/"
+        - "./projects/"
+        - ".git/"
+        - "./package/src/progpilot/Transformations/Js/"
     setFolder: ~
     setFile: ~
     setCode: ~

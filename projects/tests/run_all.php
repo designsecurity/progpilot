@@ -20,12 +20,11 @@ class RunAllTest extends TestCase
         $context->inputs->setDev(true);
         $context->inputs->setLanguages(["php", "js"]);
         $context->inputs->setFile($file);
+        // enable "vendor" folder analysis
+        // test case: tests/real/composer/
+        $context->inputs->setExclusions([]);
         
-        try {
-            $analyzer->run($context);
-        } catch (Exception $e) {
-            echo 'Exception : ',  $e->getMessage(), "\n";
-        }
+        $analyzer->run($context);
 
         $results = $context->outputs->getResults();
 

@@ -17,72 +17,59 @@ use progpilot\Objects\MyDefinition;
 
 class MyInputs
 {
+    private $dev;
     private $languages;
-    private $frameworks;
     
     private $customRules;
-
     private $sanitizers;
     private $sinks;
     private $sources;
     private $validators;
+
+    private $overwrittenCustomRules;
+    private $overwrittenSanitizers;
+    private $overwrittenSinks;
+    private $overwrittenSources;
+    private $overwrittenValidators;
+
     private $falsePositivesAnalysis;
     private $excludesFilesAnalysis;
     private $includesFilesAnalysis;
-    private $excludesFoldersAnalysis;
-    private $includesFoldersAnalysis;
-
-    private $customFile;
-    private $resolvedIncludes;
-    private $falsePositives;
-    private $sourcesFile;
-    private $sinksFile;
-    private $sanitizersFile;
-    private $validatorsFile;
-    private $includes;
-    private $excludes;
+    private $resolvedIncludesAnalysis;
 
     private $file;
     private $code;
     private $folder;
 
+    private $falsePositives;
+
     public function __construct()
     {
         $this->dev = false;
         $this->languages = ["php"];
-        $this->frameworks = ["suitecrm", "codeigniter", "prestashop", "symfony"];
         
         $this->customRules = [];
-        $this->resolvedIncludesAnalysis = [];
         $this->sanitizers = [];
         $this->sinks = [];
         $this->sources = [];
         $this->validators = [];
-        $this->falsePositivesAnalysis = [];
-        $this->excludesFilesAnalysis = [];
-        $this->includesFilesAnalysis = [];
-        $this->excludesFoldersAnalysis = [];
-        $this->includesFoldersAnalysis = [];
 
-        $this->customFile = null;
-        $this->falsePositives= null;
-        $this->resolvedIncludes = null;
-        $this->sanitizersFile = null;
-        $this->sinksFile = null;
-        $this->sourcesFile = null;
-        $this->validatorsFile = null;
-        $this->excludes = null;
-        $this->includes = null;
+        $this->overwrittenCustomRules = false;
+        $this->overwrittenSanitizers = false;
+        $this->overwrittenSinks = false;
+        $this->overwrittenSources = false;
+        $this->overwrittenValidators = false;
+
+        $this->falsePositivesAnalysis = [];
+        $this->excludesFilesAnalysis = ["vendor", "node_modules"];
+        $this->includesFilesAnalysis = [];
+        $this->resolvedIncludesAnalysis = [];
 
         $this->file = null;
         $this->code = null;
         $this->folder = null;
-    }
 
-
-    public function setFrameworks($frameworks)
-    {
-        $this->frameworks = $frameworks;
+        $this->falsePositives= null;
     }
 
     public function setLanguages($languages)
@@ -98,41 +85,6 @@ class MyInputs
     public function getLanguages()
     {
         return $this->languages;
-    }
-
-    public function getFrameworks()
-    {
-        return $this->frameworks;
-    }
-    
-    public function getSinksFile()
-    {
-        return $this->sinksFile;
-    }
-
-    public function getSourcesFile()
-    {
-        return $this->sourcesFile;
-    }
-
-    public function getValidatorsFile()
-    {
-        return $this->validatorsFile;
-    }
-
-    public function getSanitizersFile()
-    {
-        return $this->sanitizersFile;
-    }
-
-    public function getIncludedFiles()
-    {
-        return $this->includesFilesAnalysis;
-    }
-
-    public function getIncludedFolders()
-    {
-        return $this->includesFoldersAnalysis;
     }
 
     public function getFolder()
@@ -165,44 +117,84 @@ class MyInputs
         $this->code = $code;
     }
 
-    public function isExcludedFolder($name)
+    public function resolvePaths()
     {
-        $name = realpath($name);
-        foreach ($this->excludesFoldersAnalysis as $excludeName) {
-            if (strpos($name, realpath($excludeName)) === 0) {
-                return true;
+        $tmpFiles = $this->excludesFilesAnalysis;
+        $this->excludesFilesAnalysis = [];
+
+        foreach ($tmpFiles as $excludedFile) {
+            if (strpos($excludedFile, "/") !== false
+                || strpos($excludedFile, "\\") !== false) {
+                // there is a slash, the dev likely wants a path
+                if (str_starts_with("./", $excludedFile) === 0
+                    && str_starts_with(".\\", $excludedFile) === 0
+                        && str_starts_with("/", $excludedFile) === 0
+                            && preg_match("/^[a-bA-B]*:/", $excludedFile) === 0) {
+                    // it's not a relative or absolute path
+                    $excludedFile = "./".$excludedFile;
+                }
+
+                $excludedFile = realpath($excludedFile);
+            }
+
+            if (!in_array($excludedFile, $this->excludesFilesAnalysis, true)) {
+                $this->excludesFilesAnalysis[] = $excludedFile;
             }
         }
 
-        return false;
-    }
 
-    public function isIncludedFolder($name)
-    {
-        $name = realpath($name);
-        foreach ($this->includesFoldersAnalysis as $includeName) {
-            if (strpos($name, realpath($includeName)) === 0) {
-                return true;
+        $tmpFiles = $this->includesFilesAnalysis;
+        $this->includesFilesAnalysis = [];
+
+        foreach ($tmpFiles as $includedFile) {
+            if (strpos($includedFile, "/") !== false
+                || strpos($includedFile, "\\") !== false) {
+                // there is a slash, the dev likely wants a path
+                if (str_starts_with("./", $includedFile) === 0
+                    && str_starts_with(".\\", $includedFile) === 0
+                        && str_starts_with("/", $includedFile) === 0
+                            && preg_match("/^[a-bA-B]*:/", $includedFile) === 0) {
+                    // it's not a relative or absolute path
+                    $includedFile = "./".$includedFile;
+                }
+
+                $includedFile = realpath($includedFile);
+            }
+
+            if (!in_array($includedFile, $this->includesFilesAnalysis, true)) {
+                $this->includesFilesAnalysis[] = $includedFile;
             }
         }
-
-        return false;
     }
 
     public function isExcludedFile($name)
     {
         $name = realpath($name);
-        foreach ($this->excludesFilesAnalysis as $excludeName) {
-            if (realpath($excludeName) === $name) {
-                return true;
-            }
-        }
-        
-        foreach ($this->excludesFoldersAnalysis as $excludeName) {
-            $realExcludeName = realpath($excludeName);
-            $folderfirst = substr($name, 0, strlen($realExcludeName));
-            if ($realExcludeName === $folderfirst) {
-                return true;
+        $basename = basename($name);
+        $folders = explode(DIRECTORY_SEPARATOR, $name);
+
+        foreach ($this->excludesFilesAnalysis as $excludeFileName) {
+            if (strpos($excludeFileName, "/") === false
+                && strpos($excludeFileName, "\\") === false) {
+                // it's not a path
+                // test if it's a file name
+                if (basename($excludeFileName) === $basename) {
+                    return true;
+                }
+
+                // test if it's a folder name
+                if (!empty($folders)) {
+                    foreach ($folders as $folder) {
+                        if ($folder === $excludeFileName) {
+                            return true;
+                        }
+                    }
+                }
+            } else {
+                // we found if
+                if (strpos($name, $excludeFileName) === 0) {
+                    return true;
+                }
             }
         }
 
@@ -212,9 +204,32 @@ class MyInputs
     public function isIncludedFile($name)
     {
         $name = realpath($name);
-        foreach ($this->includesFilesAnalysis as $includeName) {
-            if (realpath($includeName) === $name) {
-                return true;
+        $basename = basename($name);
+        $folders = explode(DIRECTORY_SEPARATOR, $name);
+
+        foreach ($this->includesFilesAnalysis as $includedFileName) {
+            if (strpos($includedFileName, "/") === false
+                && strpos($includedFileName, "\\") === false) {
+
+                // it's not a path
+                // test if it's a file name
+                if (basename($includedFileName) === $basename) {
+                    return true;
+                }
+
+                // test if it's a folder name
+                if (!empty($folders)) {
+                    foreach ($folders as $folder) {
+                        if ($folder === $includedFileName) {
+                            return true;
+                        }
+                    }
+                }
+            } else {
+                // we found if
+                if (strpos($name, $includedFileName) === 0) {
+                    return true;
+                }
             }
         }
 
@@ -506,46 +521,6 @@ class MyInputs
         return null;
     }
 
-    public function getSanitizers()
-    {
-        return $this->sanitizers;
-    }
-
-    public function getSinks()
-    {
-        return $this->sinks;
-    }
-
-    public function getSources()
-    {
-        return $this->sources;
-    }
-
-    public function getValidators()
-    {
-        return $this->validators;
-    }
-
-    public function getResolvedIncludes()
-    {
-        return $this->resolvedIncludes;
-    }
-
-    public function getFalsePositives()
-    {
-        return $this->falsePositives;
-    }
-
-    public function getIncludes()
-    {
-        return $this->includes;
-    }
-
-    public function getExcludes()
-    {
-        return $this->excludes;
-    }
-
     public function getDev()
     {
         return $this->dev;
@@ -554,65 +529,7 @@ class MyInputs
     public function setDev($dev)
     {
         $this->dev = $dev;
-    }
 
-    public function getCustomRules()
-    {
-        return $this->customRules;
-    }
-
-    public function setCustomRules($file)
-    {
-        $this->customFile = $file;
-    }
-
-    public function setIncludeFiles($file)
-    {
-        $this->includesFile = $file;
-    }
-
-    public function setExcludes($arr)
-    {
-        $this->excludes = $arr;
-    }
-
-    public function setIncludes($arr)
-    {
-        $this->includes = $arr;
-    }
-
-    public function setFalsePositives($arr)
-    {
-        $this->falsePositives = $arr;
-    }
-
-    public function setResolvedIncludes($arr)
-    {
-        $this->resolvedIncludes = $arr;
-    }
-
-    public function setSources($file)
-    {
-        $this->sourcesFile = $file;
-    }
-
-    public function setSinks($file)
-    {
-        $this->sinksFile = $file;
-    }
-
-    public function setSanitizers($file)
-    {
-        $this->sanitizersFile = $file;
-    }
-
-    public function setValidators($file)
-    {
-        $this->validatorsFile = $file;
-    }
-
-    public function readDev()
-    {
         if ($this->dev) {
             $sanitizersfile = __DIR__."/../../uptodate_data/php/dev/sanitizers.json";
             $this->readSanitizersFile($sanitizersfile);
@@ -631,272 +548,188 @@ class MyInputs
         }
     }
 
-    public function readFrameworks()
+    public function readDir($dir, &$files)
     {
-        if (is_array($this->frameworks) && in_array("suitecrm", $this->frameworks, true)) {
-            $sanitizersfile = __DIR__."/../../uptodate_data/php/frameworks/suitecrm/sanitizers.json";
+        if (is_dir($dir)) {
+            $filesanddirs = @scandir($dir);
 
-            if (is_array($this->sanitizersFile)) {
-                if (!in_array($sanitizersfile, $this->sanitizersFile, true)) {
-                    $this->readSanitizersFile($sanitizersfile);
-                }
-            } else {
-                if ($this->sanitizersFile !== $sanitizersfile) {
-                    $this->readSanitizersFile($sanitizersfile);
-                }
-            }
-            
-            $sinksfile = __DIR__."/../../uptodate_data/php/frameworks/suitecrm/sinks.json";
-            
-            if (is_array($this->sinksFile)) {
-                if (!in_array($sinksfile, $this->sinksFile, true)) {
-                    $this->readSinksFile($sinksfile);
-                }
-            } else {
-                if ($this->sinksFile !== $sinksfile) {
-                    $this->readSinksFile($sinksfile);
-                }
-            }
-            
-            $sourcesfile = __DIR__."/../../uptodate_data/php/frameworks/suitecrm/sources.json";
-            
-            if (is_array($this->sourcesFile)) {
-                if (!in_array($sourcesfile, $this->sourcesFile, true)) {
-                    $this->readSourcesFile($sourcesfile);
-                }
-            } else {
-                if ($this->sourcesFile !== $sourcesfile) {
-                    $this->readSourcesFile($sourcesfile);
-                }
-            }
-            
-            $validatorsfile = __DIR__."/../../uptodate_data/php/frameworks/suitecrm/validators.json";
-            
-            if (is_array($this->validatorsFile)) {
-                if (!in_array($validatorsfile, $this->validatorsFile, true)) {
-                    $this->readValidatorsFile($validatorsfile);
-                }
-            } else {
-                if ($this->validatorsFile !== $validatorsfile) {
-                    $this->readValidatorsFile($validatorsfile);
-                }
-            }
-            
-            $rulesfile = __DIR__."/../../uptodate_data/php/frameworks/suitecrm/rules.json";
-            
-            if (is_array($this->customFile)) {
-                if (!in_array($rulesfile, $this->customFile, true)) {
-                    $this->readCustomFile($rulesfile);
-                }
-            } else {
-                if ($this->customFile !== $rulesfile) {
-                    $this->readCustomFile($rulesfile);
-                }
-            }
-        }
-        
-        if (is_array($this->frameworks) && in_array("codeigniter", $this->frameworks, true)) {
-            $sanitizersfile = __DIR__."/../../uptodate_data/php/frameworks/codeigniter/sanitizers.json";
-            
-            if (is_array($this->sanitizersFile)) {
-                if (!in_array($sanitizersfile, $this->sanitizersFile, true)) {
-                    $this->readSanitizersFile($sanitizersfile);
-                }
-            } else {
-                if ($this->sanitizersFile !== $sanitizersfile) {
-                    $this->readSanitizersFile($sanitizersfile);
-                }
-            }
-            
-            $sinksfile = __DIR__."/../../uptodate_data/php/frameworks/codeigniter/sinks.json";
-            
-            if (is_array($this->sinksFile)) {
-                if (!in_array($sinksfile, $this->sinksFile, true)) {
-                    $this->readSinksFile($sinksfile);
-                }
-            } else {
-                if ($this->sinksFile !== $sinksfile) {
-                    $this->readSinksFile($sinksfile);
-                }
-            }
-            
-            $sourcesfile = __DIR__."/../../uptodate_data/php/frameworks/codeigniter/sources.json";
-            
-            if (is_array($this->sourcesFile)) {
-                if (!in_array($sourcesfile, $this->sourcesFile, true)) {
-                    $this->readSourcesFile($sourcesfile);
-                }
-            } else {
-                if ($this->sourcesFile !== $sourcesfile) {
-                    $this->readSourcesFile($sourcesfile);
-                }
-            }
-            
-            $validatorsfile = __DIR__."/../../uptodate_data/php/frameworks/codeigniter/validators.json";
-            
-            if (is_array($this->validatorsFile)) {
-                if (!in_array($validatorsfile, $this->validatorsFile, true)) {
-                    $this->readValidatorsFile($validatorsfile);
-                }
-            } else {
-                if ($this->validatorsFile !== $validatorsfile) {
-                    $this->readValidatorsFile($validatorsfile);
-                }
-            }
-            
-            $rulesfile = __DIR__."/../../uptodate_data/php/frameworks/codeigniter/rules.json";
-            
-            if (is_array($this->customFile)) {
-                if (!in_array($rulesfile, $this->customFile, true)) {
-                    $this->readCustomFile($rulesfile);
-                }
-            } else {
-                if ($this->customFile !== $rulesfile) {
-                    $this->readCustomFile($rulesfile);
-                }
-            }
-        }
-        
-        
-        if (is_array($this->frameworks) && in_array("symfony", $this->frameworks, true)) {
-            $sanitizersfile = __DIR__."/../../uptodate_data/php/frameworks/symfony/sanitizers.json";
-            
-            if (is_array($this->sanitizersFile)) {
-                if (!in_array($sanitizersfile, $this->sanitizersFile, true)) {
-                    $this->readSanitizersFile($sanitizersfile);
-                }
-            } else {
-                if ($this->sanitizersFile !== $sanitizersfile) {
-                    $this->readSanitizersFile($sanitizersfile);
-                }
-            }
-            
-            $sinksfile = __DIR__."/../../uptodate_data/php/frameworks/symfony/sinks.json";
-            
-            if (is_array($this->sinksFile)) {
-                if (!in_array($sinksfile, $this->sinksFile, true)) {
-                    $this->readSinksFile($sinksfile);
-                }
-            } else {
-                if ($this->sinksFile !== $sinksfile) {
-                    $this->readSinksFile($sinksfile);
-                }
-            }
-            
-            $sourcesfile = __DIR__."/../../uptodate_data/php/frameworks/symfony/sources.json";
-            
-            if (is_array($this->sourcesFile)) {
-                if (!in_array($sourcesfile, $this->sourcesFile, true)) {
-                    $this->readSourcesFile($sourcesfile);
-                }
-            } else {
-                if ($this->sourcesFile !== $sourcesfile) {
-                    $this->readSourcesFile($sourcesfile);
-                }
-            }
-            
-            $validatorsfile = __DIR__."/../../uptodate_data/php/frameworks/symfony/validators.json";
-            
-            if (is_array($this->validatorsFile)) {
-                if (!in_array($validatorsfile, $this->validatorsFile, true)) {
-                    $this->readValidatorsFile($validatorsfile);
-                }
-            } else {
-                if ($this->validatorsFile !== $validatorsfile) {
-                    $this->readValidatorsFile($validatorsfile);
-                }
-            }
-            
-            $rulesfile = __DIR__."/../../uptodate_data/php/frameworks/symfony/rules.json";
-            
-            if (is_array($this->customFile)) {
-                if (!in_array($rulesfile, $this->customFile, true)) {
-                    $this->readCustomFile($rulesfile);
-                }
-            } else {
-                if ($this->customFile !== $rulesfile) {
-                    $this->readCustomFile($rulesfile);
-                }
-            }
-        }
-        
-        
-        if (is_array($this->frameworks) && in_array("prestashop", $this->frameworks, true)) {
-            $sanitizersfile = __DIR__."/../../uptodate_data/php/frameworks/prestashop/sanitizers.json";
-            
-            if (is_array($this->sanitizersFile)) {
-                if (!in_array($sanitizersfile, $this->sanitizersFile, true)) {
-                    $this->readSanitizersFile($sanitizersfile);
-                }
-            } else {
-                if ($this->sanitizersFile !== $sanitizersfile) {
-                    $this->readSanitizersFile($sanitizersfile);
-                }
-            }
-            
-            $sinksfile = __DIR__."/../../uptodate_data/php/frameworks/prestashop/sinks.json";
-            
-            if (is_array($this->sinksFile)) {
-                if (!in_array($sinksfile, $this->sinksFile, true)) {
-                    $this->readSinksFile($sinksfile);
-                }
-            } else {
-                if ($this->sinksFile !== $sinksfile) {
-                    $this->readSinksFile($sinksfile);
-                }
-            }
-            
-            $sourcesfile = __DIR__."/../../uptodate_data/php/frameworks/prestashop/sources.json";
-            
-            if (is_array($this->sourcesFile)) {
-                if (!in_array($sourcesfile, $this->sourcesFile, true)) {
-                    $this->readSourcesFile($sourcesfile);
-                }
-            } else {
-                if ($this->sourcesFile !== $sourcesfile) {
-                    $this->readSourcesFile($sourcesfile);
-                }
-            }
-            
-            $validatorsfile = __DIR__."/../../uptodate_data/php/frameworks/prestashop/validators.json";
-            
-            if (is_array($this->validatorsFile)) {
-                if (!in_array($validatorsfile, $this->validatorsFile, true)) {
-                    $this->readValidatorsFile($validatorsfile);
-                }
-            } else {
-                if ($this->validatorsFile !== $validatorsfile) {
-                    $this->readValidatorsFile($validatorsfile);
-                }
-            }
-            
-            $rulesfile = __DIR__."/../../uptodate_data/php/frameworks/prestashop/rules.json";
-            
-            if (is_array($this->customFile)) {
-                if (!in_array($rulesfile, $this->customFile, true)) {
-                    $this->readCustomFile($rulesfile);
-                }
-            } else {
-                if ($this->customFile !== $rulesfile) {
-                    $this->readCustomFile($rulesfile);
+            if ($filesanddirs !== false) {
+                foreach ($filesanddirs as $filedir) {
+                    if ($filedir !== '.' && $filedir !== "..") {
+                        $folderorfile = $dir."/".$filedir;
+                        
+                        if (is_dir($folderorfile)) {
+                            $this->readDir($folderorfile, $files);
+                        } else {
+                            $files[] = $folderorfile;
+                        }
+                    }
                 }
             }
         }
     }
 
-    public function readSanitizers()
+    public function readFrameworks()
     {
-        if (is_null($this->sanitizersFile)) {
+        $frameworksConfigurationFiles = [];
+        $frameworksDir = __DIR__."/../../uptodate_data/php/frameworks/";
+
+        $this->readDir($frameworksDir, $frameworksConfigurationFiles);
+
+        foreach ($frameworksConfigurationFiles as $configFile) {
+            $basenameConfigFile = basename($configFile);
+            switch ($basenameConfigFile) {
+                case "sanitizers.json":
+                    if (!$this->overwrittenSanitizers) {
+                        $this->readSanitizersFile($configFile);
+                    }
+                    break;
+                case "validators.json":
+                    if (!$this->overwrittenValidators) {
+                        $this->readValidatorsFile($configFile);
+                    }
+                    break;
+                case "sinks.json":
+                    if (!$this->overwrittenSinks) {
+                        $this->readSinksFile($configFile);
+                    }
+                    break;
+                case "sources.json":
+                    if (!$this->overwrittenSources) {
+                        $this->readSourcesFile($configFile);
+                    }
+                    break;
+                case "rules.json":
+                    if (!$this->overwrittenCustomRules) {
+                        $this->readCustomFile($configFile);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    public function addSources($files)
+    {
+        if (is_array($files)) {
+            foreach ($files as $file) {
+                $this->readSourcesFile($file);
+            }
+        } else {
+            $this->readSourcesFile($files);
+        }
+    }
+
+    public function setSources($files)
+    {
+        $this->overwrittenSources = true;
+        $this->sources = [];
+        $this->addSources($files);
+    }
+
+    public function getSources()
+    {
+        return $this->sources;
+    }
+
+    public function addSinks($files)
+    {
+        if (is_array($files)) {
+            foreach ($files as $file) {
+                $this->readSinksFile($file);
+            }
+        } else {
+            $this->readSinksFile($files);
+        }
+    }
+
+    public function getSinks()
+    {
+        return $this->sinks;
+    }
+
+    public function setSinks($files)
+    {
+        $this->overwrittenSinks = true;
+        $this->sinks = [];
+        $this->addSinks($files);
+    }
+
+    public function addValidators($files)
+    {
+        if (is_array($files)) {
+            foreach ($files as $file) {
+                $this->readValidatorsFile($file);
+            }
+        } else {
+            $this->readValidatorsFile($files);
+        }
+    }
+
+    public function setValidators($files)
+    {
+        $this->overwrittenValidators = true;
+        $this->validators = [];
+        $this->addValidators($files);
+    }
+
+    public function getValidators()
+    {
+        return $this->validators;
+    }
+
+    public function addSanitizers($files)
+    {
+        if (is_array($files)) {
+            foreach ($files as $file) {
+                $this->readSanitizersFile($file);
+            }
+        } else {
+            $this->readSanitizersFile($files);
+        }
+    }
+
+    public function setSanitizers($files)
+    {
+        $this->overwrittenSanitizers = true;
+        $this->sanitizers = [];
+        $this->addSanitizers($files);
+    }
+
+    public function getSanitizers()
+    {
+        return $this->sanitizers;
+    }
+
+    public function addCustomRules($files)
+    {
+        if (is_array($files)) {
+            foreach ($files as $file) {
+                $this->readCustomFile($file);
+            }
+        } else {
+            $this->readCustomFile($files);
+        }
+    }
+
+    public function setCustomRules($files)
+    {
+        $this->overwrittenCustomRules = true;
+        $this->customRules = [];
+        $this->addCustomRules($files);
+    }
+
+    public function getCustomRules()
+    {
+        return $this->customRules;
+    }
+
+    public function readDefaultSanitizers()
+    {
+        if (!$this->overwrittenSanitizers) {
             $this->readSanitizersFile(__DIR__."/../../uptodate_data/php/sanitizers.json");
             $this->readSanitizersFile(__DIR__."/../../uptodate_data/js/sanitizers.json");
-        } else {
-            if (is_array($this->sanitizersFile)) {
-                foreach ($this->sanitizersFile as $file) {
-                    $this->readSanitizersFile($file);
-                }
-            } else {
-                $this->readSanitizersFile($this->sanitizersFile);
-            }
         }
     }
 
@@ -965,7 +798,9 @@ class MyInputs
                         $mySanitizer->setHasParameters(true);
                     }
 
-                    $this->sanitizers[] = $mySanitizer;
+                    if (!in_array($mySanitizer, $this->sanitizers, true)) {
+                        $this->sanitizers[] = $mySanitizer;
+                    }
                 }
             } else {
                 Utils::printError(Lang::FORMAT_SANITIZERS);
@@ -973,19 +808,11 @@ class MyInputs
         }
     }
 
-    public function readSinks()
+    public function readDefaultSinks()
     {
-        if (is_null($this->sinksFile)) {
+        if (!$this->overwrittenSinks) {
             $this->readSinksFile(__DIR__."/../../uptodate_data/php/sinks.json");
             $this->readSinksFile(__DIR__."/../../uptodate_data/js/sinks.json");
-        } else {
-            if (is_array($this->sinksFile)) {
-                foreach ($this->sinksFile as $file) {
-                    $this->readSinksFile($file);
-                }
-            } else {
-                $this->readSinksFile($this->sinksFile);
-            }
         }
     }
 
@@ -1040,7 +867,9 @@ class MyInputs
                         $mySink->setHasParameters(true);
                     }
 
-                    $this->sinks[] = $mySink;
+                    if (!in_array($mySink, $this->sinks, true)) {
+                        $this->sinks[] = $mySink;
+                    }
                 }
             } else {
                 Utils::printError(Lang::FORMAT_SINKS);
@@ -1048,19 +877,11 @@ class MyInputs
         }
     }
 
-    public function readSources()
+    public function readDefaultSources()
     {
-        if (is_null($this->sourcesFile)) {
+        if (!$this->overwrittenSources) {
             $this->readSourcesFile(__DIR__."/../../uptodate_data/php/sources.json");
             $this->readSourcesFile(__DIR__."/../../uptodate_data/js/sources.json");
-        } else {
-            if (is_array($this->sourcesFile)) {
-                foreach ($this->sourcesFile as $file) {
-                    $this->readSourcesFile($file);
-                }
-            } else {
-                $this->readSourcesFile($this->sourcesFile);
-            }
         }
     }
 
@@ -1148,7 +969,9 @@ class MyInputs
                         $mySource->setHasParameters(true);
                     }
 
-                    $this->sources[] = $mySource;
+                    if (!in_array($mySource, $this->sources, true)) {
+                        $this->sources[] = $mySource;
+                    }
                 }
             } else {
                 Utils::printError(Lang::FORMAT_SOURCES);
@@ -1156,19 +979,11 @@ class MyInputs
         }
     }
 
-    public function readValidators()
+    public function readDefaultValidators()
     {
-        if (is_null($this->validatorsFile)) {
+        if (!$this->overwrittenValidators) {
             $this->readValidatorsFile(__DIR__."/../../uptodate_data/php/validators.json");
             $this->readValidatorsFile(__DIR__."/../../uptodate_data/js/validators.json");
-        } else {
-            if (is_array($this->validatorsFile)) {
-                foreach ($this->validatorsFile as $file) {
-                    $this->readValidatorsFile($file);
-                }
-            } else {
-                $this->readValidatorsFile($this->validatorsFile);
-            }
         }
     }
 
@@ -1237,235 +1052,21 @@ class MyInputs
                         $myValidator->setInstanceOfName($validator-> {'instanceof'});
                     }
 
-                    $this->validators[] = $myValidator;
+                    if (!in_array($myValidator, $this->validators, true)) {
+                        $this->validators[] = $myValidator;
+                    }
                 }
             } else {
                 Utils::printError(Lang::FORMAT_VALIDATORS);
             }
         }
     }
-
-    public function readResolvedIncludes()
+        
+    public function readDefaultCustomRules()
     {
-        if (!is_null($this->resolvedIncludes)) {
-            if (!file_exists($this->resolvedIncludes)) {
-                Utils::printError(
-                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->resolvedIncludes).")"
-                );
-            }
-
-            $outputJson = file_get_contents($this->resolvedIncludes);
-            $parsedJson = json_decode($outputJson);
-
-            if (isset($parsedJson-> {'includes'})) {
-                $includes = $parsedJson-> {'includes'};
-                foreach ($includes as $include) {
-                    if (!isset($include-> {'line'})
-                                || !isset($include-> {'column'})
-                                || !isset($include-> {'source_file'})
-                                || !isset($include-> {'value'})) {
-                        Utils::printError(Lang::FORMAT_INCLUDES);
-                    }
-
-                    if (realpath($include-> {'source_file'})) {
-                        $line = $include-> {'line'};
-                        $column = $include-> {'column'};
-                        $sourceFile = realpath($include-> {'source_file'});
-                        $value = $include-> {'value'};
-
-                        $myInclude = new MyInclude($line, $column, $sourceFile, $value);
-                        $this->resolvedIncludesAnalysis[] = $myInclude;
-                    }
-                }
-            } else {
-                Utils::printError(Lang::FORMAT_INCLUDES);
-            }
-        }
-    }
-    
-    public function readFalsePositives()
-    {
-        if (!is_null($this->falsePositives)) {
-            if (is_string($this->falsePositives)) {
-                $this->readFalsePositivesFile($this->falsePositives);
-            } elseif (is_array($this->falsePositives)) {
-                foreach ($this->falsePositives as $falsePositive) {
-                    if (!isset($falsePositive["vuln_id"])) {
-                        Utils::printError(Lang::FORMAT_FALSE_POSITIVES);
-                    }
-
-                    $vulnId = $falsePositive["vuln_id"];
-
-                    $myVuln = new MyVuln($vulnId);
-                    $this->falsePositivesAnalysis[] = $myVuln;
-                }
-            } else {
-                Utils::printError(Lang::FORMAT_FALSE_POSITIVES);
-            }
-        }
-    }
-
-    public function readFalsePositivesFile($file)
-    {
-        if (!is_null($file)) {
-            if (!file_exists($file)) {
-                Utils::printError(
-                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($file).")"
-                );
-            }
-
-            $outputJson = file_get_contents($file);
-            $parsedJson = json_decode($outputJson);
-
-            if (isset($parsedJson-> {'false_positives'})) {
-                $falsePositives = $parsedJson-> {'false_positives'};
-                foreach ($falsePositives as $falsePositive) {
-                    if (!isset($falsePositive-> {'vuln_id'})) {
-                        Utils::printError(Lang::FORMAT_FALSE_POSITIVES);
-                    }
-
-                    $vulnId = $falsePositive-> {'vuln_id'};
-
-                    $myVuln = new MyVuln($vulnId);
-                    $this->falsePositivesAnalysis[] = $myVuln;
-                }
-            } else {
-                Utils::printError(Lang::FORMAT_FALSE_POSITIVES);
-            }
-        }
-    }
-
-    public function readExcludes()
-    {
-        if (!is_null($this->excludes)) {
-            if (is_string($this->excludes)) {
-                $this->readExcludesFile($this->excludes);
-            } elseif (is_array($this->excludes)) {
-                if (isset($this->excludes["exclude_files"])) {
-                    $excludeFiles = $this->excludes["exclude_files"];
-                    foreach ($excludeFiles as $excludeFile) {
-                        if (realpath($excludeFile)) {
-                            $this->excludesFilesAnalysis[] = realpath($excludeFile);
-                        }
-                    }
-                }
-
-                if (isset($this->excludes["exclude_folders"])) {
-                    $excludeFolders = $this->excludes["exclude_folders"];
-                    foreach ($excludeFolders as $excludeFolder) {
-                        if (realpath($excludeFolder)) {
-                            $this->excludesFoldersAnalysis[] = realpath($excludeFolder);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public function readExcludesFile($file)
-    {
-        if (!is_null($file)) {
-            if (!file_exists($file)) {
-                Utils::printError(
-                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($file).")"
-                );
-            }
-
-            $outputJson = file_get_contents($file);
-            $parsedJson = json_decode($outputJson);
-
-            if (isset($parsedJson-> {'exclude_files'})) {
-                $excludeFiles = $parsedJson-> {'exclude_files'};
-                foreach ($excludeFiles as $excludeFile) {
-                    if (realpath($excludeFile)) {
-                        $this->excludesFilesAnalysis[] = realpath($excludeFile);
-                    }
-                }
-            }
-
-            if (isset($parsedJson-> {'exclude_folders'})) {
-                $excludeFolders = $parsedJson-> {'exclude_folders'};
-                foreach ($excludeFolders as $excludeFolder) {
-                    if (realpath($excludeFolder)) {
-                        $this->excludesFoldersAnalysis[] = realpath($excludeFolder);
-                    }
-                }
-            }
-        }
-    }
-
-    public function readIncludesFile($file)
-    {
-        if (!is_null($file)) {
-            if (!file_exists($file)) {
-                Utils::printError(
-                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($file).")"
-                );
-            }
-
-            $outputJson = file_get_contents($file);
-            $parsedJson = json_decode($outputJson);
-
-            if (isset($parsedJson-> {'include_files'})) {
-                $includeFiles = $parsedJson-> {'include_files'};
-                foreach ($includeFiles as $includeFile) {
-                    if (realpath($includeFile)) {
-                        $this->includesFilesAnalysis[] = realpath($includeFile);
-                    }
-                }
-            }
-
-            if (isset($parsedJson-> {'include_folders'})) {
-                $includeFolders = $parsedJson-> {'include_folders'};
-                foreach ($includeFolders as $includeFolder) {
-                    if (realpath($includeFolder)) {
-                        $this->includesFoldersAnalysis[] = realpath($includeFolder);
-                    }
-                }
-            }
-        }
-    }
-
-    public function readIncludes()
-    {
-        if (!is_null($this->includes)) {
-            if (is_string($this->includes)) {
-                $this->readIncludesFile($this->includes);
-            } elseif (is_array($this->includes)) {
-                if (isset($this->includes["include_files"])) {
-                    $includeFiles = $this->includes["include_files"];
-                    foreach ($includeFiles as $includeFile) {
-                        if (realpath($includeFile)) {
-                            $this->includesFilesAnalysis[] = realpath($includeFile);
-                        }
-                    }
-                }
-
-                if (isset($this->includes["include_folders"])) {
-                    $includeFolders = $this->includes["include_folders"];
-                    foreach ($includeFolders as $includeFolder) {
-                        if (realpath($includeFolder)) {
-                            $this->includesFoldersAnalysis[] = realpath($includeFolder);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    public function readCustomRules()
-    {
-        if (is_null($this->customFile)) {
+        if (!$this->overwrittenCustomRules) {
             $this->readCustomFile(__DIR__."/../../uptodate_data/php/rules.json");
             $this->readCustomFile(__DIR__."/../../uptodate_data/js/rules.json");
-        } else {
-            if (is_array($this->customFile)) {
-                foreach ($this->customFile as $file) {
-                    $this->readCustomFile($file);
-                }
-            } else {
-                $this->readCustomFile($this->customFile);
-            }
         }
     }
 
@@ -1663,7 +1264,212 @@ class MyInputs
                             }
                         }
 
-                        $this->customRules[] = $myCustom;
+                        if (!in_array($myCustom, $this->customRules, true)) {
+                            $this->customRules[] = $myCustom;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public function setResolvedIncludes($resolvedIncludes)
+    {
+        if (!is_null($resolvedIncludes)) {
+            if (!file_exists($resolvedIncludes)) {
+                Utils::printError(
+                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($resolvedIncludes).")"
+                );
+            }
+
+            $outputJson = file_get_contents($resolvedIncludes);
+            $parsedJson = json_decode($outputJson);
+
+            if (isset($parsedJson-> {'includes'})) {
+                $includes = $parsedJson-> {'includes'};
+                foreach ($includes as $include) {
+                    if (!isset($include-> {'line'})
+                                || !isset($include-> {'column'})
+                                || !isset($include-> {'source_file'})
+                                || !isset($include-> {'value'})) {
+                        Utils::printError(Lang::FORMAT_INCLUDES);
+                    }
+
+                    if (realpath($include-> {'source_file'})) {
+                        $line = $include-> {'line'};
+                        $column = $include-> {'column'};
+                        $sourceFile = realpath($include-> {'source_file'});
+                        $value = $include-> {'value'};
+
+                        $myInclude = new MyInclude($line, $column, $sourceFile, $value);
+                        if (!in_array($myInclude, $this->resolvedIncludesAnalysis, true)) {
+                            $this->resolvedIncludesAnalysis[] = $myInclude;
+                        }
+                    }
+                }
+            } else {
+                Utils::printError(Lang::FORMAT_INCLUDES);
+            }
+        }
+    }
+    
+    public function getFalsePositives()
+    {
+        return $this->falsePositivesAnalysis;
+    }
+
+    public function setFalsePositives($falsePositives)
+    {
+        $this->readFalsePositives($falsePositives);
+    }
+
+    public function readFalsePositives($falsePositives)
+    {
+        if (!is_null($falsePositives)) {
+            if (is_string($falsePositives)) {
+                $this->readFalsePositivesFile($falsePositives);
+            } elseif (is_array($falsePositives)) {
+                foreach ($falsePositives as $falsePositive) {
+                    if (!isset($falsePositive["vuln_id"])) {
+                        Utils::printError(Lang::FORMAT_FALSE_POSITIVES);
+                    }
+
+                    $vulnId = $falsePositive["vuln_id"];
+
+                    $myVuln = new MyVuln($vulnId);
+
+                    if (!in_array($myVuln, $this->falsePositivesAnalysis, true)) {
+                        $this->falsePositivesAnalysis[] = $myVuln;
+                    }
+                }
+            } else {
+                Utils::printError(Lang::FORMAT_FALSE_POSITIVES);
+            }
+        }
+    }
+
+    public function readFalsePositivesFile($file)
+    {
+        if (!is_null($file)) {
+            if (!file_exists($file)) {
+                Utils::printError(
+                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($file).")"
+                );
+            }
+
+            $outputJson = file_get_contents($file);
+            $parsedJson = json_decode($outputJson);
+
+            if (isset($parsedJson-> {'false_positives'})) {
+                $falsePositives = $parsedJson-> {'false_positives'};
+                foreach ($falsePositives as $falsePositive) {
+                    if (!isset($falsePositive-> {'vuln_id'})) {
+                        Utils::printError(Lang::FORMAT_FALSE_POSITIVES);
+                    }
+
+                    $vulnId = $falsePositive-> {'vuln_id'};
+
+                    $myVuln = new MyVuln($vulnId);
+                    if (!in_array($myVuln, $this->falsePositivesAnalysis, true)) {
+                        $this->falsePositivesAnalysis[] = $myVuln;
+                    }
+                }
+            } else {
+                Utils::printError(Lang::FORMAT_FALSE_POSITIVES);
+            }
+        }
+    }
+
+    public function getInclusions()
+    {
+        return $this->includesFilesAnalysis;
+    }
+
+    public function getExclusions()
+    {
+        return $this->excludesFilesAnalysis;
+    }
+
+    public function setExclusions($exclusions)
+    {
+        $this->excludesFilesAnalysis = [];
+        $this->addExclusions($exclusions);
+    }
+
+    public function setInclusions($inclusions)
+    {
+        $this->includesFilesAnalysis = [];
+        $this->addInclusions($inclusions);
+    }
+
+    public function addExclusions($exclusions)
+    {
+        if (!is_null($exclusions)) {
+            if (is_string($exclusions)) {
+                $this->readExcludesFile($exclusions);
+            } elseif (is_array($exclusions)) {
+                foreach ($exclusions as $excludeFile) {
+                    if (is_string($excludeFile) && !in_array($excludeFile, $this->excludesFilesAnalysis, true)) {
+                        $this->excludesFilesAnalysis[] = $excludeFile;
+                    }
+                }
+            }
+        }
+    }
+
+    public function addInclusions($inclusions)
+    {
+        if (!is_null($inclusions)) {
+            if (is_string($inclusions)) {
+                $this->readIncludesFile($inclusions);
+            } elseif (is_array($inclusions)) {
+                foreach ($inclusions as $includeFile) {
+                    if (is_string($includeFile) && !in_array($includeFile, $this->includesFilesAnalysis, true)) {
+                        $this->includesFilesAnalysis[] = $includeFile;
+                    }
+                }
+            }
+        }
+    }
+
+    public function readExcludesFile($file)
+    {
+        if (!is_null($file)) {
+            if (!file_exists($file)) {
+                Utils::printError(
+                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($file).")"
+                );
+            }
+
+            $outputJson = file_get_contents($file);
+            $parsedJson = json_decode($outputJson);
+
+            if (isset($parsedJson->{'exclusions'}) && is_array($parsedJson->{'exclusions'})) {
+                foreach ($parsedJson->{'exclusions'} as $excludeFile) {
+                    if (is_string($excludeFile) && !in_array($excludeFile, $this->excludesFilesAnalysis, true)) {
+                        $this->excludesFilesAnalysis[] = $excludeFile;
+                    }
+                }
+            }
+        }
+    }
+
+    public function readIncludesFile($file)
+    {
+        if (!is_null($file)) {
+            if (!file_exists($file)) {
+                Utils::printError(
+                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($file).")"
+                );
+            }
+
+            $outputJson = file_get_contents($file);
+            $parsedJson = json_decode($outputJson);
+
+            if (isset($parsedJson->{'inclusions'}) && is_array($parsedJson->{'inclusions'})) {
+                foreach ($parsedJson->{'inclusions'} as $includeFile) {
+                    if (is_string($includeFile) && !in_array($includeFile, $this->includesFilesAnalysis, true)) {
+                            $this->includesFilesAnalysis[] = $includeFile;
                     }
                 }
             }

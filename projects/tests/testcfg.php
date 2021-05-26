@@ -10,11 +10,7 @@ $analyzer = new \progpilot\Analyzer;
 $context->setAnalyzeJs(false);
 $context->setAnalyzeIncludes(false);
 $context->inputs->setCode($code);
-try {
-    $analyzer->run($context);
-} catch (Exception $e) {
-    echo 'Exception : ',  $e->getMessage(), "\n";
-}
+$analyzer->run($context);
 
 $results = $context->outputs->getAst();
 

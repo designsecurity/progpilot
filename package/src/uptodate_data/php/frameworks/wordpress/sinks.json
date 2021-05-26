@@ -1,5 +1,0 @@
-{
-    "sinks": [
-        {"name": "wp_redirect",  "parameters": [{"id": 1}], "language": "php", "attack": "open_redirect", "cwe": "CWE_601"}
-        ]
-}

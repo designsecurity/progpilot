@@ -26,15 +26,8 @@ class Application extends BaseApplication
 
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
-        $this->setCatchExceptions(false);
-
-        try {
-            $statusCode = parent::run($input, $output);
-        } catch (\Exception $e) {
-            echo "\n\n".$e->getMessage()."\n\n";
-        }
+        parent::run($input, $output);
     }
-
 
     public function getDefinition()
     {
