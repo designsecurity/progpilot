@@ -264,7 +264,7 @@ class MyOutputs
     public function setIncludeFailuresFile($file)
     {
         $log = true;
-        if(is_null($file) || empty($file)) {
+        if (is_null($file) || empty($file)) {
             $log = false;
         }
 

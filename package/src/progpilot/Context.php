@@ -479,70 +479,65 @@ class Context
                         if (isset($value["inputs"])) {
                             if (isset($value["inputs"]["customrules"])) {
                                 $keep_defaults = true;
-                                if(isset($value["inputs"]["customrules"]["keep_defaults"])) {
+                                if (isset($value["inputs"]["customrules"]["keep_defaults"])) {
                                     $keep_defaults = $value["inputs"]["customrules"]["keep_defaults"];
                                 }
 
                                 if ($keep_defaults) {
                                     $this->inputs->addCustomRules($value["inputs"]["customrules"]["config_files"]);
-                                }
-                                else  {
+                                } else {
                                     $this->inputs->setCustomRules($value["inputs"]["customrules"]["config_files"]);
                                 }
                             }
 
                             if (isset($value["inputs"]["sources"])) {
                                 $keep_defaults = true;
-                                if(isset($value["inputs"]["sources"]["keep_defaults"])) {
+                                if (isset($value["inputs"]["sources"]["keep_defaults"])) {
                                     $keep_defaults = $value["inputs"]["sources"]["keep_defaults"];
                                 }
 
                                 if ($keep_defaults) {
                                     $this->inputs->addSources($value["inputs"]["sources"]["config_files"]);
-                                }
-                                else  {
+                                } else {
                                     $this->inputs->setSources($value["inputs"]["sources"]["config_files"]);
                                 }
                             }
 
                             if (isset($value["inputs"]["sinks"])) {
                                 $keep_defaults = true;
-                                if(isset($value["inputs"]["sinks"]["keep_defaults"])) {
+                                if (isset($value["inputs"]["sinks"]["keep_defaults"])) {
                                     $keep_defaults = $value["inputs"]["sinks"]["keep_defaults"];
                                 }
 
                                 if ($keep_defaults) {
                                     $this->inputs->addSinks($value["inputs"]["sinks"]["config_files"]);
-                                }
-                                else  {
+                                } else {
                                     $this->inputs->setSinks($value["inputs"]["sinks"]["config_files"]);
                                 }
                             }
 
                             if (isset($value["inputs"]["validators"])) {
                                 $keep_defaults = true;
-                                if(isset($value["inputs"]["validators"]["keep_defaults"])) {
+                                if (isset($value["inputs"]["validators"]["keep_defaults"])) {
                                     $keep_defaults = $value["inputs"]["validators"]["keep_defaults"];
                                 }
 
                                 if ($keep_defaults) {
                                     $this->inputs->addValidators($value["inputs"]["validators"]["config_files"]);
-                                }
-                                else  {
+                                } else {
                                     $this->inputs->setValidators($value["inputs"]["validators"]["config_files"]);
                                 }
                             }
 
                             if (isset($value["inputs"]["sanitizers"])) {
                                 $keep_defaults = true;
-                                if(isset($value["inputs"]["sanitizers"]["keep_defaults"])) {
+                                if (isset($value["inputs"]["sanitizers"]["keep_defaults"])) {
                                     $keep_defaults = $value["inputs"]["sanitizers"]["keep_defaults"];
                                 }
 
                                 if ($keep_defaults) {
                                     $this->inputs->addSanitizers($value["inputs"]["sanitizers"]["config_files"]);
-                                }
-                                else  {
+                                } else {
                                     $this->inputs->setSanitizers($value["inputs"]["sanitizers"]["config_files"]);
                                 }
                             }
@@ -608,9 +603,10 @@ class Context
                             }
                         }
                     }
-                }
-                else {
-                    Utils::printError(Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->configurationFile).")");
+                } else {
+                    Utils::printError(
+                        Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->configurationFile).")"
+                    );
                 }
             } catch (ParseException $e) {
                 Utils::printError(Lang::UNABLE_TO_PARSER_YAML);
