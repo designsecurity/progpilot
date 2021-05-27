@@ -29,10 +29,6 @@ class ValueAnalysis
     public static $exprsCast;
     public static $exprsKnownValues;
 
-    public function __construct()
-    {
-    }
-
     public static function buildStorage()
     {
         ValueAnalysis::$exprsCast = new \SplObjectStorage;
@@ -56,55 +52,6 @@ class ValueAnalysis
             $knownValues = ValueAnalysis::$exprsKnownValues[$expr];
 
             $finalDefValues = [];
-/*
-            if (count($knownValues) === 1) {
-                $keys = array_keys($knownValues);
-                $values = $knownValues[$keys[0]];
-
-                for ($i = 0; $i < count($values); $i++) {
-                    if (isset($values[$i][0])) {
-                        if (Common::validLastKnownValue($values[$i][0])) {
-                            $defAssign->addLastKnownValue($values[$i][0]);
-                        }
-                    }
-                }
-            } elseif (count($knownValues) === 2) {
-                $keys = array_keys($knownValues);
-                $prefixValues = $knownValues[$keys[0]];
-                $middleValues = $knownValues[$keys[1]];
-
-                for ($i = 0; $i < count($prefixValues); $i++) {
-                    if (isset($prefixValues[$i][0]) && isset($middleValues[$i][0])) {
-                        $value = $prefixValues[$i][0].$middleValues[$i][0];
-                        if (Common::validLastKnownValue($value)) {
-                            $defAssign->addLastKnownValue($value);
-                        }
-                    }
-                }
-            } elseif (count($knownValues) === 3) {
-                $keys = array_keys($knownValues);
-                $prefixValues = $knownValues[$keys[0]];
-                $middleValues = $knownValues[$keys[1]];
-                $suffixValues = $knownValues[$keys[2]];
-
-                $max = max(count($prefixValues), count($middleValues), count($suffixValues));
-
-                for ($i = 0; $i < count($max); $i++) {
-
-                    $prefixValue =
-                    if (isset($prefixValues[$i][0])
-                        && isset($middleValues[$i][0])
-                            && isset($suffixValues[$i][0])) {
-                        $value = $prefixValues[$i][0].$middleValues[$i][0].$suffixValues[$i][0];
-
-                        if (Common::validLastKnownValue($value)) {
-                            $defAssign->addLastKnownValue($value);
-                        }
-                    }
-                }
-            }
-*/
-
             
             // we dont want to compute values with more than 3 concat :
             // $def = $val1.$val2.$val3; (too much possibilities)

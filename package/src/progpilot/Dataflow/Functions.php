@@ -54,22 +54,6 @@ class Functions
                 }
             }
         }
-        /*
-        if (isset($this->functions[$funcname])) {
-            $list_funcs = $this->functions[$funcname];
-            foreach ($list_funcs as $myFunc) {
-                if (!$myFunc->isType(MyFunction::TYPE_FUNC_METHOD) && is_null($className)) {
-                    return $myFunc;
-                }
-
-                if ($myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                    $myClass = $myFunc->getMyClass();
-                    if ($className === $myClass->getName()) {
-                        return $myFunc;
-                    }
-                }
-            }
-        }*/
         
         return null;
     }
@@ -81,28 +65,7 @@ class Functions
 
     public function addFunction($filenamehash, $classname, $funcname, $myFunc)
     {
-        // we can have many functions/methods with the same name
-        
-        //if (!isset($this->functions[$filenamehash][$classname][$funcname])) {
-            $this->functions[$filenamehash][$classname][$funcname] = $myFunc;
-            /*
-            $this->functions[$filenamehash][$classname][$funcname] = $signature;
-            */
-        //}
-
-        /*
-        $continue = true;
-        if (isset($this->functions[$funcname])) {
-            $continue = false;
-            if (!in_array($func, $this->functions[$funcname], true)) {
-                $continue = true;
-            }
-        }
-
-        if ($continue) {
-            $this->functions[$funcname][] = $func;
-        }
-        */
+        $this->functions[$filenamehash][$classname][$funcname] = $myFunc;
     }
 
     public function delFunction($filenamehash, $classname, $funcname)
@@ -112,16 +75,8 @@ class Functions
         if (isset($this->functions[$filenamehash][$classname][$funcname])) {
             $save = $this->functions[$filenamehash][$classname][$funcname];
             $this->functions[$filenamehash][$classname][$funcname] = null;
-            //unset($this->functions[$filenamehash][$classname][$funcname]);
         }
 
         return $save;
-
-        /*
-        $save = $this->functions[$funcname];
-        $this->functions[$funcname] = [];
-        //unset($this->functions[$funcname]);
-        return $save;
-        */
     }
 }

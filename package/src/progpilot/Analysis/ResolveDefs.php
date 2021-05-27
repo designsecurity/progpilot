@@ -459,45 +459,6 @@ class ResolveDefs
             }
         }
 
-        // the two defs are defined in different included file
-
-        /*
-        file1.php
-        $def1 <= def1 (file1.php)
-
-        file2.php
-        echo $def1; <= def1 (file2.php)
-
-        file3.php
-        include("file1.php")
-        include("file2.php")
-        */
-        /*
-                if ((!$def1IncludedByDef2 && !$def2IncludedByDef1) || (!$def1IncludedByDef2 && !$def2IncludedByDef1)) {
-                    $myFileDef1 = $def1->getSourceMyFile();
-                    while (!is_null($myFileDef1)) {
-                        $myFileDef2 = $def2->getSourceMyFile();
-                        while (!is_null($myFileDef2)) {
-                            // we found the file from where the include chain start
-                            if ($myFileDef1->getName() === $myFileDef2->getName()) {
-                                // if the file of def1 is included later so def1 is deeper
-                                if (($myFileDef1->getLine() > $myFileDef2->getLine())
-                                    || ($myFileDef1->getLine() === $myFileDef2->getLine()
-                                        && $myFileDef1->getColumn() >= $myFileDef2->getColumn())) {
-                                    return true;
-                                } else {
-                                    return false;
-                                }
-                            }
-
-                            $myFileDef2 = $myFileDef2->getIncludedFromMyfile();
-                        }
-
-                        $myFileDef1 = $myFileDef1->getIncludedFromMyfile();
-                    }
-                }
-        */
-        
         // def1 is included by file from def2
         // but def2 defined before or after the include ?
 
@@ -738,18 +699,6 @@ class ResolveDefs
                 $trueDefsFound[] = $nearestDef;
             }
         }
-
-        /*
-                if (empty($trueDefsFound)) {
-                    if ($context->getCurrentFunc()->getName() === "{main}") {
-                        foreach ($context->getDefsMain() as $defMain) {
-                            if (Definitions::defEquality($defMain, $searchedDed, true)) {
-                                $trueDefsFound[] = $defMain;
-                            }
-                        }
-                    }
-                }
-                */
         return $trueDefsFound;
     }
 
@@ -927,17 +876,6 @@ class ResolveDefs
                     $tempDefa->setLine($currentContextCall->func_called->getLine());
                     $tempDefa->setColumn($currentContextCall->func_called->getColumn());
                     $tempDefa->setBlockId($currentContextCall->func_callee->getLastBlockId());
-
-                    /*
-                    $resGlobal = ResolveDefs::temporarySimple(
-                        $context,
-                        $currentContextCall->func_callee->getDefs(),
-                        $tempDefa,
-                        $isIterator,
-                        $isAssign,
-                        $currentContextCall
-                    );
-                    */
 
                     $resGlobal = ResolveDefs::selectDefinitions(
                         $context,

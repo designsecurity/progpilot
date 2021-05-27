@@ -25,10 +25,6 @@ use progpilot\Code\Opcodes;
 
 class ArrayAnalysis
 {
-    public function __construct()
-    {
-    }
-
     public static function temporarySimple($context, $data, $searchedDef, $def, $isIterator = false, $isAssign = false)
     {
         $goodDefs = [];

@@ -32,10 +32,6 @@ class VisitorDataflow
     private $currentBlockId;
     private $currentClass;
 
-    public function __construct()
-    {
-    }
-
     protected function getBlockId($myBlock)
     {
         if (isset($this->blocks[$myBlock])) {
@@ -196,16 +192,6 @@ class VisitorDataflow
                             $firstBlock = false;
                         }
 
-                        /*
-                        if ($firstBlock && !is_null($defsIncluded) && $this->currentFunc->getName() === "{main}") {
-                            foreach ($defsIncluded as $def_included) {
-                                $this->defs->addDef($def_included->getName(), $def_included);
-                                $this->defs->addGen($blockId, $def_included);
-                            }
-
-                            $firstBlock = false;
-                        }
-*/
                         break;
 
                     case Opcodes::LEAVE_BLOCK:

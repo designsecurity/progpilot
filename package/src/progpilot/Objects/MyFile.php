@@ -15,11 +15,6 @@ class MyFile extends MyOp
     private $includedFromMyFile;
     private $includedToMyFile;
 
-    public function __construct($varName, $varLine, $varColumn)
-    {
-        parent::__construct($varName, $varLine, $varColumn);
-    }
-
     public function setIncludedToMyfile($myFileTo)
     {
         $this->includedToMyFile = $myFileTo;
