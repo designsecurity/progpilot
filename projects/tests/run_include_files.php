@@ -7,9 +7,7 @@ $analyzer = new \progpilot\Analyzer;
 
 $context->inputs->setDev(true);
 $context->outputs->taintedFlow(true);
-$context->setPrintFile(true);
-$context->setPrintWarning(true);
-$context->setAnalyzeHardrules(true);
+$context->setDebugMode(true);
 $context->inputs->setInclusions("include_files.json");
 
 $var = function ($result) {

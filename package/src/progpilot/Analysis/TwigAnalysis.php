@@ -34,7 +34,7 @@ class TwigAnalysis
             $template = $instruction->getProperty("argdef0");
             $variable = $instruction->getProperty("argdef1");
 
-            $file = $path."/".$template->getLastKnownValues()[0];
+            $file = $path.DIRECTORY_SEPARATOR.$template->getLastKnownValues()[0];
             $myJavascriptFile = new MyFile($file, $myFuncCall->getLine(), $myFuncCall->getColumn());
 
             if (file_exists($file)) {

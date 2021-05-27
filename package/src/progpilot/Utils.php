@@ -16,57 +16,6 @@ use progpilot\Objects\MyFunction;
 
 class Utils
 {
-    public static function getWorkSpace()
-    {
-        return getcwd()."/.progpilot_temp_workspace";
-    }
-
-    public static function unserializeFunc($signature)
-    {
-        $workSpace = Utils::getWorkSpace();
-        $funcWorkSpace = $workSpace."/".$signature.".ser";
-        
-        if (file_exists($funcWorkSpace)) {
-            $content = file_get_contents($funcWorkSpace);
-            $myFunc = unserialize($content);
-            if (!is_null($myFunc)) {
-                return $myFunc;
-            }
-        }
-
-        return null;
-    }
-
-    public static function serializeFunc($myFunc, $signature)
-    {
-        $workSpace = Utils::getWorkSpace();
-        $funcWorkSpace = $workSpace."/".$signature.".ser";
-        
-        $ser = serialize($myFunc);
-        file_put_contents($funcWorkSpace, $ser);
-    }
-
-    public static function deleteWorkSpace()
-    {
-        $workSpace = Utils::getWorkSpace();
-        $files = array_diff(scandir($workSpace), array('.','..'));
-        foreach ($files as $file) {
-            (is_dir("$workSpace/$file")) ? delTree("$workSpace/$file") : unlink("$workSpace/$file");
-        }
-
-        return rmdir($workSpace);
-    }
-
-    public static function createWorkSpace()
-    {
-        $workSpace = Utils::getWorkSpace();
-        if (!file_exists($workSpace)) {
-            if (!mkdir($workSpace)) {
-                Utils::printError(Lang::UNABLE_TO_CREATE_WORKSPACE);
-            }
-        }
-    }
-
     public static function toColumn($code, $pos)
     {
         if ($pos > strlen($code)) {
@@ -87,7 +36,7 @@ class Utils
 
     public static function printWarning($context, $message)
     {
-        if ($context->getPrintWarning()) {
+        if ($context->isDebugMode()) {
             fwrite(STDERR, "progpilot warning: $message\n");
             fwrite(STDERR, "file: '".$context->getCurrentMyFile()->getName()."'\n");
 

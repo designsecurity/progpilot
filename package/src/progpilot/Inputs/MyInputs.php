@@ -131,7 +131,7 @@ class MyInputs
                         && str_starts_with("/", $excludedFile) === 0
                             && preg_match("/^[a-bA-B]*:/", $excludedFile) === 0) {
                     // it's not a relative or absolute path
-                    $excludedFile = "./".$excludedFile;
+                    $excludedFile = ".".DIRECTORY_SEPARATOR.$excludedFile;
                 }
 
                 $excludedFile = realpath($excludedFile);
@@ -155,7 +155,7 @@ class MyInputs
                         && str_starts_with("/", $includedFile) === 0
                             && preg_match("/^[a-bA-B]*:/", $includedFile) === 0) {
                     // it's not a relative or absolute path
-                    $includedFile = "./".$includedFile;
+                    $includedFile = ".".DIRECTORY_SEPARATOR.$includedFile;
                 }
 
                 $includedFile = realpath($includedFile);
@@ -210,7 +210,6 @@ class MyInputs
         foreach ($this->includesFilesAnalysis as $includedFileName) {
             if (strpos($includedFileName, "/") === false
                 && strpos($includedFileName, "\\") === false) {
-
                 // it's not a path
                 // test if it's a file name
                 if (basename($includedFileName) === $basename) {
@@ -556,7 +555,7 @@ class MyInputs
             if ($filesanddirs !== false) {
                 foreach ($filesanddirs as $filedir) {
                     if ($filedir !== '.' && $filedir !== "..") {
-                        $folderorfile = $dir."/".$filedir;
+                        $folderorfile = $dir.DIRECTORY_SEPARATOR.$filedir;
                         
                         if (is_dir($folderorfile)) {
                             $this->readDir($folderorfile, $files);

@@ -1,0 +1,11 @@
+{
+    "includes":
+        [
+            {
+                "line":5,
+                "column":25,
+                "source_file":"./tests/folders/folderconfig7/mix3.php",
+                "value":"./sub_folder1/mix1.php"
+            }
+        ]
+}

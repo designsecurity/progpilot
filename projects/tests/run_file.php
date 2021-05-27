@@ -9,8 +9,7 @@ if ($argc > 1) {
     $context->inputs->setDev(true);
     $context->inputs->setLanguages(["php", "js"]);
         
-    $context->setAnalyzeHardrules(true);
-    $context->setPrintWarning(true);
+    $context->setDebugMode(true);
     $context->outputs->taintedFlow(true);
     /*
     $context->outputs->resolveIncludes(true);

@@ -1,0 +1,37 @@
+inputs:
+    dev_mode: false
+    languages: 
+        - php
+    sources:
+      keep_defaults: true
+      config_files:  ~
+    sinks:
+      keep_defaults: true
+      config_files:  ~
+    validators:
+      keep_defaults: true
+      config_files:  ~
+    sanitizers:
+      keep_defaults: true
+      config_files:  ~
+    customrules:
+      keep_defaults: true
+      config_files:  ~
+    inclusions: 
+        - "./tests/folders/folderconfig2/fileonly.php"
+    exclusions: 
+        - "vendor"
+    resolved_includes_file: ~
+    false_positives: ~
+    
+outputs:
+    tainted_flow: true
+    include_failures_file: ~
+    
+options:
+    analyze_includes: true
+    debug_mode: false
+    pretty_print: true
+    max_file_analysis_duration: 30
+    max_definitions: 500
+    max_file_size: 1000000

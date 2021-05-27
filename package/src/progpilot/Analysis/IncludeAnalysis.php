@@ -67,8 +67,10 @@ class IncludeAnalysis
                         $realFile = false;
 
                         // else it's maybe a relative path
-                        if (strlen($lastKnownValue) > 0 && substr($lastKnownValue, 0, 1) !== '/') {
-                            $file = $context->getPath()."/".$lastKnownValue;
+                        if (strlen($lastKnownValue) > 0 
+                            && (substr($lastKnownValue, 0, 1) !== DIRECTORY_SEPARATOR 
+                                || preg_match("/^[a-bA-B]*:/", $lastKnownValue) === 0)) {
+                            $file = $context->getPath().DIRECTORY_SEPARATOR.$lastKnownValue;
                             $realFile = realpath($file);
                         }
 
@@ -83,13 +85,21 @@ class IncludeAnalysis
 
                             // check is the file is manually set by the developer with json
                             $myInclude = $context->inputs->getIncludeByLocation(
-                                $context->getCurrentLine(),
-                                $context->getCurrentColumn(),
+                                $myFuncCall->getLine(),
+                                $myFuncCall->getColumn(),
                                 $myFuncCall->getSourceMyFile()->getName()
                             );
 
                             if (!is_null($myInclude)) {
-                                $nameIncludedFile = realpath($myInclude->getValue());
+                                $manuallyIncludedFile = $myInclude->getValue();
+                                if (strlen($manuallyIncludedFile) > 0 
+                                    && (substr($manuallyIncludedFile, 0, 1) !== DIRECTORY_SEPARATOR 
+                                        || preg_match("/^[a-bA-B]*:/", $manuallyIncludedFile) === 0)) {
+                                    $manuallyIncludedFile = $context->getPath().DIRECTORY_SEPARATOR.$manuallyIncludedFile;
+                                }
+
+                                $nameIncludedFile = realpath($manuallyIncludedFile);
+                        
                                 if ($nameIncludedFile) {
                                     $continueInclude = true;
                                 }
@@ -291,7 +301,7 @@ class IncludeAnalysis
                     }
                 }
 
-                if (!$atLeastOneIncludeResolved && $context->outputs->getResolveIncludes()) {
+                if (!$atLeastOneIncludeResolved && $context->outputs->getWriteIncludeFailures()) {
                     $myFileTemp = new MyFile(
                         $myFuncCall->getSourceMyFile()->getName(),
                         $myFuncCall->getLine(),

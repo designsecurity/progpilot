@@ -84,11 +84,11 @@ class Lang
     const FILES_ARG_DESC = "Files to be analyzed";
     const CONFIG_ARG_DESC = "Read configuration from config file";
     const MAX_TIME_EXCEEDED = "Max time execution exceeded (you can increase the value with ".
-        "\$context->setLimitTime())";
+        "\$context->setMaxFileAnalysisDuration())";
     const MAX_DEFS_EXCEEDED = "Max definitions exceeded (you can increase the value with ".
-        "\$context->setLimitDefs())";
+        "\$context->setMaxDefinitions())";
     const MAX_SIZE_EXCEEDED = "Max size of file exceeded (you can increase the value with ".
-        "\$context->setLimitSize())";
+        "\$context->setMaxFileSize())";
     const MAX_MEMORY_EXCEEDED = "Memory threshold reached, some references will be released ".
         "(increasing execution time)";
     const V8JS_NOTLOADED = "extension v8js must be loaded to analyze js files";

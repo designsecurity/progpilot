@@ -13,7 +13,6 @@ class RunExcludeFilesTest extends TestCase
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
-        $context->setAnalyzeHardrules(true);
         $context->outputs->taintedFlow(true);
         
         $exclusions = [
