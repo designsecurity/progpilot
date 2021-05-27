@@ -320,61 +320,58 @@ class CustomAnalysis
 
     public static function mustVerifyCallFlow($context, $callgraph)
     {
-
-        if ($context->getAnalyzeHardrules()) {
-            $firstCustomFunctions = [];
-            $rulesVerifyCallFlow = [];
-            $customRules = $context->inputs->getCustomRules();
-            foreach ($customRules as $customRule) {
-                if ($customRule->getType() === MyCustomRule::TYPE_SEQUENCE
+        $firstCustomFunctions = [];
+        $rulesVerifyCallFlow = [];
+        $customRules = $context->inputs->getCustomRules();
+        foreach ($customRules as $customRule) {
+            if ($customRule->getType() === MyCustomRule::TYPE_SEQUENCE
                     && $customRule->getAction() === "MUST_VERIFY_CALL_FLOW") {
-                    $sequence = $customRule->getSequence();
+                $sequence = $customRule->getSequence();
 
-                    $customRule->setCurrentOrderNumber(0);
-                    $rulesVerifyCallFlow[] = $customRule;
+                $customRule->setCurrentOrderNumber(0);
+                $rulesVerifyCallFlow[] = $customRule;
 
-                    if (is_array($sequence) && !empty($sequence)) {
-                        $firstCustomFunctions[] = $sequence[0];
-                        foreach ($sequence as $customFunction) {
-                            $customFunction->setOrderNumberReal(-1);
-                        }
+                if (is_array($sequence) && !empty($sequence)) {
+                    $firstCustomFunctions[] = $sequence[0];
+                    foreach ($sequence as $customFunction) {
+                        $customFunction->setOrderNumberReal(-1);
                     }
                 }
             }
+        }
 
-            foreach ($firstCustomFunctions as $firstCustomFunction) {
-                $functions = $context->getFunctions()->getAllFunctions($firstCustomFunction->getName());
-                foreach ($functions as $function) {
-                    if (!is_null($function)) {
-                        $callgraph->addNode($function, null);
+        foreach ($firstCustomFunctions as $firstCustomFunction) {
+            $functions = $context->getFunctions()->getAllFunctions($firstCustomFunction->getName());
+            foreach ($functions as $function) {
+                if (!is_null($function)) {
+                    $callgraph->addNode($function, null);
 
-                        foreach ($function->getBlocks() as $firstMyBlock) {
-                            $calls = $callgraph->getCalls($firstMyBlock);
-                            if (!is_null($calls)) {
-                                foreach ($calls as $call) {
-                                    $callgraph->addEdge($function, null, $call[0], $call[1]);
-                                }
+                    foreach ($function->getBlocks() as $firstMyBlock) {
+                        $calls = $callgraph->getCalls($firstMyBlock);
+                        if (!is_null($calls)) {
+                            foreach ($calls as $call) {
+                                $callgraph->addEdge($function, null, $call[0], $call[1]);
                             }
-
-                            break;
                         }
 
-                        $NodeCG = new NodeCG(
-                            $function->getName(),
-                            $function->getLine(),
-                            $function->getColumn(),
-                            $function->getSourceMyFile()->getName(),
-                            null
+                        break;
+                    }
+
+                    $NodeCG = new NodeCG(
+                        $function->getName(),
+                        $function->getLine(),
+                        $function->getColumn(),
+                        $function->getSourceMyFile()->getName(),
+                        null
+                    );
+                    $nodes = $callgraph->getNodes();
+
+                    if (array_key_exists($NodeCG->getId(), $nodes)) {
+                        $depthFirstSearch = new DepthFirstSearch(
+                            $nodes,
+                            new DFSVisitor($context, $rulesVerifyCallFlow)
                         );
-                        $nodes = $callgraph->getNodes();
-
-                        if (array_key_exists($NodeCG->getId(), $nodes)) {
-                            $depthFirstSearch = new DepthFirstSearch(
-                                $nodes,
-                                new DFSVisitor($context, $rulesVerifyCallFlow)
-                            );
-                            $depthFirstSearch->init($nodes[$NodeCG->getId()]);
-                        }
+                        $depthFirstSearch->init($nodes[$NodeCG->getId()]);
                     }
                 }
             }

@@ -1,0 +1,5 @@
+{
+    "sources": [
+        {"name": "_GET", "is_array": true, "language": "php"}
+		]
+}

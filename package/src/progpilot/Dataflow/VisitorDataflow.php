@@ -342,7 +342,7 @@ class VisitorDataflow
                             $myDef->setSourceMyFile($context->getCurrentMyfile());
                         }
 
-                        if ($this->currentFunc->getDefs()->getNbDefs() < $context->getLimitDefs()) {
+                        if ($this->currentFunc->getDefs()->getNbDefs() < $context->getMaxDefinitions()) {
                             $this->defs->addDef($myDef->getName(), $myDef);
                             $this->defs->addGen($myDef->getBlockId(), $myDef);
                         } else {

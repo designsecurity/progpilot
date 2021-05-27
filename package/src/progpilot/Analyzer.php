@@ -43,7 +43,7 @@ class Analyzer
             if ($filesanddirs !== false) {
                 foreach ($filesanddirs as $filedir) {
                     if ($filedir !== '.' && $filedir !== "..") {
-                        $folderorfile = $dir."/".$filedir;
+                        $folderorfile = $dir.DIRECTORY_SEPARATOR.$filedir;
                         
                         if (is_dir($folderorfile)) {
                             $this->getFilesOfDir($context, $folderorfile, $files);
@@ -201,7 +201,7 @@ class Analyzer
                 $context->resetInternalValues();
                 $context->outputs->setResults($pastResults);
                 
-                if ((microtime(true) - $startTime) > $context->getLimitTime()) {
+                if ((microtime(true) - $startTime) > $context->getMaxFileAnalysisDuration()) {
                     Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
                     return;
                 }
@@ -210,7 +210,7 @@ class Analyzer
                 $transformvisitor->setContext($context);
                 $transformvisitor->v8jsExecute();
             
-                if ((microtime(true) - $startTime) > $context->getLimitTime()) {
+                if ((microtime(true) - $startTime) > $context->getMaxFileAnalysisDuration()) {
                     Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
                     return;
                 }
@@ -233,7 +233,7 @@ class Analyzer
             Utils::printWarning($context, Lang::FILE_AND_CODE_ARE_NULL);
         } else {
             if (is_null($context->inputs->getCode())
-                && @filesize($filename) > $context->getLimitSize()) {
+                && @filesize($filename) > $context->getMaxFileSize()) {
                 Utils::printWarning(
                     $context,
                     Lang::MAX_SIZE_EXCEEDED." (".Utils::encodeCharacters($filename).")"
@@ -274,7 +274,7 @@ class Analyzer
     public function getNamespace($context, $file)
     {
         try {
-            if (@filesize($file) <= $context->getLimitSize()) {
+            if (@filesize($file) <= $context->getMaxFileSize()) {
                 $contents = @file_get_contents($file);
                 preg_match('/namespace (.*);/', $contents, $matches);
                 if (isset($matches[1])) {
@@ -434,7 +434,7 @@ class Analyzer
 
         foreach ($files as $file) {
             if (is_file($file)) {
-                if ($context->getPrintFile()) {
+                if ($context->isDebugMode()) {
                     echo "progpilot analyze : ".Utils::encodeCharacters($file)."\n";
                 }
             
@@ -467,7 +467,7 @@ class Analyzer
             $this->runAnalysis($context);
         }
 
-        if ($context->outputs->getResolveIncludes()) {
+        if ($context->outputs->getWriteIncludeFailures()) {
             $context->outputs->writeIncludesFile();
         }
     }

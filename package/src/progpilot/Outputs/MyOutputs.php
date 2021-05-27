@@ -20,8 +20,8 @@ use PhpParser\NodeTraverser;
 class MyOutputs
 {
     private $results;
-    private $resolveIncludes;
-    private $resolveIncludesFile;
+    private $writeIncludeFailures;
+    private $includeFailuresFile;
     private $onAddResult;
     private $taintedFlow;
     private $countfilesanalyzed;
@@ -33,8 +33,8 @@ class MyOutputs
 
     public function __construct()
     {
-        $this->resolveIncludes = false;
-        $this->resolveIncludesFile = null;
+        $this->writeIncludeFailures = false;
+        $this->includeFailuresFile = null;
         $this->currentIncludesFile = [];
         $this->results = [];
         $this->taintedFlow = false;
@@ -251,24 +251,30 @@ class MyOutputs
         $this->countfilesanalyzed = $nb;
     }
 
-    public function getResolveIncludes()
+    public function getWriteIncludeFailures()
     {
-        return $this->resolveIncludes;
+        return $this->writeIncludeFailures;
     }
 
-    public function resolveIncludes($option)
+    public function setWriteIncludeFailures($writeIncludeFailures)
     {
-        $this->resolveIncludes = $option;
+        $this->writeIncludeFailures = $writeIncludeFailures;
     }
 
-    public function resolveIncludesFile($file)
+    public function setIncludeFailuresFile($file)
     {
-        $this->resolveIncludesFile = $file;
+        $log = true;
+        if(is_null($file) || empty($file)) {
+            $log = false;
+        }
+
+        $this->writeIncludeFailures = $log;
+        $this->includeFailuresFile = $file;
     }
 
-    public function getresolveIncludesFile()
+    public function getIncludeFailuresFile()
     {
-        return $this->resolveIncludesFile;
+        return $this->includeFailuresFile;
     }
 
     public function taintedFlow($bool)
@@ -283,8 +289,8 @@ class MyOutputs
 
     public function writeIncludesFile()
     {
-        if ($this->resolveIncludes) {
-            $fp = fopen($this->resolveIncludesFile, "w");
+        if ($this->writeIncludeFailures) {
+            $fp = fopen($this->includeFailuresFile, "w");
             if ($fp) {
                 $myArray = "";
                 if (count($this->currentIncludesFile) > 0) {
@@ -294,7 +300,7 @@ class MyOutputs
                     }
                 }
 
-                $outputjson = array('includes_not_resolved' => $myArray);
+                $outputjson = array('include_failures' => $myArray);
                 fwrite($fp, json_encode($outputjson, JSON_UNESCAPED_SLASHES));
                 fclose($fp);
             }

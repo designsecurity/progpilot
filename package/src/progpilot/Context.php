@@ -33,15 +33,13 @@ class Context
     private $objects;
     private $functions;
     private $path;
-    private $analyzeHardRules;
     private $analyzeIncludes;
-    private $printFileUnderAnalysis;
     private $configurationFile;
-    private $printWarning;
+    private $debugMode;
     private $prettyPrint;
-    private $limitTime;
-    private $limitDefs;
-    private $limitSize;
+    private $maxFileAnalysisDuration;
+    private $maxDefinitions;
+    private $maxFileSize;
     private $defsMain;
     private $symbols;
     private $callStack;
@@ -54,14 +52,12 @@ class Context
     public function __construct()
     {
         $this->configurationFile = null;
-        $this->analyzeHardRules = false;
         $this->analyzeIncludes = true;
-        $this->printFileUnderAnalysis = false;
-        $this->printWarning = false;
+        $this->debugMode = false;
         $this->prettyPrint = true;
-        $this->limitTime = 30;
-        $this->limitDefs = 500;
-        $this->limitSize = 1000000;
+        $this->maxFileAnalysisDuration = 30;
+        $this->maxDefinitions = 500;
+        $this->maxFileSize = 1000000;
 
         $this->inputs = new \progpilot\Inputs\MyInputs;
         $this->outputs = new \progpilot\Outputs\MyOutputs;
@@ -281,59 +277,49 @@ class Context
         return $this->prettyPrint;
     }
 
-    public function setPrintWarning($bool)
+    public function setDebugMode($bool)
     {
-        $this->printWarning = $bool;
+        $this->debugMode = $bool;
     }
 
-    public function getPrintWarning()
+    public function isDebugMode()
     {
-        return $this->printWarning;
+        return $this->debugMode;
     }
 
-    public function setLimitDefs($limitDefs)
+    public function setMaxDefinitions($maxDefinitions)
     {
-        $this->limitDefs = $limitDefs;
+        $this->maxDefinitions = $maxDefinitions;
     }
 
-    public function getLimitDefs()
+    public function getMaxDefinitions()
     {
-        return $this->limitDefs;
+        return $this->maxDefinitions;
     }
 
-    public function setLimitTime($limitTime)
+    public function setMaxFileAnalysisDuration($maxFileAnalysisDuration)
     {
-        $this->limitTime = $limitTime;
+        $this->maxFileAnalysisDuration = $maxFileAnalysisDuration;
     }
 
-    public function getLimitTime()
+    public function getMaxFileAnalysisDuration()
     {
-        return $this->limitTime;
+        return $this->maxFileAnalysisDuration;
     }
 
-    public function setLimitSize($limitSize)
+    public function setMaxFileSize($maxFileSize)
     {
-        $this->limitSize = $limitSize;
+        $this->maxFileSize = $maxFileSize;
     }
 
-    public function getLimitSize()
+    public function getMaxFileSize()
     {
-        return $this->limitSize;
-    }
-
-    public function getAnalyzeHardrules()
-    {
-        return $this->analyzeHardRules;
+        return $this->maxFileSize;
     }
 
     public function getAnalyzeIncludes()
     {
         return $this->analyzeIncludes;
-    }
-
-    public function setAnalyzeHardRules($analyzeHardRules)
-    {
-        $this->analyzeHardRules = $analyzeHardRules;
     }
 
     public function setAnalyzeIncludes($analyzeIncludes)
@@ -481,16 +467,6 @@ class Context
         return $this->configurationFile;
     }
 
-    public function setPrintFile($bool)
-    {
-        $this->printFileUnderAnalysis = $bool;
-    }
-
-    public function getPrintFile()
-    {
-        return $this->printFileUnderAnalysis;
-    }
-
     public function readConfiguration()
     {
         if (!is_null($this->configurationFile)) {
@@ -501,118 +477,143 @@ class Context
 
                     if (is_array($value)) {
                         if (isset($value["inputs"])) {
-                            if (isset($value["inputs"]["setCustomRules"])) {
-                                $this->inputs->setCustomRules($value["inputs"]["setCustomRules"]);
+                            if (isset($value["inputs"]["customrules"])) {
+                                $keep_defaults = true;
+                                if(isset($value["inputs"]["customrules"]["keep_defaults"])) {
+                                    $keep_defaults = $value["inputs"]["customrules"]["keep_defaults"];
+                                }
+
+                                if ($keep_defaults) {
+                                    $this->inputs->addCustomRules($value["inputs"]["customrules"]["config_files"]);
+                                }
+                                else  {
+                                    $this->inputs->setCustomRules($value["inputs"]["customrules"]["config_files"]);
+                                }
                             }
 
-                            if (isset($value["inputs"]["setSources"])) {
-                                $this->inputs->setSources($value["inputs"]["setSources"]);
+                            if (isset($value["inputs"]["sources"])) {
+                                $keep_defaults = true;
+                                if(isset($value["inputs"]["sources"]["keep_defaults"])) {
+                                    $keep_defaults = $value["inputs"]["sources"]["keep_defaults"];
+                                }
+
+                                if ($keep_defaults) {
+                                    $this->inputs->addSources($value["inputs"]["sources"]["config_files"]);
+                                }
+                                else  {
+                                    $this->inputs->setSources($value["inputs"]["sources"]["config_files"]);
+                                }
                             }
 
-                            if (isset($value["inputs"]["setSinks"])) {
-                                $this->inputs->setSinks($value["inputs"]["setSinks"]);
+                            if (isset($value["inputs"]["sinks"])) {
+                                $keep_defaults = true;
+                                if(isset($value["inputs"]["sinks"]["keep_defaults"])) {
+                                    $keep_defaults = $value["inputs"]["sinks"]["keep_defaults"];
+                                }
+
+                                if ($keep_defaults) {
+                                    $this->inputs->addSinks($value["inputs"]["sinks"]["config_files"]);
+                                }
+                                else  {
+                                    $this->inputs->setSinks($value["inputs"]["sinks"]["config_files"]);
+                                }
                             }
 
-                            if (isset($value["inputs"]["setValidators"])) {
-                                $this->inputs->setValidators($value["inputs"]["setValidators"]);
+                            if (isset($value["inputs"]["validators"])) {
+                                $keep_defaults = true;
+                                if(isset($value["inputs"]["validators"]["keep_defaults"])) {
+                                    $keep_defaults = $value["inputs"]["validators"]["keep_defaults"];
+                                }
+
+                                if ($keep_defaults) {
+                                    $this->inputs->addValidators($value["inputs"]["validators"]["config_files"]);
+                                }
+                                else  {
+                                    $this->inputs->setValidators($value["inputs"]["validators"]["config_files"]);
+                                }
                             }
 
-                            if (isset($value["inputs"]["setSanitizers"])) {
-                                $this->inputs->setSanitizers($value["inputs"]["setSanitizers"]);
+                            if (isset($value["inputs"]["sanitizers"])) {
+                                $keep_defaults = true;
+                                if(isset($value["inputs"]["sanitizers"]["keep_defaults"])) {
+                                    $keep_defaults = $value["inputs"]["sanitizers"]["keep_defaults"];
+                                }
+
+                                if ($keep_defaults) {
+                                    $this->inputs->addSanitizers($value["inputs"]["sanitizers"]["config_files"]);
+                                }
+                                else  {
+                                    $this->inputs->setSanitizers($value["inputs"]["sanitizers"]["config_files"]);
+                                }
                             }
 
-                            if (isset($value["inputs"]["setIncludes"])) {
-                                $this->inputs->setIncludes($value["inputs"]["setIncludes"]);
+                            if (isset($value["inputs"]["inclusions"])) {
+                                $this->inputs->setInclusions($value["inputs"]["inclusions"]);
                             }
 
-                            if (isset($value["inputs"]["setExcludes"])) {
-                                $this->inputs->setExcludes($value["inputs"]["setExcludes"]);
+                            if (isset($value["inputs"]["exclusions"])) {
+                                $this->inputs->setExclusions($value["inputs"]["exclusions"]);
                             }
 
-                            if (isset($value["inputs"]["setFolder"])) {
-                                $this->inputs->setFolder($value["inputs"]["setFolder"]);
+                            if (isset($value["inputs"]["resolved_includes_file"])) {
+                                $this->inputs->setResolvedIncludes($value["inputs"]["resolved_includes_file"]);
                             }
 
-                            if (isset($value["inputs"]["setFile"])) {
-                                $this->inputs->setFile($value["inputs"]["setFile"]);
-                            }
-
-                            if (isset($value["inputs"]["setCode"])) {
-                                $this->inputs->setCode($value["inputs"]["setCode"]);
-                            }
-
-                            if (isset($value["inputs"]["setResolvedIncludes"])) {
-                                $this->inputs->setResolvedIncludes($value["inputs"]["setResolvedIncludes"]);
-                            }
-
-                            if (isset($value["inputs"]["setFalsePositives"])) {
-                                $this->inputs->setFalsePositives($value["inputs"]["setFalsePositives"]);
+                            if (isset($value["inputs"]["false_positives"])) {
+                                $this->inputs->setFalsePositives($value["inputs"]["false_positives"]);
                             }
                             
-                            if (isset($value["inputs"]["setLanguages"])) {
-                                $this->inputs->setLanguages($value["inputs"]["setLanguages"]);
+                            if (isset($value["inputs"]["languages"])) {
+                                $this->inputs->setLanguages($value["inputs"]["languages"]);
                             }
                             
-                            if (isset($value["inputs"]["setDev"])) {
-                                $this->inputs->setDev($value["inputs"]["setDev"]);
+                            if (isset($value["inputs"]["dev_mode"])) {
+                                $this->inputs->setDev($value["inputs"]["dev_mode"]);
                             }
                         }
 
                         if (isset($value["outputs"])) {
-                            if (isset($value["outputs"]["taintedFlow"])) {
-                                $this->outputs->taintedFlow($value["outputs"]["taintedFlow"]);
+                            if (isset($value["outputs"]["tainted_flow"])) {
+                                $this->outputs->taintedFlow($value["outputs"]["tainted_flow"]);
                             }
 
-                            if (isset($value["outputs"]["resolveIncludes"])) {
-                                $this->outputs->resolveIncludes($value["outputs"]["resolveIncludes"]);
-                            }
-
-                            if (isset($value["outputs"]["resolveIncludesFile"])) {
-                                $this->outputs->resolveIncludesFile($value["outputs"]["resolveIncludesFile"]);
-                            }
-                            
-                            if (isset($value["outputs"]["onAddResult"])) {
-                                $this->outputs->setOnAddResult($value["outputs"]["onAddResult"]);
+                            if (isset($value["outputs"]["include_failures_file"])) {
+                                $this->outputs->setIncludeFailuresFile($value["outputs"]["include_failures_file"]);
                             }
                         }
 
                         if (isset($value["options"])) {
-                            if (isset($value["options"]["setAnalyzeHardRules"])) {
-                                $this->setAnalyzeHardRules($value["options"]["setAnalyzeHardRules"]);
+                            if (isset($value["options"]["analyze_includes"])) {
+                                $this->setAnalyzeIncludes($value["options"]["analyze_includes"]);
                             }
 
-                            if (isset($value["options"]["setAnalyzeIncludes"])) {
-                                $this->setAnalyzeIncludes($value["options"]["setAnalyzeIncludes"]);
+                            if (isset($value["options"]["max_file_analysis_duration"])) {
+                                $this->setMaxFileAnalysisDuration($value["options"]["max_file_analysis_duration"]);
                             }
 
-                            if (isset($value["options"]["setPrintFile"])) {
-                                $this->setPrintFile($value["options"]["setPrintFile"]);
+                            if (isset($value["options"]["max_definitions"])) {
+                                $this->setMaxDefinitions($value["options"]["max_definitions"]);
                             }
 
-                            if (isset($value["options"]["setLimitTime"])) {
-                                $this->setLimitTime($value["options"]["setLimitTime"]);
+                            if (isset($value["options"]["max_file_size"])) {
+                                $this->setMaxFileSize($value["options"]["max_file_size"]);
                             }
 
-                            if (isset($value["options"]["setLimitDefs"])) {
-                                $this->setLimitDefs($value["options"]["setLimitDefs"]);
+                            if (isset($value["options"]["debug_mode"])) {
+                                $this->setDebugMode($value["options"]["debug_mode"]);
                             }
 
-                            if (isset($value["options"]["setLimitSize"])) {
-                                $this->setLimitSize($value["options"]["setLimitSize"]);
-                            }
-
-                            if (isset($value["options"]["setPrintWarning"])) {
-                                $this->setPrintWarning($value["options"]["setPrintWarning"]);
-                            }
-
-                            if (isset($value["options"]["setPrettyPrint"])) {
-                                $this->setPrettyPrint($value["options"]["setPrettyPrint"]);
+                            if (isset($value["options"]["pretty_print"])) {
+                                $this->setPrettyPrint($value["options"]["pretty_print"]);
                             }
                         }
                     }
                 }
+                else {
+                    Utils::printError(Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->configurationFile).")");
+                }
             } catch (ParseException $e) {
-                Utils::printError($context, Lang::UNABLE_TO_PARSER_YAML);
+                Utils::printError(Lang::UNABLE_TO_PARSER_YAML);
             }
         }
     }

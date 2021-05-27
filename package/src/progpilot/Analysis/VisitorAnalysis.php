@@ -398,7 +398,7 @@ class VisitorAnalysis
             if (isset($code[$index])) {
                 $instruction = $code[$index];
 
-                if ((microtime(true) - $startTime) > $this->context->getLimitTime()) {
+                if ((microtime(true) - $startTime) > $this->context->getMaxFileAnalysisDuration()) {
                     Utils::printWarning($this->context, Lang::MAX_TIME_EXCEEDED);
                     return;
                 }

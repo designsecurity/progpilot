@@ -8,9 +8,7 @@ if ($argc > 1) {
     $context->inputs->setFolder($argv[1]);
     $context->inputs->setDev(true);
     $context->inputs->setLanguages(["php", "js"]);
-    $context->setAnalyzeHardrules(true);
-    $context->setPrintWarning(true);
-    $context->setPrintFile(true);
+    $context->setDebugMode(true);
     $context->outputs->taintedFlow(true);
         
     $exclusions = [
@@ -18,7 +16,7 @@ if ($argc > 1) {
         "./tests/folders/folder2/sub_folder1/sub_folder2"
     ];
 
-    $context->inputs->setExcludes($exclusions);
+    $context->inputs->setExclusions($exclusions);
     $analyzer->run($context);
 
     var_dump($context->outputs->getResults());

@@ -95,8 +95,8 @@ class Analysis
 
     public static function checkIfTimeExecutionIsAcceptable($context, $myFunc)
     {
-        $threshold1 = $context->getLimitTime() / 4; // 7.5 seconds by default
-        $threshold2 = $context->getLimitTime() / 15; // 2 seconds by defaults
+        $threshold1 = $context->getMaxFileAnalysisDuration() / 4; // 7.5 seconds by default
+        $threshold2 = $context->getMaxFileAnalysisDuration() / 15; // 2 seconds by defaults
         $lastExecutionTime = $myFunc->getLastExecutionTime();
         $nbExecutions = $myFunc->getNbExecutions();
 
