@@ -69,13 +69,5 @@ class CallVisitor implements Visitor
                 }
             }
         }
-
-        /*
-        if ($op instanceof Op\Expr\FuncCall) {
-        } elseif ($op instanceof Op\Expr\NsFuncCall) {
-        } elseif ($op instanceof Op\Expr\MethodCall) {
-        } elseif ($op instanceof Op\Expr\StaticCall) {
-        } elseif ($op instanceof Op\Expr\New_) {
-        }*/
     }
 }

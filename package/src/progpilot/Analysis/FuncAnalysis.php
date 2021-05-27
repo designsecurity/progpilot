@@ -13,7 +13,6 @@ namespace progpilot\Analysis;
 use progpilot\Objects\MyDefinition;
 use progpilot\Code\Opcodes;
 use progpilot\Code\MyInstruction;
-use progpilot\AbstractLayer\Analysis as AbstractAnalysis;
 
 class FuncAnalysis
 {
@@ -31,11 +30,8 @@ class FuncAnalysis
                         && $defReturn->getArrayValue() === $arrFuncCall)
                             || ($arrFuncCall === false && !$defReturn->isType(MyDefinition::TYPE_ARRAY))) {
                     $copyDefReturn = $defReturn;
-
-                    // copydefreturn = return $defReturn;
                     $copyDefReturn->setExpr($exprReturn);
                     $defReturn->setCast($myFuncCall->getCastReturn());
-                    // exprreturn = $def = exprreturn(funccall());
                     $exprReturn->addDef($copyDefReturn);
                     
                     $expr = $copyDefReturn->getExpr();

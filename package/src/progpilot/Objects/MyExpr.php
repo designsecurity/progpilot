@@ -72,7 +72,6 @@ class MyExpr extends MyOp
         return false;
     }
 
-    /* assignement utilisant cette expression */
     public function setAssignDef($def)
     {
         $this->assignDef = $def;

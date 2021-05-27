@@ -24,7 +24,6 @@ use progpilot\Transformations\Js\Transform;
 
 class Expr
 {
-
     public static function instruction($op, $context, $myExpr)
     {
         return Expr::instructionInternal($op, $context, $myExpr);

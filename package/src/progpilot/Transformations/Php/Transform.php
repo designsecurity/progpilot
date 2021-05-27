@@ -17,7 +17,6 @@ use PHPCfg\Script;
 use PHPCfg\Visitor;
 use PHPCfg\Printer;
 
-use progpilot\Symbols;
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyBlock;
 use progpilot\Objects\MyDefinition;

@@ -24,7 +24,7 @@ use progpilot\Code\MyCode;
 use progpilot\Code\Opcodes;
 use progpilot\Code\MyInstruction;
 
-use progpilot\AbstractLayer\Analysis as AbstractAnalysis;
+use progpilot\Helpers\Analysis as HelpersAnalysis;
 
 use progpilot\Lang;
 use progpilot\Utils;
@@ -247,16 +247,16 @@ class VisitorAnalysis
                                 && !$myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC))
                                     && !$myFunc->isType(MyFunction::TYPE_FUNC_METHOD))) {
                     // we don't visit twice function with a long execution time
-                    if (AbstractAnalysis::checkIfTimeExecutionIsAcceptable($this->context, $myFunc)
+                    if (HelpersAnalysis::checkIfTimeExecutionIsAcceptable($this->context, $myFunc)
                         // other checks
-                        && (AbstractAnalysis::checkIfOneFunctionArgumentIsNew($myFunc, $instruction)
+                        && (HelpersAnalysis::checkIfOneFunctionArgumentIsNew($myFunc, $instruction)
                             || !$myFunc->isVisited()
                                 || $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)
                                     || $myFunc->hasGlobalVariables()
                                         || $myFunc->getName() === "{main}")) {
                         // we clean all the param of the function
                         $funcCallBack = "Callbacks::cleanTaintedDef";
-                        AbstractAnalysis::forAllDefsOfFunction($funcCallBack, $myFunc);
+                        HelpersAnalysis::forAllDefsOfFunction($funcCallBack, $myFunc);
 
                         // we propagate the taint to the params
                         FuncAnalysis::funccallBefore(
@@ -271,7 +271,7 @@ class VisitorAnalysis
                         // we clean all the param of the function
                         // except return defs see functions21.php test case
                         $funcCallBack = "Callbacks::addDefAsAPastArgument";
-                        AbstractAnalysis::forAllArgumentsOfFunction($funcCallBack, $myFunc, $instruction);
+                        HelpersAnalysis::forAllArgumentsOfFunction($funcCallBack, $myFunc, $instruction);
 
                         $myFunc->setIsVisited(true);
 
@@ -293,7 +293,7 @@ class VisitorAnalysis
                         }
                     } else {
                         $funcCallBack = "Callbacks::addAttributesOfInitialReturnDefs";
-                        AbstractAnalysis::forAllReturnDefsOfFunction($funcCallBack, $myFunc);
+                        HelpersAnalysis::forAllReturnDefsOfFunction($funcCallBack, $myFunc);
                     }
                 }
             }

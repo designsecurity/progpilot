@@ -22,7 +22,7 @@ use progpilot\Code\MyCode;
 use progpilot\Code\Opcodes;
 use progpilot\Code\MyInstruction;
 
-use progpilot\AbstractLayer\Analysis as AbstractAnalysis;
+use progpilot\Helpers\Analysis as HelpersAnalysis;
 
 use progpilot\Utils;
 
@@ -30,10 +30,6 @@ use function DeepCopy\deep_copy;
 
 class IncludeAnalysis
 {
-    public function __construct()
-    {
-    }
-
     public static function isCircularInclude($myFile)
     {
         $includedMyFile = $myFile->getIncludedFromMyfile();
@@ -268,7 +264,7 @@ class IncludeAnalysis
                                         $myClassesIncluded = $context->getClasses()->getListClasses();
                                         foreach ($myClassesIncluded as $myClassIncluded) {
                                             $funcCallBack = "Callbacks::modifyMyclassOfObject";
-                                            AbstractAnalysis::forAllobjects($context, $funcCallBack, $myClassIncluded);
+                                            HelpersAnalysis::forAllobjects($context, $funcCallBack, $myClassIncluded);
                                         }
 
                                         $newDefs = false;

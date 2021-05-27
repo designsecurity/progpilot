@@ -18,7 +18,7 @@ use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyClass;
 use progpilot\Code\MyInstruction;
 use progpilot\Utils;
-use progpilot\AbstractLayer\Analysis as AbstractAnalysis;
+use progpilot\Helpers\Analysis as HelpersAnalysis;
 
 class CustomAnalysis
 {
@@ -28,7 +28,7 @@ class CustomAnalysis
         foreach ($customRules as $customRule) {
             if ($customRule->getType() === MyCustomRule::TYPE_VARIABLE
                 && $customRule->getAction() === "ASSIGNMENT_DISCLOSE_HIGH_VALUE") {
-                $result = AbstractAnalysis::checkIfDefEqualDefRule($context, $defs, $customRule, $defassign);
+                $result = HelpersAnalysis::checkIfDefEqualDefRule($context, $defs, $customRule, $defassign);
                                         
                 if ($result) {
                     $hashedValue = $defassign->getLine();
@@ -61,7 +61,7 @@ class CustomAnalysis
             if ($customRule->getType() === MyCustomRule::TYPE_VARIABLE
                 && $customRule->getAction() === "DEFINE_OBJECT"
                     && !is_null($customRule->getExtra())) {
-                $result = AbstractAnalysis::checkIfDefEqualDefRule(
+                $result = HelpersAnalysis::checkIfDefEqualDefRule(
                     $context,
                     null,
                     $customRule,
@@ -120,7 +120,7 @@ class CustomAnalysis
                 if ($customRule->getType() === MyCustomRule::TYPE_FUNCTION
                     && $customRule->getAction() === "DEFINE_OBJECT"
                         && !is_null($customRule->getExtra())) {
-                    $result = AbstractAnalysis::checkIfDefEqualDefRule(
+                    $result = HelpersAnalysis::checkIfDefEqualDefRule(
                         $context,
                         null,
                         $customRule,
@@ -149,7 +149,7 @@ class CustomAnalysis
                     || $customRule->getAction() === "MUST_NOT_VERIFY_DEFINITION")) {
                 $functionDefinition = $customRule->getDefinition();
                 
-                $result = AbstractAnalysis::checkIfFuncEqualMySpecify(
+                $result = HelpersAnalysis::checkIfFuncEqualMySpecify(
                     $context,
                     $functionDefinition,
                     $myFunc,
