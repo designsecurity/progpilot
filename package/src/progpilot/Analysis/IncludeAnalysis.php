@@ -67,8 +67,8 @@ class IncludeAnalysis
                         $realFile = false;
 
                         // else it's maybe a relative path
-                        if (strlen($lastKnownValue) > 0 
-                            && (substr($lastKnownValue, 0, 1) !== DIRECTORY_SEPARATOR 
+                        if (strlen($lastKnownValue) > 0
+                            && (substr($lastKnownValue, 0, 1) !== DIRECTORY_SEPARATOR
                                 || preg_match("/^[a-bA-B]*:/", $lastKnownValue) === 0)) {
                             $file = $context->getPath().DIRECTORY_SEPARATOR.$lastKnownValue;
                             $realFile = realpath($file);
@@ -92,10 +92,11 @@ class IncludeAnalysis
 
                             if (!is_null($myInclude)) {
                                 $manuallyIncludedFile = $myInclude->getValue();
-                                if (strlen($manuallyIncludedFile) > 0 
-                                    && (substr($manuallyIncludedFile, 0, 1) !== DIRECTORY_SEPARATOR 
+                                if (strlen($manuallyIncludedFile) > 0
+                                    && (substr($manuallyIncludedFile, 0, 1) !== DIRECTORY_SEPARATOR
                                         || preg_match("/^[a-bA-B]*:/", $manuallyIncludedFile) === 0)) {
-                                    $manuallyIncludedFile = $context->getPath().DIRECTORY_SEPARATOR.$manuallyIncludedFile;
+                                    $manuallyIncludedFile =
+                                        $context->getPath().DIRECTORY_SEPARATOR.$manuallyIncludedFile;
                                 }
 
                                 $nameIncludedFile = realpath($manuallyIncludedFile);
