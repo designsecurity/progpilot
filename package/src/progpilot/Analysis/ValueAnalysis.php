@@ -188,16 +188,16 @@ class ValueAnalysis
         $defAssign->setIsEmbeddedByChars($def->getIsEmbeddedByChars(), true);
         $defAssign->setCast($def->getCast());
         $defAssign->setLabel($def->getLabel());
-        
+        /*
         if ($def->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED") {
             $defAssign->setArrayValue("PROGPILOT_ALL_INDEX_TAINTED");
             $defAssign->setTaintedByExpr($def->getExpr());
         }
         
         if ($def->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
-            $defAssign->property->addProperty("PROGPILOT_ALL_PROPERTIES_TAINTED");
+            $defAssign->property->setProperties("PROGPILOT_ALL_PROPERTIES_TAINTED");
             $defAssign->addType(MyDefinition::TYPE_INSTANCE);
             $defAssign->setTaintedByExpr($def->getExpr());
-        }
+        }*/
     }
 }

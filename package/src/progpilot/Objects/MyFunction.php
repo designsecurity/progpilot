@@ -21,25 +21,26 @@ class MyFunction extends MyOp
     const TYPE_FUNC_STATIC = 0x0002;
     const TYPE_FUNC_METHOD = 0x0004;
 
+    private $lastLine;
+    private $lastColumn;
+    private $firstBlockId;
+    private $lastBlockId;
+
     private $nbParams;
     private $params;
     private $returnDefs;
     private $initialReturnDefs;
     private $defs;
+    private $opInformations;
     private $blocks;
     private $exprs;
     private $visibility;
     private $myClass;
-    private $firstBlockId;
     private $blockId;
     private $nameInstance;
     
     private $thisDef;
-    private $backDef;
-
-    private $lastLine;
-    private $lastColumn;
-    private $lastBlockId;
+    private $instanceClassName;
 
     private $thisHasBeenUpdated;
     private $isVisited;
@@ -63,7 +64,7 @@ class MyFunction extends MyOp
         $this->myclass = null;
         $this->nameInstance = null;
         $this->thisDef = null;
-        $this->backDef = null;
+        $this->instanceClassName = "";
         $this->blockId = 0;
         $this->firstBlockId = 0;
         $this->nbParams = 0;
@@ -82,22 +83,24 @@ class MyFunction extends MyOp
         $this->chainedMethod = null;
         $this->hasGlobalVariables = false;
 
-        $this->property = new MyProperty;
+        //$this->property = new MyProperty;
         $this->defs = new Definitions;
-        $this->blocks = new \SplObjectStorage;
+        $this->opInformations = [];
+        $this->blocks = [];
         $this->exprs = [];
 
         $this->myCode = new \progpilot\Code\MyCode;
         $this->castReturn = MyDefinition::CAST_NOT_SAFE;
     }
 
+/*
     public function __clone()
     {
-        $this->property = clone $this->property;
-        $this->blocks = clone $this->blocks;
-        $this->defs = clone $this->defs;
+        //$this->property = clone $this->property;
+        //$this->blocks = clone $this->blocks;
+        //$this->defs = clone $this->defs;
     }
-
+*/
     public function setNbExecutions($nbExecutions)
     {
         $this->nbExecutions = $nbExecutions;
@@ -213,6 +216,11 @@ class MyFunction extends MyOp
         $this->lastBlockId = $lastBlockId;
     }
 
+    public function getLastBlockId()
+    {
+        return $this->lastBlockId;
+    }
+
     public function getLastLine()
     {
         return $this->lastLine;
@@ -221,11 +229,6 @@ class MyFunction extends MyOp
     public function getLastColumn()
     {
         return $this->lastColumn;
-    }
-
-    public function getLastBlockId()
-    {
-        return $this->lastBlockId;
     }
 
     public function getMyClass()
@@ -248,14 +251,14 @@ class MyFunction extends MyOp
         $this->thisDef = $thisDef;
     }
 
-    public function getBackDef()
+    public function getInstanceClassName()
     {
-        return $this->backDef;
+        return $this->instanceClassName;
     }
 
-    public function setBackDef($backDef)
+    public function setInstanceClassName($instanceClassName)
     {
-        $this->backDef = $backDef;
+        $this->instanceClassName = $instanceClassName;
     }
 
     public function getNameInstance()
@@ -286,6 +289,46 @@ class MyFunction extends MyOp
     public function getBlocks()
     {
         return $this->blocks;
+    }
+
+    public function getBlockById($id)
+    {
+        foreach($this->blocks as $block) {
+            if($block->getId() === $id) {
+                return $block;
+            }
+        }
+
+        return null;
+    }
+
+    public function setOpInformations($opInformations)
+    {
+        $this->opInformations = $opInformations;
+    }
+
+    public function getOpInformations()
+    {
+        return $this->opInformations;
+    }
+
+    public function getOpId($op)
+    {
+        return spl_object_hash($op);
+    }
+
+    public function getOpInformation($id)
+    {
+        if (isset($this->opInformations[$id])) {
+            return $this->opInformations[$id];
+        }
+
+        return null;
+    }
+
+    public function storeOpInformation($id, $infos)
+    {
+        $this->opInformations[$id] = $infos;
     }
 
     public function setDefs($defs)

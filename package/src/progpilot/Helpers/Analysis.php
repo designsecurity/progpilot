@@ -10,9 +10,15 @@
 
 namespace progpilot\Helpers;
 
+use progpilot\Code\MyCode;
+use progpilot\Code\Opcodes;
+use progpilot\Code\MyInstruction;
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
+use progpilot\Objects\MyDefState;
 use progpilot\Analysis\ResolveDefs;
+use progpilot\Analysis\TaintAnalysis;
+use progpilot\Analysis\ValueAnalysis;
 
 class Analysis
 {
@@ -108,6 +114,324 @@ class Analysis
         return true;
     }
 
+    public static function getAssignedDefOfPreviousInstruction($code, $index)
+    {
+        $previousInstruction = $code[$index - 2];
+        if ($previousInstruction->getOpcode() === Opcodes::END_EXPRESSION) {
+            $expr = $previousInstruction->getProperty(MyInstruction::EXPR);
+            if ($expr->isAssign()) {
+                return $expr->getAssignDef();
+            }
+        }
+
+        return null;
+    }
+
+    public static function isInstructionOfType($code, $index, $type)
+    {
+        if (isset($code[$index])) {
+            $instruction = $code[$index];
+            if ($instruction->getOpcode() === $type) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static function getInstruction($code, $index)
+    {
+        if (isset($code[$index])) {
+            return $code[$index];
+        }
+
+        return null;
+    }
+
+    public static function extractArrayFromArr($originalarr, $indarr)
+    {
+        if ($originalarr === $indarr) {
+            return false;
+        }
+
+        $arr = $originalarr;
+
+        if (is_array($indarr)) {
+            foreach ($indarr as $ind => $value) {
+                if (isset($originalarr[$ind])) {
+                    if ($originalarr[$ind] === $indarr[$ind]) {
+                        return $originalarr[$ind];
+                    }
+
+                    $arr = BuildArrays::extractArrayFromArr($originalarr[$ind], $indarr[$ind]);
+                } else {
+                    $arr = false;
+                }
+            }
+        }
+
+        return $arr;
+    }
+
+    public static function getArrayIndexAsAString($arrValue, $searchedDim)
+    {
+        echo "getArrayIndexAsAString 1\n";
+
+        if (is_array($arrValue) && is_array($searchedDim)) {
+            $searchedDimKey = array_keys($searchedDim);
+            echo "searchedDimKey => '".$searchedDimKey[0]."'\n";
+
+            if (array_key_exists($searchedDimKey[0], $arrValue)) {
+                echo "array_key_exists\n";
+                return Analysis::getArrayIndexAsAString($arrValue[$searchedDimKey[0]], $searchedDim[$searchedDimKey[0]]);
+            }
+        }
+
+        echo "getArrayIndexAsAString 2\n";
+            
+        if (!is_array($searchedDim)) {
+            echo "getArrayIndexAsAString 3\n";
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function isSubDimensionOfArray($def, $searchedDim)
+    {
+        echo "isSubDimensionOfArray 1\n";
+
+        if ($def->isType(MyDefinition::TYPE_ARRAY)) {
+            if (is_array($searchedDim)) {
+                foreach ($def->getArrayIndexes() as $arrayIndex) {
+                    return Analysis::getArrayIndexAsAString($arrayIndex->index, $searchedDim);
+                }
+
+                return false;
+            }
+            
+            return true;
+        }
+
+        return false;
+    }
+
+
+    public static function isASource($context, $def, $arrayValue)
+    {
+        echo "isASource 1\n";
+        var_dump($arrayValue);
+
+
+        $source = $context->inputs->getSourceByName(
+            $context,
+            null,
+            $def,
+            false,
+            false,
+            $arrayValue
+        );
+        
+        echo "isASource 2\n";
+        if (!is_null($source)) {
+            echo "isASource 3\n";
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function updateBlocksOfProperties($context, $instance)
+    {
+        echo "updateBlocksOfProperties\n";
+        $idObject = $instance->getCurrentState()->getObjectId();
+        $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
+
+        $states = [];
+        if (!is_null($tmpMyClass)) {
+            foreach ($tmpMyClass->getProperties() as $property) {
+                echo "updateBlocksOfProperties property\n";
+                $property->printStdout();
+
+                foreach ($context->getCurrentFunc()->getBlocks() as $myBlock) {
+                    echo "updateBlocksOfProperties blockid = '".$myBlock->getId()."'\n";
+                    $states = [];
+                    $blockParents = array_merge($myBlock->getParents(), $myBlock->getVirtualParents());
+
+                    foreach ($blockParents as $parentMyBlock) {
+                        echo "updateBlocksOfProperties parentblockid = '".$parentMyBlock->getId()."' \n";
+                        $state = $property->getState($parentMyBlock->getId());
+                        if (!is_null($state)) {
+                            echo "updateBlocksOfProperties parentblockid = '".$parentMyBlock->getId()."' getstate\n";
+                            $state->printStdout();
+                            $states[] = $state;
+                        }
+                    }
+
+                    $newstate = Analysis::mergeDefStates($states);
+                    echo "updateBlocksOfProperties merged new state\n";
+                    $newstate->printStdout();
+
+                    $property->setState($newstate, $myBlock->getId());
+                    echo "updateBlocksOfProperties merged new property\n";
+                    $property->printStdout();
+                }
+            }
+        }
+    }
+
+    public static function copyStates($states, $def)
+    {
+        foreach ($states as $id => $state) {
+            $def->setState($state, $id);
+        }
+    }
+
+    public static function mergeAllStates($defs)
+    {
+        $tmpstates = [];
+        echo "mergeAllStates 1\n";
+        foreach ($defs as $def) {
+            echo "mergeAllStates 2\n";
+            $def->printStdout();
+
+            foreach ($def->getStates() as $id => $state) {
+                echo "mergeAllStates 3 idstate = '$id'\n";
+                if (!is_null($state)) {
+                    echo "mergeAllStates 4\n";
+                    $state->printStdout();
+                    $tmpstates[$id][] = $state;
+                }
+            }
+        }
+
+        $newstates = [];
+        foreach ($tmpstates as $id => $states) {
+            echo "mergeAllStates 5\n";
+            $newstates[$id] = Analysis::mergeStates($states);
+        }
+
+        return $newstates;
+    }
+
+
+    public static function mergeStates($states)
+    {
+        $myState = new MyDefState;
+
+        foreach ($states as $state) {
+            echo "mergeStates 1\n";
+            if (!is_null($state)) {
+                echo "mergeStates 2\n";
+                if ($state->isTainted()) {
+                    echo "mergeStates 3\n";
+                    $myState->setTainted(true);
+                    foreach($state->getTaintedByDefs() as $taintedDef) {
+                        $myState->addTaintedByDef($taintedDef);
+                    }
+                }
+
+                if ($state->isSanitized()) {
+                    $myState->setSanitized(true);
+                    foreach ($state->getTypeSanitized() as $typeSanitized) {
+                        $myState->addTypeSanitized($typeSanitized);
+                    }
+                }
+
+                $myState->setIsEmbeddedByChars($state->getIsEmbeddedByChars(), true);
+                $myState->setCast($state->getCast());
+                $myState->setLabel($state->getLabel());
+            }
+        }
+        
+        echo "mergeStates 4\n";
+        $myState->printStdout();
+
+        return $myState;
+    }
+
+
+    public static function mergeDefsBlockIdStates($defs, $blockId)
+    {
+        $myState = new MyDefState;
+
+        foreach ($defs as $def) {
+            echo "mergeDefsBlockIdStates 1 blockId = '$blockId'\n";
+            $def->printStdout();
+
+            $state = $def->getState($blockId);
+            echo "mergeDefsBlockIdStates 2\n";
+            if (!is_null($state)) {
+                echo "mergeDefsBlockIdStates 3\n";
+                if ($state->isTainted()) {
+                    echo "mergeDefsBlockIdStates 4\n";
+                    $myState->setTainted(true);
+                    $myState->addTaintedByDef($def);
+                }
+
+                if ($state->isSanitized()) {
+                    $myState->setSanitized(true);
+                    foreach ($state->getTypeSanitized() as $typeSanitized) {
+                        $myState->addTypeSanitized($typeSanitized);
+                    }
+                }
+
+                $myState->setIsEmbeddedByChars($state->getIsEmbeddedByChars(), true);
+                $myState->setCast($state->getCast());
+                $myState->setLabel($state->getLabel());
+            }
+        }
+        
+
+        return $myState;
+    }
+
+    public static function mergeDefStates($states)
+    {
+        $myState = new MyDefState;
+
+        echo "mergeDefStates 1\n";
+
+        foreach ($states as $state) {
+            echo "mergeDefStates 2\n";
+            if ($state->isTainted()) {
+                echo "mergeDefStates 3\n";
+                $myState->setTainted(true);
+                foreach ($state->getTaintedByDefs() as $taintedDef) {
+                    $myState->addTaintedByDef($taintedDef);
+                }
+            }
+
+            if ($state->isSanitized()) {
+                $myState->setSanitized(true);
+                foreach ($state->getTypeSanitized() as $typeSanitized) {
+                    $myState->addTypeSanitized($typeSanitized);
+                }
+            }
+
+            if ($state->isType(MyDefinition::TYPE_INSTANCE)) {
+                $myState->addType(MyDefinition::TYPE_INSTANCE);
+                $myState->setObjectId($state->getObjectId());
+            }
+
+
+            if ($state->isType(MyDefinition::TYPE_ARRAY)) {
+                foreach ($state->getArrayIndexes() as $oriArrayIndex) {
+                    $tmpDef = clone $oriArrayIndex->def;
+                    $myState->addArrayIndex($oriArrayIndex->index, $tmpDef);
+                }
+
+                $myState->addType(MyDefinition::TYPE_ARRAY);
+            }
+
+            $myState->setIsEmbeddedByChars($state->getIsEmbeddedByChars(), true);
+            $myState->setCast($state->getCast());
+            $myState->setLabel($state->getLabel());
+        }
+
+        return $myState;
+    }
+
     public static function checkIfOneFunctionArgumentIsNew($myFunc, $instruction)
     {
         if (!is_null($myFunc)) {
@@ -147,12 +471,18 @@ class Analysis
     {
         $checkName = false;
         if ($myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
-            $properties = $myFunc->property->getProperties();
+            $properties = "eee";
+            //$properties = $myFunc->property->getProperties();
+            /*
             if (is_array($properties) && isset($properties[count($properties) - 1])) {
                 $lastproperty = $properties[count($properties) - 1];
                 if ($lastproperty === $mySpecify->getName()) {
                     $checkName = true;
                 }
+            }
+*/
+            if ($properties === $mySpecify->getName()) {
+                $checkName = true;
             }
         }
                 
@@ -179,7 +509,7 @@ class Analysis
                         if (isset($stackClass[$i]) && count($stackClass[$i]) > 0) {
                             $foundProperty = false;
                             foreach ($stackClass[$i] as $propClass) {
-                                $objectId = $propClass->getObjectId();
+                                $objectId = $propClass->getCurrentState()->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                         
                                 if (!is_null($myClass)
@@ -213,11 +543,16 @@ class Analysis
         $checkName = false;
         if ($def->isType(MyDefinition::TYPE_PROPERTY)) {
             $properties = $def->property->getProperties();
+            /*
             if (is_array($properties) && isset($properties[count($properties) - 1])) {
                 $lastproperty = $properties[count($properties) - 1];
                 if ($lastproperty === $definition->getName()) {
                     $checkName = true;
                 }
+            }*/
+
+            if ($properties === $definition->getName()) {
+                $checkName = true;
             }
         }
                     

@@ -17,24 +17,53 @@ class MyBlock extends MyOp
     private $endAddressBlock;
     private $loop;
 
+    public $children;
     public $parents;
+    public $virtualParents;
     public $assertions;
 
-    public function __construct()
+    public function __construct($startLine, $startColumn)
     {
-        parent::__construct("", 0, 0);
+        parent::__construct("", $startLine, $startColumn);
 
         $this->returnDefs = [];
         $this->startAddressBlock = -1;
         $this->endAddressBlock = -1;
         $this->assertions = [];
         $this->parents = [];
+        $this->virtualParents = [];
+        $this->children = [];
         $this->loop = false;
+    }
+
+    public function addVirtualParent($parent)
+    {
+        $this->virtualParents[] = $parent;
+    }
+
+    public function getVirtualParents()
+    {
+        return $this->virtualParents;
     }
 
     public function addParent($parent)
     {
         $this->parents[] = $parent;
+    }
+
+    public function getParents()
+    {
+        return $this->parents;
+    }
+
+    public function addChild($child)
+    {
+        $this->children[] = $child;
+    }
+
+    public function getChildren()
+    {
+        return $this->children;
     }
 
     public function addReturnDef($def)

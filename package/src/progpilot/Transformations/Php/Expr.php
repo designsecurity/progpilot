@@ -21,6 +21,11 @@ use progpilot\Objects\MyOp;
 use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
 use progpilot\Transformations\Php\Transform;
+use progpilot\Transformations\Php\Exprs\PropertyFetch;
+use progpilot\Transformations\Php\Exprs\DimFetch;
+use progpilot\Transformations\Php\Exprs\VariableFetch;
+use progpilot\Transformations\Php\Exprs\FunccallFetch;
+use progpilot\Transformations\Php\Exprs\ConcatFetch;
 
 class Expr
 {
@@ -71,6 +76,42 @@ class Expr
         }
     }
 
+    public static function instructionnew2($context, $op, $expr)
+    {
+        if(isset($op->var->ops[0]) && $op !== $op->var->ops[0]) {
+            Expr::instructionnew2($context, $op->var->ops[0], $expr);
+        }
+
+        if(isset($op->ops[0]) && $op !== $op->ops[0]) {
+            Expr::instructionnew2($context, $op->ops[0], $expr);
+        }
+
+        ConcatFetch::concatFetch($context, $op, $expr);
+        DimFetch::dimFetch($context, $op, $expr);
+        PropertyFetch::propertyFetch($context, $op, $expr);
+        FunccallFetch::funccallFetch($context, $op, $expr);
+    }
+
+    public static function instructionnew($context, $op, $expr)
+    {
+        if(isset($op->ops[0]) && is_null($op->original)) {
+            Expr::instructionnew2($context, $op->ops[0], $expr);
+        }
+        else {
+            VariableFetch::variableFetch($context, $op, $expr);
+        }
+    }
+
+    public static function instructionassign($context, $op, $expr)
+    {
+        if(isset($op->ops[0]) && is_null($op->original)) {
+            Expr::instructionnew2($context, $op->ops[0], $expr);
+        }/*
+        else {
+            VariableFetch::variableFetch($context, $op, $expr);
+        }*/
+    }
+
     public static function instruction($op, $context, $myExpr, $cast = MyDefinition::CAST_NOT_SAFE)
     {
         $defsOfExpr = [];
@@ -110,51 +151,66 @@ class Expr
                 $context->getCurrentFunc()->setHasGlobalVariables(true);
             }
             
-            $myTemp = new MyDefinition($context->getCurrentLine(), $column, $name);
+            $myTemp = new MyDefinition(
+                $context->getCurrentBlock()->getId(),
+                $context->getCurrentMyFile(),
+                $context->getCurrentLine(), 
+                $column, 
+                $name);
+
             if ($type === MyOp::TYPE_CONST || $type === MyOp::TYPE_LITERAL) {
                 $myTemp->addLastKnownValue($name);
             }
             $myTemp->setCast($cast);
 
             Expr::setChars($myExpr, $myTemp, $name, ["'", "<", ">"]);
-
-            if ($arr != false) {
-                $myTemp->addType(MyDefinition::TYPE_ARRAY);
-                $myTemp->setArrayValue($arr);
-            }
-
+            /*
+                        if ($arr != false) {
+                            $myTemp->addType(MyDefinition::TYPE_ARRAY);
+                            $myTemp->setArrayValue($arr);
+                        }
+            */
             $myTemp->setExpr($myExpr);
             $defsOfExpr[] = $myTemp;
 
             if ($type === MyOp::TYPE_CONST) {
                 $myTemp->addType(MyDefinition::TYPE_CONSTANTE);
             }
+            
+            /*
+                        if ($type === MyOp::TYPE_PROPERTY) {
+                            $propertyName = "";
+                            if (isset($op->ops[0])) {
+                                $propertyName = Common::getNameProperty($op->ops[0]);
+                            }
 
-            if ($type === MyOp::TYPE_PROPERTY) {
-                $propertyName = "";
-                if (isset($op->ops[0])) {
-                    $propertyName = Common::getNameProperty($op->ops[0]);
-                }
+                            $myTemp->addType(MyDefinition::TYPE_PROPERTY);
+                            $myTemp->property->setProperties($propertyName);
+                        }
 
-                $myTemp->addType(MyDefinition::TYPE_PROPERTY);
-                $myTemp->property->setProperties($propertyName);
+                        if ($type === MyOp::TYPE_STATIC_PROPERTY) {
+                            $propertyName = "";
+                            if (isset($op->ops[0])) {
+                                $propertyName = Common::getNameProperty($op->ops[0]);
+                            }
+
+                            $myTemp->addType(MyDefinition::TYPE_STATIC_PROPERTY);
+                            $myTemp->property->setProperties($propertyName);
+                        }
+            */
+
+            //if ($type === MyOp::TYPE_PROPERTY || $arr !== false) {
+            echo "expr transformPropertyFetch 1\n";
+            //Common::transformPropertyFetch($context, $op->ops[0]);
+            Common::transformPropertyFetch($context, $op);
+            echo "expr transformPropertyFetch 2\n";
+            /*
             }
-
-            if ($type === MyOp::TYPE_STATIC_PROPERTY) {
-                $propertyName = "";
-                if (isset($op->ops[0])) {
-                    $propertyName = Common::getNameProperty($op->ops[0]);
-                }
-
-                $myTemp->addType(MyDefinition::TYPE_STATIC_PROPERTY);
-                $myTemp->property->setProperties($propertyName);
-            }
-
-            if (!$phi) {
-                $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
-                $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
-                $context->getCurrentMycode()->addCode($instTemporarySimple);
-            }
+            else if (!$phi) {
+            $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
+            $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
+            $context->getCurrentMycode()->addCode($instTemporarySimple);
+            }*/
             
             return $myTemp;
         } elseif ($type === MyOp::TYPE_FUNCCALL_ARRAY) {

@@ -16,10 +16,12 @@ use PHPCfg\Op;
 use PHPCfg\Script;
 use PHPCfg\Visitor;
 use PHPCfg\Printer;
+use PHPCfg\Operand;
 
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyBlock;
 use progpilot\Objects\MyDefinition;
+use progpilot\Objects\MyProperty;
 use progpilot\Objects\MyExpr;
 use progpilot\Objects\MyClass;
 use progpilot\Objects\MyOp;
@@ -38,15 +40,28 @@ use function DeepCopy\deep_copy;
 
 class Transform implements Visitor
 {
+    private $blocksStack;
     private $sBlocks;
     private $context;
     private $blockIfToBeResolved;
     private $insideInclude;
+    private $varIds;
+
+    protected function getVarId(Operand $var)
+    {
+        if (isset($this->varIds[$var])) {
+            return $this->varIds[$var];
+        }
+
+        return $this->varIds[$var] = $this->varIds->count() + 1;
+    }
 
     public function __construct()
     {
+        $this->varIds = new \SplObjectStorage;
         $this->sBlocks = new \SplObjectStorage;
         $this->blockIfToBeResolved = [];
+        $this->blocksStack = [];
     }
 
     public function setContext($context)
@@ -62,12 +77,17 @@ class Transform implements Visitor
     public function leaveScript(Script $script)
     {
         // creating edges for myblocks structure as block structure
+
+        echo "leaveScript 1\n";
         foreach ($this->sBlocks as $block) {
             $myBlock = $this->sBlocks[$block];
+            echo "leaveScript 2 blockid = '".$myBlock->getId()."'\n";
             foreach ($block->parents as $block_parent) {
                 if ($this->sBlocks->contains($block_parent)) {
                     $myBlockParent = $this->sBlocks[$block_parent];
+                    echo "leaveScript 3 blockid parent = '".$myBlockParent->getId()."'\n";
                     $myBlock->addParent($myBlockParent);
+                    $myBlockParent->addChild($myBlock);
                 }
             }
         }
@@ -103,19 +123,20 @@ class Transform implements Visitor
             }
         }
         
-        /*
+        
         $printer = new Printer\Text();
         var_dump($printer->printScript($script));
-        */
     }
 
     public function enterBlock(Block $block, Block $prior = null)
     {
         $this->insideInclude = false;
         if (!($this->context->getCurrentOp() instanceof Op\Expr\Include_)) {
-            $myBlock = new MyBlock;
+            $myBlock = new MyBlock($this->context->getCurrentLine(), $this->context->getCurrentColumn());
             $myBlock->setStartAddressBlock(count($this->context->getCurrentMycode()->getCodes()));
-            $this->context->setCurrentBlock($block);
+            $this->context->setCurrentBlock($myBlock);
+
+            array_push($this->blocksStack, $myBlock);
 
             $this->sBlocks[$block] = $myBlock;
 
@@ -126,7 +147,13 @@ class Transform implements Visitor
             // block is for himself a parent block (handle dataflow for first block)
             $block->addParent($block);
 
-            $myBlock->setId(rand());
+            // params are part of the first block
+            foreach ($this->context->getCurrentFunc()->getParams() as $param) {
+                $instDef = new MyInstruction(Opcodes::DEFINITION);
+                $instDef->addProperty(MyInstruction::DEF, $param);
+                $this->context->getCurrentMycode()->addCode($instDef);
+            }
+            // end
         } else {
             $this->insideInclude = true;
         }
@@ -152,15 +179,19 @@ class Transform implements Visitor
                 $instBlock = new MyInstruction(Opcodes::LEAVE_BLOCK);
                 $instBlock->addProperty(MyInstruction::MYBLOCK, $myBlock);
                 $this->context->getCurrentMycode()->addCode($instBlock);
+
+                array_pop($this->blocksStack);
+
+                if(!empty($this->blocksStack)) {
+                    $this->context->setCurrentBlock($this->blocksStack[count($this->blocksStack) - 1]);
+                }
             }
         }
     }
 
     public function enterFunc(Func $func)
     {
-        // blocks are set back to zero when entering new function
-        $this->context->setCurrentBlock(null);
-
+        echo "enterFunc 1\n";
         $myFunction = new MyFunction($func->name);
         $this->context->setCurrentMycode($myFunction->getMyCode());
 
@@ -184,8 +215,13 @@ class Transform implements Visitor
                     $myFunction->addType(MyFunction::TYPE_FUNC_STATIC);
                 }
 
-                $mythisdef = new MyDefinition(0, 0, "this");
-                $mythisdef->setBlockId(0);
+                $mythisdef = new MyDefinition(
+                    0,
+                    $this->context->getCurrentMyFile(), 
+                    0, 
+                    0, 
+                    "this");
+
                 $mythisdef->addType(MyDefinition::TYPE_INSTANCE);
 
                 $myFunction->setThisDef($mythisdef);
@@ -196,19 +232,18 @@ class Transform implements Visitor
             $paramName = $param->name->value;
             $byref = $param->byRef;
 
-            $myDef = new MyDefinition($param->getLine(), $param->getAttribute("startFilePos", -1), $paramName);
+            $myDef = new MyDefinition(
+                0,
+                $this->context->getCurrentMyFile(),
+                $param->getLine(), 
+                $param->getAttribute("startFilePos", -1), 
+                $paramName);
 
             if ($byref) {
                 $myDef->addType(MyDefinition::TYPE_REFERENCE);
             }
 
             $myFunction->addParam($myDef);
-
-            $instDef = new MyInstruction(Opcodes::DEFINITION);
-            $instDef->addProperty(MyInstruction::DEF, $myDef);
-            $this->context->getCurrentMycode()->addCode($instDef);
-
-            unset($myDef);
         }
 
         $this->context->setCurrentFunc($myFunction);
@@ -234,16 +269,13 @@ class Transform implements Visitor
 
         $myFunction = $this->context->getCurrentFunc();
         
-        // can't be null?
-        if (!is_null($myFunction)) {
-            $myFunction->setLastLine($this->context->getCurrentLine());
-            $myFunction->setLastColumn($this->context->getCurrentColumn());
-            $myFunction->setLastBlockId(-1);
+        $myFunction->setLastLine($this->context->getCurrentLine());
+        $myFunction->setLastColumn($this->context->getCurrentColumn());
+        $myFunction->setLastBlockId(-1);
 
-            $instFunc = new MyInstruction(Opcodes::LEAVE_FUNCTION);
-            $instFunc->addProperty(MyInstruction::MYFUNC, $myFunction);
-            $this->context->getCurrentMycode()->addCode($instFunc);
-        }
+        $instFunc = new MyInstruction(Opcodes::LEAVE_FUNCTION);
+        $instFunc->addProperty(MyInstruction::MYFUNC, $myFunction);
+        $this->context->getCurrentMycode()->addCode($instFunc);
 
         $this->context->addTmpFunctions($myFunction);
     }
@@ -260,8 +292,10 @@ class Transform implements Visitor
 
     public function enterOp(Op $op, Block $block)
     {
+        echo "enterOp\n";
+
         $this->context->setCurrentOp($op);
-        $this->context->setCurrentBlock($block);
+        //$this->context->setCurrentBlock($block);
 
         // for theses objects getline et getcolumn methods exists except for assertion
         if ($op instanceof Op\Stmt ||
@@ -307,6 +341,8 @@ class Transform implements Visitor
             $nameGlobal = Common::getNameDefinition($this->context->getCurrentOp()->var);
 
             $myDefGlobal = new MyDefinition(
+                $this->context->getCurrentBlock()->getId(),
+                $this->context->getCurrentMyFile(),
                 $this->context->getCurrentLine(),
                 $this->context->getCurrentColumn(),
                 $nameGlobal
@@ -319,12 +355,15 @@ class Transform implements Visitor
 
             $this->context->getCurrentFunc()->setHasGlobalVariables(true);
         } elseif ($op instanceof Op\Terminal\Return_) {
-            $myBlock = $this->sBlocks[$this->context->getCurrentBlock()];
-            Assign::instruction($this->context, true, false, $myBlock);
 
-            $inst = new MyInstruction(Opcodes::RETURN_FUNCTION);
-            $inst->addProperty(MyInstruction::RETURN_DEFS, $this->context->getCurrentFunc()->getReturnDefs());
-            $this->context->getCurrentMycode()->addCode($inst);
+            if (isset($op->expr)) {
+                //$myBlock = $this->sBlocks[$this->context->getCurrentBlock()];
+                Assign::instruction($this->context, $op, $op->expr, null, true, false);
+
+                $inst = new MyInstruction(Opcodes::RETURN_FUNCTION);
+                $inst->addProperty(MyInstruction::RETURN_DEFS, $this->context->getCurrentFunc()->getReturnDefs());
+                $this->context->getCurrentMycode()->addCode($inst);
+            }
         } elseif ($op instanceof Op\Expr\Eval_) {
             if (Common::isFuncCallWithoutReturn($op)) {
                 // expr of type "assign" to have a defined return
@@ -338,7 +377,9 @@ class Transform implements Visitor
                 $this->context->getCurrentMycode()->addCode($instEndExpr);
             }
         } elseif ($op instanceof Op\Terminal\Echo_) {
+            echo "transform echo 1\n";
             if (Common::isFuncCallWithoutReturn($op)) {
+                echo "transform echo 2\n";
                 // expr of type "assign" to have a defined return
                 $myExpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
                 $this->context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
@@ -348,6 +389,7 @@ class Transform implements Visitor
                 $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);
                 $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
                 $this->context->getCurrentMycode()->addCode($instEndExpr);
+                echo "transform echo 3\n";
             }
         } elseif ($op instanceof Op\Expr\Print_) {
             if (Common::isFuncCallWithoutReturn($op)) {
@@ -399,8 +441,6 @@ class Transform implements Visitor
             }
         } elseif ($op instanceof Op\Expr\MethodCall) {
             if (Common::isFuncCallWithoutReturn($op)) {
-                $className = Common::getNameDefinition($op->var);
-
                 $myExpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
 
                 $this->context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
@@ -411,8 +451,14 @@ class Transform implements Visitor
                 $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
                 $this->context->getCurrentMycode()->addCode($instEndExpr);
             }
+        } elseif ($op instanceof Op\Expr\Param) {
+            
+            echo "param\n";
+
         } elseif ($op instanceof Op\Expr\Assign || $op instanceof Op\Expr\AssignRef) {
-            Assign::instruction($this->context);
+            if (isset($op->expr) && isset($op->var)) {
+                Assign::instruction($this->context, $op, $op->expr, $op->var);
+            }
         } elseif ($op instanceof Op\Stmt\Class_) {
             $className = Common::getNameDefinition($op);
 
@@ -434,13 +480,24 @@ class Transform implements Visitor
                     $propertyName = Common::getNameDefinition($property);
                     $visibility = Common::getTypeVisibility($property->visibility);
 
+                    $myProperty = new MyProperty(
+                        $this->context->getCurrentBlock()->getId(),
+                        $this->context->getCurrentMyFile(),
+                        $property->getLine(),
+                        $property->getAttribute("startFilePos", -1),
+                        $propertyName
+                    );
+                    $myProperty->setVisibility($visibility);
+                    $myClass->addProperty($myProperty);
+
+                    /*
                     $myDef = new MyDefinition(
                         $property->getLine(),
                         $property->getAttribute("startFilePos", -1),
                         "this"
                     );
                     $myDef->property->setVisibility($visibility);
-                    $myDef->property->addProperty($propertyName);
+                    $myDef->property->setProperties($propertyName);
                     $myDef->setClassName($className);
 
                     // it's necessary for SecurityAnalysis (visibility)
@@ -452,6 +509,9 @@ class Transform implements Visitor
                     }
                         
                     $myClass->addProperty($myDef);
+                    */
+
+
                 }
             }
 

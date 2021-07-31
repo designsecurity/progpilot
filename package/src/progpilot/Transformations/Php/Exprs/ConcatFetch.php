@@ -1,0 +1,38 @@
+<?php
+
+/*
+ * This file is part of ProgPilot, a static analyzer for security
+ *
+ * @copyright 2017 Eric Therond. All rights reserved
+ * @license MIT See LICENSE at the root of the project for more info
+ */
+
+
+namespace progpilot\Transformations\Php\Exprs;
+
+use PHPCfg\Op;
+
+use progpilot\Transformations\Php\Expr;
+use progpilot\Objects\MyDefinition;
+use progpilot\Code\MyInstruction;
+use progpilot\Code\Opcodes;
+
+class ConcatFetch
+{
+    public static function concatFetch($context, $op, $expr)
+    {
+        if (isset($op)
+            && $op instanceof Op\Expr\BinaryOp\Concat) {
+            $instDefChained = new MyInstruction(Opcodes::CONCAT_LEFT);
+
+            Expr::instructionnew($context, $op->left, $expr);
+            $instDefChained->addProperty(MyInstruction::LEFTID, $context->getCurrentFunc()->getOpId($op->left));
+            Expr::instructionnew($context, $op->right, $expr);
+            $instDefChained->addProperty(MyInstruction::RIGHTID, $context->getCurrentFunc()->getOpId($op->right));
+            $instDefChained->addProperty(MyInstruction::RESULTID, $context->getCurrentFunc()->getOpId($op->result));
+            $instDefChained->addProperty(MyInstruction::EXPR, $expr);
+
+            $context->getCurrentMycode()->addCode($instDefChained);
+        }
+    }
+}

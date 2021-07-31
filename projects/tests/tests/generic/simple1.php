@@ -1,6 +1,6 @@
 <?php
 
-$myvar1 = $_GET["p"];
+$myvar1 = $_GET["p"]; 
 
 $myvar2 = $myvar1;
 

@@ -1,0 +1,5 @@
+{
+    "sources": [
+        {"name": "get", "is_function": true, "instanceof": "Illuminate\\Http\\Request->input", "language": "php"}
+        ]
+}

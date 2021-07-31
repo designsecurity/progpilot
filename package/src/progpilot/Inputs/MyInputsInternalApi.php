@@ -243,8 +243,9 @@ class MyInputsInternalApi
                                 $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                 
-                                if (($myClass->getName() === $myValidatorInstanceName
-                                    || $myClass->getExtendsOf() === $myValidatorInstanceName)) {
+                                if (!is_null($myClass) && 
+                                    ($myClass->getName() === $myValidatorInstanceName
+                                        || $myClass->getExtendsOf() === $myValidatorInstanceName)) {
                                     return $myValidator;
                                 }
                             }
@@ -380,15 +381,23 @@ class MyInputsInternalApi
         $instanceName = false,
         $arrValue = false
     ) {
+        echo "getSourceByName 0\n";
+        var_dump($arrValue);
         foreach ($this->sources as $mySource) {
             $checkName = false;
             if (!$isFunction && $myFuncOrDef->isType(MyDefinition::TYPE_PROPERTY)) {
                 $properties = $myFuncOrDef->property->getProperties();
+                /*
                 if (is_array($properties) && count($properties) > 0) {
                     $lastproperty = $properties[count($properties) - 1];
                     if ($lastproperty === $mySource->getName()) {
                         $checkName = true;
                     }
+                }
+                */
+
+                if ($properties === $mySource->getName()) {
+                    $checkName = true;
                 }
             }
 
@@ -399,6 +408,8 @@ class MyInputsInternalApi
                 
                 if (!$instanceName && !$mySource->isInstance()) {
                     $checkInstance = true;
+
+        echo "getSourceByName 1\n";
                 }
 
                 if ($instanceName && $mySource->isInstance()) {
@@ -432,10 +443,16 @@ class MyInputsInternalApi
                 }
 
                 if ($mySource->isFunction() === $isFunction) {
+
+        echo "getSourceByName 2\n";
                     $checkFunction = true;
                 }
+                echo "getSourceByName 2 after\n";
+                var_dump($mySource->getIsArray());
+                var_dump($mySource->getArrayValue());
+                var_dump($arrValue);
 
-                // if we request an array the source must be an array
+                // if we request an array the source can be an array with no specific tainted indexes
                 // and array nots equals (like $_GET["p"])
                 if (($arrValue !== false && $arrValue !== "PROGPILOT_ALL_INDEX_TAINTED"
                     && $mySource->getIsArray()
@@ -449,10 +466,11 @@ class MyInputsInternalApi
                             // echo $row[0]
                             // we don't want an array ie : $row = mysqli_fetch_assoc()[0]
                             || (!$arrValue && $mySource->isFunction() && $mySource->getIsArray())) {
+                                echo "getSourceByName 3\n";
                     $checkArray = true;
                 }
 
-                // if we request an array the source must be an array and array value equals
+                // if we request an array the source can be an array and array value equals
                 if (($arrValue !== false && $arrValue !== "PROGPILOT_ALL_INDEX_TAINTED"
                     && $mySource->getIsArray()
                         && !empty($mySource->getArrayValue())

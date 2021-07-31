@@ -54,15 +54,7 @@ class Utils
 
     public static function printStaticProperties($language, $props)
     {
-        $propertyName = "";
-
-        if (is_array($props)) {
-            foreach ($props as $prop) {
-                $propertyName .= "::"."\$".Utils::encodeCharacters($prop);
-            }
-        }
-
-        return $propertyName;
+        return "::"."\$".Utils::encodeCharacters($props);
     }
 
     public static function printProperties($language, $props)
@@ -71,28 +63,20 @@ class Utils
         if ($language === "js") {
             $separator = ".";
         }
-        
-        $propertyName = "";
 
-        if (is_array($props)) {
-            foreach ($props as $prop) {
-                $propertyName .= "$separator".Utils::encodeCharacters($prop);
-            }
-        }
-
-        return $propertyName;
+        return $separator.Utils::encodeCharacters($props);
     }
 
-    public static function printDefinition($language, $def)
+    public static function printDefinition($language, $def, $original = null)
     {
         $prefix = "\$";
         if ($language === "js") {
             $prefix = "";
         }
             
-        if ($def->isType(MyDefinition::TYPE_PROPERTY)) {
+        if (!is_null($original) && !is_null($original->getPropertyAccessor())) {
             $defName = "$prefix".Utils::encodeCharacters($def->getName()).
-                Utils::printProperties($language, $def->property->getProperties());
+                Utils::printProperties($language, $original->getPropertyAccessor());
         } elseif ($def->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
             $defName = Utils::encodeCharacters($def->getName()).
                 Utils::printStaticProperties($language, $def->property->getProperties());
@@ -101,8 +85,14 @@ class Utils
         }
 
         $nameArray = "";
-        if ($def->isType(MyDefinition::TYPE_ARRAY)) {
-            Utils::printArray($def->getArrayValue(), $nameArray);
+
+        if (!is_null($original) && !is_null($original->getArrayIndexAccessor())) {
+            if (is_string($original->getArrayIndexAccessor())) {
+                $nameArray .= "[\"".Utils::encodeCharacters($original->getArrayIndexAccessor())."\"]";
+            } else {
+                $nameArray .= "[".Utils::encodeCharacters($original->getArrayIndexAccessor())."]";
+            }
+            //Utils::printArray($arrayAccessor, $nameArray);
         }
 
         return $defName.$nameArray;

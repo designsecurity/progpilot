@@ -1,6 +1,6 @@
 <?php
 
-$_GET["p"] = "olalal";
+$_GET["p"] = "eee";
 
 echo $_GET["p"];
 echo $_GET["t"];

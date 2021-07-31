@@ -16,6 +16,7 @@ class MyExpr extends MyOp
     private $assign;
     private $assignIterator;
     private $assignDef;
+    private $arrayIndexAccessor;
     private $theDefs;
     private $isConcat;
     private $nbChars;
@@ -30,6 +31,7 @@ class MyExpr extends MyOp
         $this->assign = false;
         $this->assignIterator = false;
         $this->assignDef = null;
+        $this->arrayIndexAccessor = [];
         $this->theDefs = [];
     }
 
@@ -64,12 +66,16 @@ class MyExpr extends MyOp
 
     public function isTainted()
     {
+        /*
         foreach ($this->theDefs as $theDef) {
             if ($theDef->isTainted()) {
                 return true;
             }
         }
         return false;
+        */
+
+        return $this->tainted;
     }
 
     public function setAssignDef($def)
@@ -107,10 +113,11 @@ class MyExpr extends MyOp
         $this->theDefs = $defs;
     }
 
-    public function addDef($myDef)
+    public function addDef($myDef, $arrayIndexAccessor = null)
     {
         if (!in_array($myDef, $this->theDefs, true)) {
             $this->theDefs[] = $myDef;
+            $this->arrayIndexAccessor[$myDef->getId()] = $arrayIndexAccessor;
         }
     }
 
@@ -118,4 +125,13 @@ class MyExpr extends MyOp
     {
         return $this->theDefs;
     }
+/*
+    public function getArrayIndexAccessorOfDef($myDef)
+    {
+        if (isset($this->arrayIndexAccessor[$myDef->getId()])) {
+            return $this->arrayIndexAccessor[$myDef->getId()];
+        }
+
+        return null;
+    }*/
 }

@@ -97,7 +97,7 @@ class MyCode
                         $edges = $codeInput[$nbInst ++];
                         $nbEdges = (int) $codeInput[$nbInst ++];
 
-                        $myBlock = new MyBlock;
+                        $myBlock = new MyBlock($context->getCurrentLine(), $context->getCurrentColumn());
                         $myBlock->setId($myBlockId);
                         $myBlock->setStartAddressBlock(count($myFunction->getMyCode()->getCodes()));
 
@@ -422,12 +422,67 @@ class MyCode
 
                     case Opcodes::TEMPORARY:
                         echo "Opcodes::TEMPORARY\n";
+                        $tempname = htmlentities(
+                            $instruction->getProperty(MyInstruction::TEMPORARY)->getName(),
+                            ENT_QUOTES,
+                            'UTF-8'
+                        );
+                        echo "name = $tempname\n";
 
                         break;
 
                     case Opcodes::DEFINITION:
                         echo "Opcodes::DEFINITION\n";
+                        $defname = htmlentities(
+                            $instruction->getProperty(MyInstruction::DEF)->getName(),
+                            ENT_QUOTES,
+                            'UTF-8'
+                        );
+                        echo "name = $defname\n";
 
+                        $instruction->getProperty(MyInstruction::DEF)->printStdout();
+
+                        break;
+
+                    case Opcodes::PROPERTY_FETCH:
+                        echo "Opcodes::PROPERTY_FETCH\n";
+                        $propertyName = htmlentities(
+                            $instruction->getProperty(MyInstruction::PROPERTY_NAME),
+                            ENT_QUOTES,
+                            'UTF-8'
+                        );
+                        echo "property name = $propertyName\n";
+    
+                        break;
+
+                    case Opcodes::ARRAYDIM_FETCH:
+                        echo "Opcodes::ARRAYDIM_FETCH\n";
+                        $arrayDim = $instruction->getProperty(MyInstruction::ARRAY_DIM);
+                        echo "array dim = $arrayDim\n";
+        
+                        break;
+
+                    case Opcodes::VARIABLE_FETCH:
+                        echo "Opcodes::ARRAYDIM_FETCH\n";
+                        $instruction->getProperty(MyInstruction::DEF)->printStdout();
+
+                        break;
+
+                    case Opcodes::VARIABLE:
+                        echo "Opcodes::VARIABLE\n";
+                        $variableName = $instruction->getProperty(MyInstruction::VARIABLE_NAME);
+                        echo "variable name = $variableName\n";
+        
+                        break;
+
+                    case Opcodes::ASSIGN:
+                        echo "Opcodes::ASSIGN\n";
+            
+                        break;
+
+                    case Opcodes::ARGUMENT:
+                        echo "Opcodes::ARGUMENT\n";
+                
                         break;
                 }
 

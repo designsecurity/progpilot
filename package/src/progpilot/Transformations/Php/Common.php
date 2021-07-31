@@ -14,6 +14,7 @@ use PHPCfg\Block;
 use PHPCfg\Op;
 use PHPCfg\Operand;
 
+use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyOp;
 use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
@@ -32,18 +33,45 @@ class Common
 
     public static function getNameProperty($op)
     {
+
+        // we ensure to have the last property test->foo->bar = bar
+        if (isset($op->name->value) && ($op instanceof Op\Expr\PropertyFetch
+            || $op instanceof Op\Expr\StaticPropertyFetch)) {
+            return $op->name->value;
+        }
+
+        if (isset($op->ops[0]->name->value)) {
+            if ($op->ops[0] instanceof Op\Expr\ArrayDimFetch
+                || $op->ops[0] instanceof Op\Expr\PropertyFetch
+                    || $op->ops[0] instanceof Op\Expr\StaticPropertyFetch) {
+                return $op->ops[0]->name->value;
+            }
+        }
+
+        // array t->test[0]
+        if (isset($op->var->ops[0]->name->value)) {
+            if ($op->var->ops[0] instanceof Op\Expr\ArrayDimFetch
+                || $op->var->ops[0] instanceof Op\Expr\PropertyFetch
+                    || $op->var->ops[0] instanceof Op\Expr\StaticPropertyFetch) {
+                return $op->var->ops[0]->name->value;
+            }
+        }
+        /*
         $propertyNameArray = [];
 
         if (isset($op->ops[0])) {
             if ($op->ops[0] instanceof Op\Expr\ArrayDimFetch) {
+                echo "here1___\n";
                 $propertyNameArray = Common::getNameProperty($op->ops[0]);
             }
 
             if ($op instanceof Op\Expr\PropertyFetch) {
+                echo "here2___\n";
                 $propertyNameArray = Common::getNameProperty($op->ops[0]);
             }
 
             if ($op instanceof Op\Expr\StaticPropertyFetch) {
+                echo "here3___\n";
                 $propertyNameArray = Common::getNameProperty($op->ops[0]);
             }
         }
@@ -51,24 +79,273 @@ class Common
         if (isset($op->var->ops)) {
             foreach ($op->var->ops as $opeach) {
                 if ($opeach instanceof Op\Expr\ArrayDimFetch) {
+                    echo "here4___\n";
                     $propertyNameArray =  Common::getNameProperty($opeach);
                 }
 
                 if ($opeach instanceof Op\Expr\PropertyFetch) {
+                    echo "here5___\n";
                     $propertyNameArray = Common::getNameProperty($opeach);
                 }
 
                 if ($opeach instanceof Op\Expr\StaticPropertyFetch) {
+                    echo "here6___\n";
                     $propertyNameArray = Common::getNameProperty($opeach);
                 }
             }
         }
 
         if (isset($op->name->value)) {
+            echo "here7___'".$op->name->value."'\n";
             $propertyNameArray[] = $op->name->value;
         }
 
         return $propertyNameArray;
+        */
+
+        /*
+                if (isset($op->var->ops)) {
+                    foreach ($op->var->ops as $opeach) {
+                        if ($opeach instanceof Op\Expr\ArrayDimFetch) {
+                            echo "here1___\n";
+                        }
+
+                        if ($opeach instanceof Op\Expr\PropertyFetch) {
+                            echo "here2___\n";
+                            //var_dump($opeach);
+                            return Common::getNameProperty($opeach);
+                        }
+
+                        if ($opeach instanceof Op\Expr\StaticPropertyFetch) {
+                            echo "here3___\n";
+                        }
+                    }
+                }
+
+                if (isset($op->ops[0]->name->value)) {
+                    if ($op->ops[0] instanceof Op\Expr\ArrayDimFetch
+                        || $op->ops[0] instanceof Op\Expr\PropertyFetch
+                            || $op->ops[0] instanceof Op\Expr\StaticPropertyFetch) {
+                                echo "here4___\n";
+                        return $op->ops[0]->name->value;
+                    }
+                }
+
+                // array t->test[0]
+                if (isset($op->var->ops[0]->name->value)) {
+                    if ($op->var->ops[0] instanceof Op\Expr\ArrayDimFetch
+                        || $op->var->ops[0] instanceof Op\Expr\PropertyFetch
+                            || $op->var->ops[0] instanceof Op\Expr\StaticPropertyFetch) {
+                        return $op->var->ops[0]->name->value;
+                    }
+                }
+
+                if (isset($op->name->value) && ($op instanceof Op\Expr\PropertyFetch
+                    || $op instanceof Op\Expr\StaticPropertyFetch)) {
+                    return $op->name->value;
+                }
+        */
+        return null;
+    }
+
+    public static function isInAssign($op)
+    {
+        if (isset($op->var->ops[0]) && $op->var->ops[0] instanceof Op\Expr\Assign) {
+            return true;
+        } else {
+            return Common::isInAssign($op->var->ops[0]);
+        }
+    }
+
+    public static function transformPropertyFetch($context, $op)
+    {
+        echo "transformPropertyFetch 1\n";
+        if (isset($op)
+            && ($op instanceof Op\Expr\PropertyFetch
+                || $op instanceof Op\Expr\StaticPropertyFetch)) {
+            if (isset($op->var->ops[0])) {
+                Common::transformPropertyFetch($context, $op->var->ops[0]);
+            }
+
+            $instDefChained = new MyInstruction(Opcodes::PROPERTY_FETCH);
+            $instDefChained->addProperty(MyInstruction::PROPERTY_NAME, $op->name->value);
+
+            // beginning of the chain
+            if (isset($op->var->original)) {
+                $originalDef = new MyDefinition(
+                    $context->getCurrentBlock()->getId(),
+                    $context->getCurrentMyFile(),
+                    $context->getCurrentLine(),
+                    $context->getCurrentColumn(),
+                    $op->var->original->name->value
+                );
+                $originalDef->addType(MyDefinition::TYPE_PROPERTY);
+
+                $instDefChained->addProperty(MyInstruction::ORIGINAL_DEF, $originalDef);
+            }
+
+            // static property
+            if (isset($op->class->value)) {
+                $originalDef = new MyDefinition(
+                    $context->getCurrentBlock()->getId(),
+                    $context->getCurrentMyFile(),
+                    $context->getCurrentLine(),
+                    $context->getCurrentColumn(),
+                    $op->class->value
+                );
+                $originalDef->addType(MyDefinition::TYPE_STATIC_PROPERTY);
+            
+                $instDefChained->addProperty(MyInstruction::ORIGINAL_DEF, $originalDef);
+            }
+
+            if (isset($op->var) && $op->var instanceof Operand\BoundVariable) {
+                $originalDef = new MyDefinition(
+                    $context->getCurrentBlock()->getId(),
+                    $context->getCurrentMyFile(),
+                    $context->getCurrentLine(),
+                    $context->getCurrentColumn(),
+                    "this"
+                );
+                
+                $instDefChained->addProperty(MyInstruction::ORIGINAL_DEF, $originalDef);
+            }
+
+            if (isset($op->result)) {
+                $instDefChained->addProperty(
+                    MyInstruction::RESULTID,
+                    $context->getCurrentFunc()->getOpId($op->result)
+                );
+            }
+            if (isset($op->var)) {
+                $instDefChained->addProperty(
+                    MyInstruction::VARID,
+                    $context->getCurrentFunc()->getOpId($op->var)
+                );
+            }
+
+            $context->getCurrentMycode()->addCode($instDefChained);
+        }
+
+        else if (isset($op)
+            && $op instanceof Op\Expr\ArrayDimFetch) {
+
+            echo "transformPropertyFetch 2\n";
+            if (isset($op->var->ops[0])) {
+                echo "transformPropertyFetch3\n";
+                Common::transformPropertyFetch($context, $op->var->ops[0]);
+            }
+
+            $instDefChained = new MyInstruction(Opcodes::ARRAYDIM_FETCH);
+            $instDefChained->addProperty(MyInstruction::ARRAY_DIM, $op->dim->value);
+
+            if (isset($op->result)) {
+                $instDefChained->addProperty(
+                    MyInstruction::RESULTID,
+                    $context->getCurrentFunc()->getOpId($op->result)
+                );
+            }
+
+            if (isset($op->var)) {
+                $instDefChained->addProperty(
+                    MyInstruction::VARID,
+                    $context->getCurrentFunc()->getOpId($op->var)
+                );
+            }
+
+            // beginning of the chain
+            if (isset($op->var->original)) {
+                $originalDef = new MyDefinition(
+                    $context->getCurrentBlock()->getId(),
+                    $context->getCurrentMyFile(),
+                    $context->getCurrentLine(),
+                    $context->getCurrentColumn(),
+                    $op->var->original->name->value
+                );
+
+                $instDefChained->addProperty(MyInstruction::ORIGINAL_DEF, $originalDef);
+            }
+
+            $context->getCurrentMycode()->addCode($instDefChained);
+        }
+
+        else if(isset($op->ops[0])) {
+            Common::transformPropertyFetch($context, $op->ops[0]);
+        }
+        else if (isset($op) && $op instanceof Operand\Literal) {
+            $myTemp = new MyDefinition(
+                $context->getCurrentBlock()->getId(),
+                $context->getCurrentMyFile(),
+                $context->getCurrentLine(), 
+                $context->getCurrentColumn(), 
+                $op->value);
+
+            $instTemporary = new MyInstruction(Opcodes::TEMPORARY);
+            $instTemporary->addProperty(MyInstruction::TEMPORARY, $myTemp);
+            /*
+            $instTemporary->addProperty(
+                MyInstruction::RESULTID,
+                $context->getCurrentFunc()->getOpId($op->result)
+            );*/
+            $context->getCurrentMycode()->addCode($instTemporary);
+        }
+        /*
+        if (isset($ops->var->original->name)) {
+            if ($ops->var->original->name instanceof Operand\Literal) {
+                return MyOp::TYPE_VARIABLE;
+            }
+        }
+
+        if (isset($ops->expr->original->name)) {   // return
+            if ($ops->expr->original->name instanceof Operand\Literal) {
+                return MyOp::TYPE_LITERAL;
+            }
+        }
+
+        if (isset($ops->original->name)) {
+            if ($ops->original instanceof Operand\Variable) {
+                return MyOp::TYPE_VARIABLE;
+            }
+
+            if ($ops->original->name instanceof Operand\Literal) {
+                return MyOp::TYPE_LITERAL;
+            }
+        }
+
+        if ($ops instanceof Operand\Literal) {
+            return MyOp::TYPE_LITERAL;
+        }*/
+
+/*
+        if (isset($op->var->original) 
+            && $op->var->original instanceof Operand\Variable) {
+            $instDefChained = new MyInstruction(Opcodes::VARIABLE);
+            $instDefChained->addProperty(MyInstruction::VARIABLE_NAME, $op->var->original->name->value);
+            $context->getCurrentMycode()->addCode($instDefChained);
+        }
+        */
+    }
+
+    public static function getTypeDef($op)
+    {
+        if (isset($op->var->ops[0])) {
+            if ($op->var->ops[0] instanceof Op\Expr\PropertyFetch) {
+                return MyOp::TYPE_PROPERTY;
+            }
+
+            if ($op->var->ops[0] instanceof Op\Expr\StaticPropertyFetch) {
+                return MyOp::TYPE_STATIC_PROPERTY;
+            }
+
+            if ($op->var->ops[0] instanceof Op\Expr\ArrayDimFetch) {
+                return MyOp::TYPE_ARRAY;
+            }
+
+            if (isset($op->var->original->name->value)) {
+                return MyOp::TYPE_VARIABLE;
+            }
+        }
+
+        return null;
     }
 
     public static function getNameDefinition($ops, $lookingForProperty = false)
@@ -179,14 +456,6 @@ class Common
                 return "public";
         }
     }
-    public static function getChainedMethod($op)
-    {
-        if (isset($op->var->ops[0]) && $op->var->ops[0] instanceof Op\Expr\MethodCall) {
-            return $op->var->ops[0]->name->value;
-        }
-      
-        return "";
-    }
 
     public static function isFuncCallWithoutReturn($op)
     {
@@ -223,7 +492,7 @@ class Common
                                 
                                 || $op->result->usages[0] instanceof Op\Iterator\Reset
                             ))
-              )) {
+            )) {
                 return true;
             }
         }

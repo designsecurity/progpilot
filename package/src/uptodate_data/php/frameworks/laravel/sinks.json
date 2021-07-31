@@ -1,0 +1,5 @@
+{
+    "sinks": [
+        {"name": "redirect", "parameters": [{"id": 1}], "instanceof": "App\\Http\\Controllers\\OpenRedirect", "language": "php", "attack": "open_redirect", "cwe": "CWE_601"}
+        ]
+}

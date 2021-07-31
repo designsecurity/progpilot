@@ -12,6 +12,7 @@ namespace progpilot\Transformations\Php;
 
 use PHPCfg\Block;
 use PHPCfg\Op;
+use PHPCfg\Operand;
 
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
@@ -22,10 +23,15 @@ use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
 use progpilot\Transformations\Php\Transform;
 use progpilot\Transformations\Php\OpTr;
+use progpilot\Transformations\Php\Common;
+use progpilot\Transformations\Php\Exprs\PropertyFetch;
+use progpilot\Transformations\Php\Exprs\DimFetch;
+use progpilot\Transformations\Php\Exprs\VariableFetch;
+use progpilot\Transformations\Php\Exprs\ArrayFetch;
 
 class Assign
 {
-    public static function instruction($context, $isReturnDef = false, $isDefine = false, $myblock = null)
+    public static function instruction($context, $op, $expr, $var, $isReturnDef = false, $isDefine = false, $myblock = null)
     {
         $backDef = null;
 
@@ -52,8 +58,6 @@ class Assign
             if (empty($name)) {
                 $name = "empty_".rand();
             }
-
-            $exprOp = $context->getCurrentOp()->expr;
         }
 
         // name of function return
@@ -62,40 +66,22 @@ class Assign
         }
 
         // $array = [expr, expr, expr]
-        if ($typeArray === MyOp::TYPE_ARRAY_EXPR) {
+        if (isset($expr->ops[0]) && $expr->ops[0] instanceof Op\Expr\Array_) {
+            ArrayFetch::arrayFetch($context, $expr->ops[0], $var, $expr, null);
+/*
             $arr = false;
             if (isset($context->getCurrentOp()->var)) {
                 $arr = BuildArrays::buildArrayFromOps($context->getCurrentOp()->var, false);
             }
 
             ArrayExpr::instruction($context->getCurrentOp()->expr, $context, $arr, $name, $isReturnDef);
+            */
         } else {
+            /*
             $isRef = false;
             if ($context->getCurrentOp() instanceof Op\Expr\AssignRef) {
                 $isRef = true;
             }
-            
-            $fromPhi = false;
-            // currently we disable analysis of phi
-            /*
-            if (isset($context->getCurrentOp()->expr->ops[0])
-                && $context->getCurrentOp()->expr->ops[0] instanceof Op\Phi) {
-
-                $tmpDefsFromPhi = [];
-                $fromPhi = true;
-
-                // normally there is only two cars for a phi => phi(var1,var2)
-                $phi = $context->getCurrentOp()->expr->ops[0];
-                foreach ($phi->vars as $phivar) {
-                    if (isset($phivar->ops[0]) && $phivar->ops[0] instanceof Op\Expr\Assign) {
-                        $oldOp = $context->getCurrentOp();
-                        $context->setCurrentOp($phivar->ops[0]);
-                        $tmpDefsFromPhi[] = Assign::instruction($context);
-                        $context->setCurrentOp($oldOp);
-                    }
-                }
-            }
-            */
 
             // it's an expression which will define a definition
             $myExpr = new MyExpr($context->getCurrentLine(), $context->getCurrentColumn());
@@ -108,31 +94,15 @@ class Assign
                 $myExpr->setAssignIterator(true);
             }
 
-            $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
-                
-            if ($fromPhi) {
-                $myTemp = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), "phi_".rand());
-                $myTemp->setExpr($myExpr);
-                $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
-                $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
-                $instTemporarySimple->addProperty(MyInstruction::PHI, count($tmpDefsFromPhi));
+            $instStartExpr = new MyInstruction(Opcodes::START_EXPRESSION);
+            $instStartExpr->addProperty(MyInstruction::EXPR, $myExpr);
+            $context->getCurrentMycode()->addCode($instStartExpr);
 
-                $nbvars = 0;
-                foreach ($tmpDefsFromPhi as $defFromPhi) {
-                    $defFromPhi->setExpr($myExpr);
-                    $instTemporarySimple->addProperty("temp_".$nbvars, $defFromPhi);
-                    $nbvars ++;
-                }
-
-                $context->getCurrentMycode()->addCode($instTemporarySimple);
-            } else {
-                $backDef = Expr::instruction($exprOp, $context, $myExpr);
-            }
+            Expr::instruction($exprOp, $context, $myExpr);
 
             $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);
             $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
             $context->getCurrentMycode()->addCode($instEndExpr);
-            $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::END_ASSIGN));
 
             $myDef = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), $name);
 
@@ -151,30 +121,26 @@ class Assign
 
             $myExpr->setAssignDef($myDef);
 
-            $instDef = new MyInstruction(Opcodes::DEFINITION);
-            $instDef->addProperty(MyInstruction::DEF, $myDef);
-            $context->getCurrentMycode()->addCode($instDef);
-
-            // $array[09][098] = expr;
-            if ($typeArray === MyOp::TYPE_ARRAY) {
-                $arr = BuildArrays::buildArrayFromOps($context->getCurrentOp()->var, false);
+            $newType = Common::getTypeDef($context->getCurrentOp());
+            if ($newType === MyOp::TYPE_ARRAY) {
                 $myDef->addType(MyDefinition::TYPE_ARRAY);
-                $myDef->setArrayValue($arr);
             }
 
-            // a variable, property
-            if ($type === MyOp::TYPE_PROPERTY) {
-                $myDef->addType(MyDefinition::TYPE_PROPERTY);
-                $propertyName = Common::getNameProperty($context->getCurrentOp()->var->ops[0]);
-                $myDef->property->setProperties($propertyName);
+            // we don't need to create a definition for property as they already exist in the instance
+            if ($newType !== MyOp::TYPE_PROPERTY) {
+                $instDef = new MyInstruction(Opcodes::DEFINITION);
+                $instDef->addProperty(MyInstruction::DEF, $myDef);
+                $context->getCurrentMycode()->addCode($instDef);
             }
 
-            // a variable, property
-            if ($type === MyOp::TYPE_STATIC_PROPERTY) {
-                $myDef->addType(MyDefinition::TYPE_STATIC_PROPERTY);
-                $propertyName = Common::getNameProperty($context->getCurrentOp()->var->ops[0]);
-                $myDef->property->setProperties($propertyName);
+            if (isset($context->getCurrentOp()->var->ops[0])) {
+                Common::transformPropertyFetch($context, $context->getCurrentOp()->var->ops[0]);
             }
+
+            $instEndAssign = new MyInstruction(Opcodes::END_ASSIGN);
+            $instEndAssign->addProperty(MyInstruction::EXPR, $myExpr);
+            $instEndAssign->addProperty(MyInstruction::DEF, $myDef);
+            $context->getCurrentMycode()->addCode($instEndAssign);
 
             // an object (created by new)
             if ($typeInstance === MyOp::TYPE_INSTANCE) {
@@ -183,26 +149,104 @@ class Assign
                     $nameClass = $context->getCurrentOp()->expr->ops[0]->class->value;
                     $myDef->addType(MyDefinition::TYPE_INSTANCE);
                     $myDef->setClassName($nameClass);
-
-                    // ou bien créer backdef ici
-                    if (!is_null($backDef)) {
-                        $backDef->setId($myDef->getId() + 1);
-                    }
                 }
             }
 
             if ($isRef) {
                 $refName = Common::getNameDefinition($context->getCurrentOp()->expr);
-                $refType = Common::getTypeDefinition($context->getCurrentOp()->expr);
-                $refTypeArray = Common::getTypeIsArray($context->getCurrentOp()->expr);
                 $myDef->setRefName($refName);
+            }
+            */
 
-                if ($refTypeArray === MyOp::TYPE_ARRAY) {
-                    $arr = BuildArrays::buildArrayFromOps($context->getCurrentOp()->expr, false);
-                    $myDef->addType(MyDefinition::TYPE_ARRAY_REFERENCE);
-                    $myDef->setRefArrValue($arr);
+            $myExpr = new MyExpr($context->getCurrentLine(), $context->getCurrentColumn());
+
+            $instAssign = new MyInstruction(Opcodes::END_ASSIGN);
+
+            // extra = properties, arrays
+            // $left(extra) = $right(extra) <= expr right
+
+            // let's start by the right part
+            /*
+                        if (isset($op->expr->original) && $op->expr->original instanceof Operand\Variable
+                            && isset($op->expr->original->name) && $op->expr->original->name instanceof Operand\Literal) {
+                            $myTemp = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), $op->expr->original->name->value);
+                            $myTemp->setSourceMyFile($context->getCurrentMyFile());
+                            $myTemp->setExpr($myExpr);
+
+                            $instAssign->addProperty(MyInstruction::VARIABLE, $myTemp);
+                        } else*/if (isset($expr) && $expr instanceof Operand\Literal) {
+                $myTemp = new MyDefinition(
+                    $context->getCurrentBlock()->getId(),
+                    $context->getCurrentMyFile(),
+                    $context->getCurrentLine(), 
+                    $context->getCurrentColumn(), 
+                    $expr->value);
+    
+                $instAssign->addProperty(MyInstruction::LITERAL, $myTemp);
+            }
+            
+            Expr::instructionnew($context, $expr, $myExpr);
+
+            // let's continue by the left part
+            $instDefinition = new MyInstruction(Opcodes::DEFINITION);
+            
+            Expr::instructionassign($context, $var, null);
+            
+            $myDef = new MyDefinition(
+                $context->getCurrentBlock()->getId(),
+                $context->getCurrentMyFile(),
+                $context->getCurrentLine(), 
+                $context->getCurrentColumn(), 
+                $name);
+
+            switch(Common::getTypeDef($op)) 
+            {
+                case MyOp::TYPE_ARRAY:
+                    $myDef->addType(MyDefinition::TYPE_ARRAY);
+                    break;
+                case MyOp::TYPE_PROPERTY:
+                    $myDef->addType(MyDefinition::TYPE_PROPERTY);
+                    break;
+                default:
+                    break;
+            }
+
+            // an object (created by new)
+            if ($typeInstance === MyOp::TYPE_INSTANCE) {
+                // it's the class name not instance name
+                if (isset($expr->ops[0]->class->value)) {
+                    $nameClass = $expr->ops[0]->class->value;
+                    $myDef->addType(MyDefinition::TYPE_INSTANCE);
+                    $myDef->setClassName($nameClass);
                 }
             }
+
+            $instDefinition->addProperty(MyInstruction::DEF, $myDef);
+            $context->getCurrentMycode()->addCode($instDefinition);
+
+            $instAssign->addProperty(MyInstruction::DEF, $myDef);
+            $instAssign->addProperty(MyInstruction::EXPR, $myExpr);
+
+            if ($isReturnDef) {
+                $context->getCurrentFunc()->addReturnDef($myDef);
+                $myDef->setReturnDef(true);
+            }
+
+
+            $instAssign->addProperty(
+                MyInstruction::EXPRID,
+                $context->getCurrentFunc()->getOpId($expr)
+            );
+
+            if (!$isReturnDef) {
+                $instAssign->addProperty(
+                    MyInstruction::VARID,
+                    $context->getCurrentFunc()->getOpId($var)
+                );
+            }
+            
+
+            $context->getCurrentMycode()->addCode($instAssign);
         }
 
         return $backDef;
