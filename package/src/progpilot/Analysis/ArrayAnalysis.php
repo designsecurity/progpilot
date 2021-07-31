@@ -50,7 +50,7 @@ class ArrayAnalysis
 
                     if (ResolveDefs::getVisibilityFromInstances($context, $data, $def)) {
                         ValueAnalysis::copyValues($searchedDef, $def);
-                        TaintAnalysis::setTainted($searchedDef, $def, $def->getExpr());
+                        TaintAnalysis::setTainted($searchedDef, $def);
                     }
                     
                     $goodDefs[] = $searchedDef;
@@ -116,7 +116,6 @@ class ArrayAnalysis
             }
         } elseif ($originalTab->getArrayValue() !== "PROGPILOT_ALL_INDEX_TAINTED") {
             $extract = BuildArrays::extractArrayFromArr($originalTab->getArrayValue(), $originalArr);
-
             // si on cherchait $copy = $array[11] ici il y a des arrays de type $array[11][quelquechose]
             // ou deuxieme cas
             // si on cherchait $copy = $arrays ici il y a des arrays de type $arrays[quelquechose]

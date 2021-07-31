@@ -85,7 +85,7 @@ class Transform
                     
                     if (isset($astNode->type)) {
                         if ($astNode->type !== "exit") {
-                            $myBlock = new MyBlock;
+                            $myBlock = new MyBlock($this->context->getCurrentLine(), $this->context->getCurrentColumn());
                             $myBlock->setStartAddressBlock(count($this->context->getCurrentMycode()->getCodes()));
                             //$this->context->setCurrentBlock($FlowNode);
 

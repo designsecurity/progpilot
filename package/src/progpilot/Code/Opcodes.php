@@ -32,4 +32,11 @@ class Opcodes
     const COND_START_IF = 18;
     const COND_BOOLEAN_NOT = 19;
     const NEW_INCLUDE = 20;
+    const PROPERTY_FETCH = 21;
+    const ARRAYDIM_FETCH = 22;
+    const VARIABLE = 23;
+    const ASSIGN = 24;
+    const ARGUMENT = 25;
+    const VARIABLE_FETCH = 26;
+    const LITERAL_FETCH = 27;
 }

@@ -24,6 +24,7 @@ use progpilot\Dataflow\Definitions;
 use progpilot\Code\Opcodes;
 use progpilot\Code\MyInstruction;
 use progpilot\Inputs\MySource;
+use progpilot\Helpers\Analysis as HelpersAnalysis;
 
 class TaintAnalysis
 {
@@ -39,7 +40,7 @@ class TaintAnalysis
         $myCode,
         $index
     ) {
-        $stackClass = ResolveDefs::funccallClass($context, $data, $myFuncCall);
+        $stackClass = ResolveDefs::funccallClass($context, $data, $myFuncCall, $myCode->getCodes(), $index);
 
         \progpilot\Analysis\CustomAnalysis::returnObject(
             $context,
@@ -281,11 +282,12 @@ class TaintAnalysis
         $conditionsRespectedFinal = true;
 
         $myTempReturn = new MyDefinition(
+            $context->getCurrentBlock()->getId(),
+            $context->getCurrentMyFile(),
             $myFuncCall->getLine(),
             $myFuncCall->getColumn(),
             "return_".$myFuncCall->getName()
         );
-        $myTempReturn->setSourceMyFile($context->getCurrentMyfile());
 
         $myExprReturn1 = new MyExpr($myFuncCall->getLine(), $myFuncCall->getColumn());
         $myExprReturn1->setAssign(true);
@@ -311,14 +313,14 @@ class TaintAnalysis
             $exprArg = $instruction->getProperty("argexpr$nbParams");
 
             if (is_null($myFunc) || !is_null($mySanitizer)) {
-                if ($defArg->isTainted()) {
+                if ($defArg->getCurrentState()->isTainted()) {
                     $paramsTainted = true;
                     $myExprReturn2->addDef($defArg);
                 }
 
-                if ($defArg->isSanitized()) {
+                if ($defArg->getCurrentState()->isSanitized()) {
                     $paramsSanitized = true;
-                    $tmps = $defArg->getTypeSanitized();
+                    $tmps = $defArg->getCurrentState()->getTypeSanitized();
 
                     foreach ($tmps as $tmp) {
                         if (!in_array($tmp, $paramsTypeSanitized, true)) {
@@ -339,7 +341,7 @@ class TaintAnalysis
                         $theDefsArgs = $exprArg->getDefs();
                         if (count($theDefsArgs) > 0) {
                             foreach ($values as $value) {
-                                foreach ($theDefsArgs[0]->getLastKnownValues() as $lastKnownValue) {
+                                foreach ($theDefsArgs[0]->getCurrentState()->getLastKnownValues() as $lastKnownValue) {
                                     if (($value->value === $lastKnownValue && $conditions === "equals")
                                         || ($value->value !== $lastKnownValue && $conditions === "notequals")) {
                                         $conditionsRespected = true;
@@ -358,7 +360,7 @@ class TaintAnalysis
                     }
                 } elseif ($conditions === "taint") {
                     $conditionsTaint = true;
-                    if ($defArg->isTainted()) {
+                    if ($defArg->getCurrentState()->isTainted()) {
                         $paramsTaintedconditionsTaint = true;
                         $myExprReturn2->addDef($defArg);
                     }
@@ -374,15 +376,16 @@ class TaintAnalysis
         $returnSanitizer = false;
 
         $codes = $myCode->getCodes();
-        if (isset($codes[$index + 2]) && $codes[$index + 2]->getOpcode() === Opcodes::END_ASSIGN) {
-            $instructionDef = $codes[$index + 3];
+        if (isset($codes[$index + 2]) && $codes[$index + 2]->getOpcode() === Opcodes::DEFINITION) {
+            $instructionDef = $codes[$index + 2];
             $myDefReturn = $instructionDef->getProperty(MyInstruction::DEF);
             $returnSanitizer = true;
         }
         
         // the return of func will be tainted if one of arg is tainted
         if ($returnSanitizer) {
-            TaintAnalysis::setTainted($paramsTainted, $myTempReturn, $myExprReturn2);
+            $myTempReturn->setTainted($paramsTainted);
+            //TaintAnalysis::setTainted($myTempReturn, $myTempReturn);
         }
 
         if ($returnSanitizer || $conditionsSanitize) {
@@ -390,21 +393,21 @@ class TaintAnalysis
                 if ($conditionsSanitize) {
                     foreach ($exprsTaintedconditionsSanitize as $exprsanitize) {
                         foreach ($exprsanitize->getDefs() as $oneDef) {
-                            $oneDef->setSanitized(true);
+                            $oneDef->getCurrentState()->setSanitized(true);
                             if (is_array($preventFinal)) {
                                 foreach ($preventFinal as $preventFinalValue) {
-                                    $oneDef->addTypeSanitized($preventFinalValue);
+                                    $oneDef->getCurrentState()->addTypeSanitized($preventFinalValue);
                                 }
                             }
                         }
                     }
                 } else {
-                    $myTempReturn->setSanitized(true);
-                    $myDefReturn->setSanitized(true);
+                    $myTempReturn->getCurrentState()->setSanitized(true);
+                    $myDefReturn->getCurrentState()->setSanitized(true);
                     if (is_array($preventFinal)) {
                         foreach ($preventFinal as $preventFinalValue) {
-                            $myTempReturn->addTypeSanitized($preventFinalValue);
-                            $myDefReturn->addTypeSanitized($preventFinalValue);
+                            $myTempReturn->getCurrentState()->addTypeSanitized($preventFinalValue);
+                            $myDefReturn->getCurrentState()->addTypeSanitized($preventFinalValue);
                         }
                     }
                 }
@@ -412,18 +415,22 @@ class TaintAnalysis
         }
 
         if ($returnSanitizer && $paramsSanitized) {
-            $myTempReturn->setSanitized(true);
-            $myDefReturn->setSanitized(true);
+            $myTempReturn->getCurrentState()->setSanitized(true);
+            $myDefReturn->getCurrentState()->setSanitized(true);
             foreach ($paramsTypeSanitized as $tmp) {
-                $myTempReturn->addTypeSanitized($tmp);
-                $myDefReturn->addTypeSanitized($tmp);
+                $myTempReturn->getCurrentState()->addTypeSanitized($tmp);
+                $myDefReturn->getCurrentState()->addTypeSanitized($tmp);
             }
         }
 
         if ($returnSanitizer) {
             if (ResolveDefs::getVisibilityFromInstances($context, $data, $myDefReturn)) {
+                /*
                 ValueAnalysis::copyValues($myTempReturn, $myDefReturn);
-                TaintAnalysis::setTainted($myTempReturn->isTainted(), $myDefReturn, $myExprReturn1);
+                TaintAnalysis::setTainted($myTempReturn->isTainted(), $myTempReturn, $myDefReturn);
+                */
+
+                HelpersAnalysis::copyDefAttributes($myTempReturn, $myDefReturn);
             }
         }
     }
@@ -484,17 +491,18 @@ class TaintAnalysis
                 $defAssign->setCast(MyDefinition::CAST_NOT_SAFE);
 
                 $myDef = new MyDefinition(
+                    $context->getCurrentBlock()->getId(),
+                    $context->getCurrentMyFile(),
                     $myFuncCall->getLine(),
                     $myFuncCall->getColumn(),
                     $myFuncCall->getName()."_return"
                 );
-                $myDef->setSourceMyFile($defAssign->getSourceMyFile());
                 $myDef->setTainted(true);
                 // no need to taintedbyexpr because it's source like _GET
 
                 if ($mySource->getIsObject()) {
                     $defAssign->addType(MyDefinition::TYPE_INSTANCE);
-                    $defAssign->property->addProperty("PROGPILOT_ALL_PROPERTIES_TAINTED");
+                    $defAssign->property->setProperties("PROGPILOT_ALL_PROPERTIES_TAINTED");
                     
                     $defAssign->setTaintedByExpr($exprReturn);
                     $defAssign->setExpr($exprReturn);
@@ -548,14 +556,5 @@ class TaintAnalysis
         }
         
         return $hasSources;
-    }
-
-    public static function setTainted($tainted, $defAssign, $expr)
-    {
-        // we don't want to override the original flow (see )
-        if ($tainted) {
-            $defAssign->setTainted(true);
-            $defAssign->setTaintedByExpr($expr);
-        }
     }
 }

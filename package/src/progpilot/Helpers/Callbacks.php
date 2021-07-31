@@ -50,7 +50,6 @@ class Callbacks
 
         if (!is_null($originalDef)) {
             $def->setType($originalDef->getType());
-            $def->setArrayValue($originalDef->getArrayValue());
             $def->setSourceMyFile($originalDef->getSourceMyFile());
             $def->setName($originalDef->getName());
             $def->setIsInstance($originalDef->getIsInstance());
@@ -66,7 +65,7 @@ class Callbacks
             $def->setClassName($originalDef->getClassName());
             $def->setRefName($originalDef->getRefName());
             $def->setTainted($originalDef->isTainted());
-            $def->setTaintedByExpr($originalDef->getTaintedByExpr());
+            $def->setTaintedByDefs($originalDef->getTaintedByDefs());
             $def->setRefArrValue($originalDef->getRefArrValue());
             $def->setCopyArrays($originalDef->getCopyArrays());
             $def->setExpr($originalDef->getExpr());

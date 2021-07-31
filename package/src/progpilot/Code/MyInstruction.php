@@ -27,7 +27,17 @@ class MyInstruction
     const ARR = 13;
     const TEMPORARY = 14;
     const PHI = 15;
-    const CHAINED_DEF = 16;
+    const ORIGINAL_DEF = 16;
+    const ARRAY_DIM = 17;
+    const PROPERTY_NAME = 18;
+    const VARID = 19;
+    const RESULTID = 20;
+    const VARIABLE_NAME = 21;
+    const VARIABLE = 22;
+    const LITERAL = 23;
+    const EXPRID = 24;
+    const LEFTID = 25;
+    const RIGHTID = 26;
 
     private $properties;
     private $opcode;
@@ -50,7 +60,11 @@ class MyInstruction
 
     public function getProperty($index)
     {
-        return $this->properties[$index];
+        if (isset($this->properties[$index])) {
+            return $this->properties[$index];
+        }
+
+        return null;
     }
 
     public function getOpcode()

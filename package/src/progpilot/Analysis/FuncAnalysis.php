@@ -10,21 +10,26 @@
 
 namespace progpilot\Analysis;
 
+use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
 use progpilot\Code\Opcodes;
 use progpilot\Code\MyInstruction;
 
 class FuncAnalysis
 {
-    public static function funccallAfter($context, $data, $myFuncCall, $myFunc, $arrFuncCall, $instruction, $opAfter)
+    public static function funccallAfter($context, $data, $myFuncCall, $myFunc, $arrFuncCall, $instruction, $code, $index)
     {
         $exprReturn = $instruction->getProperty(MyInstruction::EXPR);
+        $varid = $instruction->getProperty(MyInstruction::VARID);
+        $resultid = $instruction->getProperty(MyInstruction::RESULTID);
 
         $i = 0;
 
+        echo "funccallAfter 1 '".$myFuncCall->getName()."'\n";
         if (!is_null($myFunc)) {
             $defsReturn = $myFunc->getReturnDefs();
             foreach ($defsReturn as $defReturn) {
+                echo "funccallAfter 1 '".$myFuncCall->getName()."' one def return\n";
                 if (($arrFuncCall !== false
                     && $defReturn->isType(MyDefinition::TYPE_ARRAY)
                         && $defReturn->getArrayValue() === $arrFuncCall)
@@ -33,15 +38,15 @@ class FuncAnalysis
                     $copyDefReturn->setExpr($exprReturn);
                     $defReturn->setCast($myFuncCall->getCastReturn());
                     $exprReturn->addDef($copyDefReturn);
-                    
+
                     $expr = $copyDefReturn->getExpr();
                     if ($expr->isAssign()) {
                         $defAssign = $expr->getAssignDef();
-                        //TaintAnalysis::setTainted($copyDefReturn, $defAssign, $expr);
+                        //TaintAnalysis::setTainted($copyDefReturn, $defAssign);
 
                         if (ResolveDefs::getVisibilityFromInstances($context, $data, $defAssign)) {
                             ValueAnalysis::copyValues($copyDefReturn, $defAssign);
-                            TaintAnalysis::setTainted($copyDefReturn->isTainted(), $defAssign, $expr);
+                            TaintAnalysis::setTainted($copyDefReturn, $defAssign);
                         }
 
                         ArrayAnalysis::copyArrayFromDef(
@@ -51,22 +56,17 @@ class FuncAnalysis
                             $defAssign->getArrayValue()
                         );
                     }
-
-                    if ($opAfter->isPropertyExist(MyInstruction::CHAINED_DEF)) {
-                        $def = $opAfter->getProperty(MyInstruction::CHAINED_DEF);
-                        $def->setObjectId($defReturn->getObjectId());
-                    }
                 }
             }
 
-            if ($opAfter->getOpcode() === Opcodes::DEFINITION) {
-                $copyTab = $opAfter->getProperty(MyInstruction::DEF);
-                $originalTabs = $myFunc->getReturnDefs();
-
-                foreach ($originalTabs as $originalTab) {
-                    ArrayAnalysis::copyArrayFromDef($originalTab, $arrFuncCall, $copyTab, $copyTab->getArrayValue());
-                }
+            $previousOpInformation = $context->getCurrentFunc()->getOpInformation($varid);
+            if (!is_null($previousOpInformation)) {
+                $opInformation["def_assign"] = $previousOpInformation["def_assign"];
             }
+            
+            echo "funccallAfter 2 '$resultid'\n";
+            $opInformation["chained_results"] = $myFunc->getReturnDefs();
+            $context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
         }
     }
 

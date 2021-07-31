@@ -8,6 +8,7 @@ class testc1
     {
         $this->boum1 = htmlentities($this->boum1);
     }
+    
 };
 
 $instance1 = new testc1;

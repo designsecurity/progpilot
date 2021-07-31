@@ -12,9 +12,9 @@ namespace progpilot\Objects;
 
 class MyClass extends MyOp
 {
-    private $properties;
     private $methods;
-    private $objectIdThis;
+    private $properties;
+    //private $objectIdThis;
     private $extendsof;
 
     public function __construct($varLine, $varColumn, $varName)
@@ -23,7 +23,7 @@ class MyClass extends MyOp
 
         $this->properties = [];
         $this->methods = [];
-        $this->objectIdThis = null;
+        //$this->objectIdThis = null;
         $this->extendsof = null;
     }
 
@@ -77,8 +77,8 @@ class MyClass extends MyOp
     public function addProperty($property)
     {
         $exist = false;
-        foreach ($this->properties as $propertyClass) {
-            if ($propertyClass->property->getProperties() === $property->property->getProperties()) {
+        foreach ($this->properties as $defClass) {
+            if ($defClass->getName() === $property->getName()) {
                 $exist = true;
                 break;
             }
@@ -91,16 +91,20 @@ class MyClass extends MyOp
 
     public function getProperty($name)
     {
-        foreach ($this->properties as $property) {
+        echo "getProperty 1 '$name'\n";
+        foreach ($this->properties as $def) {
+            echo "getProperty 2 '".$def->getName()."'\n";
+            
             // we don't check if it's STATIC property or NOT
-            if ($property->property->getProperties()[0] === $name) {
-                return $property;
+            if ($def->getName() === $name) {
+                echo "getProperty 3\n";
+                return $def;
             }
         }
 
         return null;
     }
-
+/*
     public function setObjectIdThis($objectId)
     {
         $this->objectIdThis = $objectId;
@@ -110,7 +114,7 @@ class MyClass extends MyOp
     {
         return $this->objectIdThis;
     }
-
+*/
     public function getExtendsOf()
     {
         return $this->extendsof;

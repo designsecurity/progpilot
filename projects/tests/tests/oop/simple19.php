@@ -2,8 +2,6 @@
 
 class testc1
 {
-    private $member1;
-
     public $object1;
 
     public function set_object1($val)
@@ -22,13 +20,16 @@ class testc2
     }
 };
 
+
 $testc1 = new testc1;
 
 $testc1->object1 = new testc2;
 
 $testc1->object1->object2 = $_GET["p"];
 
-echo $testc1->object1->object2; // NOT OK
+$toto = $testc1->object1->object2;
+
+echo $toto; // NOT OK
 
 
 

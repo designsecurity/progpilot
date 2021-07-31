@@ -269,22 +269,25 @@ class Definitions
     public static function defEquality($def1, $def2, $byPassArray = false)
     {
         if ($def1->getName() === $def2->getName()) {
+            /*
             if (($def1->property->getProperties() !== $def2->property->getProperties())
                 && !$def1->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")
                     && !$def2->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
                     return false;
             }
+*/
 
+/*
             if (($def1->getArrayValue() !== $def2->getArrayValue()) && !$byPassArray) {
                 if ($def1->isType(MyDefinition::TYPE_ARRAY) && $def2->isType(MyDefinition::TYPE_ARRAY)) {
-                    $extract = BuildArrays::extractArrayFromArr($def1->getArrayValue(), $def2->getArrayValue());
+                    //$extract = BuildArrays::extractArrayFromArr($def1->getArrayValue(), $def2->getArrayValue());
 
-                    if ($extract === false) {
-                        return false;
-                    }
+                    //if ($extract === false) {
+                        //return false;
+                    //}
                 }
             }
-
+*/
             return true;
         }
 
@@ -310,8 +313,10 @@ class Definitions
 
     public function reachingDefs($myBlocks)
     {
+        echo "reachingDefs1\n";
         foreach ($myBlocks as $block) {
             $blockId = $block->getId();
+            echo "reachingDefs2 blockid '$blockId'\n";
             $this->setOutMinusKill($blockId, $this->getGen($blockId));
             $this->setOut($blockId, $this->getGen($blockId));
         }
@@ -321,12 +326,16 @@ class Definitions
         while ($change) {
             $change = false;
 
-            foreach ($myBlocks as $id => $block) {
+            foreach ($myBlocks as $block) {
+                echo "reachingDefs3\n";
                 foreach ($block->parents as $idparent => $parent) {
                     $idcurrent = $block->getId();
                     $idparent = $parent->getId();
 
+                    echo "reachingDefs4 idcurrent = '$idcurrent' idparent = '$idparent'\n";
+
                     if ($idcurrent !== $idparent) {
+                        echo "reachingDefs5\n";
                         $temp = ArrayMulti::arrayMergeMulti($this->getIn($idcurrent), $this->getOut($idparent));
                         $this->setIn($idcurrent, $temp);
 

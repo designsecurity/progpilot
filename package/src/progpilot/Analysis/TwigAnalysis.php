@@ -47,8 +47,12 @@ class TwigAnalysis
 
                     $arrIndex = "{{".key($arr)."}}";
 
-                    $myDef = new MyDefinition($def->getLine(), $def->getColumn(), $arrIndex);
-                    $myDef->setSourceMyFile($myJavascriptFile);
+                    $myDef = new MyDefinition(
+                        $context->getCurrentBlock()->getId(),
+                        $context->getCurrentMyFile(),
+                        $def->getLine(), 
+                        $def->getColumn(), 
+                        $arrIndex);
 
                     if ($def->isTainted()) {
                         $myDef->setTainted(true);

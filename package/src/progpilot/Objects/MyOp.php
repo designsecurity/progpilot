@@ -19,7 +19,6 @@ class MyOp
     private $varLine;
     private $varColumn;
     private $sourceMyFile;
-    private $arrayValue;
 
     private $flags;
 
@@ -44,7 +43,11 @@ class MyOp
         $this->varLine = $varLine;
         $this->varColumn = $varColumn;
         $this->sourceMyFile = null;
-        $this->arrayValue = false;
+    }
+
+    public function __clone()
+    {
+        $this->varId = MyOp::$nbObjects ++;
     }
 
     public function setId($varId)
@@ -82,16 +85,6 @@ class MyOp
         if ($this->isType($type)) {
             $this->flags ^= $type;
         }
-    }
-
-    public function setArrayValue($arrayValue)
-    {
-        $this->arrayValue = $arrayValue;
-    }
-
-    public function getArrayValue()
-    {
-        return $this->arrayValue;
     }
 
     public function getLine()

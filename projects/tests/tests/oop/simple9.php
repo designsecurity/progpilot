@@ -26,5 +26,4 @@ if (true) {
     $instance = new testc2;
 }
 
-$instance = new testc1;
 $instance->boum1($_GET["p"]);

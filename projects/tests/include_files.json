@@ -1,6 +1,6 @@
 {
     "inclusions":
     [
-        "./tests/real/wordpress/"
+        "../../../../vulnapps/laravel8/"
     ]
 }

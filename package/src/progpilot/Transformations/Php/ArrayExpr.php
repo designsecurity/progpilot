@@ -78,7 +78,7 @@ class ArrayExpr
                     $arrtrans = BuildArrays::buildArrayFromArr($buildingArr, false);
                     
                     $myDef->addType(MyDefinition::TYPE_ARRAY);
-                    $myDef->setArrayValue($arrtrans);
+                    //$myDef->setArrayValue($arrtrans);
 
                     $instDef = new MyInstruction(Opcodes::DEFINITION);
                     $instDef->addProperty(MyInstruction::DEF, $myDef);

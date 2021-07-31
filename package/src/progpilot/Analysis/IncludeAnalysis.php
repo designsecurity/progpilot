@@ -227,7 +227,8 @@ class IncludeAnalysis
                                                 $mainInclude,
                                                 $arrFuncCall,
                                                 $instruction,
-                                                $code[$index + 3]
+                                                $code,
+                                                $index
                                             );
                                         }
 

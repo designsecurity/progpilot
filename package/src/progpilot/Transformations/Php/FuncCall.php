@@ -22,12 +22,21 @@ use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
 use progpilot\Transformations\Php\Transform;
 use progpilot\Transformations\Php\Expr;
+use progpilot\Transformations\Php\Exprs\PropertyFetch;
+use progpilot\Transformations\Php\Exprs\DimFetch;
 
 class FuncCall
 {
     public static function argument($context, $arg, $instFuncCallMain, $funcCallName, $numParam)
     {
-        // each argument will be a definition defined by an expression
+        $myExprparam = new MyExpr($context->getCurrentLine(), $context->getCurrentColumn());
+
+        Expr::instructionnew($context, $arg, $myExprparam);
+        
+        $instArg = new MyInstruction(Opcodes::ARGUMENT);
+        $instArg->addProperty(MyInstruction::VARID, $context->getCurrentFunc()->getOpId($arg));
+        $context->getCurrentMycode()->addCode($instArg);
+
         $defName =
             $funcCallName.
             "_param".
@@ -37,20 +46,21 @@ class FuncCall
             "_column".
             $context->getCurrentColumn().
             "_progpilot";
-        $typeArray = Common::getTypeIsArray($arg);
+        $myDef = new MyDefinition(
+            $context->getCurrentBlock()->getId(),
+            $context->getCurrentMyFile(),
+            $context->getCurrentLine(), 
+            $context->getCurrentColumn(), 
+            $defName);
 
-        $myDef = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), $defName);
-
-        $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_ASSIGN));
-        $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
-
-        $myExprparam = new MyExpr($context->getCurrentLine(), $context->getCurrentColumn());
-        $myExprparam->setAssign(true);
-        $myExprparam->setAssignDef($myDef);
+        $instArg->addProperty("argdef$numParam", $myDef);
+        $instArg->addProperty("argexpr$numParam", $myExprparam);
+        $instArg->addProperty("idparam", $numParam);
 
         $instFuncCallMain->addProperty("argdef$numParam", $myDef);
         $instFuncCallMain->addProperty("argexpr$numParam", $myExprparam);
 
+/*
         // if we have funccall($arg, array("test"=>false)); for example
         if ($typeArray === MyOp::TYPE_ARRAY_EXPR) {
             ArrayExpr::instruction($arg, $context, false, $defName, false);
@@ -63,18 +73,21 @@ class FuncCall
             $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
             $context->getCurrentMycode()->addCode($instTemporarySimple);
         } else {
+
+            echo "transform funcall 1\n";
+            if (isset($context->getCurrentOp()->expr)) {
+                echo "transform funcall 2\n";
+                //Common::transformPropertyFetch($context, $context->getCurrentOp()->expr->ops[0]);
+            }
+            echo "transform funcall 3\n";
+
             $myTemp = Expr::instruction($arg, $context, $myExprparam);
 
+            echo "transform funcall 4\n";
             if (!is_null($myTemp)) {
                 $myDef->setValueFromDef($myTemp);
             }
         }
-
-        $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);
-        $instEndExpr->addProperty(MyInstruction::EXPR, $myExprparam);
-        $context->getCurrentMycode()->addCode($instEndExpr);
-
-        $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::END_ASSIGN));
 
         $instDef = new MyInstruction(Opcodes::DEFINITION);
         $instDef->addProperty(MyInstruction::DEF, $myDef);
@@ -82,6 +95,7 @@ class FuncCall
 
         unset($myExprparam);
         unset($myDef);
+        */
     }
 
     /*
@@ -98,32 +112,21 @@ class FuncCall
     ) {
         $mybackdef = null;
         $nbparams = 0;
-        $propertyName = "";
+        $propertyName = null;
         $className = "";
 
         // instance_name = new obj; instance_name->method_name()
-        if ($isMethod) {
-            $chainedMethod = Common::getChainedMethod($context->getCurrentOp());
-            if (!empty($chainedMethod)) {
-                $chainedMethodDef = new MyDefinition(
-                    $context->getCurrentLine(),
-                    $context->getCurrentColumn(),
-                    "chained_".$chainedMethod
-                );
 
-                $chainedMethodDef->addType(MyDefinition::TYPE_INSTANCE);
-
-                $instDefChained = new MyInstruction(Opcodes::DEFINITION);
-                $instDefChained->addProperty(MyInstruction::DEF, $chainedMethodDef);
-                $instDefChained->addProperty(MyInstruction::CHAINED_DEF, $chainedMethodDef);
-                $context->getCurrentMycode()->addCode($instDefChained);
-            }
-
+        echo "funccall transform1\n";
+        if($context->getCurrentOp() instanceof Op\Expr\MethodCall) {
+            echo "funccall transform2\n";
+            $isMethod = true;
             $instanceName = Common::getNameDefinition($context->getCurrentOp()->var);
             
             if (isset($context->getCurrentOp()->var->ops[0])) {
                 $propertyName = Common::getNameProperty($context->getCurrentOp()->var->ops[0]);
             }
+            echo "funccall transform3 '$instanceName' '$propertyName'\n";
         }
 
         $funcCallName = "";
@@ -164,12 +167,31 @@ class FuncCall
         }
 
         $instFuncCallMain = new MyInstruction(Opcodes::FUNC_CALL);
+
+        if (isset($context->getCurrentOp()->result)) {
+            $instFuncCallMain->addProperty(
+                MyInstruction::RESULTID,
+                $context->getCurrentFunc()->getOpId($context->getCurrentOp()->result)
+            );
+        }
+        if (isset($context->getCurrentOp()->var)) {
+            $instFuncCallMain->addProperty(
+                MyInstruction::VARID,
+                $context->getCurrentFunc()->getOpId($context->getCurrentOp()->var)
+            );
+        } elseif (isset($context->getCurrentOp()->class)) {
+            $instFuncCallMain->addProperty(
+                MyInstruction::VARID,
+                $context->getCurrentFunc()->getOpId($context->getCurrentOp()->class)
+            );
+        }
         $instFuncCallMain->addProperty(MyInstruction::FUNCNAME, $funcCallName);
 
         $myFunctionCall = new MyFunction($funcCallName);
         $myFunctionCall->setCastReturn($cast);
         $myFunctionCall->setLine($context->getCurrentLine());
         $myFunctionCall->setColumn($context->getCurrentColumn());
+        $myFunctionCall->setInstanceClassName($className);
 
         if ($isStatic && isset($context->getCurrentOp()->class->value)) {
             $nameClass = $context->getCurrentOp()->class->value;
@@ -180,17 +202,6 @@ class FuncCall
         if ($isMethod) {
             $myFunctionCall->addType(MyFunction::TYPE_FUNC_METHOD);
             $myFunctionCall->setNameInstance($instanceName);
-        
-            $mybackdef = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), $instanceName);
-            $mybackdef->addType(MyDefinition::TYPE_INSTANCE);
-            $mybackdef->setClassName($className);
-
-            if ($propertyName !== "" && count($propertyName) > 0) {
-                $mybackdef->addType(MyDefinition::TYPE_PROPERTY);
-                $mybackdef->property->setProperties($propertyName);
-            }
-
-            $myFunctionCall->setBackDef($mybackdef);
         }
 
         $listArgs = [];
@@ -216,9 +227,12 @@ class FuncCall
         }
 
         $myFunctionCall->setNbParams($nbparams);
-        if (!empty($chainedMethod)) {
-            $myFunctionCall->setIsChainedMethod(true);
-            $myFunctionCall->setChainedMethod($chainedMethodDef);
+
+
+        if ($isMethod) {
+            if (isset($context->getCurrentOp()->var->ops[0])) {
+                Common::transformPropertyFetch($context, $context->getCurrentOp()->var->ops[0]);
+            }
         }
 
         $instFuncCallMain->addProperty(MyInstruction::MYFUNC_CALL, $myFunctionCall);
