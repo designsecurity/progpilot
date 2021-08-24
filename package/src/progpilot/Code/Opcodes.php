@@ -39,4 +39,5 @@ class Opcodes
     const ARGUMENT = 25;
     const VARIABLE_FETCH = 26;
     const LITERAL_FETCH = 27;
+    const STATIC_PROPERTY_FETCH = 28;
 }

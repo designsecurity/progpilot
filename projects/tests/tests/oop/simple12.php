@@ -12,5 +12,5 @@ if (rand() % 2) {
     $instance1->boum1 = "eee"; // block 16
     echo $instance1->boum1;
 } else {
-    echo $instance1->boum1; // block 27
+    echo $instance1->boum1; // block 18
 }

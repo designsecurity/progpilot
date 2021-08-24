@@ -455,6 +455,17 @@ class MyCode
     
                         break;
 
+                    case Opcodes::STATIC_PROPERTY_FETCH:
+                        echo "Opcodes::STATIC_PROPERTY_FETCH\n";
+                        $propertyName = htmlentities(
+                            $instruction->getProperty(MyInstruction::PROPERTY_NAME),
+                            ENT_QUOTES,
+                            'UTF-8'
+                        );
+                        echo "property name = $propertyName\n";
+        
+                        break;
+
                     case Opcodes::ARRAYDIM_FETCH:
                         echo "Opcodes::ARRAYDIM_FETCH\n";
                         $arrayDim = $instruction->getProperty(MyInstruction::ARRAY_DIM);
@@ -463,7 +474,7 @@ class MyCode
                         break;
 
                     case Opcodes::VARIABLE_FETCH:
-                        echo "Opcodes::ARRAYDIM_FETCH\n";
+                        echo "Opcodes::VARIABLE_FETCH\n";
                         $instruction->getProperty(MyInstruction::DEF)->printStdout();
 
                         break;

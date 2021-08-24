@@ -50,9 +50,10 @@ class TwigAnalysis
                     $myDef = new MyDefinition(
                         $context->getCurrentBlock()->getId(),
                         $context->getCurrentMyFile(),
-                        $def->getLine(), 
-                        $def->getColumn(), 
-                        $arrIndex);
+                        $def->getLine(),
+                        $def->getColumn(),
+                        $arrIndex
+                    );
 
                     if ($def->isTainted()) {
                         $myDef->setTainted(true);

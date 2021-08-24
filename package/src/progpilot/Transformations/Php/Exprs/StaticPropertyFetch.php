@@ -17,27 +17,27 @@ use progpilot\Objects\MyDefinition;
 use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
 
-class PropertyFetch
+class StaticPropertyFetch
 {
-    public static function propertyFetch($context, $op, $expr)
+    public static function staticPropertyFetch($context, $op, $expr)
     {
         if (isset($op)
-            && $op instanceof Op\Expr\PropertyFetch) {
-            $instDefChained = new MyInstruction(Opcodes::PROPERTY_FETCH);
+            && $op instanceof Op\Expr\StaticPropertyFetch) {
+            $instDefChained = new MyInstruction(Opcodes::STATIC_PROPERTY_FETCH);
             $instDefChained->addProperty(MyInstruction::PROPERTY_NAME, $op->name->value);
             $instDefChained->addProperty(MyInstruction::EXPR, $expr);
 
-            // beginning of the chain
-            if (isset($op->var->original)) {
+            // static property
+            if (isset($op->class->value)) {
                 $originalDef = new MyDefinition(
                     $context->getCurrentBlock()->getId(),
                     $context->getCurrentMyFile(),
                     $context->getCurrentLine(),
                     $context->getCurrentColumn(),
-                    $op->var->original->name->value
+                    $op->class->value
                 );
-                $originalDef->addType(MyDefinition::TYPE_PROPERTY);
-
+                $originalDef->addType(MyDefinition::TYPE_STATIC_PROPERTY);
+            
                 $instDefChained->addProperty(MyInstruction::ORIGINAL_DEF, $originalDef);
             }
 

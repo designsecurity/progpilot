@@ -46,20 +46,29 @@ class MyDefState extends MyOp
         if ($this->isTainted()) {
             echo "tainted = 1\n";
 
-            foreach($this->taintedByDefs as $taintedByDef) {
-                echo "taintedByDef = '".$taintedByDef->getId()."'\n";
+            foreach ($this->taintedByDefs as $taintedByDef) {
+                echo "taintedByDef = '".$taintedByDef[0]->getId()."'\n";
             }
         }
 
         echo "last_known_value :\n";
         var_dump($this->lastKnownValue);
-
         echo "is_embeddedbychar :\n";
         var_dump($this->isEmbeddedByChar);
+        echo "isSanitized :\n";
+        var_dump($this->isSanitized);
         echo "type_sanitized :\n";
         var_dump($this->typeSanitized);
         echo "objectid :\n";
         var_dump($this->objectId);
+        echo "istypeinstance : '".$this->isType(MyDefinition::TYPE_INSTANCE)."'\n";
+        echo "istypearray : '".$this->isType(MyDefinition::TYPE_ARRAY)."'\n";
+        foreach($this->arrayIndexes as $arrayIndex) {
+            echo "index :\n";
+            var_dump($arrayIndex->index);
+            echo "def :\n";
+            $arrayIndex->def->printStdout();
+        }
     }
 
     public function addTaintedByDef($taintedByDef)
@@ -223,43 +232,53 @@ class MyDefState extends MyOp
         $this->isTainted = $tainted;
     }
 
-    public function getOrCreateDefArrayIndex($arrayIndex)
+    public function getOrCreateDefArrayIndex($blockId, $myArrayDef, $arrayIndex)
     {
         echo "getOrCreateDefArrayIndex 1\n";
 
+        $ret = [];
+        $found = false;
         for ($i = 0; $i < count($this->arrayIndexes); $i ++) {
             echo "getOrCreateDefArrayIndex 2\n";
             var_dump($arrayIndex);
             var_dump($this->arrayIndexes[$i]->index);
-            if($this->arrayIndexes[$i]->index === $arrayIndex) {
+            if ($this->arrayIndexes[$i]->index === $arrayIndex) {
+                $found = true;
+                $ret[] = $this->arrayIndexes[$i]->def;
                 echo "getOrCreateDefArrayIndex 3\n";
-                return [false, $this->arrayIndexes[$i]->def];
             }
         }
 
-        $myDef = new MyDefinition($this->getLine(), $this->getColumn(), "built-in-index-array");
-        $myDef->setSourceMyFile($this->getSourceMyFile());
+        if($found) {
+            return [false, $ret];
+        }
+
+        $myDef = new MyDefinition($blockId, $myArrayDef->getSourceMyFile(), $myArrayDef->getLine(), $myArrayDef->getColumn(), "built-in-index-array");
+        $myDef->addType(MyDefinition::TYPE_ARRAY_ELEMENT);
         $this->addArrayIndex($arrayIndex, $myDef);
         $this->addType(MyDefinition::TYPE_ARRAY);
-
-        return [true, $myDef];
+        $ret[] = $myDef;
+        echo "getOrCreateDefArrayIndex 4\n";
+        $myDef->printStdout();
+        return [true, $ret];
     }
 
     public function getDefArrayIndex($arrayIndex)
     {
+        $ret = [];
         for ($i = 0; $i < count($this->arrayIndexes); $i ++) {
-            if($this->arrayIndexes[$i]->index === $arrayIndex) {
-                return $this->arrayIndexes[$i]->def;
+            if ($this->arrayIndexes[$i]->index === $arrayIndex) {
+                $ret[] = $this->arrayIndexes[$i]->def;
             }
         }
 
-        return null;
+        return $ret;
     }
 
     public function isArrayIndexExists($arrayIndex)
     {
         for ($i = 0; $i < count($this->arrayIndexes); $i ++) {
-            if($this->arrayIndexes[$i]->index === $arrayIndex) {
+            if ($this->arrayIndexes[$i]->index === $arrayIndex) {
                 return true;
             }
         }
@@ -279,7 +298,6 @@ class MyDefState extends MyOp
     {
         if (!empty($this->arrayIndexes)) {
             for ($i = 0; $i < count($this->arrayIndexes); $i ++) {
-
                 $currentEle = $this->arrayIndexes[$i];
 
                 $ele = new \stdClass;
@@ -288,8 +306,7 @@ class MyDefState extends MyOp
 
                 $this->arrayIndexes[$i] = $ele;
             }
-        }
-        else {
+        } else {
             $ele = new \stdClass;
             $ele->index = $arrayIndex;
             $ele->def = $def;

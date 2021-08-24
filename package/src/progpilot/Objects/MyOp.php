@@ -26,7 +26,7 @@ class MyOp
     const TYPE_LITERAL = "type_literal";
     const TYPE_ARRAY = "type_array";
     const TYPE_ARRAY_EXPR = "type_array_expr";
-    const TYPE_COPY_ARRAY = "type_copy_array";
+    const TYPE_ARRAY_ELEMENT = "type_array_element";
     const TYPE_METHOD = "type_method";
     const TYPE_INSTANCE = "type_instance";
     const TYPE_PROPERTY = "type_property";

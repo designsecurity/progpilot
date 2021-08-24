@@ -22,10 +22,12 @@ use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
 use progpilot\Transformations\Php\Transform;
 use progpilot\Transformations\Php\Exprs\PropertyFetch;
+use progpilot\Transformations\Php\Exprs\StaticPropertyFetch;
 use progpilot\Transformations\Php\Exprs\DimFetch;
 use progpilot\Transformations\Php\Exprs\VariableFetch;
 use progpilot\Transformations\Php\Exprs\FunccallFetch;
 use progpilot\Transformations\Php\Exprs\ConcatFetch;
+use progpilot\Transformations\Php\Exprs\ArrayFetch;
 
 class Expr
 {
@@ -78,33 +80,36 @@ class Expr
 
     public static function instructionnew2($context, $op, $expr)
     {
-        if(isset($op->var->ops[0]) && $op !== $op->var->ops[0]) {
+        if (isset($op->var->ops[0]) && $op !== $op->var->ops[0]) {
             Expr::instructionnew2($context, $op->var->ops[0], $expr);
         }
 
-        if(isset($op->ops[0]) && $op !== $op->ops[0]) {
+        if (isset($op->ops[0]) && $op !== $op->ops[0]) {
             Expr::instructionnew2($context, $op->ops[0], $expr);
         }
 
         ConcatFetch::concatFetch($context, $op, $expr);
         DimFetch::dimFetch($context, $op, $expr);
         PropertyFetch::propertyFetch($context, $op, $expr);
+        StaticPropertyFetch::staticPropertyFetch($context, $op, $expr);
         FunccallFetch::funccallFetch($context, $op, $expr);
     }
 
     public static function instructionnew($context, $op, $expr)
     {
-        if(isset($op->ops[0]) && is_null($op->original)) {
+        echo "instructionnew 1\n";
+        if (isset($op->ops[0]) && is_null($op->original)) {
+            echo "instructionnew 2\n";
             Expr::instructionnew2($context, $op->ops[0], $expr);
-        }
-        else {
+        } else {
+            echo "instructionnew 3\n";
             VariableFetch::variableFetch($context, $op, $expr);
         }
     }
 
     public static function instructionassign($context, $op, $expr)
     {
-        if(isset($op->ops[0]) && is_null($op->original)) {
+        if (isset($op->ops[0]) && is_null($op->original)) {
             Expr::instructionnew2($context, $op->ops[0], $expr);
         }/*
         else {
@@ -154,9 +159,10 @@ class Expr
             $myTemp = new MyDefinition(
                 $context->getCurrentBlock()->getId(),
                 $context->getCurrentMyFile(),
-                $context->getCurrentLine(), 
-                $column, 
-                $name);
+                $context->getCurrentLine(),
+                $column,
+                $name
+            );
 
             if ($type === MyOp::TYPE_CONST || $type === MyOp::TYPE_LITERAL) {
                 $myTemp->addLastKnownValue($name);

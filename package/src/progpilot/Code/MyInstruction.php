@@ -38,6 +38,7 @@ class MyInstruction
     const EXPRID = 24;
     const LEFTID = 25;
     const RIGHTID = 26;
+    const REFERENCE = 27;
 
     private $properties;
     private $opcode;

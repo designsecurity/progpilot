@@ -17,8 +17,16 @@ use progpilot\Code\MyInstruction;
 
 class FuncAnalysis
 {
-    public static function funccallAfter($context, $data, $myFuncCall, $myFunc, $arrFuncCall, $instruction, $code, $index)
-    {
+    public static function funccallAfter(
+        $context,
+        $data,
+        $myFuncCall,
+        $myFunc,
+        $arrFuncCall,
+        $instruction,
+        $code,
+        $index
+    ) {
         $exprReturn = $instruction->getProperty(MyInstruction::EXPR);
         $varid = $instruction->getProperty(MyInstruction::VARID);
         $resultid = $instruction->getProperty(MyInstruction::RESULTID);
@@ -27,14 +35,17 @@ class FuncAnalysis
 
         echo "funccallAfter 1 '".$myFuncCall->getName()."'\n";
         if (!is_null($myFunc)) {
+            echo "funccallAfter 2 '".$myFuncCall->getName()."'\n";
             $defsReturn = $myFunc->getReturnDefs();
             foreach ($defsReturn as $defReturn) {
-                echo "funccallAfter 1 '".$myFuncCall->getName()."' one def return\n";
+                echo "funccallAfter 3 '".$myFuncCall->getName()."' one def return\n";
+                /*
                 if (($arrFuncCall !== false
                     && $defReturn->isType(MyDefinition::TYPE_ARRAY)
                         && $defReturn->getArrayValue() === $arrFuncCall)
                             || ($arrFuncCall === false && !$defReturn->isType(MyDefinition::TYPE_ARRAY))) {
                     $copyDefReturn = $defReturn;
+                    
                     $copyDefReturn->setExpr($exprReturn);
                     $defReturn->setCast($myFuncCall->getCastReturn());
                     $exprReturn->addDef($copyDefReturn);
@@ -56,17 +67,21 @@ class FuncAnalysis
                             $defAssign->getArrayValue()
                         );
                     }
-                }
+                }*/
             }
-
+/*
             $previousOpInformation = $context->getCurrentFunc()->getOpInformation($varid);
             if (!is_null($previousOpInformation)) {
                 $opInformation["def_assign"] = $previousOpInformation["def_assign"];
-            }
+            }*/
             
-            echo "funccallAfter 2 '$resultid'\n";
-            $opInformation["chained_results"] = $myFunc->getReturnDefs();
-            $context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
+            if ($myFuncCall->getName() !== "__construct") {
+                echo "funccallAfter 2 '$resultid'\n";
+
+                $opInformation["chained_results"] = $myFunc->getReturnDefs();
+                echo "storeopinformation here returndef '$resultid'\n";
+                $context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
+            }
         }
     }
 
@@ -83,6 +98,8 @@ class FuncAnalysis
                 $param->setParamToArg($defArg);
                 $defArg->setArgToParam($param);
                 
+                $defArg->setState($defArg->getCurrentState(), $param->getBlockId());
+
                 $nbParams ++;
             }
         }

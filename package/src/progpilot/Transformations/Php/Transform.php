@@ -182,7 +182,7 @@ class Transform implements Visitor
 
                 array_pop($this->blocksStack);
 
-                if(!empty($this->blocksStack)) {
+                if (!empty($this->blocksStack)) {
                     $this->context->setCurrentBlock($this->blocksStack[count($this->blocksStack) - 1]);
                 }
             }
@@ -217,10 +217,11 @@ class Transform implements Visitor
 
                 $mythisdef = new MyDefinition(
                     0,
-                    $this->context->getCurrentMyFile(), 
-                    0, 
-                    0, 
-                    "this");
+                    $this->context->getCurrentMyFile(),
+                    0,
+                    0,
+                    "this"
+                );
 
                 $mythisdef->addType(MyDefinition::TYPE_INSTANCE);
 
@@ -235,9 +236,10 @@ class Transform implements Visitor
             $myDef = new MyDefinition(
                 0,
                 $this->context->getCurrentMyFile(),
-                $param->getLine(), 
-                $param->getAttribute("startFilePos", -1), 
-                $paramName);
+                $param->getLine(),
+                $param->getAttribute("startFilePos", -1),
+                $paramName
+            );
 
             if ($byref) {
                 $myDef->addType(MyDefinition::TYPE_REFERENCE);
@@ -355,7 +357,6 @@ class Transform implements Visitor
 
             $this->context->getCurrentFunc()->setHasGlobalVariables(true);
         } elseif ($op instanceof Op\Terminal\Return_) {
-
             if (isset($op->expr)) {
                 //$myBlock = $this->sBlocks[$this->context->getCurrentBlock()];
                 Assign::instruction($this->context, $op, $op->expr, null, true, false);
@@ -452,9 +453,7 @@ class Transform implements Visitor
                 $this->context->getCurrentMycode()->addCode($instEndExpr);
             }
         } elseif ($op instanceof Op\Expr\Param) {
-            
             echo "param\n";
-
         } elseif ($op instanceof Op\Expr\Assign || $op instanceof Op\Expr\AssignRef) {
             if (isset($op->expr) && isset($op->var)) {
                 Assign::instruction($this->context, $op, $op->expr, $op->var);
@@ -501,17 +500,15 @@ class Transform implements Visitor
                     $myDef->setClassName($className);
 
                     // it's necessary for SecurityAnalysis (visibility)
-                    
+
                     if ($property->static === 8) {
                         $myDef->addType(MyDefinition::TYPE_STATIC_PROPERTY);
                     } else {
                         $myDef->addType(MyDefinition::TYPE_PROPERTY);
                     }
-                        
+
                     $myClass->addProperty($myDef);
                     */
-
-
                 }
             }
 

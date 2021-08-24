@@ -4,7 +4,7 @@
         {"name": "mysink", "instanceof": "known_class1->middle_object", "language": "php", "attack": "xss", "cwe": "CWE_79"},
         {"name": "mysink", "instanceof": "known_class1_undefined", "language": "php", "attack": "xss", "cwe": "CWE_79"},
         {"name": "mysink", "instanceof": "known_class1_undefined->middle_object", "language": "php", "attack": "xss", "cwe": "CWE_79"},
-        {"name": "query", "instanceof": "SomeClass->db", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "query", "instanceof": "SomeClassDb", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
         {"name": "query", "instanceof": "SomeClass1", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
         {"name": "query", "instanceof": "VulnerableClass", "language": "php", "attack": "sql_injection", "cwe": "CWE_89"}
         ]

@@ -25,7 +25,7 @@ class MyDefinition extends MyOp
     const TYPE_CONSTANTE = 0x0004;
     const TYPE_REFERENCE = 0x0008;
     const TYPE_ARRAY_REFERENCE = 0x0010;
-    const TYPE_COPY_ARRAY = 0x0020;
+    const TYPE_ARRAY_ELEMENT = 0x0020;
     const TYPE_INSTANCE = 0x0040;
     const TYPE_GLOBAL = 0x0080;
     const TYPE_STATIC_PROPERTY = 0x0100;
@@ -41,6 +41,8 @@ class MyDefinition extends MyOp
     private $paramToArg;
     private $argToParam;
     private $isReturnDef;
+    private $refs;
+    private $refArrValue;
 
     public $original;
     public $states;
@@ -58,6 +60,8 @@ class MyDefinition extends MyOp
         $this->paramToArg = null;
         $this->argToParam = null;
         $this->isReturnDef = null;
+        $this->refs = [];
+        $this->refArrValue = null;
 
         $this->original = new MyDefOriginal;
         $this->states = [];
@@ -73,8 +77,8 @@ class MyDefinition extends MyOp
         ref = ".$this->isType(MyDefinition::TYPE_REFERENCE)." :: \
         is_property = ".$this->isType(MyDefinition::TYPE_PROPERTY)." :: \
         is_static_property = ".$this->isType(MyDefinition::TYPE_STATIC_PROPERTY)." :: \
+        is_type_array_element = ".$this->isType(MyDefinition::TYPE_ARRAY_ELEMENT)." :: \
         isArray = ".$this->isType(MyDefinition::TYPE_ARRAY)." :: \
-        isCopyArray = ".$this->isType(MyDefinition::TYPE_COPY_ARRAY)." :: \
         is_const = ".$this->isType(MyDefinition::TYPE_CONSTANTE)." :: \
         is_return_def = ".$this->isReturnDef." :: \
         blockid = ".$this->getBlockId()."\n";
@@ -84,11 +88,9 @@ class MyDefinition extends MyOp
             $this->getParamToArg()->printStdout();
         }
 
-        if (!is_null($this->getSourceMyFile())) {
-            $this->getSourceMyFile()->printStdout();
-        }
+        $this->getSourceMyFile()->printStdout();
 
-        foreach($this->states as $id => $state) {
+        foreach ($this->states as $id => $state) {
             echo "state blockid '$id'\n";
             $state->printStdout();
         }
@@ -99,6 +101,11 @@ class MyDefinition extends MyOp
     public function unsetState($blockId)
     {
         unset($this->states[$blockId]);
+    }
+
+    public function setStates($states)
+    {
+        $this->states = $states;
     }
 
     public function setState($state, $blockId)
@@ -116,7 +123,7 @@ class MyDefinition extends MyOp
 
     public function getCurrentState()
     {
-        if(isset($this->states[$this->blockId])) {
+        if (isset($this->states[$this->blockId])) {
             return $this->states[$this->blockId];
         }
 
@@ -130,7 +137,7 @@ class MyDefinition extends MyOp
 
     public function getState($blockId)
     {
-        if(isset($this->states[$blockId])) {
+        if (isset($this->states[$blockId])) {
             return $this->states[$blockId];
         }
 
@@ -139,7 +146,7 @@ class MyDefinition extends MyOp
 
     public function getStateOrCreate($blockId)
     {
-        if(isset($this->states[$blockId])) {
+        if (isset($this->states[$blockId])) {
             return $this->states[$blockId];
         }
 
@@ -206,14 +213,14 @@ class MyDefinition extends MyOp
         $this->className = $className;
     }
 
-    public function getRefName()
+    public function getRefs()
     {
-        return $this->refName;
+        return $this->refs;
     }
 
-    public function setRefName($refname)
+    public function setRefs($refs)
     {
-        $this->refName = $refname;
+        $this->refs = $refs;
     }
 
     public function getRefArrValue()
