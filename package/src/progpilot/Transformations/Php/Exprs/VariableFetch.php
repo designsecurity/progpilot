@@ -24,12 +24,14 @@ class VariableFetch
         echo "variableFetch 1\n";
         if (isset($op->original) && $op->original instanceof Operand\Variable
             && isset($op->original->name) && $op->original->name instanceof Operand\Literal) {
+            echo "variableFetch 2\n";
             $myTemp = new MyDefinition(
                 $context->getCurrentBlock()->getId(),
                 $context->getCurrentMyFile(),
-                $context->getCurrentLine(), 
-                $context->getCurrentColumn(), 
-                $op->original->name->value);
+                $context->getCurrentLine(),
+                $context->getCurrentColumn(),
+                $op->original->name->value
+            );
 
             $instVariableFetch = new MyInstruction(Opcodes::VARIABLE_FETCH);
             $instVariableFetch->addProperty(MyInstruction::EXPR, $expr);

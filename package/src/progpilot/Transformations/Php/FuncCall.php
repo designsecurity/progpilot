@@ -49,9 +49,10 @@ class FuncCall
         $myDef = new MyDefinition(
             $context->getCurrentBlock()->getId(),
             $context->getCurrentMyFile(),
-            $context->getCurrentLine(), 
-            $context->getCurrentColumn(), 
-            $defName);
+            $context->getCurrentLine(),
+            $context->getCurrentColumn(),
+            $defName
+        );
 
         $instArg->addProperty("argdef$numParam", $myDef);
         $instArg->addProperty("argexpr$numParam", $myExprparam);
@@ -59,6 +60,7 @@ class FuncCall
 
         $instFuncCallMain->addProperty("argdef$numParam", $myDef);
         $instFuncCallMain->addProperty("argexpr$numParam", $myExprparam);
+
 
 /*
         // if we have funccall($arg, array("test"=>false)); for example
@@ -118,7 +120,7 @@ class FuncCall
         // instance_name = new obj; instance_name->method_name()
 
         echo "funccall transform1\n";
-        if($context->getCurrentOp() instanceof Op\Expr\MethodCall) {
+        if ($context->getCurrentOp() instanceof Op\Expr\MethodCall) {
             echo "funccall transform2\n";
             $isMethod = true;
             $instanceName = Common::getNameDefinition($context->getCurrentOp()->var);

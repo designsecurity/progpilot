@@ -107,7 +107,7 @@ class ArrayAnalysis
                     $extractBis = BuildArrays::buildArrayFromArr($copyArr, $extract);
 
                     $copyTab->addCopyArray($extractBis, $defArr);
-                    $copyTab->addType(MyDefinition::TYPE_COPY_ARRAY);
+                    //$copyTab->addType(MyDefinition::TYPE_COPY_ARRAY);
                     if ($copyTab->isType(MyDefinition::TYPE_ARRAY)) {
                         $copyTab->removeType(MyDefinition::TYPE_ARRAY);
                     }
@@ -126,7 +126,7 @@ class ArrayAnalysis
                 }
 
                 $copyTab->addCopyArray($extract, $originalTab);
-                $copyTab->addType(MyDefinition::TYPE_COPY_ARRAY);
+                //$copyTab->addType(MyDefinition::TYPE_COPY_ARRAY);
 
                 if ($copyTab->isType(MyDefinition::TYPE_ARRAY)) {
                     $copyTab->removeType(MyDefinition::TYPE_ARRAY);

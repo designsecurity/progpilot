@@ -27,16 +27,16 @@ class FunccallFetch
                 || $op instanceof Op\Expr\Print_
                 || $op instanceof Op\Terminal\Echo_
                 || $op instanceof Op\Expr\Eval_
-                || $op instanceof Op\Expr\Exit_ 
+                || $op instanceof Op\Expr\Exit_
                 || $op instanceof Op\Terminal\Exit_
-                || $op instanceof Op\Expr\FuncCall 
+                || $op instanceof Op\Expr\FuncCall
                 || $op instanceof Op\Expr\NsFuncCall
                 || $op instanceof Op\Expr\MethodCall
                 || $op instanceof Op\Expr\StaticCall
                 || $op instanceof Op\Expr\New_)) {
             $oldOp = $context->getCurrentOp();
             $context->setCurrentOp($op);
-            $myTempDef = FuncCall::instruction($context, $expr, null, false, false, null);
+            FuncCall::instruction($context, $expr, null, false, false, null);
             $context->setCurrentOp($oldOp);
         }
     }

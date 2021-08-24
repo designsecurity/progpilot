@@ -45,6 +45,9 @@ class Callbacks
         // it's more than a cleanwe need a clone of each def/myfunc after the dataflow? or after transform?
         // and put back the origin value because the def could have been modified (tainted as well but also arrays)
         
+        // but the original defs values will be modified each time we call this function???
+        // SHOULD CLONE??
+        
         $originalDef = $funcDefs->getOriginalDef($def->getId());
 
 
@@ -52,25 +55,14 @@ class Callbacks
             $def->setType($originalDef->getType());
             $def->setSourceMyFile($originalDef->getSourceMyFile());
             $def->setName($originalDef->getName());
-            $def->setIsInstance($originalDef->getIsInstance());
-            $def->setIsProperty($originalDef->getIsProperty());
             $def->setValidWhenReturning($originalDef->getValidWhenReturning());
             $def->setValidNotBoolean($originalDef->getValidNotBoolean());
             $def->setReturnedFromValidator($originalDef->getReturnedFromValidator());
-            $def->setEmbeddedByChar($originalDef->getIsEmbeddedByChars());
-            $def->setLabel($originalDef->getLabel());
-            $def->setCast($originalDef->getCast());
-            $def->setValueFromDef($originalDef->getValueFromDef());
-            $def->setLastKnownValues($originalDef->getLastKnownValues());
             $def->setClassName($originalDef->getClassName());
-            $def->setRefName($originalDef->getRefName());
-            $def->setTainted($originalDef->isTainted());
-            $def->setTaintedByDefs($originalDef->getTaintedByDefs());
+            $def->setRefs($originalDef->getRefs());
             $def->setRefArrValue($originalDef->getRefArrValue());
-            $def->setCopyArrays($originalDef->getCopyArrays());
-            $def->setExpr($originalDef->getExpr());
-            $def->setSanitized($originalDef->isSanitized());
-            $def->setTypeSanitized($originalDef->getTypeSanitized());
+            $def->setStates($originalDef->getStates());
+
         }
     }
 }

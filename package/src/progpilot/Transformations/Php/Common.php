@@ -224,11 +224,8 @@ class Common
             }
 
             $context->getCurrentMycode()->addCode($instDefChained);
-        }
-
-        else if (isset($op)
+        } elseif (isset($op)
             && $op instanceof Op\Expr\ArrayDimFetch) {
-
             echo "transformPropertyFetch 2\n";
             if (isset($op->var->ops[0])) {
                 echo "transformPropertyFetch3\n";
@@ -266,18 +263,16 @@ class Common
             }
 
             $context->getCurrentMycode()->addCode($instDefChained);
-        }
-
-        else if(isset($op->ops[0])) {
+        } elseif (isset($op->ops[0])) {
             Common::transformPropertyFetch($context, $op->ops[0]);
-        }
-        else if (isset($op) && $op instanceof Operand\Literal) {
+        } elseif (isset($op) && $op instanceof Operand\Literal) {
             $myTemp = new MyDefinition(
                 $context->getCurrentBlock()->getId(),
                 $context->getCurrentMyFile(),
-                $context->getCurrentLine(), 
-                $context->getCurrentColumn(), 
-                $op->value);
+                $context->getCurrentLine(),
+                $context->getCurrentColumn(),
+                $op->value
+            );
 
             $instTemporary = new MyInstruction(Opcodes::TEMPORARY);
             $instTemporary->addProperty(MyInstruction::TEMPORARY, $myTemp);
@@ -316,7 +311,7 @@ class Common
         }*/
 
 /*
-        if (isset($op->var->original) 
+        if (isset($op->var->original)
             && $op->var->original instanceof Operand\Variable) {
             $instDefChained = new MyInstruction(Opcodes::VARIABLE);
             $instDefChained->addProperty(MyInstruction::VARIABLE_NAME, $op->var->original->name->value);
@@ -327,6 +322,12 @@ class Common
 
     public static function getTypeDef($op)
     {
+        if (isset($op->expr->ops[0])) {
+            if ($op->expr->ops[0] instanceof Op\Expr\Array_) {
+                return MyOp::TYPE_ARRAY;
+            }
+        }
+        
         if (isset($op->var->ops[0])) {
             if ($op->var->ops[0] instanceof Op\Expr\PropertyFetch) {
                 return MyOp::TYPE_PROPERTY;

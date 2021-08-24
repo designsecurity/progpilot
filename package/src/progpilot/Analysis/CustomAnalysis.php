@@ -19,6 +19,7 @@ use progpilot\Objects\MyClass;
 use progpilot\Code\MyInstruction;
 use progpilot\Utils;
 use progpilot\Helpers\Analysis as HelpersAnalysis;
+use progpilot\Helpers\Dataflow as HelpersDataflow;
 
 class CustomAnalysis
 {
@@ -54,29 +55,31 @@ class CustomAnalysis
         return null;
     }
     
-    public static function defineObject($context, $myFuncorDef, $stackClass)
+    public static function defineObject($context, $myFuncorDef, $myClassFound, $instruction)
     {
         $customRules = $context->inputs->getCustomRules();
+        echo "defineObject 1\n";
         foreach ($customRules as $customRule) {
             if ($customRule->getType() === MyCustomRule::TYPE_VARIABLE
                 && $customRule->getAction() === "DEFINE_OBJECT"
                     && !is_null($customRule->getExtra())) {
+                echo "defineObject 2\n";
                 $result = HelpersAnalysis::checkIfDefEqualDefRule(
                     $context,
                     null,
                     $customRule,
                     $myFuncorDef,
-                    $stackClass
+                    $myClassFound
                 );
-                
+
                 if ($result) {
-                    $myClassNew = new MyClass(
-                        $myFuncorDef->getLine(),
-                        $myFuncorDef->getColumn(),
-                        $customRule->getExtra()
+                    echo "returnObject for '".$myFuncorDef->getName()."' 4\n";
+                    CustomAnalysis::returnObjectCreateObject(
+                        $context,
+                        $instruction,
+                        $customRule,
+                        $myFuncorDef
                     );
-                    
-                    return $myClassNew;
                 }
             }
         }
@@ -84,57 +87,60 @@ class CustomAnalysis
         return null;
     }
     
-    public static function returnObjectCreateObject($context, $myExpr, $customRule, $myFuncorDef)
+    public static function returnObjectCreateObject($context, $instruction, $customRule, $myFuncorDef)
     {
-        $defAssign = $myExpr->getAssignDef();
-                
-        $objectId = $context->getObjects()->addObject();
-                
-        $defAssign->addType(MyDefinition::TYPE_INSTANCE);
-        $defAssign->setObjectId($objectId);
-                        
-        $myClass = $context->getClasses()->getMyClass($customRule->getExtra());
-                                
-        if (is_null($myClass)) {
-            $myClass = new MyClass(
-                $defAssign->getLine(),
-                $defAssign->getColumn(),
-                $customRule->getExtra()
+        // $this->foo->bar (we want to define an object on bar)
+        if ($myFuncorDef->isType(MyDefinition::TYPE_PROPERTY)) {
+            $myFakeInstance = $myFuncorDef;
+            $myFakeInstance->addType(MyDefinition::TYPE_INSTANCE);
+            $myFakeInstance->setClassName($customRule->getExtra());
+
+        } else {
+            $myFakeInstance = new MyDefinition(
+                $context->getCurrentBlock()->getId(),
+                $context->getCurrentMyFile(),
+                $myFuncorDef->getLine(),
+                $myFuncorDef->getColumn(),
+                "return__custom"
             );
+            $myFakeInstance->addType(MyDefinition::TYPE_INSTANCE);
+            $myFakeInstance->setClassName($customRule->getExtra());
         }
 
-        $context->getObjects()->addMyclassToObject($objectId, $myClass);
+        HelpersDataflow::createObject($context, $myFakeInstance);
         
-        $myBackDef = $myFuncorDef->getBackDef();
-        if (!is_null($myBackDef)) {
-            $objectId = $myBackDef->getObjectId();
-            $context->getObjects()->addMyclassToObject($objectId, $myClass);
-        }
+        $resultid = $instruction->getProperty(MyInstruction::RESULTID);
+        echo "returnObjectCreateObject '$resultid'\n";
+        $myFakeInstance->printStdout();
+        $opInformation["chained_results"] = [];
+        $opInformation["chained_results"][] = $myFakeInstance;
+        $context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
     }
     
-    public static function returnObject($context, $myFuncorDef, $stackClass, $myExpr)
+    public static function returnObject($context, $myFuncorDef, $myClass, $instruction)
     {
-        if (!is_null($myExpr) && $myExpr->isAssign()) {
-            $customRules = $context->inputs->getCustomRules();
-            foreach ($customRules as $customRule) {
-                if ($customRule->getType() === MyCustomRule::TYPE_FUNCTION
+        echo "returnObject for '".$myFuncorDef->getName()."' 1\n";
+        $customRules = $context->inputs->getCustomRules();
+        foreach ($customRules as $customRule) {
+            if ($customRule->getType() === MyCustomRule::TYPE_FUNCTION
                     && $customRule->getAction() === "DEFINE_OBJECT"
                         && !is_null($customRule->getExtra())) {
-                    $result = HelpersAnalysis::checkIfDefEqualDefRule(
+                echo "returnObject for '".$myFuncorDef->getName()."' 3\n";
+                $result = HelpersAnalysis::checkIfDefEqualDefRule(
+                    $context,
+                    null,
+                    $customRule,
+                    $myFuncorDef,
+                    $myClass
+                );
+                if ($result) {
+                    echo "returnObject for '".$myFuncorDef->getName()."' 4\n";
+                    CustomAnalysis::returnObjectCreateObject(
                         $context,
-                        null,
+                        $instruction,
                         $customRule,
-                        $myFuncorDef,
-                        $stackClass
+                        $myFuncorDef
                     );
-                    if ($result) {
-                        CustomAnalysis::returnObjectCreateObject(
-                            $context,
-                            $myExpr,
-                            $customRule,
-                            $myFuncorDef
-                        );
-                    }
                 }
             }
         }
@@ -211,7 +217,7 @@ class CustomAnalysis
                                                 break 2;
                                             }
                                         } else {
-                                            $defLastKnownValues = $defArg->getLastKnownValues();
+                                            $defLastKnownValues = $defArg->getCurrentState()->getLastKnownValues();
                                         }
                                         
                                         if (count($defLastKnownValues) === 0) {

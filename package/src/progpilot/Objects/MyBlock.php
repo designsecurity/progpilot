@@ -38,7 +38,9 @@ class MyBlock extends MyOp
 
     public function addVirtualParent($parent)
     {
-        $this->virtualParents[] = $parent;
+        if(!in_array($parent, $this->virtualParents, true)) {
+            $this->virtualParents[] = $parent;
+        }
     }
 
     public function getVirtualParents()
@@ -48,7 +50,9 @@ class MyBlock extends MyOp
 
     public function addParent($parent)
     {
-        $this->parents[] = $parent;
+        if (!in_array($parent, $this->parents, true)) {
+            $this->parents[] = $parent;
+        }
     }
 
     public function getParents()
@@ -58,7 +62,9 @@ class MyBlock extends MyOp
 
     public function addChild($child)
     {
-        $this->children[] = $child;
+        if (!in_array($child, $this->children, true)) {
+            $this->children[] = $child;
+        }
     }
 
     public function getChildren()
@@ -68,7 +74,9 @@ class MyBlock extends MyOp
 
     public function addReturnDef($def)
     {
-        $this->returnDefs[] = $def;
+        if (!in_array($def, $this->returnDefs, true)) {
+            $this->returnDefs[] = $def;
+        }
     }
 
     public function getReturnDefs()
@@ -78,7 +86,9 @@ class MyBlock extends MyOp
 
     public function addAssertion($myassertion)
     {
-        $this->assertions[] = $myassertion;
+        if (!in_array($myassertion, $this->assertions, true)) {
+            $this->assertions[] = $myassertion;
+        }
     }
 
     public function getAssertions()

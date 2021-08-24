@@ -21,18 +21,32 @@ class ConcatFetch
 {
     public static function concatFetch($context, $op, $expr)
     {
-        if (isset($op)
-            && $op instanceof Op\Expr\BinaryOp\Concat) {
-            $instDefChained = new MyInstruction(Opcodes::CONCAT_LEFT);
+        if (isset($op)) {
+            if ($op instanceof Op\Expr\BinaryOp\Concat) {
+                $instDefChained = new MyInstruction(Opcodes::CONCAT_LEFT);
 
-            Expr::instructionnew($context, $op->left, $expr);
-            $instDefChained->addProperty(MyInstruction::LEFTID, $context->getCurrentFunc()->getOpId($op->left));
-            Expr::instructionnew($context, $op->right, $expr);
-            $instDefChained->addProperty(MyInstruction::RIGHTID, $context->getCurrentFunc()->getOpId($op->right));
-            $instDefChained->addProperty(MyInstruction::RESULTID, $context->getCurrentFunc()->getOpId($op->result));
-            $instDefChained->addProperty(MyInstruction::EXPR, $expr);
+                Expr::instructionnew($context, $op->left, $expr);
+                $instDefChained->addProperty(MyInstruction::LEFTID, $context->getCurrentFunc()->getOpId($op->left));
+                Expr::instructionnew($context, $op->right, $expr);                
+                $opIds = [];
+                $opIds[] = $context->getCurrentFunc()->getOpId($op->right);
+                $instDefChained->addProperty(MyInstruction::RIGHTID, $opIds);
+                $instDefChained->addProperty(MyInstruction::RESULTID, $context->getCurrentFunc()->getOpId($op->result));
+                $instDefChained->addProperty(MyInstruction::EXPR, $expr);
 
-            $context->getCurrentMycode()->addCode($instDefChained);
+                $context->getCurrentMycode()->addCode($instDefChained);
+            } elseif ($op instanceof Op\Expr\ConcatList) {
+                $instDefChained = new MyInstruction(Opcodes::CONCAT_LEFT);
+
+                $opIds = [];
+                foreach ($op->list as $opsbis) {
+                    $opIds[] = $context->getCurrentFunc()->getOpId($opsbis);
+                    Expr::instructionnew($context, $opsbis, $expr);
+                }
+                $instDefChained->addProperty(MyInstruction::RIGHTID, $opIds);
+                $instDefChained->addProperty(MyInstruction::RESULTID, $context->getCurrentFunc()->getOpId($op->result));
+                $context->getCurrentMycode()->addCode($instDefChained);
+            }
         }
     }
 }

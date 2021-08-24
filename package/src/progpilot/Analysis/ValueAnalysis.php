@@ -193,7 +193,7 @@ class ValueAnalysis
             $defAssign->setArrayValue("PROGPILOT_ALL_INDEX_TAINTED");
             $defAssign->setTaintedByExpr($def->getExpr());
         }
-        
+
         if ($def->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
             $defAssign->property->setProperties("PROGPILOT_ALL_PROPERTIES_TAINTED");
             $defAssign->addType(MyDefinition::TYPE_INSTANCE);

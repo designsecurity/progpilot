@@ -61,7 +61,7 @@ class MyFunction extends MyOp
         $this->initialReturnDefs = [];
         $this->returnDefs = [];
         $this->visibility = "public";
-        $this->myclass = null;
+        $this->myClass = null;
         $this->nameInstance = null;
         $this->thisDef = null;
         $this->instanceClassName = "";
@@ -233,12 +233,12 @@ class MyFunction extends MyOp
 
     public function getMyClass()
     {
-        return $this->myclass;
+        return $this->myClass;
     }
 
     public function setMyClass($myClass)
     {
-        $this->myclass = $myClass;
+        $this->myClass = $myClass;
     }
 
     public function getThisDef()
@@ -293,8 +293,8 @@ class MyFunction extends MyOp
 
     public function getBlockById($id)
     {
-        foreach($this->blocks as $block) {
-            if($block->getId() === $id) {
+        foreach ($this->blocks as $block) {
+            if ($block->getId() === $id) {
                 return $block;
             }
         }

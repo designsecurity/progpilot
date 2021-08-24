@@ -243,7 +243,7 @@ class MyInputsInternalApi
                                 $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                 
-                                if (!is_null($myClass) && 
+                                if (!is_null($myClass) &&
                                     ($myClass->getName() === $myValidatorInstanceName
                                         || $myClass->getExtendsOf() === $myValidatorInstanceName)) {
                                     return $myValidator;
@@ -339,7 +339,7 @@ class MyInputsInternalApi
                             $stackClass[$stackNumberOfProperties - $mySinkNumberOfProperties];
 
                             foreach ($knownProperties as $propClass) {
-                                $objectId = $propClass->getObjectId();
+                                $objectId = $propClass->getCurrentState()->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                 
                                 if ((is_null($myClass) && $mySinkInstanceName === $propClass->getName())
@@ -409,7 +409,7 @@ class MyInputsInternalApi
                 if (!$instanceName && !$mySource->isInstance()) {
                     $checkInstance = true;
 
-        echo "getSourceByName 1\n";
+                    echo "getSourceByName 1\n";
                 }
 
                 if ($instanceName && $mySource->isInstance()) {
@@ -443,8 +443,7 @@ class MyInputsInternalApi
                 }
 
                 if ($mySource->isFunction() === $isFunction) {
-
-        echo "getSourceByName 2\n";
+                    echo "getSourceByName 2\n";
                     $checkFunction = true;
                 }
                 echo "getSourceByName 2 after\n";

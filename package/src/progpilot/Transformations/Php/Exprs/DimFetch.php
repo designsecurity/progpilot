@@ -20,15 +20,22 @@ class DimFetch
 {
     public static function dimFetch($context, $op, $expr)
     {
-        echo "concat4\n";
+        echo "ArrayDimFetch 1\n";
         if (isset($op)
             && $op instanceof Op\Expr\ArrayDimFetch) {
-                echo "concat5\n";
+                echo "ArrayDimFetch 2\n";
             $instDefChained = new MyInstruction(Opcodes::ARRAYDIM_FETCH);
-            $instDefChained->addProperty(MyInstruction::ARRAY_DIM, $op->dim->value);
+            if (isset($op->dim->value)) {
+                $instDefChained->addProperty(MyInstruction::ARRAY_DIM, $op->dim->value);
+            }
+            else {
+                // null when for pushing elements $arr[] = $ele;
+                $instDefChained->addProperty(MyInstruction::ARRAY_DIM, 0);
+            }
             $instDefChained->addProperty(MyInstruction::EXPR, $expr);
 
             if (isset($op->result)) {
+                echo "ArrayDimFetch 3\n";
                 $instDefChained->addProperty(
                     MyInstruction::RESULTID,
                     $context->getCurrentFunc()->getOpId($op->result)
@@ -36,6 +43,7 @@ class DimFetch
             }
 
             if (isset($op->var)) {
+                echo "ArrayDimFetch 4\n";
                 $instDefChained->addProperty(
                     MyInstruction::VARID,
                     $context->getCurrentFunc()->getOpId($op->var)

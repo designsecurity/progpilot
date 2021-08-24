@@ -18,6 +18,8 @@ class MyProperty extends MyDefinition
     public function __construct($blockId, $myFile, $varLine, $varColumn, $varName)
     {
         parent::__construct($blockId, $myFile, $varLine, $varColumn, $varName);
+
+        $this->addType(MyDefinition::TYPE_PROPERTY);
         $this->visibility = "public";
     }
 

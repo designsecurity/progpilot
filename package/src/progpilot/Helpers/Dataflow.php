@@ -22,6 +22,7 @@ class Dataflow
         if ($myDef->isType(MyDefinition::TYPE_INSTANCE)) {
             $idObject = $context->getObjects()->addObject();
             $myDef->getCurrentState()->setObjectId($idObject);
+            $myDef->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
 
             echo "createObject 2\n";
             $myDef->printStdout();
@@ -36,8 +37,7 @@ class Dataflow
                         $myDef->getColumn(),
                         $myDef->getClassName()
                     );
-                }
-                else {
+                } else {
                     $myClass = clone $myClass;
                 }
 
