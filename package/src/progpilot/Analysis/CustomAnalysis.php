@@ -94,7 +94,6 @@ class CustomAnalysis
             $myFakeInstance = $myFuncorDef;
             $myFakeInstance->addType(MyDefinition::TYPE_INSTANCE);
             $myFakeInstance->setClassName($customRule->getExtra());
-
         } else {
             $myFakeInstance = new MyDefinition(
                 $context->getCurrentBlock()->getId(),

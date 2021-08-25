@@ -19,13 +19,12 @@ use progpilot\Code\Opcodes;
 
 class StaticPropertyFetch
 {
-    public static function staticPropertyFetch($context, $op, $expr)
+    public static function staticPropertyFetch($context, $op)
     {
         if (isset($op)
             && $op instanceof Op\Expr\StaticPropertyFetch) {
             $instDefChained = new MyInstruction(Opcodes::STATIC_PROPERTY_FETCH);
             $instDefChained->addProperty(MyInstruction::PROPERTY_NAME, $op->name->value);
-            $instDefChained->addProperty(MyInstruction::EXPR, $expr);
 
             // static property
             if (isset($op->class->value)) {

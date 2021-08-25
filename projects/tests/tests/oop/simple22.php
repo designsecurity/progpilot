@@ -12,13 +12,13 @@ $a->data = $_GET["p"];
 
 $b = $a;
 
-echo $a->data;
+echo $a->data; // KO
 
 
-echo $b->data;
+echo $b->data; // KO
 
 $b->data = "eee";
 
-echo $a->data;
+echo $a->data; // OK
 
-echo $b->data;
+echo $b->data; // OK

@@ -15,6 +15,8 @@ use progpilot\Objects\MyDefinition;
 use progpilot\Code\Opcodes;
 use progpilot\Code\MyInstruction;
 
+use progpilot\Helpers\Analysis as HelpersAnalysis;
+
 class FuncAnalysis
 {
     public static function funccallAfter(
@@ -35,17 +37,25 @@ class FuncAnalysis
 
         echo "funccallAfter 1 '".$myFuncCall->getName()."'\n";
         if (!is_null($myFunc)) {
+            echo "myblock callee id '".$myFuncCall->getBlockId()."'\n";
             echo "funccallAfter 2 '".$myFuncCall->getName()."'\n";
             $defsReturn = $myFunc->getReturnDefs();
             foreach ($defsReturn as $defReturn) {
                 echo "funccallAfter 3 '".$myFuncCall->getName()."' one def return\n";
+                echo "funccallAfter 3 myblock caller currentstate'".$defReturn->getBlockId()."'of def return\n";
+                $defReturn->printStdout();
+
+                if($defReturn->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
+                    echo "updateBlocksOfProperties force\n";
+                    //HelpersAnalysis::updateBlocksOfProperties($context, $defReturn);
+                }
                 /*
                 if (($arrFuncCall !== false
                     && $defReturn->isType(MyDefinition::TYPE_ARRAY)
                         && $defReturn->getArrayValue() === $arrFuncCall)
                             || ($arrFuncCall === false && !$defReturn->isType(MyDefinition::TYPE_ARRAY))) {
                     $copyDefReturn = $defReturn;
-                    
+
                     $copyDefReturn->setExpr($exprReturn);
                     $defReturn->setCast($myFuncCall->getCastReturn());
                     $exprReturn->addDef($copyDefReturn);
@@ -75,6 +85,10 @@ class FuncAnalysis
                 $opInformation["def_assign"] = $previousOpInformation["def_assign"];
             }*/
             
+
+
+
+
             if ($myFuncCall->getName() !== "__construct") {
                 echo "funccallAfter 2 '$resultid'\n";
 

@@ -24,15 +24,17 @@ use progpilot\Transformations\Php\Transform;
 use progpilot\Transformations\Php\Expr;
 use progpilot\Transformations\Php\Exprs\PropertyFetch;
 use progpilot\Transformations\Php\Exprs\DimFetch;
+use progpilot\Transformations\Php\Exprs\VariableFetch;
 
 class FuncCall
 {
     public static function argument($context, $arg, $instFuncCallMain, $funcCallName, $numParam)
     {
+        echo "argument start\n";
         $myExprparam = new MyExpr($context->getCurrentLine(), $context->getCurrentColumn());
 
-        Expr::instructionnew($context, $arg, $myExprparam);
-        
+        VariableFetch::variableFetch($context, $arg, null);
+
         $instArg = new MyInstruction(Opcodes::ARGUMENT);
         $instArg->addProperty(MyInstruction::VARID, $context->getCurrentFunc()->getOpId($arg));
         $context->getCurrentMycode()->addCode($instArg);
@@ -61,6 +63,7 @@ class FuncCall
         $instFuncCallMain->addProperty("argdef$numParam", $myDef);
         $instFuncCallMain->addProperty("argexpr$numParam", $myExprparam);
 
+        echo "argument end\n";
 
 /*
         // if we have funccall($arg, array("test"=>false)); for example
@@ -119,7 +122,7 @@ class FuncCall
 
         // instance_name = new obj; instance_name->method_name()
 
-        echo "funccall transform1\n";
+        echo "funccall start\n";
         if ($context->getCurrentOp() instanceof Op\Expr\MethodCall) {
             echo "funccall transform2\n";
             $isMethod = true;
@@ -187,6 +190,7 @@ class FuncCall
                 $context->getCurrentFunc()->getOpId($context->getCurrentOp()->class)
             );
         }
+        echo "funccall transform4 '$funcCallName'\n";
         $instFuncCallMain->addProperty(MyInstruction::FUNCNAME, $funcCallName);
 
         $myFunctionCall = new MyFunction($funcCallName);
@@ -223,25 +227,28 @@ class FuncCall
             $listArgs = $context->getCurrentOp()->args;
         }
 
+        echo "funccall start arg\n";
         foreach ($listArgs as $arg) {
             FuncCall::argument($context, $arg, $instFuncCallMain, $funcCallName, $nbparams);
             $nbparams ++;
         }
+        echo "funccall end arg\n";
 
         $myFunctionCall->setNbParams($nbparams);
 
-
+/*
         if ($isMethod) {
             if (isset($context->getCurrentOp()->var->ops[0])) {
                 Common::transformPropertyFetch($context, $context->getCurrentOp()->var->ops[0]);
             }
-        }
+        }*/
 
         $instFuncCallMain->addProperty(MyInstruction::MYFUNC_CALL, $myFunctionCall);
         $instFuncCallMain->addProperty(MyInstruction::EXPR, $myExpr);
         $instFuncCallMain->addProperty(MyInstruction::ARR, $funcCallArr);
         $context->getCurrentMycode()->addCode($instFuncCallMain);
 
+        echo "funcall end\n";
         return $mybackdef;
     }
 }

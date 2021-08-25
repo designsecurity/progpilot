@@ -19,13 +19,13 @@ use progpilot\Code\Opcodes;
 
 class PropertyFetch
 {
-    public static function propertyFetch($context, $op, $expr)
+    public static function propertyFetch($context, $op)
     {
         if (isset($op)
             && $op instanceof Op\Expr\PropertyFetch) {
+                echo "propertyFetch\n";
             $instDefChained = new MyInstruction(Opcodes::PROPERTY_FETCH);
             $instDefChained->addProperty(MyInstruction::PROPERTY_NAME, $op->name->value);
-            $instDefChained->addProperty(MyInstruction::EXPR, $expr);
 
             // beginning of the chain
             if (isset($op->var->original)) {

@@ -404,7 +404,9 @@ class TaintAnalysis
             $myTempReturn->getCurrentState()->setTainted($paramsTainted);
 
             foreach ($paramsTaintedDefs as $paramsTaintedDef) {
-                $myTempReturn->getCurrentState()->addTaintedByDef([$paramsTaintedDef, $paramsTaintedDef->getCurrentState()]);
+                $myTempReturn->getCurrentState()->addTaintedByDef(
+                    [$paramsTaintedDef, $paramsTaintedDef->getCurrentState()]
+                );
             }
             //TaintAnalysis::setTainted($myTempReturn, $myTempReturn);
         }

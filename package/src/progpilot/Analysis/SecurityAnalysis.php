@@ -64,7 +64,7 @@ class SecurityAnalysis
         
                         echo "security funccall 5\n";
                         $myDefArg = $instruction->getProperty("argdef$i");
-
+/*
                         if ($myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
                             && $mySink->isParameterCondition($i + 1, "array_tainted")) {
                             foreach ($myDefArg->getCopyArrays() as $copyarray) {
@@ -89,7 +89,7 @@ class SecurityAnalysis
                         } elseif ($myDefArg->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")
                             && $mySink->isParameterCondition($i + 1, "object_tainted")) {
                             $conditionRespected = true;
-                        }
+                        }*/
 
                         if (!$conditionRespected) {
                             break;
@@ -229,8 +229,7 @@ class SecurityAnalysis
                             return false;
                         }
                     }
-                }
-                else  {
+                } else {
                     return false; // not safe because type not sanitized
                 }
 
@@ -292,7 +291,12 @@ class SecurityAnalysis
                     $ret = SecurityAnalysis::getPrintableTaintedDef($mySink, $taintedDef);
 
                     if (!SecurityAnalysis::inArrayStateSource($temp, $ret)) {
-                        $resultsFlow = SecurityAnalysis::taintedStateFlow($mySink, $indexParameter, $taintedDef, $taintedState);
+                        $resultsFlow = SecurityAnalysis::taintedStateFlow(
+                            $mySink,
+                            $indexParameter,
+                            $taintedDef,
+                            $taintedState
+                        );
                         $resultTaintedFlow = $resultsFlow[0];
                         $hashIdVuln .= $resultsFlow[1];
 

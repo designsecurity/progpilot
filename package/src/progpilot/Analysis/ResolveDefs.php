@@ -193,6 +193,7 @@ class ResolveDefs
                 "return__construct"
             );
             $myFakeInstance->addType(MyDefinition::TYPE_INSTANCE);
+            $myFakeInstance->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
             $myFakeInstance->setClassName($myFuncCall->getInstanceClassName());
 
             HelpersDataflow::createObject($context, $myFakeInstance);
@@ -575,7 +576,9 @@ class ResolveDefs
             $arrayDef->printStdout();
             if ($arrayDef->getCurrentState()->isType(MyDefinition::TYPE_ARRAY)) {
                 echo "selectArrays 4\n";
-                $arrayDefs[] = $arrayDef->getCurrentState()->getOrCreateDefArrayIndex($tempDefa->getBlockId(), $arrayDef, $arrayDim);
+                $arrayDefs[] = $arrayDef
+                    ->getCurrentState()
+                        ->getOrCreateDefArrayIndex($tempDefa->getBlockId(), $arrayDef, $arrayDim);
             }
         }
 
@@ -627,12 +630,18 @@ class ResolveDefs
             echo "selectStaticProperties 2_ '$propertyName'\n";
             $property = $myClass->getProperty($propertyName);
 
+            if (!is_null($property)) {
+                echo "selectStaticProperties 3_ '$propertyName'\n";
+                $property->printStdout();
+            }
+
             if (!is_null($property)
                                         && (ResolveDefs::getVisibility(
                                             $tempDef,
                                             $property,
                                             $currentFunc
                                         ))) {
+                                            echo "selectStaticProperties 4_ '$propertyName'\n";
                 return $property;
             }
         }
@@ -653,7 +662,7 @@ class ResolveDefs
 
         foreach ($instances as $instance) {
             echo "selectProperties 2_\n";
-            if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
+            if ($instance->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
                 /*
                 if ($instance->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
                     $tempDefa->setTaintedByExpr($instance->getTaintedByExpr());
@@ -677,8 +686,7 @@ class ResolveDefs
                                                     || $bypassVisibility)) {
                         echo "selectProperties 5_\n";
                         $propertiesDefs[] = [$property, $tmpMyClass];
-                    }
-                    else {
+                    } else {
                         // we didn't find any propery but in this case php create automatically the property
 
                         $myProperty = new MyProperty(
@@ -752,11 +760,11 @@ class ResolveDefs
                 $isAssign,
                 true
             );
-            
+
             if (!(count($resStatic) === 1 && $resStatic[0] === $tempDefa)) {
                 return $resStatic;
             }
-            
+
             // if no result we are looking inside the callee functions
             for ($callNumber = count($callStack) - 1; $callNumber >= 0; $callNumber --) {
                 $currentContextCall = $callStack[$callNumber][4];
@@ -766,7 +774,7 @@ class ResolveDefs
                     $tempDefa->setLine($currentContextCall->func_called->getLine());
                     $tempDefa->setColumn($currentContextCall->func_called->getColumn());
                     $tempDefa->setBlockId($currentContextCall->func_callee->getLastBlockId());
-                    
+
                     $resGlobal = ResolveDefs::temporarySimple(
                         $context,
                         $currentContextCall->func_callee->getDefs(),
