@@ -44,7 +44,7 @@ $newsettestc1 = new testc1;
 
 $newsettestc1->set_object1($_GET["p"]);
 
-echo $newsettestc1->object1; // NOT OK (FN)
+echo $newsettestc1->object1; // NOT OK
 
 
 
@@ -64,9 +64,9 @@ $testc1_encore2->member1 = $_GET["p"];
 
 $val = $testc1_encore2->member1;
 
-echo $testc1_encore2->member1; // OK
+echo $testc1_encore2->member1; // NOT OK
 
-echo $val; // OK
+echo $val; // NOT OK
 
 
 

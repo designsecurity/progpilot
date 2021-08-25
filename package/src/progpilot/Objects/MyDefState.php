@@ -63,7 +63,7 @@ class MyDefState extends MyOp
         var_dump($this->objectId);
         echo "istypeinstance : '".$this->isType(MyDefinition::TYPE_INSTANCE)."'\n";
         echo "istypearray : '".$this->isType(MyDefinition::TYPE_ARRAY)."'\n";
-        foreach($this->arrayIndexes as $arrayIndex) {
+        foreach ($this->arrayIndexes as $arrayIndex) {
             echo "index :\n";
             var_dump($arrayIndex->index);
             echo "def :\n";
@@ -249,11 +249,18 @@ class MyDefState extends MyOp
             }
         }
 
-        if($found) {
+        if ($found) {
             return [false, $ret];
         }
 
-        $myDef = new MyDefinition($blockId, $myArrayDef->getSourceMyFile(), $myArrayDef->getLine(), $myArrayDef->getColumn(), "built-in-index-array");
+        $myDef = new MyDefinition(
+            $blockId,
+            $myArrayDef->getSourceMyFile(),
+            $myArrayDef->getLine(),
+            $myArrayDef->getColumn(),
+            "built-in-index-array"
+        );
+            
         $myDef->addType(MyDefinition::TYPE_ARRAY_ELEMENT);
         $this->addArrayIndex($arrayIndex, $myDef);
         $this->addType(MyDefinition::TYPE_ARRAY);

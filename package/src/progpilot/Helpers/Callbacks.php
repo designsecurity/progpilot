@@ -62,7 +62,6 @@ class Callbacks
             $def->setRefs($originalDef->getRefs());
             $def->setRefArrValue($originalDef->getRefArrValue());
             $def->setStates($originalDef->getStates());
-
         }
     }
 }

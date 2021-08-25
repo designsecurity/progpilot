@@ -36,6 +36,8 @@ use progpilot\Transformations\Php\Assign;
 use progpilot\Transformations\Php\Common;
 use progpilot\Transformations\Php\Context;
 
+use progpilot\Transformations\Php\Exprs\VariableFetch;
+
 use function DeepCopy\deep_copy;
 
 class Transform implements Visitor
@@ -87,6 +89,7 @@ class Transform implements Visitor
                     $myBlockParent = $this->sBlocks[$block_parent];
                     echo "leaveScript 3 blockid parent = '".$myBlockParent->getId()."'\n";
                     $myBlock->addParent($myBlockParent);
+                    $myBlock->addVirtualParent($myBlockParent);
                     $myBlockParent->addChild($myBlock);
                 }
             }
@@ -224,6 +227,10 @@ class Transform implements Visitor
                 );
 
                 $mythisdef->addType(MyDefinition::TYPE_INSTANCE);
+                $mythisdef->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
+
+                echo "enterFunc 2\n";
+                $mythisdef->printStdout();
 
                 $myFunction->setThisDef($mythisdef);
             }
@@ -326,6 +333,7 @@ class Transform implements Visitor
            const TYPE_REQUIRE = 3;
            const TYPE_REQUIRE_ONCE = 4;
         */
+        Expr::instructionnew2($this->context, $op, null);
 
         if ($op instanceof Op\Expr\Include_) {
             if (Common::isFuncCallWithoutReturn($op)) {
@@ -365,7 +373,7 @@ class Transform implements Visitor
                 $inst->addProperty(MyInstruction::RETURN_DEFS, $this->context->getCurrentFunc()->getReturnDefs());
                 $this->context->getCurrentMycode()->addCode($inst);
             }
-        } elseif ($op instanceof Op\Expr\Eval_) {
+        }/* elseif ($op instanceof Op\Expr\Eval_) {
             if (Common::isFuncCallWithoutReturn($op)) {
                 // expr of type "assign" to have a defined return
                 $myExpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
@@ -441,7 +449,9 @@ class Transform implements Visitor
                 $this->context->getCurrentMycode()->addCode($instEndExpr);
             }
         } elseif ($op instanceof Op\Expr\MethodCall) {
+            echo "MethodCall direct1\n";
             if (Common::isFuncCallWithoutReturn($op)) {
+                echo "MethodCall direct2\n";
                 $myExpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
 
                 $this->context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
@@ -452,10 +462,9 @@ class Transform implements Visitor
                 $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
                 $this->context->getCurrentMycode()->addCode($instEndExpr);
             }
-        } elseif ($op instanceof Op\Expr\Param) {
-            echo "param\n";
-        } elseif ($op instanceof Op\Expr\Assign || $op instanceof Op\Expr\AssignRef) {
+        }*/ elseif ($op instanceof Op\Expr\Assign || $op instanceof Op\Expr\AssignRef) {
             if (isset($op->expr) && isset($op->var)) {
+                VariableFetch::variableFetch($this->context, $op->expr, null);
                 Assign::instruction($this->context, $op, $op->expr, $op->var);
             }
         } elseif ($op instanceof Op\Stmt\Class_) {

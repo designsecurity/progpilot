@@ -174,6 +174,7 @@ class VisitorDataflow
                                 $thisdef->setBlockId($myBlock->getId());
                                 $thisdef->unsetState(0);
                                 $thisdef->addState($myBlock->getId());
+                                $thisdef->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
 
                                 $context->getCurrentFunc()->getDefs()->addDef($thisdef->getName(), $thisdef);
                                 $context->getCurrentFunc()->getDefs()->addGen($thisdef->getBlockId(), $thisdef);
@@ -343,7 +344,7 @@ class VisitorDataflow
                                 && !$myDef->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
                                 $context->getCurrentFunc()->getDefs()->addDef($myDef->getName(), $myDef);
                                 $context->getCurrentFunc()->getDefs()->addGen($myDef->getBlockId(), $myDef);
-                            } 
+                            }
                         } else {
                             if (!$alreadyWarned) {
                                 Utils::printWarning($context, Lang::MAX_DEFS_EXCEEDED);

@@ -163,10 +163,13 @@ class Common
         if (isset($op)
             && ($op instanceof Op\Expr\PropertyFetch
                 || $op instanceof Op\Expr\StaticPropertyFetch)) {
+                    echo "transformPropertyFetch 2\n";
             if (isset($op->var->ops[0])) {
+                echo "transformPropertyFetch 3\n";
                 Common::transformPropertyFetch($context, $op->var->ops[0]);
             }
 
+            echo "transformPropertyFetch 4\n";
             $instDefChained = new MyInstruction(Opcodes::PROPERTY_FETCH);
             $instDefChained->addProperty(MyInstruction::PROPERTY_NAME, $op->name->value);
 
@@ -460,6 +463,24 @@ class Common
 
     public static function isFuncCallWithoutReturn($op)
     {
+        echo "isFuncCallWithoutReturn\n";
+        //var_dump($op);
+
+        if($op instanceof Op\Expr\Assign
+            || $op instanceof Op\Terminal\Return_) {
+            return false;
+        }
+
+        if(isset($op->var->ops[0]) && $op !== $op->var->ops[0]) {
+            return Common::isFuncCallWithoutReturn($op->var->ops[0]);
+        } 
+
+        if(isset($op->result->ops[1]) && $op !== $op->result->ops[1]) {
+            return Common::isFuncCallWithoutReturn($op->result->ops[1]);
+        } 
+
+        return true;
+        /*
         if (isset($op->var->ops[0]) && $op->var->ops[0] instanceof Op\Expr\MethodCall) {
             return true;
         } elseif (isset($op->result->usages[0]) && $op->result->usages[0] instanceof Op\Expr\MethodCall) {
@@ -499,6 +520,7 @@ class Common
         }
 
         return false;
+        */
     }
 
     public static function getTypeIsArray($ops)

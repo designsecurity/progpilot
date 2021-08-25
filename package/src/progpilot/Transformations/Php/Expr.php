@@ -79,20 +79,26 @@ class Expr
     }
 
     public static function instructionnew2($context, $op, $expr)
-    {
+    {/*
+        echo "instructionnew2 1\n";
         if (isset($op->var->ops[0]) && $op !== $op->var->ops[0]) {
+            echo "instructionnew2 2\n";
             Expr::instructionnew2($context, $op->var->ops[0], $expr);
         }
 
         if (isset($op->ops[0]) && $op !== $op->ops[0]) {
+            echo "instructionnew2 3\n";
             Expr::instructionnew2($context, $op->ops[0], $expr);
         }
 
+        echo "instructionnew2 4\n";
+        */
         ConcatFetch::concatFetch($context, $op, $expr);
         DimFetch::dimFetch($context, $op, $expr);
-        PropertyFetch::propertyFetch($context, $op, $expr);
-        StaticPropertyFetch::staticPropertyFetch($context, $op, $expr);
+        PropertyFetch::propertyFetch($context, $op);
+        StaticPropertyFetch::staticPropertyFetch($context, $op);
         FunccallFetch::funccallFetch($context, $op, $expr);
+        VariableFetch::variableFetch($context, $op, $expr);
     }
 
     public static function instructionnew($context, $op, $expr)

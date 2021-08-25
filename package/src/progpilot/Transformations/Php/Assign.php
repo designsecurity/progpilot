@@ -185,17 +185,21 @@ class Assign
             $instAssign->addProperty(MyInstruction::LITERAL, $myTemp);
         }
         
+        echo "assign expr start\n";
         // $array = [expr, expr, expr]
+        /*
         if (isset($expr->ops[0]) && $expr->ops[0] instanceof Op\Expr\Array_) {
             ArrayFetch::arrayFetch($context, $expr->ops[0], $var, $expr, $name);
         } else {
             Expr::instructionnew($context, $expr, $myExpr);
         }
+        */
+        echo "assign expr end\n";
 
         // let's continue by the left part
         $instDefinition = new MyInstruction(Opcodes::DEFINITION);
             
-        Expr::instructionassign($context, $var, null);
+        //Expr::instructionassign($context, $var, null);
             
         $myDef = new MyDefinition(
             $context->getCurrentBlock()->getId(),

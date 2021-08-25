@@ -16,6 +16,7 @@ class MyBlock extends MyOp
     private $startAddressBlock;
     private $endAddressBlock;
     private $loop;
+    private $needUpdateOfState;
 
     public $children;
     public $parents;
@@ -34,13 +35,30 @@ class MyBlock extends MyOp
         $this->virtualParents = [];
         $this->children = [];
         $this->loop = false;
+        $this->needUpdateOfState = true;
+    }
+
+
+    public function setNeedUpdateOfState($update)
+    {
+        $this->needUpdateOfState = $update;
+    }
+
+    public function doNeedUpdateOfState()
+    {
+        return $this->needUpdateOfState;
     }
 
     public function addVirtualParent($parent)
     {
-        if(!in_array($parent, $this->virtualParents, true)) {
+        if (!in_array($parent, $this->virtualParents, true)) {
             $this->virtualParents[] = $parent;
         }
+    }
+
+    public function setVirtualParents($parents)
+    {
+        $this->virtualParents = $parents;
     }
 
     public function getVirtualParents()

@@ -27,7 +27,7 @@ class ConcatFetch
 
                 Expr::instructionnew($context, $op->left, $expr);
                 $instDefChained->addProperty(MyInstruction::LEFTID, $context->getCurrentFunc()->getOpId($op->left));
-                Expr::instructionnew($context, $op->right, $expr);                
+                Expr::instructionnew($context, $op->right, $expr);
                 $opIds = [];
                 $opIds[] = $context->getCurrentFunc()->getOpId($op->right);
                 $instDefChained->addProperty(MyInstruction::RIGHTID, $opIds);
