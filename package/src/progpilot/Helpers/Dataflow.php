@@ -19,13 +19,13 @@ class Dataflow
     {
         echo "createObject 1\n";
 
-        if ($myDef->isType(MyDefinition::TYPE_INSTANCE)) {
+        if ($myDef->isType(MyDefinition::TYPE_INSTANCE)
+            || $myDef->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
             $idObject = $context->getObjects()->addObject();
             $myDef->getCurrentState()->setObjectId($idObject);
             $myDef->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
 
             echo "createObject 2\n";
-            $myDef->printStdout();
 
             if (!empty($myDef->getClassName())) {
                 $myClass = $context->getClasses()->getMyClass($myDef->getClassName());

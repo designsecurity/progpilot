@@ -163,7 +163,7 @@ class Common
         if (isset($op)
             && ($op instanceof Op\Expr\PropertyFetch
                 || $op instanceof Op\Expr\StaticPropertyFetch)) {
-                    echo "transformPropertyFetch 2\n";
+            echo "transformPropertyFetch 2\n";
             if (isset($op->var->ops[0])) {
                 echo "transformPropertyFetch 3\n";
                 Common::transformPropertyFetch($context, $op->var->ops[0]);
@@ -323,8 +323,27 @@ class Common
         */
     }
 
+    public static function isChainedKnownType($op)
+    {
+        if ($op instanceof Op\Expr\PropertyFetch
+            || $op instanceof Op\Expr\StaticPropertyFetch
+                || $op instanceof Op\Expr\ArrayDimFetch) {
+            return true;
+        }
+
+        return false;
+    }
+
     public static function getTypeDef($op)
     {
+        if (isset($op) && isset($op->name)) {
+            if ($op instanceof Op\Expr\FuncCall
+                && $op->name instanceof Operand\Literal
+                    && $op->name->value === "define") {
+                return MyOp::TYPE_CONST;
+            }
+        }
+        
         if (isset($op->expr->ops[0])) {
             if ($op->expr->ops[0] instanceof Op\Expr\Array_) {
                 return MyOp::TYPE_ARRAY;
@@ -332,20 +351,26 @@ class Common
         }
         
         if (isset($op->var->ops[0])) {
-            if ($op->var->ops[0] instanceof Op\Expr\PropertyFetch) {
-                return MyOp::TYPE_PROPERTY;
-            }
+            if (isset($op->var->ops[0]->var->ops[0]) 
+                && Common::isChainedKnownType($op->var->ops[0]->var->ops[0])
+                 && $op->var->ops[0]->var->ops[0] !== $op->var->ops[0]) {
+                return Common::getTypeDef($op->var->ops[0]);
+            } else {
+                if ($op->var->ops[0] instanceof Op\Expr\PropertyFetch) {
+                    return MyOp::TYPE_PROPERTY;
+                }
 
-            if ($op->var->ops[0] instanceof Op\Expr\StaticPropertyFetch) {
-                return MyOp::TYPE_STATIC_PROPERTY;
-            }
+                if ($op->var->ops[0] instanceof Op\Expr\StaticPropertyFetch) {
+                    return MyOp::TYPE_STATIC_PROPERTY;
+                }
 
-            if ($op->var->ops[0] instanceof Op\Expr\ArrayDimFetch) {
-                return MyOp::TYPE_ARRAY;
-            }
+                if ($op->var->ops[0] instanceof Op\Expr\ArrayDimFetch) {
+                    return MyOp::TYPE_ARRAY;
+                }
 
-            if (isset($op->var->original->name->value)) {
-                return MyOp::TYPE_VARIABLE;
+                if (isset($op->var->original->name->value)) {
+                    return MyOp::TYPE_VARIABLE;
+                }
             }
         }
 
@@ -466,18 +491,18 @@ class Common
         echo "isFuncCallWithoutReturn\n";
         //var_dump($op);
 
-        if($op instanceof Op\Expr\Assign
+        if ($op instanceof Op\Expr\Assign
             || $op instanceof Op\Terminal\Return_) {
             return false;
         }
 
-        if(isset($op->var->ops[0]) && $op !== $op->var->ops[0]) {
+        if (isset($op->var->ops[0]) && $op !== $op->var->ops[0]) {
             return Common::isFuncCallWithoutReturn($op->var->ops[0]);
-        } 
+        }
 
-        if(isset($op->result->ops[1]) && $op !== $op->result->ops[1]) {
+        if (isset($op->result->ops[1]) && $op !== $op->result->ops[1]) {
             return Common::isFuncCallWithoutReturn($op->result->ops[1]);
-        } 
+        }
 
         return true;
         /*
@@ -504,14 +529,14 @@ class Common
                                 || $op->result->usages[0] instanceof Op\Expr\Array_
                                 || $op->result->usages[0] instanceof Op\Expr\Include_
                                 || $op->result->usages[0] instanceof Op\Expr\Eval_
-                                
+
                                 || $op->result->usages[0] instanceof Op\Expr\Cast\Int_
                                 || $op->result->usages[0] instanceof Op\Expr\Cast\Array_
                                 || $op->result->usages[0] instanceof Op\Expr\Cast\Bool_
                                 || $op->result->usages[0] instanceof Op\Expr\Cast\Double_
                                 || $op->result->usages[0] instanceof Op\Expr\Cast\Object_
                                 || $op->result->usages[0] instanceof Op\Expr\Cast\String_
-                                
+
                                 || $op->result->usages[0] instanceof Op\Iterator\Reset
                             ))
             )) {

@@ -14,7 +14,7 @@ use progpilot\Objects\MyDefinition;
 
 class AssertionAnalysis
 {
-    public static function temporarySimple($context, $data, $myBlock, $resolveTemporary, $tempDef)
+    public static function temporarySimple($myBlock, $def)
     {
         $assertions = $myBlock->getAssertions();
 
@@ -26,34 +26,20 @@ class AssertionAnalysis
             $myDefAssertion = $assertion->getDef();
             $typeAssertion = $assertion->getType();
 
-            // there was not resolution so we simply check name (or better equality values)
-            if ($resolveTemporary === $tempDef) {
-                if ($myDefAssertion->getName() === $tempDef->getName()) {
-                    $tempDef->setTainted(false);
-                }
-
-                $equality = true;
-            }
-
-            if ($myDefAssertion === $resolveTemporary) {
-                if ($myDefAssertion->getName() === $tempDef->getName()) {
-                    $tempDef->setTainted(false);
-                }
-
+            if ($myDefAssertion->getName() === $def->getName()) {
                 $equality = true;
                 break;
             }
         }
 
-
         if ($equality && $typeAssertion !== "string") {
             $safe = true;
         }
-
-        if ($resolveTemporary->getCast() === MyDefinition::CAST_SAFE) {
+/*
+        if ($def->getCast() === MyDefinition::CAST_SAFE) {
             $safe = true;
         }
-
+*/
         return $safe;
     }
 }

@@ -40,4 +40,7 @@ class Opcodes
     const VARIABLE_FETCH = 26;
     const LITERAL_FETCH = 27;
     const STATIC_PROPERTY_FETCH = 28;
+    const CAST = 29;
+    const CONST_FETCH = 30;
+    const ITERATOR = 31;
 }

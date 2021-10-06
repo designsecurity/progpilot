@@ -33,7 +33,16 @@ class FuncCall
         echo "argument start\n";
         $myExprparam = new MyExpr($context->getCurrentLine(), $context->getCurrentColumn());
 
-        VariableFetch::variableFetch($context, $arg, null);
+        Expr::instructionnew($context, $arg, null);
+        //VariableFetch::variableFetch($context, $arg, null);
+
+        $instVariable = $context->getCurrentMycode()->getLastCode();
+        if ($instVariable->getOpcode() === Opcodes::VARIABLE_FETCH) {
+            echo "FuncCall argument variable\n";
+            $defArg = $instVariable->getProperty(MyInstruction::DEF);
+            $instFuncCallMain->addProperty("argoriginaldef$numParam", $defArg);
+        }
+
 
         $instArg = new MyInstruction(Opcodes::ARGUMENT);
         $instArg->addProperty(MyInstruction::VARID, $context->getCurrentFunc()->getOpId($arg));
@@ -65,42 +74,42 @@ class FuncCall
 
         echo "argument end\n";
 
-/*
-        // if we have funccall($arg, array("test"=>false)); for example
-        if ($typeArray === MyOp::TYPE_ARRAY_EXPR) {
-            ArrayExpr::instruction($arg, $context, false, $defName, false);
+        /*
+                // if we have funccall($arg, array("test"=>false)); for example
+                if ($typeArray === MyOp::TYPE_ARRAY_EXPR) {
+                    ArrayExpr::instruction($arg, $context, false, $defName, false);
 
-            $myTemp = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), $defName);
-            //$myTemp->addLastKnownValue($defName);
-            $myTemp->setExpr($myExprparam);
+                    $myTemp = new MyDefinition($context->getCurrentLine(), $context->getCurrentColumn(), $defName);
+                    //$myTemp->addLastKnownValue($defName);
+                    $myTemp->setExpr($myExprparam);
 
-            $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
-            $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
-            $context->getCurrentMycode()->addCode($instTemporarySimple);
-        } else {
+                    $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
+                    $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
+                    $context->getCurrentMycode()->addCode($instTemporarySimple);
+                } else {
 
-            echo "transform funcall 1\n";
-            if (isset($context->getCurrentOp()->expr)) {
-                echo "transform funcall 2\n";
-                //Common::transformPropertyFetch($context, $context->getCurrentOp()->expr->ops[0]);
-            }
-            echo "transform funcall 3\n";
+                    echo "transform funcall 1\n";
+                    if (isset($context->getCurrentOp()->expr)) {
+                        echo "transform funcall 2\n";
+                        //Common::transformPropertyFetch($context, $context->getCurrentOp()->expr->ops[0]);
+                    }
+                    echo "transform funcall 3\n";
 
-            $myTemp = Expr::instruction($arg, $context, $myExprparam);
+                    $myTemp = Expr::instruction($arg, $context, $myExprparam);
 
-            echo "transform funcall 4\n";
-            if (!is_null($myTemp)) {
-                $myDef->setValueFromDef($myTemp);
-            }
-        }
+                    echo "transform funcall 4\n";
+                    if (!is_null($myTemp)) {
+                        $myDef->setValueFromDef($myTemp);
+                    }
+                }
 
-        $instDef = new MyInstruction(Opcodes::DEFINITION);
-        $instDef->addProperty(MyInstruction::DEF, $myDef);
-        $context->getCurrentMycode()->addCode($instDef);
+                $instDef = new MyInstruction(Opcodes::DEFINITION);
+                $instDef->addProperty(MyInstruction::DEF, $myDef);
+                $context->getCurrentMycode()->addCode($instDef);
 
-        unset($myExprparam);
-        unset($myDef);
-        */
+                unset($myExprparam);
+                unset($myDef);
+                */
     }
 
     /*
@@ -155,7 +164,9 @@ class FuncCall
         }
 
         if ($funcCallName === "define") {
-            Assign::instruction($context, false, true);
+            Assign::instruction($context, $context->getCurrentOp(), null, null, false, true, null);
+
+            //Assign::instruction($context, false, true);
         }
 
         if ($context->getCurrentOp() instanceof Op\Expr\Include_) {
@@ -169,6 +180,7 @@ class FuncCall
         } elseif ($context->getCurrentOp() instanceof Op\Expr\Exit_
             || $context->getCurrentOp() instanceof Op\Terminal\Exit_) {
             $funcCallName = "exit";
+            //var_dump($context->getCurrentOp());
         }
 
         $instFuncCallMain = new MyInstruction(Opcodes::FUNC_CALL);
@@ -199,7 +211,7 @@ class FuncCall
         $myFunctionCall->setColumn($context->getCurrentColumn());
         $myFunctionCall->setInstanceClassName($className);
 
-        if ($isStatic && isset($context->getCurrentOp()->class->value)) {
+        if ($context->getCurrentOp() instanceof Op\Expr\StaticCall) {
             $nameClass = $context->getCurrentOp()->class->value;
             $myFunctionCall->addType(MyFunction::TYPE_FUNC_STATIC);
             $myFunctionCall->setNameInstance($nameClass);
@@ -218,7 +230,9 @@ class FuncCall
                     || $context->getCurrentOp() instanceof Op\Expr\Eval_
                     || $context->getCurrentOp() instanceof Op\Expr\Exit_
                     || $context->getCurrentOp() instanceof Op\Terminal\Exit_) {
-            $listArgs[] = $context->getCurrentOp()->expr;
+            if (isset($context->getCurrentOp()->expr)) {
+                $listArgs[] = $context->getCurrentOp()->expr;
+            }
 
             if ($context->getCurrentOp() instanceof Op\Expr\Include_) {
                 $instFuncCallMain->addProperty(MyInstruction::TYPE_INCLUDE, $context->getCurrentOp()->type);
@@ -236,12 +250,12 @@ class FuncCall
 
         $myFunctionCall->setNbParams($nbparams);
 
-/*
-        if ($isMethod) {
-            if (isset($context->getCurrentOp()->var->ops[0])) {
-                Common::transformPropertyFetch($context, $context->getCurrentOp()->var->ops[0]);
-            }
-        }*/
+        /*
+                if ($isMethod) {
+                    if (isset($context->getCurrentOp()->var->ops[0])) {
+                        Common::transformPropertyFetch($context, $context->getCurrentOp()->var->ops[0]);
+                    }
+                }*/
 
         $instFuncCallMain->addProperty(MyInstruction::MYFUNC_CALL, $myFunctionCall);
         $instFuncCallMain->addProperty(MyInstruction::EXPR, $myExpr);

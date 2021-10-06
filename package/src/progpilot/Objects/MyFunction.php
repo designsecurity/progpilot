@@ -93,14 +93,14 @@ class MyFunction extends MyOp
         $this->castReturn = MyDefinition::CAST_NOT_SAFE;
     }
 
-/*
-    public function __clone()
-    {
-        //$this->property = clone $this->property;
-        //$this->blocks = clone $this->blocks;
-        //$this->defs = clone $this->defs;
-    }
-*/
+    /*
+        public function __clone()
+        {
+            //$this->property = clone $this->property;
+            //$this->blocks = clone $this->blocks;
+            //$this->defs = clone $this->defs;
+        }
+    */
     public function setNbExecutions($nbExecutions)
     {
         $this->nbExecutions = $nbExecutions;
@@ -328,7 +328,9 @@ class MyFunction extends MyOp
 
     public function storeOpInformation($id, $infos)
     {
-        $this->opInformations[$id] = $infos;
+        if (!empty($id)) {
+            $this->opInformations[$id] = $infos;
+        }
     }
 
     public function setDefs($defs)

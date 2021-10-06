@@ -29,6 +29,9 @@ class MyDefinition extends MyOp
     const TYPE_INSTANCE = 0x0040;
     const TYPE_GLOBAL = 0x0080;
     const TYPE_STATIC_PROPERTY = 0x0100;
+    const ALL_PROPERTIES_TAINTED = 0x0200;
+    const TYPE_LITERAL = 0x0400;
+    const TYPE_ITERATOR = 0x0800;
 
     const SECURITY_HIGH = 1;
     const SECURITY_LOW = 2;
@@ -42,6 +45,7 @@ class MyDefinition extends MyOp
     private $argToParam;
     private $isReturnDef;
     private $refs;
+    private $iteratorValues;
     private $refArrValue;
 
     public $original;
@@ -61,6 +65,7 @@ class MyDefinition extends MyOp
         $this->argToParam = null;
         $this->isReturnDef = null;
         $this->refs = [];
+        $this->iteratorValues = [];
         $this->refArrValue = null;
 
         $this->original = new MyDefOriginal;
@@ -71,6 +76,7 @@ class MyDefinition extends MyOp
 
     public function printStdout($context = null)
     {
+        echo "_____________________ start def _____________________\n";
         echo "def id ".$this->varId." :: \
         name = ".htmlentities($this->getName(), ENT_QUOTES, 'UTF-8')." :: \
         line = ".$this->getLine()." :: column = ".$this->getColumn()." :: \
@@ -80,6 +86,7 @@ class MyDefinition extends MyOp
         is_type_array_element = ".$this->isType(MyDefinition::TYPE_ARRAY_ELEMENT)." :: \
         isArray = ".$this->isType(MyDefinition::TYPE_ARRAY)." :: \
         is_const = ".$this->isType(MyDefinition::TYPE_CONSTANTE)." :: \
+        is_iterator = ".$this->isType(MyDefinition::TYPE_ITERATOR)." :: \
         is_return_def = ".$this->isReturnDef." :: \
         blockid = ".$this->getBlockId()."\n";
 
@@ -92,10 +99,12 @@ class MyDefinition extends MyOp
 
         foreach ($this->states as $id => $state) {
             echo "state blockid '$id'\n";
+            echo "__________________ start state ________________________\n";
             $state->printStdout();
+            echo "__________________ end state________________________\n";
         }
 
-        echo "__________________________________________\n\n\n";
+        echo "_____________________ end def _____________________\n\n\n";
     }
 
     public function unsetState($blockId)
@@ -221,6 +230,16 @@ class MyDefinition extends MyOp
     public function setRefs($refs)
     {
         $this->refs = $refs;
+    }
+
+    public function getIteratorValues()
+    {
+        return $this->iteratorValues;
+    }
+
+    public function setIteratorValues($iteratorValues)
+    {
+        $this->iteratorValues = $iteratorValues;
     }
 
     public function getRefArrValue()

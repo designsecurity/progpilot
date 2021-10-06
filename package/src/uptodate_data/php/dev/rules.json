@@ -35,6 +35,22 @@
             "language": "php", 
             "action": "DEFINE_OBJECT", 
             "extra": "SomeClassDb"
+        },
+        {
+            "name": "middle_object_unknown", 
+            "instanceof": "known_class1", 
+            "description": "new sinks",
+            "language": "php", 
+            "action": "DEFINE_OBJECT", 
+            "extra": "SomeClassUnknown"
+        },
+        {
+            "name": "middle_object", 
+            "instanceof": "known_class1_undefined", 
+            "description": "new sinks",
+            "language": "php", 
+            "action": "DEFINE_OBJECT", 
+            "extra": "SomeClassUnknown"
         }
 		]
 }

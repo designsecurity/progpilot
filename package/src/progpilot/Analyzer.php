@@ -9,6 +9,7 @@
 
 namespace progpilot;
 
+use PHPCfg\Printer;
 use progpilot\Utils;
 use progpilot\Code\MyCode;
 use progpilot\Objects\MyFile;
@@ -91,6 +92,7 @@ class Analyzer
     public function transformPhp($context, $script)
     {
         // transform
+        echo "transformPhp 1--->\n";
         if (!is_null($script)) {
             $traverser = new \PHPCfg\Traverser();
             $transformvisitor = new \progpilot\Transformations\Php\Transform();
@@ -98,6 +100,10 @@ class Analyzer
             $traverser->addVisitor($transformvisitor);
             $traverser->traverse($script);
             
+            echo "transformPhp 2--->\n";
+            $printer = new Printer\Text();
+            var_dump($printer->printScript($script));
+
             unset($traverser);
             unset($transformvisitor);
         }
@@ -163,6 +169,7 @@ class Analyzer
     
     public function computeDataFlowPhp($context)
     {
+        echo "computeDataFlowPhp--->\n";
         // free memory
         if (function_exists('gc_mem_caches')) {
             gc_mem_caches();
@@ -222,6 +229,7 @@ class Analyzer
     
     public function computeDataFlow($context)
     {
+        echo "computeDataFlow1--->\n";
         $filename = $context->inputs->getFile();
 
         if (!file_exists($filename) && is_null($context->inputs->getCode())) {
@@ -239,8 +247,11 @@ class Analyzer
                     Lang::MAX_SIZE_EXCEEDED." (".Utils::encodeCharacters($filename).")"
                 );
             } else {
+                echo "computeDataFlow2--->\n";
                 if (!$context->isFileDataAnalyzed($filename)) {
+                    echo "computeDataFlow3--->\n";
                     if ($context->inputs->isLanguage(Analyzer::PHP)) {
+                        echo "computeDataFlow4--->\n";
                         $this->computeDataFlowPhp($context);
                     } elseif ($context->inputs->isLanguage(Analyzer::JS)) {
                         $this->computeDataFlowJs($context);

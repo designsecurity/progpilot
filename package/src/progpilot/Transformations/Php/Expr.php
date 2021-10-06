@@ -28,6 +28,9 @@ use progpilot\Transformations\Php\Exprs\VariableFetch;
 use progpilot\Transformations\Php\Exprs\FunccallFetch;
 use progpilot\Transformations\Php\Exprs\ConcatFetch;
 use progpilot\Transformations\Php\Exprs\ArrayFetch;
+use progpilot\Transformations\Php\Exprs\CastFetch;
+use progpilot\Transformations\Php\Exprs\ConstFetch;
+use progpilot\Transformations\Php\Exprs\LiteralFetch;
 
 class Expr
 {
@@ -79,7 +82,8 @@ class Expr
     }
 
     public static function instructionnew2($context, $op, $expr)
-    {/*
+    {
+/*
         echo "instructionnew2 1\n";
         if (isset($op->var->ops[0]) && $op !== $op->var->ops[0]) {
             echo "instructionnew2 2\n";
@@ -93,24 +97,28 @@ class Expr
 
         echo "instructionnew2 4\n";
         */
+        CastFetch::castFetch($context, $op, $expr);
         ConcatFetch::concatFetch($context, $op, $expr);
         DimFetch::dimFetch($context, $op, $expr);
         PropertyFetch::propertyFetch($context, $op);
         StaticPropertyFetch::staticPropertyFetch($context, $op);
         FunccallFetch::funccallFetch($context, $op, $expr);
         VariableFetch::variableFetch($context, $op, $expr);
+        ArrayFetch::arrayFetch($context, $op, $expr, "");
+        ConstFetch::constFetch($context, $op, $expr);
     }
 
     public static function instructionnew($context, $op, $expr)
-    {
+    {/*
         echo "instructionnew 1\n";
         if (isset($op->ops[0]) && is_null($op->original)) {
             echo "instructionnew 2\n";
             Expr::instructionnew2($context, $op->ops[0], $expr);
-        } else {
+        } else {*/
             echo "instructionnew 3\n";
             VariableFetch::variableFetch($context, $op, $expr);
-        }
+            LiteralFetch::literalFetch($context, $op, $expr);
+        //}
     }
 
     public static function instructionassign($context, $op, $expr)

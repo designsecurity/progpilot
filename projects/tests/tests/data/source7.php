@@ -14,3 +14,5 @@ $var2 = $var1->methodc1arr();
 echo $var2;
 
 echo $var2["tainted"];
+
+echo $var2["not_tainted"];
