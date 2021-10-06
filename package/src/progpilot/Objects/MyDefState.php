@@ -10,6 +10,8 @@
 
 namespace progpilot\Objects;
 
+use progpilot\Transformations\Php\Common;
+
 class MyDefState extends MyOp
 {
     private $isTainted;
@@ -62,6 +64,7 @@ class MyDefState extends MyOp
         echo "objectid :\n";
         var_dump($this->objectId);
         echo "istypeinstance : '".$this->isType(MyDefinition::TYPE_INSTANCE)."'\n";
+        echo "allpropertiestainted : '".$this->isType(MyDefinition::ALL_PROPERTIES_TAINTED)."'\n";
         echo "istypearray : '".$this->isType(MyDefinition::TYPE_ARRAY)."'\n";
         foreach ($this->arrayIndexes as $arrayIndex) {
             echo "index :\n";
@@ -88,8 +91,9 @@ class MyDefState extends MyOp
         $this->taintedByDefs = $defs;
     }
 
-    public function setIsEmbeddedByChars($chars, $control)
+    public function setIsEmbeddedByChars($chars)
     {
+        /*
         foreach ($chars as $char => $value) {
             if (!isset($this->isEmbeddedByChar[$char])) {
                 $this->isEmbeddedByChar[$char] = $value;
@@ -100,6 +104,11 @@ class MyDefState extends MyOp
                     $this->isEmbeddedByChar[$char] = true;
                 }
             }
+        }
+        */
+
+        foreach ($chars as $char => $value) {
+            $this->isEmbeddedByChar[$char] = $value % 2;
         }
     }
 
@@ -266,7 +275,6 @@ class MyDefState extends MyOp
         $this->addType(MyDefinition::TYPE_ARRAY);
         $ret[] = $myDef;
         echo "getOrCreateDefArrayIndex 4\n";
-        $myDef->printStdout();
         return [true, $ret];
     }
 

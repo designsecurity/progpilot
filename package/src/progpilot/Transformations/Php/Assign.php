@@ -46,15 +46,11 @@ class Assign
             $name = "const_".rand();
             if (isset($context->getCurrentOp()->args[0]->value)) {
                 $name = $context->getCurrentOp()->args[0]->value;
+                $var = $context->getCurrentOp()->args[0];
             }
 
-            $type = MyOp::TYPE_CONST;
-            $typeArray = null;
-            $typeInstance = null;
-
-            $exprOp = $context->getCurrentOp();
             if (isset($context->getCurrentOp()->args[1])) {
-                $exprOp = $context->getCurrentOp()->args[1];
+                $expr = $context->getCurrentOp()->args[1];
             }
         } else {
             $name = Common::getNameDefinition($context->getCurrentOp());
@@ -181,25 +177,16 @@ class Assign
                 $context->getCurrentColumn(),
                 $expr->value
             );
-    
+
             $instAssign->addProperty(MyInstruction::LITERAL, $myTemp);
         }
-        
-        echo "assign expr start\n";
-        // $array = [expr, expr, expr]
-        /*
-        if (isset($expr->ops[0]) && $expr->ops[0] instanceof Op\Expr\Array_) {
-            ArrayFetch::arrayFetch($context, $expr->ops[0], $var, $expr, $name);
-        } else {
-            Expr::instructionnew($context, $expr, $myExpr);
+
+        if (isset($expr)) {
+            Expr::instructionnew($context, $expr, null);
         }
-        */
-        echo "assign expr end\n";
 
         // let's continue by the left part
         $instDefinition = new MyInstruction(Opcodes::DEFINITION);
-            
-        //Expr::instructionassign($context, $var, null);
             
         $myDef = new MyDefinition(
             $context->getCurrentBlock()->getId(),
@@ -209,26 +196,35 @@ class Assign
             $name
         );
 
+        echo "ASSIGNDEF 1 line '".$context->getCurrentLine()."'\n";
         switch (Common::getTypeDef($op)) {
             case MyOp::TYPE_ARRAY:
+                echo "ASSIGNDEF 2a\n";
                 $myDef->addType(MyDefinition::TYPE_ARRAY);
                 $myDef->getCurrentState()->addType(MyDefinition::TYPE_ARRAY);
                 break;
             case MyOp::TYPE_PROPERTY:
+                echo "ASSIGNDEF 2b\n";
                 $myDef->addType(MyDefinition::TYPE_PROPERTY);
                 break;
             case MyOp::TYPE_STATIC_PROPERTY:
+                echo "ASSIGNDEF 2c\n";
                 $myDef->addType(MyDefinition::TYPE_STATIC_PROPERTY);
                 break;
+            case MyOp::TYPE_CONST:
+                echo "ASSIGNDEF 2d\n";
+                $myDef->addType(MyDefinition::TYPE_CONSTANTE);
+                break;
             default:
+                echo "ASSIGNDEF 2e\n";
                 break;
         }
 
-        echo "ASSIGNDEF\n";
-        $myDef->printStdout();
+        echo "ASSIGNDEF 3\n";
         
+        // NOT NECESSARY?
         // an object (created by new)
-        if ($typeInstance === MyOp::TYPE_INSTANCE) {
+        if (isset($typeInstance) && $typeInstance === MyOp::TYPE_INSTANCE) {
             // it's the class name not instance name
             if (isset($expr->ops[0]->class->value)) {
                 $nameClass = $expr->ops[0]->class->value;
@@ -252,6 +248,12 @@ class Assign
             $myDef->setReturnDef(true);
         }
 
+        // because the expr of an array expr is the array itself defined in arrayfetch.php
+        if (isset($expr->ops[0])
+            && $expr->ops[0] instanceof Op\Expr\Array_) {
+            $expr = $expr->ops[0];
+        }
+
         $instAssign->addProperty(
             MyInstruction::EXPRID,
             $context->getCurrentFunc()->getOpId($expr)
@@ -265,6 +267,9 @@ class Assign
         }
 
         $context->getCurrentMycode()->addCode($instAssign);
+
+        echo "ASSIGNDEF 4\n";
+        $myDef->printStdout();
         
 
         return $backDef;

@@ -34,7 +34,6 @@ class FunccallFetch
                 || $op instanceof Op\Expr\MethodCall
                 || $op instanceof Op\Expr\StaticCall
                 || $op instanceof Op\Expr\New_)) {
-
             echo "funccallfetch\n";
             $oldOp = $context->getCurrentOp();
             $context->setCurrentOp($op);

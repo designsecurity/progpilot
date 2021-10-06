@@ -21,7 +21,7 @@ use progpilot\Transformations\Php\Expr;
 
 class ArrayFetch
 {
-    public static function arrayFetch($context, $op, $var, $expr, $name)
+    public static function arrayFetch($context, $op, $expr, $name)
     {
         echo "arrayFetch -3 ====================== start ======================\n";
         if (isset($op)
@@ -37,19 +37,29 @@ class ArrayFetch
                     if (isset($op->keys[$nbArrayExpr])
                         && $op->keys[$nbArrayExpr] instanceof Operand\Literal) {
                         $key = $op->keys[$nbArrayExpr]->value;
+                    } elseif (isset($op->keys[$nbArrayExpr]->ops[0])
+                        && $op->keys[$nbArrayExpr]->ops[0] instanceof Op\Expr\ConstFetch
+                            && isset($op->keys[$nbArrayExpr]->ops[0]->name)
+                             && $op->keys[$nbArrayExpr]->ops[0]->name instanceof Operand\Literal) {
+                        $key = $op->keys[$nbArrayExpr]->ops[0]->name->value;
                     } else {
                         $key = $nbArrayExpr;
                     }
+
+                    echo "arrayFetch 0 key = '$key'\n";
 
                     // element / value part
                     if (isset($value->ops[0])
                         && $value->ops[0] instanceof Op\Expr\Array_) {
                         echo "arrayFetch rec '$key' '$tempArrayName'\n";
-                        ArrayFetch::arrayFetch($context, $value->ops[0], $value->ops[0], $value->ops[0], $name."_rec");
+                        ArrayFetch::arrayFetch($context, $value->ops[0], $value->ops[0], $name."_rec");
                         $newvalue = $value->ops[0];
                     } else {
                         echo "arrayFetch Expr '$key' '$tempArrayName'\n";
-                        Expr::instructionnew($context, $value, "right");
+                        if (isset($value->original)) {
+                            echo "HERE11\n";
+                            Expr::instructionnew($context, $value, "right");
+                        }
                         $newvalue = $value;
                         if (isset($value->result)) {
                             $newvalue = $value->result;
@@ -120,6 +130,7 @@ class ArrayFetch
                 }
 
 
+                echo "arrayFetch 11 '$key' '$tempArrayName'\n";
                 $myTemp = new MyDefinition(
                     $context->getCurrentBlock()->getId(),
                     $context->getCurrentMyFile(),
@@ -136,9 +147,14 @@ class ArrayFetch
     
                 $instVariableFetch->addProperty(
                     MyInstruction::EXPRID,
-                    $context->getCurrentFunc()->getOpId($expr)
+                    $context->getCurrentFunc()->getOpId($op)
                 );
                 
+                $instVariableFetch->addProperty(
+                    MyInstruction::VARID,
+                    $context->getCurrentFunc()->getOpId($op->result)
+                );
+
                 $instVariableFetch->addProperty(MyInstruction::DEF, $myTemp);
                 $context->getCurrentMycode()->addCode($instVariableFetch);
             }

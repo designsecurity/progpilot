@@ -273,8 +273,11 @@ class VisitorDataflow
 
                                     $defarg = $instruction->getProperty("argdef$nbparams");
 
+                                    echo "visitdataflow defarg___\n";
+
                                     if ($mySource->isParameter($nbparams + 1)) {
-                                        $deffrom = $defarg->getValueFromDef();
+
+                                        $deffrom = $instruction->getProperty("argoriginaldef$nbparams");
                                         if (!is_null($deffrom)) {
                                             $context->getCurrentFunc()->getDefs()->addDef(
                                                 $deffrom->getName(),
@@ -329,7 +332,6 @@ class VisitorDataflow
                                 // only one array by name is defined in a function (or blocks see arrays12.php)
 
                                 echo "VisitorDataFlow__ DEFINITION array 1\n";
-                                $myDef->printStdout();
 
                                 if (!$this->isArrayAlreadyDefined(
                                     $myDef->getName(),

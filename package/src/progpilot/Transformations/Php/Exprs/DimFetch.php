@@ -22,7 +22,8 @@ class DimFetch
     {
         if (isset($op)
             && $op instanceof Op\Expr\ArrayDimFetch) {
-                echo "ArrayDimFetch 2\n";
+                echo "ArrayDimFetch 2 line '".$context->getCurrentLine()."'\n";
+
             $instDefChained = new MyInstruction(Opcodes::ARRAYDIM_FETCH);
             if (isset($op->dim->value)) {
                 $instDefChained->addProperty(MyInstruction::ARRAY_DIM, $op->dim->value);
@@ -50,6 +51,7 @@ class DimFetch
 
             // beginning of the chain
             if (isset($op->var->original)) {
+                echo "ArrayDimFetch 5 '".$op->var->original->name->value."'\n";
                 $originalDef = new MyDefinition(
                     $context->getCurrentBlock()->getId(),
                     $context->getCurrentMyFile(),

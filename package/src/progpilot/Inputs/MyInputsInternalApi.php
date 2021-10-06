@@ -272,6 +272,7 @@ class MyInputsInternalApi
                             || $mySanitizer->getInstanceOfName() === $myClass->getExtendsOf())) {
                         return $mySanitizer;
                     }
+                    /*
 
                     if ($mySanitizer->getLanguage() === "php") {
                         $propertiesSanitizer = explode("->", $mySanitizer->getInstanceOfName());
@@ -299,7 +300,7 @@ class MyInputsInternalApi
                                 }
                             }
                         }
-                    }
+                    }*/
                 }
             }
         }
@@ -309,13 +310,17 @@ class MyInputsInternalApi
 
     public function getSinkByName($context, $stackClass, $myFunc, $myClass)
     {
+        echo "getSinkByName 1___\n";
         foreach ($this->sinks as $mySink) {
             if ($mySink->getName() === $myFunc->getName()) {
+                echo "getSinkByName 2___\n";
                 if (!$mySink->isInstance() && !$myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
                     return $mySink;
                 }
 
                 if ($mySink->isInstance() && $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
+                    echo "getSinkByName 3___ '".$mySink->getInstanceOfName()."'\n";
+                    var_dump($myClass);
                     if (!is_null($myClass)
                         && ($mySink->getInstanceOfName() === $myClass->getName()
                             || $mySink->getInstanceOfName() === $myClass->getExtendsOf())) {

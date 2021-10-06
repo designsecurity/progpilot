@@ -468,6 +468,10 @@ class MyCode
 
                     case Opcodes::ARRAYDIM_FETCH:
                         echo "Opcodes::ARRAYDIM_FETCH\n";
+                        $varid = $instruction->getProperty(MyInstruction::VARID);
+                        $exprid = $instruction->getProperty(MyInstruction::EXPRID);
+                        echo "varid = '$varid'\n";
+                        echo "exprid = '$exprid'\n";
                         $arrayDim = $instruction->getProperty(MyInstruction::ARRAY_DIM);
                         echo "array dim = $arrayDim\n";
         
@@ -475,6 +479,10 @@ class MyCode
 
                     case Opcodes::VARIABLE_FETCH:
                         echo "Opcodes::VARIABLE_FETCH\n";
+                        $varid = $instruction->getProperty(MyInstruction::VARID);
+                        $exprid = $instruction->getProperty(MyInstruction::EXPRID);
+                        echo "varid = '$varid'\n";
+                        echo "exprid = '$exprid'\n";
                         $instruction->getProperty(MyInstruction::DEF)->printStdout();
 
                         break;
@@ -494,6 +502,26 @@ class MyCode
                     case Opcodes::ARGUMENT:
                         echo "Opcodes::ARGUMENT\n";
                 
+                        break;
+
+                    case Opcodes::CAST:
+                        echo "Opcodes::CAST\n";
+                    
+                        break;
+
+                    case Opcodes::CONST_FETCH:
+                        echo "Opcodes::CONST_FETCH\n";
+                        
+                        break;
+
+                    case Opcodes::LITERAL_FETCH:
+                        echo "Opcodes::LITERAL_FETCH\n";
+                            
+                        break;
+
+                    case Opcodes::ITERATOR:
+                        echo "Opcodes::ITERATOR\n";
+                                 
                         break;
                 }
 

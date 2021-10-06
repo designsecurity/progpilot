@@ -15,7 +15,6 @@ use PHPCfg\Func;
 use PHPCfg\Op;
 use PHPCfg\Script;
 use PHPCfg\Visitor;
-use PHPCfg\Printer;
 use PHPCfg\Operand;
 
 use progpilot\Objects\MyFunction;
@@ -125,10 +124,6 @@ class Transform implements Visitor
                 }
             }
         }
-        
-        
-        $printer = new Printer\Text();
-        var_dump($printer->printScript($script));
     }
 
     public function enterBlock(Block $block, Block $prior = null)
@@ -230,7 +225,6 @@ class Transform implements Visitor
                 $mythisdef->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
 
                 echo "enterFunc 2\n";
-                $mythisdef->printStdout();
 
                 $myFunction->setThisDef($mythisdef);
             }
@@ -318,6 +312,7 @@ class Transform implements Visitor
 
         if ($op instanceof Op\Stmt\JumpIf) {
             $instStartIf = new MyInstruction(Opcodes::COND_START_IF);
+            $instStartIf->addProperty(MyInstruction::EXPRID, $this->context->getCurrentFunc()->getOpId($op->cond));
             $this->context->getCurrentMycode()->addCode($instStartIf);
 
             $this->blockIfToBeResolved[] = [$instStartIf, $op->if, $op->else];
@@ -335,7 +330,14 @@ class Transform implements Visitor
         */
         Expr::instructionnew2($this->context, $op, null);
 
-        if ($op instanceof Op\Expr\Include_) {
+        if ($op instanceof Op\Iterator\Value) {
+            $instIterator = new MyInstruction(Opcodes::ITERATOR);
+            Expr::instructionnew($this->context, $op->var, null);
+            $instIterator->addProperty(MyInstruction::VARID, $this->context->getCurrentFunc()->getOpId($op->var));
+            $instIterator->addProperty(MyInstruction::RESULTID, $this->context->getCurrentFunc()->getOpId($op->result));
+            $this->context->getCurrentMycode()->addCode($instIterator);
+        }
+        elseif ($op instanceof Op\Expr\Include_) {
             if (Common::isFuncCallWithoutReturn($op)) {
                 // expr of type "assign" to have a defined return
                 $myExpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
@@ -367,13 +369,23 @@ class Transform implements Visitor
         } elseif ($op instanceof Op\Terminal\Return_) {
             if (isset($op->expr)) {
                 //$myBlock = $this->sBlocks[$this->context->getCurrentBlock()];
+
+                echo "HERE1 return\n";
+                if (isset($op->expr->original)) {
+                    echo "HERE2 return\n";
+                    Expr::instructionnew($this->context, $op->expr, "right");
+                }
+
+                echo "HERE3 return\n";
                 Assign::instruction($this->context, $op, $op->expr, null, true, false);
 
                 $inst = new MyInstruction(Opcodes::RETURN_FUNCTION);
                 $inst->addProperty(MyInstruction::RETURN_DEFS, $this->context->getCurrentFunc()->getReturnDefs());
                 $this->context->getCurrentMycode()->addCode($inst);
             }
-        }/* elseif ($op instanceof Op\Expr\Eval_) {
+        /*
+        }
+        elseif ($op instanceof Op\Expr\Eval_) {
             if (Common::isFuncCallWithoutReturn($op)) {
                 // expr of type "assign" to have a defined return
                 $myExpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
@@ -461,10 +473,10 @@ class Transform implements Visitor
                 $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);
                 $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
                 $this->context->getCurrentMycode()->addCode($instEndExpr);
-            }
-        }*/ elseif ($op instanceof Op\Expr\Assign || $op instanceof Op\Expr\AssignRef) {
+            }*/
+        } elseif ($op instanceof Op\Expr\Assign || $op instanceof Op\Expr\AssignRef) {
             if (isset($op->expr) && isset($op->var)) {
-                VariableFetch::variableFetch($this->context, $op->expr, null);
+                //VariableFetch::variableFetch($this->context, $op->expr, null);
                 Assign::instruction($this->context, $op, $op->expr, $op->var);
             }
         } elseif ($op instanceof Op\Stmt\Class_) {

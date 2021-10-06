@@ -58,12 +58,10 @@ class CustomAnalysis
     public static function defineObject($context, $myFuncorDef, $myClassFound, $instruction)
     {
         $customRules = $context->inputs->getCustomRules();
-        echo "defineObject 1\n";
         foreach ($customRules as $customRule) {
             if ($customRule->getType() === MyCustomRule::TYPE_VARIABLE
                 && $customRule->getAction() === "DEFINE_OBJECT"
                     && !is_null($customRule->getExtra())) {
-                echo "defineObject 2\n";
                 $result = HelpersAnalysis::checkIfDefEqualDefRule(
                     $context,
                     null,
@@ -73,7 +71,6 @@ class CustomAnalysis
                 );
 
                 if ($result) {
-                    echo "returnObject for '".$myFuncorDef->getName()."' 4\n";
                     CustomAnalysis::returnObjectCreateObject(
                         $context,
                         $instruction,
@@ -109,8 +106,6 @@ class CustomAnalysis
         HelpersDataflow::createObject($context, $myFakeInstance);
         
         $resultid = $instruction->getProperty(MyInstruction::RESULTID);
-        echo "returnObjectCreateObject '$resultid'\n";
-        $myFakeInstance->printStdout();
         $opInformation["chained_results"] = [];
         $opInformation["chained_results"][] = $myFakeInstance;
         $context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
@@ -118,13 +113,11 @@ class CustomAnalysis
     
     public static function returnObject($context, $myFuncorDef, $myClass, $instruction)
     {
-        echo "returnObject for '".$myFuncorDef->getName()."' 1\n";
         $customRules = $context->inputs->getCustomRules();
         foreach ($customRules as $customRule) {
             if ($customRule->getType() === MyCustomRule::TYPE_FUNCTION
                     && $customRule->getAction() === "DEFINE_OBJECT"
                         && !is_null($customRule->getExtra())) {
-                echo "returnObject for '".$myFuncorDef->getName()."' 3\n";
                 $result = HelpersAnalysis::checkIfDefEqualDefRule(
                     $context,
                     null,
@@ -133,7 +126,6 @@ class CustomAnalysis
                     $myClass
                 );
                 if ($result) {
-                    echo "returnObject for '".$myFuncorDef->getName()."' 4\n";
                     CustomAnalysis::returnObjectCreateObject(
                         $context,
                         $instruction,
@@ -145,7 +137,7 @@ class CustomAnalysis
         }
     }
 
-    public static function mustVerifyDefinition($context, $instruction, $myFunc, $stackClass = null)
+    public static function mustVerifyDefinition($context, $instruction, $myFunc, $myClass = null)
     {
         $customRules = $context->inputs->getCustomRules();
         foreach ($customRules as $customRule) {
@@ -158,7 +150,7 @@ class CustomAnalysis
                     $context,
                     $functionDefinition,
                     $myFunc,
-                    $stackClass
+                    $myClass
                 );
 
                 if (!is_null($functionDefinition)) {
@@ -197,16 +189,14 @@ class CustomAnalysis
                                             && $valueParameter->is_array === true
                                                 && isset($valueParameter->array_index)) {
                                             $arrayfound = false;
-                                            if ($defArg->isType(MyDefinition::TYPE_COPY_ARRAY)) {
-                                                $copyArrays = $defArg->getCopyArrays();
-                                                foreach ($copyArrays as $copyArray) {
-                                                    foreach ($copyArray[0] as $copyIndex => $copyValue) {
-                                                        if ($copyIndex === $valueParameter->array_index) {
-                                                            $defLastKnownValues = $copyArray[1]->getLastKnownValues();
-                                                            $arrayfound = true;
+                                            
+                                            if ($defArg->getCurrentState()->isType(MyDefinition::TYPE_ARRAY)) {
+                                                foreach ($defArg->getCurrentState()->getArrayIndexes() as $arrayIndex) {
+                                                    if ($arrayIndex->index === $valueParameter->array_index) {
+                                                        $defLastKnownValues = $arrayIndex->def->getCurrentState()->getLastKnownValues();
+                                                        $arrayfound = true;
 
-                                                            break 2;
-                                                        }
+                                                        break 2;
                                                     }
                                                 }
                                             }

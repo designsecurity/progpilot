@@ -12,6 +12,7 @@ namespace progpilot\Helpers;
 
 use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyProperty;
+use progpilot\Objects\MyAssertion;
 
 class Callbacks
 {
@@ -38,6 +39,25 @@ class Callbacks
     public static function addAttributesOfInitialReturnDefs($returnDef, $initialReturnDef)
     {
         $returnDef->setTainted($initialReturnDef->isTainted());
+    }
+
+    public static function addSanitizedTypes($defValid, $sanitizedTypes)
+    {
+
+        echo "addSanitizedTypes callback____\n";
+
+        $defValid->getCurrentState()->setSanitized(true);
+        if (is_array($sanitizedTypes)) {
+            foreach ($sanitizedTypes as $sanitizedType) {
+                $defValid->getCurrentState()->addTypeSanitized($sanitizedType);
+            }
+        }
+    }
+
+    public static function addValidAssertion($defValid, $block)
+    {
+        $myAssertion = new MyAssertion($defValid, "valid");
+        $block->addAssertion($myAssertion);
     }
 
     public static function cleanTaintedDef($def, $funcDefs)

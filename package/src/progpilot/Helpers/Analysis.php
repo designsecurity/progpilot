@@ -19,6 +19,7 @@ use progpilot\Objects\MyDefState;
 use progpilot\Analysis\ResolveDefs;
 use progpilot\Analysis\TaintAnalysis;
 use progpilot\Analysis\ValueAnalysis;
+use progpilot\Analysis\AssertionAnalysis;
 
 class Analysis
 {
@@ -244,59 +245,81 @@ class Analysis
         return false;
     }
 
-    public static function updateBlocksOfArrayElement($context, $arrayElement)
+
+    public static function updateBlocksOfDef($context, $def)
     {
-        echo "updateBlocksOfArrayElement\n";
-        $arrayElement->printStdout();
-        $states = [];
+        echo "updateBlocksOfDef\n";
+        $def->printStdout();
 
-        foreach ($context->getCurrentFunc()->getBlocks() as $myBlock) {
-            echo "updateBlocksOfArrayElement blockid = '".$myBlock->getId()."'\n";
-            if ($myBlock->getId() === $context->getCurrentBlock()->getId()) {
-                echo "updateBlocksOfArrayElement blockid = '".$myBlock->getId()."' good block\n";
-                $states = [];
-                $blockParents = array_merge($myBlock->getParents(), $myBlock->getVirtualParents());
+        if (!is_null($def->getParamToArg())) {
+            $def = $def->getParamToArg();
+        }
 
-                foreach ($blockParents as $parentMyBlock) {
-                    echo "updateBlocksOfArrayElement parentblockid = '".$parentMyBlock->getId()."' \n";
-                    $state = $arrayElement->getState($parentMyBlock->getId());
-                    if (!is_null($state)) {
-                        echo "updateBlocksOfArrayElement parentblockid = '".$parentMyBlock->getId()."' getstate\n";
-                        $states[] = $state;
-                    }
-                }
+        echo "updateBlocksOfDef currentid = '".$context->getCurrentBlock()->getId()."' foreach2\n";
+        $def->printStdout();
 
-                $newstate = Analysis::mergeDefStates($states);
-                echo "updateBlocksOfArrayElement merged new state\n";
-                $newstate->printStdout();
-
-                $arrayElement->setState($newstate, $myBlock->getId());
-                echo "updateBlocksOfArrayElement merged new arrayDef\n";
-                $arrayElement->printStdout();
+        foreach ($def->getStates() as $state) {
+            echo "updateBlocksOfDef currentid = '".$context->getCurrentBlock()->getId()."' foreach2\n";
+            $state->printStdout();
+            if ($state->isType(MyDefinition::TYPE_ARRAY)) {
+                echo "updateBlocksOfDef currentid = '".$context->getCurrentBlock()->getId()."' foreach3\n";
+                Analysis::updateBlocksOfArrayElements($context, $state);
+            } elseif ($state->isType(MyDefinition::TYPE_INSTANCE)) {
+                echo "updateBlocksOfDef currentid = '".$context->getCurrentBlock()->getId()."' foreach4\n";
+                Analysis::updateBlocksOfProperties($context, $state);
             }
         }
     }
 
-    public static function updateBlocksOfArrayElements($context, $array)
+    public static function blockSwitching($context, $myFunc)
+    {
+        $tmpDefs = $myFunc->getDefs();
+        echo "blockSwitching currentid = '".$context->getCurrentBlock()->getId()."' namefunction '".$myFunc->getName()."' 1\n";
+        foreach ($tmpDefs->getDefs() as $defs) {
+            foreach ($defs as $def) {
+                Analysis::updateBlocksOfDef($context, $def);
+            }
+        }
+    }
+
+    public static function updateBlocksOfArrayElement($context, $arrayElement)
+    {
+        echo "updateBlocksOfArrayElement\n";
+        $states = [];
+
+        $myBlock = $context->getCurrentBlock();
+        echo "updateBlocksOfArrayElement blockid = '".$myBlock->getId()."' good block\n";
+        $states = [];
+        $blockParents = array_merge($myBlock->getParents(), $myBlock->getVirtualParents());
+
+        foreach ($blockParents as $parentMyBlock) {
+            echo "updateBlocksOfArrayElement parentblockid = '".$parentMyBlock->getId()."' \n";
+            $state = $arrayElement->getState($parentMyBlock->getId());
+            if (!is_null($state) && !in_array($state, $states, true)) {
+                echo "updateBlocksOfArrayElement parentblockid = '".$parentMyBlock->getId()."' getstate\n";
+                $states[] = $state;
+            }
+        }
+
+        $newstate = Analysis::mergeDefStates($states);
+        echo "updateBlocksOfArrayElement merged new state\n";
+        $newstate->printStdout();
+
+        $arrayElement->setState($newstate, $myBlock->getId());
+        echo "updateBlocksOfArrayElement merged new arrayDef\n";
+        $arrayElement->printStdout();
+    }
+
+    public static function updateBlocksOfArrayElements($context, $state)
     {
         echo "updateBlocksOfArrays\n";
-        $array->printStdout();
 
-        $arrayIndexes = $array->getCurrentState()->getArrayIndexes();
+        $arrayIndexes = $state->getArrayIndexes();
         foreach ($arrayIndexes as $arrayIndexArr) {
             $arrayDef = $arrayIndexArr->def;
-            echo "updateBlocksOfArrays 1\n";
-            if ($arrayDef->getCurrentState()->isType(MyDefinition::TYPE_ARRAY)) {
-                echo "updateBlocksOfArrays 2\n";
-                $arrayIndexesRec = $arrayDef->getCurrentState()->getArrayIndexes();
-                foreach ($arrayIndexesRec as $arrayIndexArrRec) {
-                    $arrayDefRec = $arrayIndexArrRec->def;
-                    Analysis::updateBlocksOfArrayElement($context, $arrayDefRec);
-                }
-            } else {
-                echo "updateBlocksOfArrays 3\n";
-                Analysis::updateBlocksOfArrayElement($context, $arrayDef);
-            }
+            echo "updateBlocksOfArrays 3\n";
+            Analysis::updateBlocksOfArrayElement($context, $arrayDef);
+            Analysis::updateBlocksOfDef($context, $arrayDef);
         }
     }
 
@@ -325,32 +348,24 @@ class Analysis
                 echo "updateBlocksOfProperties merged new state before count states = '".count($states)."'\n";
                 $newstate = Analysis::mergeDefStates($states);
                 echo "updateBlocksOfProperties merged new state\n";
-                $newstate->printStdout();
 
                 $property->setState($newstate, $myBlock->getId());
                 echo "updateBlocksOfProperties merged new property\n";
-                $property->printStdout();
             }
         }
     }
 
-    public static function updateBlocksOfProperties($context, $instance)
+    public static function updateBlocksOfProperties($context, $state)
     {
         echo "updateBlocksOfProperties START\n";
-        $instance->printStdout();
-        $idObject = $instance->getCurrentState()->getObjectId();
+        $idObject = $state->getObjectId();
         $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
 
         if (!is_null($tmpMyClass)) {
             foreach ($tmpMyClass->getProperties() as $property) {
                 echo "updateBlocksOfProperties property\n";
-                $property->printStdout();
-
-                if ($property->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
-                    Analysis::updateBlocksOfProperties($context, $property);
-                }
-
                 Analysis::updateBlocksOfProperty($context, $property);
+                Analysis::updateBlocksOfDef($context, $property);
             }
         }
 
@@ -359,6 +374,26 @@ class Analysis
         }
     }
 
+
+    public static function forEachTaintedByDefs($def, $block, $callback)
+    {
+        echo "forEachTaintedByDefs -1\n";
+
+        foreach ($def->getStates() as $state) {
+            $taintedDefs = $state->getTaintedByDefs();
+            foreach ($taintedDefs as $taintedByDef) {
+                $taintedDef = $taintedByDef[0];
+                $taintedState = $taintedByDef[1];
+
+                echo "forEachTaintedByDefs 0\n";
+
+                $params = array($taintedDef, $block);
+                call_user_func_array(__NAMESPACE__ ."\\$callback", $params);
+            }
+        }
+    }
+
+    
     public static function copyStates($states, $def)
     {
         foreach ($states as $id => $state) {
@@ -366,45 +401,188 @@ class Analysis
         }
     }
 
-    public static function mergeDefsBlockIdStates($defs, $blockId)
+
+
+    public static function listOfTreeValues($lastKnownValues)
     {
+        $values = [];
+        for ($i = 0; $i < count($lastKnownValues[0]); $i ++) {
+            $start = $lastKnownValues[0][$i];
+            for ($j = 0; $j < count($lastKnownValues[1]); $j ++) {
+                $middle = $lastKnownValues[1][$j];
+                for ($k = 0; $k < count($lastKnownValues[2]); $k ++) {
+                    $end = $lastKnownValues[2][$k];
+                    $string = $start.$middle.$end;
+                    $values[] = $string;
+                }
+            }
+        }
+
+        return $values;
+    }
+
+    public static function listOfTwoValues($lastKnownValues)
+    {
+        $values = [];
+        for ($i = 0; $i < count($lastKnownValues[0]); $i ++) {
+            $start = $lastKnownValues[0][$i];
+            for ($k = 0; $k < count($lastKnownValues[1]); $k ++) {
+                $end = $lastKnownValues[1][$k];
+                $string = $start.$end;
+                $values[] = $string;
+            }
+        }
+
+        return $values;
+    }
+
+    public static function listOfOneValues($lastKnownValues)
+    {
+        $values = [];
+        for ($i = 0; $i < count($lastKnownValues[0]); $i ++) {
+            $string = $lastKnownValues[0][$i];
+            $values[] = $string;
+        }
+
+        return $values;
+    }
+
+
+    public static function adjustArrayValues(&$lastKnownValues)
+    {
+        $max = 0;
+        for ($i = 0; $i < count($lastKnownValues); $i ++) {
+            if (count($lastKnownValues[$i]) > $max) {
+                $max = count($lastKnownValues[$i]);
+            }
+        }
+
+        for ($i = 0; $i < count($lastKnownValues); $i ++) {
+            if (count($lastKnownValues[$i]) < $max) {
+                $missingElements = $max - count($lastKnownValues[$i]);
+                for ($j = 0; $j < $missingElements; $j ++) {
+                    array_push($lastKnownValues[$i], "");
+                }
+            }
+        }
+    }
+
+    public static function updateNbChars(&$nbChars, $string, $arrayChars)
+    {
+        if (is_string($string)) {
+            foreach ($arrayChars as $char) {
+                if (!isset($nbChars[$char])) {
+                    $nbChars[$char] = 0;
+                }
+            }
+
+            for ($i = 0; $i < strlen($string); $i++) {
+                foreach ($arrayChars as $char) {
+                    if ($string[$i] === $char) {
+                        $nbChars[$char] ++;
+                    }
+                }
+            }
+        }
+    }
+
+    public static function getNbChars($string, $arrayChars)
+    {
+        $nbChars = [];
+
+        if (is_string($string)) {
+            foreach ($arrayChars as $char) {
+                $nbChars[$char] = 0;
+            }
+            
+            for ($i = 0; $i < strlen($string); $i++) {
+                foreach ($arrayChars as $char) {
+                    if ($string[$i] === $char) {
+                        $nbChars[$char] ++;
+                    }
+                }
+            }
+        }
+
+        return $nbChars;
+    }
+
+    public static function computeConcatenatedLastKnownValues($lastKnownValues)
+    {
+        Analysis::adjustArrayValues($lastKnownValues);
+
+        switch (count($lastKnownValues)) {
+            case 1:
+                echo "computeConcatenatedLastKnownValues 1\n";
+                return Analysis::listOfOneValues($lastKnownValues);
+            case 2:
+                echo "computeConcatenatedLastKnownValues 2\n";
+                return Analysis::listOfTwoValues($lastKnownValues);
+            case 3:
+                echo "computeConcatenatedLastKnownValues 3\n";
+                return Analysis::listOfTreeValues($lastKnownValues);
+            default:
+                break;
+        }
+        
+        return [];
+    }
+
+    public static function mergeDefsBlockIdStates($defs, $concatValues, $block)
+    {
+        $blockId = $block->getId();
+
         $myState = new MyDefState;
         echo "mergeDefsBlockIdStates\n";
 
+        $oneStateNotSanitizer = false;
         foreach ($defs as $def) {
             echo "mergeDefsBlockIdStates 0 blockId = '$blockId'\n";
             $def->printStdout();
 
             if ($def->isType(MyDefinition::TYPE_ARRAY_ELEMENT)
                 || $def->isType(MyDefinition::TYPE_PROPERTY)) {
-                echo "mergeDefsBlockIdStates 1\n";
+                echo "mergeDefsBlockIdStates 1 blockid = '$blockId'\n";
                 $state = $def->getState($blockId);
-                //$state = $def->getCurrentState();
+            //$state = $def->getCurrentState();
             } else {
                 echo "mergeDefsBlockIdStates 2\n";
                 $state = $def->getCurrentState();
-                $state->printStdout();
             }
 
             if (!is_null($state)) {
                 echo "mergeDefsBlockIdStates 3\n";
-                if ($state->isTainted()) {
+                $state->printStdout();
+                if ($state->isTainted() && !AssertionAnalysis::temporarySimple($block, $def)) {
                     echo "mergeDefsBlockIdStates 4\n";
                     $myState->setTainted(true);
                     $myState->addTaintedByDef([$def, $state]);
                 }
 
-                if ($state->isSanitized()) {
+                if ($state->isSanitized() && !$oneStateNotSanitizer) {
                     $myState->setSanitized(true);
                     foreach ($state->getTypeSanitized() as $typeSanitized) {
                         $myState->addTypeSanitized($typeSanitized);
                     }
+                } else {
+                    // if one value is not sanitized it's enough to not sanitize
+                    // see custom/sanitizer4.php
+                    $myState->setSanitized(false);
+                    $myState->setTypeSanitized([]);
+                    $oneStateNotSanitizer = true;
                 }
 
                 echo "mergeDefsBlockIdStates 5 '".$state->getObjectId()."'\n";
                 if ($state->getObjectId() !== -1) {
-                    $myState->addType(MyDefinition::TYPE_INSTANCE);
                     $myState->setObjectId($state->getObjectId());
+                }
+
+                if ($state->isType(MyDefinition::TYPE_INSTANCE)) {
+                    $myState->addType(MyDefinition::TYPE_INSTANCE);
+                }
+
+                if ($state->isType(MyDefinition::ALL_PROPERTIES_TAINTED)) {
+                    $myState->addType(MyDefinition::ALL_PROPERTIES_TAINTED);
                 }
 
                 if ($state->isType(MyDefinition::TYPE_ARRAY)) {
@@ -412,11 +590,9 @@ class Analysis
                     foreach ($state->getArrayIndexes() as $oriArrayIndex) {
                         echo "mergeDefsBlockIdStates 7 index:\n";
                         var_dump($oriArrayIndex->index);
-                        $oriArrayIndex->def->printStdout();
-                        $tmpDef = clone $oriArrayIndex->def;
+                        //$tmpDef = clone $oriArrayIndex->def;
                         echo "mergeDefsBlockIdStates 8 index:\n";
-                        $tmpDef->printStdout();
-                        $myState->addArrayIndex($oriArrayIndex->index, $tmpDef);
+                        $myState->addArrayIndex($oriArrayIndex->index, $oriArrayIndex->def);
                     }
     
                     $myState->addType(MyDefinition::TYPE_ARRAY);
@@ -425,6 +601,13 @@ class Analysis
                 $myState->setIsEmbeddedByChars($state->getIsEmbeddedByChars(), true);
                 $myState->setCast($state->getCast());
                 $myState->setLabel($state->getLabel());
+
+                echo "mergeDefsBlockIdStates 9 '".count($concatValues)."'\n";
+                $values = count($concatValues) ? $concatValues : $state->getLastKnownValues();
+                foreach ($values as $value) {
+                    echo "mergeDefsBlockIdStates 10\n";
+                    $myState->addLastKnownValue($value);
+                }
             }
         }
 
@@ -463,12 +646,23 @@ class Analysis
             }
 
             if ($state->isType(MyDefinition::TYPE_ARRAY)) {
+                echo "mergeDefStates 6 TYPE ARRAY\n";
                 foreach ($state->getArrayIndexes() as $oriArrayIndex) {
-                    $tmpDef = clone $oriArrayIndex->def;
-                    $myState->addArrayIndex($oriArrayIndex->index, $tmpDef);
+                    echo "mergeDefStates 6 TYPE ARRAY FOREACH index:\n";
+                    var_dump($oriArrayIndex->index);
+                    if (!$myState->isArrayIndexExists($oriArrayIndex->index)) {
+                        $tmpDef = clone $oriArrayIndex->def;
+                        $myState->addArrayIndex($oriArrayIndex->index, $tmpDef);
+                    }
                 }
 
                 $myState->addType(MyDefinition::TYPE_ARRAY);
+            }
+
+            echo "mergeDefStates 6b\n";
+            foreach ($state->getLastKnownValues() as $value) {
+                echo "mergeDefStates 6c\n";
+                $myState->addLastKnownValue($value);
             }
 
             $myState->setIsEmbeddedByChars($state->getIsEmbeddedByChars(), true);
@@ -524,74 +718,20 @@ class Analysis
         return true;
     }
     
-    public static function checkIfFuncEqualMySpecify($context, $mySpecify, $myFunc, $stackClass = null)
+    public static function checkIfFuncEqualMySpecify($context, $mySpecify, $myFunc, $myClass = null)
     {
-        $checkName = false;
-        if ($myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
-            $properties = "eee";
-            //$properties = $myFunc->property->getProperties();
-            /*
-            if (is_array($properties) && isset($properties[count($properties) - 1])) {
-                $lastproperty = $properties[count($properties) - 1];
-                if ($lastproperty === $mySpecify->getName()) {
-                    $checkName = true;
-                }
-            }
-*/
-            if ($properties === $mySpecify->getName()) {
-                $checkName = true;
-            }
+        if (!$mySpecify->isInstance()
+            && $mySpecify->getName() === $myFunc->getName()) {
+            return true;
         }
-                
-        $checkInstance = false;
-        if (($mySpecify->getName() === $myFunc->getName()) || $checkName) {
-            $checkName = true;
-            $checkInstance = true;
-            
-            if ($mySpecify->isInstance() && !is_null($stackClass)) {
-                if ($mySpecify->getLanguage() === "php") {
-                    $propertiesRule = explode("->", $mySpecify->getInstanceOfName());
-                } elseif ($mySpecify->getLanguage() === "js") {
-                    $propertiesRule = explode(".", $mySpecify->getInstanceOfName());
-                }
-                        
-                if (is_array($propertiesRule)) {
-                    $i = 0;
-                    foreach ($propertiesRule as $propertyName) {
-                        // if(!isset($stackClass[$i])) && count() == 0 =>
-                        //$test = new ClassInconnu;
-                        //$test->db->call() (db has no known instance)
-                        $foundProperty = true;
-                        
-                        if (isset($stackClass[$i]) && count($stackClass[$i]) > 0) {
-                            $foundProperty = false;
-                            foreach ($stackClass[$i] as $propClass) {
-                                $objectId = $propClass->getCurrentState()->getObjectId();
-                                $myClass = $context->getObjects()->getMyClassFromObject($objectId);
-                                        
-                                if (!is_null($myClass)
-                                    && ($myClass->getName() === $propertyName
-                                        || $myClass->getExtendsOf() === $propertyName)) {
-                                    $foundProperty = true;
-                                    break;
-                                }
-                            }
-                        }
-                                
-                        if (!$foundProperty) {
-                            $checkInstance = false;
-                            break;
-                        }
-                            
-                        $i ++;
-                    }
-                }
-            } elseif ($mySpecify->isInstance() && is_null($stackClass)) {
-                $checkInstance = false;
-            }
+                    
+        if ($mySpecify->isInstance() && !is_null($myClass) &&
+            ($myClass->getName() === $mySpecify->getInstanceOfName()
+                || $myClass->getExtendsOf() === $mySpecify->getInstanceOfName())) {
+            return true;
         }
         
-        return $checkInstance & $checkName;
+        return false;
     }
     
     public static function checkIfDefEqualDefRule($context, $defs, $rule, $def, $myClass = null)
@@ -603,7 +743,7 @@ class Analysis
             return true;
         }
                     
-        if ($definition->isInstance() && !is_null($myClass) &&
+        if ($definition->isInstance() && !is_null($myClass) && $def->getName() === $definition->getName() &&
             ($myClass->getName() === $definition->getInstanceOfName()
                 || $myClass->getExtendsOf() === $definition->getInstanceOfName())) {
             return true;

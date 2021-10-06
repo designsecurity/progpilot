@@ -64,32 +64,32 @@ class SecurityAnalysis
         
                         echo "security funccall 5\n";
                         $myDefArg = $instruction->getProperty("argdef$i");
-/*
-                        if ($myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
-                            && $mySink->isParameterCondition($i + 1, "array_tainted")) {
-                            foreach ($myDefArg->getCopyArrays() as $copyarray) {
-                                if (!SecurityAnalysis::isSafe($i + 1, $copyarray[1], $myDefArg, $mySink, $myFuncCall)) {
-                                    $conditionRespected = true;
-                                }
-                            }
-                        } elseif (!$myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
-                         && (!$mySink->isParameterCondition($i + 1, "array_tainted")
-                         || $mySink->isParameterCondition($i + 1, "variable_tainted"))) {
-                            $defsBy = $myDefArg->getCurrentState()->getTaintedByDefs();
-                            foreach ($defsBy as $defBy) {
-                                $def = $defBy[0];
-                                $state = $defBy[1];
-                                if (!SecurityAnalysis::isSafeState($mySink, $i + 1, $state)) {
-                                    $conditionRespected = true;
-                                }
-                            }
-                        } elseif ($myDefArg->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED"
-                            && $mySink->isParameterCondition($i + 1, "array_tainted")) {
-                            $conditionRespected = true;
-                        } elseif ($myDefArg->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")
-                            && $mySink->isParameterCondition($i + 1, "object_tainted")) {
-                            $conditionRespected = true;
-                        }*/
+                        /*
+                                                if ($myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
+                                                    && $mySink->isParameterCondition($i + 1, "array_tainted")) {
+                                                    foreach ($myDefArg->getCopyArrays() as $copyarray) {
+                                                        if (!SecurityAnalysis::isSafe($i + 1, $copyarray[1], $myDefArg, $mySink, $myFuncCall)) {
+                                                            $conditionRespected = true;
+                                                        }
+                                                    }
+                                                } elseif (!$myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
+                                                 && (!$mySink->isParameterCondition($i + 1, "array_tainted")
+                                                 || $mySink->isParameterCondition($i + 1, "variable_tainted"))) {
+                                                    $defsBy = $myDefArg->getCurrentState()->getTaintedByDefs();
+                                                    foreach ($defsBy as $defBy) {
+                                                        $def = $defBy[0];
+                                                        $state = $defBy[1];
+                                                        if (!SecurityAnalysis::isSafeState($mySink, $i + 1, $state)) {
+                                                            $conditionRespected = true;
+                                                        }
+                                                    }
+                                                } elseif ($myDefArg->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED"
+                                                    && $mySink->isParameterCondition($i + 1, "array_tainted")) {
+                                                    $conditionRespected = true;
+                                                } elseif ($myDefArg->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")
+                                                    && $mySink->isParameterCondition($i + 1, "object_tainted")) {
+                                                    $conditionRespected = true;
+                                                }*/
 
                         if (!$conditionRespected) {
                             break;
@@ -119,14 +119,14 @@ class SecurityAnalysis
                                 );
                             }
                         } else {*/
-                            echo "security funccall 8\n";
-                            SecurityAnalysis::callbis(
-                                $i + 1,
-                                $myFuncCall,
-                                $context,
-                                $mySink,
-                                $myDefArg
-                            );
+                        echo "security funccall 8\n";
+                        SecurityAnalysis::callbis(
+                            $i + 1,
+                            $myFuncCall,
+                            $context,
+                            $mySink,
+                            $myDefArg
+                        );
                         //}
                     }
                 }
@@ -147,8 +147,6 @@ class SecurityAnalysis
             foreach ($fromTaintedByDefs as $fromTaintedByDef) {
                 $fromTaintedDef = $fromTaintedByDef[0];
                 $fromTaintedState = $fromTaintedByDef[1];
-                echo "taintedFlow 1\n";
-                $fromTaintedDef->printStdout();
                 $possibleConditions = ["QUOTES", "object_tainted", "array_tainted", "variable_tainted", null];
                 foreach ($possibleConditions as $condition) {
                     if ($mySink->isParameterCondition($indexParameter, $condition)) {
@@ -180,10 +178,8 @@ class SecurityAnalysis
     {
         $possibleConditions = ["QUOTES", "object_tainted", "array_tainted", "variable_tainted", null];
         
-        echo "isSafeState 1\n";
         foreach ($possibleConditions as $condition) {
             if ($mySink->isParameterCondition($indexParameter, $condition)) {
-                echo "isSafeState 2 '$condition'\n";
                 if (!SecurityAnalysis::isSafeStateCondition($mySink, $myState, $condition)) {
                     return false;
                 }
@@ -195,14 +191,11 @@ class SecurityAnalysis
     
     public static function isSafeStateCondition($mySink, $state, $condition)
     {
-        echo "isSafeStateCondition 1\n";
-        if ($state->isTainted() && $state->getCast() === MyDefinition::CAST_NOT_SAFE) {
-            echo "isSafeStateCondition 2\n";
+        if (($state->isTainted() || $state->isType(MyDefinition::ALL_PROPERTIES_TAINTED))
+            && $state->getCast() === MyDefinition::CAST_NOT_SAFE) {
             if ($state->isSanitized()) {
-                echo "isSafeStateCondition 3 '".$mySink->getAttack()."'\n";
                 if ($state->isTypeSanitized($mySink->getAttack())
                             || $state->isTypeSanitized("ALL")) {
-                    echo "isSafeStateCondition 4\n";
                     // 1° the argument of sink must be quoted
                     if ($condition === "QUOTES" && !$state->isTypeSanitized("ALL")) {
                         // the def is embedded into quotes but quotes are not sanitized
@@ -233,10 +226,8 @@ class SecurityAnalysis
                     return false; // not safe because type not sanitized
                 }
 
-                echo "isSafeStateCondition 5\n";
                 return true;
             }
-            echo "isSafeStateCondition 6\n";
 
             return false;
         }
@@ -247,7 +238,6 @@ class SecurityAnalysis
 
     public static function isSafeStatesCondition($mySink, $myDef, $condition, $isFlow)
     {
-        echo "isSafeStatesCondition\n";
         $statesMyDef = $myDef->getStates();
         foreach ($statesMyDef as $stateMyDef) {
             if (!SecurityAnalysis::isSafeStateCondition($mySink, $stateMyDef, $condition)) {
@@ -273,9 +263,6 @@ class SecurityAnalysis
 
         $nbtainted = 0;
 
-        echo "callbis 1\n";
-        $myDef->printStdout();
-
         // arg param of sink = always current state
 
         if (!SecurityAnalysis::isSafeState($mySink, $indexParameter, $myDef->getCurrentState())) {
@@ -283,9 +270,6 @@ class SecurityAnalysis
             foreach ($taintedDefs as $taintedByDef) {
                 $taintedDef = $taintedByDef[0];
                 $taintedState = $taintedByDef[1];
-
-                echo "callbis 2\n";
-                $taintedDef->printStdout();
 
                 if (!SecurityAnalysis::isSafeState($mySink, $indexParameter, $taintedState)) {
                     $ret = SecurityAnalysis::getPrintableTaintedDef($mySink, $taintedDef);
@@ -336,9 +320,6 @@ class SecurityAnalysis
 
     public static function getPrintableTaintedDef($mySink, $myDef)
     {
-        echo "getPrintableTaintedDef\n";
-        $myDef->printStdout();
-
         if (!is_null($myDef->getArgToParam())) {
             $param = $myDef->getArgToParam();
             $return["source_name"] = \progpilot\Utils::printDefinition($mySink->getLanguage(), $param);
