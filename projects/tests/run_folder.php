@@ -10,13 +10,13 @@ if ($argc > 1) {
     $context->inputs->setLanguages(["php", "js"]);
     $context->setDebugMode(true);
     $context->outputs->taintedFlow(true);
-        
+        /*
     $exclusions = [
         "./tests/folders/folder2/mix3.php",
         "./tests/folders/folder2/sub_folder1/sub_folder2"
-    ];
+    ];*/
 
-    $context->inputs->setExclusions($exclusions);
+    $context->inputs->addExclusions($exclusions);
     $analyzer->run($context);
 
     var_dump($context->outputs->getResults());

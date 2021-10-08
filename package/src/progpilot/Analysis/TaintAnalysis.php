@@ -104,7 +104,6 @@ class TaintAnalysis
         $arrFuncCall = $instruction->getProperty(MyInstruction::ARR);
         $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
 
-        echo "funccallValidator 1 '$funcName'___\n";
         $nbParams = 0;
         $defsValid = [];
         $conditionsRespected = true;
@@ -117,7 +116,6 @@ class TaintAnalysis
         }
 
         while (true) {
-            echo "funccallValidator 2___\n";
             if (!$instruction->isPropertyExist("argdef$nbParams")
                 || !$instruction->isPropertyExist("argexpr$nbParams")) {
                 break;
@@ -127,25 +125,19 @@ class TaintAnalysis
             $exprArg = $instruction->getProperty("argexpr$nbParams");
 
             if (!is_null($myValidator)) {
-                echo "funccallValidator 3___ name '".$myValidator->getName()."'\n";
                 $conditions = $myValidator->getParameterconditions($nbParams + 1);
                 if ($conditions === "valid" && !$exprArg->getIsConcat()) {
                     $defsValid[] = $defArg;
                 } elseif ($conditions === "array_not_tainted") {
-                    echo "funccallValidator b___ 1\n";
                     if ($defArg->getCurrentState()->isType(MyDefinition::TYPE_ARRAY)) {
-                        echo "funccallValidator b___ 2\n";
                         foreach ($defArg->getCurrentState()->getArrayIndexes() as $arrayIndex) {
-                            echo "funccallValidator b___ 3\n";
                             if ($arrayIndex->def->getCurrentState()->isTainted()) {
-                                echo "funccallValidator b___ 4\n";
                                 $conditionsRespected = false;
                                 break;
                             }
                         }
                     }
                 } elseif ($conditions === "not_tainted") {
-                    echo "funccallValidator a___\n";
                     if ($defArg->isTainted()) {
                         $conditionsRespected = false;
                     }
@@ -153,11 +145,7 @@ class TaintAnalysis
                     $conditionsRespectedEquals = false;
                     $values = $myValidator->getParameterValues($nbParams + 1);
 
-
-                    echo "funccallValidator EQUALS 1\n";
-
                     if (!is_null($values)) {
-                        echo "funccallValidator EQUALS 2\n";
                         foreach ($values as $value) {
                             foreach ($defArg->getCurrentState()->getLastKnownValues() as $lastKnownValue) {
                                 if ($value->value === $lastKnownValue && $conditions === "equals") {
@@ -169,14 +157,11 @@ class TaintAnalysis
                         }
                     }
 
-                    echo "funccallValidator 5___\n";
                     if (!$conditionsRespectedEquals) {
-                        echo "funccallValidator 6___\n";
                         $conditionsRespected = false;
                     }
                 }
             } else {
-                echo "funccallValidator ccccc___\n";
                 if (!is_null($myFunc)) {
                     $ambiguous = true;
 
@@ -227,12 +212,8 @@ class TaintAnalysis
             $nbParams ++;
         }
         
-
-        echo "funccallValidator qsdqsdqsdqs___\n";
         if (count($defsValid) > 0) {
-            echo "funccallValidator 7___\n";
             if ($conditionsRespected) {
-                echo "funccallValidator 8___\n";
 
                 $resultid = $instruction->getProperty(MyInstruction::RESULTID);
                 $opInformation = $context->getCurrentFunc()->getOpInformation($resultid);
@@ -288,7 +269,6 @@ class TaintAnalysis
         $index,
         $objectId = -1
     ) {
-        echo "funccallSanitizer 1____\n";
         $funcName = $instruction->getProperty(MyInstruction::FUNCNAME);
         $arrFuncCall = $instruction->getProperty(MyInstruction::ARR);
         $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
@@ -358,23 +338,16 @@ class TaintAnalysis
             if (!is_null($mySanitizer)) {
                 $conditions = $mySanitizer->getParameterconditions($nbParams + 1);
 
-                echo "funccallSanitizer 1--1____\n";
                 if ($conditions === "equals" || $conditions === "notequals") {
                     $conditionsRespected = false;
                     $values = $mySanitizer->getParameterValues($nbParams + 1);
 
-                    echo "funccallSanitizer 1--2____\n";
                     if (!is_null($values)) {
-                        echo "funccallSanitizer 1--3____\n";
                         foreach ($values as $value) {
-                            echo "funccallSanitizer 1--4____\n";
                             foreach ($defArg->getCurrentState()->getLastKnownValues() as $lastKnownValue) {
-                                echo "funccallSanitizer 1--5____\n";
                                 if (($value->value === $lastKnownValue && $conditions === "equals")
                                     || ($value->value !== $lastKnownValue && $conditions === "notequals")) {
                                     $conditionsRespected = true;
-
-                                    echo "funccallSanitizer 1--6____\n";
                                     if (isset($value->prevent)) {
                                         $preventFinal = array_merge($preventFinal, $value->prevent);
                                     }
@@ -393,7 +366,6 @@ class TaintAnalysis
                         $myExprReturn2->addDef($defArg);
                     }
                 } elseif ($conditions === "sanitize") {
-                    echo "funccallSanitizer 2____\n";
                     $conditionsSanitize = true;
                     $exprsTaintedconditionsSanitize[] = $defArg;
                 }
@@ -407,7 +379,6 @@ class TaintAnalysis
         if ($funcName !== "__construct") {
             $resultid = $instruction->getProperty(MyInstruction::RESULTID);
             $opInformation = $context->getCurrentFunc()->getOpInformation($resultid);
-            echo "storeopinformation here '$resultid' taintanalysis\n";
             $opInformation["chained_results"][] = $myTempReturn;
 
             $context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
@@ -417,7 +388,6 @@ class TaintAnalysis
 
         $myTempReturn->getCurrentState()->setObjectId($objectId);
 
-        echo "funccallSanitizer 3____\n";
         // the return of func will be tainted if one of arg is tainted
         if ($returnSanitizer) {
             $myTempReturn->getCurrentState()->setTainted($paramsTainted);
@@ -431,12 +401,9 @@ class TaintAnalysis
         }
 
         if ($returnSanitizer || $conditionsSanitize) {
-            echo "funccallSanitizer 4____\n";
             if (!is_null($mySanitizer) && $conditionsRespectedFinal) {
-                echo "funccallSanitizer 5____\n";
                 if ($conditionsSanitize) {
                     foreach ($exprsTaintedconditionsSanitize as $defTaintedconditionsSanitize) {
-                        echo "funccallSanitizer 6____\n";
                         $callback = "Callbacks::addSanitizedTypes";
                         HelpersAnalysis::forEachTaintedByDefs($defTaintedconditionsSanitize, $preventFinal, $callback);
                     }
@@ -461,8 +428,6 @@ class TaintAnalysis
                 //$myDefReturn->getCurrentState()->addTypeSanitized($tmp);
             }
         }
-
-        echo "funcallsanitize\n";
 
         /*
                 if ($returnSanitizer) {
@@ -527,9 +492,6 @@ class TaintAnalysis
 
             $resultid = $instruction->getProperty(MyInstruction::RESULTID);
             $opInformation = $context->getCurrentFunc()->getOpInformation($resultid);
-            echo "storeopinformation here '$resultid' taintanalysis\n";
-        
-            echo "FUNCCALL SOURCE 1\n";
 
 
             $myDef = new MyDefinition(
@@ -553,7 +515,6 @@ class TaintAnalysis
                 $myDef->setClassName($myFuncCall->getName()."_built-in-class");
                 HelpersDataflow::createObject($context, $myDef);
 
-                echo "FUNCCALL SOURCE 2\n";
             //$defAssign->property->setProperties("PROGPILOT_ALL_PROPERTIES_TAINTED");
             } elseif ($mySource->getIsArray()) {
                 $myDef->getCurrentState()->addType(MyDefinition::TYPE_ARRAY);
@@ -585,9 +546,6 @@ class TaintAnalysis
 
                 $myElement = $newArrs[1][0];
                 $myElement->getCurrentState()->setTainted(true);
-
-                echo "getIsReturnArray_\n";
-                var_dump($myElement);
 
             /*
             if ($arrFuncCall === $valueArray) {

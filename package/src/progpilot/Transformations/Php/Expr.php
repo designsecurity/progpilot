@@ -83,20 +83,6 @@ class Expr
 
     public static function instructionnew2($context, $op, $expr)
     {
-/*
-        echo "instructionnew2 1\n";
-        if (isset($op->var->ops[0]) && $op !== $op->var->ops[0]) {
-            echo "instructionnew2 2\n";
-            Expr::instructionnew2($context, $op->var->ops[0], $expr);
-        }
-
-        if (isset($op->ops[0]) && $op !== $op->ops[0]) {
-            echo "instructionnew2 3\n";
-            Expr::instructionnew2($context, $op->ops[0], $expr);
-        }
-
-        echo "instructionnew2 4\n";
-        */
         CastFetch::castFetch($context, $op, $expr);
         ConcatFetch::concatFetch($context, $op, $expr);
         DimFetch::dimFetch($context, $op, $expr);
@@ -109,16 +95,9 @@ class Expr
     }
 
     public static function instructionnew($context, $op, $expr)
-    {/*
-        echo "instructionnew 1\n";
-        if (isset($op->ops[0]) && is_null($op->original)) {
-            echo "instructionnew 2\n";
-            Expr::instructionnew2($context, $op->ops[0], $expr);
-        } else {*/
-            echo "instructionnew 3\n";
-            VariableFetch::variableFetch($context, $op, $expr);
-            LiteralFetch::literalFetch($context, $op, $expr);
-        //}
+    {
+        VariableFetch::variableFetch($context, $op, $expr);
+        LiteralFetch::literalFetch($context, $op, $expr);
     }
 
     public static function instructionassign($context, $op, $expr)
@@ -219,18 +198,8 @@ class Expr
                         }
             */
 
-            //if ($type === MyOp::TYPE_PROPERTY || $arr !== false) {
-            echo "expr transformPropertyFetch 1\n";
-            //Common::transformPropertyFetch($context, $op->ops[0]);
             Common::transformPropertyFetch($context, $op);
-            echo "expr transformPropertyFetch 2\n";
-            /*
-            }
-            else if (!$phi) {
-            $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
-            $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $myTemp);
-            $context->getCurrentMycode()->addCode($instTemporarySimple);
-            }*/
+            
             
             return $myTemp;
         } elseif ($type === MyOp::TYPE_FUNCCALL_ARRAY) {

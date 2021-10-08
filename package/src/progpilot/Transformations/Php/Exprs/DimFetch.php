@@ -22,8 +22,6 @@ class DimFetch
     {
         if (isset($op)
             && $op instanceof Op\Expr\ArrayDimFetch) {
-                echo "ArrayDimFetch 2 line '".$context->getCurrentLine()."'\n";
-
             $instDefChained = new MyInstruction(Opcodes::ARRAYDIM_FETCH);
             if (isset($op->dim->value)) {
                 $instDefChained->addProperty(MyInstruction::ARRAY_DIM, $op->dim->value);
@@ -34,7 +32,6 @@ class DimFetch
             $instDefChained->addProperty(MyInstruction::EXPR, $expr);
 
             if (isset($op->result)) {
-                echo "ArrayDimFetch 3\n";
                 $instDefChained->addProperty(
                     MyInstruction::RESULTID,
                     $context->getCurrentFunc()->getOpId($op->result)
@@ -42,7 +39,6 @@ class DimFetch
             }
 
             if (isset($op->var)) {
-                echo "ArrayDimFetch 4\n";
                 $instDefChained->addProperty(
                     MyInstruction::VARID,
                     $context->getCurrentFunc()->getOpId($op->var)
@@ -51,7 +47,6 @@ class DimFetch
 
             // beginning of the chain
             if (isset($op->var->original)) {
-                echo "ArrayDimFetch 5 '".$op->var->original->name->value."'\n";
                 $originalDef = new MyDefinition(
                     $context->getCurrentBlock()->getId(),
                     $context->getCurrentMyFile(),
@@ -61,6 +56,10 @@ class DimFetch
                 );
 
                 $instDefChained->addProperty(MyInstruction::ORIGINAL_DEF, $originalDef);
+
+                if ($originalDef->getName() === "GLOBALS") {
+                    $context->getCurrentFunc()->setHasGlobalVariables(true);
+                }
             }
 
             $context->getCurrentMycode()->addCode($instDefChained);

@@ -73,15 +73,15 @@ class Utils
         if ($language === "js") {
             $prefix = "";
         }
-            
+        /*
         if (!is_null($original) && !is_null($original->getPropertyAccessor())) {
-            $defName = "$prefix".Utils::encodeCharacters($def->getName()).
-                Utils::printProperties($language, $original->getPropertyAccessor());
+        $defName = "$prefix".Utils::encodeCharacters($def->getName()).
+            Utils::printProperties($language, $original->getPropertyAccessor());
         } elseif ($def->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
-            $defName = Utils::encodeCharacters($def->getName()).
-                Utils::printStaticProperties($language, $def->property->getProperties());
-        } else {
-            $defName = "$prefix".Utils::encodeCharacters($def->getName());
+        $defName = Utils::encodeCharacters($def->getName()).
+            Utils::printStaticProperties($language, $def->property->getProperties());
+        } else {*/
+        $defName = "$prefix".Utils::encodeCharacters($def->getName());/*
         }
 
         $nameArray = "";
@@ -93,9 +93,28 @@ class Utils
                 $nameArray .= "[".Utils::encodeCharacters($original->getArrayIndexAccessor())."]";
             }
             //Utils::printArray($arrayAccessor, $nameArray);
+        }*/
+
+        $suffix = "";
+        if (!is_null($original) && !empty($original)) {
+            $defName = "$prefix".Utils::encodeCharacters($original[0]->getName());
+            for ($i = 1; $i < count($original); $i ++) {
+                if (is_numeric($original[$i])
+                    || $original[$i] === ']'
+                        || $original[$i] === '['
+                            || $original[$i] === '->'
+                                || $original[$i] === '::') {
+                    $suffix .= Utils::encodeCharacters($original[$i]);
+                } else {
+                    $suffix .= "\"".Utils::encodeCharacters($original[$i])."\"";
+                }
+            }
+        } else {
+            $defName = "$prefix".Utils::encodeCharacters($def->getName());
         }
 
-        return $defName.$nameArray;
+
+        return $defName.$suffix;
     }
 
     public static function printFunction($function)

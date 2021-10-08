@@ -21,14 +21,10 @@ class ConstFetch
 {
     public static function constFetch($context, $op, $expr)
     {
-        echo "constFetch 1\n";
-
         if (isset($op)
             && $op instanceof Op\Expr\ConstFetch
                 && isset($op->name)
                     && $op->name instanceof Operand\Literal) {
-            echo "constFetch 2\n";
-
             $myTemp = new MyDefinition(
                 $context->getCurrentBlock()->getId(),
                 $context->getCurrentMyFile(),

@@ -30,15 +30,12 @@ class FuncCall
 {
     public static function argument($context, $arg, $instFuncCallMain, $funcCallName, $numParam)
     {
-        echo "argument start\n";
         $myExprparam = new MyExpr($context->getCurrentLine(), $context->getCurrentColumn());
 
         Expr::instructionnew($context, $arg, null);
-        //VariableFetch::variableFetch($context, $arg, null);
 
         $instVariable = $context->getCurrentMycode()->getLastCode();
         if ($instVariable->getOpcode() === Opcodes::VARIABLE_FETCH) {
-            echo "FuncCall argument variable\n";
             $defArg = $instVariable->getProperty(MyInstruction::DEF);
             $instFuncCallMain->addProperty("argoriginaldef$numParam", $defArg);
         }
@@ -72,7 +69,6 @@ class FuncCall
         $instFuncCallMain->addProperty("argdef$numParam", $myDef);
         $instFuncCallMain->addProperty("argexpr$numParam", $myExprparam);
 
-        echo "argument end\n";
 
         /*
                 // if we have funccall($arg, array("test"=>false)); for example
@@ -131,16 +127,13 @@ class FuncCall
 
         // instance_name = new obj; instance_name->method_name()
 
-        echo "funccall start\n";
         if ($context->getCurrentOp() instanceof Op\Expr\MethodCall) {
-            echo "funccall transform2\n";
             $isMethod = true;
             $instanceName = Common::getNameDefinition($context->getCurrentOp()->var);
             
             if (isset($context->getCurrentOp()->var->ops[0])) {
                 $propertyName = Common::getNameProperty($context->getCurrentOp()->var->ops[0]);
             }
-            echo "funccall transform3 '$instanceName' '$propertyName'\n";
         }
 
         $funcCallName = "";
@@ -202,7 +195,6 @@ class FuncCall
                 $context->getCurrentFunc()->getOpId($context->getCurrentOp()->class)
             );
         }
-        echo "funccall transform4 '$funcCallName'\n";
         $instFuncCallMain->addProperty(MyInstruction::FUNCNAME, $funcCallName);
 
         $myFunctionCall = new MyFunction($funcCallName);
@@ -241,12 +233,10 @@ class FuncCall
             $listArgs = $context->getCurrentOp()->args;
         }
 
-        echo "funccall start arg\n";
         foreach ($listArgs as $arg) {
             FuncCall::argument($context, $arg, $instFuncCallMain, $funcCallName, $nbparams);
             $nbparams ++;
         }
-        echo "funccall end arg\n";
 
         $myFunctionCall->setNbParams($nbparams);
 
@@ -262,7 +252,6 @@ class FuncCall
         $instFuncCallMain->addProperty(MyInstruction::ARR, $funcCallArr);
         $context->getCurrentMycode()->addCode($instFuncCallMain);
 
-        echo "funcall end\n";
         return $mybackdef;
     }
 }

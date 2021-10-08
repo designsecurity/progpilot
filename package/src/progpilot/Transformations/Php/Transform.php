@@ -79,14 +79,11 @@ class Transform implements Visitor
     {
         // creating edges for myblocks structure as block structure
 
-        echo "leaveScript 1\n";
         foreach ($this->sBlocks as $block) {
             $myBlock = $this->sBlocks[$block];
-            echo "leaveScript 2 blockid = '".$myBlock->getId()."'\n";
             foreach ($block->parents as $block_parent) {
                 if ($this->sBlocks->contains($block_parent)) {
                     $myBlockParent = $this->sBlocks[$block_parent];
-                    echo "leaveScript 3 blockid parent = '".$myBlockParent->getId()."'\n";
                     $myBlock->addParent($myBlockParent);
                     $myBlock->addVirtualParent($myBlockParent);
                     $myBlockParent->addChild($myBlock);
@@ -189,7 +186,6 @@ class Transform implements Visitor
 
     public function enterFunc(Func $func)
     {
-        echo "enterFunc 1\n";
         $myFunction = new MyFunction($func->name);
         $this->context->setCurrentMycode($myFunction->getMyCode());
 
@@ -223,8 +219,6 @@ class Transform implements Visitor
 
                 $mythisdef->addType(MyDefinition::TYPE_INSTANCE);
                 $mythisdef->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
-
-                echo "enterFunc 2\n";
 
                 $myFunction->setThisDef($mythisdef);
             }
@@ -295,8 +289,6 @@ class Transform implements Visitor
 
     public function enterOp(Op $op, Block $block)
     {
-        echo "enterOp\n";
-
         $this->context->setCurrentOp($op);
         //$this->context->setCurrentBlock($block);
 
@@ -336,8 +328,7 @@ class Transform implements Visitor
             $instIterator->addProperty(MyInstruction::VARID, $this->context->getCurrentFunc()->getOpId($op->var));
             $instIterator->addProperty(MyInstruction::RESULTID, $this->context->getCurrentFunc()->getOpId($op->result));
             $this->context->getCurrentMycode()->addCode($instIterator);
-        }
-        elseif ($op instanceof Op\Expr\Include_) {
+        } elseif ($op instanceof Op\Expr\Include_) {
             if (Common::isFuncCallWithoutReturn($op)) {
                 // expr of type "assign" to have a defined return
                 $myExpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
@@ -350,14 +341,12 @@ class Transform implements Visitor
                 $this->context->getCurrentMycode()->addCode($instEndExpr);
             }
         } elseif ($op instanceof Op\Terminal\GlobalVar) {
-            $nameGlobal = Common::getNameDefinition($this->context->getCurrentOp()->var);
-
             $myDefGlobal = new MyDefinition(
                 $this->context->getCurrentBlock()->getId(),
                 $this->context->getCurrentMyFile(),
                 $this->context->getCurrentLine(),
                 $this->context->getCurrentColumn(),
-                $nameGlobal
+                $op->var->value
             );
             $myDefGlobal->setType(MyDefinition::TYPE_GLOBAL);
 
@@ -369,14 +358,10 @@ class Transform implements Visitor
         } elseif ($op instanceof Op\Terminal\Return_) {
             if (isset($op->expr)) {
                 //$myBlock = $this->sBlocks[$this->context->getCurrentBlock()];
-
-                echo "HERE1 return\n";
                 if (isset($op->expr->original)) {
-                    echo "HERE2 return\n";
                     Expr::instructionnew($this->context, $op->expr, "right");
                 }
 
-                echo "HERE3 return\n";
                 Assign::instruction($this->context, $op, $op->expr, null, true, false);
 
                 $inst = new MyInstruction(Opcodes::RETURN_FUNCTION);

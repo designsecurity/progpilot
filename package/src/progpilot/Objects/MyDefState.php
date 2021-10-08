@@ -241,27 +241,8 @@ class MyDefState extends MyOp
         $this->isTainted = $tainted;
     }
 
-    public function getOrCreateDefArrayIndex($blockId, $myArrayDef, $arrayIndex)
+    public function createDefArrayIndex($blockId, $myArrayDef, $arrayIndex)
     {
-        echo "getOrCreateDefArrayIndex 1\n";
-
-        $ret = [];
-        $found = false;
-        for ($i = 0; $i < count($this->arrayIndexes); $i ++) {
-            echo "getOrCreateDefArrayIndex 2\n";
-            var_dump($arrayIndex);
-            var_dump($this->arrayIndexes[$i]->index);
-            if ($this->arrayIndexes[$i]->index === $arrayIndex) {
-                $found = true;
-                $ret[] = $this->arrayIndexes[$i]->def;
-                echo "getOrCreateDefArrayIndex 3\n";
-            }
-        }
-
-        if ($found) {
-            return [false, $ret];
-        }
-
         $myDef = new MyDefinition(
             $blockId,
             $myArrayDef->getSourceMyFile(),
@@ -274,8 +255,26 @@ class MyDefState extends MyOp
         $this->addArrayIndex($arrayIndex, $myDef);
         $this->addType(MyDefinition::TYPE_ARRAY);
         $ret[] = $myDef;
-        echo "getOrCreateDefArrayIndex 4\n";
+
         return [true, $ret];
+    }
+
+    public function getOrCreateDefArrayIndex($blockId, $myArrayDef, $arrayIndex)
+    {
+        $ret = [];
+        $found = false;
+        for ($i = 0; $i < count($this->arrayIndexes); $i ++) {
+            if ($this->arrayIndexes[$i]->index === $arrayIndex) {
+                $found = true;
+                $ret[] = $this->arrayIndexes[$i]->def;
+            }
+        }
+
+        if ($found) {
+            return [false, $ret];
+        }
+
+        return $this->createDefArrayIndex($blockId, $myArrayDef, $arrayIndex);
     }
 
     public function getDefArrayIndex($arrayIndex)

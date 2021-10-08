@@ -1,5 +1,5 @@
 <?php
-/*
+
 define('DVWA_WEB_PAGE_TO_ROOT', './');
 require_once DVWA_WEB_PAGE_TO_ROOT . 'dvwa/dvwaPage.inc.php';
 
@@ -13,12 +13,12 @@ $page[ 'help_button' ]   = 'xss_r';
 $page[ 'source_button' ] = 'xss_r';
 
 dvwaDatabaseConnect();
-*/
+
 $vulnerabilityFile = '';
 switch ($_COOKIE[ 'security' ]) {
     case 'low':
         $vulnerabilityFile = 'low.php';
-        break;/*
+        break;
     case 'medium':
         $vulnerabilityFile = 'medium.php';
         break;
@@ -27,7 +27,7 @@ switch ($_COOKIE[ 'security' ]) {
         break;
     default:
         $vulnerabilityFile = 'impossible.php';
-        break;*/
+        break;
 }
 
 require_once DVWA_WEB_PAGE_TO_ROOT . "dvwa/{$vulnerabilityFile}";
@@ -62,11 +62,5 @@ $page[ 'body' ] .= "
 		<li>" . dvwaExternalLinkUrlGet('http://www.scriptalert1.com/') . "</li>
 	</ul>
 </div>\n";
-
-
-function dvwaHtmlEcho($pPage)
-{
-  echo $pPage['body'];
-}
 
 dvwaHtmlEcho($page);

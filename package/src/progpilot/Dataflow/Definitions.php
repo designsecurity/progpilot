@@ -313,10 +313,8 @@ class Definitions
 
     public function reachingDefs($myBlocks)
     {
-        echo "reachingDefs1\n";
         foreach ($myBlocks as $block) {
             $blockId = $block->getId();
-            echo "reachingDefs2 blockid '$blockId'\n";
             $this->setOutMinusKill($blockId, $this->getGen($blockId));
             $this->setOut($blockId, $this->getGen($blockId));
         }
@@ -327,15 +325,11 @@ class Definitions
             $change = false;
 
             foreach ($myBlocks as $block) {
-                echo "reachingDefs3\n";
                 foreach ($block->parents as $idparent => $parent) {
                     $idcurrent = $block->getId();
                     $idparent = $parent->getId();
 
-                    echo "reachingDefs4 idcurrent = '$idcurrent' idparent = '$idparent'\n";
-
                     if ($idcurrent !== $idparent) {
-                        echo "reachingDefs5\n";
                         $temp = ArrayMulti::arrayMergeMulti($this->getIn($idcurrent), $this->getOut($idparent));
                         $this->setIn($idcurrent, $temp);
 

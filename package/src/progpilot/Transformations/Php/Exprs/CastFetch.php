@@ -27,8 +27,6 @@ class CastFetch
                 || $op instanceof Op\Expr\Cast\Bool_
                 || $op instanceof Op\Expr\Cast\Double_
                 || $op instanceof Op\Expr\Cast\Object_) {
-                echo "castFetch\n";
-
                 Expr::instructionnew($context, $op->expr, $expr);
                 $instDefChained = new MyInstruction(Opcodes::CAST);
                 $instDefChained->addProperty("type_cast", MyDefinition::CAST_SAFE);
