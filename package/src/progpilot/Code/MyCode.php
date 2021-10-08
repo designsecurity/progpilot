@@ -523,6 +523,11 @@ class MyCode
                         echo "Opcodes::ITERATOR\n";
                                  
                         break;
+
+                    case Opcodes::ARRAY_EXPR:
+                        echo "Opcodes::ARRAY_EXPR\n";
+                                     
+                        break;
                 }
 
                 $index = $index + 1;

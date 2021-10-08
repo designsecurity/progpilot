@@ -43,9 +43,6 @@ class Callbacks
 
     public static function addSanitizedTypes($defValid, $sanitizedTypes)
     {
-
-        echo "addSanitizedTypes callback____\n";
-
         $defValid->getCurrentState()->setSanitized(true);
         if (is_array($sanitizedTypes)) {
             foreach ($sanitizedTypes as $sanitizedType) {

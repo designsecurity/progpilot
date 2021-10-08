@@ -21,11 +21,8 @@ class LiteralFetch
 {
     public static function literalFetch($context, $op, $expr)
     {
-        echo "literalfetch 1\n";
         if (isset($op)
             && $op instanceof Operand\Literal) {
-            echo "constFetch 2\n";
-
             $myTemp = new MyDefinition(
                 $context->getCurrentBlock()->getId(),
                 $context->getCurrentMyFile(),

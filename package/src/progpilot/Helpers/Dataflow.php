@@ -17,20 +17,14 @@ class Dataflow
 {
     public static function createObject($context, $myDef)
     {
-        echo "createObject 1\n";
-
         if ($myDef->isType(MyDefinition::TYPE_INSTANCE)
             || $myDef->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
             $idObject = $context->getObjects()->addObject();
             $myDef->getCurrentState()->setObjectId($idObject);
             $myDef->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
 
-            echo "createObject 2\n";
-
             if (!empty($myDef->getClassName())) {
                 $myClass = $context->getClasses()->getMyClass($myDef->getClassName());
-                echo "createObject 3\n";
-
                 if (is_null($myClass)) {
                     $myClass = new MyClass(
                         $myDef->getLine(),

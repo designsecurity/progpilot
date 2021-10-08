@@ -23,17 +23,31 @@ class ArrayFetch
 {
     public static function arrayFetch($context, $op, $expr, $name)
     {
-        echo "arrayFetch -3 ====================== start ======================\n";
         if (isset($op)
             && $op instanceof Op\Expr\Array_) {
-            echo "arrayFetch -2\n";
+            $instVariableFetch = new MyInstruction(Opcodes::ARRAY_EXPR);
+
             if (isset($op->values) && !empty($op->values)) {
-                echo "arrayFetch -1\n";
                 $nbArrayExpr = 0;
                 $tempArrayName = "tmp_array_".rand();
 
                 foreach ($op->values as $value) {
-                    echo "arrayFetch 0\n";
+                    if (isset($op->keys[$nbArrayExpr])) {
+                        $instVariableFetch->addProperty(
+                            "key".$nbArrayExpr,
+                            $context->getCurrentFunc()->getOpId($op->keys[$nbArrayExpr])
+                        );
+            
+                        Expr::instructionnew($context, $op->keys[$nbArrayExpr], "");
+                    }
+
+                    Expr::instructionnew($context, $value, "");
+                    $instVariableFetch->addProperty(
+                        "value".$nbArrayExpr,
+                        $context->getCurrentFunc()->getOpId($value)
+                    );
+
+                    /*
                     if (isset($op->keys[$nbArrayExpr])
                         && $op->keys[$nbArrayExpr] instanceof Operand\Literal) {
                         $key = $op->keys[$nbArrayExpr]->value;
@@ -45,49 +59,51 @@ class ArrayFetch
                     } else {
                         $key = $nbArrayExpr;
                     }
+                    */
+                    /*
+                                        // element / value part
+                                        if (isset($value->ops[0])
+                                            && $value->ops[0] instanceof Op\Expr\Array_) {
+                                            echo "arrayFetch rec '$key' '$tempArrayName'\n";
+                                            ArrayFetch::arrayFetch($context, $value->ops[0], $value->ops[0], $name."_rec");
+                                            $newvalue = $value->ops[0];
+                                        } else {
+                                            echo "arrayFetch Expr '$key' '$tempArrayName'\n";
+                                            if (isset($value->original)) {
+                                                echo "HERE11\n";
+                                                Expr::instructionnew($context, $value, "right");
+                                            }
+                                            $newvalue = $value;
+                                            if (isset($value->result)) {
+                                                $newvalue = $value->result;
+                                            }
+                                        }
 
-                    echo "arrayFetch 0 key = '$key'\n";
+                                        echo "arrayFetch 0 '$key' '$tempArrayName'\n";
+                                        $instAssign = new MyInstruction(Opcodes::END_ASSIGN);
 
-                    // element / value part
-                    if (isset($value->ops[0])
-                        && $value->ops[0] instanceof Op\Expr\Array_) {
-                        echo "arrayFetch rec '$key' '$tempArrayName'\n";
-                        ArrayFetch::arrayFetch($context, $value->ops[0], $value->ops[0], $name."_rec");
-                        $newvalue = $value->ops[0];
-                    } else {
-                        echo "arrayFetch Expr '$key' '$tempArrayName'\n";
-                        if (isset($value->original)) {
-                            echo "HERE11\n";
-                            Expr::instructionnew($context, $value, "right");
-                        }
-                        $newvalue = $value;
-                        if (isset($value->result)) {
-                            $newvalue = $value->result;
-                        }
-                    }
-                
-                    echo "arrayFetch 0 '$key' '$tempArrayName'\n";
-                    $instAssign = new MyInstruction(Opcodes::END_ASSIGN);
+                                        // simulation of the left part
+                                        $instDefChained = new MyInstruction(Opcodes::ARRAYDIM_FETCH);
+                                        $instDefChained->addProperty(MyInstruction::ARRAY_DIM, $key);
+                                        /*
+                                        /* the result of the array_dim fetch tmp[0] = something
+                                           should be the varid later of assign instruction (***) */
 
-                    // simulation of the left part
-                    $instDefChained = new MyInstruction(Opcodes::ARRAYDIM_FETCH);
-                    $instDefChained->addProperty(MyInstruction::ARRAY_DIM, $key);
-                    /* the result of the array_dim fetch tmp[0] = something
-                       should be the varid later of assign instruction (***) */
+                    /*
                     $instDefChained->addProperty(
-                        MyInstruction::RESULTID,
-                        $context->getCurrentFunc()->getOpId($op->keys[$nbArrayExpr])
+                     MyInstruction::RESULTID,
+                     $context->getCurrentFunc()->getOpId($op->keys[$nbArrayExpr])
                     );
 
 
                     //echo "arrayFetch '$key' RESULTID = '".$context->getCurrentFunc()->getOpId($var)."'\n";
 
                     $originalDef = new MyDefinition(
-                        $context->getCurrentBlock()->getId(),
-                        $context->getCurrentMyFile(),
-                        $context->getCurrentLine(),
-                        $context->getCurrentColumn(),
-                        $tempArrayName
+                     $context->getCurrentBlock()->getId(),
+                     $context->getCurrentMyFile(),
+                     $context->getCurrentLine(),
+                     $context->getCurrentColumn(),
+                     $tempArrayName
                     );
 
                     $instDefChained->addProperty(MyInstruction::ORIGINAL_DEF, $originalDef);
@@ -95,11 +111,11 @@ class ArrayFetch
 
                     // simulation of the assign / left part
                     $myDef = new MyDefinition(
-                        $context->getCurrentBlock()->getId(),
-                        $context->getCurrentMyFile(),
-                        $context->getCurrentLine(),
-                        $context->getCurrentColumn(),
-                        $tempArrayName
+                     $context->getCurrentBlock()->getId(),
+                     $context->getCurrentMyFile(),
+                     $context->getCurrentLine(),
+                     $context->getCurrentColumn(),
+                     $tempArrayName
                     );
 
                     $myDef->addType(MyDefinition::TYPE_ARRAY);
@@ -108,57 +124,70 @@ class ArrayFetch
                     $instDefinition = new MyInstruction(Opcodes::DEFINITION);
                     $instDefinition->addProperty(MyInstruction::DEF, $myDef);
                     $context->getCurrentMycode()->addCode($instDefinition);
-        
+
                     $instAssign->addProperty(MyInstruction::DEF, $myDef);
-        
+
                     echo "arrayFetch '$key' EXPRID = '".$context->getCurrentFunc()->getOpId($newvalue)."'\n";
                     $instAssign->addProperty(
-                        MyInstruction::EXPRID,
-                        $context->getCurrentFunc()->getOpId($newvalue)
+                     MyInstruction::EXPRID,
+                     $context->getCurrentFunc()->getOpId($newvalue)
                     );
-        
+        */
                     //echo "arrayFetch '$key' VARID = '".$context->getCurrentFunc()->getOpId($var)."'\n";
                     /* here (***) */
+                    /*
                     $instAssign->addProperty(
                         MyInstruction::VARID,
                         $context->getCurrentFunc()->getOpId($op->keys[$nbArrayExpr])
                     );
-        
-                    $context->getCurrentMycode()->addCode($instAssign);
 
+                    $context->getCurrentMycode()->addCode($instAssign);
+*/
                     $nbArrayExpr ++;
                 }
 
+                /*
+                                echo "arrayFetch 11 '$key' '$tempArrayName'\n";
+                                $myTemp = new MyDefinition(
+                                    $context->getCurrentBlock()->getId(),
+                                    $context->getCurrentMyFile(),
+                                    $context->getCurrentLine(),
+                                    $context->getCurrentColumn(),
+                                    $tempArrayName
+                                );
 
-                echo "arrayFetch 11 '$key' '$tempArrayName'\n";
-                $myTemp = new MyDefinition(
-                    $context->getCurrentBlock()->getId(),
-                    $context->getCurrentMyFile(),
-                    $context->getCurrentLine(),
-                    $context->getCurrentColumn(),
-                    $tempArrayName
-                );
-    
-                $myTemp->addType(MyDefinition::TYPE_ARRAY);
-                $myTemp->getCurrentState()->addType(MyDefinition::TYPE_ARRAY);
+                                $myTemp->addType(MyDefinition::TYPE_ARRAY);
+                                $myTemp->getCurrentState()->addType(MyDefinition::TYPE_ARRAY);
 
-                $instVariableFetch = new MyInstruction(Opcodes::VARIABLE_FETCH);
-                $instVariableFetch->addProperty(MyInstruction::EXPR, "right");
-    
-                $instVariableFetch->addProperty(
-                    MyInstruction::EXPRID,
-                    $context->getCurrentFunc()->getOpId($op)
-                );
-                
-                $instVariableFetch->addProperty(
-                    MyInstruction::VARID,
-                    $context->getCurrentFunc()->getOpId($op->result)
-                );
+                                $instVariableFetch = new MyInstruction(Opcodes::VARIABLE_FETCH);
+                                $instVariableFetch->addProperty(MyInstruction::EXPR, "right");
 
-                $instVariableFetch->addProperty(MyInstruction::DEF, $myTemp);
-                $context->getCurrentMycode()->addCode($instVariableFetch);
+                                $instVariableFetch->addProperty(
+                                    MyInstruction::EXPRID,
+                                    $context->getCurrentFunc()->getOpId($op)
+                                );
+
+                                $instVariableFetch->addProperty(
+                                    MyInstruction::VARID,
+                                    $context->getCurrentFunc()->getOpId($op->result)
+                                );
+
+                                $instVariableFetch->addProperty(MyInstruction::DEF, $myTemp);
+                                $context->getCurrentMycode()->addCode($instVariableFetch);
+                                */
             }
+
+            $instVariableFetch->addProperty(
+                MyInstruction::RESULTID,
+                $context->getCurrentFunc()->getOpId($op->result)
+            );
+
+            $instVariableFetch->addProperty(
+                "nbkeys",
+                $nbArrayExpr
+            );
+
+            $context->getCurrentMycode()->addCode($instVariableFetch);
         }
-        echo "arrayFetch +3 ====================== end ======================\n";
     }
 }

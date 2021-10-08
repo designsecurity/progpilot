@@ -23,7 +23,6 @@ class PropertyFetch
     {
         if (isset($op)
             && $op instanceof Op\Expr\PropertyFetch) {
-                echo "propertyFetch\n";
             $instDefChained = new MyInstruction(Opcodes::PROPERTY_FETCH);
             $instDefChained->addProperty(MyInstruction::PROPERTY_NAME, $op->name->value);
 

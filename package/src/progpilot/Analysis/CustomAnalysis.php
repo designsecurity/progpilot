@@ -193,7 +193,8 @@ class CustomAnalysis
                                             if ($defArg->getCurrentState()->isType(MyDefinition::TYPE_ARRAY)) {
                                                 foreach ($defArg->getCurrentState()->getArrayIndexes() as $arrayIndex) {
                                                     if ($arrayIndex->index === $valueParameter->array_index) {
-                                                        $defLastKnownValues = $arrayIndex->def->getCurrentState()->getLastKnownValues();
+                                                        $defLastKnownValues =
+                                                            $arrayIndex->def->getCurrentState()->getLastKnownValues();
                                                         $arrayfound = true;
 
                                                         break 2;

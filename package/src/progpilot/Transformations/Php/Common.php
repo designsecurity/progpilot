@@ -159,17 +159,13 @@ class Common
 
     public static function transformPropertyFetch($context, $op)
     {
-        echo "transformPropertyFetch 1\n";
         if (isset($op)
             && ($op instanceof Op\Expr\PropertyFetch
                 || $op instanceof Op\Expr\StaticPropertyFetch)) {
-            echo "transformPropertyFetch 2\n";
             if (isset($op->var->ops[0])) {
-                echo "transformPropertyFetch 3\n";
                 Common::transformPropertyFetch($context, $op->var->ops[0]);
             }
 
-            echo "transformPropertyFetch 4\n";
             $instDefChained = new MyInstruction(Opcodes::PROPERTY_FETCH);
             $instDefChained->addProperty(MyInstruction::PROPERTY_NAME, $op->name->value);
 
@@ -229,9 +225,7 @@ class Common
             $context->getCurrentMycode()->addCode($instDefChained);
         } elseif (isset($op)
             && $op instanceof Op\Expr\ArrayDimFetch) {
-            echo "transformPropertyFetch 2\n";
             if (isset($op->var->ops[0])) {
-                echo "transformPropertyFetch3\n";
                 Common::transformPropertyFetch($context, $op->var->ops[0]);
             }
 
@@ -346,12 +340,12 @@ class Common
         
         if (isset($op->expr->ops[0])) {
             if ($op->expr->ops[0] instanceof Op\Expr\Array_) {
-                return MyOp::TYPE_ARRAY;
+                return MyOp::TYPE_ARRAY_EXPR;
             }
         }
         
         if (isset($op->var->ops[0])) {
-            if (isset($op->var->ops[0]->var->ops[0]) 
+            if (isset($op->var->ops[0]->var->ops[0])
                 && Common::isChainedKnownType($op->var->ops[0]->var->ops[0])
                  && $op->var->ops[0]->var->ops[0] !== $op->var->ops[0]) {
                 return Common::getTypeDef($op->var->ops[0]);
@@ -366,6 +360,10 @@ class Common
 
                 if ($op->var->ops[0] instanceof Op\Expr\ArrayDimFetch) {
                     return MyOp::TYPE_ARRAY;
+                }
+
+                if ($op->var->ops[0] instanceof Op\Expr\Array_) {
+                    return MyOp::TYPE_ARRAY_EXPR;
                 }
 
                 if (isset($op->var->original->name->value)) {
@@ -488,9 +486,6 @@ class Common
 
     public static function isFuncCallWithoutReturn($op)
     {
-        echo "isFuncCallWithoutReturn\n";
-        //var_dump($op);
-
         if ($op instanceof Op\Expr\Assign
             || $op instanceof Op\Terminal\Return_) {
             return false;

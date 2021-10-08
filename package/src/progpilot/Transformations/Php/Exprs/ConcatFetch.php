@@ -23,7 +23,6 @@ class ConcatFetch
     {
         if (isset($op)) {
             if ($op instanceof Op\Expr\BinaryOp\Concat) {
-                echo "concatFetch\n";
                 $instDefChained = new MyInstruction(Opcodes::CONCAT_LEFT);
 
                 Expr::instructionnew($context, $op->left, $expr);

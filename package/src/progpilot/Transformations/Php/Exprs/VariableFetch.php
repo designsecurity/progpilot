@@ -21,10 +21,8 @@ class VariableFetch
 {
     public static function variableFetch($context, $op, $expr)
     {
-        echo "variableFetch 1\n";
         if (isset($op->original) && $op->original instanceof Operand\Variable
             && isset($op->original->name) && $op->original->name instanceof Operand\Literal) {
-            echo "variableFetch 2\n";
             $myTemp = new MyDefinition(
                 $context->getCurrentBlock()->getId(),
                 $context->getCurrentMyFile(),

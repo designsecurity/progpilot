@@ -39,7 +39,6 @@ class ResolveDefs
         $resultid = $instruction->getProperty(MyInstruction::RESULTID);
 
         if ($myFuncCall->getName() === "dirname") {
-
             /*
             $codes = $myCode->getCodes();
 
@@ -56,7 +55,7 @@ class ResolveDefs
 
                 $index = $index + 2;
             }
-            
+
             if (isset($codes[$index + 2]) && $codes[$index + 2]->getOpcode() === Opcodes::END_ASSIGN) {
                 $instructionDef = $codes[$index + 3];
                 $myDefReturn = $instructionDef->getProperty(MyInstruction::DEF);
@@ -70,14 +69,9 @@ class ResolveDefs
             }
             */
 
-            echo "funccallReturnValues 1 '$resultid'\n";
 
             if ($instruction->isPropertyExist("argdef0")) {
-                echo "funccallReturnValues 2 '$resultid'\n";
                 $defarg = $instruction->getProperty("argdef0");
-                $defarg->printStdout();
-
-
 
                 $myTempReturn = new MyDefinition(
                     $context->getCurrentBlock()->getId(),
@@ -88,7 +82,6 @@ class ResolveDefs
                 );
 
                 foreach ($defarg->getCurrentState()->getLastKnownValues() as $knownValue) {
-                    echo "funccallReturnValues 3 '$resultid' '$knownValue'\n";
                     $myTempReturn->getCurrentState()->addLastKnownValue(dirname($knownValue));
                 }
 
@@ -212,11 +205,8 @@ class ResolveDefs
 
         $i = 0;
         $classStackName = [];
-
-        echo "funccallClass 1_\n";
         
         if ($myFuncCall->getName() === "__construct") {
-            echo "funccallClass 1b_ '".$myFuncCall->getInstanceClassName()."'\n";
             $myFakeInstance = new MyDefinition(
                 $context->getCurrentBlock()->getId(),
                 $context->getCurrentMyFile(),
@@ -233,13 +223,10 @@ class ResolveDefs
             $opInformation["chained_results"][] = $myFakeInstance;
             $context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
 
-            echo "funccallClass 1c_\n";
             $classStackName[$i][] = $myFakeInstance;
         } elseif ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
             $tmpProperties = null;
 
-            echo "funccallClass 2_ name '".$myFuncCall->getName()."'";
-            echo " nameinstance '".$myFuncCall->getNameInstance()."'\n";
             $myDefTmp = new MyDefinition(
                 $context->getCurrentBlock()->getId(),
                 $context->getCurrentMyFile(),
@@ -256,10 +243,8 @@ class ResolveDefs
             $previousChainedResults = $context->getCurrentFunc()->getOpInformation($varid);
 
             if (!is_null($previousChainedResults)) {
-                echo "funccallClass 3_ '$varid'\n";
                 $instances = $previousChainedResults["chained_results"];
             } else {
-                echo "funccallClass 4_\n";
                 $instances = ResolveDefs::selectInstances(
                     $context,
                     $data,
@@ -268,9 +253,7 @@ class ResolveDefs
             }
 
             foreach ($instances as $instance) {
-                echo "funccallClass 5_\n";
                 if ($instance->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
-                    echo "funccallClass 6_\n";
                     $classStackName[$i][] = $instance;
                 }
             }
@@ -415,25 +398,19 @@ class ResolveDefs
     // return true if op is deeper in code than def
     public static function isNearest($context, $def1, $def2)
     {
-        echo "isNearest 1________________________\n";
         if ($def1->getSourceMyFile()->getName() === $def2->getSourceMyFile()->getName()) {
-            echo "isNearest 2________________________\n";
             // def1 is deeper in the code
             if ($def1->getLine() > $def2->getLine()) {
-                echo "isNearest 3________________________\n";
                 return true;
             }
 
             // the two defs are on the same line
             if ($def1->getLine() === $def2->getLine()) {
-                echo "isNearest 4________________________\n";
                 if ($def1->getId() >= $def2->getId()) {
-                    echo "isNearest 5________________________\n";
                     return true;
                 }
             }
         } else {
-            echo "isNearest 6________________________\n";
             return ResolveDefs::isNearestIncludes($def1, $def2);
         }
 
@@ -529,51 +506,39 @@ class ResolveDefs
 
     public static function selectDefinitions($context, $data, $searchedDed, $bypassIsNearest = false)
     {
-        echo "selectDefinitions 1\n";
-
         $defsFound = [];
         if (is_null($data)) {
             return $defsFound;
         }
-        echo "selectDefinitions 2\n";
 
         foreach ($data as $def) {
-            echo "selectDefinitions 2b\n";
             if (Definitions::defEquality($def, $searchedDed, $bypassIsNearest)
                         && ResolveDefs::isNearest($context, $searchedDed, $def)) {
-                
                 if (!is_null($def->getParamToArg())) {
                     $def = $def->getParamToArg();
                 }
 
-                echo "selectDefinitions 3 'searched id = ".$searchedDed->getId()."' 'def id = ".$def->getId()."'\n";
-                $def->printStdout();
                 // CA SERT A QUOI ICI REDONDANT AVEC LE DERNIER ?
                 if ($def->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)
                     && $searchedDed->isType(MyDefinition::TYPE_INSTANCE)) {
-                    echo "selectDefinitions 4\n";
-
-                if (!is_null($def->getArgToParam())) {
-                    $def = $def->getArgToParam();
-                }
+                    if (!is_null($def->getArgToParam())) {
+                        $def = $def->getArgToParam();
+                    }
 
                     $defsFound[$def->getBlockId()][] = $def;
                 } elseif ($def->getCurrentState()->isType(MyDefinition::TYPE_ARRAY)
                         /*&& $def->getArrayValue() === $searchedDed->getArrayValue()*/) {
-                    echo "selectDefinitions 7\n";
                     // we are looking for the nearest not instance of a property
 
-                if (!is_null($def->getArgToParam())) {
-                    $def = $def->getArgToParam();
-                }
+                    if (!is_null($def->getArgToParam())) {
+                        $def = $def->getArgToParam();
+                    }
 
                     $defsFound[$def->getBlockId()][] = $def;
                 } elseif (!$searchedDed->isType(MyDefinition::TYPE_INSTANCE)) {
-                    echo "selectDefinitions 8\n";
-
-                if (!is_null($def->getArgToParam())) {
-                    $def = $def->getArgToParam();
-                }
+                    if (!is_null($def->getArgToParam())) {
+                        $def = $def->getArgToParam();
+                    }
                 
                     // we are looking for the nearest not instance of a property
                     $defsFound[$def->getBlockId()][] = $def;
@@ -581,36 +546,26 @@ class ResolveDefs
             }
         }
 
-        echo "selectDefinitions 9\n";
         // si on a trouvé des defs dans le même bloc que la ou on cherche elles killent les autres
         if (isset($defsFound[$searchedDed->getBlockId()])
                     && count($defsFound[$searchedDed->getBlockId()]) > 0) {
-                        echo "selectDefinitions 10\n";
             $defsFoundGood[$searchedDed->getBlockId()] = $defsFound[$searchedDed->getBlockId()];
         } else {
-            echo "selectDefinitions 11\n";
             $defsFoundGood = $defsFound;
         }
 
         $trueDefsFound = [];
 
         foreach ($defsFoundGood as $blockDefs) {
-            echo "selectDefinitions 12\n";
             $nearestDef = null;
             foreach ($blockDefs as $blockId => $defLast) {
-                echo "selectDefinitions 13\n";
                 //if (!$bypassIsNearest) {
 
-                    echo "selectDefinitions 14\n";
-                    if (ResolveDefs::isNearest($context, $searchedDed, $defLast)) {
-
-                        echo "selectDefinitions 15\n";
-                        if (is_null($nearestDef) || ResolveDefs::isNearest($context, $defLast, $nearestDef)) {
-
-                            echo "selectDefinitions 16\n";
-                            $nearestDef = $defLast;
-                        }
+                if (ResolveDefs::isNearest($context, $searchedDed, $defLast)) {
+                    if (is_null($nearestDef) || ResolveDefs::isNearest($context, $defLast, $nearestDef)) {
+                        $nearestDef = $defLast;
                     }
+                }
                     /*
                 } else {
 
@@ -621,13 +576,10 @@ class ResolveDefs
             }
 
             if (!is_null($nearestDef)/* && !$bypassIsNearest*/) {
-
-                echo "selectDefinitions 18\n";
                 $trueDefsFound[] = $nearestDef;
             }
         }
 
-        echo "selectDefinitions 19\n";
         return $trueDefsFound;
     }
 
@@ -638,23 +590,18 @@ class ResolveDefs
         $copyTempDefa = clone $tempDefa;
         $copyTempDefa->addType(MyDefinition::TYPE_ARRAY);
 
-        echo "selectArrays 1\n";
         $arrayDefsTmp = ResolveDefs::selectDefinitions(
             $context,
             $data,
             $copyTempDefa
         );
 
-        echo "selectArrays 2\n";
         foreach ($arrayDefsTmp as $arrayDef) {
-            echo "selectArrays 3\n";
-
             if (!is_null($arrayDef->getParamToArg())) {
                 $arrayDef = $arrayDef->getParamToArg();
             }
 
             if ($arrayDef->getCurrentState()->isType(MyDefinition::TYPE_ARRAY)) {
-                echo "selectArrays 4\n";
                 $arrayDefs[] = $arrayDef
                     ->getCurrentState()
                         ->getOrCreateDefArrayIndex($tempDefa->getBlockId(), $arrayDef, $arrayDim);
@@ -699,19 +646,14 @@ class ResolveDefs
 
     public static function selectStaticProperties($context, $tempDef, $propertyName)
     {
-        echo "selectStaticProperties 1_\n";
         $currentFunc = $context->getCurrentFunc();
         $className = $tempDef->getName();
 
         $myClass = $context->getClasses()->getMyClass($className);
 
         if (!is_null($myClass)) {
-            echo "selectStaticProperties 2_ '$propertyName'\n";
             $property = $myClass->getProperty($propertyName);
 
-            if (!is_null($property)) {
-                echo "selectStaticProperties 3_ '$propertyName'\n";
-            }
 
             if (!is_null($property)
                                         && (ResolveDefs::getVisibility(
@@ -719,7 +661,6 @@ class ResolveDefs
                                             $property,
                                             $currentFunc
                                         ))) {
-                                            echo "selectStaticProperties 4_ '$propertyName'\n";
                 return $property;
             }
         }
@@ -735,24 +676,20 @@ class ResolveDefs
         //if ($tempDefa->isType(MyDefinition::TYPE_PROPERTY)) {
         $tempDefaProp = clone $tempDefa;
 
-        echo "selectProperties 1_\n";
         $instances = ResolveDefs::selectInstances($context, $data, $tempDefaProp);
 
         foreach ($instances as $instance) {
-            echo "selectProperties 2_\n";
             if ($instance->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
                 /*
                 if ($instance->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
                     $tempDefa->setTaintedByExpr($instance->getTaintedByExpr());
                     $tempDefa->setTainted(true);
                 } else {*/
-                echo "selectProperties 3_\n";
 
                 $idObject = $instance->getCurrentState()->getObjectId();
                 $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
 
                 if (!is_null($tmpMyClass)) {
-                    echo "selectProperties 4_ '$propertyName'\n";
                     $property = $tmpMyClass->getProperty($propertyName);
 
                     if (!is_null($property)
@@ -762,12 +699,10 @@ class ResolveDefs
                                                     $currentFunc
                                                 )
                                                     || $bypassVisibility)) {
-                        echo "selectProperties 5_\n";
                         $propertiesDefs[] = [$property, $tmpMyClass];
                     } else {
                         // we didn't find any propery but in this case php create automatically the property
 
-                        echo "selectProperties 6_\n";
                         $myProperty = new MyProperty(
                             $context->getCurrentBlock()->getId(),
                             $context->getCurrentMyFile(),
@@ -778,11 +713,9 @@ class ResolveDefs
                         $myProperty->setVisibility("public");
                         $tmpMyClass->addProperty($myProperty);
 
-                        if($instance->getCurrentState()->isType(MyDefinition::ALL_PROPERTIES_TAINTED)) {
-                            echo "selectProperties 7_\n";
+                        if ($instance->getCurrentState()->isType(MyDefinition::ALL_PROPERTIES_TAINTED)) {
                             $myProperty->getCurrentState()->setTainted(true);
                             $myProperty->getCurrentState()->addTaintedByDef([$instance, $instance->getCurrentState()]);
-
                         }
 
 
@@ -797,21 +730,18 @@ class ResolveDefs
         return $propertiesDefs;
     }
 
-    public static function selectGlobals($globalName, $context, $data, $tempDefa, $isIterator, $isAssign)
+    public static function selectGlobals($context, $defa)
     {
         $callStack = $context->getCallStack();
 
         if (is_array($callStack)) {
             for ($callNumber = count($callStack) - 1; $callNumber !== 0; $callNumber --) {
                 $currentContextCall = $callStack[$callNumber][4];
-
                 // ca peut arriver si on est dans le main() est qu'on appelle une globale
                 if (!is_null($currentContextCall->func_called) && !is_null($currentContextCall->func_callee)) {
                     // we can't looking for an element of a global array in PHP
-                    $tempDefa->removeType(MyDefinition::TYPE_ARRAY);
-                    $tempDefa->setArrayValue(false);
 
-                    $tempDefa->setName($globalName);
+                    $tempDefa = clone $defa;
                     $tempDefa->setLine($currentContextCall->func_called->getLine());
                     $tempDefa->setColumn($currentContextCall->func_called->getColumn());
                     $tempDefa->setBlockId($currentContextCall->func_callee->getLastBlockId());
@@ -819,8 +749,7 @@ class ResolveDefs
                     $resGlobal = ResolveDefs::selectDefinitions(
                         $context,
                         $currentContextCall->func_callee->getDefs()->getOutMinusKill($tempDefa->getBlockId()),
-                        $tempDefa,
-                        $isIterator
+                        $tempDefa
                     );
 
                     // to not call recursively this function

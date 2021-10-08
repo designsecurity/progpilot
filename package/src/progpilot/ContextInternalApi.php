@@ -77,7 +77,6 @@ class ContextInternalApi
         $this->callStack = [];
     }
     
-
     public function pushToCallStack($val)
     {
         array_push($this->callStack, $val);

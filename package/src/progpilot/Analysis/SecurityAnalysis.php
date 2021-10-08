@@ -47,49 +47,17 @@ class SecurityAnalysis
             $nameInstance = $myFuncCall->getNameInstance();
         }
 
-        echo "security funccall 1\n";
-
         $mySink = $context->inputs->getSinkByName($context, $stackClass, $myFuncCall, $myClass);
         if (!is_null($mySink)) {
-            echo "security funccall 2\n";
             $nbParams = $myFuncCall->getNbParams();
             $conditionRespected = true;
             if ($mySink->hasParameters()) {
-                echo "security funccall 3\n";
                 for ($i = 0; $i < $nbParams; $i ++) {
-                    echo "security funccall 4\n";
                     if ($mySink->isParameter($i + 1)) {
                         //$conditionRespected = false;
                         $conditionRespected = true;
         
-                        echo "security funccall 5\n";
                         $myDefArg = $instruction->getProperty("argdef$i");
-                        /*
-                                                if ($myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
-                                                    && $mySink->isParameterCondition($i + 1, "array_tainted")) {
-                                                    foreach ($myDefArg->getCopyArrays() as $copyarray) {
-                                                        if (!SecurityAnalysis::isSafe($i + 1, $copyarray[1], $myDefArg, $mySink, $myFuncCall)) {
-                                                            $conditionRespected = true;
-                                                        }
-                                                    }
-                                                } elseif (!$myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
-                                                 && (!$mySink->isParameterCondition($i + 1, "array_tainted")
-                                                 || $mySink->isParameterCondition($i + 1, "variable_tainted"))) {
-                                                    $defsBy = $myDefArg->getCurrentState()->getTaintedByDefs();
-                                                    foreach ($defsBy as $defBy) {
-                                                        $def = $defBy[0];
-                                                        $state = $defBy[1];
-                                                        if (!SecurityAnalysis::isSafeState($mySink, $i + 1, $state)) {
-                                                            $conditionRespected = true;
-                                                        }
-                                                    }
-                                                } elseif ($myDefArg->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED"
-                                                    && $mySink->isParameterCondition($i + 1, "array_tainted")) {
-                                                    $conditionRespected = true;
-                                                } elseif ($myDefArg->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")
-                                                    && $mySink->isParameterCondition($i + 1, "object_tainted")) {
-                                                    $conditionRespected = true;
-                                                }*/
 
                         if (!$conditionRespected) {
                             break;
@@ -99,9 +67,7 @@ class SecurityAnalysis
             }
 
             if ($conditionRespected) {
-                echo "security funccall 6\n";
                 for ($i = 0; $i < $nbParams; $i ++) {
-                    echo "security funccall 7\n";
                     $myDefArg = $instruction->getProperty("argdef$i");
                     $myDefExpr = $instruction->getProperty("argexpr$i");
 
@@ -119,7 +85,6 @@ class SecurityAnalysis
                                 );
                             }
                         } else {*/
-                        echo "security funccall 8\n";
                         SecurityAnalysis::callbis(
                             $i + 1,
                             $myFuncCall,
@@ -329,17 +294,17 @@ class SecurityAnalysis
 
             return $return;
         }
-        
+
         if (!is_null($myDef->original->getDef())) {
             $return["source_name"] = \progpilot\Utils::printDefinition(
                 $mySink->getLanguage(),
-                $myDef->original->getDef(),
-                $myDef->original
+                $myDef,
+                $myDef->original->getDef()
             );
-            $return["source_line"] = $myDef->original->getDef()->getLine();
-            $return["source_column"] = $myDef->original->getDef()->getColumn();
+            $return["source_line"] = $myDef->original->getDef()[0]->getLine();
+            $return["source_column"] = $myDef->original->getDef()[0]->getColumn();
             $return["source_file"] = \progpilot\Utils::encodeCharacters(
-                $myDef->original->getDef()->getSourceMyFile()->getName()
+                $myDef->original->getDef()[0]->getSourceMyFile()->getName()
             );
             return $return;
         }

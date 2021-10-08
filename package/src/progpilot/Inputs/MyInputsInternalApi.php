@@ -293,7 +293,7 @@ class MyInputsInternalApi
                             foreach ($knownProperties as $propClass) {
                                 $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
-                                
+
                                 if (!is_null($myClass) && ($myClass->getName() === $mySanitizerInstanceName
                                     || $myClass->getExtendsOf() === $mySanitizerInstanceName)) {
                                     return $mySanitizer;
@@ -310,17 +310,13 @@ class MyInputsInternalApi
 
     public function getSinkByName($context, $stackClass, $myFunc, $myClass)
     {
-        echo "getSinkByName 1___\n";
         foreach ($this->sinks as $mySink) {
             if ($mySink->getName() === $myFunc->getName()) {
-                echo "getSinkByName 2___\n";
                 if (!$mySink->isInstance() && !$myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
                     return $mySink;
                 }
 
                 if ($mySink->isInstance() && $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                    echo "getSinkByName 3___ '".$mySink->getInstanceOfName()."'\n";
-                    var_dump($myClass);
                     if (!is_null($myClass)
                         && ($mySink->getInstanceOfName() === $myClass->getName()
                             || $mySink->getInstanceOfName() === $myClass->getExtendsOf())) {
@@ -386,8 +382,6 @@ class MyInputsInternalApi
         $instanceName = false,
         $arrValue = false
     ) {
-        echo "getSourceByName 0\n";
-        var_dump($arrValue);
         foreach ($this->sources as $mySource) {
             $checkName = false;
             if (!$isFunction && $myFuncOrDef->isType(MyDefinition::TYPE_PROPERTY)) {
@@ -413,8 +407,6 @@ class MyInputsInternalApi
                 
                 if (!$instanceName && !$mySource->isInstance()) {
                     $checkInstance = true;
-
-                    echo "getSourceByName 1\n";
                 }
 
                 if ($instanceName && $mySource->isInstance()) {
@@ -448,13 +440,8 @@ class MyInputsInternalApi
                 }
 
                 if ($mySource->isFunction() === $isFunction) {
-                    echo "getSourceByName 2\n";
                     $checkFunction = true;
                 }
-                echo "getSourceByName 2 after\n";
-                var_dump($mySource->getIsArray());
-                var_dump($mySource->getArrayValue());
-                var_dump($arrValue);
 
                 // if we request an array the source can be an array with no specific tainted indexes
                 // and array nots equals (like $_GET["p"])
@@ -470,7 +457,6 @@ class MyInputsInternalApi
                             // echo $row[0]
                             // we don't want an array ie : $row = mysqli_fetch_assoc()[0]
                             || (!$arrValue && $mySource->isFunction() && $mySource->getIsArray())) {
-                                echo "getSourceByName 3\n";
                     $checkArray = true;
                 }
 

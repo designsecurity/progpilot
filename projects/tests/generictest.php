@@ -23,7 +23,7 @@
                 ],
                 [
                     "./tests/generic/mix1.php",
-                        [["\$var1[0]", "4", "xss"]]
+                        [["\$var1[0]", "9", "xss"]]
                 ],
                 [
                     "./tests/generic/mix2.php",
@@ -51,7 +51,7 @@
                 ],
                 [
                     "./tests/generic/simple5.php",
-                        [["\$myvar1[11]", "3", "xss"]]
+                        [["\$myvar1[11]", "5", "xss"]]
                 ],
                 [
                     "./tests/generic/simple6.php",
@@ -63,8 +63,8 @@
                 ],
                 [
                     "./tests/generic/simple8.php",
-                        [["\$var_gauche[0]", "3", "xss"],
-                        ["\$ret[0]", "8", "xss"]]
+                        [["\$var_gauche[0]", "5", "xss"],
+                        ["\$ret[0]", "10", "xss"]]
                 ],
                 [
                     "./tests/generic/simple9.php",
@@ -94,24 +94,24 @@
 
                 [
                     "./tests/generic/arrays1.php",
-                        [["\$newmyarr[11][9865]", "4", "xss"]]
+                        [["\$newmyarr[11][9865]", "7", "xss"]]
                 ],
 
                 [
                     "./tests/generic/arrays2.php",
-                        [["\$newmyarr[11][9865]", "3", "xss"]]
+                        [["\$newmyarr[11][9865]", "4", "xss"]]
                 ],
                 [
                     "./tests/generic/arrays3.php",
-                        [["\$newmyarr[11]", "4", "xss"]]
+                        [["\$newmyarr[11]", "7", "xss"]]
                 ],
                 [
                     "./tests/generic/arrays4.php",
-                        [["\$newmyarr[11]", "4", "xss"]]
+                        [["\$copy[11]", "8", "xss"]]
                 ],
                 [
                     "./tests/generic/arrays5.php",
-                        [["\$var1", "3", "xss"]]
+                        [["\$newmyarr[11][9865]", "6", "xss"]]
                 ],
                 [
                     "./tests/generic/arrays6.php",
@@ -119,27 +119,27 @@
                 ],
                 [
                     "./tests/generic/arrays7.php",
-                        [["\$onearr[9865]", "3", "xss"]]
+                        [["\$testarr[11][9865]", "7", "xss"]]
                 ],
                 [
                     "./tests/generic/arrays8.php",
-                        [["\$arr[1113]", "6", "xss"]]
+                        [["\$arr[1113]", "9", "xss"]]
                 ],
                 [
                     "./tests/generic/arrays9.php",
-                        [["\$onearr[11][6661]", "4", "xss"]]
+                        [["\$testarr[6661]", "8", "xss"]]
                 ],
                 [
                     "./tests/generic/arrays10.php",
-                        [["\$arr[0]", "3", "xss"]]
+                        [["\$arr[0]", "5", "xss"]]
                 ],
                 [
                     "./tests/generic/arrays11.php",
-                        [["\$arr[0][2]", "3", "xss"]]
+                        [["\$arr[0][1]", "7", "xss"]]
                 ],
                 [
                     "./tests/generic/arrays12.php",
-                        [["\$var1[1]", "6", "xss"]]
+                        [["\$var2[1]", "13", "xss"]]
                 ],
                 [
                     "./tests/generic/arrays13.php",
@@ -151,31 +151,31 @@
                 ],
                 [
                     "./tests/generic/arrays15.php",
-                        [["\$var", "8", "xss"]]
+                        [["\$var1", "8", "xss"]]
                 ],
                 [
                     "./tests/generic/arrays16.php",
-                        [["\$var[\"t\"]", "3", "xss"]]
+                        [["\$var[\"t\"]", "5", "xss"]]
                 ],
                 [
                     "./tests/generic/arraysrec1.php",
-                        [["\$var1[1]", "8", "xss"]]
+                        [["\$var1[1]", "10", "xss"]]
                 ],
                 [
                     "./tests/generic/arraysexpr1.php",
-                        [["\$newmyarr[2]", "3", "xss"]]
+                        [["\$newmyarr[2]", "7", "xss"]]
                 ],
                 [
                     "./tests/generic/arraysexpr2.php",
-                        [["\$newmyarr[2][1][2]", "3", "xss"]]
+                        [["\$newmyarr[2][1][2]", "6", "xss"]]
                 ],
                 [
                     "./tests/generic/arraysexpr3.php",
-                        [["\$onearr[11][6661]", "3", "xss"]]
+                        [["\$newmyarr[2][2][11][6661]", "10", "xss"]]
                 ],
                 [
                     "./tests/generic/arraysexpr4.php",
-                        [["\$var_main[\"TEST1\"]", "4", "xss"]]
+                        [["\$var_main[\"TEST1\"]", "10", "xss"]]
                 ],
                 [
                     "./tests/generic/functions1.php",
@@ -183,11 +183,11 @@
                 ],
                 [
                     "./tests/generic/functions2.php",
-                        [["\$testf_return[0]", "5", "xss"]]
+                        [["\$safea[0]", "10", "xss"]]
                 ],
                 [
                     "./tests/generic/functions3.php",
-                        [["\$testf_return[0]", "7", "xss"]]
+                        [["\$arraysafe[0]", "14", "xss"]]
                 ],
                 [
                     "./tests/generic/functions4.php",
@@ -213,23 +213,23 @@
                 ],
                 [
                     "./tests/generic/functions9.php",
-                        [["\$arr[8989][1]", "5", "xss"]]
+                        [["\$ret[0][8989][1]", "12", "xss"]]
                 ],
                 [
                     "./tests/generic/functions10.php",
-                        [["\$arr[8989][1][989]", "5", "xss"]]
+                        [["\$ret[0][1][989]", "12", "xss"]]
                 ],
                 [
                     "./tests/generic/functions11.php",
-                        [["\$ret[0]", "8", "xss"]]
+                        [["\$ret[0]", "10", "xss"]]
                 ],
                 [
                     "./tests/generic/functions12.php",
-                        [["\$arr[8989][1][989]", "5", "xss"]]
+                        [["\$ret_gauche[0][8989][1][989]", "12", "xss"]]
                 ],
                 [
                     "./tests/generic/functions13.php",
-                        [["\$testf1_return[0]", "5", "xss"]]
+                        [["\$ret[0][0]", "10", "xss"]]
                 ],
                 [
                     "./tests/generic/functions14.php",
@@ -237,11 +237,11 @@
                 ],
                 [
                     "./tests/generic/functions15.php",
-                        [["\$var[1][12]", "9", "xss"]]
+                        [["\$var_param[1][12]", "5", "xss"]]
                 ],
                 [
                     "./tests/generic/functions16.php",
-                        [["\$var[1][12]", "9", "xss"]]
+                        [["\$var_param[1][12]", "5", "xss"]]
                 ],
                 [
                     "./tests/generic/functions17.php",
@@ -253,7 +253,7 @@
                 ],
                 [
                     "./tests/generic/functions19.php",
-                        [["\$testf1_param0_line10_column65_progpilot[\"test\"]", "10", "xss"]]
+                        [["\$param2[\"test\"]", "6", "xss"]]
                 ],
                 [
                     "./tests/generic/functions20.php",
@@ -295,7 +295,7 @@
                 ],
                 [
                     "./tests/generic/foreach1.php",
-                        [["\$array_value", "6", "xss"]]
+                        [["\$arrays[1]", "4", "xss"]]
                 ],
 
                 [
