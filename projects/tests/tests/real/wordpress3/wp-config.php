@@ -1,4 +1,5 @@
 <?php
+/*
 // ** MySQL settings ** //
 define('DB_NAME', 'wordpress');    // The name of the database
 define('DB_USER', 'username');     // Your MySQL username
@@ -13,9 +14,8 @@ $table_prefix  = 'wp_';   // Only numbers, letters, and underscores please!
 // For example, install de.mo to wp-includes/languages and set WPLANG to 'de'
 // to enable German language support.
 define ('WPLANG', '');
-
+*/
 /* That's all, stop editing! Happy blogging. */
-
 define('ABSPATH', dirname(__FILE__).'/');
 require_once(ABSPATH.'wp-settings.php');
 

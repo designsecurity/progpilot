@@ -1,4 +1,5 @@
 <?php
+/*
 // Turn register globals off
 function unregister_GLOBALS() {
 	if ( !ini_get('register_globals') )
@@ -64,10 +65,10 @@ error_reporting(E_ALL ^ E_NOTICE);
 // For an advanced caching plugin to use, static because you would only want one
 if ( defined('WP_CACHE') )
 	require (ABSPATH . 'wp-content/advanced-cache.php');
-
+*/
 define('WPINC', 'wp-includes');
 require_once (ABSPATH . WPINC . '/wp-db.php');
-
+/*
 // Table names
 $wpdb->posts            = $table_prefix . 'posts';
 $wpdb->users            = $table_prefix . 'users';
@@ -116,8 +117,8 @@ require (ABSPATH . WPINC . '/functions.php');
 require (ABSPATH . WPINC . '/default-filters.php');
 require_once (ABSPATH . WPINC . '/wp-l10n.php');
 
-$wpdb->hide_errors();
-$db_check = $wpdb->get_var("SELECT option_value FROM $wpdb->options WHERE option_name = 'siteurl'");
+$wpdb->hide_errors();*/
+$db_check = $wpdb->get_var("SELECT option_value FROM $wpdb->options WHERE option_name = 'siteurl'");/*
 if ( !$db_check && (!strstr($_SERVER['PHP_SELF'], 'install.php') && !defined('WP_INSTALLING')) ) {
 	if ( strstr($_SERVER['PHP_SELF'], 'wp-admin') )
 		$link = 'install.php';
@@ -185,6 +186,7 @@ if ( defined('WP_CACHE') && function_exists('wp_cache_postload') )
 	wp_cache_postload();
 
 do_action('plugins_loaded');
+*/
 /*
 // If already slashed, strip.
 if ( get_magic_quotes_gpc() ) {
@@ -200,6 +202,7 @@ $_POST   = add_magic_quotes($_POST  );
 $_COOKIE = add_magic_quotes($_COOKIE);
 $_SERVER = add_magic_quotes($_SERVER);
 */
+/*
 $wp_query   = new WP_Query();
 $wp_rewrite = new WP_Rewrite();
 $wp         = new WP();
@@ -225,5 +228,5 @@ register_shutdown_function('shutdown_action_hook');
 
 // Everything is loaded and initialized.
 do_action('init');
-
+*/
 ?>

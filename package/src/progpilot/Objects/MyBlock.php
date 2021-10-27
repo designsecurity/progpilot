@@ -15,7 +15,7 @@ class MyBlock extends MyOp
     private $returnDefs;
     private $startAddressBlock;
     private $endAddressBlock;
-    private $loop;
+    private $jumpIf;
     private $needUpdateOfState;
 
     public $children;
@@ -34,7 +34,7 @@ class MyBlock extends MyOp
         $this->parents = [];
         $this->virtualParents = [];
         $this->children = [];
-        $this->loop = false;
+        $this->jumpIf = false;
         $this->needUpdateOfState = true;
     }
 
@@ -134,13 +134,13 @@ class MyBlock extends MyOp
         return $this->endAddressBlock;
     }
 
-    public function setIsLoop($loop)
+    public function setIsJumpIf($jumpIf)
     {
-        $this->loop = $loop;
+        $this->jumpIf = $jumpIf;
     }
 
-    public function getIsLoop()
+    public function getIsJumpIf()
     {
-        return $this->loop;
+        return $this->jumpIf;
     }
 }

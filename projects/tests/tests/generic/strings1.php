@@ -29,11 +29,11 @@ $id4 = addslashes($_GET["p"]);
 mysql_query("select * from table where id = '$id4'"); // safe
 
 $id5 = addslashes($_GET["p"]);
-mysql_query("select * from table where id = '$id5"); // vuln
+mysql_query("select * from table where id = '$id5"); // vuln FN, but not realistic, not a valid sql query
 
 $id6 = addslashes($_GET["p"]);
 $id7 = addslashes($_GET["p"]);
-mysql_query("select * from table where id = '$id6' and name = '$id7"); // vuln
+mysql_query("select * from table where id = '$id6' and name = '$id7"); // vuln FN, but not realistic, not a valid sql query
 
 
 function testf1($aa)
@@ -43,7 +43,7 @@ function testf1($aa)
 
 $ret = testf1($_GET["p"]);
 
-echo $ret;
+echo $ret; // safe
 
 $tainted1 = $_GET["p"];
 echo "'$tainted1'"; // vuln

@@ -4,7 +4,7 @@
 //  ORIGINAL CODE FROM:
 //  Justin Vincent (justin@visunet.ie)
 //	http://php.justinvincent.com
-
+/*
 define('EZSQL_VERSION', 'WP1.25');
 define('OBJECT', 'OBJECT', true);
 define('ARRAY_A', 'ARRAY_A', false);
@@ -12,9 +12,9 @@ define('ARRAY_N', 'ARRAY_N', false);
 
 if (!defined('SAVEQUERIES'))
 	define('SAVEQUERIES', false);
-
+*/
 class wpdb {
-
+/*
 	var $show_errors = true;
 	var $num_queries = 0;	
 	var $last_query;
@@ -83,16 +83,17 @@ class wpdb {
 		else
 			return mysql_real_escape_string( $string, $this->dbh );
 	}
-
+*/
 	// ==================================================================
 	//	Print SQL/DB error.
 
 	function print_error($str = '') {
+	/*
 		global $EZSQL_ERROR;
 		if (!$str) $str = mysql_error();
 		$EZSQL_ERROR[] = 
 		array ('query' => $this->last_query, 'error_str' => $str);
-
+*/
 		// Is error output turned on or not..
 		if ( $this->show_errors ) {
 			// If there is an error then take note of it
@@ -107,7 +108,7 @@ class wpdb {
 
 	// ==================================================================
 	//	Turn error handling on or off..
-
+/*
 	function show_errors() {
 		$this->show_errors = true;
 	}
@@ -127,7 +128,7 @@ class wpdb {
 
 	// ==================================================================
 	//	Basic Query	- see docs for more detail
-
+*/
 	function query($query) {
 		// initialise return
 		$return_val = 0;
@@ -203,7 +204,7 @@ class wpdb {
 		// If there is a value return it else return null
 		return (isset($values[$x]) && $values[$x]!=='') ? $values[$x] : null;
 	}
-
+/*
 	// ==================================================================
 	//	Get one row from the DB - see docs for more detail
 
@@ -240,7 +241,7 @@ class wpdb {
 
 	// ==================================================================
 	// Return the the query as a result set - see docs for more details
-
+*/
 	function get_results($query = null, $output = OBJECT) {
 		$this->func_call = "\$db->get_results(\"$query\", $output)";
 
@@ -266,7 +267,7 @@ class wpdb {
 			}
 		}
 	}
-
+/*
 
 	// ==================================================================
 	// Function to get column meta data info pertaining to the last query
@@ -285,7 +286,7 @@ class wpdb {
 				return $this->col_info[$col_offset]->{$info_type};
 			}
 		}
-	}
+	}/*
 
 	function timer_start() {
 		$mtime = microtime();
@@ -356,7 +357,7 @@ HEAD;
 	echo $message;
 	echo "</body></html>";
 	die();
-	}
+	}*/
 }
 
 $wpdb = new wpdb(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);

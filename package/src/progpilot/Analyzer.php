@@ -101,6 +101,10 @@ class Analyzer
 
             unset($traverser);
             unset($transformvisitor);
+            
+            $dumper = new \PHPCfg\Printer\Text();
+            echo $dumper->printScript($script);
+            
         }
     }
 

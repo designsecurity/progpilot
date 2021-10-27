@@ -36,49 +36,8 @@ class FuncAnalysis
         $i = 0;
 
         if (!is_null($myFunc)) {
-            $defsReturn = $myFunc->getReturnDefs();
-            foreach ($defsReturn as $defReturn) {
-                /*
-                if (($arrFuncCall !== false
-                    && $defReturn->isType(MyDefinition::TYPE_ARRAY)
-                        && $defReturn->getArrayValue() === $arrFuncCall)
-                            || ($arrFuncCall === false && !$defReturn->isType(MyDefinition::TYPE_ARRAY))) {
-                    $copyDefReturn = $defReturn;
-
-                    $copyDefReturn->setExpr($exprReturn);
-                    $defReturn->setCast($myFuncCall->getCastReturn());
-                    $exprReturn->addDef($copyDefReturn);
-
-                    $expr = $copyDefReturn->getExpr();
-                    if ($expr->isAssign()) {
-                        $defAssign = $expr->getAssignDef();
-                        //TaintAnalysis::setTainted($copyDefReturn, $defAssign);
-
-                        if (ResolveDefs::getVisibilityFromInstances($context, $data, $defAssign)) {
-                            ValueAnalysis::copyValues($copyDefReturn, $defAssign);
-                            TaintAnalysis::setTainted($copyDefReturn, $defAssign);
-                        }
-
-                        ArrayAnalysis::copyArrayFromDef(
-                            $defReturn,
-                            $arrFuncCall,
-                            $defAssign,
-                            $defAssign->getArrayValue()
-                        );
-                    }
-                }*/
-            }
-/*
-            $previousOpInformation = $context->getCurrentFunc()->getOpInformation($varid);
-            if (!is_null($previousOpInformation)) {
-                $opInformation["def_assign"] = $previousOpInformation["def_assign"];
-            }*/
-            
-
-
-
-
             if ($myFuncCall->getName() !== "__construct" && !empty($myFunc->getReturnDefs())) {
+                $opInformation = $context->getCurrentFunc()->getOpInformation($resultid);
                 $opInformation["chained_results"] = $myFunc->getReturnDefs();
                 $context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
             }
@@ -98,7 +57,9 @@ class FuncAnalysis
                 $param->setParamToArg($defArg);
                 $defArg->setArgToParam($param);
                 
-                $defArg->setState($defArg->getCurrentState(), $param->getBlockId());
+                $state = $defArg->createState();
+                $defArg->assignStateToBlockId($state->getId(), $param->getBlockId());
+                //$defArg->setState($defArg->getCurrentState(), $param->getBlockId());
 
                 $nbParams ++;
             }

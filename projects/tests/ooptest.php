@@ -3,11 +3,11 @@
         return [
                 [
                     "./tests/oop/simple1.php",
-                        [["\$instance1->boum2", "12", "xss"]]
+                        [["\$instance1->boum2", "15", "xss"]]
                 ],
                 [
                     "./tests/oop/simple2.php",
-                        [["\$instance1->boum2", "11", "xss"]]
+                        [["\$instance1->boum2", "13", "xss"]]
                 ],
                 [
                     "./tests/oop/simple3.php",
@@ -19,19 +19,19 @@
                 ],
                 [
                     "./tests/oop/simple5.php",
-                        [["\$instance->boum1", "25", "xss"]]
+                        [["\$get_boum1_return", "14", "xss"]]
                 ],
                 [
                     "./tests/oop/simple6.php",
-                        [["\$instance->boum1", "24", "xss"]]
+                        [["\$instance->boum1", "26", "xss"]]
                 ],
                 [
                     "./tests/oop/simple7.php",
-                        [["\$instance->boum1", "15", "xss"]]
+                        [["\$instance->boum1", "17", "xss"]]
                 ],
                 [
                     "./tests/oop/simple8.php",
-                        [["\$instance1->boum2", "16", "xss"]]
+                        [["\$instance1->boum2", "18", "xss"]]
                 ],
                 [
                     "./tests/oop/simple9.php",
@@ -39,49 +39,52 @@
                 ],
                 [
                     "./tests/oop/simple10.php",
-                        [["\$instance1->boum1", "5", "xss"]]
-                ],
-                [
-                    "./tests/oop/simple11.php",
-                        [["\$instance1->boum1", "18", "xss"]]
-                ],
-                [
-                    "./tests/oop/simple12.php",
-                        [["\$instance1->boum1", "9", "xss"]]
-                ],
-                [
-                    "./tests/oop/simple13.php",
-                        [["\$instance1->boum1", "14", "xss"]]
-                ],
-                [
-                    "./tests/oop/simple14.php",
-                        [["\$instance1->boum2", "11", "xss"]]
-                ],
-                [
-                    "./tests/oop/simple15.php",
-                        [["\$this->boum1", "5", "xss"]]
-                ],
-                [
-                    "./tests/oop/simple16.php",
-                        [["\$instance1->boum1", "5", "xss"]]
-                ],
-                [
-                    "./tests/oop/simple17.php",
-                        [["\$this->boum1[0]", "9", "xss"]]
-                ],
-                [
-                    "./tests/oop/simple18.php",
                         [["\$instance1->boum1", "15", "xss"]]
                 ],
                 [
+                    "./tests/oop/simple11.php",
+                        [["\$instance1->boum1", "20", "xss"]]
+                ],
+                [
+                    "./tests/oop/simple12.php",
+                        [["\$instance1->boum1", "15", "xss"]]
+                ],
+                [
+                    "./tests/oop/simple13.php",
+                        [["\$instance1->boum1", "32", "xss"],
+                        ["\$instance1->boum1", "36", "xss"]]
+                ],
+                [
+                    "./tests/oop/simple14.php",
+                        [["\$instance1->boum2", "16", "xss"]]
+                ],
+                [
+                    "./tests/oop/simple15.php",
+                        [["\$this->boum1", "10", "xss"]]
+                ],
+                [
+                    "./tests/oop/simple16.php",
+                        [["\$instance1->boum1", "31", "xss"]]
+                ],
+                [
+                    "./tests/oop/simple17.php",
+                        [["\$copy[0]", "33", "xss"]]
+                ],
+                [
+                    "./tests/oop/simple18.php",
+                        [["\$instance1->boum1", "34", "xss"]]
+                ],
+                [
                     "./tests/oop/simple19.php",
-                        [["\$testc1->object1->object2", "29", "xss"],
-                        ["\$newtestc1->object1", "37", "xss"],
-                        ["\$newsettestc1->object1", "7", "xss"]]
+                        [["\$toto", "30", "xss"],
+                        ["\$newtestc1->object1", "40", "xss"],
+                        ["\$newsettestc1->object1", "47", "xss"],
+                        ["\$testc1_encore2->member1", "67", "xss"],
+                        ["\$val", "65", "xss"]]
                 ],
                 [
                     "./tests/oop/simple20.php",
-                        [["\$this->member2", "7", "xss"]]
+                        [["\$this->member2", "12", "xss"]]
                 ],
                 [
                     "./tests/oop/simple21.php",
@@ -90,9 +93,8 @@
                 ],
                 [
                     "./tests/oop/simple22.php",
-                        [["\$a->data", "11", "xss"],
-                        ["\$this->data", "6", "xss"],
-                        ["\$a->data", "11", "xss"]]
+                        [["\$a->data", "15", "xss"],
+                        ["\$b->data", "18", "xss"]]
                 ],
                 [
                     "./tests/oop/simple23/a.php",
@@ -100,17 +102,17 @@
                 ],
                 [
                     "./tests/oop/simple24.php",
-                        [["\$a->data", "6", "xss"],
-                        ["\$b->data", "6", "xss"]]
+                        [["\$a->data", "22", "xss"],
+                        ["\$b->data", "31", "xss"]]
                 ],
                 [
                     "./tests/oop/simple25.php",
-                        [["\$query", "6", "sql_injection"]]
+                        [["\$query", "7", "sql_injection"]]
                 ],
                 [
                     "./tests/oop/simple26.php",
-                        [["\$_GET[\"p\"]", "8", "xss"],
-                        ["\$_GET[\"t\"]", "17", "xss"]]
+                        [["\$taint2", "15", "xss"],
+                        ["\$taint1", "6", "xss"]]
                 ],
                 [
                     "./tests/oop/simple27.php",
@@ -127,19 +129,19 @@
                 ],
                 [
                     "./tests/oop/simple30.php",
-                        [["testa::\$stavar", "12", "xss"]]
+                        [["testa::\$stavar", "16", "xss"]]
                 ],
                 [
                     "./tests/oop/simple31.php",
-                        [["\$a->stavar", "11", "xss"]]
+                        [["\$a->stavar", "14", "xss"]]
                 ],
                 [
                     "./tests/oop/simple32.php",
-                        [["testa::\$stavar", "9", "xss"]]
+                        [["testa::\$stavar", "11", "xss"]]
                 ],
                 [
                     "./tests/oop/simple33.php",
-                        [["\$tainted", "31", "xss"]]
+                        [["\$tainted", "35", "xss"]]
                 ],
                 [
                     "./tests/oop/simple34.php",

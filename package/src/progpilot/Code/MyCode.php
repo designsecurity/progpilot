@@ -528,6 +528,11 @@ class MyCode
                         echo "Opcodes::ARRAY_EXPR\n";
                                      
                         break;
+
+                    case Opcodes::BINARYOP:
+                        echo "Opcodes::BINARYOP\n";
+                                         
+                        break;
                 }
 
                 $index = $index + 1;

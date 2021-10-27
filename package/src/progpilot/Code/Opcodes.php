@@ -44,4 +44,5 @@ class Opcodes
     const CONST_FETCH = 30;
     const ITERATOR = 31;
     const ARRAY_EXPR = 32;
+    const BINARYOP = 33;
 }

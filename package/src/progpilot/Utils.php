@@ -69,52 +69,63 @@ class Utils
 
     public static function printDefinition($language, $def, $original = null)
     {
+
         $prefix = "\$";
-        if ($language === "js") {
-            $prefix = "";
-        }
-        /*
-        if (!is_null($original) && !is_null($original->getPropertyAccessor())) {
-        $defName = "$prefix".Utils::encodeCharacters($def->getName()).
-            Utils::printProperties($language, $original->getPropertyAccessor());
-        } elseif ($def->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
-        $defName = Utils::encodeCharacters($def->getName()).
-            Utils::printStaticProperties($language, $def->property->getProperties());
-        } else {*/
-        $defName = "$prefix".Utils::encodeCharacters($def->getName());/*
-        }
-
-        $nameArray = "";
-
-        if (!is_null($original) && !is_null($original->getArrayIndexAccessor())) {
-            if (is_string($original->getArrayIndexAccessor())) {
-                $nameArray .= "[\"".Utils::encodeCharacters($original->getArrayIndexAccessor())."\"]";
-            } else {
-                $nameArray .= "[".Utils::encodeCharacters($original->getArrayIndexAccessor())."]";
+        if ($def->isType(MyDefinition::TYPE_STATIC_PROPERTY)
+            || $language === "js") {
+            // oop/simple31.php
+            if (!is_null($original) 
+                && !empty($original)
+                    && $original[0]->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
+                $prefix = "";
             }
-            //Utils::printArray($arrayAccessor, $nameArray);
-        }*/
+        }
 
-        $suffix = "";
+        $printableDef = "";
         if (!is_null($original) && !empty($original)) {
-            $defName = "$prefix".Utils::encodeCharacters($original[0]->getName());
-            for ($i = 1; $i < count($original); $i ++) {
-                if (is_numeric($original[$i])
+            for ($i = 0; $i < count($original); $i ++) {
+                if ($original[$i] instanceof MyDefinition) {
+                    $printableDef .= "$prefix".Utils::encodeCharacters($original[$i]->getName());
+                } elseif (is_numeric($original[$i])
                     || $original[$i] === ']'
                         || $original[$i] === '['
                             || $original[$i] === '->'
                                 || $original[$i] === '::') {
-                    $suffix .= Utils::encodeCharacters($original[$i]);
+                    // numeric element
+                    $printableDef .= $original[$i];
+
+                    $wasArray = false;
+                    if ($original[$i] === '[') {
+                        $wasArray = true;
+                    }
+
+                    $wasStatic = false;
+                    if ($original[$i] === '::') {
+                        $wasStatic = true;
+                    }
                 } else {
-                    $suffix .= "\"".Utils::encodeCharacters($original[$i])."\"";
+                    // string element (array, property name)
+                    if ($wasArray) {
+                        $printableDef .= "\"";
+                    }
+
+                    if ($wasStatic) {
+                        $printableDef .= "\$";
+                    }
+
+                    $printableDef .= Utils::encodeCharacters($original[$i]);
+
+                    if ($wasArray) {
+                        $printableDef .= "\"";
+                    }
                 }
             }
         } else {
-            $defName = "$prefix".Utils::encodeCharacters($def->getName());
+            $printableDef = "$prefix".Utils::encodeCharacters($def->getName());
         }
 
 
-        return $defName.$suffix;
+        return $printableDef;
     }
 
     public static function printFunction($function)

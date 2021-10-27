@@ -23,7 +23,7 @@
                 [
                     "./tests/real/wordpress2/wp-commentsrss2.php",
                         [["\$query", "131", "sql_injection"],
-                        ["\$this->last_query", "20", "xss"]]
+                        ["\$this->last_query", "101", "xss"]]
                 ]
                 
         ];

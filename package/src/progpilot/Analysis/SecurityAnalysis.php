@@ -22,6 +22,8 @@ use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
 use progpilot\Code\MyInstruction;
 
+use progpilot\Helpers\Analysis as HelpersAnalysis;
+
 class SecurityAnalysis
 {
     public static function inArrayStateSource($temp, $ret)
@@ -99,7 +101,7 @@ class SecurityAnalysis
         }
     }
 
-    public static function taintedStateFlow($mySink, $indexParameter, $taintedDef, $taintedState)
+    public static function taintedStateFlow($context, $mySink, $indexParameter, $taintedDef, $taintedState)
     {
         $resultTaintedFlow = [];
         $idFlow = \progpilot\Utils::printDefinition($mySink->getLanguage(), $taintedDef);
@@ -112,10 +114,11 @@ class SecurityAnalysis
             foreach ($fromTaintedByDefs as $fromTaintedByDef) {
                 $fromTaintedDef = $fromTaintedByDef[0];
                 $fromTaintedState = $fromTaintedByDef[1];
+
                 $possibleConditions = ["QUOTES", "object_tainted", "array_tainted", "variable_tainted", null];
                 foreach ($possibleConditions as $condition) {
                     if ($mySink->isParameterCondition($indexParameter, $condition)) {
-                        if (!SecurityAnalysis::isSafeStateCondition($mySink, $fromTaintedState, $condition)) {
+                        if (!SecurityAnalysis::isSafeStateCondition($context, $mySink, $fromTaintedState, $condition, true)) {
                             $ret = SecurityAnalysis::getPrintableTaintedDef($mySink, $fromTaintedDef);
 
                             $oneTainted["flow_name"] = $ret["source_name"];
@@ -139,13 +142,13 @@ class SecurityAnalysis
         return [$resultTaintedFlow, $idFlow];
     }
 
-    public static function isSafeState($mySink, $indexParameter, $myState, $isFlow = false)
+    public static function isSafeState($context, $mySink, $indexParameter, $myState)
     {
         $possibleConditions = ["QUOTES", "object_tainted", "array_tainted", "variable_tainted", null];
         
         foreach ($possibleConditions as $condition) {
             if ($mySink->isParameterCondition($indexParameter, $condition)) {
-                if (!SecurityAnalysis::isSafeStateCondition($mySink, $myState, $condition)) {
+                if (!SecurityAnalysis::isSafeStateCondition($context, $mySink, $myState, $condition)) {
                     return false;
                 }
             }
@@ -154,10 +157,12 @@ class SecurityAnalysis
         return true;
     }
     
-    public static function isSafeStateCondition($mySink, $state, $condition)
+    public static function isSafeStateCondition($context, $mySink, $state, $condition, $isFlow = false)
     {
-        if (($state->isTainted() || $state->isType(MyDefinition::ALL_PROPERTIES_TAINTED))
-            && $state->getCast() === MyDefinition::CAST_NOT_SAFE) {
+        if (($state->isTainted())
+            && $state->getCast() === MyDefinition::CAST_NOT_SAFE
+                && $condition !== "object_tainted"
+                    && $condition !== "array_tainted") {
             if ($state->isSanitized()) {
                 if ($state->isTypeSanitized($mySink->getAttack())
                             || $state->isTypeSanitized("ALL")) {
@@ -195,17 +200,25 @@ class SecurityAnalysis
             }
 
             return false;
+        } elseif (($condition === "object_tainted" || $isFlow)
+            && $state->isType(MyDefinition::TYPE_INSTANCE)
+                && $state->isType(MyDefinition::ALL_PROPERTIES_TAINTED)) {
+            return false;
+        } elseif (($condition === "array_tainted" || $isFlow)
+            && $state->isType(MyDefinition::TYPE_ARRAY)
+                && $state->isType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED)) {
+            return false;
         }
-
+        
         return true;
     }
 
 
-    public static function isSafeStatesCondition($mySink, $myDef, $condition, $isFlow)
+    public static function isSafeStatesCondition($context, $mySink, $myDef, $condition)
     {
         $statesMyDef = $myDef->getStates();
         foreach ($statesMyDef as $stateMyDef) {
-            if (!SecurityAnalysis::isSafeStateCondition($mySink, $stateMyDef, $condition)) {
+            if (!SecurityAnalysis::isSafeStateCondition($context, $mySink, $stateMyDef, $condition)) {
                 return false;
             }
         }
@@ -230,17 +243,18 @@ class SecurityAnalysis
 
         // arg param of sink = always current state
 
-        if (!SecurityAnalysis::isSafeState($mySink, $indexParameter, $myDef->getCurrentState())) {
+        if (!SecurityAnalysis::isSafeState($context, $mySink, $indexParameter, $myDef->getCurrentState())) {
             $taintedDefs = $myDef->getCurrentState()->getTaintedByDefs();
             foreach ($taintedDefs as $taintedByDef) {
                 $taintedDef = $taintedByDef[0];
                 $taintedState = $taintedByDef[1];
 
-                if (!SecurityAnalysis::isSafeState($mySink, $indexParameter, $taintedState)) {
+                if (!SecurityAnalysis::isSafeState($context, $mySink, $indexParameter, $taintedState)) {
                     $ret = SecurityAnalysis::getPrintableTaintedDef($mySink, $taintedDef);
 
                     if (!SecurityAnalysis::inArrayStateSource($temp, $ret)) {
                         $resultsFlow = SecurityAnalysis::taintedStateFlow(
+                            $context,
                             $mySink,
                             $indexParameter,
                             $taintedDef,

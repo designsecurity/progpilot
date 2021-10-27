@@ -23,6 +23,7 @@ use progpilot\Code\Opcodes;
 use progpilot\Code\MyInstruction;
 
 use progpilot\Helpers\Analysis as HelpersAnalysis;
+use progpilot\Helpers\State as HelpersState;
 
 use progpilot\Utils;
 
@@ -50,6 +51,7 @@ class IncludeAnalysis
         $arrFuncCall = $instruction->getProperty(MyInstruction::ARR);
         $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
 
+        echo "INCLUDE >>>>>>>>>>>>>>>>>>>>> -3\n";
         // require, require_once ... already handled in transform Expr/include_
         if ($myFuncCall->getName() === "include" && $context->getAnalyzeIncludes()) {
             $typeInclude = $instruction->getProperty(MyInstruction::TYPE_INCLUDE);
@@ -57,11 +59,14 @@ class IncludeAnalysis
             if ($nbParams > 0) {
                 $atLeastOneIncludeResolved = false;
 
+                echo "INCLUDE >>>>>>>>>>>>>>>>>>>>> -2 line = '".$myFuncCall->getLine()."'\n";
                 $myDefArg = $instruction->getProperty("argdef0");
                 if (count($myDefArg->getCurrentState()->getLastKnownValues()) !== 0) {
+                    echo "INCLUDE >>>>>>>>>>>>>>>>>>>>> -2b\n";
                     foreach ($myDefArg->getCurrentState()->getLastKnownValues() as $lastKnownValue) {
                         $realFile = false;
 
+                        echo "INCLUDE >>>>>>>>>>>>>>>>>>>>> -1 '$lastKnownValue'\n";
                         // else it's maybe a relative path
                         if (strlen($lastKnownValue) > 0
                             && (substr($lastKnownValue, 0, 1) !== DIRECTORY_SEPARATOR
@@ -121,6 +126,7 @@ class IncludeAnalysis
                                     $myFuncCall->getLine(),
                                     $myFuncCall->getColumn()
                                 );
+
                                 $myFileIncluded->setIncludedFromMyfile(clone $context->getCurrentMyFile());
                                 if (!IncludeAnalysis::isCircularInclude($myFileIncluded)) {
                                     // include once
@@ -133,6 +139,8 @@ class IncludeAnalysis
                                         $arrayRequires[] = $nameIncludedFile;
                                     }
 
+                                    echo "INCLUDE >>>>>>>>>>>>>>>>>>>>> 0\n";
+                                    echo "INCLUDE >>>>>>>>>>>>>>>>>>>>> '$nameIncludedFile' 1\n";
                                     $analyzerInclude = new \progpilot\Analyzer;
                                     $saveCurrentMyfile = $context->getCurrentMyfile();
                                     $saveCurrentOp = $context->getCurrentOp();
@@ -168,11 +176,12 @@ class IncludeAnalysis
                                     $saveMyFile = [];
                                     $defsIncluded = [];
                                     if (!is_null($mainInclude)) {
-                                        $lastMyBlockConstuctor =
-                                            $mainInclude->getBlockById($mainInclude->getLastBlockId());
-                                        if (!is_null($context->getCurrentBlock())
-                                        && !is_null($lastMyBlockConstuctor)) {
-                                            $saveCurrentBlock->addVirtualParent($lastMyBlockConstuctor);
+                                        foreach ($mainInclude->getLastBlockIds() as $lastBlockId) {
+                                            $lastMyBlockConstuctor =
+                                            $mainInclude->getBlockById($lastBlockId);
+                                            if (!is_null($context->getCurrentBlock()) && !is_null($lastMyBlockConstuctor)) {
+                                                $saveCurrentBlock->addVirtualParent($lastMyBlockConstuctor);
+                                            }
                                         }
                                     
                                         // we change the source of defs nevermind the file is really analyzed or nor
@@ -259,21 +268,14 @@ class IncludeAnalysis
                                         // it's an approximation ...
                                         $defsOutputIncludedFinal = [];
                                         if (!is_null($mainInclude->getDefs())) {
-                                            $defsMainReturn =
-                                                $mainInclude->getDefs()->getDefRefByName("{main}_return");
+                                            $defsOutputIncluded = [];
+                                            foreach ($mainInclude->getLastBlockIds() as $lastBlockId) {
+                                                $defsOutputIncluded = array_merge(
+                                                    $mainInclude->getDefs()->getOutMinusKill($lastBlockId),
+                                                    $defsOutputIncluded
+                                                );
+                                            }
 
-                                            $defsOutputIncluded = $mainInclude->getDefs()->getOutMinusKill(
-                                                $mainInclude->getLastBlockId()
-                                            );
-
-                                            /*
-                                            if (is_array($defsMainReturn)) {
-                                                echo "FUNC_CALL include 12c\n";
-                                                foreach ($defsMainReturn as $defMainReturn) {
-                                                    $defsOutputIncluded = $mainInclude->getDefs()->getOutMinusKill(
-                                                        $defMainReturn->getBlockId()
-                                                    );
-                                                    */
                                             if (!is_null($defsOutputIncluded)) {
                                                 foreach ($defsOutputIncluded as $defOutputIncludedId) {
                                                     if (!in_array(
@@ -285,9 +287,6 @@ class IncludeAnalysis
                                                     }
                                                 }
                                             }
-                                                    /*
-                                                }
-                                            }*/
                                         }
 
                                         // for all class found, we resolve previous seen objects of this class
@@ -299,7 +298,13 @@ class IncludeAnalysis
 
                                         $newDefs = false;
                                         if (!empty($defsOutputIncludedFinal)) {
+
+                                    echo "INCLUDE >>>>>>>>>>>>>>>>>>>>> '$nameIncludedFile' 2\n";
                                             foreach ($defsOutputIncludedFinal as $defOutputIncludedFinal) {
+
+                                                echo "INCLUDE >>>>>>>>>>>>>>>>>>>>> '$nameIncludedFile' 3\n";
+                                                $defOutputIncludedFinal->printStdout();
+
                                                 $ret1 = $defs->addDef(
                                                     $defOutputIncludedFinal->getName(),
                                                     $defOutputIncludedFinal
@@ -322,7 +327,7 @@ class IncludeAnalysis
                                             );
                                         }
 
-                                        HelpersAnalysis::blockSwitching($context, $context->getCurrentFunc());
+                                        HelpersState::blockSwitching($context, $context->getCurrentFunc());
                                     }
 
 

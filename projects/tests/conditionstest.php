@@ -20,11 +20,13 @@
                 ],
                 [
                     "./tests/conditions/condition7.php",
-                        [["\$tainted", "3", "xss"]]
+                        [["\$notsafe", "7", "xss"],
+                        ["\$tainted", "3", "xss"]]
                 ],
                 [
                     "./tests/conditions/condition8.php",
-                        [["\$tainted", "47", "xss"],
+                        [["\$tainted", "40", "xss"],
+                        ["\$tainted", "47", "xss"],
                         ["\$tainted", "53", "xss"]]
                 ]
             ];

@@ -87,20 +87,20 @@ class RunAllTest extends TestCase
             $tabjavascript = [];
         }
         
-        $tab = array_merge(/*
+        $tab = array_merge(
             $taboop,
-            $tabreal,*/
-            $tabgen/*,
+            //$tabreal,
+            $tabgen,
             $tabinc,
             $tabdata,
             $tabcond,
             $tabneg,
             $tabcus,
-            $tabvulntest,
+            //$tabvulntest,
             $tabwander,
             $tabframeworks,
             $tabtwig,
-            $tabjavascript*/
+            $tabjavascript
         );
         
         return $tab;

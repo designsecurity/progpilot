@@ -3,7 +3,7 @@
         return [
                 [
                     "./tests/frameworks/codeigniter1.php",
-                        [["\$_GET[\"p\"]", '6', "xss"]]
+                        [["\$data[\"title\"]", '8', "xss"]]
                 ],
                 [
                     "./tests/frameworks/codeigniter2.php",
@@ -15,7 +15,7 @@
                 ],
                 [
                     "./tests/frameworks/symfony1.php",
-                        [["5", "67", "security misconfiguration"],
+                        [["5", "79", "security misconfiguration"],
                         ["11", "183", "security misconfiguration"]]
                 ]
             ];

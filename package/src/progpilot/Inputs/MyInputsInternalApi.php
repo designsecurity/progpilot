@@ -272,35 +272,6 @@ class MyInputsInternalApi
                             || $mySanitizer->getInstanceOfName() === $myClass->getExtendsOf())) {
                         return $mySanitizer;
                     }
-                    /*
-
-                    if ($mySanitizer->getLanguage() === "php") {
-                        $propertiesSanitizer = explode("->", $mySanitizer->getInstanceOfName());
-                    } elseif ($mySanitizer->getLanguage() === "js") {
-                        $propertiesSanitizer = explode(".", $mySanitizer->getInstanceOfName());
-                    }
-
-                    if (is_array($propertiesSanitizer)) {
-                        $mySanitizerInstanceName = $propertiesSanitizer[0];
-
-                        $mySanitizerNumberOfProperties = count($propertiesSanitizer);
-                        $stackNumberOfProperties = count($stackClass);
-
-                        if ($stackNumberOfProperties >= $mySanitizerNumberOfProperties) {
-                            $knownProperties =
-                            $stackClass[$stackNumberOfProperties - $mySanitizerNumberOfProperties];
-
-                            foreach ($knownProperties as $propClass) {
-                                $objectId = $propClass->getObjectId();
-                                $myClass = $context->getObjects()->getMyClassFromObject($objectId);
-
-                                if (!is_null($myClass) && ($myClass->getName() === $mySanitizerInstanceName
-                                    || $myClass->getExtendsOf() === $mySanitizerInstanceName)) {
-                                    return $mySanitizer;
-                                }
-                            }
-                        }
-                    }*/
                 }
             }
         }
@@ -340,7 +311,7 @@ class MyInputsInternalApi
                             $stackClass[$stackNumberOfProperties - $mySinkNumberOfProperties];
 
                             foreach ($knownProperties as $propClass) {
-                                $objectId = $propClass->getCurrentState()->getObjectId();
+                                $objectId = $propClass->getObjectId();
                                 $myClass = $context->getObjects()->getMyClassFromObject($objectId);
                                 
                                 if ((is_null($myClass) && $mySinkInstanceName === $propClass->getName())
@@ -374,101 +345,30 @@ class MyInputsInternalApi
         return null;
     }
     
-    public function getSourceByName(
-        $context,
-        $stackClass,
-        $myFuncOrDef,
-        $isFunction = false,
-        $instanceName = false,
-        $arrValue = false
-    ) {
+    public function getSourceByName($myFuncOrDef, $myClass, $dimArray = null)
+    {
         foreach ($this->sources as $mySource) {
-            $checkName = false;
-            if (!$isFunction && $myFuncOrDef->isType(MyDefinition::TYPE_PROPERTY)) {
-                $properties = $myFuncOrDef->property->getProperties();
-                /*
-                if (is_array($properties) && count($properties) > 0) {
-                    $lastproperty = $properties[count($properties) - 1];
-                    if ($lastproperty === $mySource->getName()) {
-                        $checkName = true;
-                    }
-                }
-                */
-
-                if ($properties === $mySource->getName()) {
-                    $checkName = true;
-                }
-            }
-
-            if (($mySource->getName() === $myFuncOrDef->getName()) || $checkName) {
-                $checkFunction = false;
-                $checkArray = false;
-                $checkInstance = false;
-                
-                if (!$instanceName && !$mySource->isInstance()) {
-                    $checkInstance = true;
+            if ($mySource->getName() === $myFuncOrDef->getName()) {
+                if (!$mySource->isInstance() 
+                    && empty($mySource->getArrayValue())
+                        && !$myFuncOrDef->isType(MyFunction::TYPE_FUNC_METHOD)
+                            && !$myFuncOrDef->isType(MyDefinition::TYPE_PROPERTY)) {
+                    return $mySource;
                 }
 
-                if ($instanceName && $mySource->isInstance()) {
-                    if ($mySource->getInstanceOfName() === $instanceName) {
-                        $checkInstance = true;
-                    }
-
-                    if ($mySource->getLanguage() === "php") {
-                        $propertiesSource = explode("->", $mySource->getInstanceOfName());
-                    } elseif ($mySource->getLanguage() === "js") {
-                        $propertiesSource = explode(".", $mySource->getInstanceOfName());
-                    }
-
-                    if (is_array($propertiesSource)) {
-                        $mySourceInstanceName = $propertiesSource[0];
-
-                        $mySourceNumberOfProperties = count($propertiesSource);
-                        $stackNumberOfProperties = count($stackClass);
-
-                        if ($stackNumberOfProperties >= $mySourceNumberOfProperties) {
-                            $knownProperties =
-                                $stackClass[$stackNumberOfProperties - $mySourceNumberOfProperties];
-
-                            foreach ($knownProperties as $propClass) {
-                                if ($propClass->getName() === $mySourceInstanceName) {
-                                    $checkInstance = true;
-                                }
-                            }
-                        }
+                if ($mySource->isInstance() 
+                    && ($myFuncOrDef->isType(MyFunction::TYPE_FUNC_METHOD) 
+                        || $myFuncOrDef->isType(MyDefinition::TYPE_PROPERTY))) {
+                    if (!is_null($myClass) &&
+                        ($mySource->getInstanceOfName() === $myClass->getName()
+                            || $mySource->getInstanceOfName() === $myClass->getExtendsOf())) {
+                        return $mySource;
                     }
                 }
 
-                if ($mySource->isFunction() === $isFunction) {
-                    $checkFunction = true;
-                }
-
-                // if we request an array the source can be an array with no specific tainted indexes
-                // and array nots equals (like $_GET["p"])
-                if (($arrValue !== false && $arrValue !== "PROGPILOT_ALL_INDEX_TAINTED"
-                    && $mySource->getIsArray()
-                        && empty($mySource->getArrayValue()))
-                            // or we don't request an array
-                            // and the source is not an array (echo $hardcoded_tainted)
-                            || (!$arrValue && !$mySource->getIsArray())
-                            // or we don't request an array
-                            // if mysource is a function and a array like that :
-                            // $row = mysqli_fetch_assoc()
-                            // echo $row[0]
-                            // we don't want an array ie : $row = mysqli_fetch_assoc()[0]
-                            || (!$arrValue && $mySource->isFunction() && $mySource->getIsArray())) {
-                    $checkArray = true;
-                }
-
-                // if we request an array the source can be an array and array value equals
-                if (($arrValue !== false && $arrValue !== "PROGPILOT_ALL_INDEX_TAINTED"
-                    && $mySource->getIsArray()
-                        && !empty($mySource->getArrayValue())
-                            && $mySource->isAnArrayValue($arrValue))) {
-                    $checkArray = true;
-                }
-
-                if ($checkArray && $checkInstance && $checkFunction) {
+                if ($mySource->getIsArray() 
+                    && !empty($mySource->getArrayValue())
+                        && $mySource->isAnArrayValue($dimArray)) {
                     return $mySource;
                 }
             }
@@ -737,6 +637,14 @@ class MyInputsInternalApi
                         $mySource->setIsFunction(true);
                     }
 
+                    if (isset($source-> {'is_arrayof_objects'}) && $source-> {'is_arrayof_objects'}) {
+                        $mySource->setIsArrayOfObjects(true);
+                    }
+
+                    if (isset($source-> {'is_arrayof_arrays'}) && $source-> {'is_arrayof_arrays'}) {
+                        $mySource->setIsArrayOfArrays(true);
+                    }
+
                     if (isset($source-> {'is_array'}) && $source-> {'is_array'}) {
                         $mySource->setIsArray(true);
                     }
@@ -748,7 +656,7 @@ class MyInputsInternalApi
                     if (isset($source-> {'array_index'}) && is_array($source-> {'array_index'})) {
                         $arr = [];
                         foreach ($source-> {'array_index'} as $array_index) {
-                            $arr[$array_index] = false;
+                            $arr[] = $array_index;
                         }
 
                         $mySource->setArrayValue($arr);

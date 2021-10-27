@@ -90,7 +90,7 @@ class Assign
             $context->getCurrentColumn(),
             $name
         );
-
+ 
         switch (Common::getTypeDef($op)) {
             case MyOp::TYPE_ARRAY:
                 $myDef->addType(MyDefinition::TYPE_ARRAY);
@@ -134,6 +134,7 @@ class Assign
 
         if ($isReturnDef) {
             $context->getCurrentFunc()->addReturnDef($myDef);
+            $context->getCurrentBlock()->addReturnDef($myDef);
             $myDef->setReturnDef(true);
         }
 
@@ -149,13 +150,15 @@ class Assign
             );
         }
 
-
         if (isset($op->result)) {
             $instAssign->addProperty(
                 MyInstruction::RESULTID,
                 $context->getCurrentFunc()->getOpId($op->result)
             );
         }
+
+        echo "ASSIGN TRANSFORM 1 '".$myDef->getName()."'\n";
+        $myDef->printStdout();
 
         $context->getCurrentMycode()->addCode($instAssign);
 

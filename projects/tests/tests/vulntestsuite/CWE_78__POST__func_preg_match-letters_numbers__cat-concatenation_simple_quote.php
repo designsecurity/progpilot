@@ -45,7 +45,7 @@ MODIFICATIONS.*/
 $tainted = $_POST['UserData'];
 
 $re = "/^[a-zA-Z0-9]*$/";
-if (preg_match($re, $tainted) == 1) {
+if (preg_match($re, $tainted) === 1) {
     $tainted = $tainted;
 } else {
     $tainted = "";

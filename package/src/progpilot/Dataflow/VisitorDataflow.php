@@ -32,7 +32,7 @@ class VisitorDataflow
 
     protected function isArrayAlreadyDefined($nameArray, $blockId)
     {
-        if (isset($this->blocksArrays["".$blockId.""]["".$nameArray.""])) {
+        if (isset($this->blocksArrays/*["".$blockId.""]*/["".$nameArray.""])) {
             return true;
         }
 
@@ -41,7 +41,7 @@ class VisitorDataflow
 
     protected function defineArray($nameArray, $blockId)
     {
-        $this->blocksArrays["".$blockId.""]["".$nameArray.""] = true;
+        $this->blocksArrays/*["".$blockId.""]*/["".$nameArray.""] = true;
     }
 
     public function analyze($context, $myFunc, $defsIncluded = null)
@@ -54,7 +54,6 @@ class VisitorDataflow
 
         $blocks = null;
         $blocksStack = null;
-        $lastBlockId = 0;
         $firstBlock = true;
         $firstBlockId = 0;
         $alreadyWarned = false;
@@ -162,7 +161,8 @@ class VisitorDataflow
                             foreach ($context->getCurrentFunc()->getParams() as $param) {
                                 $param->setBlockId($myBlock->getId());
                                 $param->unsetState(0);
-                                $param->addState($myBlock->getId());
+                                $state = $param->createState();
+                                $param->assignStateToBlockId($state->getId(), $myBlock->getId());
                             }
                             // end
 
@@ -173,7 +173,9 @@ class VisitorDataflow
                                 //$thisdef->setObjectId($this->currentClass->getObjectIdThis());
                                 $thisdef->setBlockId($myBlock->getId());
                                 $thisdef->unsetState(0);
-                                $thisdef->addState($myBlock->getId());
+                                $state = $thisdef->createState();
+                                $thisdef->assignStateToBlockId($state->getId(), $myBlock->getId());
+
                                 $thisdef->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
 
                                 $context->getCurrentFunc()->getDefs()->addDef($thisdef->getName(), $thisdef);
@@ -194,14 +196,13 @@ class VisitorDataflow
 
                     case Opcodes::LEAVE_BLOCK:
                         $myBlock = $instruction->getProperty(MyInstruction::MYBLOCK);
-
+                        $lastBlockId = $myBlock->getId();
                         array_pop($blocksStack);
                         if (!empty($blocksStack)) {
                             $context->setCurrentBlock($blocksStack[count($blocksStack) - 1]);
                         }
 
                         $context->getCurrentFunc()->getDefs()->computeKill($myBlock->getId());
-                        $lastBlockId = $myBlock->getId();
 
                         // representations start
                         $idCfg = hash("sha256", $context->getCurrentFunc()->getName()."-".$myBlock->getId());
@@ -221,14 +222,15 @@ class VisitorDataflow
                         $context->getCurrentFunc()->getDefs()->reachingDefs($blocks);
 
                         $myFunc->setBlocks($blocks);
-                        $myFunc->setLastBlockId($lastBlockId);
 
+                        $lastBlockIds = $myFunc->getLastBlockIds();
+                
                         // functions are generally parsed before the main and so declarations of instances
                         if ($myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
                             foreach ($context->getObjects()->getObjects() as $idobject => $myClass) {
                                 foreach ($myClass->getMethods() as $myMethod) {
                                     if ($myMethod->getName() === $myFunc->getName()) {
-                                        $myMethod->setLastBlockId($lastBlockId);
+                                        $myMethod->setLastBlockIds($lastBlockIds);
                                     }
                                 }
                             }
@@ -253,7 +255,7 @@ class VisitorDataflow
                             $myFuncCall->setSourceMyFile($context->getCurrentMyfile());
                         }
 
-                        $mySource = $context->inputs->getSourceByName($context, null, $myFuncCall, true, false, false);
+                        $mySource = $context->inputs->getSourceByName($myFuncCall, null);
                         if (!is_null($mySource)) {
                             if ($mySource->hasParameters()) {
                                 $nbparams = 0;

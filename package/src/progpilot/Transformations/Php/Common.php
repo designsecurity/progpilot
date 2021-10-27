@@ -56,95 +56,6 @@ class Common
                 return $op->var->ops[0]->name->value;
             }
         }
-        /*
-        $propertyNameArray = [];
-
-        if (isset($op->ops[0])) {
-            if ($op->ops[0] instanceof Op\Expr\ArrayDimFetch) {
-                echo "here1___\n";
-                $propertyNameArray = Common::getNameProperty($op->ops[0]);
-            }
-
-            if ($op instanceof Op\Expr\PropertyFetch) {
-                echo "here2___\n";
-                $propertyNameArray = Common::getNameProperty($op->ops[0]);
-            }
-
-            if ($op instanceof Op\Expr\StaticPropertyFetch) {
-                echo "here3___\n";
-                $propertyNameArray = Common::getNameProperty($op->ops[0]);
-            }
-        }
-
-        if (isset($op->var->ops)) {
-            foreach ($op->var->ops as $opeach) {
-                if ($opeach instanceof Op\Expr\ArrayDimFetch) {
-                    echo "here4___\n";
-                    $propertyNameArray =  Common::getNameProperty($opeach);
-                }
-
-                if ($opeach instanceof Op\Expr\PropertyFetch) {
-                    echo "here5___\n";
-                    $propertyNameArray = Common::getNameProperty($opeach);
-                }
-
-                if ($opeach instanceof Op\Expr\StaticPropertyFetch) {
-                    echo "here6___\n";
-                    $propertyNameArray = Common::getNameProperty($opeach);
-                }
-            }
-        }
-
-        if (isset($op->name->value)) {
-            echo "here7___'".$op->name->value."'\n";
-            $propertyNameArray[] = $op->name->value;
-        }
-
-        return $propertyNameArray;
-        */
-
-        /*
-                if (isset($op->var->ops)) {
-                    foreach ($op->var->ops as $opeach) {
-                        if ($opeach instanceof Op\Expr\ArrayDimFetch) {
-                            echo "here1___\n";
-                        }
-
-                        if ($opeach instanceof Op\Expr\PropertyFetch) {
-                            echo "here2___\n";
-                            //var_dump($opeach);
-                            return Common::getNameProperty($opeach);
-                        }
-
-                        if ($opeach instanceof Op\Expr\StaticPropertyFetch) {
-                            echo "here3___\n";
-                        }
-                    }
-                }
-
-                if (isset($op->ops[0]->name->value)) {
-                    if ($op->ops[0] instanceof Op\Expr\ArrayDimFetch
-                        || $op->ops[0] instanceof Op\Expr\PropertyFetch
-                            || $op->ops[0] instanceof Op\Expr\StaticPropertyFetch) {
-                                echo "here4___\n";
-                        return $op->ops[0]->name->value;
-                    }
-                }
-
-                // array t->test[0]
-                if (isset($op->var->ops[0]->name->value)) {
-                    if ($op->var->ops[0] instanceof Op\Expr\ArrayDimFetch
-                        || $op->var->ops[0] instanceof Op\Expr\PropertyFetch
-                            || $op->var->ops[0] instanceof Op\Expr\StaticPropertyFetch) {
-                        return $op->var->ops[0]->name->value;
-                    }
-                }
-
-                if (isset($op->name->value) && ($op instanceof Op\Expr\PropertyFetch
-                    || $op instanceof Op\Expr\StaticPropertyFetch)) {
-                    return $op->name->value;
-                }
-        */
         return null;
     }
 
@@ -330,20 +241,10 @@ class Common
 
     public static function getTypeDef($op)
     {
-        if (isset($op) && isset($op->name)) {
-            if ($op instanceof Op\Expr\FuncCall
-                && $op->name instanceof Operand\Literal
-                    && $op->name->value === "define") {
-                return MyOp::TYPE_CONST;
-            }
-        }
-        
-        if (isset($op->expr->ops[0])) {
-            if ($op->expr->ops[0] instanceof Op\Expr\Array_) {
-                return MyOp::TYPE_ARRAY_EXPR;
-            }
-        }
-        
+        // the order is important (current it breaks array14.php)
+        // first we look for the left side
+        // this->foo
+
         if (isset($op->var->ops[0])) {
             if (isset($op->var->ops[0]->var->ops[0])
                 && Common::isChainedKnownType($op->var->ops[0]->var->ops[0])
@@ -369,6 +270,23 @@ class Common
                 if (isset($op->var->original->name->value)) {
                     return MyOp::TYPE_VARIABLE;
                 }
+            }
+        }
+ 
+        // then for the right
+        // foo = array()
+        // foo = define("FOO")
+        if (isset($op) && isset($op->name)) {
+            if ($op instanceof Op\Expr\FuncCall
+                && $op->name instanceof Operand\Literal
+                    && $op->name->value === "define") {
+                return MyOp::TYPE_CONST;
+            }
+        }
+        
+        if (isset($op->expr->ops[0])) {
+            if ($op->expr->ops[0] instanceof Op\Expr\Array_) {
+                return MyOp::TYPE_ARRAY_EXPR;
             }
         }
 

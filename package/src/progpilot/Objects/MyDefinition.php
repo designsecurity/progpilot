@@ -30,8 +30,10 @@ class MyDefinition extends MyOp
     const TYPE_GLOBAL = 0x0080;
     const TYPE_STATIC_PROPERTY = 0x0100;
     const ALL_PROPERTIES_TAINTED = 0x0200;
-    const TYPE_LITERAL = 0x0400;
-    const TYPE_ITERATOR = 0x0800;
+    const ALL_ARRAY_ELEMENTS_TAINTED = 0x0400;
+    const TYPE_LITERAL = 0x0800;
+    const TYPE_ITERATOR = 0x1000;
+    const TYPE_ARRAY_ARRAY = 0x2000;
 
     const SECURITY_HIGH = 1;
     const SECURITY_LOW = 2;
@@ -70,8 +72,11 @@ class MyDefinition extends MyOp
 
         $this->original = new MyDefOriginal;
         $this->states = [];
+        $this->blocksIdsStates = [];
 
-        $this->addState($blockId);
+        // original state
+        $state = $this->createState();
+        $this->assignStateToBlockId($state->getId(), $blockId);
     }
 
     public function printStdout($context = null)
@@ -91,49 +96,76 @@ class MyDefinition extends MyOp
         blockid = ".$this->getBlockId()."\n";
 
         if (!is_null($this->getParamToArg())) {
-            echo "it's a param (to arg possibility)\n";
+            echo "it's a param (to arg possibility) start ===\n";
             $this->getParamToArg()->printStdout();
+            echo "it's a param (to arg possibility) end ===\n";
         }
 
         $this->getSourceMyFile()->printStdout();
 
         foreach ($this->states as $id => $state) {
-            echo "state blockid '$id'\n";
+            echo "state id '$id'\n";
             echo "__________________ start state ________________________\n";
             $state->printStdout();
             echo "__________________ end state________________________\n";
         }
 
+        echo "_____________________ states blocks associations _____________________\n\n\n";
+        var_dump($this->blocksIdsStates);
         echo "_____________________ end def _____________________\n\n\n";
+
     }
 
     public function unsetState($blockId)
     {
+        /*
         unset($this->states[$blockId]);
+        */
+
+        unset($this->blocksIdsStates[$blockId]);
     }
 
     public function setStates($states)
     {
         $this->states = $states;
     }
-
+/*
     public function setState($state, $blockId)
     {
         $this->states[$blockId] = $state;
     }
+*/
+    public function assignStateToBlockId($stateId, $blockId)
+    {
+        $this->blocksIdsStates[$blockId] = $stateId;
+    }
 
-    public function addState($blockId)
+    public function createState()
     {
         $state = new MyDefState;
-        $this->states[$blockId] = $state;
+        $this->states[$state->getId()] = $state;
 
         return $state;
     }
 
+    public function addState($state)
+    {
+        $this->states[$state->getId()] = $state;
+    }
+
     public function getCurrentState()
     {
+        /*
         if (isset($this->states[$this->blockId])) {
             return $this->states[$this->blockId];
+        }
+        */
+
+        if (isset($this->blocksIdsStates[$this->blockId])) {
+            $stateId = $this->blocksIdsStates[$this->blockId];
+            if(isset($this->states[$stateId])) {
+                return $this->states[$stateId];
+            }
         }
 
         return null;
@@ -146,20 +178,20 @@ class MyDefinition extends MyOp
 
     public function getState($blockId)
     {
+        /*
         if (isset($this->states[$blockId])) {
             return $this->states[$blockId];
+        }
+        */
+
+        if (isset($this->blocksIdsStates[$blockId])) {
+            $stateId = $this->blocksIdsStates[$blockId];
+            if(isset($this->states[$stateId])) {
+                return $this->states[$stateId];
+            }
         }
 
         return null;
-    }
-
-    public function getStateOrCreate($blockId)
-    {
-        if (isset($this->states[$blockId])) {
-            return $this->states[$blockId];
-        }
-
-        return $this->addState($blockId);
     }
     
     public function setArgToParam($def)

@@ -1,8 +1,17 @@
 {
-    "custom_rules": [{
+    "custom_rules": [
+        {
+            "name": "headers", 
+            "instanceof": "Symfony\\Component\\HttpFoundation\\Response", 
+            "description": "access headers of the symfony response",
+            "language": "php", 
+            "action": "DEFINE_OBJECT", 
+            "extra": "ResponseHeadersSymfony"
+        },
+        {
             "name": "set",  
             "is_function": true,
-            "instanceof": "Symfony\\Component\\HttpFoundation\\Response->headers", 
+            "instanceof": "ResponseHeadersSymfony", 
             "parameters": 
             [
                 {"id": 1, "fixed": true, "valid_by_default": true, "values": 

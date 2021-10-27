@@ -30,6 +30,7 @@ class LiteralFetch
                 $context->getCurrentColumn(),
                 "literal"
             );
+            
             $myTemp->getCurrentState()->addType(MyDefinition::TYPE_LITERAL);
 
             $myTemp->getCurrentState()->addLastKnownValue($op->value);
