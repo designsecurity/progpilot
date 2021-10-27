@@ -184,13 +184,14 @@
         
         {"name": "yaml_parse", "parameters": [{"id": 1}], "language": "php", "attack": "code_injection", "cwe": "CWE_95"},
         {"name": "unserialize", "parameters": [{"id": 1}], "language": "php", "attack": "code_injection", "cwe": "CWE_95"},
-        {"name": "preg_replace", "parameters": [{"id": 1}, {"id": 2}], "language": "php", "attack": "code_injection", "cwe": "CWE_95"},
-        {"name": "mb_ereg_replace", "parameters": [{"id": 1}, {"id": 2}], "language": "php", "attack": "code_injection", "cwe": "CWE_95"},
-        {"name": "mb_eregi_replace", "parameters": [{"id": 1}, {"id": 2}], "language": "php", "attack": "code_injection", "cwe": "CWE_95"},
-        {"name": "preg_filter", "parameters": [{"id": 1}, {"id": 2}], "language": "php", "attack": "code_injection", "cwe": "CWE_95"},
         {"name": "preg_replace_callback", "parameters": [{"id": 2}], "language": "php", "attack": "code_injection", "cwe": "CWE_95"},
         {"name": "eval", "parameters": [{"id": 1}], "language": "php", "attack": "eval code_injection", "cwe": "CWE_95"},
         {"name": "assert", "parameters": [{"id": 1}], "language": "php", "attack": "assert code_injection", "cwe": "CWE_95"},
-        {"name": "create_function", "language": "php", "attack": "create_function code_injection", "cwe": "CWE_95"}
+        {"name": "create_function", "language": "php", "attack": "create_function code_injection", "cwe": "CWE_95"},
+
+        {"name": "preg_replace", "parameters": [{"id": 1}], "language": "php", "attack": "redos", "cwe": "CWE_1333"},
+        {"name": "mb_ereg_replace", "parameters": [{"id": 1}], "language": "php", "attack": "redos", "cwe": "CWE_1333"},
+        {"name": "mb_eregi_replace", "parameters": [{"id": 1}], "language": "php", "attack": "redos", "cwe": "CWE_1333"},
+        {"name": "preg_filter", "parameters": [{"id": 1}], "language": "php", "attack": "redos", "cwe": "CWE_1333"}
         ]
 }

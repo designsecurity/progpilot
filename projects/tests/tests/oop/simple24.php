@@ -6,7 +6,7 @@ class Testc1
     public $data;
     
     public function change_data($data)
-    {
+    {   // block 48
         $this->data = $data;
     }
 }
@@ -19,13 +19,13 @@ if (rand() === 1) {
     $a->change_data("eee");
 }
 
-echo $a->data;
+echo $a->data; // id 62
 
 $b = new Testc1;
 if (rand() === 1) {
     $b->change_data("eee");
-} else {
+} else { // block 35
     $b->change_data($_GET["p"]);
 }
-
-echo $b->data;
+// block 30
+echo $b->data; // id 76

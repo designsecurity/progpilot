@@ -27,6 +27,8 @@ class MyDefState extends MyOp
 
     public function __construct()
     {
+        parent::__construct("state", 0, 0);
+
         $this->isEmbeddedByChar = [];
         $this->valueFromDef = null;
         $this->isTainted = false;
@@ -65,7 +67,10 @@ class MyDefState extends MyOp
         var_dump($this->objectId);
         echo "istypeinstance : '".$this->isType(MyDefinition::TYPE_INSTANCE)."'\n";
         echo "allpropertiestainted : '".$this->isType(MyDefinition::ALL_PROPERTIES_TAINTED)."'\n";
+        echo "allarrayelementstainted : '".$this->isType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED)."'\n";
         echo "istypearray : '".$this->isType(MyDefinition::TYPE_ARRAY)."'\n";
+        echo "istypearrayarray : '".$this->isType(MyDefinition::TYPE_ARRAY_ARRAY)."'\n";
+        
         foreach ($this->arrayIndexes as $arrayIndex) {
             echo "index :\n";
             var_dump($arrayIndex->index);
@@ -91,22 +96,16 @@ class MyDefState extends MyOp
         $this->taintedByDefs = $defs;
     }
 
+    public function updateIsEmbeddedByChars($chars)
+    {
+        foreach ($chars as $char => $value) {
+            $curChar = isset($this->isEmbeddedByChar[$char]) ? $this->isEmbeddedByChar[$char] : 0;
+            $this->isEmbeddedByChar[$char] = ($value + $curChar) % 2;
+        }
+    }
+
     public function setIsEmbeddedByChars($chars)
     {
-        /*
-        foreach ($chars as $char => $value) {
-            if (!isset($this->isEmbeddedByChar[$char])) {
-                $this->isEmbeddedByChar[$char] = $value;
-            } else {
-                if (!$value && !$control) {
-                    $this->isEmbeddedByChar[$char] = false;
-                } elseif ($value) {
-                    $this->isEmbeddedByChar[$char] = true;
-                }
-            }
-        }
-        */
-
         foreach ($chars as $char => $value) {
             $this->isEmbeddedByChar[$char] = $value % 2;
         }
@@ -255,6 +254,18 @@ class MyDefState extends MyOp
         $this->addArrayIndex($arrayIndex, $myDef);
         $this->addType(MyDefinition::TYPE_ARRAY);
         $ret[] = $myDef;
+
+        $existingState = $myArrayDef->getState($blockId);
+
+        if (!is_null($existingState) && $existingState->isType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED)) {
+            $myDef->getCurrentState()->setTainted(true);
+            $myDef->getCurrentState()->addTaintedByDef([$myArrayDef, $myArrayDef->getCurrentState()]);
+        }
+        else if($myArrayDef->getCurrentState()->isType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED)) {
+            // data/source17.php
+            $myDef->getCurrentState()->setTainted(true);
+            $myDef->getCurrentState()->addTaintedByDef([$myArrayDef, $myArrayDef->getCurrentState()]);
+        }
 
         return [true, $ret];
     }

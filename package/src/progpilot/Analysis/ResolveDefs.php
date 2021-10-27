@@ -92,110 +92,6 @@ class ResolveDefs
         }
     }
 
-    public static function propertyClass($context, $data, $mydef)
-    {
-        $i = 0;
-        $classStackName = [];
-        $currentFunc = $context->getCurrentFunc();
-        
-        if ($mydef->isType(MyDefinition::TYPE_PROPERTY)) {
-            $properties = $mydef->property->getProperties();
-            $tmpProperties = [];
-
-            while (true) {
-                $myDefTmp = new MyDefinition(
-                    $context->getCurrentBlock()->getId(),
-                    $context->getCurrentMyFile(),
-                    $mydef->getLine(),
-                    $mydef->getColumn(),
-                    $mydef->getName()
-                );
-                $myDefTmp->property->setProperties($tmpProperties);
-                $myDefTmp->addType(MyDefinition::TYPE_PROPERTY);
-                $myDefTmp->setId($mydef->getId());
-                
-                $classStackName[$i] = [];
-                if ($i === 0) {
-                    $instances = ResolveDefs::selectInstances(
-                        $context,
-                        $data->getOutMinusKill($mydef->getBlockId()),
-                        $myDefTmp
-                    );
-                } else {
-                    $instances = ResolveDefs::selectProperties(
-                        $context,
-                        $data->getOutMinusKill($mydef->getBlockId()),
-                        $myDefTmp
-                    );
-                }
-                
-                // if we have document.url but document hasn't been defined
-                // we use the original name of the instance (document)
-                if (count($instances) === 0) {
-                    $myClassNew = \progpilot\Analysis\CustomAnalysis::defineObject(
-                        $context,
-                        $mydef,
-                        $classStackName
-                    );
-                    
-                    if (!is_null($myClassNew)) {
-                        $mydef->addType(MyDefinition::TYPE_INSTANCE);
-                        $idObject = $context->getObjects()->addObject();
-                        $mydef->setObjectId($idObject);
-                        $context->getObjects()->addMyclassToObject($idObject, $myClassNew);
-                    }
-                    
-                    $classStackName[$i][] = $mydef;
-                } else {
-                    foreach ($instances as $instance) {
-                        if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
-                            $objectId = $instance->getObjectId();
-                            $myClass = $context->getObjects()->getMyClassFromObject($objectId);
-                            
-                            if (!is_null($myClass) && isset($properties[$i])) {
-                                $property = $myClass->getProperty($properties[$i]);
-
-                                // if property doesn't exist by default it's a public property
-                                if (is_null($property) || (!is_null($property)
-                                    && (ResolveDefs::getVisibility($myDefTmp, $property, $currentFunc)))) {
-                                    $myClassNew = \progpilot\Analysis\CustomAnalysis::defineObject(
-                                        $context,
-                                        $myClass,
-                                        $classStackName
-                                    );
-                    
-                                    if (!is_null($myClassNew)) {
-                                        $idObject = $context->getObjects()->addObject();
-                                        $instance->setObjectId($idObject);
-                                        $context->getObjects()->addMyclassToObject($idObject, $myClassNew);
-                                    }
-                                    
-                                    $classStackName[$i][] = $instance;
-                                }
-                            } else {
-                                $classStackName[$i][] = $instance;
-                            }
-                        }
-                    }
-                }
-
-                if (!isset($properties[$i])) {
-                    break;
-                }
-
-                $tmpProperties[] = $properties[$i];
-
-                $i ++;
-
-                if (!isset($properties[$i])) {
-                    break;
-                }
-            }
-        }
-
-        return $classStackName;
-    }
-
     public static function funccallClass($context, $data, $myFuncCall, $code, $index)
     {
         $instruction = $code[$index];
@@ -223,13 +119,13 @@ class ResolveDefs
             $opInformation["chained_results"][] = $myFakeInstance;
             $context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
 
-            $classStackName[$i][] = $myFakeInstance;
+            $classStackName[$i][] = $myFakeInstance->getCurrentState();
         } elseif ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
             $tmpProperties = null;
 
             $myDefTmp = new MyDefinition(
                 $context->getCurrentBlock()->getId(),
-                $context->getCurrentMyFile(),
+                $context->getCurrentFunc()->getSourceMyFile(),
                 $myFuncCall->getLine(),
                 $myFuncCall->getColumn(),
                 $myFuncCall->getNameInstance()
@@ -253,8 +149,15 @@ class ResolveDefs
             }
 
             foreach ($instances as $instance) {
-                if ($instance->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
-                    $classStackName[$i][] = $instance;
+                if ($instance->isType(MyDefinition::TYPE_PROPERTY)) {
+                    $state = $instance->getState($context->getCurrentBlock()->getId());
+                    if (!is_null($state) && $state->isType(MyDefinition::TYPE_INSTANCE)) {
+                        $classStackName[$i][] = $state;
+                    }
+                } else {
+                    if ($instance->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
+                        $classStackName[$i][] = $instance->getCurrentState();
+                    }
                 }
             }
         }
@@ -511,9 +414,20 @@ class ResolveDefs
             return $defsFound;
         }
 
+        echo "selectDefinitions 1\n";
+        if ($searchedDed->getName() === "html") {
+            $searchedDed->printStdout();
+        }
+
         foreach ($data as $def) {
+
+            echo "selectDefinitions 2\n";
+            if ($def->getName() === "html") {
+                $def->printStdout();
+            }
             if (Definitions::defEquality($def, $searchedDed, $bypassIsNearest)
                         && ResolveDefs::isNearest($context, $searchedDed, $def)) {
+                            echo "selectDefinitions 3\n";
                 if (!is_null($def->getParamToArg())) {
                     $def = $def->getParamToArg();
                 }
@@ -533,13 +447,11 @@ class ResolveDefs
                     if (!is_null($def->getArgToParam())) {
                         $def = $def->getArgToParam();
                     }
-
                     $defsFound[$def->getBlockId()][] = $def;
                 } elseif (!$searchedDed->isType(MyDefinition::TYPE_INSTANCE)) {
                     if (!is_null($def->getArgToParam())) {
                         $def = $def->getArgToParam();
                     }
-                
                     // we are looking for the nearest not instance of a property
                     $defsFound[$def->getBlockId()][] = $def;
                 }
@@ -566,11 +478,11 @@ class ResolveDefs
                         $nearestDef = $defLast;
                     }
                 }
-                    /*
+                /*
                 } else {
 
-                    echo "selectDefinitions 17\n";
-                    $trueDefsFound[] = $defLast;
+                echo "selectDefinitions 17\n";
+                $trueDefsFound[] = $defLast;
                 }
                 */
             }
@@ -601,11 +513,11 @@ class ResolveDefs
                 $arrayDef = $arrayDef->getParamToArg();
             }
 
-            if ($arrayDef->getCurrentState()->isType(MyDefinition::TYPE_ARRAY)) {
-                $arrayDefs[] = $arrayDef
+            //if ($arrayDef->getCurrentState()->isType(MyDefinition::TYPE_ARRAY)) {
+            $arrayDefs[] = $arrayDef
                     ->getCurrentState()
                         ->getOrCreateDefArrayIndex($tempDefa->getBlockId(), $arrayDef, $arrayDim);
-            }
+            //}
         }
 
         return $arrayDefs;
@@ -673,33 +585,28 @@ class ResolveDefs
         $propertiesDefs = [];
         $currentFunc = $context->getCurrentFunc();
 
-        //if ($tempDefa->isType(MyDefinition::TYPE_PROPERTY)) {
         $tempDefaProp = clone $tempDefa;
 
         $instances = ResolveDefs::selectInstances($context, $data, $tempDefaProp);
 
         foreach ($instances as $instance) {
-            if ($instance->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
-                /*
-                if ($instance->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
-                    $tempDefa->setTaintedByExpr($instance->getTaintedByExpr());
-                    $tempDefa->setTainted(true);
-                } else {*/
+            if($instance->isType(MyDefinition::TYPE_ITERATOR)
+                && !empty($instance->getIteratorValues())
+                    && $instance->getIteratorValues()[0]->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
+                // source of type array of properties
+                $instance = $instance->getIteratorValues()[0];
+            }
 
+            if ($instance->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
                 $idObject = $instance->getCurrentState()->getObjectId();
                 $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
 
                 if (!is_null($tmpMyClass)) {
                     $property = $tmpMyClass->getProperty($propertyName);
-
-                    if (!is_null($property)
-                                                && (ResolveDefs::getVisibility(
-                                                    $tempDefaProp,
-                                                    $property,
-                                                    $currentFunc
-                                                )
-                                                    || $bypassVisibility)) {
-                        $propertiesDefs[] = [$property, $tmpMyClass];
+                    if (!is_null($property)) {
+                        if (ResolveDefs::getVisibility($tempDefaProp, $property, $currentFunc)) {
+                            $propertiesDefs[] = [$property, $tmpMyClass];
+                        }
                     } else {
                         // we didn't find any propery but in this case php create automatically the property
 
@@ -722,10 +629,8 @@ class ResolveDefs
                         $propertiesDefs[] = [$myProperty, $tmpMyClass];
                     }
                 }
-                //}
             }
         }
-        //}
 
         return $propertiesDefs;
     }
@@ -740,21 +645,22 @@ class ResolveDefs
                 // ca peut arriver si on est dans le main() est qu'on appelle une globale
                 if (!is_null($currentContextCall->func_called) && !is_null($currentContextCall->func_callee)) {
                     // we can't looking for an element of a global array in PHP
+                    foreach ($currentContextCall->func_callee->getLastBlockIds() as $lastBlockId) {
+                        $tempDefa = clone $defa;
+                        $tempDefa->setLine($currentContextCall->func_called->getLine());
+                        $tempDefa->setColumn($currentContextCall->func_called->getColumn());
+                        $tempDefa->setBlockId($lastBlockId);
 
-                    $tempDefa = clone $defa;
-                    $tempDefa->setLine($currentContextCall->func_called->getLine());
-                    $tempDefa->setColumn($currentContextCall->func_called->getColumn());
-                    $tempDefa->setBlockId($currentContextCall->func_callee->getLastBlockId());
+                        $resGlobal = ResolveDefs::selectDefinitions(
+                            $context,
+                            $currentContextCall->func_callee->getDefs()->getOutMinusKill($tempDefa->getBlockId()),
+                            $tempDefa
+                        );
 
-                    $resGlobal = ResolveDefs::selectDefinitions(
-                        $context,
-                        $currentContextCall->func_callee->getDefs()->getOutMinusKill($tempDefa->getBlockId()),
-                        $tempDefa
-                    );
-
-                    // to not call recursively this function
-                    if (!(count($resGlobal) === 1 && $resGlobal[0] === $tempDefa)) {
-                        return $resGlobal;
+                        // to not call recursively this function
+                        if (!(count($resGlobal) === 1 && $resGlobal[0] === $tempDefa)) {
+                            return $resGlobal;
+                        }
                     }
                 }
             }

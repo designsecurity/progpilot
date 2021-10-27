@@ -33,6 +33,12 @@ class ConstFetch
                 $op->name->value
             );
             $myTemp->getCurrentState()->addType(MyDefinition::TYPE_CONSTANTE);
+            if ($op->name->value === "DIRECTORY_SEPARATOR") {
+                $myTemp->getCurrentState()->addLastKnownValue("/");
+            }
+            else {
+                $myTemp->getCurrentState()->addLastKnownValue($op->name->value);
+            }
 
             $instDefChained = new MyInstruction(Opcodes::CONST_FETCH);
             $instDefChained->addProperty(MyInstruction::DEF, $myTemp);

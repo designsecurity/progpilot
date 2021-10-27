@@ -15,6 +15,8 @@ use progpilot\Objects\MyDefinition;
 class MySource extends MySpecify
 {
     private $isObject;
+    private $isArrayOfObjects;
+    private $isArrayOfArrays;
     private $isArray;
     private $isFunction;
     private $arrayValue;
@@ -32,6 +34,8 @@ class MySource extends MySpecify
         parent::__construct($name, $language);
 
         $this->isObject = false;
+        $this->isArrayOfObjects = false;
+        $this->isArrayOfArrays = false;
         $this->isFunction = false;
         $this->returnArrayValue = null;
         $this->isReturnArray = false;
@@ -83,6 +87,26 @@ class MySource extends MySpecify
         $this->isObject = $isObject;
     }
 
+    public function getIsArrayOfObjects()
+    {
+        return $this->isArrayOfObjects;
+    }
+
+    public function setIsArrayOfObjects($isArrayOfObjects)
+    {
+        $this->isArrayOfObjects = $isArrayOfObjects;
+    }
+
+    public function getIsArrayOfArrays()
+    {
+        return $this->isArrayOfArrays;
+    }
+
+    public function setIsArrayOfArrays($isArrayOfArrays)
+    {
+        $this->isArrayOfArrays = $isArrayOfArrays;
+    }
+
     public function getIsArray()
     {
         return $this->isArray;
@@ -95,10 +119,8 @@ class MySource extends MySpecify
 
     public function isAnArrayValue($arr)
     {
-        foreach ($arr as $key => $value) {
-            if (isset($this->arrayValue[$key])) {
-                return true;
-            }
+        if(in_array($arr, $this->arrayValue, true)) {
+            return true;
         }
 
         return false;

@@ -22,7 +22,8 @@ class PropertyFetch
     public static function propertyFetch($context, $op)
     {
         if (isset($op)
-            && $op instanceof Op\Expr\PropertyFetch) {
+            && $op instanceof Op\Expr\PropertyFetch
+                && isset($op->name->value)) {
             $instDefChained = new MyInstruction(Opcodes::PROPERTY_FETCH);
             $instDefChained->addProperty(MyInstruction::PROPERTY_NAME, $op->name->value);
 

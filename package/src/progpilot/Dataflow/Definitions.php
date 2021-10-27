@@ -325,8 +325,8 @@ class Definitions
             $change = false;
 
             foreach ($myBlocks as $block) {
+                $idcurrent = $block->getId();
                 foreach ($block->parents as $idparent => $parent) {
-                    $idcurrent = $block->getId();
                     $idparent = $parent->getId();
 
                     if ($idcurrent !== $idparent) {

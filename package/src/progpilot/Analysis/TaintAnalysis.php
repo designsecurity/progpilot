@@ -176,7 +176,7 @@ class TaintAnalysis
                             $validwhenreturning = $returnDef->getValidWhenReturning();
                             $validNotBoolean = $returnDef->getValidNotBoolean();
 
-                            foreach ($returnDef->getLastKnownValues() as $lastKnownValue) {
+                            foreach ($returnDef->getCurrentState()->getLastKnownValues() as $lastKnownValue) {
                                 if ($lastKnownValue === "true"
                                     || $lastKnownValue === "TRUE"
                                         || (is_numeric($lastKnownValue) && $lastKnownValue > 0)) {
@@ -201,59 +201,25 @@ class TaintAnalysis
 
                     // all the returns are true OR all the returns are false
                     if (!$ambiguous) {
-                        $theDefsArgs = $exprArg->getDefs();
-                        foreach ($theDefsArgs as $theDefsArg) {
-                            $defsValid[] = $theDefsArg;
-                        }
+                        $defsValid[] = $defArg;
                     }
                 }
             }
 
             $nbParams ++;
         }
-        
-        if (count($defsValid) > 0) {
-            if ($conditionsRespected) {
 
+        if (!empty($defsValid)) {
+            if ($conditionsRespected) {
                 $resultid = $instruction->getProperty(MyInstruction::RESULTID);
                 $opInformation = $context->getCurrentFunc()->getOpInformation($resultid);
                 foreach ($defsValid as $defValid) {
                     $opInformation["condition_defs"][] = $defValid;
                 }
+
+                $opInformation["valid_when_returning"] = $validwhenreturning;
                 
                 $context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
-
-                /*
-                $codes = $myCode->getCodes();
-
-                if (isset($codes[$index + 2])) {
-                    $instructionIf = $codes[$index + 2];
-                    if ($instructionIf->getOpcode() === Opcodes::COND_START_IF) {
-                        $myBlockIf = $instructionIf->getProperty(MyInstruction::MYBLOCK_IF);
-                        $myBlockElse = $instructionIf->getProperty(MyInstruction::MYBLOCK_ELSE);
-
-                        if ($instructionIf->isPropertyExist(MyInstruction::NOT_BOOLEAN)) {
-                            $block = $validwhenreturning ? $myBlockElse : $myBlockIf;
-                            $notboolean = true;
-                        } else {
-                            $block = $validwhenreturning ? $myBlockIf : $myBlockElse;
-                            $notboolean = false;
-                        }
-
-                        foreach ($defsValid as $defValid) {
-                            $myAssertion = new MyAssertion($defValid, "valid");
-                            $block->addAssertion($myAssertion);
-                        }
-
-                        foreach ($block->getReturnDefs() as $defReturn) {
-                            $defReturn->setReturnedFromValidator(true);
-                            $defReturn->setValidWhenReturning($validwhenreturning);
-                            $defReturn->setValidNotBoolean($notboolean);
-                        }
-                    }
-                }
-
-                */
             }
         }
     }
@@ -293,15 +259,6 @@ class TaintAnalysis
             "return_".$myFuncCall->getName()
         );
 
-        $myExprReturn1 = new MyExpr($myFuncCall->getLine(), $myFuncCall->getColumn());
-        $myExprReturn1->setAssign(true);
-        $myExprReturn1->setAssignDef($myTempReturn);
-        $myExprReturn1->addDef($myTempReturn);
-
-        $myExprReturn2 = new MyExpr($myFuncCall->getLine(), $myFuncCall->getColumn());
-        $myExprReturn2->setAssign(true);
-        $myExprReturn2->setAssignDef($myTempReturn);
-
         $mySanitizer = $context->inputs->getSanitizerByName($context, $stackClass, $myFuncCall, $myClass);
         
         if (!is_null($mySanitizer)) {
@@ -312,25 +269,21 @@ class TaintAnalysis
             if (!$instruction->isPropertyExist("argdef$nbParams")) {
                 break;
             }
-
+            
             $defArg = $instruction->getProperty("argdef$nbParams");
-            $exprArg = $instruction->getProperty("argexpr$nbParams");
 
-            if (is_null($myFunc) || !is_null($mySanitizer)) {
-                if ($defArg->getCurrentState()->isTainted()) {
-                    $paramsTainted = true;
-                    $paramsTaintedDefs[] = $defArg;
-                    $myExprReturn2->addDef($defArg);
-                }
+            if ($defArg->getCurrentState()->isTainted()) {
+                $paramsTainted = true;
+                $paramsTaintedDefs[] = $defArg;
+            }
 
-                if ($defArg->getCurrentState()->isSanitized()) {
-                    $paramsSanitized = true;
-                    $tmps = $defArg->getCurrentState()->getTypeSanitized();
+            if ($defArg->getCurrentState()->isSanitized()) {
+                $paramsSanitized = true;
+                $tmps = $defArg->getCurrentState()->getTypeSanitized();
 
-                    foreach ($tmps as $tmp) {
-                        if (!in_array($tmp, $paramsTypeSanitized, true)) {
-                            $paramsTypeSanitized[] = $tmp;
-                        }
+                foreach ($tmps as $tmp) {
+                    if (!in_array($tmp, $paramsTypeSanitized, true)) {
+                        $paramsTypeSanitized[] = $tmp;
                     }
                 }
             }
@@ -363,7 +316,6 @@ class TaintAnalysis
                     $conditionsTaint = true;
                     if ($defArg->getCurrentState()->isTainted()) {
                         $paramsTaintedconditionsTaint = true;
-                        $myExprReturn2->addDef($defArg);
                     }
                 } elseif ($conditions === "sanitize") {
                     $conditionsSanitize = true;
@@ -373,8 +325,21 @@ class TaintAnalysis
 
             $nbParams ++;
         }
+        /*
+                if(!is_null($mySanitizer)) {
+                    echo "funccallSanitizer 10b\n";
+                     foreach($mySanitizer->getParameters() as $paramSanitizer) {
+                        echo "funccallSanitizer 10c\n";
+                        $index = $paramSanitizer[0];
+                        echo "funccallSanitizer 10d '$index' > '$nbParams'\n";
+                        if($index > $nbParams) {
+                            echo "funccallSanitizer 10e\n";
+                            $conditionsRespectedFinal = false;
 
-        $returnSanitizer = false;
+                        }
+                     }
+
+                }*/
 
         if ($funcName !== "__construct") {
             $resultid = $instruction->getProperty(MyInstruction::RESULTID);
@@ -384,12 +349,21 @@ class TaintAnalysis
             $context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
         }
 
-        $returnSanitizer = true;
+        $funcReturnDefs = (!is_null($myFunc) && !empty($myFunc->getReturnDefs())) ? true : false;
 
-        $myTempReturn->getCurrentState()->setObjectId($objectId);
+        //$myTempReturn->getCurrentState()->setObjectId($objectId);
 
-        // the return of func will be tainted if one of arg is tainted
-        if ($returnSanitizer) {
+
+        $mySource = $context->inputs->getSourceByName($myFuncCall, $myClass);
+
+        // the default return of func will be tainted if one of arg is tainted
+        // AND no defs are returned/defined
+        // AND the func is not a sanitizer (with all conditions respected)
+        // AND the func is not a source (will return already a def)
+        if (!$funcReturnDefs
+            && is_null($mySource)/*
+            && (is_null($mySanitizer)
+                || !$conditionsRespectedFinal)*/) {
             $myTempReturn->getCurrentState()->setTainted($paramsTainted);
 
             foreach ($paramsTaintedDefs as $paramsTaintedDef) {
@@ -397,46 +371,32 @@ class TaintAnalysis
                     [$paramsTaintedDef, $paramsTaintedDef->getCurrentState()]
                 );
             }
-            //TaintAnalysis::setTainted($myTempReturn, $myTempReturn);
         }
 
-        if ($returnSanitizer || $conditionsSanitize) {
-            if (!is_null($mySanitizer) && $conditionsRespectedFinal) {
-                if ($conditionsSanitize) {
-                    foreach ($exprsTaintedconditionsSanitize as $defTaintedconditionsSanitize) {
-                        $callback = "Callbacks::addSanitizedTypes";
-                        HelpersAnalysis::forEachTaintedByDefs($defTaintedconditionsSanitize, $preventFinal, $callback);
-                    }
-                } else {
-                    $myTempReturn->getCurrentState()->setSanitized(true);
-                    //$myDefReturn->getCurrentState()->setSanitized(true);
-                    if (is_array($preventFinal)) {
-                        foreach ($preventFinal as $preventFinalValue) {
-                            $myTempReturn->getCurrentState()->addTypeSanitized($preventFinalValue);
-                            //$myDefReturn->getCurrentState()->addTypeSanitized($preventFinalValue);
-                        }
+        //if ($conditionsSanitize) {
+        if (!is_null($mySanitizer) && $conditionsRespectedFinal) {
+            if ($conditionsSanitize) {
+                foreach ($exprsTaintedconditionsSanitize as $defTaintedconditionsSanitize) {
+                    $callback = "Callbacks::addSanitizedTypes";
+                    HelpersAnalysis::forEachTaintedByDefs($defTaintedconditionsSanitize, $preventFinal, $callback);
+                }
+            } else {
+                $myTempReturn->getCurrentState()->setSanitized(true);
+                if (is_array($preventFinal)) {
+                    foreach ($preventFinal as $preventFinalValue) {
+                        $myTempReturn->getCurrentState()->addTypeSanitized($preventFinalValue);
                     }
                 }
             }
         }
+        //}
 
-        if ($returnSanitizer && $paramsSanitized) {
+        if ($paramsSanitized) {
             $myTempReturn->getCurrentState()->setSanitized(true);
-            //$myDefReturn->getCurrentState()->setSanitized(true);
             foreach ($paramsTypeSanitized as $tmp) {
                 $myTempReturn->getCurrentState()->addTypeSanitized($tmp);
-                //$myDefReturn->getCurrentState()->addTypeSanitized($tmp);
             }
         }
-
-        /*
-                if ($returnSanitizer) {
-                    if (ResolveDefs::getVisibilityFromInstances($context, $data, $myDefReturn)) {
-                        $returnState = $myTempReturn->getCurrentState();
-                        $myDefReturn->setState($returnState, $myTempReturn->getBlockId());
-                    }
-                }
-        */
     }
 
     public static function funccallSource($stackClass, $context, $data, $myClass, $instruction)
@@ -451,8 +411,8 @@ class TaintAnalysis
         if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD) && !is_null($myClass)) {
             $className = $myClass->getName();
         }
-        
-        $mySource = $context->inputs->getSourceByName($context, $stackClass, $myFuncCall, true, $className, false);
+
+        $mySource = $context->inputs->getSourceByName($myFuncCall, $myClass);
         if (!is_null($mySource)) {
             $hasSources = true;
             if ($mySource->hasParameters()) {
@@ -489,7 +449,6 @@ class TaintAnalysis
                 }
             }
 
-
             $resultid = $instruction->getProperty(MyInstruction::RESULTID);
             $opInformation = $context->getCurrentFunc()->getOpInformation($resultid);
 
@@ -514,18 +473,19 @@ class TaintAnalysis
 
                 $myDef->setClassName($myFuncCall->getName()."_built-in-class");
                 HelpersDataflow::createObject($context, $myDef);
+            } elseif ($mySource->getIsArrayOfArrays()) {
+                $myDef->getCurrentState()->addType(MyDefinition::TYPE_ARRAY_ARRAY);
+                $myDef->getCurrentState()->addType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED);
+            } elseif ($mySource->getIsArrayOfObjects()) {
+                $myDef->getCurrentState()->addType(MyDefinition::TYPE_ARRAY);
+                $myDef->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
+                $myDef->getCurrentState()->addType(MyDefinition::ALL_PROPERTIES_TAINTED);
 
-            //$defAssign->property->setProperties("PROGPILOT_ALL_PROPERTIES_TAINTED");
+                $myDef->setClassName($myFuncCall->getName()."_built-in-class");
+                HelpersDataflow::createObject($context, $myDef);
             } elseif ($mySource->getIsArray()) {
                 $myDef->getCurrentState()->addType(MyDefinition::TYPE_ARRAY);
-            //$defAssign->setArrayValue("PROGPILOT_ALL_INDEX_TAINTED");
-
-                    // we don't add type of TYPE_ARRAY because is a virtual array
-                    // $row = mysqli_fetch_row
-                    // echo $row[0]
-                    // we don't want row as an array because it's value is constance PROGPILOT_ALL_INDEX_TAINTED
-                    // which doesn't mean anything for the user
-                    //$defAssign->addType(MyDefinition::TYPE_ARRAY);
+                $myDef->getCurrentState()->addType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED);
             } elseif ($mySource->getIsReturnArray() && $arrFuncCall === false) {
                 $valueArray = array($mySource->getReturnArrayValue() => false);
 

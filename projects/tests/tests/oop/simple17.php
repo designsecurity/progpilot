@@ -5,11 +5,11 @@ class testc1
     public $boum1;
 
     public function set_boum1($boum1)
-    {
+    {   // block 24
         $this->boum1[0] = $boum1;
     }
 };
-/*
+
 class testc2
 {
     private $boum1;
@@ -19,15 +19,15 @@ class testc2
         $this->boum1 = "eee";
     }
 };
-/*
-if (rand() % 2) {*/
-    $instance1 = new testc1;/*
+
+if (rand() % 2) {
+    $instance1 = new testc1;
 } else {
     $instance1 = new testc2;
-}*/
+}
 
 $instance1->set_boum1($_GET["p"]);
-
+// block 3
 $copy = $instance1->boum1;
 
 echo $copy[0];

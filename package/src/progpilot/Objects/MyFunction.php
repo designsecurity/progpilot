@@ -24,7 +24,7 @@ class MyFunction extends MyOp
     private $lastLine;
     private $lastColumn;
     private $firstBlockId;
-    private $lastBlockId;
+    private $lastBlockIds;
 
     private $nbParams;
     private $params;
@@ -71,7 +71,7 @@ class MyFunction extends MyOp
 
         $this->lastLine = 0;
         $this->lastColumn = 0;
-        $this->lastBlockId = 0;
+        $this->lastBlockIds = [];
         $this->lastExecutionTime = 0;
         $this->startExecutionTime = 0;
         $this->nbExecutions = 0;
@@ -91,6 +91,11 @@ class MyFunction extends MyOp
 
         $this->myCode = new \progpilot\Code\MyCode;
         $this->castReturn = MyDefinition::CAST_NOT_SAFE;
+    }
+
+    public function reset()
+    {
+        $this->opInformations = [];
     }
 
     /*
@@ -211,14 +216,21 @@ class MyFunction extends MyOp
         $this->lastColumn = $lastColumn;
     }
 
-    public function setLastBlockId($lastBlockId)
+    public function setLastBlockIds($lastBlockIds)
     {
-        $this->lastBlockId = $lastBlockId;
+        $this->lastBlockIds = $lastBlockIds;
     }
 
-    public function getLastBlockId()
+    public function getLastBlockIds()
     {
-        return $this->lastBlockId;
+        return $this->lastBlockIds;
+    }
+
+    public function addLastBlockId($id)
+    {
+        if(!in_array($id, $this->lastBlockIds, true)) {
+            $this->lastBlockIds[] = $id;
+        }
     }
 
     public function getLastLine()

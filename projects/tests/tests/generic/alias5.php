@@ -8,11 +8,11 @@ $var6 = &$var5["t"];
 echo $var6;
 
 if (true) {
-    // block 16
+    // block 12
     // if $var5 = "oula"; it's a FP we don't track array from array element
     $var5["t"] = "oula";
 } else {
-    // block 27
+    // block 22
     // if $var5 = "oula"; it's a FP we don't track array from array element
     $var5["t"] = "oula";
 }

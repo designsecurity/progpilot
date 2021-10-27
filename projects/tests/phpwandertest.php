@@ -41,7 +41,7 @@
                 ],
                 [
                     "./tests/phpwander/test7.php",
-                        [["\$param", "9", "xss"]]
+                        [["\$param", "10", "xss"]]
                 ],// handle with report confidence to check
                 [
                     "./tests/phpwander/test8.php",
@@ -63,7 +63,7 @@
                 ],*/
                 [
                     "./tests/phpwander/test12.php",
-                        [["D::\$vars", "8", "xss"],
+                        [["D::\$vars", "10", "xss"],
                         ["\$danger_return", "12", "xss"]]
                 ],// a corriger
                 [

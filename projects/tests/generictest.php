@@ -19,7 +19,7 @@
                 ],
                 [
                     "./tests/generic/alias5.php",
-                        [["\$var5[\"t\"]", "3", "xss"]]
+                        [["\$var5[\"t\"]", "6", "xss"]]
                 ],
                 [
                     "./tests/generic/mix1.php",
@@ -147,7 +147,7 @@
                 ],
                 [
                     "./tests/generic/arrays14.php",
-                        [["\$var1[11][1]", "6", "xss"]]
+                        [["\$var2[11][1]", "12", "xss"]]
                 ],
                 [
                     "./tests/generic/arrays15.php",
@@ -284,8 +284,6 @@
                         ["\$id1", "19", "sql_injection"],
                         ["\$id2", "22", "sql_injection"],
                         ["\$id3", "25", "sql_injection"],
-                        ["\$id5", "31", "sql_injection"],
-                        ["\$id7", "35", "sql_injection"],
                         ["\$tainted1", "48", "xss"],
                         ["\$tainted2", "51", "xss"],
                         ["\$tainted3", "54", "xss"],
@@ -295,7 +293,7 @@
                 ],
                 [
                     "./tests/generic/foreach1.php",
-                        [["\$arrays[1]", "4", "xss"]]
+                        [["\$array_value", "12", "xss"]]
                 ],
 
                 [

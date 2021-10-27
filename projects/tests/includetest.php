@@ -61,7 +61,7 @@
 
                 [
                     "./tests/includes/simple12.php",
-                        [["\${main}_return[\"cb36d7468e442c354c5037bbb4d59b1c\"]", "7", "xss"]]
+                        [["\$ret[\"cb36d7468e442c354c5037bbb4d59b1c\"]", "5", "xss"]]
                 ],
 
                 [

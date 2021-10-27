@@ -153,7 +153,7 @@
 
                 [
                     "./tests/vulntestsuite/CWE_862_Fopen__object-Array__func_preg_replace__fopen.php",
-                        [["\$tainted", "66", "path_traversal"]]
+                        [["\$tainted", "64", "path_traversal"]]
                 ],
 
 
@@ -3432,6 +3432,8 @@
                         ["\$query", "51", "command_injection"]]
 
                 ],
+                
+                
                 [
                     "./tests/vulntestsuite/CWE_89__GET__CAST-cast_float_sort_of__multiple_select-sprintf_%u_simple_quote.php", 
                     [["\$data", "57", "xss"]]

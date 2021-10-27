@@ -55,7 +55,7 @@ class CustomAnalysis
         return null;
     }
     
-    public static function defineObject($context, $myFuncorDef, $myClassFound, $instruction)
+    public static function defineObject($context, $instruction, $myFuncorDef, $myClassFound)
     {
         $customRules = $context->inputs->getCustomRules();
         foreach ($customRules as $customRule) {
@@ -104,7 +104,7 @@ class CustomAnalysis
         }
 
         HelpersDataflow::createObject($context, $myFakeInstance);
-        
+
         $resultid = $instruction->getProperty(MyInstruction::RESULTID);
         $opInformation["chained_results"] = [];
         $opInformation["chained_results"][] = $myFakeInstance;
@@ -146,14 +146,14 @@ class CustomAnalysis
                     || $customRule->getAction() === "MUST_NOT_VERIFY_DEFINITION")) {
                 $functionDefinition = $customRule->getDefinition();
                 
-                $result = HelpersAnalysis::checkIfFuncEqualMySpecify(
-                    $context,
-                    $functionDefinition,
-                    $myFunc,
-                    $myClass
-                );
-
                 if (!is_null($functionDefinition)) {
+
+                    $result = HelpersAnalysis::checkIfFuncEqualMySpecify(
+                        $context,
+                        $functionDefinition,
+                        $myFunc,
+                        $myClass
+                    );
                     if ($result) {
                         if ($myFunc->getNbParams() < $functionDefinition->getMinNbArgs()
                             || $myFunc->getNbParams() > $functionDefinition->getMaxNbArgs()) {
@@ -173,7 +173,7 @@ class CustomAnalysis
                                 $isParameterSufficient = $param[4];
                                 $isParameterFailIfNotVerifed = $param[5];
                                 $isParameterNotEquals = $param[6];
-                                
+
                                 if (!is_null($valuesParameter)) {
                                     if (!$instruction->isPropertyExist("argdef$idParam")) {
                                         $isValid = $validbydefault;
@@ -197,7 +197,7 @@ class CustomAnalysis
                                                             $arrayIndex->def->getCurrentState()->getLastKnownValues();
                                                         $arrayfound = true;
 
-                                                        break 2;
+                                                        break;
                                                     }
                                                 }
                                             }

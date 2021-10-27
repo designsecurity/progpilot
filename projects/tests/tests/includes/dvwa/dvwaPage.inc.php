@@ -592,3 +592,4 @@ $MYSQL_PASS       = 'MySQL password: <em>' . (($_DVWA[ 'db_password' ] != "") ? 
 $MYSQL_DB         = 'MySQL database: <em>' . $_DVWA[ 'db_database' ] . '</em>';
 $MYSQL_SERVER     = 'MySQL host: <em>' . $_DVWA[ 'db_server' ] . '</em>';
 // -- END (Setup Functions)
+

@@ -67,7 +67,6 @@ class Callbacks
         
         $originalDef = $funcDefs->getOriginalDef($def->getId());
 
-
         if (!is_null($originalDef)) {
             $def->setType($originalDef->getType());
             $def->setSourceMyFile($originalDef->getSourceMyFile());
