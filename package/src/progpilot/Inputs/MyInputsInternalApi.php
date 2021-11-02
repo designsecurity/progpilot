@@ -349,15 +349,15 @@ class MyInputsInternalApi
     {
         foreach ($this->sources as $mySource) {
             if ($mySource->getName() === $myFuncOrDef->getName()) {
-                if (!$mySource->isInstance() 
+                if (!$mySource->isInstance()
                     && empty($mySource->getArrayValue())
                         && !$myFuncOrDef->isType(MyFunction::TYPE_FUNC_METHOD)
                             && !$myFuncOrDef->isType(MyDefinition::TYPE_PROPERTY)) {
                     return $mySource;
                 }
 
-                if ($mySource->isInstance() 
-                    && ($myFuncOrDef->isType(MyFunction::TYPE_FUNC_METHOD) 
+                if ($mySource->isInstance()
+                    && ($myFuncOrDef->isType(MyFunction::TYPE_FUNC_METHOD)
                         || $myFuncOrDef->isType(MyDefinition::TYPE_PROPERTY))) {
                     if (!is_null($myClass) &&
                         ($mySource->getInstanceOfName() === $myClass->getName()
@@ -366,7 +366,7 @@ class MyInputsInternalApi
                     }
                 }
 
-                if ($mySource->getIsArray() 
+                if ($mySource->getIsArray()
                     && !empty($mySource->getArrayValue())
                         && $mySource->isAnArrayValue($dimArray)) {
                     return $mySource;

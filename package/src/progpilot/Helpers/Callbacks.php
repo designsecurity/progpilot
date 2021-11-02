@@ -31,9 +31,9 @@ class Callbacks
         }
     }
 
-    public static function addDefAsAPastArgument($myfunc, $nbparam, $arg)
+    public static function addStateDefAsAPastArgument($myfunc, $nbparam, $arg)
     {
-        $myfunc->addPastArgument($nbparam, $arg);
+        $myfunc->addStateIdPastArgument($nbparam, $arg->getCurrentState()->getId());
     }
 
     public static function addAttributesOfInitialReturnDefs($returnDef, $initialReturnDef)
@@ -78,6 +78,7 @@ class Callbacks
             $def->setRefs($originalDef->getRefs());
             $def->setRefArrValue($originalDef->getRefArrValue());
             $def->setStates($originalDef->getStates());
+            $def->setStatesToBlocksIds($originalDef->getStatesToBlocksIds());
         }
     }
 }

@@ -157,9 +157,6 @@ class Assign
             );
         }
 
-        echo "ASSIGN TRANSFORM 1 '".$myDef->getName()."'\n";
-        $myDef->printStdout();
-
         $context->getCurrentMycode()->addCode($instAssign);
 
         return $backDef;

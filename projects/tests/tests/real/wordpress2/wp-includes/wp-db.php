@@ -152,6 +152,7 @@ class wpdb {
 
 		// If there is an error then take note of it..
 		if ( mysql_error() ) {
+		echo $this->last_query;
 			$this->print_error();
 			return false;
 		}

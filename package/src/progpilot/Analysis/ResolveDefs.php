@@ -377,15 +377,15 @@ class ResolveDefs
                     $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
                     
                     if (!is_null($tmpMyClass)) {
-                        $property = $tmpMyClass->getProperty($prop);
+                        $property = $tmpMyClass->getProperty($context, $instance, $prop);
 
                         if (!is_null($property)
                             && (ResolveDefs::getVisibility($copyDefAssign, $property, $currentFunc))) {
                             $visibilityFinal = true;
                             break;
-                        } elseif (is_null($property)) {
+                        }/* elseif (is_null($property)) {
                             $visibilityFinal = true; // property doesn't exist
-                        }
+                        }*/
                     } else {
                         $visibilityFinal = true; // class not defined
                     }
@@ -414,20 +414,9 @@ class ResolveDefs
             return $defsFound;
         }
 
-        echo "selectDefinitions 1\n";
-        if ($searchedDed->getName() === "html") {
-            $searchedDed->printStdout();
-        }
-
         foreach ($data as $def) {
-
-            echo "selectDefinitions 2\n";
-            if ($def->getName() === "html") {
-                $def->printStdout();
-            }
             if (Definitions::defEquality($def, $searchedDed, $bypassIsNearest)
                         && ResolveDefs::isNearest($context, $searchedDed, $def)) {
-                            echo "selectDefinitions 3\n";
                 if (!is_null($def->getParamToArg())) {
                     $def = $def->getParamToArg();
                 }
@@ -564,7 +553,7 @@ class ResolveDefs
         $myClass = $context->getClasses()->getMyClass($className);
 
         if (!is_null($myClass)) {
-            $property = $myClass->getProperty($propertyName);
+            $property = $myClass->getProperty($context, $tempDef, $tempDef, $propertyName);
 
 
             if (!is_null($property)
@@ -590,28 +579,30 @@ class ResolveDefs
         $instances = ResolveDefs::selectInstances($context, $data, $tempDefaProp);
 
         foreach ($instances as $instance) {
-            if($instance->isType(MyDefinition::TYPE_ITERATOR)
+            if ($instance->isType(MyDefinition::TYPE_ITERATOR)
                 && !empty($instance->getIteratorValues())
                     && $instance->getIteratorValues()[0]->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
                 // source of type array of properties
                 $instance = $instance->getIteratorValues()[0];
             }
-
+            
+            $state = $instance->getState($tempDefaProp->getBlockId());
+            //if (!is_null($state) && $state->isType(MyDefinition::TYPE_INSTANCE)) {
             if ($instance->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
                 $idObject = $instance->getCurrentState()->getObjectId();
                 $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
 
                 if (!is_null($tmpMyClass)) {
-                    $property = $tmpMyClass->getProperty($propertyName);
+                    $property = $tmpMyClass->getProperty($context, $tempDefaProp, $instance, $propertyName);
                     if (!is_null($property)) {
                         if (ResolveDefs::getVisibility($tempDefaProp, $property, $currentFunc)) {
                             $propertiesDefs[] = [$property, $tmpMyClass];
                         }
-                    } else {
+                    }/* else {
                         // we didn't find any propery but in this case php create automatically the property
 
                         $myProperty = new MyProperty(
-                            $context->getCurrentBlock()->getId(),
+                            $tempDefaProp->getBlockId(),
                             $context->getCurrentMyFile(),
                             $tempDefa->getLine(),
                             $tempDefa->getColumn(),
@@ -627,7 +618,7 @@ class ResolveDefs
 
 
                         $propertiesDefs[] = [$myProperty, $tmpMyClass];
-                    }
+                    }*/
                 }
             }
         }

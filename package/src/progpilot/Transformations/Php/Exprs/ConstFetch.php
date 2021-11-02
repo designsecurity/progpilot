@@ -35,8 +35,7 @@ class ConstFetch
             $myTemp->getCurrentState()->addType(MyDefinition::TYPE_CONSTANTE);
             if ($op->name->value === "DIRECTORY_SEPARATOR") {
                 $myTemp->getCurrentState()->addLastKnownValue("/");
-            }
-            else {
+            } else {
                 $myTemp->getCurrentState()->addLastKnownValue($op->name->value);
             }
 

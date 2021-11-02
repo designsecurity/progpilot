@@ -113,7 +113,6 @@ class MyDefinition extends MyOp
         echo "_____________________ states blocks associations _____________________\n\n\n";
         var_dump($this->blocksIdsStates);
         echo "_____________________ end def _____________________\n\n\n";
-
     }
 
     public function unsetState($blockId)
@@ -123,6 +122,16 @@ class MyDefinition extends MyOp
         */
 
         unset($this->blocksIdsStates[$blockId]);
+    }
+
+    public function setStatesToBlocksIds($statesToBlocksIds)
+    {
+        $this->blocksIdsStates = $statesToBlocksIds;
+    }
+
+    public function getStatesToBlocksIds()
+    {
+        return $this->blocksIdsStates;
     }
 
     public function setStates($states)
@@ -163,7 +172,7 @@ class MyDefinition extends MyOp
 
         if (isset($this->blocksIdsStates[$this->blockId])) {
             $stateId = $this->blocksIdsStates[$this->blockId];
-            if(isset($this->states[$stateId])) {
+            if (isset($this->states[$stateId])) {
                 return $this->states[$stateId];
             }
         }
@@ -186,7 +195,7 @@ class MyDefinition extends MyOp
 
         if (isset($this->blocksIdsStates[$blockId])) {
             $stateId = $this->blocksIdsStates[$blockId];
-            if(isset($this->states[$stateId])) {
+            if (isset($this->states[$stateId])) {
                 return $this->states[$stateId];
             }
         }

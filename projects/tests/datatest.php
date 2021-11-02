@@ -1,10 +1,6 @@
 <?php
         return [
                 [
-                    "./tests/includes/simple1.php",
-                        [["\$var1", '3', "xss"]]
-                ],
-                [
                     "./tests/data/sink1.php",
                         [["\$var7", "3", "xss"]]
                 ],
@@ -224,6 +220,10 @@
                 ],
                 [
                     "./tests/data/customvalidator4.php",
+                        [["\$a", "16", "file_inclusion"]]
+                ],
+                [
+                    "./tests/data/customvalidator5.php",
                         [["\$a", "16", "file_inclusion"]]
                 ]
             ]; 

@@ -32,8 +32,10 @@ class State
         foreach ($def->getStates() as $state) {
             if ($state->isType(MyDefinition::TYPE_ARRAY)) {
                 State::updateBlocksOfArrayElements($context, $state);
-            } elseif ($state->isType(MyDefinition::TYPE_INSTANCE)) {
-                State::updateBlocksOfProperties($context, $state);
+            }
+            
+            if ($state->isType(MyDefinition::TYPE_INSTANCE)) {
+                State::updateBlocksOfProperties($context, $def, $state);
             }
         }
     }
@@ -61,17 +63,18 @@ class State
         $blockParents = array_merge($myBlock->getParents(), $myBlock->getVirtualParents());
 
         foreach ($blockParents as $parentMyBlock) {
-            $state = $arrayElement->getState($parentMyBlock->getId());
-            if (!is_null($state) && !in_array($state, $states, true)) {
-                $states[] = $state;
+            if ($parentMyBlock->getId() !== $myBlock->getId()) {
+                $state = $arrayElement->getState($parentMyBlock->getId());
+                if (!is_null($state) && !in_array($state, $states, true)) {
+                    $states[] = $state;
+                }
             }
         }
 
-        if(count($states) === 1) {
+        if (count($states) === 1) {
             $newstate = $states[0];
-        }
-        else {
-            $newstate = State::mergeDefStates($states);        
+        } else {
+            $newstate = State::mergeDefStates($states);
             $arrayElement->addState($newstate);
         }
 
@@ -93,34 +96,36 @@ class State
         foreach ($context->getCurrentFunc()->getBlocks() as $myBlock) {
             $blockParents = $myBlock->getVirtualParents();
             $existingState = $property->getState($myBlock->getId());
-                        
+                     
             // the state has been already computer, we don't need to update that
             // unless there is a new parent that have been added
             if (is_null($existingState) || $myBlock->doNeedUpdateOfState()) {
                 $states = [];
                 foreach ($blockParents as $parentMyBlock) {
-                    $state = $property->getState($parentMyBlock->getId());
-                    if (!is_null($state)) {
-                        $states[] = $state;
+                    if ($parentMyBlock->getId() !== $myBlock->getId()) {
+                        $state = $property->getState($parentMyBlock->getId());
+                        if (!is_null($state) && !in_array($state, $states, true)) {
+                            $states[] = $state;
+                        }
                     }
                 }
 
-                if(count($states) === 1) {
+                if (count($states) === 0) {
+                    $newstate = $property->getCurrentState();
+                } elseif (count($states) === 1) {
                     $newstate = $states[0];
-                }
-                else {
-                    $newstate = State::mergeDefStates($states);     
+                    $property->assignStateToBlockId($newstate->getId(), $myBlock->getId());
+                } else {
+                    $newstate = State::mergeDefStates($states);
                     $property->addState($newstate);
+                    $property->assignStateToBlockId($newstate->getId(), $myBlock->getId());
                 }
 
-                $property->assignStateToBlockId($newstate->getId(), $myBlock->getId());
-
-                //$property->setState($newstate, $myBlock->getId());
             }
         }
     }
 
-    public static function updateBlocksOfProperties($context, $state)
+    public static function updateBlocksOfProperties($context, $def, $state)
     {
         $idObject = $state->getObjectId();
         $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
@@ -130,6 +135,12 @@ class State
                 State::updateBlocksOfProperty($context, $property);
                 State::updateBlocksOfDef($context, $property);
             }
+/*
+            if ($state->isType(MyDefinition::ALL_PROPERTIES_TAINTED)) {
+                echo "updateBlocksOfProperties foreach ALL_PROPERTIES_TAINTED\n";
+                // not really a property but the instance itself
+                //State::updateBlocksOfProperty($context, $def);
+            }*/
         }
     }
 
@@ -141,23 +152,17 @@ class State
 
         $oneStateNotSanitizer = false;
 
-        echo "mergeDefsBlockIdStates 1\n";
         foreach ($defs as $def) {
             if ($def->isType(MyDefinition::TYPE_ARRAY_ELEMENT)
                 || $def->isType(MyDefinition::TYPE_PROPERTY)) {
-                    echo "mergeDefsBlockIdStates 2 '$blockId'\n";
                 $state = $def->getState($blockId);
             //$state = $def->getCurrentState();
             } else {
-                echo "mergeDefsBlockIdStates 3\n";
                 $state = $def->getCurrentState();
             }
 
-            echo "mergeDefsBlockIdStates 4\n";
 
             if (!is_null($state)) {
-                echo "mergeDefsBlockIdStates 5\n";
-                $state->printStdout();
                 if ($state->isTainted() && !AssertionAnalysis::temporarySimple($block, $def)) {
                     $myState->setTainted(true);
 

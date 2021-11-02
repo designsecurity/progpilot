@@ -147,7 +147,6 @@ class CustomAnalysis
                 $functionDefinition = $customRule->getDefinition();
                 
                 if (!is_null($functionDefinition)) {
-
                     $result = HelpersAnalysis::checkIfFuncEqualMySpecify(
                         $context,
                         $functionDefinition,

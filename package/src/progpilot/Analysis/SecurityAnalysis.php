@@ -118,7 +118,13 @@ class SecurityAnalysis
                 $possibleConditions = ["QUOTES", "object_tainted", "array_tainted", "variable_tainted", null];
                 foreach ($possibleConditions as $condition) {
                     if ($mySink->isParameterCondition($indexParameter, $condition)) {
-                        if (!SecurityAnalysis::isSafeStateCondition($context, $mySink, $fromTaintedState, $condition, true)) {
+                        if (!SecurityAnalysis::isSafeStateCondition(
+                            $context,
+                            $mySink,
+                            $fromTaintedState,
+                            $condition,
+                            true
+                        )) {
                             $ret = SecurityAnalysis::getPrintableTaintedDef($mySink, $fromTaintedDef);
 
                             $oneTainted["flow_name"] = $ret["source_name"];

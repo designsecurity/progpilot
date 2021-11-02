@@ -260,8 +260,7 @@ class MyDefState extends MyOp
         if (!is_null($existingState) && $existingState->isType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED)) {
             $myDef->getCurrentState()->setTainted(true);
             $myDef->getCurrentState()->addTaintedByDef([$myArrayDef, $myArrayDef->getCurrentState()]);
-        }
-        else if($myArrayDef->getCurrentState()->isType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED)) {
+        } elseif ($myArrayDef->getCurrentState()->isType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED)) {
             // data/source17.php
             $myDef->getCurrentState()->setTainted(true);
             $myDef->getCurrentState()->addTaintedByDef([$myArrayDef, $myArrayDef->getCurrentState()]);

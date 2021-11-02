@@ -36,7 +36,7 @@
         {"name": "zip_read", "stored_payload": true, "is_function": true, "language": "php"},
         {"name": "mysql_fetch_array", "stored_payload": true, "is_array": true, "is_function": true, "language": "php"},
         {"name": "mysql_fetch_assoc", "stored_payload": true, "is_array": true, "is_function": true, "language": "php"},
-        {"name": "mysql_fetch_object", "stored_payload": true, "is_object": true, "is_function": true, "language": "php", "type": "TODO"},
+        {"name": "mysql_fetch_object", "stored_payload": true, "is_arrayof_objects": true, "is_function": true, "language": "php", "type": "TODO"},
         {"name": "mysql_fetch_row", "stored_payload": true, "is_array": true, "is_function": true, "language": "php"},
         {"name": "mysqli_fetch_all", "stored_payload": true, "is_array": true, "is_function": true, "language": "php"},
         {"name": "mysqli_fetch_array", "stored_payload": true, "is_array": true, "is_function": true, "language": "php"},
