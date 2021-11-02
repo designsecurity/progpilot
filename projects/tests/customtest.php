@@ -30,10 +30,6 @@
                         [["3", "7", "security misconfiguration"]]
                 ],
                 [
-                    "./tests/custom/custom5.php",
-                        [["3", "7", "security misconfiguration"]]
-                ],
-                [
                     "./tests/custom/customcookieoptions.php",
                         [["12", "176", "security misconfiguration"]]
                 ],

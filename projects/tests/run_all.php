@@ -89,7 +89,7 @@ class RunAllTest extends TestCase
         
         $tab = array_merge(
             $taboop,
-            //$tabreal,
+            $tabreal,
             $tabgen,
             $tabinc,
             $tabdata,

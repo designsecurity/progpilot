@@ -238,7 +238,6 @@ class VisitorAnalysis
             $visibility = $list[3];
             $instance = $list[4];
 
-
             \progpilot\Analysis\CustomAnalysis::defineObject(
                 $this->context,
                 $instruction,
@@ -261,6 +260,7 @@ class VisitorAnalysis
                             || ((!$myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)
                                 && !$myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC))
                                     && !$myFunc->isType(MyFunction::TYPE_FUNC_METHOD))) {
+
                     // we don't visit twice function with a long execution time
                     if (HelpersAnalysis::checkIfTimeExecutionIsAcceptable($this->context, $myFunc)
                         // other checks
@@ -285,7 +285,7 @@ class VisitorAnalysis
                     
                         // we clean all the param of the function
                         // except return defs see functions21.php test case
-                        $funcCallBack = "Callbacks::addDefAsAPastArgument";
+                        $funcCallBack = "Callbacks::addStateDefAsAPastArgument";
                         HelpersAnalysis::forAllArgumentsOfFunction($funcCallBack, $myFunc, $instruction);
 
                         $myFunc->setIsVisited(true);
@@ -429,24 +429,12 @@ class VisitorAnalysis
         return $newDefFounds;
     }
 
-    public static function checkIfItsAloop($myBlock)
-    {
-        if ($myBlock->getIsJumpIf()
-            && count($myBlock->parents) === 3) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function analyze($myCode, $myFuncCalled = null)
+    public function analyze($myCode, $myFuncCalled = null, $blockDirect = false)
     {
         $startTime = microtime(true);
         $index = $myCode->getStart();
         $code = $myCode->getCodes();
         $originalFlow = [];
-
-        //$myCode->printStdout();
 
         do {
             if (isset($code[$index])) {
@@ -465,20 +453,20 @@ class VisitorAnalysis
                     $originalFlow = [];
                 }
 
+
                 switch ($instruction->getOpcode()) {
                     case Opcodes::ENTER_BLOCK:
                         $myBlock = $instruction->getProperty(MyInstruction::MYBLOCK);
 
-                        echo "ENTER_BLOCK 1 id = '".$myBlock->getId()."'\n";
-
-                        if ($this->currentStorageMyBlocks->contains($myBlock)) {
-                            echo "ENTER_BLOCK 2 id = '".$myBlock->getId()."'\n";
+                        if (in_array($myBlock, $this->myBlockStack, true)) {
+                            //if ($this->currentStorageMyBlocks->contains($myBlock)) {
+                            /*
                             array_pop($this->myBlockStack);
 
                             if (count($this->myBlockStack) > 0) {
                                 $this->currentMyBlock = $this->myBlockStack[count($this->myBlockStack) - 1];
-                            }
-
+                            }*/
+                            
                             $index = $myBlock->getEndAddressBlock();
                             break;
                         }
@@ -489,35 +477,29 @@ class VisitorAnalysis
                         array_push($this->myBlockStack, $this->currentMyBlock);
 
                         $this->currentStorageMyBlocks->attach($myBlock);
-                        
-                        echo "ENTER_BLOCK 3 id = '".$myBlock->getId()."'\n";
 
                         // we remove this parent because it's a loop while(block1) block2
                         // and block1 must be analysis before block2
-                        if (!VisitorAnalysis::checkIfItsAloop($myBlock)) {
-                            echo "ENTER_BLOCK 4 id = '".$myBlock->getId()."'\n";
-                            foreach ($myBlock->parents as $blockParent) {
-                                echo "ENTER_BLOCK 5 idparent = '".$blockParent->getId()."'\n";
-                                if (!$this->currentStorageMyBlocks->contains($blockParent)) {
-                                    echo "ENTER_BLOCK 6 idparent = '".$blockParent->getId()."'\n";
-                                    $addrStart = $blockParent->getStartAddressBlock();
-                                    $addrEnd = $blockParent->getEndAddressBlock();
+                        foreach ($myBlock->parents as $blockParent) {
+                            if (!in_array($blockParent, $this->myBlockStack, true)) {
+                                $addrStart = $blockParent->getStartAddressBlock();
+                                $addrEnd = $blockParent->getEndAddressBlock();
 
-                                    $oldIndexStart = $myCode->getStart();
-                                    $oldIndexEnd = $myCode->getEnd();
+                                $oldIndexStart = $myCode->getStart();
+                                $oldIndexEnd = $myCode->getEnd();
 
-                                    $myCode->setStart($addrStart);
-                                    $myCode->setEnd($addrEnd);
+                                $myCode->setStart($addrStart);
+                                $myCode->setEnd($addrEnd);
 
-                                    $this->analyze($myCode);
+                                $this->analyze($myCode, null, true);
 
-                                    $myCode->setStart($oldIndexStart);
-                                    $myCode->setEnd($oldIndexEnd);
-                                }
+                                $myCode->setStart($oldIndexStart);
+                                $myCode->setEnd($oldIndexEnd);
                             }
                         }
 
-                        echo "ENTER_BLOCK BLOCKSWITCHING\n";
+                        $blockDirect = false;
+
                         // we enter in a new block this "it's a blockswitching" and we need to update states
                         $myBlock->setNeedUpdateOfState(true);
                         HelpersState::blockSwitching($this->context, $this->currentMyFunc);
@@ -526,12 +508,17 @@ class VisitorAnalysis
                     
 
                     case Opcodes::LEAVE_BLOCK:
+                        $myBlock = $instruction->getProperty(MyInstruction::MYBLOCK);
                         array_pop($this->myBlockStack);
 
                         if (count($this->myBlockStack) > 0) {
                             $this->currentMyBlock = $this->myBlockStack[count($this->myBlockStack) - 1];
                             $this->context->setCurrentBlock($this->currentMyBlock);
                         }
+
+                        // a block can "now" be visited twice (loops), so we put virtual parents added when visiting
+                        // functions for instance to the original one
+                        $myBlock->setVirtualParents($myBlock->getParents());
 
                         break;
                     
@@ -566,7 +553,8 @@ class VisitorAnalysis
                             $lastBlockIdsCalled = $myFunc->getLastBlockIds();
                             foreach ($lastBlockIdsCalled as $lastBlockIdCalled) {
                                 $lastMyBlockCalled = $myFunc->getBlockById($lastBlockIdCalled);
-                                $blockOfCallee = $this->currentMyBlock; // leave block has popped the callee block normally
+                                // "leave block" has popped the callee block normally
+                                $blockOfCallee = $this->currentMyBlock;
 
                                 if (!is_null($lastMyBlockCalled) && !is_null($blockOfCallee)) {
                                     // we add a new parent and remove the old parents
@@ -579,10 +567,9 @@ class VisitorAnalysis
 
                             $returnDefs = $myFunc->getReturnDefs();
                             foreach ($returnDefs as $returnDef) {
-                                //$returnDef->setState($returnDef->getCurrentState(), $this->currentMyBlock->getId());
-
                                 $state = $returnDef->getCurrentState();
-                                $returnDef->assignStateToBlockId($state->getId(), $this->context->getCurrentBlock()->getId());
+                                $currentBlockId = $this->context->getCurrentBlock()->getId();
+                                $returnDef->assignStateToBlockId($state->getId(), $currentBlockId);
                             }
 
                             // we enter in a new block this "it's a blockswitching" and we need to update states
@@ -713,13 +700,9 @@ class VisitorAnalysis
 
                         $lastNbChars = HelpersAnalysis::getNbChars("", $chars);
 
-                        echo "CONCAT1\n";
                         $leftValues = [];
                         if (isset($leftOpInformation["chained_results"])) {
                             foreach ($leftOpInformation["chained_results"] as $chainedResult) {
-                                echo "CONCAT2\n";
-                                $chainedResult->printStdout();
-
                                 $curLastKnownValues = $chainedResult->getCurrentState()->getLastKnownValues();
                                 foreach ($curLastKnownValues as $curLastKnownValue) {
                                     $leftValues[] = $curLastKnownValue;
@@ -734,20 +717,14 @@ class VisitorAnalysis
                             }
                         }
                         
-                        echo "CONCAT3\n";
                         $rightValuesSets = [];
                         foreach ($rightids as $rightid) {
-                            echo "CONCAT4\n";
                             $rightOpInformation = $this->context->getCurrentFunc()->getOpInformation($rightid);
                             $rightValuesSet = [];
                             if (isset($rightOpInformation["chained_results"])
                                 && !empty($rightOpInformation["chained_results"])) {
                                 foreach ($rightOpInformation["chained_results"] as $chainedResult) {
-                                    echo "CONCAT5\n";
-                                    $chainedResult->printStdout();
-
                                     $curLastKnownValues = $chainedResult->getCurrentState()->getLastKnownValues();
-                                    var_dump($curLastKnownValues);
                                     $rightValuesSet[] = $curLastKnownValues;
                                     $chainedResult->getCurrentState()->updateIsEmbeddedByChars($lastNbChars);
 
@@ -770,22 +747,17 @@ class VisitorAnalysis
                             $leftValues[] = "";
                         }
 
-                        echo "CONCAT6\n";
                         $i = 1;
                         $possibleRightsParts = [];
                         $possibleRightsParts[0] = $leftValues;
                         foreach ($rightValuesSets as $rightValueSet) {
-                            echo "CONCAT7\n";
                             $possibleRightsParts[$i] = [];
 
                             foreach ($rightValueSet as $rightValues) {
-                                echo "CONCAT8\n";
-
                                 if (empty($rightValues)) {
                                     $possibleRightsParts[$i][] = "";
                                 } else {
                                     foreach ($rightValues as $rightValue) {
-                                        echo "CONCAT9\n";
                                         // $i = 0
                                         // [0][0] = ./dvwa/
                                         // [0][1] = ./folder/
@@ -811,19 +783,11 @@ class VisitorAnalysis
                         ./dvwa/mid/medium.php
                         */
 
-                        echo "CONCAT10\n";
-                        var_dump($leftValues);
-
                         $concats = [];
                         $lastPart = count($possibleRightsParts) - 1;
-                        var_dump($possibleRightsParts);
-
                         foreach ($possibleRightsParts[$lastPart] as $lastRightPart) {
-                            echo "last part '$lastRightPart'\n";
                             $stringConcat = "";
                             for ($i = 0; $i < ($lastPart); $i ++) {
-                                echo "access to possible rights parts\n";
-                                var_dump($possibleRightsParts[$i]);
                                 $stringConcat .= $possibleRightsParts[$i][0];
                             }
 
@@ -854,7 +818,8 @@ class VisitorAnalysis
 */
 
                         $myTemp->addState($mergedState);
-                        $myTemp->assignStateToBlockId($mergedState->getId(), $this->context->getCurrentBlock()->getId());
+                        $currentBlockId = $this->context->getCurrentBlock()->getId();
+                        $myTemp->assignStateToBlockId($mergedState->getId(), $currentBlockId);
                         
                         $opInformation["chained_results"][] = $myTemp;
 
@@ -877,8 +842,6 @@ class VisitorAnalysis
                         $opInformation["def_assign"] = $previousCode;
                         $opInformation["array_dim"] = $arrayDim;
 
-                        echo "ARRAYDIM_FETCH 1 dim '$arrayDim'\n";
-
                         // beginning of the chain: $originalDef[0][1]
                         if (!is_null($originalDef)) {
                             $originalFlow = [];
@@ -886,10 +849,7 @@ class VisitorAnalysis
                             $originalFlow[] = "[";
                             $originalFlow[] = $arrayDim;
                             $originalFlow[] = "]";
-
-                            echo "ARRAYDIM_FETCH 2 getline '".$originalDef->getLine()."' dim '$arrayDim'\n";
-                            $originalDef->printStdout();
-
+    
                             if ($originalDef->getName() === "GLOBALS") {
                                 $globalDef = new MyDefinition(
                                     $this->context->getCurrentBlock()->getId(),
@@ -913,12 +873,14 @@ class VisitorAnalysis
                                 );
 
                                 foreach ($defsFound as $defFound) {
-                                    echo "ARRAYDIM_FETCH 3 getline '".$originalDef->getLine()."' dim '$arrayDim'\n";
-
                                     // the element has just been created and right side (!expr)
                                     if ($defFound[0]) {
-                                        if (/*!is_null($expr)
-                                        && */HelpersAnalysis::isASource($this->context, $originalDef, null, $arrayDim)) {
+                                        if (HelpersAnalysis::isASource(
+                                            $this->context,
+                                            $originalDef,
+                                            null,
+                                            $arrayDim
+                                        )) {
                                             foreach ($defFound[1] as $delEle) {
                                                 $delEle->getCurrentState()->setTainted(true);
                                             }
@@ -927,8 +889,6 @@ class VisitorAnalysis
 
                                     // just for the flow
                                     foreach ($defFound[1] as $delEle) {
-                                        echo "ARRAYDIM_FETCH 4\n";
-                                        $delEle->printStdout();
                                         $delEle->original->setDef($originalFlow);
                                         $delEle->original->setArrayIndexAccessor($arrayDim);
                                         $opInformation["chained_results"][] = $delEle;
@@ -956,15 +916,11 @@ class VisitorAnalysis
                             // we are in the middle of the chain thus we can access the previous chained object
                             $previousOpInformation = $this->context->getCurrentFunc()->getOpInformation($varid);
 
-                            echo "ARRAYDIM_FETCH 7\n";
-
                             foreach ($previousOpInformation["chained_results"] as $previousChainedResult) {
                                 // IT'S NOT GET CURRENT STATE but CURRENT BLOCK ID
 
-                                echo "ARRAYDIM_FETCH 8\n";
-                                $previousChainedResult->printStdout();
-
                                 $state = $previousChainedResult->getState($this->currentMyBlock->getId());
+
 
                                 if (!is_null($state)) {
                                     $newArrs = $state->getOrCreateDefArrayIndex(
@@ -998,7 +954,8 @@ class VisitorAnalysis
                                     }
 
                                     if (count($previousOpInformation["chained_results"]) > 1) {
-                                        $originalFlow = array_slice($originalFlow, 0, count($originalFlow) - $previousToSlice);
+                                        $endEle = count($originalFlow) - $previousToSlice;
+                                        $originalFlow = array_slice($originalFlow, 0, $endEle);
                                     }
                                 }
                             }
@@ -1068,7 +1025,6 @@ class VisitorAnalysis
                             $originalFlow[] = $propertyName;
 
                             $originalDef->setId(0);
-
                             //if ($originalDef->isType(MyDefinition::TYPE_PROPERTY)) {
                             $defsFound = ResolveDefs::selectProperties(
                                 $this->context,
@@ -1080,7 +1036,6 @@ class VisitorAnalysis
                             foreach ($defsFound as $defFoundArr) {
                                 $defFound = $defFoundArr[0];
                                 $myClassFound = $defFoundArr[1];
-
                                 if (HelpersAnalysis::isASource($this->context, $defFound, $myClassFound, null)) {
                                     $defFound->getCurrentState()->setTainted(true);
                                 }
@@ -1095,7 +1050,6 @@ class VisitorAnalysis
                                 // just for the flow
                                 $defFound->original->setDef($originalFlow);
                                 //$defFound->original->setPropertyAccessor($propertyName);
-
                                 $opInformation["chained_results"][] = $defFound;
                             }
 
@@ -1105,14 +1059,17 @@ class VisitorAnalysis
                             $originalFlow[] = $propertyName;
                             // we are in the middle of the chain thus we can access the previous chained object
                             $previousOpInformation = $this->context->getCurrentFunc()->getOpInformation($varid);
-                            $opInformation["original_def"] = $previousOpInformation["original_def"];
+                            
+                            if (isset($previousOpInformation["original_def"])) {
+                                $opInformation["original_def"] = $previousOpInformation["original_def"];
+                            }
 
                             foreach ($previousOpInformation["chained_results"] as $previousChainedResult) {
                                 $idObject = $previousChainedResult->getCurrentState()->getObjectId();
                                 $tmpMyClass = $this->context->getObjects()->getMyClassFromObject($idObject);
 
                                 if (!is_null($tmpMyClass)) {
-                                    $property = $tmpMyClass->getProperty($propertyName);
+                                    $property = $tmpMyClass->getProperty($this->context, $previousChainedResult, $previousChainedResult, $propertyName);
 
                                     if (!is_null($property)
                                                 && ResolveDefs::getVisibility(
@@ -1186,9 +1143,11 @@ class VisitorAnalysis
                                     && $chainedResult->getCurrentState()->isType(MyDefinition::TYPE_ARRAY)) ||
                                     $chainedResult->getCurrentState()->isType(MyDefinition::TYPE_ARRAY_ARRAY)) {
                                     // probably a source arrayofobjects arrayofarrays
-                                    if ($chainedResult->getCurrentState()->isType(MyDefinition::ALL_PROPERTIES_TAINTED)) {
+                                    if ($chainedResult
+                                        ->getCurrentState()->isType(MyDefinition::ALL_PROPERTIES_TAINTED)) {
                                         $opInformation["chained_results"][] = $chainedResult;
-                                    } elseif ($chainedResult->getCurrentState()->isType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED)) {
+                                    } elseif ($chainedResult
+                                        ->getCurrentState()->isType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED)) {
                                         $opInformation["chained_results"][] = $chainedResult;
                                     }
                                 }
@@ -1209,19 +1168,10 @@ class VisitorAnalysis
 
                         $opInformation = [];
 
-                        if ($variable->getName() === "html") {
-                            echo "VARIABLE_FETCH 1\n";
-                            $variable->printStdout();
-                        }
                         $newDefFounds = [];
                         $defFounds = $this->fetchVariable($variable);
 
                         foreach ($defFounds as $defFound) {
-                            if ($defFound->getName() === "html") {
-                                echo "VARIABLE_FETCH 2\n";
-                                $defFound->printStdout();
-                            }
-
                             if ($defFound->isType(MyDefinition::TYPE_GLOBAL)) {
                                 $defGlobals = ResolveDefs::selectGlobals($this->context, $defFound);
                                 foreach ($defGlobals as $defGlobal) {
@@ -1252,7 +1202,6 @@ class VisitorAnalysis
                                     $originalFlow = [];
                                     $originalFlow[] = $variable;
                                     $iteratorValue->original->setDef($originalFlow);
-
                                     $newDefFounds[] = $iteratorValue;
                                 }
                             } else {
@@ -1293,14 +1242,7 @@ class VisitorAnalysis
                         $opDataVar = $this->context->getCurrentFunc()->getOpInformation($varid);
                         $concatValues = isset($opDataVar["concats_values"]) ? $opDataVar["concats_values"] : [];
 
-                        echo "ARGUMENT 1\n";
-
                         if (isset($opDataVar["chained_results"])) {
-                            foreach ($opDataVar["chained_results"] as $chainedResult) {
-                                echo "ARGUMENT 2\n";
-                                $chainedResult->printStdout();
-                            }
-
                             $mergedState = HelpersState::mergeDefsBlockIdStates(
                                 $opDataVar["chained_results"],
                                 $concatValues,
@@ -1310,10 +1252,8 @@ class VisitorAnalysis
                             //$def->setState($mergedState, $this->context->getCurrentBlock()->getId());
 
                             $def->addState($mergedState);
-                            $def->assignStateToBlockId($mergedState->getId(), $this->context->getCurrentBlock()->getId());
-
-                            echo "ARGUMENT 3\n";
-                            $def->printStdout();
+                            $currentBlockId =  $this->context->getCurrentBlock()->getId();
+                            $def->assignStateToBlockId($mergedState->getId(), $currentBlockId);
                         }
     
                         break;
@@ -1344,8 +1284,6 @@ class VisitorAnalysis
                             $opVarData["chained_results"][] = $def;
                         }
 
-                        echo "END_ASSIGN 1\n";
-
                         // don't need to resolve variable we have already access to it
                         // ssa = 1) result=var3 2) expr=var3
                         if (!is_null($opExprData) && isset($opExprData["chained_results"])) {
@@ -1354,12 +1292,6 @@ class VisitorAnalysis
                                 $concatValues,
                                 $this->context->getCurrentBlock()
                             );
-
-                            foreach ($opExprData["chained_results"] as $chainedResult) {
-                                echo "END_ASSIGN 2\n";
-                                $chainedResult->printStdout();
-                            }
-
 
                             if (!is_null($opVarData)) {
                                 foreach ($opVarData["chained_results"] as $chainedResult) {
@@ -1375,7 +1307,8 @@ class VisitorAnalysis
                                         */
 
                                         $chainedResult->addState($mergedState);
-                                        $chainedResult->assignStateToBlockId($mergedState->getId(), $this->context->getCurrentBlock()->getId());
+                                        $currentBlockId = $this->context->getCurrentBlock()->getId();
+                                        $chainedResult->assignStateToBlockId($mergedState->getId(), $currentBlockId);
 
                                         if ($reference) {
                                             $chainedResult->addType(MyDefinition::TYPE_REFERENCE);
@@ -1383,8 +1316,6 @@ class VisitorAnalysis
                                         }
                                     }
 
-                                    echo "END_ASSIGN 3\n";
-                                    $chainedResult->printStdout();
                                     $opResultData["chained_results"][] = $chainedResult;
                                 }
 
@@ -1553,7 +1484,8 @@ class VisitorAnalysis
                                 );*/
 
                                 $newEle->addState($mergedState);
-                                $newEle->assignStateToBlockId($mergedState->getId(), $this->context->getCurrentBlock()->getId());
+                                $currentBlockId = $this->context->getCurrentBlock()->getId();
+                                $newEle->assignStateToBlockId($mergedState->getId(), $currentBlockId);
                             }
 
                             $opInformation["chained_results"][] = $myTemp;

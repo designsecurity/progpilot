@@ -146,6 +146,19 @@
                 [
                     "./tests/oop/simple34.php",
                         [["\$tainted", "16", "xss"]]
+                ],
+                [
+                    "./tests/oop/simple35.php",
+                        [["\$get_boum1_return", "14", "xss"],
+                        ["\$get_boum1_return", "14", "xss"]]
+                ],
+                [
+                    "./tests/oop/chained1.php",
+                        [["\$tainted", "33", "xss"]]
+                ],
+                [
+                    "./tests/oop/chained2.php",
+                        [["\$title", "7", "xss"]]
                 ]
                 
         ];

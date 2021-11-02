@@ -119,7 +119,7 @@ class MySource extends MySpecify
 
     public function isAnArrayValue($arr)
     {
-        if(in_array($arr, $this->arrayValue, true)) {
+        if (in_array($arr, $this->arrayValue, true)) {
             return true;
         }
 

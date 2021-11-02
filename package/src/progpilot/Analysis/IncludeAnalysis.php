@@ -51,7 +51,6 @@ class IncludeAnalysis
         $arrFuncCall = $instruction->getProperty(MyInstruction::ARR);
         $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
 
-        echo "INCLUDE >>>>>>>>>>>>>>>>>>>>> -3\n";
         // require, require_once ... already handled in transform Expr/include_
         if ($myFuncCall->getName() === "include" && $context->getAnalyzeIncludes()) {
             $typeInclude = $instruction->getProperty(MyInstruction::TYPE_INCLUDE);
@@ -59,14 +58,11 @@ class IncludeAnalysis
             if ($nbParams > 0) {
                 $atLeastOneIncludeResolved = false;
 
-                echo "INCLUDE >>>>>>>>>>>>>>>>>>>>> -2 line = '".$myFuncCall->getLine()."'\n";
                 $myDefArg = $instruction->getProperty("argdef0");
                 if (count($myDefArg->getCurrentState()->getLastKnownValues()) !== 0) {
-                    echo "INCLUDE >>>>>>>>>>>>>>>>>>>>> -2b\n";
                     foreach ($myDefArg->getCurrentState()->getLastKnownValues() as $lastKnownValue) {
                         $realFile = false;
 
-                        echo "INCLUDE >>>>>>>>>>>>>>>>>>>>> -1 '$lastKnownValue'\n";
                         // else it's maybe a relative path
                         if (strlen($lastKnownValue) > 0
                             && (substr($lastKnownValue, 0, 1) !== DIRECTORY_SEPARATOR
@@ -80,7 +76,6 @@ class IncludeAnalysis
                         if (!$realFile) {
                             $realFile = realpath($lastKnownValue);
                         }
-
                         if (!$realFile) {
                             $continueInclude = false;
 
@@ -139,8 +134,6 @@ class IncludeAnalysis
                                         $arrayRequires[] = $nameIncludedFile;
                                     }
 
-                                    echo "INCLUDE >>>>>>>>>>>>>>>>>>>>> 0\n";
-                                    echo "INCLUDE >>>>>>>>>>>>>>>>>>>>> '$nameIncludedFile' 1\n";
                                     $analyzerInclude = new \progpilot\Analyzer;
                                     $saveCurrentMyfile = $context->getCurrentMyfile();
                                     $saveCurrentOp = $context->getCurrentOp();
@@ -179,12 +172,13 @@ class IncludeAnalysis
                                         foreach ($mainInclude->getLastBlockIds() as $lastBlockId) {
                                             $lastMyBlockConstuctor =
                                             $mainInclude->getBlockById($lastBlockId);
-                                            if (!is_null($context->getCurrentBlock()) && !is_null($lastMyBlockConstuctor)) {
+                                            if (!is_null($context->getCurrentBlock())
+                                                && !is_null($lastMyBlockConstuctor)) {
                                                 $saveCurrentBlock->addVirtualParent($lastMyBlockConstuctor);
                                             }
                                         }
                                     
-                                        // we change the source of defs nevermind the file is really analyzed or nor
+                                        // we change the source of defs nevermind the file is really analyzed or not
                                         foreach ($mainInclude->getDefs()->getDefs() as $defOfMainArray) {
                                             foreach ($defOfMainArray as $defOfMain) {
                                                 $defOfMain->setSourceMyFile($myFileIncluded);
@@ -200,7 +194,7 @@ class IncludeAnalysis
                                                         || ($defToInclude->getLine() === $myFuncCall->getLine()
                                                             && $defToInclude->getColumn() < $myFuncCall->getColumn())) {
                                                         $saveMyFile[$defToInclude->getId()]
-                                                            = $defToInclude->getSourceMyFile()->getIncludedToMyfile();
+                                                            = $defToInclude->getSourceMyFile();
                                                         $defsIncluded[] = $defToInclude;
 
                                                         $tmp = clone $defToInclude->getSourceMyFile();
@@ -244,9 +238,10 @@ class IncludeAnalysis
 
                                             foreach ($defsIncluded as $defIncluded) {
                                                 if (!is_null($saveMyFile[$defIncluded->getId()])) {
+                                                    /*
                                                     $tmp = clone $defIncluded->getSourceMyFile();
-                                                    $tmp->setIncludedToMyfile($saveMyFile[$defIncluded->getId()]);
-                                                    $defIncluded->setSourceMyFile($tmp);
+                                                    $tmp->setIncludedToMyfile($saveMyFile[$defIncluded->getId()]);*/
+                                                    $defIncluded->setSourceMyFile($saveMyFile[$defIncluded->getId()]);
                                                 }
                                             }
                                     
@@ -298,12 +293,7 @@ class IncludeAnalysis
 
                                         $newDefs = false;
                                         if (!empty($defsOutputIncludedFinal)) {
-
-                                    echo "INCLUDE >>>>>>>>>>>>>>>>>>>>> '$nameIncludedFile' 2\n";
                                             foreach ($defsOutputIncludedFinal as $defOutputIncludedFinal) {
-
-                                                echo "INCLUDE >>>>>>>>>>>>>>>>>>>>> '$nameIncludedFile' 3\n";
-                                                $defOutputIncludedFinal->printStdout();
 
                                                 $ret1 = $defs->addDef(
                                                     $defOutputIncludedFinal->getName(),

@@ -228,7 +228,7 @@ class MyFunction extends MyOp
 
     public function addLastBlockId($id)
     {
-        if(!in_array($id, $this->lastBlockIds, true)) {
+        if (!in_array($id, $this->lastBlockIds, true)) {
             $this->lastBlockIds[] = $id;
         }
     }
@@ -370,12 +370,12 @@ class MyFunction extends MyOp
         return $this->exprs;
     }
 
-    public function getPastArguments()
+    public function getStateIdsPastArguments()
     {
         return $this->args;
     }
 
-    public function addPastArgument($nbparam, $arg)
+    public function addStateIdPastArgument($nbparam, $arg)
     {
         $this->args[$nbparam][] = $arg;
     }

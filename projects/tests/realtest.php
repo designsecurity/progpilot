@@ -25,5 +25,4 @@
                         [["\$query", "131", "sql_injection"],
                         ["\$this->last_query", "101", "xss"]]
                 ]
-                
         ];

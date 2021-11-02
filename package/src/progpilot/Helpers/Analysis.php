@@ -292,19 +292,33 @@ class Analysis
                 if ($instruction->isPropertyExist("argdef$i")) {
                     $defArg = $instruction->getProperty("argdef$i");
 
-                    $pastArgs = $myFunc->getPastArguments();
-                    if (isset($pastArgs[$i]) && is_array($pastArgs[$i])) {
-                        foreach ($pastArgs[$i] as $pastArg) {
-                            if (!$defArg->getCurrentState()->isTainted()
-                                && $defArg->getCurrentState()->getLastKnownValues()
-                                === $pastArg->getCurrentState()->getLastKnownValues()
-                                    && $defArg->getType() === $pastArg->getType()) {
+                    $statesIdPastArgs = $myFunc->getStateIdsPastArguments();
+                    if (isset($statesIdPastArgs[$i]) && is_array($statesIdPastArgs[$i])) {
+                        foreach ($statesIdPastArgs[$i] as $stateIdPastArg) {
+                            if ($stateIdPastArg === $defArg->getCurrentState()->getId()) {
                                 return false;
                             }
                         }
                     } else {
                         return true;
                     }
+
+                    /*
+                                        $pastArgs = $myFunc->getPastArguments();
+                                        if (isset($pastArgs[$i]) && is_array($pastArgs[$i])) {
+                                            foreach ($pastArgs[$i] as $pastArg) {
+                                                if (!$defArg->getCurrentState()->isTainted()
+                                                    && $defArg->getCurrentState()->getLastKnownValues()
+                                                    === $pastArg->getCurrentState()->getLastKnownValues()
+                                                        && $defArg->getType() === $pastArg->getType()) {
+                                                    return false;
+                                                }
+                                            }
+                                        } else {
+                                            return true;
+                                        }
+
+                                        */
                 }
             }
         }

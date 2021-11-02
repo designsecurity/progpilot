@@ -89,7 +89,7 @@ class MyClass extends MyOp
         }
     }
 
-    public function getProperty($name)
+    public function getProperty($context, $tempdef, $instance, $name)
     {
         foreach ($this->properties as $def) {
             // we don't check if it's STATIC property or NOT
@@ -98,19 +98,36 @@ class MyClass extends MyOp
             }
         }
 
-        return null;
-    }
-/*
-    public function setObjectIdThis($objectId)
-    {
-        $this->objectIdThis = $objectId;
-    }
+        // we didn't find any propery but in this case php create automatically the property
+        // same code than in selectproperties resolvedef
+        $myProperty = new MyProperty(
+            $tempdef->getBlockId(),
+            $context->getCurrentMyFile(),
+            $tempdef->getLine(),
+            $tempdef->getColumn(),
+            $name
+        );
+        $myProperty->setVisibility("public");
+        $this->addProperty($myProperty);
 
-    public function getObjectIdThis()
-    {
-        return $this->objectIdThis;
+        if ($instance->getCurrentState()->isType(MyDefinition::ALL_PROPERTIES_TAINTED)) {
+            $myProperty->getCurrentState()->setTainted(true);
+            $myProperty->getCurrentState()->addTaintedByDef([$instance, $instance->getCurrentState()]);
+        }
+
+        return $myProperty;
     }
-*/
+    /*
+        public function setObjectIdThis($objectId)
+        {
+            $this->objectIdThis = $objectId;
+        }
+
+        public function getObjectIdThis()
+        {
+            return $this->objectIdThis;
+        }
+    */
     public function getExtendsOf()
     {
         return $this->extendsof;

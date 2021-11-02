@@ -40,14 +40,13 @@
                     "./tests/includes/simple8.php",
                         [["\$_GET[\"p\"]", "3",  "xss"]]
                 ],
-
                 [
                     "./tests/includes/simple9.php",
                         [["158", "3599", "security misconfiguration"],
                         ["158", "3599", "security misconfiguration"],
                         ["159", "3679", "security misconfiguration"],
                         ["159", "3679", "security misconfiguration"],
-                        ["\$page[\"body\"]", "51", "xss"]]
+                        ["\$pPage[\"body\"]", "329", "xss"]]
                 ],
                 [
                     "./tests/includes/simple10.php",

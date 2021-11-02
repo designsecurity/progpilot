@@ -158,6 +158,23 @@
                         [["\$var[\"t\"]", "5", "xss"]]
                 ],
                 [
+                    "./tests/generic/arrays17.php",
+                        [["\$values[0]", "7", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays18.php",
+                        [["\$var5[\"t\"]", "5", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays19.php",
+                        [["\$var5[\"t\"]", "6", "xss"],
+                        ["\$var5[\"t\"]", "14", "xss"]]
+                ],
+                [
+                    "./tests/generic/arrays20.php",
+                        [["\$a", "3", "xss"]]
+                ],
+                [
                     "./tests/generic/arraysrec1.php",
                         [["\$var1[1]", "10", "xss"]]
                 ],
@@ -334,6 +351,22 @@
                 [
                     "./tests/generic/calluserfunc4.php",
                         [["\$a", "3", "xss"]]
+                ],
+                [
+                    "./tests/generic/loop1.php",
+                        [["\$file", "10", "xss"]]
+                ],
+                [
+                    "./tests/generic/loop2.php",
+                        [["\$row->title", "7", "xss"]]
+                ],
+                [
+                    "./tests/generic/loop3.php",
+                        [["\$row->title", "4", "xss"]]
+                ],
+                [
+                    "./tests/generic/loop4.php",
+                        [["\$this->last_query", "6", "xss"]]
                 ]
                 
         ];

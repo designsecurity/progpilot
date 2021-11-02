@@ -74,7 +74,7 @@ class Utils
         if ($def->isType(MyDefinition::TYPE_STATIC_PROPERTY)
             || $language === "js") {
             // oop/simple31.php
-            if (!is_null($original) 
+            if (!is_null($original)
                 && !empty($original)
                     && $original[0]->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
                 $prefix = "";

@@ -126,7 +126,6 @@ class Transform implements Visitor
 
     public function enterBlock(Block $block, Block $prior = null)
     {
-        echo "enterBlock 1\n";
         $this->insideInclude = false;
         if (!($this->context->getCurrentOp() instanceof Op\Expr\Include_)) {
             $myBlock = new MyBlock($this->context->getCurrentLine(), $this->context->getCurrentColumn());
@@ -150,8 +149,6 @@ class Transform implements Visitor
                 $instDef->addProperty(MyInstruction::DEF, $param);
                 $this->context->getCurrentMycode()->addCode($instDef);
             }
-
-        echo "enterBlock 2 blockid = '".$myBlock->getId()."'\n";
             // end
         } else {
             $this->insideInclude = true;
@@ -317,7 +314,10 @@ class Transform implements Visitor
         if ($op instanceof Op\Expr\BooleanNot) {
             $instNotBoolean = new MyInstruction(Opcodes::COND_BOOLEAN_NOT);
             $instNotBoolean->addProperty(MyInstruction::EXPRID, $this->context->getCurrentFunc()->getOpId($op->expr));
-            $instNotBoolean->addProperty(MyInstruction::RESULTID, $this->context->getCurrentFunc()->getOpId($op->result));
+            $instNotBoolean->addProperty(
+                MyInstruction::RESULTID,
+                $this->context->getCurrentFunc()->getOpId($op->result)
+            );
             $this->context->getCurrentMycode()->addCode($instNotBoolean);
         }
 
@@ -327,13 +327,9 @@ class Transform implements Visitor
             $this->context->getCurrentMycode()->addCode($instStartIf);
 
             $this->blockIfToBeResolved[] = [$instStartIf, $op->if, $op->else];
-            
-            $myblock = $this->sBlocks[$block];
-            $myblock->setIsJumpIf(true);
-            echo "MYBLOCK IS JUMPIP = '".$myblock->getId()."'\n";
-            
             //$this->parseconditions($instStartIf, $op->cond->ops);
         }
+
         /*
            const TYPE_INCLUDE = 1;
            const TYPE_INCLUDE_OPNCE = 2;
@@ -348,7 +344,7 @@ class Transform implements Visitor
             $instIterator->addProperty(MyInstruction::VARID, $this->context->getCurrentFunc()->getOpId($op->var));
             $instIterator->addProperty(MyInstruction::RESULTID, $this->context->getCurrentFunc()->getOpId($op->result));
             $this->context->getCurrentMycode()->addCode($instIterator);
-        } elseif ($op instanceof Op\Expr\Include_) {
+        }/* elseif ($op instanceof Op\Expr\Include_) {
             if (Common::isFuncCallWithoutReturn($op)) {
                 // expr of type "assign" to have a defined return
                 $myExpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
@@ -360,7 +356,7 @@ class Transform implements Visitor
                 $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
                 $this->context->getCurrentMycode()->addCode($instEndExpr);
             }
-        } elseif ($op instanceof Op\Terminal\GlobalVar) {
+        } */elseif ($op instanceof Op\Terminal\GlobalVar) {
             $myDefGlobal = new MyDefinition(
                 $this->context->getCurrentBlock()->getId(),
                 $this->context->getCurrentMyFile(),
@@ -376,7 +372,6 @@ class Transform implements Visitor
 
             $this->context->getCurrentFunc()->setHasGlobalVariables(true);
         } elseif ($op instanceof Op\Terminal\Return_) {
-
             // we put the ids of return as last block id
             $this->context->getCurrentFunc()->addLastBlockId($this->context->getCurrentBlock()->getId());
 
@@ -393,10 +388,7 @@ class Transform implements Visitor
                 $this->context->getCurrentMycode()->addCode($inst);
             }
         } elseif ($op instanceof Op\Expr\Assign || $op instanceof Op\Expr\AssignRef) {
-            echo "assign 1 getcurrentline = '".$this->context->getCurrentLine()."'\n";
-
             if (isset($op->expr) && isset($op->var)) {
-                echo "assign 2\n";
                 //VariableFetch::variableFetch($this->context, $op->expr, null);
                 Assign::instruction($this->context, $op, $op->expr, $op->var);
             }
