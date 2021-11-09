@@ -75,10 +75,64 @@ class Transform implements Visitor
         $this->context->outputs->currentIncludesFile = [];
     }
 
+    public function checkIsALoop($block, $blockToLook)
+    {
+        $allBlocks = [];
+        $allBlocks[] = $block;
+        $parentsBlocks = [];
+        $parentsBlocks[] = $block;
+        $myBlockIf = $this->sBlocks[$blockToLook];
+
+        while (!empty($parentsBlocks)) {
+            $blockP = array_pop($parentsBlocks);
+            if ($this->sBlocks->contains($blockP)) {
+                $myBlockP = $this->sBlocks[$blockP];
+                foreach ($blockP->parents as $block_parent) {
+                    if ($block_parent !== $blockP) {
+                        if ($block_parent === $blockToLook) {
+                            $myBlockP->addLoopParent($myBlockIf);
+                            return true;
+                        }
+
+                        if (!in_array($block_parent, $parentsBlocks, true)
+                            && !in_array($block_parent, $allBlocks, true)) {
+                            $parentsBlocks[] = $block_parent;
+                            $allBlocks[] = $block_parent;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
     public function leaveScript(Script $script)
     {
-        // creating edges for myblocks structure as block structure
+        foreach ($this->blockIfToBeResolved as $blockResolved) {
+            $instructionIf = $blockResolved[0];
+            $blockInit = $blockResolved[1];
+            $blockIf = $blockResolved[2];
+            $blockElse = $blockResolved[3];
 
+            if ($this->sBlocks->contains($blockIf)
+                && $this->sBlocks->contains($blockElse)
+                    && $this->sBlocks->contains($blockInit)) {
+                $myBlockIf = $this->sBlocks[$blockIf];
+                $myBlockElse = $this->sBlocks[$blockElse];
+                $myBlockInit = $this->sBlocks[$blockInit];
+
+                if ($this->checkIsALoop($blockInit, $blockIf)) {
+                    $myBlockElse->addParent($myBlockIf);
+                    $myBlockElse->addVirtualParent($myBlockIf);
+                }
+
+                $instructionIf->addProperty(MyInstruction::MYBLOCK_IF, $myBlockIf);
+                $instructionIf->addProperty(MyInstruction::MYBLOCK_ELSE, $myBlockElse);
+            }
+        }
+
+        // creating edges for myblocks structure as block structure
         foreach ($this->sBlocks as $block) {
             $myBlock = $this->sBlocks[$block];
             foreach ($block->parents as $block_parent) {
@@ -91,20 +145,6 @@ class Transform implements Visitor
                 }
             }
         }
-
-        foreach ($this->blockIfToBeResolved as $blockResolved) {
-            $instructionIf = $blockResolved[0];
-            $blockIf = $blockResolved[1];
-            $blockElse = $blockResolved[2];
-
-            if ($this->sBlocks->contains($blockIf) && $this->sBlocks->contains($blockElse)) {
-                $myBlockIf = $this->sBlocks[$blockIf];
-                $myBlockElse = $this->sBlocks[$blockElse];
-
-                $instructionIf->addProperty(MyInstruction::MYBLOCK_IF, $myBlockIf);
-                $instructionIf->addProperty(MyInstruction::MYBLOCK_ELSE, $myBlockElse);
-            }
-        }
         
         // extends class
         foreach ($this->context->getClasses()->getListClasses() as $myClass) {
@@ -112,7 +152,9 @@ class Transform implements Visitor
                 $myClassFather = $this->context->getClasses()->getMyClass($myClass->getExtendsOf());
                 if (!is_null($myClassFather)) {
                     foreach ($myClassFather->getMethods() as $methodFather) {
-                        $myClass->addMethod(clone $methodFather);
+                        $cloneMethodFather = $methodFather;
+
+                        $myClass->addMethod($cloneMethodFather);
                         $methodFather->setMyClass($myClass);
                     }
                                     
@@ -326,7 +368,7 @@ class Transform implements Visitor
             $instStartIf->addProperty(MyInstruction::EXPRID, $this->context->getCurrentFunc()->getOpId($op->cond));
             $this->context->getCurrentMycode()->addCode($instStartIf);
 
-            $this->blockIfToBeResolved[] = [$instStartIf, $op->if, $op->else];
+            $this->blockIfToBeResolved[] = [$instStartIf, $block, $op->if, $op->else];
             //$this->parseconditions($instStartIf, $op->cond->ops);
         }
 
@@ -344,19 +386,7 @@ class Transform implements Visitor
             $instIterator->addProperty(MyInstruction::VARID, $this->context->getCurrentFunc()->getOpId($op->var));
             $instIterator->addProperty(MyInstruction::RESULTID, $this->context->getCurrentFunc()->getOpId($op->result));
             $this->context->getCurrentMycode()->addCode($instIterator);
-        }/* elseif ($op instanceof Op\Expr\Include_) {
-            if (Common::isFuncCallWithoutReturn($op)) {
-                // expr of type "assign" to have a defined return
-                $myExpr = new MyExpr($this->context->getCurrentLine(), $this->context->getCurrentColumn());
-                $this->context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
-
-                FuncCall::instruction($this->context, $myExpr, false);
-
-                $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);
-                $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
-                $this->context->getCurrentMycode()->addCode($instEndExpr);
-            }
-        } */elseif ($op instanceof Op\Terminal\GlobalVar) {
+        } elseif ($op instanceof Op\Terminal\GlobalVar) {
             $myDefGlobal = new MyDefinition(
                 $this->context->getCurrentBlock()->getId(),
                 $this->context->getCurrentMyFile(),

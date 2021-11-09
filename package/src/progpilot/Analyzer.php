@@ -103,7 +103,8 @@ class Analyzer
             unset($transformvisitor);
             /*
             $dumper = new \PHPCfg\Printer\Text();
-            echo $dumper->printScript($script);*/
+            echo $dumper->printScript($script);
+            */
         }
     }
 
@@ -127,7 +128,8 @@ class Analyzer
             }
 
             $visitoranalyzer->setContext($context);
-            $visitoranalyzer->analyze($myFunc->getMyCode(), null, true);
+            //$visitoranalyzer->analyze($myFunc->getMyCode(), null, true);
+            $visitoranalyzer->analyze($myFunc, null, true);
 
             foreach ($myFunc->getReturnDefs() as $returnDef) {
                 $returnDefCopy = deep_copy($returnDef);

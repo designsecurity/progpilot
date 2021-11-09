@@ -56,8 +56,6 @@ class State
 
     public static function updateBlocksOfArrayElement($context, $arrayElement)
     {
-        $states = [];
-
         $myBlock = $context->getCurrentBlock();
         $states = [];
         $blockParents = array_merge($myBlock->getParents(), $myBlock->getVirtualParents());
@@ -71,14 +69,15 @@ class State
             }
         }
 
-        if (count($states) === 1) {
+        if (count($states) === 0) {
+        } elseif (count($states) === 1) {
             $newstate = $states[0];
+            $arrayElement->assignStateToBlockId($newstate->getId(), $myBlock->getId());
         } else {
             $newstate = State::mergeDefStates($states);
             $arrayElement->addState($newstate);
+            $arrayElement->assignStateToBlockId($newstate->getId(), $myBlock->getId());
         }
-
-        $arrayElement->assignStateToBlockId($newstate->getId(), $myBlock->getId());
     }
 
     public static function updateBlocksOfArrayElements($context, $state)
@@ -93,7 +92,10 @@ class State
 
     public static function updateBlocksOfProperty($context, $property)
     {
-        foreach ($context->getCurrentFunc()->getBlocks() as $myBlock) {
+        $myBlock = $context->getCurrentBlock();
+        $states = [];
+
+        //foreach ($context->getCurrentFunc()->getBlocks() as $myBlock) {
             $blockParents = $myBlock->getVirtualParents();
             $existingState = $property->getState($myBlock->getId());
                      
@@ -109,7 +111,7 @@ class State
                         }
                     }
                 }
-
+                
                 if (count($states) === 0) {
                     $newstate = $property->getCurrentState();
                 } elseif (count($states) === 1) {
@@ -120,9 +122,8 @@ class State
                     $property->addState($newstate);
                     $property->assignStateToBlockId($newstate->getId(), $myBlock->getId());
                 }
-
             }
-        }
+        //}
     }
 
     public static function updateBlocksOfProperties($context, $def, $state)
@@ -135,12 +136,6 @@ class State
                 State::updateBlocksOfProperty($context, $property);
                 State::updateBlocksOfDef($context, $property);
             }
-/*
-            if ($state->isType(MyDefinition::ALL_PROPERTIES_TAINTED)) {
-                echo "updateBlocksOfProperties foreach ALL_PROPERTIES_TAINTED\n";
-                // not really a property but the instance itself
-                //State::updateBlocksOfProperty($context, $def);
-            }*/
         }
     }
 
@@ -161,14 +156,12 @@ class State
                 $state = $def->getCurrentState();
             }
 
-
             if (!is_null($state)) {
                 if ($state->isTainted() && !AssertionAnalysis::temporarySimple($block, $def)) {
                     $myState->setTainted(true);
 
                     // for the flow we don't want built-in variables
-                    if ($def->getName() === "built-in-concatenation"
-                       /*|| $def->getName() === "built-in-index-array"*/) {
+                    if ($def->getName() === "built-in-concatenation") {
                         $myState->setTaintedByDefs($state->getTaintedByDefs());
                     } else {
                         $myState->addTaintedByDef([$def, $state]);

@@ -20,22 +20,25 @@ class Dataflow
         if ($myDef->isType(MyDefinition::TYPE_INSTANCE)
             || $myDef->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
             $idObject = $context->getObjects()->addObject();
-            $myDef->getCurrentState()->setObjectId($idObject);
-            $myDef->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
 
-            if (!empty($myDef->getClassName())) {
-                $myClass = $context->getClasses()->getMyClass($myDef->getClassName());
-                if (is_null($myClass)) {
-                    $myClass = new MyClass(
-                        $myDef->getLine(),
-                        $myDef->getColumn(),
-                        $myDef->getClassName()
-                    );
-                } else {
-                    $myClass = clone $myClass;
+            if ($myDef->getCurrentState()->getObjectId() === -1) {
+                $myDef->getCurrentState()->setObjectId($idObject);
+                $myDef->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
+
+                if (!empty($myDef->getClassName())) {
+                    $myClass = $context->getClasses()->getMyClass($myDef->getClassName());
+                    if (is_null($myClass)) {
+                        $myClass = new MyClass(
+                            $myDef->getLine(),
+                            $myDef->getColumn(),
+                            $myDef->getClassName()
+                        );
+                    } else {
+                        $myClass = clone $myClass;
+                    }
+
+                    $context->getObjects()->addMyclassToObject($idObject, $myClass);
                 }
-
-                $context->getObjects()->addMyclassToObject($idObject, $myClass);
             }
         }
     }

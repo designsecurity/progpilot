@@ -553,7 +553,7 @@ class ResolveDefs
         $myClass = $context->getClasses()->getMyClass($className);
 
         if (!is_null($myClass)) {
-            $property = $myClass->getProperty($context, $tempDef, $tempDef, $propertyName);
+            $property = $myClass->getProperty($context, $tempDef->getBlockId(), $tempDef, $propertyName);
 
 
             if (!is_null($property)
@@ -586,14 +586,22 @@ class ResolveDefs
                 $instance = $instance->getIteratorValues()[0];
             }
             
-            $state = $instance->getState($tempDefaProp->getBlockId());
-            //if (!is_null($state) && $state->isType(MyDefinition::TYPE_INSTANCE)) {
-            if ($instance->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
-                $idObject = $instance->getCurrentState()->getObjectId();
+            if ($instance->isType(MyDefinition::TYPE_PROPERTY)
+                || $instance->isType(MyDefinition::TYPE_ARRAY_ELEMENT)) {
+                $state = $instance->getState($tempDefaProp->getBlockId());
+                $stateId = $tempDefaProp->getBlockId();
+            }
+            else {
+                $state = $instance->getCurrentState();
+                $stateId = $instance->getBlockId();
+            }
+
+            if (!is_null($state) && $state->isType(MyDefinition::TYPE_INSTANCE)) {
+                $idObject = $state->getObjectId();
                 $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
 
                 if (!is_null($tmpMyClass)) {
-                    $property = $tmpMyClass->getProperty($context, $tempDefaProp, $instance, $propertyName);
+                    $property = $tmpMyClass->getProperty($context, $stateId, $instance, $propertyName);
                     if (!is_null($property)) {
                         if (ResolveDefs::getVisibility($tempDefaProp, $property, $currentFunc)) {
                             $propertiesDefs[] = [$property, $tmpMyClass];
@@ -659,7 +667,7 @@ class ResolveDefs
 
         return array();
     }
-    /*
+    
     public static function selectStaticProperty($context, $data, $tempDefa, $isIterator, $isAssign)
     {
         $callStack = $context->getCallStack();
@@ -705,7 +713,6 @@ class ResolveDefs
 
         return array();
     }
-*/
 
     public static function temporarySimple(
         $context,

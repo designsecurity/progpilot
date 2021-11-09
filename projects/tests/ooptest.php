@@ -153,12 +153,16 @@
                         ["\$get_boum1_return", "14", "xss"]]
                 ],
                 [
+                    "./tests/oop/simple36.php",
+                        [["\$aaas->title", "33", "xss"]]
+                ],
+                [
                     "./tests/oop/chained1.php",
                         [["\$tainted", "33", "xss"]]
                 ],
                 [
                     "./tests/oop/chained2.php",
-                        [["\$title", "7", "xss"]]
+                        [["\$aaa->title", "22", "xss"]]
                 ]
                 
         ];

@@ -16,6 +16,12 @@ use progpilot\Objects\MyAssertion;
 
 class Callbacks
 {
+    public static function cleanStatesDef($def, $defs)
+    {
+        $def->setStates([]);
+        $def->setStatesToBlocksIds([]);
+    }
+
     public static function modifyMyclassOfObject($context, $idObject, $currentMyclass, $newMyclass)
     {
         if (!is_null($currentMyclass) && $currentMyclass->getName() === $newMyclass->getName()) {
