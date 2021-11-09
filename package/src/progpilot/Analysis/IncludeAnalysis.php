@@ -294,7 +294,6 @@ class IncludeAnalysis
                                         $newDefs = false;
                                         if (!empty($defsOutputIncludedFinal)) {
                                             foreach ($defsOutputIncludedFinal as $defOutputIncludedFinal) {
-
                                                 $ret1 = $defs->addDef(
                                                     $defOutputIncludedFinal->getName(),
                                                     $defOutputIncludedFinal

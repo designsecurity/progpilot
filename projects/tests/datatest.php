@@ -132,6 +132,10 @@
                         [["\$b", "4", "xss"]]
                 ],
                 [
+                    "./tests/data/source21.php",
+                        [["\$title", "0", "xss"]]
+                ],
+                [
                     "./tests/data/sanitizer1.php",
                         [["\$var7safe", "5", "xss"]]
                 ],

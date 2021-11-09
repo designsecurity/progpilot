@@ -59,7 +59,7 @@ class VisitorDataflow
         $alreadyWarned = false;
         $alreadyWarned = false;
         $defs = null;
-
+        
         do {
             if (isset($code[$index])) {
                 $instruction = $code[$index];

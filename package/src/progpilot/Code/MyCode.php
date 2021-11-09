@@ -517,8 +517,10 @@ class MyCode
                     case Opcodes::LITERAL_FETCH:
                         echo "Opcodes::LITERAL_FETCH\n";
                         $def = $instruction->getProperty(MyInstruction::DEF);
-                        $literal = $def->getCurrentState()->getLastKnownValues()[0];
-                        echo "literal = $literal\n";
+                        if (isset($def->getCurrentState()->getLastKnownValues()[0])) {
+                            $literal = $def->getCurrentState()->getLastKnownValues()[0];
+                            echo "literal = $literal\n";
+                        }
                             
                         break;
 

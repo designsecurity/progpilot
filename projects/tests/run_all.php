@@ -96,7 +96,7 @@ class RunAllTest extends TestCase
             $tabcond,
             $tabneg,
             $tabcus,
-            //$tabvulntest,
+            $tabvulntest,
             $tabwander,
             $tabframeworks,
             $tabtwig,

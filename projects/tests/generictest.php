@@ -362,7 +362,7 @@
                 ],
                 [
                     "./tests/generic/loop3.php",
-                        [["\$row->title", "4", "xss"]]
+                        [["\$row->title", "5", "xss"]]
                 ],
                 [
                     "./tests/generic/loop4.php",

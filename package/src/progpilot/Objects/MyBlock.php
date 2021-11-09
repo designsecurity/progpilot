@@ -16,6 +16,8 @@ class MyBlock extends MyOp
     private $startAddressBlock;
     private $endAddressBlock;
     private $needUpdateOfState;
+    private $hasBeenAnalyzed;
+    private $loopParents;
 
     public $children;
     public $parents;
@@ -31,11 +33,22 @@ class MyBlock extends MyOp
         $this->endAddressBlock = -1;
         $this->assertions = [];
         $this->parents = [];
+        $this->loopParents = [];
         $this->virtualParents = [];
         $this->children = [];
         $this->needUpdateOfState = true;
+        $this->hasBeenAnalyzed = false;
     }
 
+    public function hasBeenAnalyzed()
+    {
+        return $this->hasBeenAnalyzed;
+    }
+
+    public function setHasBeenAnalyzed($hasBeenAnalyzed)
+    {
+        $this->hasBeenAnalyzed = $hasBeenAnalyzed;
+    }
 
     public function setNeedUpdateOfState($update)
     {
@@ -45,6 +58,18 @@ class MyBlock extends MyOp
     public function doNeedUpdateOfState()
     {
         return $this->needUpdateOfState;
+    }
+
+    public function addLoopParent($parent)
+    {
+        if (!in_array($parent, $this->loopParents, true)) {
+            $this->loopParents[] = $parent;
+        }
+    }
+
+    public function isLoopParent($parent)
+    {
+        return in_array($parent, $this->loopParents, true);
     }
 
     public function addVirtualParent($parent)
