@@ -18,7 +18,7 @@ use progpilot\Code\Opcodes;
 
 class DimFetch
 {
-    public static function dimFetch($context, $op, $expr)
+    public static function dimFetch($context, $op)
     {
         if (isset($op)
             && $op instanceof Op\Expr\ArrayDimFetch) {
@@ -29,7 +29,6 @@ class DimFetch
                 // null when for pushing elements $arr[] = $ele;
                 $instDefChained->addProperty(MyInstruction::ARRAY_DIM, 0);
             }
-            $instDefChained->addProperty(MyInstruction::EXPR, $expr);
 
             if (isset($op->result)) {
                 $instDefChained->addProperty(

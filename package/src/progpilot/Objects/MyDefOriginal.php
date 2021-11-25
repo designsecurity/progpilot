@@ -14,13 +14,11 @@ class MyDefOriginal
 {
     private $def;
     private $arrayIndexAccessor;
-    private $propertyAccessor;
 
     public function __construct()
     {
         $this->def = null;
         $this->arrayIndexAccessor = null;
-        $this->propertyAccessor = null;
     }
 
     public function getDef()
@@ -31,16 +29,6 @@ class MyDefOriginal
     public function setDef($myDef)
     {
         $this->def = $myDef;
-    }
-
-    public function getPropertyAccessor()
-    {
-        return $this->propertyAccessor;
-    }
-
-    public function setPropertyAccessor($propertyAccessor)
-    {
-        $this->propertyAccessor = $propertyAccessor;
     }
 
     public function getArrayIndexAccessor()

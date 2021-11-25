@@ -15,10 +15,10 @@ use progpilot\Transformations\Php\Common;
 class MyDefState extends MyOp
 {
     private $isTainted;
+    private $taintedByDefs;
     private $isSanitized;
     private $typeSanitized;
     private $lastKnownValue;
-    private $valueFromDef;
     private $cast;
     private $isEmbeddedByChar;
     private $label;
@@ -30,9 +30,7 @@ class MyDefState extends MyOp
         parent::__construct("state", 0, 0);
 
         $this->isEmbeddedByChar = [];
-        $this->valueFromDef = null;
         $this->isTainted = false;
-        $this->refArrValue = null;
         $this->taintedByDefs = [];
         $this->label = MyDefinition::SECURITY_LOW;
         $this->isSanitized = false;
@@ -155,36 +153,13 @@ class MyDefState extends MyOp
         return $this->cast;
     }
 
-    public function setValueFromDef($def)
-    {
-        $this->valueFromDef = $def;
-    }
-
-    public function getValueFromDef()
-    {
-        return $this->valueFromDef;
-    }
-
-    public function resetLastKnownValues()
-    {
-        $this->lastKnownValue = [];
-    }
-
-    public function setLastKnownValues($values)
-    {
-        $this->lastKnownValue = $values;
-    }
-
-    public function setLastKnownValue($id, $value)
-    {
-        $this->lastKnownValue[$id] = $value;
-    }
-
     public function addLastKnownValue($value)
     {
         $value = rtrim(ltrim($value));
 
-        if (Common::validLastKnownValue($value) && !in_array($value, $this->lastKnownValue, true)) {
+        if (Common::validLastKnownValue($value)
+            && !in_array($value, $this->lastKnownValue, true)
+                && count($this->lastKnownValue) < 10) {
             $this->lastKnownValue[] = $value;
         }
     }
@@ -287,18 +262,6 @@ class MyDefState extends MyOp
         return $this->createDefArrayIndex($blockId, $myArrayDef, $arrayIndex);
     }
 
-    public function getDefArrayIndex($arrayIndex)
-    {
-        $ret = [];
-        for ($i = 0; $i < count($this->arrayIndexes); $i ++) {
-            if ($this->arrayIndexes[$i]->index === $arrayIndex) {
-                $ret[] = $this->arrayIndexes[$i]->def;
-            }
-        }
-
-        return $ret;
-    }
-
     public function isArrayIndexExists($arrayIndex)
     {
         for ($i = 0; $i < count($this->arrayIndexes); $i ++) {
@@ -312,29 +275,26 @@ class MyDefState extends MyOp
 
     public function addArrayIndex($arrayIndex, $def)
     {
-        $ele = new \stdClass;
-        $ele->index = $arrayIndex;
-        $ele->def = $def;
-        $this->arrayIndexes[] = $ele;
-    }
-
-    public function addSubArrayIndex($arrayIndex, $def)
-    {
-        if (!empty($this->arrayIndexes)) {
-            for ($i = 0; $i < count($this->arrayIndexes); $i ++) {
-                $currentEle = $this->arrayIndexes[$i];
-
-                $ele = new \stdClass;
-                $ele->index = array(key($arrayIndex) => $currentEle->index);
-                $ele->def = $currentEle->def;
-
-                $this->arrayIndexes[$i] = $ele;
-            }
-        } else {
+        if (!$this->isArrayIndexExists($arrayIndex)
+            && count($this->arrayIndexes) < 100) {
             $ele = new \stdClass;
             $ele->index = $arrayIndex;
             $ele->def = $def;
             $this->arrayIndexes[] = $ele;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function overwriteArrayIndex($arrayIndex, $def)
+    {
+        for ($i = 0; $i < count($this->arrayIndexes); $i ++) {
+            if ($this->arrayIndexes[$i]->index === $arrayIndex) {
+                $this->arrayIndexes[$i]->def = $def;
+                break;
+            }
         }
     }
 

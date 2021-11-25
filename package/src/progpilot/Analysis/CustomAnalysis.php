@@ -19,7 +19,6 @@ use progpilot\Objects\MyClass;
 use progpilot\Code\MyInstruction;
 use progpilot\Utils;
 use progpilot\Helpers\Analysis as HelpersAnalysis;
-use progpilot\Helpers\Dataflow as HelpersDataflow;
 
 class CustomAnalysis
 {
@@ -55,7 +54,7 @@ class CustomAnalysis
         return null;
     }
     
-    public static function defineObject($context, $instruction, $myFuncorDef, $myClassFound)
+    public static function defineObject($context, $instruction, $myFuncorDef, $myClassFound, $virtualReturnDef)
     {
         $customRules = $context->inputs->getCustomRules();
         foreach ($customRules as $customRule) {
@@ -71,11 +70,11 @@ class CustomAnalysis
                 );
 
                 if ($result) {
-                    CustomAnalysis::returnObjectCreateObject(
+                    return CustomAnalysis::returnObjectCreateObject(
                         $context,
-                        $instruction,
                         $customRule,
-                        $myFuncorDef
+                        $myFuncorDef,
+                        $virtualReturnDef
                     );
                 }
             }
@@ -84,34 +83,28 @@ class CustomAnalysis
         return null;
     }
     
-    public static function returnObjectCreateObject($context, $instruction, $customRule, $myFuncorDef)
+    public static function returnObjectCreateObject($context, $customRule, $myFuncorDef, $virtualReturnDef)
     {
+        $myFakeInstance = null;
+
         // $this->foo->bar (we want to define an object on bar)
         if ($myFuncorDef->isType(MyDefinition::TYPE_PROPERTY)) {
             $myFakeInstance = $myFuncorDef;
             $myFakeInstance->addType(MyDefinition::TYPE_INSTANCE);
             $myFakeInstance->setClassName($customRule->getExtra());
-        } else {
-            $myFakeInstance = new MyDefinition(
-                $context->getCurrentBlock()->getId(),
-                $context->getCurrentMyFile(),
-                $myFuncorDef->getLine(),
-                $myFuncorDef->getColumn(),
-                "return__custom"
-            );
+        } else if (!is_null($virtualReturnDef)) {
+            $myFakeInstance = $virtualReturnDef;
             $myFakeInstance->addType(MyDefinition::TYPE_INSTANCE);
             $myFakeInstance->setClassName($customRule->getExtra());
         }
 
-        HelpersDataflow::createObject($context, $myFakeInstance);
-
-        $resultid = $instruction->getProperty(MyInstruction::RESULTID);
-        $opInformation["chained_results"] = [];
-        $opInformation["chained_results"][] = $myFakeInstance;
-        $context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
+        if (!is_null($myFakeInstance)) {
+            HelpersAnalysis::createObject($context, $myFakeInstance);
+            return $myFakeInstance;
+        }
     }
     
-    public static function returnObject($context, $myFuncorDef, $myClass, $instruction)
+    public static function returnObject($context, $myFuncorDef, $myClass, $instruction, $virtualReturnDef)
     {
         $customRules = $context->inputs->getCustomRules();
         foreach ($customRules as $customRule) {
@@ -126,15 +119,17 @@ class CustomAnalysis
                     $myClass
                 );
                 if ($result) {
-                    CustomAnalysis::returnObjectCreateObject(
+                    return CustomAnalysis::returnObjectCreateObject(
                         $context,
-                        $instruction,
                         $customRule,
-                        $myFuncorDef
+                        $myFuncorDef,
+                        $virtualReturnDef
                     );
                 }
             }
         }
+        
+        return null;
     }
 
     public static function mustVerifyDefinition($context, $instruction, $myFunc, $myClass = null)

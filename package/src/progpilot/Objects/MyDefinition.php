@@ -15,6 +15,8 @@ use progpilot\Objects\MyOp;
 use progpilot\Utils;
 use progpilot\Transformations\Php\Common;
 
+use progpilot\Helpers\State as HelpersState;
+
 class MyDefinition extends MyOp
 {
     const CAST_SAFE = 1;
@@ -48,7 +50,6 @@ class MyDefinition extends MyOp
     private $isReturnDef;
     private $refs;
     private $iteratorValues;
-    private $refArrValue;
 
     public $original;
     public $states;
@@ -68,7 +69,6 @@ class MyDefinition extends MyOp
         $this->isReturnDef = null;
         $this->refs = [];
         $this->iteratorValues = [];
-        $this->refArrValue = null;
 
         $this->original = new MyDefOriginal;
         $this->states = [];
@@ -117,10 +117,6 @@ class MyDefinition extends MyOp
 
     public function unsetState($blockId)
     {
-        /*
-        unset($this->states[$blockId]);
-        */
-
         unset($this->blocksIdsStates[$blockId]);
     }
 
@@ -138,14 +134,26 @@ class MyDefinition extends MyOp
     {
         $this->states = $states;
     }
-/*
-    public function setState($state, $blockId)
-    {
-        $this->states[$blockId] = $state;
-    }
-*/
+
     public function assignStateToBlockId($stateId, $blockId)
     {
+        if (isset($this->blocksIdsStates[$blockId])
+            && $blockId !== $this->getBlockId()) {
+            $toRemove = true;
+            $overWrittentStateId = $this->blocksIdsStates[$blockId];
+            foreach ($this->blocksIdsStates as $keyBlockId => $valueStateId) {
+                if ($valueStateId === $overWrittentStateId
+                    && $keyBlockId !== $blockId) {
+                    $toRemove = false;
+                    break;
+                }
+            }
+
+            if($toRemove) {
+                unset($this->states[$overWrittentStateId]);
+            }
+        }
+
         $this->blocksIdsStates[$blockId] = $stateId;
     }
 
@@ -157,19 +165,13 @@ class MyDefinition extends MyOp
         return $state;
     }
 
-    public function addState($state)
+    public function addState($newstate)
     {
-        $this->states[$state->getId()] = $state;
+        $this->states[$newstate->getId()] = $newstate;
     }
 
     public function getCurrentState()
     {
-        /*
-        if (isset($this->states[$this->blockId])) {
-            return $this->states[$this->blockId];
-        }
-        */
-
         if (isset($this->blocksIdsStates[$this->blockId])) {
             $stateId = $this->blocksIdsStates[$this->blockId];
             if (isset($this->states[$stateId])) {
@@ -180,6 +182,11 @@ class MyDefinition extends MyOp
         return null;
     }
 
+    public function getNbStates()
+    {
+        return count($this->states);
+    }
+
     public function getStates()
     {
         return $this->states;
@@ -187,12 +194,6 @@ class MyDefinition extends MyOp
 
     public function getState($blockId)
     {
-        /*
-        if (isset($this->states[$blockId])) {
-            return $this->states[$blockId];
-        }
-        */
-
         if (isset($this->blocksIdsStates[$blockId])) {
             $stateId = $this->blocksIdsStates[$blockId];
             if (isset($this->states[$stateId])) {
@@ -281,16 +282,6 @@ class MyDefinition extends MyOp
     public function setIteratorValues($iteratorValues)
     {
         $this->iteratorValues = $iteratorValues;
-    }
-
-    public function getRefArrValue()
-    {
-        return $this->refArrValue;
-    }
-
-    public function setRefArrValue($arr)
-    {
-        $this->refArrValue = $arr;
     }
 
     public function getBlockId()

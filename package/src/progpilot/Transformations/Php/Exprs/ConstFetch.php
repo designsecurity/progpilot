@@ -19,7 +19,7 @@ use progpilot\Code\Opcodes;
 
 class ConstFetch
 {
-    public static function constFetch($context, $op, $expr)
+    public static function constFetch($context, $op)
     {
         if (isset($op)
             && $op instanceof Op\Expr\ConstFetch

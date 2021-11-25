@@ -62,6 +62,16 @@ class Context extends ContextInternalApi
         return $this->maxFileSize;
     }
 
+    public function setMaxMemory($maxMemory)
+    {
+        $this->maxMemory = $maxMemory;
+    }
+
+    public function getMaxMemory()
+    {
+        return $this->maxMemory;
+    }
+
     public function getAnalyzeIncludes()
     {
         return $this->analyzeIncludes;

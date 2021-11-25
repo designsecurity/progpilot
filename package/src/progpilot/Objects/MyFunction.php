@@ -33,7 +33,6 @@ class MyFunction extends MyOp
     private $defs;
     private $opInformations;
     private $blocks;
-    private $exprs;
     private $visibility;
     private $myClass;
     private $blockId;
@@ -45,12 +44,8 @@ class MyFunction extends MyOp
     private $thisHasBeenUpdated;
     private $isVisited;
     private $isVisitedFromInclude;
-    private $isChainedMethod;
 
     private $myCode;
-    private $castReturn;
-
-    public $property;
 
     public function __construct($name)
     {
@@ -79,18 +74,13 @@ class MyFunction extends MyOp
         $this->thisHasBeenUpdated = false;
         $this->isVisited = false;
         $this->isVisitedFromInclude = false;
-        $this->isChainedMethod = false;
-        $this->chainedMethod = null;
         $this->hasGlobalVariables = false;
 
-        //$this->property = new MyProperty;
         $this->defs = new Definitions;
         $this->opInformations = [];
         $this->blocks = [];
-        $this->exprs = [];
 
         $this->myCode = new \progpilot\Code\MyCode;
-        $this->castReturn = MyDefinition::CAST_NOT_SAFE;
     }
 
     public function reset()
@@ -98,14 +88,6 @@ class MyFunction extends MyOp
         $this->opInformations = [];
     }
 
-    /*
-        public function __clone()
-        {
-            //$this->property = clone $this->property;
-            //$this->blocks = clone $this->blocks;
-            //$this->defs = clone $this->defs;
-        }
-    */
     public function setNbExecutions($nbExecutions)
     {
         $this->nbExecutions = $nbExecutions;
@@ -154,26 +136,6 @@ class MyFunction extends MyOp
     public function hasGlobalVariables()
     {
         return $this->hasGlobalVariables;
-    }
-
-    public function setIsChainedMethod($isChainedMethod)
-    {
-        $this->isChainedMethod = $isChainedMethod;
-    }
-
-    public function isChainedMethod()
-    {
-        return $this->isChainedMethod;
-    }
-
-    public function setChainedMethod($chainedMethod)
-    {
-        $this->chainedMethod = $chainedMethod;
-    }
-
-    public function getChainedMethod()
-    {
-        return $this->chainedMethod;
     }
 
     public function setIsVisitedFromInclude($isVisited)
@@ -326,7 +288,45 @@ class MyFunction extends MyOp
 
     public function getOpId($op)
     {
-        return spl_object_hash($op);
+        if (is_object($op)) {
+            return spl_object_hash($op);
+        }
+        
+        return null;
+    }
+
+    public function getNbsOpInformations()
+    {
+        $nb = 0;
+        if (is_array($this->opInformations)) {
+            foreach ($this->opInformations as $opInformation) {
+                if (isset($opInformation["chained_results"])) {
+                    $nb += count($opInformation["chained_results"]);
+                }
+
+                if (isset($opInformation["valid_when_returning"])) {
+                    $nb += 1;
+                }
+            
+                if (isset($opInformation["condition_defs"])) {
+                    $nb += count($opInformation["condition_defs"]);
+                }
+            }
+        }
+
+        return $nb;
+    }
+
+    public function cleanOpInformations()
+    {
+        $this->opInformations = null;
+    }
+
+    public function cleanOpInformation($id)
+    {
+        if (isset($this->opInformations[$id])) {
+            unset($this->opInformations[$id]);
+        }
     }
 
     public function getOpInformation($id)
@@ -355,29 +355,14 @@ class MyFunction extends MyOp
         return $this->defs;
     }
 
-    public function addExpr($expr)
-    {
-        $this->exprs[] = $expr;
-    }
-
-    public function setExprs($exprs)
-    {
-        $this->exprs = $exprs;
-    }
-
-    public function getExprs()
-    {
-        return $this->exprs;
-    }
-
-    public function getStateIdsPastArguments()
+    public function getStatePastArguments()
     {
         return $this->args;
     }
 
-    public function addStateIdPastArgument($nbparam, $arg)
+    public function addStatePastArgument($nbparam, $state)
     {
-        $this->args[$nbparam][] = $arg;
+        $this->args[$nbparam][] = $state;
     }
 
     public function addParam($param)
@@ -457,15 +442,5 @@ class MyFunction extends MyOp
     public function setBlockId($blockId)
     {
         $this->blockId = $blockId;
-    }
-    
-    public function setCastReturn($cast)
-    {
-        $this->castReturn = $cast;
-    }
-    
-    public function getCastReturn()
-    {
-        return $this->castReturn;
     }
 }

@@ -63,7 +63,6 @@ class MyValidator extends MySpecify
     {
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
-            $conditions = $parameter[1];
             $values = $parameter[2];
 
             if ($index === $i) {
@@ -78,7 +77,6 @@ class MyValidator extends MySpecify
     {
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
-            $conditions = $parameter[1];
 
             if ($index === $i) {
                 return true;

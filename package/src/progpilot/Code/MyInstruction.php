@@ -17,15 +17,12 @@ class MyInstruction
     const MYBLOCK_ELSE = 3;
     const MYFUNC = 4;
     const NOT_BOOLEAN = 5;
-    const EXPR = 6;
     const MYCLASS = 7;
     const DEF = 8;
     const RETURN_DEFS = 9;
     const FUNCNAME = 10;
     const TYPE_INCLUDE = 11;
     const MYFUNC_CALL = 12;
-    const ARR = 13;
-    const TEMPORARY = 14;
     const PHI = 15;
     const ORIGINAL_DEF = 16;
     const ARRAY_DIM = 17;

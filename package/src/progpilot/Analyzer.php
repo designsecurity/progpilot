@@ -13,6 +13,7 @@ use PHPCfg\Printer;
 use progpilot\Utils;
 use progpilot\Code\MyCode;
 use progpilot\Objects\MyFile;
+use progpilot\Helpers\Analysis as HelpersAnalysis;
 
 use function DeepCopy\deep_copy;
 
@@ -101,6 +102,7 @@ class Analyzer
 
             unset($traverser);
             unset($transformvisitor);
+        
             /*
             $dumper = new \PHPCfg\Printer\Text();
             echo $dumper->printScript($script);
@@ -116,8 +118,6 @@ class Analyzer
             $myFunc->getMyCode()->setStart(0);
             $myFunc->getMyCode()->setEnd(count($myFunc->getMyCode()->getCodes()));
             
-            \progpilot\Analysis\ValueAnalysis::buildStorage();
-            
             $visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
 
             if ($updatemyfile) {
@@ -127,9 +127,13 @@ class Analyzer
                 $context->setCurrentMyfile($myFile);
             }
 
+            $params = $myFunc->getParams();
+            foreach ($params as $param) {
+                $param->setParamToArg(null);
+            }
+
             $visitoranalyzer->setContext($context);
-            //$visitoranalyzer->analyze($myFunc->getMyCode(), null, true);
-            $visitoranalyzer->analyze($myFunc, null, true);
+            $visitoranalyzer->analyzeFunc($myFunc, null, true);
 
             foreach ($myFunc->getReturnDefs() as $returnDef) {
                 $returnDefCopy = deep_copy($returnDef);
@@ -331,7 +335,8 @@ class Analyzer
         // we take all function except mains
         if (isset($functions["$fileNameHash"])) {
             $myFuncsToAnalyze = $functions["$fileNameHash"];
-            
+            // we put the functions at the top (will be analyzed at first)
+            // could impact initialreturndef and funccall to be analyzed or not
             foreach ($myFuncsToAnalyze as $myFuncsByClass) {
                 foreach ($myFuncsByClass as $myFunc) {
                     // func with global variables except to be analyzed/called from a main
@@ -341,7 +346,6 @@ class Analyzer
                 }
             }
 
-            // we put the main functions at the end (will be analyzed at the end)
             foreach ($myFuncsToAnalyze as $myFuncsByClass) {
                 foreach ($myFuncsByClass as $myFunc) {
                     if ($myFunc->getName() == "{main}") {
@@ -352,27 +356,26 @@ class Analyzer
         }
 
         foreach ($myFuncsOfFile as $myFunc) {
-            // cfg, ast, callgraph initialization
-            $context->outputs->createRepresentationsForFunction($myFunc);
-
             $this->runFunctionAnalysis($context, $myFunc);
-        
-            $tmpCallgraph = $context->outputs->callgraph[$myFunc->getId()];
-            $tmpCallgraph->computeCallGraph();
-
-            \progpilot\Analysis\CustomAnalysis::mustVerifyCallFlow($context, $tmpCallgraph);
             $context->resetCallStack();
-        }
-
-        if (memory_get_usage() > 2000000000) { // 1GB
-            Utils::printWarning($context, Lang::MAX_MEMORY_EXCEEDED);
-            $context->resetDataflow();
-            $context->outputs->resetRepresentationsForAllFunctions();
         }
     }
     
     public function run($context, $cmdFiles = null)
     {
+        $currentMemoryLimit = ini_get("memory_limit");
+        if (!$currentMemoryLimit) {
+            $currentMemoryLimit = 0;
+        }
+
+        $bytes = HelpersAnalysis::getBytes($currentMemoryLimit);
+        if ($bytes < $context->getMaxMemory()) {
+            $ret = ini_set('memory_limit', $context->getMaxMemory());
+            if (!$ret) {
+                Utils::printWarning($context, Lang::CANNOT_SET_MEMORY.$context->getMaxMemory());
+            }
+        }
+
         $files = [];
 
         $context->readConfiguration();

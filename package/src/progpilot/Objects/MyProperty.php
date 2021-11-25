@@ -14,7 +14,6 @@ class MyProperty extends MyDefinition
 {
     private $visibility;
 
-
     public function __construct($blockId, $myFile, $varLine, $varColumn, $varName)
     {
         parent::__construct($blockId, $myFile, $varLine, $varColumn, $varName);

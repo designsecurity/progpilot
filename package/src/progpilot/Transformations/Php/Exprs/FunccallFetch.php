@@ -20,7 +20,7 @@ use progpilot\Transformations\Php\FuncCall;
 
 class FunccallFetch
 {
-    public static function funccallFetch($context, $op, $expr)
+    public static function funccallFetch($context, $op)
     {
         if (isset($op)
             && ($op instanceof Op\Expr\Include_
@@ -36,7 +36,7 @@ class FunccallFetch
                 || $op instanceof Op\Expr\New_)) {
             $oldOp = $context->getCurrentOp();
             $context->setCurrentOp($op);
-            FuncCall::instruction($context, $expr, null, false, false, null);
+            FuncCall::instruction($context);
             $context->setCurrentOp($oldOp);
         }
     }

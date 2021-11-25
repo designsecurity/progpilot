@@ -15,7 +15,6 @@ use PHPCfg\Op;
 
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
-use progpilot\Objects\MyExpr;
 use progpilot\Objects\MyOp;
 
 use progpilot\Code\MyInstruction;
@@ -24,12 +23,12 @@ use progpilot\Transformations\Js\Transform;
 
 class Expr
 {
-    public static function instruction($op, $context, $myExpr)
+    public static function instruction($op, $context)
     {
-        return Expr::instructionInternal($op, $context, $myExpr);
+        return Expr::instructionInternal($op, $context);
     }
 
-    public static function instructionInternal($op, $context, $myExpr)
+    public static function instructionInternal($op, $context)
     {
         $myTempDef = null;
         
@@ -38,7 +37,6 @@ class Expr
         
         if ($typeright === "Identifier" || $typeright === "Literal" || $typeright === "MemberExpression") {
             $myright = new MyDefinition($op->loc->start->line, $op->loc->start->column, $nameright);
-            $myright->setExpr($myExpr);
             
             if ($typeright === "MemberExpression") {
                 $propertyName = Common::getNameProperty($op);
@@ -58,17 +56,10 @@ class Expr
         }
     
         if ($typeright === "BinaryExpression") {
-            $myExpr->setIsConcat(true);
         
             $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::CONCAT_LEFT));
-            Expr::instructionInternal($op->left, $context, $myExpr);
 
             $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::CONCAT_RIGHT));
-            Expr::instructionInternal($op->right, $context, $myExpr);
-        } elseif ($typeright === "CallExpression") {
-            $myTempDef = FuncCall::instruction($context, $myExpr, $op);
-        } elseif ($typeright === "NewExpression") {
-            $myTempDef = FuncCall::instruction($context, $myExpr, $op);
         }
 
         return $myTempDef;

@@ -13,7 +13,6 @@ namespace progpilot\Code;
 use progpilot\Objects\MyOp;
 use progpilot\Objects\MyBlock;
 use progpilot\Objects\MyDefinition;
-use progpilot\Objects\MyExpr;
 use progpilot\Objects\MyFunction;
 
 class MyCode
@@ -182,21 +181,13 @@ class MyCode
                             $funcDefIdParam = (int) $codeInput[$nbInst ++];
                             $funcExprIdParam = (int) $codeInput[$nbInst ++];
                             $funcDefParam = $arrayDefinitions[$funcDefIdParam];
-                            $funcExprParam = $arrayExprs[$funcExprIdParam];
                             $instFuncCallMain->addProperty("argdef$j", $funcDefParam);
-                            $instFuncCallMain->addProperty("argexpr$j", $funcExprParam);
                         }
 
                         $funcExprString = $codeInput[$nbInst ++];
                         $funcExprId = (int) $codeInput[$nbInst ++];
 
-                        // !!!!????
-                        //$myExpr = $arrayExprs[$funcExprId];
-                        $myExpr = null;
-
                         $instFuncCallMain->addProperty(MyInstruction::MYFUNC_CALL, $myFunctionCall);
-                        $instFuncCallMain->addProperty(MyInstruction::EXPR, $myExpr);
-                        $instFuncCallMain->addProperty(MyInstruction::ARR, null);
                         $myFunction->getMyCode()->addCode($instFuncCallMain);
 
                         break;
@@ -232,41 +223,6 @@ class MyCode
                         $myFunction->getMyCode()->addCode(new MyInstruction(Opcodes::END_ASSIGN));
 
                         break;
-
-                    case 'start_expression':
-                        $myFunction->getMyCode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
-
-                        break;
-
-                    case 'end_expression':
-                        $exprString = $codeInput[$nbInst ++];
-                        $exprLine = (int) $codeInput[$nbInst ++];
-                        $exprColumn = (int) $codeInput[$nbInst ++];
-
-                        $myExpr = new MyExpr($exprLine, $exprColumn);
-
-                        $exprIsAssign =  $codeInput[$nbInst ++];
-
-                        if ($exprIsAssign === "true") {
-                            $exprDefAssignId = (int) $codeInput[$nbInst ++];
-                            $myExpr->setAssign(true);
-                            $myExpr->setAssignDef($exprDefAssignId);
-                        }
-
-                        $nbExprs = (int) $codeInput[$nbInst ++];
-
-                        $arrayExprs[] = $myExpr;
-
-                        for ($i = 0; $i < $nbExprs; $i ++) {
-                            $defId = (int) $codeInput[$nbInst ++];
-                            $myExpr->addDef($defId);
-                        }
-
-                        $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);
-                        $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
-                        $myFunction->getMyCode()->addCode($instEndExpr);
-
-                        break;
                 }
             }
 
@@ -282,34 +238,6 @@ class MyCode
                 }
             }
 
-            foreach ($arrayExprs as $myExpr) {
-                $defs = $myExpr->getDefs();
-                $myExpr->setDefs(array());
-
-                if ($myExpr->isAssign()) {
-                    $defId = $myExpr->getAssignDef();
-                    if (isset($arrayDefinitions[$defId])) {
-                        $myDef = $arrayDefinitions[$defId];
-                        $myExpr->setAssignDef($myDef);
-                    }
-                }
-
-                foreach ($defs as $defId) {
-                    if (isset($arrayDefinitions[$defId])) {
-                        $myDef = $arrayDefinitions[$defId];
-                        $myExpr->addDef($myDef);
-                    }
-                }
-            }
-
-            foreach ($arrayDefinitions as $myDef) {
-                $expr = $myDef->getExpr();
-                
-                if (isset($arrayExprs[$expr])) {
-                    $myExpr = $arrayExprs[$expr];
-                    $myDef->setExpr($myExpr);
-                }
-            }
 
             $instFunc = new MyInstruction(Opcodes::LEAVE_FUNCTION);
             $instFunc->addProperty(MyInstruction::MYFUNC, $myFunction);
@@ -378,16 +306,6 @@ class MyCode
                         echo "name = $funcname\n";
                         break;
 
-                    case Opcodes::START_EXPRESSION:
-                        echo "Opcodes::START_EXPRESSION\n";
-                        break;
-
-                    case Opcodes::END_EXPRESSION:
-                        echo "Opcodes::END_EXPRESSION\n";
-                        $myExpr = $instruction->getProperty(MyInstruction::EXPR);
-                        echo "expression tainted = ".$myExpr->isTainted()."\n";
-                        break;
-
                     case Opcodes::CONCAT_LIST:
                         echo "Opcodes::CONCAT_LIST\n";
                         break;
@@ -418,17 +336,6 @@ class MyCode
 
                     case Opcodes::COND_START_IF:
                         echo "Opcodes::COND_START_IF\n";
-                        break;
-
-                    case Opcodes::TEMPORARY:
-                        echo "Opcodes::TEMPORARY\n";
-                        $tempname = htmlentities(
-                            $instruction->getProperty(MyInstruction::TEMPORARY)->getName(),
-                            ENT_QUOTES,
-                            'UTF-8'
-                        );
-                        echo "name = $tempname\n";
-
                         break;
 
                     case Opcodes::DEFINITION:

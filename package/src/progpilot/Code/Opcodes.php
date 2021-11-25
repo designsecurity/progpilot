@@ -19,9 +19,6 @@ class Opcodes
     const DEFINITION = 5;
     const START_ASSIGN = 6;
     const END_ASSIGN = 7;
-    const START_EXPRESSION = 8;
-    const END_EXPRESSION = 9;
-    const TEMPORARY = 10;
     const CONCAT_LEFT = 11;
     const CONCAT_RIGHT = 12;
     const CONCAT_LIST = 13;

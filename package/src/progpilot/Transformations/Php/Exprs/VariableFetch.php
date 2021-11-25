@@ -32,7 +32,6 @@ class VariableFetch
             );
 
             $instVariableFetch = new MyInstruction(Opcodes::VARIABLE_FETCH);
-            $instVariableFetch->addProperty(MyInstruction::EXPR, $expr);
 
             $property = is_null($expr) ? MyInstruction::VARID : MyInstruction::EXPRID;
 
