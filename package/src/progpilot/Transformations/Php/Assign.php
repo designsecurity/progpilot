@@ -16,7 +16,6 @@ use PHPCfg\Operand;
 
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
-use progpilot\Objects\MyExpr;
 use progpilot\Objects\MyOp;
 
 use progpilot\Code\MyInstruction;
@@ -37,8 +36,7 @@ class Assign
         $expr,
         $var,
         $isReturnDef = false,
-        $isDefine = false,
-        $myblock = null
+        $isDefine = false
     ) {
         $backDef = null;
 
@@ -54,10 +52,6 @@ class Assign
             }
         } else {
             $name = Common::getNameDefinition($context->getCurrentOp());
-            $type = Common::getTypeDefinition($context->getCurrentOp());
-            $typeArray = Common::getTypeIsArray($context->getCurrentOp());
-            $typeInstance = Common::getTypeIsInstance($context->getCurrentOp());
-            
             if (empty($name)) {
                 $name = "empty_".rand();
             }
@@ -68,16 +62,15 @@ class Assign
             $name = $context->getCurrentFunc()->getName()."_return";
         }
 
-        $myExpr = new MyExpr($context->getCurrentLine(), $context->getCurrentColumn());
-
         $instAssign = new MyInstruction(Opcodes::END_ASSIGN);
 
         // extra = properties, arrays
         // $left(extra) = $right(extra) <= expr right
 
         // let's start by the right part
+        // in case of the expr has not been catched naturally in the transform
         if (isset($expr)) {
-            Expr::instructionnew($context, $expr, null);
+            Expr::implicitfetch($context, $expr, null);
         }
 
         // let's continue by the left part
@@ -110,23 +103,11 @@ class Assign
             default:
                 break;
         }
-        
-        // NOT NECESSARY?
-        // an object (created by new)
-        if (isset($typeInstance) && $typeInstance === MyOp::TYPE_INSTANCE) {
-            // it's the class name not instance name
-            if (isset($expr->ops[0]->class->value)) {
-                $nameClass = $expr->ops[0]->class->value;
-                $myDef->addType(MyDefinition::TYPE_INSTANCE);
-                $myDef->setClassName($nameClass);
-            }
-        }
 
         $instDefinition->addProperty(MyInstruction::DEF, $myDef);
         $context->getCurrentMycode()->addCode($instDefinition);
 
         $instAssign->addProperty(MyInstruction::DEF, $myDef);
-        $instAssign->addProperty(MyInstruction::EXPR, $myExpr);
 
         if ($op instanceof Op\Expr\AssignRef) {
             $instAssign->addProperty(MyInstruction::REFERENCE, true);

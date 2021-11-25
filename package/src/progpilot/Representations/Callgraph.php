@@ -186,12 +186,12 @@ class Callgraph
             }
 
             // calculate edges second case : calls from parents
-            if (count($calls) > 0) {
+            if (!empty($calls)) {
                 $lastCallParent = $calls[count($calls) - 1][0];
                 $lastMyClassParent = $calls[count($calls) - 1][1];
                 foreach ($this->blocks[$myBlock]->children as $child) {
                     $calls = $this->getCalls($child);
-                    if (!is_null($calls) && count($calls) > 0) {
+                    if (!is_null($calls) && !empty($calls)) {
                         $firstCallChild = $calls[0][0];
                         $firstMyClassChild = $calls[0][1];
                         $this->addEdge(

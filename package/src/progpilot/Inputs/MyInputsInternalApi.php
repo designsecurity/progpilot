@@ -208,7 +208,7 @@ class MyInputsInternalApi
         return null;
     }
 
-    public function getValidatorByName($context, $stackClass, $myFunc, $myClass)
+    public function getValidatorByName($myFunc, $myClass)
     {
         foreach ($this->validators as $myValidator) {
             if ($myValidator->getName() === $myFunc->getName()) {
@@ -222,35 +222,6 @@ class MyInputsInternalApi
                             || $myValidator->getInstanceOfName() === $myClass->getExtendsOf())) {
                         return $myValidator;
                     }
-
-                    if ($myValidator->getLanguage() === "php") {
-                        $propertiesValidator = explode("->", $myValidator->getInstanceOfName());
-                    } elseif ($myValidator->getLanguage() === "js") {
-                        $propertiesValidator = explode(".", $myValidator->getInstanceOfName());
-                    }
-
-                    if (is_array($propertiesValidator)) {
-                        $myValidatorInstanceName = $propertiesValidator[0];
-
-                        $myValidatorNumberOfProperties = count($propertiesValidator);
-                        $stackNumberOfProperties = count($stackClass);
-
-                        if ($stackNumberOfProperties >= $myValidatorNumberOfProperties) {
-                            $knownProperties =
-                                $stackClass[$stackNumberOfProperties - $myValidatorNumberOfProperties];
-
-                            foreach ($knownProperties as $propClass) {
-                                $objectId = $propClass->getObjectId();
-                                $myClass = $context->getObjects()->getMyClassFromObject($objectId);
-                                
-                                if (!is_null($myClass) &&
-                                    ($myClass->getName() === $myValidatorInstanceName
-                                        || $myClass->getExtendsOf() === $myValidatorInstanceName)) {
-                                    return $myValidator;
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -258,7 +229,7 @@ class MyInputsInternalApi
         return null;
     }
 
-    public function getSanitizerByName($context, $stackClass, $myFunc, $myClass)
+    public function getSanitizerByName($myFunc, $myClass)
     {
         foreach ($this->sanitizers as $mySanitizer) {
             if ($mySanitizer->getName() === $myFunc->getName()) {
@@ -279,7 +250,7 @@ class MyInputsInternalApi
         return null;
     }
 
-    public function getSinkByName($context, $stackClass, $myFunc, $myClass)
+    public function getSinkByName($myFunc, $myClass)
     {
         foreach ($this->sinks as $mySink) {
             if ($mySink->getName() === $myFunc->getName()) {
@@ -292,36 +263,6 @@ class MyInputsInternalApi
                         && ($mySink->getInstanceOfName() === $myClass->getName()
                             || $mySink->getInstanceOfName() === $myClass->getExtendsOf())) {
                         return $mySink;
-                    }
-
-                    if ($mySink->getLanguage() === "php") {
-                        $propertiesSink = explode("->", $mySink->getInstanceOfName());
-                    } elseif ($mySink->getLanguage() === "js") {
-                        $propertiesSink = explode(".", $mySink->getInstanceOfName());
-                    }
-
-                    if (is_array($propertiesSink)) {
-                        $mySinkInstanceName = $propertiesSink[0];
-
-                        $mySinkNumberOfProperties = count($propertiesSink);
-                        $stackNumberOfProperties = count($stackClass);
-
-                        if ($stackNumberOfProperties >= $mySinkNumberOfProperties) {
-                            $knownProperties =
-                            $stackClass[$stackNumberOfProperties - $mySinkNumberOfProperties];
-
-                            foreach ($knownProperties as $propClass) {
-                                $objectId = $propClass->getObjectId();
-                                $myClass = $context->getObjects()->getMyClassFromObject($objectId);
-                                
-                                if ((is_null($myClass) && $mySinkInstanceName === $propClass->getName())
-                                    || (!is_null($myClass)
-                                        && ($myClass->getName() === $mySinkInstanceName
-                                            || $myClass->getExtendsOf() === $mySinkInstanceName))) {
-                                    return $mySink;
-                                }
-                            }
-                        }
                     }
                 }
             }

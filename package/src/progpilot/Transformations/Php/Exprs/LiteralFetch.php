@@ -19,7 +19,7 @@ use progpilot\Code\Opcodes;
 
 class LiteralFetch
 {
-    public static function literalFetch($context, $op, $expr)
+    public static function literalFetch($context, $op)
     {
         if (isset($op)
             && $op instanceof Operand\Literal) {
@@ -32,7 +32,6 @@ class LiteralFetch
             );
             
             $myTemp->getCurrentState()->addType(MyDefinition::TYPE_LITERAL);
-
             $myTemp->getCurrentState()->addLastKnownValue($op->value);
 
             $instDefChained = new MyInstruction(Opcodes::LITERAL_FETCH);

@@ -21,7 +21,6 @@ use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyBlock;
 use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyProperty;
-use progpilot\Objects\MyExpr;
 use progpilot\Objects\MyClass;
 use progpilot\Objects\MyOp;
 use progpilot\Objects\MyFile;
@@ -29,13 +28,10 @@ use progpilot\Objects\MyFile;
 use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
 
-use progpilot\Transformations\Php\FuncCall;
 use progpilot\Transformations\Php\Expr;
 use progpilot\Transformations\Php\Assign;
 use progpilot\Transformations\Php\Common;
 use progpilot\Transformations\Php\Context;
-
-use progpilot\Transformations\Php\Exprs\VariableFetch;
 
 use function DeepCopy\deep_copy;
 
@@ -297,7 +293,8 @@ class Transform implements Visitor
 
         // we can have a block opened and we need to leave it
         if ($inst->getOpcode() !== Opcodes::LEAVE_BLOCK) {
-            if (!is_null($this->context->getCurrentBlock())) {
+            if (!is_null($this->context->getCurrentBlock())
+                && $this->sBlocks->contains($this->context->getCurrentBlock())) {
                 $myBlock = $this->sBlocks[$this->context->getCurrentBlock()];
                 $myBlock->setEndAddressBlock(count($this->context->getCurrentMycode()->getCodes()));
 
@@ -319,24 +316,13 @@ class Transform implements Visitor
         $this->context->addTmpFunctions($myFunction);
     }
 
-    public function parseconditions($instStartIf, $cond)
-    {
-        foreach ($cond as $ops) {
-            if ($ops instanceof Op\Expr\BooleanNot) {
-                $instStartIf->addProperty(MyInstruction::NOT_BOOLEAN, true);
-                $this->parseconditions($instStartIf, $ops->expr->ops);
-            }
-        }
-    }
-
     public function enterOp(Op $op, Block $block)
     {
         $this->context->setCurrentOp($op);
-        //$this->context->setCurrentBlock($block);
 
         // for theses objects getline et getcolumn methods exists except for assertion
         if ($op instanceof Op\Stmt ||
-                    ($op instanceof Op\Expr && !($op instanceof Op\Expr\Assertion)) ||
+                ($op instanceof Op\Expr && !($op instanceof Op\Expr\Assertion)) ||
                     $op instanceof Op\Terminal) {
             if ($op->getLine() !== -1 && $op->getAttribute("startFilePos", -1) !== -1) {
                 $this->context->setCurrentLine($op->getLine());
@@ -344,16 +330,14 @@ class Transform implements Visitor
             }
         }
 
-        // careful it includes also binaryop concat and more
-        if ($op instanceof Op\Expr\BinaryOp) {
+        if ($op instanceof Op\Expr\BinaryOp
+            && !($op instanceof Op\Expr\BinaryOp\Concat)) {
             $instBinary = new MyInstruction(Opcodes::BINARYOP);
             $instBinary->addProperty(MyInstruction::LEFTID, $this->context->getCurrentFunc()->getOpId($op->left));
             $instBinary->addProperty(MyInstruction::RIGHTID, $this->context->getCurrentFunc()->getOpId($op->right));
             $instBinary->addProperty(MyInstruction::RESULTID, $this->context->getCurrentFunc()->getOpId($op->result));
             $this->context->getCurrentMycode()->addCode($instBinary);
-        }
-
-        if ($op instanceof Op\Expr\BooleanNot) {
+        } elseif ($op instanceof Op\Expr\BooleanNot) {
             $instNotBoolean = new MyInstruction(Opcodes::COND_BOOLEAN_NOT);
             $instNotBoolean->addProperty(MyInstruction::EXPRID, $this->context->getCurrentFunc()->getOpId($op->expr));
             $instNotBoolean->addProperty(
@@ -361,28 +345,15 @@ class Transform implements Visitor
                 $this->context->getCurrentFunc()->getOpId($op->result)
             );
             $this->context->getCurrentMycode()->addCode($instNotBoolean);
-        }
-
-        if ($op instanceof Op\Stmt\JumpIf) {
+        } elseif ($op instanceof Op\Stmt\JumpIf) {
             $instStartIf = new MyInstruction(Opcodes::COND_START_IF);
             $instStartIf->addProperty(MyInstruction::EXPRID, $this->context->getCurrentFunc()->getOpId($op->cond));
             $this->context->getCurrentMycode()->addCode($instStartIf);
 
             $this->blockIfToBeResolved[] = [$instStartIf, $block, $op->if, $op->else];
-            //$this->parseconditions($instStartIf, $op->cond->ops);
-        }
-
-        /*
-           const TYPE_INCLUDE = 1;
-           const TYPE_INCLUDE_OPNCE = 2;
-           const TYPE_REQUIRE = 3;
-           const TYPE_REQUIRE_ONCE = 4;
-        */
-        Expr::instructionnew2($this->context, $op, null);
-
-        if ($op instanceof Op\Iterator\Value) {
+        } elseif ($op instanceof Op\Iterator\Value) {
             $instIterator = new MyInstruction(Opcodes::ITERATOR);
-            Expr::instructionnew($this->context, $op->var, null);
+            Expr::implicitfetch($this->context, $op->var, null);
             $instIterator->addProperty(MyInstruction::VARID, $this->context->getCurrentFunc()->getOpId($op->var));
             $instIterator->addProperty(MyInstruction::RESULTID, $this->context->getCurrentFunc()->getOpId($op->result));
             $this->context->getCurrentMycode()->addCode($instIterator);
@@ -406,9 +377,8 @@ class Transform implements Visitor
             $this->context->getCurrentFunc()->addLastBlockId($this->context->getCurrentBlock()->getId());
 
             if (isset($op->expr)) {
-                //$myBlock = $this->sBlocks[$this->context->getCurrentBlock()];
                 if (isset($op->expr->original)) {
-                    Expr::instructionnew($this->context, $op->expr, "right");
+                    Expr::implicitfetch($this->context, $op->expr, "right");
                 }
 
                 Assign::instruction($this->context, $op, $op->expr, null, true, false);
@@ -419,7 +389,6 @@ class Transform implements Visitor
             }
         } elseif ($op instanceof Op\Expr\Assign || $op instanceof Op\Expr\AssignRef) {
             if (isset($op->expr) && isset($op->var)) {
-                //VariableFetch::variableFetch($this->context, $op->expr, null);
                 Assign::instruction($this->context, $op, $op->expr, $op->var);
             }
         } elseif ($op instanceof Op\Stmt\Class_) {
@@ -438,7 +407,6 @@ class Transform implements Visitor
             $this->context->getClasses()->addMyclass($myClass);
             
             foreach ($op->stmts->children as $property) {
-                // if($property instanceof Op\Stmt\ClassMethod)
                 if ($property instanceof Op\Stmt\Property) {
                     $propertyName = Common::getNameDefinition($property);
                     $visibility = Common::getTypeVisibility($property->visibility);
@@ -463,6 +431,9 @@ class Transform implements Visitor
             $instClass = new MyInstruction(Opcodes::CLASSE);
             $instClass->addProperty(MyInstruction::MYCLASS, $myClass);
             $this->context->getCurrentMycode()->addCode($instClass);
+        }
+        else {
+            Expr::explicitfetch($this->context, $op, null);
         }
     }
 }

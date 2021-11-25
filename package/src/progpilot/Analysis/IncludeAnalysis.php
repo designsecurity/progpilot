@@ -45,10 +45,9 @@ class IncludeAnalysis
         return false;
     }
 
-    public static function funccall($context, $defs, $blocks, $instruction, $code, $index)
+    public static function funccall($context, $blocks, $defs, $instruction)
     {
         $funcName = $instruction->getProperty(MyInstruction::FUNCNAME);
-        $arrFuncCall = $instruction->getProperty(MyInstruction::ARR);
         $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
 
         // require, require_once ... already handled in transform Expr/include_
@@ -62,7 +61,6 @@ class IncludeAnalysis
                 if (count($myDefArg->getCurrentState()->getLastKnownValues()) !== 0) {
                     foreach ($myDefArg->getCurrentState()->getLastKnownValues() as $lastKnownValue) {
                         $realFile = false;
-
                         // else it's maybe a relative path
                         if (strlen($lastKnownValue) > 0
                             && (substr($lastKnownValue, 0, 1) !== DIRECTORY_SEPARATOR
@@ -238,23 +236,14 @@ class IncludeAnalysis
 
                                             foreach ($defsIncluded as $defIncluded) {
                                                 if (!is_null($saveMyFile[$defIncluded->getId()])) {
-                                                    /*
-                                                    $tmp = clone $defIncluded->getSourceMyFile();
-                                                    $tmp->setIncludedToMyfile($saveMyFile[$defIncluded->getId()]);*/
                                                     $defIncluded->setSourceMyFile($saveMyFile[$defIncluded->getId()]);
                                                 }
                                             }
-                                    
-                                            FuncAnalysis::funccallAfter(
-                                                $context,
-                                                $defs->getOutMinusKill($myFuncCall->getBlockId()),
-                                                $mainInclude,
-                                                $mainInclude,
-                                                $arrFuncCall,
-                                                $instruction,
-                                                $code,
-                                                $index
-                                            );
+
+                                            $resultid = $instruction->getProperty(MyInstruction::RESULTID);
+                                            $opInformation = $context->getCurrentFunc()->getOpInformation($resultid);
+                                            $opInformation["chained_results"] = $mainInclude->getReturnDefs();
+                                            $context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
                                         }
 
                                         // even if we don't visit again the function

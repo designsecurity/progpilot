@@ -24,15 +24,13 @@ class ConcatFetch
         if (isset($op)) {
             if ($op instanceof Op\Expr\BinaryOp\Concat) {
                 $instDefChained = new MyInstruction(Opcodes::CONCAT_LEFT);
-
-                Expr::instructionnew($context, $op->left, $expr);
+                Expr::implicitfetch($context, $op->left, $expr);
                 $instDefChained->addProperty(MyInstruction::LEFTID, $context->getCurrentFunc()->getOpId($op->left));
-                Expr::instructionnew($context, $op->right, $expr);
+                Expr::implicitfetch($context, $op->right, $expr);
                 $opIds = [];
                 $opIds[] = $context->getCurrentFunc()->getOpId($op->right);
                 $instDefChained->addProperty(MyInstruction::RIGHTID, $opIds);
                 $instDefChained->addProperty(MyInstruction::RESULTID, $context->getCurrentFunc()->getOpId($op->result));
-                $instDefChained->addProperty(MyInstruction::EXPR, $expr);
 
                 $context->getCurrentMycode()->addCode($instDefChained);
             } elseif ($op instanceof Op\Expr\ConcatList) {
@@ -41,7 +39,7 @@ class ConcatFetch
                 $opIds = [];
                 foreach ($op->list as $opsbis) {
                     $opIds[] = $context->getCurrentFunc()->getOpId($opsbis);
-                    Expr::instructionnew($context, $opsbis, $expr);
+                    Expr::implicitfetch($context, $opsbis, $expr);
                 }
                 $instDefChained->addProperty(MyInstruction::RIGHTID, $opIds);
                 $instDefChained->addProperty(MyInstruction::RESULTID, $context->getCurrentFunc()->getOpId($op->result));

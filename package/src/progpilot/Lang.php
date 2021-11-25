@@ -91,5 +91,6 @@ class Lang
         "\$context->setMaxFileSize())";
     const MAX_MEMORY_EXCEEDED = "Memory threshold reached, some references will be released ".
         "(increasing execution time)";
+    const CANNOT_SET_MEMORY = "Cannot set php memory_limit to ";
     const V8JS_NOTLOADED = "extension v8js must be loaded to analyze js files";
 }

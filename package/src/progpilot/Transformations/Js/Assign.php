@@ -15,7 +15,6 @@ use PHPCfg\Op;
 
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
-use progpilot\Objects\MyExpr;
 use progpilot\Objects\MyOp;
 
 use progpilot\Code\MyInstruction;
@@ -30,19 +29,7 @@ class Assign
         $context->getCurrentMycode()->addCode(
             new MyInstruction(Opcodes::START_ASSIGN)
         );
-        $context->getCurrentMycode()->addCode(
-            new MyInstruction(Opcodes::START_EXPRESSION)
-        );
               
-        $myExpr = new MyExpr(
-            $opExpr->loc->start->line,
-            $opExpr->loc->start->column
-        );
-        
-        $backDef = Expr::instruction($opExpr, $context, $myExpr);
-                                    
-        $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);
-        $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
         $context->getCurrentMycode()->addCode($instEndExpr);
 
         $context->getCurrentMycode()->addCode(
@@ -76,9 +63,6 @@ class Assign
             }
         }
         
-        $myDef->setExpr($myExpr);
-        $myExpr->setAssign(true);
-        $myExpr->setAssignDef($myDef);
 
         $instDef = new MyInstruction(Opcodes::DEFINITION);
         $instDef->addProperty(MyInstruction::DEF, $myDef);

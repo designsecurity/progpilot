@@ -13,7 +13,6 @@ namespace progpilot\Transformations\Js;
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyBlock;
 use progpilot\Objects\MyDefinition;
-use progpilot\Objects\MyExpr;
 use progpilot\Objects\MyClass;
 use progpilot\Objects\MyOp;
 use progpilot\Objects\MyFile;
@@ -122,19 +121,6 @@ class Transform
                                     break;
                             
                                 case 'CallExpression':
-                                    $myExpr = new MyExpr(
-                                        $astNode->loc->start->line,
-                                        $astNode->loc->start->column
-                                    );
-                                    $this->context->getCurrentMycode()->addCode(
-                                        new MyInstruction(Opcodes::START_EXPRESSION)
-                                    );
-        
-                                    FuncCall::instruction($this->context, $myExpr, $astNode);
-                                                    
-                                    $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);
-                                    $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
-                                    $this->context->getCurrentMycode()->addCode($instEndExpr);
                                     
                                     break;
                             

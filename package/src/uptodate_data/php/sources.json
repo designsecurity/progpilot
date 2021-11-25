@@ -91,7 +91,6 @@
         {"name": "getallheaders", "is_function": true, "language": "php"},
         {"name": "get_browser", "is_function": true, "language": "php"},
         {"name": "getenv", "is_function": true, "language": "php"},
-        {"name": "gethostbyaddr", "is_function": true, "language": "php"},
         {"name": "runkit_superglobals", "is_function": true, "language": "php"},
         {"name": "import_request_variables", "is_function": true, "language": "php"}
 		]

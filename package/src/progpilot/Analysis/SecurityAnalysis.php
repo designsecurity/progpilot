@@ -40,62 +40,24 @@ class SecurityAnalysis
         return false;
     }
 
-    public static function funccall($stackClass, $context, $instruction, $myClass = null)
+    public static function funccall($context, $instruction, $myClass = null)
     {
         $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
 
-        $nameInstance = null;
-        if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
-            $nameInstance = $myFuncCall->getNameInstance();
-        }
-
-        $mySink = $context->inputs->getSinkByName($context, $stackClass, $myFuncCall, $myClass);
+        $mySink = $context->inputs->getSinkByName($myFuncCall, $myClass);
         if (!is_null($mySink)) {
             $nbParams = $myFuncCall->getNbParams();
-            $conditionRespected = true;
-            if ($mySink->hasParameters()) {
-                for ($i = 0; $i < $nbParams; $i ++) {
-                    if ($mySink->isParameter($i + 1)) {
-                        //$conditionRespected = false;
-                        $conditionRespected = true;
-        
-                        $myDefArg = $instruction->getProperty("argdef$i");
+            for ($i = 0; $i < $nbParams; $i ++) {
+                $myDefArg = $instruction->getProperty("argdef$i");
 
-                        if (!$conditionRespected) {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if ($conditionRespected) {
-                for ($i = 0; $i < $nbParams; $i ++) {
-                    $myDefArg = $instruction->getProperty("argdef$i");
-                    $myDefExpr = $instruction->getProperty("argexpr$i");
-
-                    if (!$mySink->hasParameters() || ($mySink->hasParameters() && $mySink->isParameter($i + 1))) {
-                        /*
-                        if ($myDefArg->isType(MyDefinition::TYPE_COPY_ARRAY)
-                            && $mySink->isParameterCondition($i + 1, "array_tainted")) {
-                            foreach ($myDefArg->getCopyArrays() as $copyarray) {
-                                SecurityAnalysis::call(
-                                    $i + 1,
-                                    $myFuncCall,
-                                    $context,
-                                    $mySink,
-                                    $copyarray[1]
-                                );
-                            }
-                        } else {*/
-                        SecurityAnalysis::callbis(
-                            $i + 1,
-                            $myFuncCall,
-                            $context,
-                            $mySink,
-                            $myDefArg
-                        );
-                        //}
-                    }
+                if (!$mySink->hasParameters() || ($mySink->hasParameters() && $mySink->isParameter($i + 1))) {
+                    SecurityAnalysis::callbis(
+                        $i + 1,
+                        $myFuncCall,
+                        $context,
+                        $mySink,
+                        $myDefArg
+                    );
                 }
             }
         }
@@ -248,7 +210,6 @@ class SecurityAnalysis
         $nbtainted = 0;
 
         // arg param of sink = always current state
-
         if (!SecurityAnalysis::isSafeState($context, $mySink, $indexParameter, $myDef->getCurrentState())) {
             $taintedDefs = $myDef->getCurrentState()->getTaintedByDefs();
             foreach ($taintedDefs as $taintedByDef) {
@@ -257,7 +218,6 @@ class SecurityAnalysis
 
                 if (!SecurityAnalysis::isSafeState($context, $mySink, $indexParameter, $taintedState)) {
                     $ret = SecurityAnalysis::getPrintableTaintedDef($mySink, $taintedDef);
-
                     if (!SecurityAnalysis::inArrayStateSource($temp, $ret)) {
                         $resultsFlow = SecurityAnalysis::taintedStateFlow(
                             $context,

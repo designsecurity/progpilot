@@ -14,7 +14,6 @@ class MyClass extends MyOp
 {
     private $methods;
     private $properties;
-    //private $objectIdThis;
     private $extendsof;
 
     public function __construct($varLine, $varColumn, $varName)
@@ -23,7 +22,6 @@ class MyClass extends MyOp
 
         $this->properties = [];
         $this->methods = [];
-        //$this->objectIdThis = null;
         $this->extendsof = null;
     }
 
@@ -118,17 +116,7 @@ class MyClass extends MyOp
 
         return $myProperty;
     }
-    /*
-        public function setObjectIdThis($objectId)
-        {
-            $this->objectIdThis = $objectId;
-        }
-
-        public function getObjectIdThis()
-        {
-            return $this->objectIdThis;
-        }
-    */
+    
     public function getExtendsOf()
     {
         return $this->extendsof;

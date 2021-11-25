@@ -21,15 +21,13 @@ use progpilot\Transformations\Php\Expr;
 
 class ArrayFetch
 {
-    public static function arrayFetch($context, $op, $expr, $name)
+    public static function arrayFetch($context, $op)
     {
         if (isset($op)
             && $op instanceof Op\Expr\Array_) {
             if (isset($op->values) && !empty($op->values)) {
                 $instVariableFetch = new MyInstruction(Opcodes::ARRAY_EXPR);
                 $nbArrayExpr = 0;
-                $tempArrayName = "tmp_array_".rand();
-
                 foreach ($op->values as $value) {
                     if (isset($op->keys[$nbArrayExpr])) {
                         $instVariableFetch->addProperty(
@@ -37,10 +35,10 @@ class ArrayFetch
                             $context->getCurrentFunc()->getOpId($op->keys[$nbArrayExpr])
                         );
             
-                        Expr::instructionnew($context, $op->keys[$nbArrayExpr], "");
+                        Expr::implicitfetch($context, $op->keys[$nbArrayExpr], "");
                     }
 
-                    Expr::instructionnew($context, $value, "");
+                    Expr::implicitfetch($context, $value, "");
                     $instVariableFetch->addProperty(
                         "value".$nbArrayExpr,
                         $context->getCurrentFunc()->getOpId($value)

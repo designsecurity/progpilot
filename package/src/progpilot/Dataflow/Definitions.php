@@ -266,28 +266,9 @@ class Definitions
     }
 
     // def1 = def, def2 = defsearch inside ResolveDefs function
-    public static function defEquality($def1, $def2, $byPassArray = false)
+    public static function defEquality($def1, $def2)
     {
         if ($def1->getName() === $def2->getName()) {
-            /*
-            if (($def1->property->getProperties() !== $def2->property->getProperties())
-                && !$def1->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")
-                    && !$def2->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
-                    return false;
-            }
-*/
-
-/*
-            if (($def1->getArrayValue() !== $def2->getArrayValue()) && !$byPassArray) {
-                if ($def1->isType(MyDefinition::TYPE_ARRAY) && $def2->isType(MyDefinition::TYPE_ARRAY)) {
-                    //$extract = BuildArrays::extractArrayFromArr($def1->getArrayValue(), $def2->getArrayValue());
-
-                    //if ($extract === false) {
-                        //return false;
-                    //}
-                }
-            }
-*/
             return true;
         }
 

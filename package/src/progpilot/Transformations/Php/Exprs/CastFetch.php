@@ -27,14 +27,14 @@ class CastFetch
                 || $op instanceof Op\Expr\Cast\Bool_
                 || $op instanceof Op\Expr\Cast\Double_
                 || $op instanceof Op\Expr\Cast\Object_) {
-                Expr::instructionnew($context, $op->expr, $expr);
+                Expr::implicitfetch($context, $op->expr, $expr);
                 $instDefChained = new MyInstruction(Opcodes::CAST);
                 $instDefChained->addProperty("type_cast", MyDefinition::CAST_SAFE);
                 $instDefChained->addProperty(MyInstruction::EXPRID, $context->getCurrentFunc()->getOpId($op->expr));
                 $instDefChained->addProperty(MyInstruction::RESULTID, $context->getCurrentFunc()->getOpId($op->result));
                 $context->getCurrentMycode()->addCode($instDefChained);
             } elseif ($op instanceof Op\Expr\Cast\String_) {
-                Expr::instructionnew($context, $op->expr, $expr);
+                Expr::implicitfetch($context, $op->expr, $expr);
                 $instDefChained = new MyInstruction(Opcodes::CAST);
                 $instDefChained->addProperty("type_cast", MyDefinition::CAST_NOT_SAFE);
                 $instDefChained->addProperty(MyInstruction::EXPRID, $context->getCurrentFunc()->getOpId($op->expr));

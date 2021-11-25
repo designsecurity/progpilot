@@ -18,34 +18,37 @@ use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyDefState;
 use progpilot\Analysis\ResolveDefs;
 use progpilot\Analysis\TaintAnalysis;
-use progpilot\Analysis\ValueAnalysis;
 use progpilot\Analysis\AssertionAnalysis;
 
 class State
 {
-    public static function updateBlocksOfDef($context, $def)
+    public static function updateBlocksOfDef($context, $def, &$defStack)
     {
         if (!is_null($def->getParamToArg())) {
             $def = $def->getParamToArg();
         }
 
         foreach ($def->getStates() as $state) {
-            if ($state->isType(MyDefinition::TYPE_ARRAY)) {
-                State::updateBlocksOfArrayElements($context, $state);
-            }
+            if (!in_array($state->getId(), $defStack, true)) {
+                $defStack[] = $state->getId();
+                if ($state->isType(MyDefinition::TYPE_ARRAY)) {
+                    State::updateBlocksOfArrayElements($context, $state, $defStack);
+                }
             
-            if ($state->isType(MyDefinition::TYPE_INSTANCE)) {
-                State::updateBlocksOfProperties($context, $def, $state);
+                if ($state->isType(MyDefinition::TYPE_INSTANCE)) {
+                    State::updateBlocksOfProperties($context, $state, $defStack);
+                }
             }
         }
     }
 
     public static function blockSwitching($context, $myFunc)
     {
+        $defStack = [];
         $tmpDefs = $myFunc->getDefs();
         foreach ($tmpDefs->getDefs() as $defs) {
             foreach ($defs as $def) {
-                State::updateBlocksOfDef($context, $def);
+                State::updateBlocksOfDef($context, $def, $defStack);
             }
         }
         
@@ -54,7 +57,7 @@ class State
         }
     }
 
-    public static function updateBlocksOfArrayElement($context, $arrayElement)
+    public static function updateBlocksOfArrayElement($context, $arrayElement, &$defStack)
     {
         $myBlock = $context->getCurrentBlock();
         $states = [];
@@ -69,72 +72,74 @@ class State
             }
         }
 
-        if (count($states) === 0) {
-        } elseif (count($states) === 1) {
+        if (count($states) === 1) {
             $newstate = $states[0];
             $arrayElement->assignStateToBlockId($newstate->getId(), $myBlock->getId());
-        } else {
-            $newstate = State::mergeDefStates($states);
-            $arrayElement->addState($newstate);
-            $arrayElement->assignStateToBlockId($newstate->getId(), $myBlock->getId());
+        } elseif (count($states) > 1) {
+            if ($arrayElement->getNbStates() < 20) {
+                $newstate = State::mergeDefStates($states);
+                $arrayElement->addState($newstate);
+                $arrayElement->assignStateToBlockId($newstate->getId(), $myBlock->getId());
+                $defStack[] = $newstate->getId();
+            }
         }
     }
 
-    public static function updateBlocksOfArrayElements($context, $state)
+    public static function updateBlocksOfArrayElements($context, $state, &$defStack)
     {
         $arrayIndexes = $state->getArrayIndexes();
         foreach ($arrayIndexes as $arrayIndexArr) {
             $arrayDef = $arrayIndexArr->def;
-            State::updateBlocksOfArrayElement($context, $arrayDef);
-            State::updateBlocksOfDef($context, $arrayDef);
+            State::updateBlocksOfArrayElement($context, $arrayDef, $defStack);
+            State::updateBlocksOfDef($context, $arrayDef, $defStack);
         }
     }
 
-    public static function updateBlocksOfProperty($context, $property)
+    public static function updateBlocksOfProperty($context, $property, &$defStack)
     {
         $myBlock = $context->getCurrentBlock();
         $states = [];
 
-        //foreach ($context->getCurrentFunc()->getBlocks() as $myBlock) {
-            $blockParents = $myBlock->getVirtualParents();
-            $existingState = $property->getState($myBlock->getId());
+
+        $blockParents = $myBlock->getVirtualParents();
+        $existingState = $property->getState($myBlock->getId());
                      
-            // the state has been already computer, we don't need to update that
-            // unless there is a new parent that have been added
-            if (is_null($existingState) || $myBlock->doNeedUpdateOfState()) {
-                $states = [];
-                foreach ($blockParents as $parentMyBlock) {
-                    if ($parentMyBlock->getId() !== $myBlock->getId()) {
-                        $state = $property->getState($parentMyBlock->getId());
-                        if (!is_null($state) && !in_array($state, $states, true)) {
-                            $states[] = $state;
-                        }
+        // the state has been already computer, we don't need to update that
+        // unless there is a new parent that have been added
+        if (is_null($existingState) || $myBlock->doNeedUpdateOfState()) {
+            $states = [];
+            foreach ($blockParents as $parentMyBlock) {
+                if ($parentMyBlock->getId() !== $myBlock->getId()) {
+                    $state = $property->getState($parentMyBlock->getId());
+                    if (!is_null($state) && !in_array($state, $states, true)) {
+                        $states[] = $state;
                     }
                 }
+            }
                 
-                if (count($states) === 0) {
-                    $newstate = $property->getCurrentState();
-                } elseif (count($states) === 1) {
-                    $newstate = $states[0];
-                    $property->assignStateToBlockId($newstate->getId(), $myBlock->getId());
-                } else {
+            if (count($states) === 1) {
+                $newstate = $states[0];
+                $property->assignStateToBlockId($newstate->getId(), $myBlock->getId());
+            } elseif (count($states) > 1) {
+                if ($property->getNbStates() < 20) {
                     $newstate = State::mergeDefStates($states);
-                    $property->addState($newstate);
+                    $property->addState($newstate);              
                     $property->assignStateToBlockId($newstate->getId(), $myBlock->getId());
+                    $defStack[] = $newstate->getId();
                 }
             }
-        //}
+        }
     }
 
-    public static function updateBlocksOfProperties($context, $def, $state)
+    public static function updateBlocksOfProperties($context, $state, &$defStack)
     {
         $idObject = $state->getObjectId();
         $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
 
         if (!is_null($tmpMyClass)) {
             foreach ($tmpMyClass->getProperties() as $property) {
-                State::updateBlocksOfProperty($context, $property);
-                State::updateBlocksOfDef($context, $property);
+                State::updateBlocksOfProperty($context, $property, $defStack);
+                State::updateBlocksOfDef($context, $property, $defStack);
             }
         }
     }
@@ -151,13 +156,12 @@ class State
             if ($def->isType(MyDefinition::TYPE_ARRAY_ELEMENT)
                 || $def->isType(MyDefinition::TYPE_PROPERTY)) {
                 $state = $def->getState($blockId);
-            //$state = $def->getCurrentState();
             } else {
                 $state = $def->getCurrentState();
             }
 
             if (!is_null($state)) {
-                if ($state->isTainted() && !AssertionAnalysis::temporarySimple($block, $def)) {
+                if ($state->isTainted() && !AssertionAnalysis::checkDefIsAssert($block, $def)) {
                     $myState->setTainted(true);
 
                     // for the flow we don't want built-in variables
@@ -200,10 +204,13 @@ class State
                 }
 
                 if ($state->isType(MyDefinition::TYPE_ARRAY)) {
-                    foreach ($state->getArrayIndexes() as $oriArrayIndex) {
-                        $myState->addArrayIndex($oriArrayIndex->index, $oriArrayIndex->def);
+                    foreach ($state->getArrayIndexes() as $oriArrayIndex) {                 
+                        $retadd = $myState->addArrayIndex($oriArrayIndex->index, $oriArrayIndex->def);
+                        // if tainted we force the potential existing array (could not be added before)
+                        if (!$retadd && $oriArrayIndex->def->getCurrentState()->isTainted()) {
+                            $myState->overwriteArrayIndex($oriArrayIndex->index, $oriArrayIndex->def);
+                        }  
                     }
-    
                     $myState->addType(MyDefinition::TYPE_ARRAY);
                 }
 

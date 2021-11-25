@@ -39,6 +39,7 @@ class ContextInternalApi
     protected $maxFileAnalysisDuration;
     protected $maxDefinitions;
     protected $maxFileSize;
+    protected $maxMemory;
     protected $defsMain;
     protected $callStack;
 
@@ -56,6 +57,7 @@ class ContextInternalApi
         $this->maxFileAnalysisDuration = 30;
         $this->maxDefinitions = 500;
         $this->maxFileSize = 1000000;
+        $this->maxMemory = 4000000000; // 4GB
 
         $this->inputs = new \progpilot\Inputs\MyInputs;
         $this->outputs = new \progpilot\Outputs\MyOutputs;
@@ -303,6 +305,24 @@ class ContextInternalApi
         return $this->functions;
     }
 
+    public function getNbsOpInformationsAll()
+    {
+        $nb = 0;
+        foreach ($this->getFunctions()->getFunctions() as $functionclasses) {
+            foreach ($functionclasses as $functionnames) {
+                foreach ($functionnames as $function) {
+                    foreach ($function->getOpInformations() as $opInformation) {
+                        if (isset($opInformation["chained_results"])) {
+                            $nb += count($opInformation["chained_results"]);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return $nb;
+    }
+
     public function getInputs()
     {
         return $this->inputs;
@@ -513,6 +533,10 @@ class ContextInternalApi
 
                             if (isset($value["options"]["max_file_size"])) {
                                 $this->setMaxFileSize($value["options"]["max_file_size"]);
+                            }
+
+                            if (isset($value["options"]["max_memory"])) {
+                                $this->setMaxFileSize($value["options"]["max_memory"]);
                             }
 
                             if (isset($value["options"]["debug_mode"])) {

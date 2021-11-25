@@ -14,7 +14,7 @@ use progpilot\Objects\MyDefinition;
 
 class AssertionAnalysis
 {
-    public static function temporarySimple($myBlock, $def)
+    public static function checkDefIsAssert($myBlock, $def)
     {
         $assertions = $myBlock->getAssertions();
 
@@ -35,11 +35,7 @@ class AssertionAnalysis
         if ($equality && $typeAssertion !== "string") {
             $safe = true;
         }
-/*
-        if ($def->getCast() === MyDefinition::CAST_SAFE) {
-            $safe = true;
-        }
-*/
+
         return $safe;
     }
 }

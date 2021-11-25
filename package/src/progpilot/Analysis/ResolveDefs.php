@@ -30,72 +30,24 @@ use progpilot\Objects\MyFunction;
 use progpilot\Dataflow\Definitions;
 
 use progpilot\Helpers\Analysis as HelpersAnalysis;
-use progpilot\Helpers\Dataflow as HelpersDataflow;
 
 class ResolveDefs
 {
-    public static function funccallReturnValues($context, $myFuncCall, $instruction, $myCode, $index)
+    public static function funccallReturnValues($myFuncCall, $instruction, $virtualReturnDef)
     {
-        $resultid = $instruction->getProperty(MyInstruction::RESULTID);
-
         if ($myFuncCall->getName() === "dirname") {
-            /*
-            $codes = $myCode->getCodes();
-
-            $suffix = "";
-            if (isset($codes[$index + 1]) && $codes[$index + 1]->getOpcode() === Opcodes::CONCAT_RIGHT) {
-                if (isset($codes[$index + 2]) && $codes[$index + 2]->getOpcode() === Opcodes::TEMPORARY) {
-                    $tempInstruction = $codes[$index + 2];
-                    $myTemp = $tempInstruction->getProperty(MyInstruction::TEMPORARY);
-
-                    if (isset($myTemp->getLastKnownValues()[0])) {
-                        $suffix = $myTemp->getLastKnownValues()[0];
-                    }
-                }
-
-                $index = $index + 2;
-            }
-
-            if (isset($codes[$index + 2]) && $codes[$index + 2]->getOpcode() === Opcodes::END_ASSIGN) {
-                $instructionDef = $codes[$index + 3];
-                $myDefReturn = $instructionDef->getProperty(MyInstruction::DEF);
-
-                if ($instruction->isPropertyExist("argdef0")) {
-                    $defarg = $instruction->getProperty("argdef0");
-                    foreach ($defarg->getLastKnownValues() as $knownValue) {
-                        $myDefReturn->addLastKnownValue(dirname($knownValue).$suffix);
-                    }
-                }
-            }
-            */
-
-
             if ($instruction->isPropertyExist("argdef0")) {
                 $defarg = $instruction->getProperty("argdef0");
 
-                $myTempReturn = new MyDefinition(
-                    $context->getCurrentBlock()->getId(),
-                    $context->getCurrentMyFile(),
-                    $myFuncCall->getLine(),
-                    $myFuncCall->getColumn(),
-                    "special_return_".$myFuncCall->getName()
-                );
-
                 foreach ($defarg->getCurrentState()->getLastKnownValues() as $knownValue) {
-                    $myTempReturn->getCurrentState()->addLastKnownValue(dirname($knownValue));
+                    $virtualReturnDef->getCurrentState()->addLastKnownValue(dirname($knownValue));
                 }
-
-                $opInformation = $context->getCurrentFunc()->getOpInformation($resultid);
-                $opInformation["chained_results"][] = $myTempReturn;
-                $context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
             }
         }
     }
 
-    public static function funccallClass($context, $data, $myFuncCall, $code, $index)
+    public static function funccallClass($context, $data, $myFuncCall, $instruction)
     {
-        $instruction = $code[$index];
-
         $varid = $instruction->getProperty(MyInstruction::VARID);
         $resultid = $instruction->getProperty(MyInstruction::RESULTID);
 
@@ -114,15 +66,13 @@ class ResolveDefs
             $myFakeInstance->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
             $myFakeInstance->setClassName($myFuncCall->getInstanceClassName());
 
-            HelpersDataflow::createObject($context, $myFakeInstance);
+            HelpersAnalysis::createObject($context, $myFakeInstance);
 
             $opInformation["chained_results"][] = $myFakeInstance;
             $context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
 
             $classStackName[$i][] = $myFakeInstance->getCurrentState();
         } elseif ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
-            $tmpProperties = null;
-
             $myDefTmp = new MyDefinition(
                 $context->getCurrentBlock()->getId(),
                 $context->getCurrentFunc()->getSourceMyFile(),
@@ -131,17 +81,17 @@ class ResolveDefs
                 $myFuncCall->getNameInstance()
             );
 
-            //$myDefTmp->property->setProperties($tmpProperties);
             $myDefTmp->addType(MyDefinition::TYPE_PROPERTY);
             // we don't want the backdef but the original instance
             
             $classStackName[$i] = [];
             $previousChainedResults = $context->getCurrentFunc()->getOpInformation($varid);
 
-            if (!is_null($previousChainedResults)) {
+            if (!is_null($previousChainedResults)
+                && isset($previousChainedResults["chained_results"])) {
                 $instances = $previousChainedResults["chained_results"];
             } else {
-                $instances = ResolveDefs::selectInstances(
+                $instances = ResolveDefs::selectDefinitions(
                     $context,
                     $data,
                     $myDefTmp
@@ -370,7 +320,7 @@ class ResolveDefs
             $prop = $defAssign->getName();
             $visibilityFinal = false;
 
-            $instances = ResolveDefs::selectInstances($context, $data, $copyDefAssign);
+            $instances = ResolveDefs::selectDefinitions($context, $data, $copyDefAssign);
             foreach ($instances as $instance) {
                 if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
                     $idObject = $instance->getCurrentState()->getObjectId();
@@ -407,7 +357,7 @@ class ResolveDefs
         return $visibilityFinal;
     }
 
-    public static function selectDefinitions($context, $data, $searchedDed, $bypassIsNearest = false)
+    public static function selectDefinitions($context, $data, $searchedDed)
     {
         $defsFound = [];
         if (is_null($data)) {
@@ -415,35 +365,10 @@ class ResolveDefs
         }
 
         foreach ($data as $def) {
-            if (Definitions::defEquality($def, $searchedDed, $bypassIsNearest)
-                        && ResolveDefs::isNearest($context, $searchedDed, $def)) {
-                if (!is_null($def->getParamToArg())) {
-                    $def = $def->getParamToArg();
-                }
-
-                // CA SERT A QUOI ICI REDONDANT AVEC LE DERNIER ?
-                if ($def->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)
-                    && $searchedDed->isType(MyDefinition::TYPE_INSTANCE)) {
-                    if (!is_null($def->getArgToParam())) {
-                        $def = $def->getArgToParam();
-                    }
-
-                    $defsFound[$def->getBlockId()][] = $def;
-                } elseif ($def->getCurrentState()->isType(MyDefinition::TYPE_ARRAY)
-                        /*&& $def->getArrayValue() === $searchedDed->getArrayValue()*/) {
-                    // we are looking for the nearest not instance of a property
-
-                    if (!is_null($def->getArgToParam())) {
-                        $def = $def->getArgToParam();
-                    }
-                    $defsFound[$def->getBlockId()][] = $def;
-                } elseif (!$searchedDed->isType(MyDefinition::TYPE_INSTANCE)) {
-                    if (!is_null($def->getArgToParam())) {
-                        $def = $def->getArgToParam();
-                    }
-                    // we are looking for the nearest not instance of a property
-                    $defsFound[$def->getBlockId()][] = $def;
-                }
+            if (Definitions::defEquality($def, $searchedDed)
+                && ResolveDefs::isNearest($context, $searchedDed, $def)) {
+                // we are looking for the nearest not instance of a property
+                $defsFound[$def->getBlockId()][] = $def;
             }
         }
 
@@ -460,28 +385,28 @@ class ResolveDefs
         foreach ($defsFoundGood as $blockDefs) {
             $nearestDef = null;
             foreach ($blockDefs as $blockId => $defLast) {
-                //if (!$bypassIsNearest) {
-
                 if (ResolveDefs::isNearest($context, $searchedDed, $defLast)) {
                     if (is_null($nearestDef) || ResolveDefs::isNearest($context, $defLast, $nearestDef)) {
                         $nearestDef = $defLast;
                     }
                 }
-                /*
-                } else {
-
-                echo "selectDefinitions 17\n";
-                $trueDefsFound[] = $defLast;
-                }
-                */
             }
 
-            if (!is_null($nearestDef)/* && !$bypassIsNearest*/) {
+            if (!is_null($nearestDef)) {
                 $trueDefsFound[] = $nearestDef;
             }
         }
 
-        return $trueDefsFound;
+
+        $trueDefsFoundParams = [];
+        foreach ($trueDefsFound as $trueDef) {
+            if (!is_null($trueDef->getParamToArg())) {
+                $trueDef = $trueDef->getParamToArg();
+            }
+            $trueDefsFoundParams[] = $trueDef;
+        }
+
+        return $trueDefsFoundParams;
     }
 
     public static function selectArrays($context, $data, $tempDefa, $arrayDim)
@@ -497,52 +422,17 @@ class ResolveDefs
             $copyTempDefa
         );
 
-        foreach ($arrayDefsTmp as $arrayDef) {
+        foreach ($arrayDefsTmp as $arrayDef) {/*
             if (!is_null($arrayDef->getParamToArg())) {
                 $arrayDef = $arrayDef->getParamToArg();
             }
-
-            //if ($arrayDef->getCurrentState()->isType(MyDefinition::TYPE_ARRAY)) {
+*/
             $arrayDefs[] = $arrayDef
-                    ->getCurrentState()
-                        ->getOrCreateDefArrayIndex($tempDefa->getBlockId(), $arrayDef, $arrayDim);
-            //}
+                ->getCurrentState()
+                    ->getOrCreateDefArrayIndex($tempDefa->getBlockId(), $arrayDef, $arrayDim);
         }
 
         return $arrayDefs;
-    }
-
-    public static function selectInstances($context, $data, $tempDefa, $bypassIsNearest = false)
-    {
-        $instancesDefs = [];
-
-        // we can have multiple instances with the same property assigned
-        // we are looking for and instance, not a property
-        $copyTempDefa = clone $tempDefa;
-        /*
-                if ($copyTempDefa->isType(MyDefinition::TYPE_PROPERTY)) {
-                    $copyTempDefa->removeType(MyDefinition::TYPE_PROPERTY);
-                    $copyTempDefa->property->setProperties(null);
-                }
-        */
-        /*
-        if (!$copyTempDefa->isType(MyDefinition::TYPE_INSTANCE)) {
-            $copyTempDefa->addType(MyDefinition::TYPE_INSTANCE);
-        }
-
-        if ($copyTempDefa->isType(MyDefinition::TYPE_ARRAY)) {
-            $copyTempDefa->removeType(MyDefinition::TYPE_ARRAY);
-        }
-        */
-
-        $instancesDefs = ResolveDefs::selectDefinitions(
-            $context,
-            $data,
-            $copyTempDefa,
-            $bypassIsNearest
-        );
-
-        return $instancesDefs;
     }
 
     public static function selectStaticProperties($context, $tempDef, $propertyName)
@@ -555,13 +445,8 @@ class ResolveDefs
         if (!is_null($myClass)) {
             $property = $myClass->getProperty($context, $tempDef->getBlockId(), $tempDef, $propertyName);
 
-
             if (!is_null($property)
-                                        && (ResolveDefs::getVisibility(
-                                            $tempDef,
-                                            $property,
-                                            $currentFunc
-                                        ))) {
+                && (ResolveDefs::getVisibility($tempDef, $property, $currentFunc))) {
                 return $property;
             }
         }
@@ -569,14 +454,14 @@ class ResolveDefs
         return null;
     }
 
-    public static function selectProperties($context, $data, $tempDefa, $propertyName, $bypassVisibility = false)
+    public static function selectProperties($context, $data, $tempDefa, $propertyName)
     {
         $propertiesDefs = [];
         $currentFunc = $context->getCurrentFunc();
 
         $tempDefaProp = clone $tempDefa;
 
-        $instances = ResolveDefs::selectInstances($context, $data, $tempDefaProp);
+        $instances = ResolveDefs::selectDefinitions($context, $data, $tempDefaProp);
 
         foreach ($instances as $instance) {
             if ($instance->isType(MyDefinition::TYPE_ITERATOR)
@@ -590,8 +475,7 @@ class ResolveDefs
                 || $instance->isType(MyDefinition::TYPE_ARRAY_ELEMENT)) {
                 $state = $instance->getState($tempDefaProp->getBlockId());
                 $stateId = $tempDefaProp->getBlockId();
-            }
-            else {
+            } else {
                 $state = $instance->getCurrentState();
                 $stateId = $instance->getBlockId();
             }
@@ -606,27 +490,7 @@ class ResolveDefs
                         if (ResolveDefs::getVisibility($tempDefaProp, $property, $currentFunc)) {
                             $propertiesDefs[] = [$property, $tmpMyClass];
                         }
-                    }/* else {
-                        // we didn't find any propery but in this case php create automatically the property
-
-                        $myProperty = new MyProperty(
-                            $tempDefaProp->getBlockId(),
-                            $context->getCurrentMyFile(),
-                            $tempDefa->getLine(),
-                            $tempDefa->getColumn(),
-                            $propertyName
-                        );
-                        $myProperty->setVisibility("public");
-                        $tmpMyClass->addProperty($myProperty);
-
-                        if ($instance->getCurrentState()->isType(MyDefinition::ALL_PROPERTIES_TAINTED)) {
-                            $myProperty->getCurrentState()->setTainted(true);
-                            $myProperty->getCurrentState()->addTaintedByDef([$instance, $instance->getCurrentState()]);
-                        }
-
-
-                        $propertiesDefs[] = [$myProperty, $tmpMyClass];
-                    }*/
+                    }
                 }
             }
         }
@@ -640,7 +504,7 @@ class ResolveDefs
 
         if (is_array($callStack)) {
             for ($callNumber = count($callStack) - 1; $callNumber !== 0; $callNumber --) {
-                $currentContextCall = $callStack[$callNumber][4];
+                $currentContextCall = $callStack[$callNumber][3];
                 // ca peut arriver si on est dans le main() est qu'on appelle une globale
                 if (!is_null($currentContextCall->func_called) && !is_null($currentContextCall->func_callee)) {
                     // we can't looking for an element of a global array in PHP
@@ -666,160 +530,5 @@ class ResolveDefs
         }
 
         return array();
-    }
-    
-    public static function selectStaticProperty($context, $data, $tempDefa, $isIterator, $isAssign)
-    {
-        $callStack = $context->getCallStack();
-        if (is_array($callStack)) {
-            // we are looking in first for a possible static property defined inside the function
-            $resStatic = ResolveDefs::temporarySimple(
-                $context,
-                $data,
-                $tempDefa,
-                $isIterator,
-                $isAssign,
-                true
-            );
-
-            if (!(count($resStatic) === 1 && $resStatic[0] === $tempDefa)) {
-                return $resStatic;
-            }
-
-            // if no result we are looking inside the callee functions
-            for ($callNumber = count($callStack) - 1; $callNumber >= 0; $callNumber --) {
-                $currentContextCall = $callStack[$callNumber][4];
-
-                // ca peut arriver si on est dans le main() est qu'on appelle une static
-                if (!is_null($currentContextCall->func_called) && !is_null($currentContextCall->func_callee)) {
-                    $tempDefa->setLine($currentContextCall->func_called->getLine());
-                    $tempDefa->setColumn($currentContextCall->func_called->getColumn());
-                    $tempDefa->setBlockId($currentContextCall->func_callee->getLastBlockId());
-
-                    $resGlobal = ResolveDefs::temporarySimple(
-                        $context,
-                        $currentContextCall->func_callee->getDefs(),
-                        $tempDefa,
-                        $isIterator,
-                        $isAssign,
-                        true
-                    );
-                    if (!(count($resGlobal) === 1 && $resGlobal[0] === $tempDefa)) {
-                        return $resGlobal;
-                    }
-                }
-            }
-        }
-
-        return array();
-    }
-
-    public static function temporarySimple(
-        $context,
-        $data,
-        $tempDefa,
-        $isIterator,
-        $isAssign,
-        $bypassStatic = false
-    ) {
-        if ($tempDefa->isType(MyDefinition::TYPE_STATIC_PROPERTY) && !$bypassStatic) {
-            return ResolveDefs::selectStaticProperty(
-                $context,
-                $data,
-                $tempDefa,
-                $isIterator,
-                $isAssign
-            );
-        } elseif ($tempDefa->isType(MyDefinition::TYPE_ARRAY) && $tempDefa->getName() === "GLOBALS") {
-            return ResolveDefs::selectGlobals(
-                key($tempDefa->getArrayValue()),
-                $context,
-                $data,
-                $tempDefa,
-                $isIterator,
-                $isAssign
-            );
-        } else {
-            if ($tempDefa->isType(MyDefinition::TYPE_PROPERTY)) {
-                $defs = ResolveDefs::selectProperties(
-                    $context,
-                    $data->getOutMinusKill($tempDefa->getBlockId()),
-                    $tempDefa
-                );
-            } else {
-                $defs = ResolveDefs::selectDefinitions(
-                    $context,
-                    $data->getOutMinusKill($tempDefa->getBlockId()),
-                    $tempDefa,
-                    $isIterator
-                );
-            }
-
-            $goodDefs = [];
-            if (count($defs) > 0) {
-                foreach ($defs as $defz) {
-                    if (!is_null($defz->getParamToArg())) {
-                        $param = $defz;
-                        $defz = $defz->getParamToArg();
-                        $defz->setBlockId($param->getBlockId());
-                    }
-
-                    // a param (paramtoarg use case) cannot be global
-                    if ($defz->isType(MyDefinition::TYPE_GLOBAL)) {
-                        return ResolveDefs::selectGlobals(
-                            $defz->getName(),
-                            $context,
-                            $data,
-                            $tempDefa,
-                            $isIterator,
-                            $isAssign
-                        );
-                    } else {
-                        $defaa = ArrayAnalysis::temporarySimple(
-                            $context,
-                            $data->getOutMinusKill($tempDefa->getBlockId()),
-                            $tempDefa,
-                            $defz,
-                            $isIterator
-                        );
-
-                        foreach ($defaa as $defa) {
-                            // a param (case argtoparam) cannot be a reference (alreay copied)
-                            if ($defa->isType(MyDefinition::TYPE_REFERENCE)) {
-                                $refDef = new MyDefinition(
-                                    $context->getCurrentBlock()->getId(),
-                                    $context->getCurrentMyFile(),
-                                    $tempDefa->getLine(),
-                                    $tempDefa->getColumn(),
-                                    $defa->getRefName()
-                                );
-
-                                if ($defa->isType(MyDefinition::TYPE_ARRAY_REFERENCE)) {
-                                    $refDef->addType(MyDefinition::TYPE_ARRAY);
-                                    $refDef->setArrayValue($defa->getRefArrValue());
-                                }
-
-                                $trueRefs = ResolveDefs::selectDefinitions(
-                                    $context,
-                                    $data->getOutMinusKill($refDef->getBlockId()),
-                                    $refDef
-                                );
-
-                                foreach ($trueRefs as $ref) {
-                                    $goodDefs[] = $ref;
-                                }
-                            } else {
-                                $goodDefs[] = $defa;
-                            }
-                        }
-                    }
-                }
-            } else {
-                // only one
-                $goodDefs[] = $tempDefa;
-            }
-
-            return $goodDefs;
-        }
     }
 }

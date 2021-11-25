@@ -50,16 +50,6 @@ class MyOp
         $this->varId = MyOp::$nbObjects ++;
     }
 
-    public function setId($varId)
-    {
-        $this->varId = $varId;
-    }
-
-    public function getId()
-    {
-        return $this->varId;
-    }
-
     public function setType($flags)
     {
         $this->flags = $flags;
@@ -85,6 +75,16 @@ class MyOp
         if ($this->isType($type)) {
             $this->flags ^= $type;
         }
+    }
+
+    public function setId($varId)
+    {
+        $this->varId = $varId;
+    }
+
+    public function getId()
+    {
+        return $this->varId;
     }
 
     public function getLine()

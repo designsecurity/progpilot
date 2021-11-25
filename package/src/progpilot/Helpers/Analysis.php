@@ -16,9 +16,9 @@ use progpilot\Code\MyInstruction;
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyDefState;
+use progpilot\Objects\MyClass;
 use progpilot\Analysis\ResolveDefs;
 use progpilot\Analysis\TaintAnalysis;
-use progpilot\Analysis\ValueAnalysis;
 use progpilot\Analysis\AssertionAnalysis;
 
 class Analysis
@@ -107,110 +107,35 @@ class Analysis
         $lastExecutionTime = $myFunc->getLastExecutionTime();
         $nbExecutions = $myFunc->getNbExecutions();
 
-        if (($nbExecutions === 1 && $lastExecutionTime >= $threshold1)
-            || ($nbExecutions > 4 && $lastExecutionTime >= $threshold2)) {
+        if (($nbExecutions >= 1 && $nbExecutions < 5 && $lastExecutionTime >= $threshold1)
+            || ($nbExecutions >= 4 && $nbExecutions < 10 && $lastExecutionTime >= $threshold2)
+                || $nbExecutions >= 10) {
             return false;
         }
 
         return true;
     }
 
-    public static function getAssignedDefOfPreviousInstruction($code, $index)
-    {
-        $previousInstruction = $code[$index - 2];
-        if ($previousInstruction->getOpcode() === Opcodes::END_EXPRESSION) {
-            $expr = $previousInstruction->getProperty(MyInstruction::EXPR);
-            if ($expr->isAssign()) {
-                return $expr->getAssignDef();
+    public static function getBytes($val) {
+        $val = trim($val);
+        $last = strtolower($val[strlen($val)-1]);
+        if (!is_numeric($last)) {
+            $val = (int) substr($val, 0, -1);
+            switch ($last) {
+            // The 'G' modifier is available since PHP 5.1.0
+            case 'g':
+                $val *= 1024;
+                // no break
+            case 'm':
+                $val *= 1024;
+                // no break
+            case 'k':
+                $val *= 1024;
             }
         }
-
-        return null;
+    
+        return $val;
     }
-
-    public static function isInstructionOfType($code, $index, $type)
-    {
-        if (isset($code[$index])) {
-            $instruction = $code[$index];
-            if ($instruction->getOpcode() === $type) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static function getInstruction($code, $index)
-    {
-        if (isset($code[$index])) {
-            return $code[$index];
-        }
-
-        return null;
-    }
-
-    public static function extractArrayFromArr($originalarr, $indarr)
-    {
-        if ($originalarr === $indarr) {
-            return false;
-        }
-
-        $arr = $originalarr;
-
-        if (is_array($indarr)) {
-            foreach ($indarr as $ind => $value) {
-                if (isset($originalarr[$ind])) {
-                    if ($originalarr[$ind] === $indarr[$ind]) {
-                        return $originalarr[$ind];
-                    }
-
-                    $arr = BuildArrays::extractArrayFromArr($originalarr[$ind], $indarr[$ind]);
-                } else {
-                    $arr = false;
-                }
-            }
-        }
-
-        return $arr;
-    }
-
-    public static function getArrayIndexAsAString($arrValue, $searchedDim)
-    {
-        if (is_array($arrValue) && is_array($searchedDim)) {
-            $searchedDimKey = array_keys($searchedDim);
-
-            if (array_key_exists($searchedDimKey[0], $arrValue)) {
-                return Analysis::getArrayIndexAsAString(
-                    $arrValue[$searchedDimKey[0]],
-                    $searchedDim[$searchedDimKey[0]]
-                );
-            }
-        }
-            
-        if (!is_array($searchedDim)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public static function isSubDimensionOfArray($def, $searchedDim)
-    {
-        if ($def->isType(MyDefinition::TYPE_ARRAY)) {
-            if (is_array($searchedDim)) {
-                foreach ($def->getArrayIndexes() as $arrayIndex) {
-                    return Analysis::getArrayIndexAsAString($arrayIndex->index, $searchedDim);
-                }
-
-                return false;
-            }
-            
-            return true;
-        }
-
-        return false;
-    }
-
 
     public static function isASource($context, $def, $myClass, $arrayDim)
     {
@@ -277,6 +202,52 @@ class Analysis
         return $nbChars;
     }
 
+    public static function checkCallStackReachMaxTime($context)
+    {
+        $callStack = $context->getCallStack();
+        $endTime = microtime(true);
+
+        if (is_array($callStack)) {
+            foreach ($callStack as $call) {
+                $myFunc = $call[0];
+                $startTime = $myFunc->getStartExecutionTime();
+                $diff = $endTime - $startTime;
+
+                if ($diff > $context->getMaxFileAnalysisDuration()) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    public static function checkDeeplyIfDefIsTainted($def)
+    {
+        $arrayTotal[] = $def;
+        $defsToAnalyze[] = $def;
+        while (!empty($defsToAnalyze)) {
+            $def = array_pop($defsToAnalyze);
+            foreach ($def->getStates() as $state) {
+                if ($state->isTainted()) {
+                    return true;
+                }
+
+                foreach ($state->getArrayIndexes() as $arrayElement) {
+                    if ($arrayElement->def !== $def
+                        && !in_array($arrayElement->def, $defsToAnalyze, true)
+                            && !in_array($arrayElement->def, $arrayTotal, true)
+                                && count($arrayTotal) < 50) {
+                        $defsToAnalyze[] = $arrayElement->def;
+                        $arrayTotal[] = $arrayElement->def;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
     public static function checkIfOneFunctionArgumentIsNew($myFunc, $instruction)
     {
         if (!is_null($myFunc)) {
@@ -288,42 +259,34 @@ class Analysis
                 return false;
             }
 
+            $statesPastArgs = $myFunc->getStatePastArguments();
             for ($i = 0; $i < count($params); $i++) {
                 if ($instruction->isPropertyExist("argdef$i")) {
                     $defArg = $instruction->getProperty("argdef$i");
 
-                    $statesIdPastArgs = $myFunc->getStateIdsPastArguments();
-                    if (isset($statesIdPastArgs[$i]) && is_array($statesIdPastArgs[$i])) {
-                        foreach ($statesIdPastArgs[$i] as $stateIdPastArg) {
-                            if ($stateIdPastArg === $defArg->getCurrentState()->getId()) {
+                    if (Analysis::checkDeeplyIfDefIsTainted($defArg)) {
+                        return true;
+                    }
+
+                    if (empty($defArg->getCurrentState()->getLastKnownValues())) {
+                        return false;
+                    }
+
+                    if (isset($statesPastArgs[$i]) && is_array($statesPastArgs[$i])) {
+                        foreach ($statesPastArgs[$i] as $statePastArg) {
+                            if ($defArg->getCurrentState()->getLastKnownValues()
+                                === $statePastArg->getLastKnownValues()) {
                                 return false;
                             }
                         }
                     } else {
                         return true;
                     }
-
-                    /*
-                                        $pastArgs = $myFunc->getPastArguments();
-                                        if (isset($pastArgs[$i]) && is_array($pastArgs[$i])) {
-                                            foreach ($pastArgs[$i] as $pastArg) {
-                                                if (!$defArg->getCurrentState()->isTainted()
-                                                    && $defArg->getCurrentState()->getLastKnownValues()
-                                                    === $pastArg->getCurrentState()->getLastKnownValues()
-                                                        && $defArg->getType() === $pastArg->getType()) {
-                                                    return false;
-                                                }
-                                            }
-                                        } else {
-                                            return true;
-                                        }
-
-                                        */
                 }
             }
         }
 
-        return true;
+        return false;
     }
     
     public static function checkIfFuncEqualMySpecify($context, $mySpecify, $myFunc, $myClass = null)
@@ -358,5 +321,33 @@ class Analysis
         }
         
         return false;
+    }
+
+    public static function createObject($context, $myDef)
+    {
+        if ($myDef->isType(MyDefinition::TYPE_INSTANCE)
+            || $myDef->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
+            $idObject = $context->getObjects()->addObject();
+
+            if ($myDef->getCurrentState()->getObjectId() === -1) {
+                $myDef->getCurrentState()->setObjectId($idObject);
+                $myDef->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
+
+                if (!empty($myDef->getClassName())) {
+                    $myClass = $context->getClasses()->getMyClass($myDef->getClassName());
+                    if (is_null($myClass)) {
+                        $myClass = new MyClass(
+                            $myDef->getLine(),
+                            $myDef->getColumn(),
+                            $myDef->getClassName()
+                        );
+                    } else {
+                        $myClass = clone $myClass;
+                    }
+
+                    $context->getObjects()->addMyclassToObject($idObject, $myClass);
+                }
+            }
+        }
     }
 }
