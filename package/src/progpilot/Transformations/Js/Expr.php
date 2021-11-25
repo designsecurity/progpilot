@@ -56,7 +56,6 @@ class Expr
         }
     
         if ($typeright === "BinaryExpression") {
-        
             $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::CONCAT_LEFT));
 
             $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::CONCAT_RIGHT));

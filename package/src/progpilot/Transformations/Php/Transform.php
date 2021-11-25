@@ -431,8 +431,7 @@ class Transform implements Visitor
             $instClass = new MyInstruction(Opcodes::CLASSE);
             $instClass->addProperty(MyInstruction::MYCLASS, $myClass);
             $this->context->getCurrentMycode()->addCode($instClass);
-        }
-        else {
+        } else {
             Expr::explicitfetch($this->context, $op, null);
         }
     }

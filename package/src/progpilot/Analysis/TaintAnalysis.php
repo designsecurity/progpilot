@@ -146,7 +146,7 @@ class TaintAnalysis
                     $opInformation["condition_defs"][] = $defValid;
                 }
 
-                $opInformation["valid_when_returning"] = $validwhenreturning;        
+                $opInformation["valid_when_returning"] = $validwhenreturning;
                 return $opInformation;
             }
         }

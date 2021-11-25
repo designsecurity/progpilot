@@ -106,7 +106,7 @@ class MyOutputsInternalApi
 
     public function callgraphAddFuncCall($myFunc, $myBlock, $myFunccall, $myClass)
     {
-        if (!is_null($myFunc) 
+        if (!is_null($myFunc)
             && isset($this->callgraph[$myFunc->getId()])) {
             $tmpCallgraph = $this->callgraph[$myFunc->getId()];
             $tmpCallgraph->addFuncCall($myBlock, $myFunccall, $myClass);

@@ -92,7 +92,7 @@ class CustomAnalysis
             $myFakeInstance = $myFuncorDef;
             $myFakeInstance->addType(MyDefinition::TYPE_INSTANCE);
             $myFakeInstance->setClassName($customRule->getExtra());
-        } else if (!is_null($virtualReturnDef)) {
+        } elseif (!is_null($virtualReturnDef)) {
             $myFakeInstance = $virtualReturnDef;
             $myFakeInstance->addType(MyDefinition::TYPE_INSTANCE);
             $myFakeInstance->setClassName($customRule->getExtra());

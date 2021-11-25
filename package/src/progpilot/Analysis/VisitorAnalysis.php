@@ -1166,7 +1166,10 @@ class VisitorAnalysis
                                         if ($chainedResult->getNbStates() < 20) {
                                             $chainedResult->addState($mergedState);
                                             $currentBlockId = $this->context->getCurrentBlock()->getId();
-                                            $chainedResult->assignStateToBlockId($mergedState->getId(), $currentBlockId);
+                                            $chainedResult->assignStateToBlockId(
+                                                $mergedState->getId(),
+                                                $currentBlockId
+                                            );
 
                                             if ($reference) {
                                                 $chainedResult->addType(MyDefinition::TYPE_REFERENCE);

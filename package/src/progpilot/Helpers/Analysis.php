@@ -116,21 +116,22 @@ class Analysis
         return true;
     }
 
-    public static function getBytes($val) {
+    public static function getBytes($val)
+    {
         $val = trim($val);
         $last = strtolower($val[strlen($val)-1]);
         if (!is_numeric($last)) {
             $val = (int) substr($val, 0, -1);
             switch ($last) {
             // The 'G' modifier is available since PHP 5.1.0
-            case 'g':
-                $val *= 1024;
-                // no break
-            case 'm':
-                $val *= 1024;
-                // no break
-            case 'k':
-                $val *= 1024;
+                case 'g':
+                    $val *= 1024;
+                    // no break
+                case 'm':
+                    $val *= 1024;
+                    // no break
+                case 'k':
+                    $val *= 1024;
             }
         }
     
