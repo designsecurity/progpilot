@@ -11,8 +11,6 @@ function secret()
     }
     
     var_dump(dev_retrieve_secret());
-    
-    //secret();
 }
 
 secret();

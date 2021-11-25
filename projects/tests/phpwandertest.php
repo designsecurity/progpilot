@@ -4,7 +4,7 @@
                 [
                     "./tests/phpwander/test0.php",
                         [["\$id_return", "4", "path_traversal"],
-                        ["\$return_basename", "9", "path_traversal"],
+                        ["\$basename_return", "9", "path_traversal"],
                         ["\$_GET[\"f\"]", "11", "path_traversal"],
                         ["\$b", "9", "xss"],
                         ["\$c", "11", "xss"]]
