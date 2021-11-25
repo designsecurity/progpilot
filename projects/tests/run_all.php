@@ -66,6 +66,7 @@ class RunAllTest extends TestCase
 
     public function dataProvider()
     {
+        $tabopti = include("optimizationstest.php");
         $taboop = include("ooptest.php");
         $tabreal = include("realtest.php");
         $tabgen = include("generictest.php");
@@ -88,6 +89,7 @@ class RunAllTest extends TestCase
         }
         
         $tab = array_merge(
+            $tabopti,
             $taboop,
             $tabreal,
             $tabgen,

@@ -25,7 +25,7 @@
                 [
                     "./tests/real/wordpress2",
                         [["\$query", "132", "sql_injection"],
-                        ["\$this->last_query", "101", "xss"]]
+                        ["\$this->last_query", "102", "xss"]]
                 ]/*,
                 [
                     "./tests/real/wordpress3",
@@ -41,6 +41,6 @@
                 ],
                 [
                     "./tests/real/incallstack/",
-                        []
+                        [["\$rtrim_return", "77", "xss"]]
                 ]
             ];
