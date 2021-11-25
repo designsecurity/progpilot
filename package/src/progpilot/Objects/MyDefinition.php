@@ -149,7 +149,7 @@ class MyDefinition extends MyOp
                 }
             }
 
-            if($toRemove) {
+            if ($toRemove) {
                 unset($this->states[$overWrittentStateId]);
             }
         }

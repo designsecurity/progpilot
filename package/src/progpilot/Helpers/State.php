@@ -123,7 +123,7 @@ class State
             } elseif (count($states) > 1) {
                 if ($property->getNbStates() < 20) {
                     $newstate = State::mergeDefStates($states);
-                    $property->addState($newstate);              
+                    $property->addState($newstate);
                     $property->assignStateToBlockId($newstate->getId(), $myBlock->getId());
                     $defStack[] = $newstate->getId();
                 }
@@ -204,12 +204,12 @@ class State
                 }
 
                 if ($state->isType(MyDefinition::TYPE_ARRAY)) {
-                    foreach ($state->getArrayIndexes() as $oriArrayIndex) {                 
+                    foreach ($state->getArrayIndexes() as $oriArrayIndex) {
                         $retadd = $myState->addArrayIndex($oriArrayIndex->index, $oriArrayIndex->def);
                         // if tainted we force the potential existing array (could not be added before)
                         if (!$retadd && $oriArrayIndex->def->getCurrentState()->isTainted()) {
                             $myState->overwriteArrayIndex($oriArrayIndex->index, $oriArrayIndex->def);
-                        }  
+                        }
                     }
                     $myState->addType(MyDefinition::TYPE_ARRAY);
                 }
