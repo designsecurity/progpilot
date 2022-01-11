@@ -21,7 +21,12 @@ jobs:
           coverage: "none"
           php-version: "${{ matrix.php-version }}"
           tools: composer:v2
-      - name: "Install dependencies"
-        run: "composer update --no-progress --prefer-dist"
+      - name: Setup tests
+        working-directory: ./projects/tests/
+        run: |
+          rm -f composer.lock
+          rm -rf vendor/
+          composer clearcache
+          composer update --no-progress --prefer-dist
       - name: "PHPUnit"
         run: "php vendor/bin/phpunit ./projects/tests/"
