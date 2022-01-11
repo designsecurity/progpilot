@@ -1,8 +1,8 @@
 # progpilot
 > A static analyzer for security purposes  
 > Only PHP language is currently supported
-
-[![Build Status](https://travis-ci.org/designsecurity/progpilot.svg?branch=master)](https://travis-ci.org/designsecurity/progpilot) [![Packagist](https://img.shields.io/packagist/v/designsecurity/progpilot.svg)](https://packagist.org/packages/designsecurity/progpilot) [![Packagist](https://img.shields.io/packagist/l/designsecurity/progpilot.svg)](LICENSE)
+https://github.com/designsecurity/progpilot/actions/workflows/main.yml/badge.svg
+[![Build Status](https://github.com/designsecurity/progpilot/actions/workflows/main.yml/badge.svg)](https://github.com/designsecurity/progpilot/actions) [![Packagist](https://img.shields.io/packagist/v/designsecurity/progpilot.svg)](https://packagist.org/packages/designsecurity/progpilot) [![Packagist](https://img.shields.io/packagist/l/designsecurity/progpilot.svg)](LICENSE)
 ---
 
 ## Installation
