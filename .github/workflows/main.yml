@@ -29,4 +29,5 @@ jobs:
           composer clearcache
           composer update --no-progress --prefer-dist
       - name: "PHPUnit"
-        run: "php vendor/bin/phpunit ./projects/tests/"
+        working-directory: ./projects/tests/
+        run: "php vendor/bin/phpunit"
