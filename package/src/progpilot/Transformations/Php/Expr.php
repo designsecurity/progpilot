@@ -35,7 +35,7 @@ class Expr
             for ($i = 0; $i < strlen($string); $i++) {
                 foreach ($arrayChars as $char) {
                     if ($string[$i] === $char) {
-                        $nbChars[$char] ++;
+                        $nbChars[(string) $char] ++;
                     }
                 }
             }
