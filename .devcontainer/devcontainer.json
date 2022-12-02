@@ -3,5 +3,5 @@
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
-	"remoteUser": "root"
+	"remoteUser": "developer"
 }

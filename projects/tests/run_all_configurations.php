@@ -19,7 +19,7 @@ class RunAllConfigurationTest extends TestCase
         $analyzer->run($context);
 
         $results = $context->outputs->getResults();
-
+        var_dump($results);
         foreach ($results as $vuln) {
             if (isset($expectedVulns[$nbVulns])) {
                 $expectedSourceName = $expectedVulns[$nbVulns][0];

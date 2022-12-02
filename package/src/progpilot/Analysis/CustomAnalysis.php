@@ -286,7 +286,7 @@ class CustomAnalysis
                         
                         if (!$isValid) {
                             $hashedValue = $myFunc->getLine();
-                            $hashedValue.= "-".$customRule->getAction()."-".$myFunc->getSourceMyFile()->getName();
+                            $hashedValue.= "-".$customRule->getAction()."-".basename($myFunc->getSourceMyFile()->getName());
                             $idVuln = hash("sha256", $hashedValue);
                             
                             if (is_null($context->inputs->getFalsePositiveById($idVuln))) {

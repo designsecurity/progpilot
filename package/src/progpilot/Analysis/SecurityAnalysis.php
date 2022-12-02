@@ -228,6 +228,7 @@ class SecurityAnalysis
                         );
                         $resultTaintedFlow = $resultsFlow[0];
                         $hashIdVuln .= $resultsFlow[1];
+                        $hashIdVuln .= $ret["source_name"];
 
                         $temp["source_name"][] = $ret["source_name"];
 
