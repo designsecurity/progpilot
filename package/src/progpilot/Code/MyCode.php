@@ -13,7 +13,6 @@ namespace progpilot\Code;
 use progpilot\Objects\MyOp;
 use progpilot\Objects\MyBlock;
 use progpilot\Objects\MyDefinition;
-use progpilot\Objects\MyExpr;
 use progpilot\Objects\MyFunction;
 
 class MyCode
@@ -72,7 +71,7 @@ class MyCode
     {
         $myFunction = new MyFunction("{main}");
         $context->setCurrentMycode($myFunction->getMyCode());
-        $context->getFunctions()->addFunction($myFunction->getName(), $myFunction);
+        $context->getFunctions()->addFunction("file.js", "function", $myFunction->getName(), $myFunction);
 
         $instFunc = new MyInstruction(Opcodes::ENTER_FUNCTION);
         $instFunc->addProperty(MyInstruction::MYFUNC, $myFunction);
@@ -97,7 +96,7 @@ class MyCode
                         $edges = $codeInput[$nbInst ++];
                         $nbEdges = (int) $codeInput[$nbInst ++];
 
-                        $myBlock = new MyBlock;
+                        $myBlock = new MyBlock($context->getCurrentLine(), $context->getCurrentColumn());
                         $myBlock->setId($myBlockId);
                         $myBlock->setStartAddressBlock(count($myFunction->getMyCode()->getCodes()));
 
@@ -140,6 +139,7 @@ class MyCode
                         $defColumn = (int) $codeInput[$nbInst ++];
 
                         $myDef = new MyDefinition($defLine, $defColumn, $defName);
+                        
                         $myDef->setSourceMyFile($myJavascriptFile);
                         $arrayDefinitions[] = $myDef;
 
@@ -181,21 +181,13 @@ class MyCode
                             $funcDefIdParam = (int) $codeInput[$nbInst ++];
                             $funcExprIdParam = (int) $codeInput[$nbInst ++];
                             $funcDefParam = $arrayDefinitions[$funcDefIdParam];
-                            $funcExprParam = $arrayExprs[$funcExprIdParam];
                             $instFuncCallMain->addProperty("argdef$j", $funcDefParam);
-                            $instFuncCallMain->addProperty("argexpr$j", $funcExprParam);
                         }
 
                         $funcExprString = $codeInput[$nbInst ++];
                         $funcExprId = (int) $codeInput[$nbInst ++];
 
-                        // !!!!????
-                        //$myExpr = $arrayExprs[$funcExprId];
-                        $myExpr = null;
-
                         $instFuncCallMain->addProperty(MyInstruction::MYFUNC_CALL, $myFunctionCall);
-                        $instFuncCallMain->addProperty(MyInstruction::EXPR, $myExpr);
-                        $instFuncCallMain->addProperty(MyInstruction::ARR, null);
                         $myFunction->getMyCode()->addCode($instFuncCallMain);
 
                         break;
@@ -231,41 +223,6 @@ class MyCode
                         $myFunction->getMyCode()->addCode(new MyInstruction(Opcodes::END_ASSIGN));
 
                         break;
-
-                    case 'start_expression':
-                        $myFunction->getMyCode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
-
-                        break;
-
-                    case 'end_expression':
-                        $exprString = $codeInput[$nbInst ++];
-                        $exprLine = (int) $codeInput[$nbInst ++];
-                        $exprColumn = (int) $codeInput[$nbInst ++];
-
-                        $myExpr = new MyExpr($exprLine, $exprColumn);
-
-                        $exprIsAssign =  $codeInput[$nbInst ++];
-
-                        if ($exprIsAssign === "true") {
-                            $exprDefAssignId = (int) $codeInput[$nbInst ++];
-                            $myExpr->setAssign(true);
-                            $myExpr->setAssignDef($exprDefAssignId);
-                        }
-
-                        $nbExprs = (int) $codeInput[$nbInst ++];
-
-                        $arrayExprs[] = $myExpr;
-
-                        for ($i = 0; $i < $nbExprs; $i ++) {
-                            $defId = (int) $codeInput[$nbInst ++];
-                            $myExpr->addDef($defId);
-                        }
-
-                        $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);
-                        $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
-                        $myFunction->getMyCode()->addCode($instEndExpr);
-
-                        break;
                 }
             }
 
@@ -281,34 +238,6 @@ class MyCode
                 }
             }
 
-            foreach ($arrayExprs as $myExpr) {
-                $defs = $myExpr->getDefs();
-                $myExpr->setDefs(array());
-
-                if ($myExpr->isAssign()) {
-                    $defId = $myExpr->getAssignDef();
-                    if (isset($arrayDefinitions[$defId])) {
-                        $myDef = $arrayDefinitions[$defId];
-                        $myExpr->setAssignDef($myDef);
-                    }
-                }
-
-                foreach ($defs as $defId) {
-                    if (isset($arrayDefinitions[$defId])) {
-                        $myDef = $arrayDefinitions[$defId];
-                        $myExpr->addDef($myDef);
-                    }
-                }
-            }
-
-            foreach ($arrayDefinitions as $myDef) {
-                $expr = $myDef->getExpr();
-                
-                if (isset($arrayExprs[$expr])) {
-                    $myExpr = $arrayExprs[$expr];
-                    $myDef->setExpr($myExpr);
-                }
-            }
 
             $instFunc = new MyInstruction(Opcodes::LEAVE_FUNCTION);
             $instFunc->addProperty(MyInstruction::MYFUNC, $myFunction);
@@ -322,6 +251,7 @@ class MyCode
     public function printStdout()
     {
         $index = 0;
+        $currentFunc = null;
 
         do {
             if (isset($this->code[$index])) {
@@ -329,21 +259,22 @@ class MyCode
                 echo "[$index] ";
                 switch ($instruction->getOpcode()) {
                     case Opcodes::ENTER_FUNCTION:
-                        echo Opcodes::ENTER_FUNCTION."\n";
+                        echo "Opcodes::ENTER_FUNCTION\n";
 
                         $myFunc = $instruction->getProperty(MyInstruction::MYFUNC);
+                        $currentFunc = $myFunc;
                         echo "name = ".htmlentities($myFunc->getName(), ENT_QUOTES, 'UTF-8')."\n";
                         break;
 
                     case Opcodes::CLASSE:
-                        echo Opcodes::CLASSE."\n";
+                        echo "Opcodes::CLASSE\n";
 
                         $myClass = $instruction->getProperty(MyInstruction::MYCLASS);
                         echo "name = ".htmlentities($myClass->getName(), ENT_QUOTES, 'UTF-8')."\n";
                         break;
 
                     case Opcodes::ENTER_BLOCK:
-                        echo Opcodes::ENTER_BLOCK."\n";
+                        echo "Opcodes::ENTER_BLOCK\n";
 
                         $myBlock = $instruction->getProperty(MyInstruction::MYBLOCK);
                         echo "id = ".$myBlock->getId()."\n";
@@ -351,7 +282,7 @@ class MyCode
                         break;
 
                     case Opcodes::LEAVE_BLOCK:
-                        echo Opcodes::LEAVE_BLOCK."\n";
+                        echo "Opcodes::LEAVE_BLOCK\n";
 
                         $myBlock = $instruction->getProperty(MyInstruction::MYBLOCK);
                         echo "id = ".$myBlock->getId()."\n";
@@ -359,13 +290,13 @@ class MyCode
                         break;
 
                     case Opcodes::LEAVE_FUNCTION:
-                        echo Opcodes::LEAVE_FUNCTION."\n";
+                        echo "Opcodes::LEAVE_FUNCTION\n";
 
                         break;
                     
 
                     case Opcodes::FUNC_CALL:
-                        echo Opcodes::FUNC_CALL."\n";
+                        echo "Opcodes::FUNC_CALL\n";
 
                         $funcname = htmlentities(
                             $instruction->getProperty(MyInstruction::FUNCNAME),
@@ -375,70 +306,144 @@ class MyCode
                         echo "name = $funcname\n";
                         break;
 
-                    case Opcodes::START_EXPRESSION:
-                        echo Opcodes::START_EXPRESSION."\n";
-                        break;
-
-                    case Opcodes::END_EXPRESSION:
-                        echo Opcodes::END_EXPRESSION."\n";
-                        $myExpr = $instruction->getProperty(MyInstruction::EXPR);
-                        echo "expression et tainted = ".$myExpr->isTainted()."\n";
-                        break;
-
                     case Opcodes::CONCAT_LIST:
-                        echo Opcodes::CONCAT_LIST."\n";
+                        echo "Opcodes::CONCAT_LIST\n";
                         break;
 
                     case Opcodes::CONCAT_LEFT:
-                        echo Opcodes::CONCAT_LEFT."\n";
+                        echo "Opcodes::CONCAT_LEFT\n";
                         break;
 
                     case Opcodes::CONCAT_RIGHT:
-                        echo Opcodes::CONCAT_RIGHT."\n";
+                        echo "Opcodes::CONCAT_RIGHT\n";
                         break;
 
                     case Opcodes::RETURN_FUNCTION:
-                        echo Opcodes::RETURN_FUNCTION."\n";
+                        echo "Opcodes::RETURN_FUNCTION\n";
                         break;
 
                     case Opcodes::START_ASSIGN:
-                        echo Opcodes::START_ASSIGN."\n";
+                        echo "Opcodes::START_ASSIGN\n";
                         break;
 
                     case Opcodes::END_ASSIGN:
-                        echo Opcodes::END_ASSIGN."\n";
+                        echo "Opcodes::END_ASSIGN\n";
                         break;
 
                     case Opcodes::COND_BOOLEAN_NOT:
-                        echo Opcodes::COND_BOOLEAN_NOT."\n";
+                        echo "Opcodes::COND_BOOLEAN_NOT\n";
                         break;
 
                     case Opcodes::COND_START_IF:
-                        echo Opcodes::COND_START_IF."\n";
-                        break;
-
-                    case Opcodes::TEMPORARY:
-                        echo Opcodes::TEMPORARY."\n";
-                        $listOfMyTemp = [];
-                        if ($instruction->isPropertyExist(MyInstruction::PHI)) {
-                            for ($i = 0; $i < $instruction->getProperty(MyInstruction::PHI); $i++) {
-                                $listOfMyTemp[] = $instruction->getProperty("temp_".$i);
-                            }
-                        } else {
-                            $listOfMyTemp[] = $instruction->getProperty(MyInstruction::TEMPORARY);
-                        }
-                            
-                        foreach ($listOfMyTemp as $def) {
-                            $def->printStdout();
-                        }
-
+                        echo "Opcodes::COND_START_IF\n";
                         break;
 
                     case Opcodes::DEFINITION:
-                        echo Opcodes::DEFINITION."\n";
-                        $def = $instruction->getProperty(MyInstruction::DEF);
-                        $def->printStdout();
+                        echo "Opcodes::DEFINITION\n";
+                        $defname = htmlentities(
+                            $instruction->getProperty(MyInstruction::DEF)->getName(),
+                            ENT_QUOTES,
+                            'UTF-8'
+                        );
+                        echo "name = $defname\n";
 
+                        $instruction->getProperty(MyInstruction::DEF)->printStdout();
+
+                        break;
+
+                    case Opcodes::PROPERTY_FETCH:
+                        echo "Opcodes::PROPERTY_FETCH\n";
+                        $propertyName = htmlentities(
+                            $instruction->getProperty(MyInstruction::PROPERTY_NAME),
+                            ENT_QUOTES,
+                            'UTF-8'
+                        );
+                        echo "property name = $propertyName\n";
+    
+                        break;
+
+                    case Opcodes::STATIC_PROPERTY_FETCH:
+                        echo "Opcodes::STATIC_PROPERTY_FETCH\n";
+                        $propertyName = htmlentities(
+                            $instruction->getProperty(MyInstruction::PROPERTY_NAME),
+                            ENT_QUOTES,
+                            'UTF-8'
+                        );
+                        echo "property name = $propertyName\n";
+        
+                        break;
+
+                    case Opcodes::ARRAYDIM_FETCH:
+                        echo "Opcodes::ARRAYDIM_FETCH\n";
+                        $varid = $instruction->getProperty(MyInstruction::VARID);
+                        $exprid = $instruction->getProperty(MyInstruction::EXPRID);
+                        echo "varid = '$varid'\n";
+                        echo "exprid = '$exprid'\n";
+                        $arrayDim = $instruction->getProperty(MyInstruction::ARRAY_DIM);
+                        echo "array dim = $arrayDim\n";
+        
+                        break;
+
+                    case Opcodes::VARIABLE_FETCH:
+                        echo "Opcodes::VARIABLE_FETCH\n";
+                        $varid = $instruction->getProperty(MyInstruction::VARID);
+                        $exprid = $instruction->getProperty(MyInstruction::EXPRID);
+                        echo "varid = '$varid'\n";
+                        echo "exprid = '$exprid'\n";
+                        $instruction->getProperty(MyInstruction::DEF)->printStdout();
+
+                        break;
+
+                    case Opcodes::VARIABLE:
+                        echo "Opcodes::VARIABLE\n";
+                        $variableName = $instruction->getProperty(MyInstruction::VARIABLE_NAME);
+                        echo "variable name = $variableName\n";
+        
+                        break;
+
+                    case Opcodes::ASSIGN:
+                        echo "Opcodes::ASSIGN\n";
+            
+                        break;
+
+                    case Opcodes::ARGUMENT:
+                        echo "Opcodes::ARGUMENT\n";
+                
+                        break;
+
+                    case Opcodes::CAST:
+                        echo "Opcodes::CAST\n";
+                    
+                        break;
+
+                    case Opcodes::CONST_FETCH:
+                        echo "Opcodes::CONST_FETCH\n";
+                        
+                        break;
+
+                    case Opcodes::LITERAL_FETCH:
+                        echo "Opcodes::LITERAL_FETCH\n";
+                        $def = $instruction->getProperty(MyInstruction::DEF);
+                        if (isset($def->getCurrentState()->getLastKnownValues()[0])) {
+                            $literal = $def->getCurrentState()->getLastKnownValues()[0];
+                            echo "literal = $literal\n";
+                        }
+                            
+                        break;
+
+                    case Opcodes::ITERATOR:
+                        echo "Opcodes::ITERATOR\n";
+                                 
+                        break;
+
+                    case Opcodes::ARRAY_EXPR:
+                        echo "Opcodes::ARRAY_EXPR\n";
+                                     
+                        break;
+
+                    case Opcodes::BINARYOP:
+                        echo "Opcodes::BINARYOP\n";
+                                         
                         break;
                 }
 

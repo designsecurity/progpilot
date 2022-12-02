@@ -3,9 +3,9 @@
         {"name": "is_php", "language": "php", "prevent": ["ALL"]},
         {"name": "is_really_writable", "language": "php", "prevent": ["ALL"]},
         {"name": "html_escape", "language": "php", "prevent": ["xss", "QUOTES"]},
-        {"name": "xss_clean", "instanceof": "CI_Controller->security", "language": "php", "prevent": ["xss", "QUOTES"]},
-        {"name": "escape", "instanceof": "CI_Model->db", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
-        {"name": "escape_str", "instanceof": "CI_Model->db", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
-        {"name": "escape_like_str", "instanceof": "CI_Model->db", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]}
+        {"name": "xss_clean", "instanceof": "SecurityHelperCodeIgniter", "language": "php", "prevent": ["xss", "QUOTES"]},
+        {"name": "escape", "instanceof": "DBCodeIgniter", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
+        {"name": "escape_str", "instanceof": "DBCodeIgniter", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
+        {"name": "escape_like_str", "instanceof": "DBCodeIgniter", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]}
         ]
 }

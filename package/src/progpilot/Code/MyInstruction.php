@@ -12,38 +12,30 @@ namespace progpilot\Code;
 
 class MyInstruction
 {
-    /*
-            const MYBLOCK = 1;
-            const MYBLOCK_IF = 2;
-            const MYBLOCK_ELSE = 3;
-            const MYFUNC = 4;
-            const NOT_BOOLEAN = 5;
-            const EXPR = 6;
-            const MYCLASS = 7;
-            const DEF = 8;
-            const RETURN_DEFS = 9;
-            const FUNCNAME = 10;
-            const TYPE_INCLUDE = 11;
-            const MYFUNC_CALL = 12;
-            const ARR = 13;
-            const TEMPORARY = 14;
-    */
-
-    const MYBLOCK = "myblock";
-    const MYBLOCK_IF = "myblock_if";
-    const MYBLOCK_ELSE = "myblock_else";
-    const MYFUNC = "myfunc";
-    const NOT_BOOLEAN = "not_boolean";
-    const EXPR = "expr";
-    const MYCLASS = "myclass";
-    const DEF = "def";
-    const RETURN_DEFS = "return_defs";
-    const FUNCNAME = "funcname";
-    const TYPE_INCLUDE = "type_include";
-    const MYFUNC_CALL = "myfunc_call";
-    const ARR = "arr";
-    const TEMPORARY = "temporary";
-    const PHI = "phi";
+    const MYBLOCK = 1;
+    const MYBLOCK_IF = 2;
+    const MYBLOCK_ELSE = 3;
+    const MYFUNC = 4;
+    const NOT_BOOLEAN = 5;
+    const MYCLASS = 7;
+    const DEF = 8;
+    const RETURN_DEFS = 9;
+    const FUNCNAME = 10;
+    const TYPE_INCLUDE = 11;
+    const MYFUNC_CALL = 12;
+    const PHI = 15;
+    const ORIGINAL_DEF = 16;
+    const ARRAY_DIM = 17;
+    const PROPERTY_NAME = 18;
+    const VARID = 19;
+    const RESULTID = 20;
+    const VARIABLE_NAME = 21;
+    const VARIABLE = 22;
+    const LITERAL = 23;
+    const EXPRID = 24;
+    const LEFTID = 25;
+    const RIGHTID = 26;
+    const REFERENCE = 27;
 
     private $properties;
     private $opcode;
@@ -66,7 +58,11 @@ class MyInstruction
 
     public function getProperty($index)
     {
-        return $this->properties[$index];
+        if (isset($this->properties[$index])) {
+            return $this->properties[$index];
+        }
+
+        return null;
     }
 
     public function getOpcode()

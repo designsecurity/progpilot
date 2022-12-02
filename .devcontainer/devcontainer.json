@@ -1,0 +1,7 @@
+{
+	"name": "progpilot-linux",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"remoteUser": "developer"
+}

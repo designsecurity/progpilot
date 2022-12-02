@@ -19,7 +19,6 @@ class MyOp
     private $varLine;
     private $varColumn;
     private $sourceMyFile;
-    private $arrayValue;
 
     private $flags;
 
@@ -27,7 +26,7 @@ class MyOp
     const TYPE_LITERAL = "type_literal";
     const TYPE_ARRAY = "type_array";
     const TYPE_ARRAY_EXPR = "type_array_expr";
-    const TYPE_COPY_ARRAY = "type_copy_array";
+    const TYPE_ARRAY_ELEMENT = "type_array_element";
     const TYPE_METHOD = "type_method";
     const TYPE_INSTANCE = "type_instance";
     const TYPE_PROPERTY = "type_property";
@@ -44,17 +43,11 @@ class MyOp
         $this->varLine = $varLine;
         $this->varColumn = $varColumn;
         $this->sourceMyFile = null;
-        $this->arrayValue = false;
     }
 
-    public function setId($varId)
+    public function __clone()
     {
-        $this->varId = $varId;
-    }
-
-    public function getId()
-    {
-        return $this->varId;
+        $this->varId = MyOp::$nbObjects ++;
     }
 
     public function setType($flags)
@@ -84,14 +77,14 @@ class MyOp
         }
     }
 
-    public function setArrayValue($arrayValue)
+    public function setId($varId)
     {
-        $this->arrayValue = $arrayValue;
+        $this->varId = $varId;
     }
 
-    public function getArrayValue()
+    public function getId()
     {
-        return $this->arrayValue;
+        return $this->varId;
     }
 
     public function getLine()

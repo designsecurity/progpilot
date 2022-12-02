@@ -50,6 +50,12 @@
         {"name": "is_callable",  "language": "php", "parameters": [{"id": 1, "conditions": "valid"}]},
         {"name": "is_iterable",  "language": "php", "parameters": [{"id": 1, "conditions": "valid"}]},
         {"name": "is_resource",  "language": "php", "parameters": [{"id": 1, "conditions": "valid"}]},
-        {"name": "empty",  "language": "php", "parameters": [{"id": 1, "conditions": "valid"}]}
+        {"name": "empty",  "language": "php", "parameters": [{"id": 1, "conditions": "valid"}]},
+        {"name": "strstr",  "language": "php", "parameters": 
+            [
+                {"id": 1, "conditions": "valid"},
+                {"id": 2, "conditions": "valid"}
+            ]
+        }
 		]
 }

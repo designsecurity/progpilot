@@ -52,12 +52,13 @@ class ProgpilotCommand extends Command
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
-        if (!is_null($input->getOption('configuration'))) {
-            $context->setConfiguration($input->getOption('configuration'));
-        }
-
-        $cmdFiles = $this->input->getArgument('files');
         try {
+            if (!is_null($input->getOption('configuration'))) {
+                $context->setConfiguration($input->getOption('configuration'));
+            }
+
+            $cmdFiles = $this->input->getArgument('files');
+        
             $analyzer->run($context, $cmdFiles);
 
             if ($context->getPrettyPrint()) {
@@ -69,8 +70,12 @@ class ProgpilotCommand extends Command
             if (count($context->outputs->getResults()) > 0) {
                 return 1;
             }
-        } catch (Exception $e) {
-            echo Lang::GLOBAL_ERROR.$e->getMessage()." file : ".$e->getFile()." line : ".$e->getLine()."\n";
+        } catch (\Exception $e) {
+            echo $e->getMessage()."\n";
+            
+            if ($context->isDebugMode()) {
+                echo "Exception raised on file : ".$e->getFile()." line : ".$e->getLine()."\n";
+            }
         }
         
         return 0;

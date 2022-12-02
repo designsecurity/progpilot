@@ -17,7 +17,7 @@ var_dump($context->outputs->getResults());
 $arr = [
         array("vuln_id" => "a6c0d68d130972bd4e23ae6c68d548d5cf8d40a78e73136a1b89dab8f3b441c1")
     ];
-$context->setAnalyzeHardrules(true);
+    
 $context->inputs->setDev(true);
 $context->inputs->setFile("./tests/custom/custom1.php");
 $context->inputs->setFalsePositives($arr);

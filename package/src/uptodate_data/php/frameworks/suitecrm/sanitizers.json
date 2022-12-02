@@ -1,6 +1,0 @@
-{
-    "sanitizers": [
-        {"name": "quote", "instanceof": "DBManager", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]},
-        {"name": "quoted", "instanceof": "DBManager", "language": "php", "prevent": ["sql_injection", "command_injection", "QUOTES"]}
-        ]
-}

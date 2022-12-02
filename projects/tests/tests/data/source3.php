@@ -1,5 +1,5 @@
 <?php
 
-$var = $shell_exec;
+$var = shell_exec('ls -lart');
 
 print("$var");

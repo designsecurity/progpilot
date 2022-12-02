@@ -15,4 +15,3 @@ function testf3($param)
     echo $_GET["p"];
 }
 
-testf3("test");

@@ -2,17 +2,6 @@
     "custom_rules": [
         {"sequence":
             [
-                {"function_name": "dev_iam_authenticated", "language": "php"},
-                {"function_name": "dev_iam_rights", "language": "php"},
-                {"function_name": "dev_retrieve_secret", "language": "php"}
-            ],
-            "description": "the user must be authentified and have rights before retrieving secrets",
-            "action": "MUST_VERIFY_CALL_FLOW",
-            "attack": "bypass access control", 
-            "cwe": "CWE_285"
-        },
-        {"sequence":
-            [
                 {"function_name": "secret", "language": "php"},
                 {"function_name": "dev_iam_authenticated", "language": "php"},
                 {"function_name": "dev_iam_rights", "language": "php"},
@@ -38,6 +27,30 @@
             "language": "php", "action": "MUST_VERIFY_DEFINITION",
             "attack": "security misconfiguration", 
             "cwe": "CWE_1004"
+        },
+        {
+            "name": "db", 
+            "instanceof": "SomeClass", 
+            "description": "Access to SomeClass->db as new sinks",
+            "language": "php", 
+            "action": "DEFINE_OBJECT", 
+            "extra": "SomeClassDb"
+        },
+        {
+            "name": "middle_object_unknown", 
+            "instanceof": "known_class1", 
+            "description": "new sinks",
+            "language": "php", 
+            "action": "DEFINE_OBJECT", 
+            "extra": "SomeClassUnknown"
+        },
+        {
+            "name": "middle_object", 
+            "instanceof": "known_class1_undefined", 
+            "description": "new sinks",
+            "language": "php", 
+            "action": "DEFINE_OBJECT", 
+            "extra": "SomeClassUnknown"
         }
 		]
 }

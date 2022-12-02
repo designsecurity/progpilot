@@ -34,7 +34,7 @@ class TwigAnalysis
             $template = $instruction->getProperty("argdef0");
             $variable = $instruction->getProperty("argdef1");
 
-            $file = $path."/".$template->getLastKnownValues()[0];
+            $file = $path.DIRECTORY_SEPARATOR.$template->getLastKnownValues()[0];
             $myJavascriptFile = new MyFile($file, $myFuncCall->getLine(), $myFuncCall->getColumn());
 
             if (file_exists($file)) {
@@ -47,8 +47,13 @@ class TwigAnalysis
 
                     $arrIndex = "{{".key($arr)."}}";
 
-                    $myDef = new MyDefinition($def->getLine(), $def->getColumn(), $arrIndex);
-                    $myDef->setSourceMyFile($myJavascriptFile);
+                    $myDef = new MyDefinition(
+                        $context->getCurrentBlock()->getId(),
+                        $context->getCurrentMyFile(),
+                        $def->getLine(),
+                        $def->getColumn(),
+                        $arrIndex
+                    );
 
                     if ($def->isTainted()) {
                         $myDef->setTainted(true);

@@ -1,10 +1,6 @@
 <?php
         return [
                 [
-                    "./tests/includes/simple1.php",
-                        [["\$var1", '3', "xss"]]
-                ],
-                [
                     "./tests/data/sink1.php",
                         [["\$var7", "3", "xss"]]
                 ],
@@ -32,8 +28,8 @@
                 ],
                 [
                     "./tests/data/sink6.php",
-                        [["\$_GET[\"p1\"]", "3", "code_injection"],
-                        ["\$_GET[\"t1\"]", "3", "code_injection"]]
+                        [["\$_GET[\"p1\"]", "3", "redos"],
+                        ["\$_GET[\"p2\"]", "5", "redos"]]
                 ],
                 [
                     "./tests/data/sink7.php",
@@ -79,23 +75,23 @@
                 ],
                 [
                     "./tests/data/source7.php",
-                        [["\$methodc1arr_return", "12", "xss"]]
+                        [["\$var2[\"tainted\"]", "16", "xss"]]
                 ],
                 [
                     "./tests/data/source8.php",
-                        [["\$func1arr_return", "7", "xss"]]
+                        [["\$var2[\"tainted\"]", "9", "xss"]]
                 ],
                 [
                     "./tests/data/source9.php",
-                        [["\$func1arr_return", "7", "xss"]]
+                        [["\$func1arr_return[\"tainted\"]", "7", "xss"]]
                 ],
                 [
                     "./tests/data/source10.php",
-                        [["\$func1arr_return", "8", "xss"]]
+                        [["\$func1arr_return[\"tainted\"]", "8", "xss"]]
                 ],
                 [
                     "./tests/data/source11.php",
-                        [["\$inst->member1", "9", "xss"]]
+                        [["\$inst->member1", "10", "xss"]]
                 ],
                 [
                     "./tests/data/source12.php",
@@ -111,8 +107,8 @@
                 ],
                 [
                     "./tests/data/source15.php",
-                        [["\$inst->object->member1", "18", "xss"],
-                        ["\$inst1->object->member1", "44", "xss"]]
+                        [["\$member1", "10", "xss"],
+                        ["\$member1", "36", "xss"]]
                 ],
                 [
                     "./tests/data/source16.php",
@@ -133,7 +129,11 @@
                 ],
                 [
                     "./tests/data/source20.php",
-                        [["\$comment->ddd", "23", "xss"]]
+                        [["\$b", "4", "xss"]]
+                ],
+                [
+                    "./tests/data/source21.php",
+                        [["\$title", "0", "xss"]]
                 ],
                 [
                     "./tests/data/sanitizer1.php",
@@ -172,5 +172,62 @@
                 [
                     "./tests/data/sanitizer9.php",
                         [["\$tainted3", "19", "xss"]]
+                ],
+                [
+                    "./tests/data/sanitizer10.php",
+                        []
+                ],
+                [
+                    "./tests/data/sanitizer11.php",
+                        []
+                ]
+                /*,
+                // need support of proper validator propagation
+                [
+                    "./tests/data/validator1.php",
+                        [["\$tainted3", "19", "xss"]]
+                ]
+                */,
+                [
+                    "./tests/data/validator2.php",
+                        [["\$tainted", "3", "xss"],
+                        ["\$tainted", "3", "xss"]]
+                ],
+                [
+                    "./tests/data/validator3.php",
+                        [["\$tainted", "3", "xss"],
+                        ["\$tainted", "3", "xss"]]
+                ],
+                [
+                    "./tests/data/validator4.php",
+                        [["\$tainted", "3", "xss"]]
+                ],
+                [
+                    "./tests/data/validator5.php",
+                        [["\$tainted", "3", "xss"]]
+                ],
+                [
+                    "./tests/data/validator6.php",
+                        [["\$show_updated", "3", "xss"]]
+                ],
+                [
+                    "./tests/data/customvalidator1.php",
+                        [["\$a", "25", "file_inclusion"]]
+                ],
+                [
+                    "./tests/data/customvalidator2.php",
+                        [["\$a", "14", "file_inclusion"]]
+                ],
+                [
+                    "./tests/data/customvalidator3.php",
+                        [["\$a", "16", "file_inclusion"]]
+                ],
+                [
+                    "./tests/data/customvalidator4.php",
+                        [["\$a", "16", "file_inclusion"]]
+                ],
+                [
+                    "./tests/data/customvalidator5.php",
+                        [["\$a", "16", "file_inclusion"]]
                 ]
             ]; 

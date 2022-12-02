@@ -15,7 +15,6 @@ use PHPCfg\Op;
 
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
-use progpilot\Objects\MyExpr;
 use progpilot\Objects\MyOp;
 
 use progpilot\Code\MyInstruction;
@@ -41,22 +40,9 @@ class FuncCall
         $myDef = new MyDefinition($op->loc->start->line, $op->loc->start->column, $defName);
 
         $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_ASSIGN));
-        $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::START_EXPRESSION));
-
-        $myExprparam = new MyExpr($op->loc->start->line, $op->loc->start->column);
-        $myExprparam->setAssign(true);
-        $myExprparam->setAssignDef($myDef);
 
         $instFuncCallMain->addProperty("argdef$numParam", $myDef);
-        $instFuncCallMain->addProperty("argexpr$numParam", $myExprparam);
 
-        /*
-        $myTemp = Expr::instruction($arg, $context, $myExprparam);
-
-        if (!is_null($myTemp)) {
-            $myDef->setValueFromDef($myTemp);
-        }
-        */
         $myargumenttype = $arg->type;
         $myargumentvalue = "";
         
@@ -75,7 +61,6 @@ class FuncCall
         }
             
         $mytemp = new MyDefinition($op->loc->start->line, $op->loc->start->column, $myargumentvalue);
-        $mytemp->setExpr($myExprparam);
         
         if ($myargumenttype === 'MemberExpression') {
             $propertyName = Common::getNameProperty($arg);
@@ -86,10 +71,6 @@ class FuncCall
         $instTemporarySimple = new MyInstruction(Opcodes::TEMPORARY);
         $instTemporarySimple->addProperty(MyInstruction::TEMPORARY, $mytemp);
         $context->getCurrentMycode()->addCode($instTemporarySimple);
-
-        $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);
-        $instEndExpr->addProperty(MyInstruction::EXPR, $myExprparam);
-        $context->getCurrentMycode()->addCode($instEndExpr);
 
         $context->getCurrentMycode()->addCode(new MyInstruction(Opcodes::END_ASSIGN));
 
@@ -104,7 +85,6 @@ class FuncCall
      */
     public static function instruction(
         $context,
-        $myExpr,
         $op
     ) {
     
@@ -163,8 +143,6 @@ class FuncCall
 
             $myFunctionCall->setNbParams($nbparams);
             $instFuncCallMain->addProperty(MyInstruction::MYFUNC_CALL, $myFunctionCall);
-            $instFuncCallMain->addProperty(MyInstruction::EXPR, $myExpr);
-            $instFuncCallMain->addProperty(MyInstruction::ARR, false);
             $context->getCurrentMycode()->addCode($instFuncCallMain);
             
             return $mybackdef;

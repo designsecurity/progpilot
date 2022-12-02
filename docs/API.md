@@ -20,17 +20,20 @@ To retrieve the value of $file, $code and $folder use these methods:
 ***
 - $obj_context->inputs->setLanguages($array);  
 Languages you want to analyze (["php", "js"] but js is in development), default is *["php"]*
-- $obj_context->inputs->setFrameworks($array);  
-Frameworks you want to analyze (default is *["suitecrm", "codeigniter"]*)
 - $obj_context->inputs->setDev($bool);  
 If you want to use security data relative to development of progpilot (default is *false*)
 ***
 
 ***
+- $obj_context->inputs->addSources($files_sources);
 - $obj_context->inputs->setSources($files_sources);
+- $obj_context->inputs->addSinks($files_sinks);
 - $obj_context->inputs->setSinks($files_sinks);
+- $obj_context->inputs->addSanitizers($files_sanitizers);
 - $obj_context->inputs->setSanitizers($files_sanitizers);
+- $obj_context->inputs->addValidators($files_validators);
 - $obj_context->inputs->setValidators($files_validators);
+- $obj_context->inputs->addCustomRules($files_custom);
 - $obj_context->inputs->setCustomRules($files_custom);
 - $obj_context->inputs->getCustomRules();
 - $obj_context->inputs->getSources();
@@ -49,15 +52,15 @@ These functions are explained in the chapter about [**handling false positives**
 ***
 
 ***
-- $obj_context->inputs->setIncludes($mixed);  
-- $obj_context->inputs->setExcludes($mixed);  
+- $obj_context->inputs->setInclusions($mixed);  
+- $obj_context->inputs->setExclusions($mixed);  
 For include or exclude files and folders during the analysis, see an [**example here**](./../projects/tests/exclude_files.json) with a json file configuration and an [**example here**](./../projects/tests/run_exclude_files.php) with a php array.
 ***
 
 ## Outputs
 ***
-- $obj_context->outputs->resolveIncludes($bool);
-- $obj_context->outputs->resolveIncludesFile($file);  
+- $obj_context->outputs->setWriteIncludeFailures($bool);
+- $obj_context->outputs->setIncludeFailuresFile($file);  
 These functions are explained in the chapter about [**included files**](./INCLUDES.md)
 - $obj_context->outputs->getAst();
 - $obj_context->outputs->getCfg();
@@ -72,25 +75,19 @@ print the number of files analyzed (it does not count the included files (with *
 
 ## Options
 ***
-- $obj_context->setLimitDefs($nb);  
+- $obj_context->setMaxDefinitions($nb);  
 to prevent memory exhaustion you could limit the number of definitions by file during the analysis (default is *3000*)
-- $obj_context->setLimitTime($time_sec);  
+- $obj_context->setMaxFileAnalysisDuration($time_sec);  
 max execution time by file for some steps of the analysis (default is *10 seconds*)
-- $obj_context->setLimitSize($size_bytes);  
+- $obj_context->setMaxFileSize($size_bytes);  
 do not analyze file that are larger than this defined size (default is 500 000 bytes)
-- $obj_context->setPrintFile($bool);  
-*true* if you want to print the name of files analyzed by progpilot, default is *false*
-- $obj_context->setPrintWarning($bool);  
-*true* if you want to print warnings during the analysis, default is *false*
+- $obj_context->setDebugMode($bool);  
+*true* if you want to output warnings during the analysis, default is *false*
 - $obj_context->setPrettyPrint($bool);  
 *true* if you want to pretty print the JSON output of standalone progpilot application, default is *true*
-- $obj_context->setAnalyzeFunctions($bool);  
-*true* if you want to analyze all functions (*false* only *main function* is analyzed), default is *true*
 - $obj_context->setAnalyzeIncludes($bool);  
 *true* or *false* if you want to analyze included files, default is *true*
 - $obj_context->setConfiguration($config);  
 you can use an yaml file to specify the configuration of analysis, see an [**example here**](./../projects/example_config/configuration.yml).
-- $obj_context->setAnalyzeHardRules($bool);  
-If you want to check custom rules that can take a lot a time (default is false)  
 These rules are explained in the chapter [**customize an analyze**](./CUSTOM_ANALYSIS.md)
 ***

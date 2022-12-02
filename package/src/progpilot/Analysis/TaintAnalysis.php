@@ -17,103 +17,52 @@ use progpilot\Objects\ArrayStatic;
 use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyInstance;
 use progpilot\Objects\MyAssertion;
-use progpilot\Objects\MyExpr;
 use progpilot\Objects\MyFunction;
 
 use progpilot\Dataflow\Definitions;
 use progpilot\Code\Opcodes;
 use progpilot\Code\MyInstruction;
 use progpilot\Inputs\MySource;
+use progpilot\Helpers\Analysis as HelpersAnalysis;
 
 class TaintAnalysis
 {
-    public static function funccallSpecifyAnalysis(
-        $myFunc,
-        $stackClass,
+    public static function funccallValidator(
         $context,
-        $data,
+        $myFunc,
         $myClass,
-        $myFuncCall,
-        $arrFuncCall,
-        $instruction,
-        $myCode,
-        $index
+        $instruction
     ) {
-        $stackClass = ResolveDefs::funccallClass($context, $data, $myFuncCall);
-
-        \progpilot\Analysis\CustomAnalysis::returnObject(
-            $context,
-            $myFuncCall,
-            $stackClass,
-            $instruction->getProperty(MyInstruction::EXPR)
-        );
-
-        TaintAnalysis::funccallValidator($stackClass, $context, $data, $myClass, $instruction, $myCode, $index);
-        TaintAnalysis::funccallSanitizer(
-            $myFunc,
-            $stackClass,
-            $context,
-            $data,
-            $myClass,
-            $instruction,
-            $myCode,
-            $index
-        );
-        
-        $hasSources = TaintAnalysis::funccallSource($stackClass, $context, $data, $myClass, $instruction);
-
-        // for example for document.write
-        if (is_null($myClass) && $myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)) {
-            $myClass = new MyClass(
-                $myFuncCall->getLine(),
-                $myFuncCall->getColumn(),
-                $myFuncCall->getNameInstance()
-            );
-        }
-        
-        SecurityAnalysis::funccall($stackClass, $context, $instruction, $myClass);
-        
-        return $hasSources;
-    }
-
-    public static function funccallValidator($stackClass, $context, $data, $myClass, $instruction, $myCode, $index)
-    {
-        $funcName = $instruction->getProperty(MyInstruction::FUNCNAME);
-        $arrFuncCall = $instruction->getProperty(MyInstruction::ARR);
         $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
 
         $nbParams = 0;
         $defsValid = [];
         $conditionsRespected = true;
 
-        $myValidator = $context->inputs->getValidatorByName($context, $stackClass, $myFuncCall, $myClass);
+        $myValidator = $context->inputs->getValidatorByName($myFuncCall, $myClass);
         if (!is_null($myValidator)) {
-            while (true) {
-                if (!$instruction->isPropertyExist("argdef$nbParams")) {
-                    break;
-                }
+            $validwhenreturning = $myValidator->getValidWhenReturning();
+        } else {
+            $validwhenreturning = true;
+        }
 
-                $defArg = $instruction->getProperty("argdef$nbParams");
-                $exprArg = $instruction->getProperty("argexpr$nbParams");
+        while (true) {
+            if (!$instruction->isPropertyExist("argdef$nbParams")) {
+                break;
+            }
 
+            $defArg = $instruction->getProperty("argdef$nbParams");
+
+            if (!is_null($myValidator)) {
                 $conditions = $myValidator->getParameterconditions($nbParams + 1);
-                if ($conditions === "valid" && !$exprArg->getIsConcat()) {
-                    $theDefsArgs = $exprArg->getDefs();
-
-                    foreach ($theDefsArgs as $theDefsArg) {
-                        $defsValid[] = $theDefsArg;
-                    }
+                if ($conditions === "valid") {
+                    $defsValid[] = $defArg;
                 } elseif ($conditions === "array_not_tainted") {
-                    if ($defArg->isType(MyDefinition::TYPE_ARRAY) && $defArg->isTainted()) {
-                        $conditionsRespected = false;
-                    } elseif ($defArg->isType(MyDefinition::TYPE_COPY_ARRAY)) {
-                        $copyArrays = $defArg->getCopyArrays();
-                        foreach ($copyArrays as $copyArray) {
-                            $arrvalue = $copyArray[0];
-                            $defarr = $copyArray[1];
-
-                            if ($defarr->isTainted()) {
+                    if ($defArg->getCurrentState()->isType(MyDefinition::TYPE_ARRAY)) {
+                        foreach ($defArg->getCurrentState()->getArrayIndexes() as $arrayIndex) {
+                            if ($arrayIndex->def->getCurrentState()->isTainted()) {
                                 $conditionsRespected = false;
+                                break;
                             }
                         }
                     }
@@ -121,18 +70,17 @@ class TaintAnalysis
                     if ($defArg->isTainted()) {
                         $conditionsRespected = false;
                     }
-                } elseif ($conditions === "equals") {
+                } elseif ($conditions === "equals" || $conditions === "notequals") {
                     $conditionsRespectedEquals = false;
                     $values = $myValidator->getParameterValues($nbParams + 1);
 
                     if (!is_null($values)) {
-                        $theDefsArgs = $exprArg->getDefs();
-                        if (count($theDefsArgs) > 0) {
-                            foreach ($values as $value) {
-                                foreach ($theDefsArgs[0]->getLastKnownValues() as $lastKnownValue) {
-                                    if ($value->value === $lastKnownValue) {
-                                        $conditionsRespectedEquals = true;
-                                    }
+                        foreach ($values as $value) {
+                            foreach ($defArg->getCurrentState()->getLastKnownValues() as $lastKnownValue) {
+                                if ($value->value === $lastKnownValue && $conditions === "equals") {
+                                    $conditionsRespectedEquals = true;
+                                } elseif ($value->value !== $lastKnownValue && $conditions === "notequals") {
+                                    $conditionsRespectedEquals = true;
                                 }
                             }
                         }
@@ -142,79 +90,91 @@ class TaintAnalysis
                         $conditionsRespected = false;
                     }
                 }
+            } else {
+                if (!is_null($myFunc)) {
+                    $ambiguous = true;
 
-                $nbParams ++;
-            }
-        }
+                    foreach ($myFunc->getReturnDefs() as $returnDef) {
+                        $ambiguous = false;
+                        // we have a return def from a known validator
+                        if ($returnDef->getReturnedFromValidator()) {
+                            $returnTrue = false;
+                            $returnFalse = false;
 
-        if (count($defsValid) > 0) {
-            if ($conditionsRespected) {
-                $codes = $myCode->getCodes();
+                            // we overwrite the value for below
+                            $validwhenreturning = $returnDef->getValidWhenReturning();
+                            $validNotBoolean = $returnDef->getValidNotBoolean();
 
-                if (isset($codes[$index + 2])) {
-                    $instructionIf = $codes[$index + 2];
-                    if ($instructionIf->getOpcode() === Opcodes::COND_START_IF) {
-                        $myBlockIf = $instructionIf->getProperty(MyInstruction::MYBLOCK_IF);
-                        $myBlockElse = $instructionIf->getProperty(MyInstruction::MYBLOCK_ELSE);
+                            foreach ($returnDef->getCurrentState()->getLastKnownValues() as $lastKnownValue) {
+                                if ($lastKnownValue === "true"
+                                    || $lastKnownValue === "TRUE"
+                                        || (is_numeric($lastKnownValue) && $lastKnownValue > 0)) {
+                                    $returnTrue = true;
+                                } elseif ($lastKnownValue === "false"
+                                    || $lastKnownValue === "FALSE"
+                                        || (is_numeric($lastKnownValue) && $lastKnownValue <= 0)) {
+                                    $returnFalse = true;
+                                } else {
+                                    $ambiguous = true;
+                                    break 2;
+                                }
+                            }
 
-                        foreach ($defsValid as $defValid) {
-                            $type = "valid";
-                            $myAssertion = new MyAssertion($defValid, $type);
-
-                            if ($instructionIf->isPropertyExist(MyInstruction::NOT_BOOLEAN)) {
-                                $myBlockElse->addAssertion($myAssertion);
-                            } else {
-                                $myBlockIf->addAssertion($myAssertion);
+                            // ambiguous
+                            if ($returnTrue && $returnFalse) {
+                                $ambiguous = true;
+                                break;
                             }
                         }
                     }
+
+                    // all the returns are true OR all the returns are false
+                    if (!$ambiguous) {
+                        $defsValid[] = $defArg;
+                    }
                 }
             }
+
+            $nbParams ++;
         }
+
+        if (!empty($defsValid)) {
+            if ($conditionsRespected) {
+                $resultid = $instruction->getProperty(MyInstruction::RESULTID);
+                $opInformation = $context->getCurrentFunc()->getOpInformation($resultid);
+                foreach ($defsValid as $defValid) {
+                    $opInformation["condition_defs"][] = $defValid;
+                }
+
+                $opInformation["valid_when_returning"] = $validwhenreturning;
+                return $opInformation;
+            }
+        }
+
+        return null;
     }
 
     public static function funccallSanitizer(
         $myFunc,
-        $stackClass,
         $context,
-        $data,
         $myClass,
         $instruction,
-        $myCode,
-        $index
+        $virtualReturnDef
     ) {
         $funcName = $instruction->getProperty(MyInstruction::FUNCNAME);
-        $arrFuncCall = $instruction->getProperty(MyInstruction::ARR);
         $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
 
         $conditionsSanitize = false;
-        $conditionsTaint = false;
-        $paramsTaintedconditionsTaint = false;
 
         $paramsTainted = false;
         $paramsSanitized = false;
         $paramsTypeSanitized = [];
+        $paramsTaintedDefs = [];
 
         $nbParams = 0;
         $conditionsRespectedFinal = true;
 
-        $myTempReturn = new MyDefinition(
-            $myFuncCall->getLine(),
-            $myFuncCall->getColumn(),
-            "return_".$myFuncCall->getName()
-        );
-        $myTempReturn->setSourceMyFile($context->getCurrentMyfile());
-
-        $myExprReturn1 = new MyExpr($myFuncCall->getLine(), $myFuncCall->getColumn());
-        $myExprReturn1->setAssign(true);
-        $myExprReturn1->setAssignDef($myTempReturn);
-        $myExprReturn1->addDef($myTempReturn);
-
-        $myExprReturn2 = new MyExpr($myFuncCall->getLine(), $myFuncCall->getColumn());
-        $myExprReturn2->setAssign(true);
-        $myExprReturn2->setAssignDef($myTempReturn);
-
-        $mySanitizer = $context->inputs->getSanitizerByName($context, $stackClass, $myFuncCall, $myClass);
+        $mySanitizer = $context->inputs->getSanitizerByName($myFuncCall, $myClass);
         
         if (!is_null($mySanitizer)) {
             $preventFinal = $mySanitizer->getPrevent();
@@ -224,24 +184,21 @@ class TaintAnalysis
             if (!$instruction->isPropertyExist("argdef$nbParams")) {
                 break;
             }
-
+            
             $defArg = $instruction->getProperty("argdef$nbParams");
-            $exprArg = $instruction->getProperty("argexpr$nbParams");
 
-            if (is_null($myFunc) || !is_null($mySanitizer)) {
-                if ($defArg->isTainted()) {
-                    $paramsTainted = true;
-                    $myExprReturn2->addDef($defArg);
-                }
+            if ($defArg->getCurrentState()->isTainted()) {
+                $paramsTainted = true;
+                $paramsTaintedDefs[] = $defArg;
+            }
 
-                if ($defArg->isSanitized()) {
-                    $paramsSanitized = true;
-                    $tmps = $defArg->getTypeSanitized();
+            if ($defArg->getCurrentState()->isSanitized()) {
+                $paramsSanitized = true;
+                $tmps = $defArg->getCurrentState()->getTypeSanitized();
 
-                    foreach ($tmps as $tmp) {
-                        if (!in_array($tmp, $paramsTypeSanitized, true)) {
-                            $paramsTypeSanitized[] = $tmp;
-                        }
+                foreach ($tmps as $tmp) {
+                    if (!in_array($tmp, $paramsTypeSanitized, true)) {
+                        $paramsTypeSanitized[] = $tmp;
                     }
                 }
             }
@@ -249,21 +206,18 @@ class TaintAnalysis
             if (!is_null($mySanitizer)) {
                 $conditions = $mySanitizer->getParameterconditions($nbParams + 1);
 
-                if ($conditions === "equals") {
+                if ($conditions === "equals" || $conditions === "notequals") {
                     $conditionsRespected = false;
                     $values = $mySanitizer->getParameterValues($nbParams + 1);
 
                     if (!is_null($values)) {
-                        $theDefsArgs = $exprArg->getDefs();
-                        if (count($theDefsArgs) > 0) {
-                            foreach ($values as $value) {
-                                foreach ($theDefsArgs[0]->getLastKnownValues() as $lastKnownValue) {
-                                    if ($value->value === $lastKnownValue) {
-                                        $conditionsRespected = true;
-
-                                        if (isset($value->prevent)) {
-                                            $preventFinal = array_merge($preventFinal, $value->prevent);
-                                        }
+                        foreach ($values as $value) {
+                            foreach ($defArg->getCurrentState()->getLastKnownValues() as $lastKnownValue) {
+                                if (($value->value === $lastKnownValue && $conditions === "equals")
+                                    || ($value->value !== $lastKnownValue && $conditions === "notequals")) {
+                                    $conditionsRespected = true;
+                                    if (isset($value->prevent)) {
+                                        $preventFinal = array_merge($preventFinal, $value->prevent);
                                     }
                                 }
                             }
@@ -275,92 +229,67 @@ class TaintAnalysis
                     }
                 } elseif ($conditions === "taint") {
                     $conditionsTaint = true;
-                    if ($defArg->isTainted()) {
+                    if ($defArg->getCurrentState()->isTainted()) {
                         $paramsTaintedconditionsTaint = true;
-                        $myExprReturn2->addDef($defArg);
                     }
                 } elseif ($conditions === "sanitize") {
                     $conditionsSanitize = true;
-                    $exprsTaintedconditionsSanitize[] = $exprArg;
+                    $exprsTaintedconditionsSanitize[] = $defArg;
                 }
             }
 
             $nbParams ++;
         }
 
-        $returnSanitizer = false;
+        $funcReturnDefs = (!is_null($myFunc) && !empty($myFunc->getReturnDefs())) ? true : false;
 
-        $codes = $myCode->getCodes();
-        if (isset($codes[$index + 2]) && $codes[$index + 2]->getOpcode() === Opcodes::END_ASSIGN) {
-            $instructionDef = $codes[$index + 3];
-            $myDefReturn = $instructionDef->getProperty(MyInstruction::DEF);
-            $returnSanitizer = true;
-        }
-        
-        // the return of func will be tainted if one of arg is tainted
-        if ($returnSanitizer) {
-            TaintAnalysis::setTainted($paramsTainted, $myTempReturn, $myExprReturn2);
+        $mySource = $context->inputs->getSourceByName($myFuncCall, $myClass);
+
+        // the default return of func will be tainted if one of arg is tainted
+        // AND no defs are returned/defined
+        // AND the func is not a sanitizer (with all conditions respected)
+        // AND the func is not a source (will return already a def)
+        if (!$funcReturnDefs
+            && is_null($mySource)) {
+            $virtualReturnDef->getCurrentState()->setTainted($paramsTainted);
+
+            foreach ($paramsTaintedDefs as $paramsTaintedDef) {
+                $virtualReturnDef->getCurrentState()->addTaintedByDef(
+                    [$paramsTaintedDef, $paramsTaintedDef->getCurrentState()]
+                );
+            }
         }
 
-        if ($returnSanitizer || $conditionsSanitize) {
-            if (!is_null($mySanitizer) && $conditionsRespectedFinal) {
-                if ($conditionsSanitize) {
-                    foreach ($exprsTaintedconditionsSanitize as $exprsanitize) {
-                        foreach ($exprsanitize->getDefs() as $oneDef) {
-                            $oneDef->setSanitized(true);
-                            if (is_array($preventFinal)) {
-                                foreach ($preventFinal as $preventFinalValue) {
-                                    $oneDef->addTypeSanitized($preventFinalValue);
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    $myTempReturn->setSanitized(true);
-                    $myDefReturn->setSanitized(true);
-                    if (is_array($preventFinal)) {
-                        foreach ($preventFinal as $preventFinalValue) {
-                            $myTempReturn->addTypeSanitized($preventFinalValue);
-                            $myDefReturn->addTypeSanitized($preventFinalValue);
-                        }
+        if (!is_null($mySanitizer) && $conditionsRespectedFinal) {
+            if ($conditionsSanitize) {
+                foreach ($exprsTaintedconditionsSanitize as $defTaintedconditionsSanitize) {
+                    $callback = "Callbacks::addSanitizedTypes";
+                    HelpersAnalysis::forEachTaintedByDefs($defTaintedconditionsSanitize, $preventFinal, $callback);
+                }
+            } else {
+                $virtualReturnDef->getCurrentState()->setSanitized(true);
+                if (is_array($preventFinal)) {
+                    foreach ($preventFinal as $preventFinalValue) {
+                        $virtualReturnDef->getCurrentState()->addTypeSanitized($preventFinalValue);
                     }
                 }
             }
         }
 
-        if ($returnSanitizer && $paramsSanitized) {
-            $myTempReturn->setSanitized(true);
-            $myDefReturn->setSanitized(true);
+        if ($paramsSanitized) {
+            $virtualReturnDef->getCurrentState()->setSanitized(true);
             foreach ($paramsTypeSanitized as $tmp) {
-                $myTempReturn->addTypeSanitized($tmp);
-                $myDefReturn->addTypeSanitized($tmp);
-            }
-        }
-
-        if ($returnSanitizer) {
-            if (ResolveDefs::getVisibilityFromInstances($context, $data, $myDefReturn)) {
-                ValueAnalysis::copyValues($myTempReturn, $myDefReturn);
-                TaintAnalysis::setTainted($myTempReturn->isTainted(), $myDefReturn, $myExprReturn1);
+                $virtualReturnDef->getCurrentState()->addTypeSanitized($tmp);
             }
         }
     }
 
-    public static function funccallSource($stackClass, $context, $data, $myClass, $instruction)
+    public static function funccallSource($context, $myClass, $instruction, $virtualReturnDef)
     {
-        $hasSources = false;
-        
-        $funcName = $instruction->getProperty(MyInstruction::FUNCNAME);
-        $arrFuncCall = $instruction->getProperty(MyInstruction::ARR);
         $myFuncCall = $instruction->getProperty(MyInstruction::MYFUNC_CALL);
-        
-        $className = false;
-        if ($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD) && !is_null($myClass)) {
-            $className = $myClass->getName();
-        }
-        
-        $mySource = $context->inputs->getSourceByName($stackClass, $myFuncCall, true, $className, false);
+
+        $mySource = $context->inputs->getSourceByName($myFuncCall, $myClass);
         if (!is_null($mySource)) {
-            $hasSources = true;
             if ($mySource->hasParameters()) {
                 $nbParams = 0;
                 while (true) {
@@ -368,21 +297,21 @@ class TaintAnalysis
                         break;
                     }
 
-                    $defArg = $instruction->getProperty("argdef$nbParams");
-
                     if ($mySource->isParameter($nbParams + 1)) {
-                        $defFrom = $defArg->getValueFromDef();
+                        $defFrom = $instruction->getProperty("argoriginaldef$nbParams");
                         
                         if (!is_null($defFrom)) {
                             $arrayIndex = $mySource->getconditionsParameter($nbParams + 1, MySource::CONDITION_ARRAY);
                             if (!is_null($arrayIndex)) {
-                                $trueArrayIndex = array($arrayIndex => false);
-                                $defFrom->addType(MyDefinition::TYPE_ARRAY);
-                                $defFrom->setArrayValue($trueArrayIndex);
-                            }
+                                $newArrs = $defFrom->getCurrentState()->getOrCreateDefArrayIndex(
+                                    $defFrom->getBlockId(),
+                                    $defFrom,
+                                    $arrayIndex
+                                );
 
-                            // no expression needed it's a source
-                            $defFrom->setTainted(true);
+                                $myElement = $newArrs[1][0];
+                                $myElement->getCurrentState()->setTainted(true);
+                            }
                         }
                     }
 
@@ -390,88 +319,46 @@ class TaintAnalysis
                 }
             }
 
-            $exprReturn = $instruction->getProperty(MyInstruction::EXPR);
+            $myDef = $virtualReturnDef;
+            
+            // sanitizers are deleted
+            $myDef->getCurrentState()->setSanitized(false);
+            $myDef->getCurrentState()->setTypeSanitized([]);
+            $myDef->getCurrentState()->setCast(MyDefinition::CAST_NOT_SAFE);
+            //$myDef->getCurrentState()->setTainted(true);
+            // no need to taintedbyexpr because it's source like _GET
 
-            if ($exprReturn->isAssign()) {
-                $defAssign = $exprReturn->getAssignDef();
-                
-                // sanitizers are deleted
-                $defAssign->setSanitized(false);
-                $defAssign->setTypeSanitized([]);
-                $defAssign->setCast(MyDefinition::CAST_NOT_SAFE);
+            if ($mySource->getIsObject()) {
+                $myDef->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
+                $myDef->getCurrentState()->addType(MyDefinition::ALL_PROPERTIES_TAINTED);
 
-                $myDef = new MyDefinition(
-                    $myFuncCall->getLine(),
-                    $myFuncCall->getColumn(),
-                    $myFuncCall->getName()."_return"
+                $myDef->setClassName($myFuncCall->getName()."_built-in-class");
+                HelpersAnalysis::createObject($context, $myDef);
+            } elseif ($mySource->getIsArrayOfArrays()) {
+                $myDef->getCurrentState()->addType(MyDefinition::TYPE_ARRAY_ARRAY);
+                $myDef->getCurrentState()->addType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED);
+            } elseif ($mySource->getIsArrayOfObjects()) {
+                $myDef->getCurrentState()->addType(MyDefinition::TYPE_ARRAY);
+                $myDef->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
+                $myDef->getCurrentState()->addType(MyDefinition::ALL_PROPERTIES_TAINTED);
+
+                $myDef->setClassName($myFuncCall->getName()."_built-in-class");
+                HelpersAnalysis::createObject($context, $myDef);
+            } elseif ($mySource->getIsArray()) {
+                $myDef->getCurrentState()->addType(MyDefinition::TYPE_ARRAY);
+                $myDef->getCurrentState()->addType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED);
+            } elseif ($mySource->getIsReturnArray()) {
+                $newArrs = $myDef->getCurrentState()->getOrCreateDefArrayIndex(
+                    $myDef->getBlockId(),
+                    $myDef,
+                    $mySource->getReturnArrayValue()
                 );
-                $myDef->setSourceMyFile($defAssign->getSourceMyFile());
-                $myDef->setTainted(true);
-                // no need to taintedbyexpr because it's source like _GET
 
-                if ($mySource->getIsObject()) {
-                    $defAssign->addType(MyDefinition::TYPE_INSTANCE);
-                    $defAssign->property->addProperty("PROGPILOT_ALL_PROPERTIES_TAINTED");
-                    
-                    $defAssign->setTaintedByExpr($exprReturn);
-                    $defAssign->setExpr($exprReturn);
-                    
-                    $exprReturn->addDef($defAssign);
-                } elseif ($mySource->getIsArray()) {
-                    $defAssign->setArrayValue("PROGPILOT_ALL_INDEX_TAINTED");
-                    // we don't add type of TYPE_ARRAY because is a virtual array
-                    // $row = mysqli_fetch_row
-                    // echo $row[0]
-                    // we don't want row as an array because it's value is constance PROGPILOT_ALL_INDEX_TAINTED
-                    // which doesn't mean anything for the user
-                    //$defAssign->addType(MyDefinition::TYPE_ARRAY);
-                    
-                    $defAssign->setTaintedByExpr($exprReturn);
-                    $defAssign->setExpr($exprReturn);
-
-                    $exprReturn->addDef($defAssign);
-                } elseif ($mySource->getIsReturnArray() && $arrFuncCall === false) {
-                    $valueArray = array($mySource->getReturnArrayValue() => false);
-
-                    $defAssign->addCopyArray($valueArray, $myDef);
-                    $defAssign->addType(MyDefinition::TYPE_COPY_ARRAY);
-
-                    $exprReturn->addDef($myDef);
-                    $myDef->setExpr($exprReturn);
-                } elseif ($mySource->getIsReturnArray()) {
-                    $valueArray = array($mySource->getReturnArrayValue() => false);
-
-                    if ($arrFuncCall === $valueArray) {
-                        $exprReturn->addDef($myDef);
-                        $myDef->setExpr($exprReturn);
-
-                        if ($exprReturn->isAssign()) {
-                            if (ResolveDefs::getVisibilityFromInstances($context, $data, $defAssign)) {
-                                ValueAnalysis::copyValues($myDef, $defAssign);
-                                TaintAnalysis::setTainted($myDef->isTainted(), $defAssign, $exprReturn);
-                            }
-                        }
-                    }
-                } elseif (!$mySource->getIsReturnArray()) {
-                    $exprReturn->addDef($myDef);
-                    if ($exprReturn->isAssign()) {
-                        if (ResolveDefs::getVisibilityFromInstances($context, $data, $defAssign)) {
-                            ValueAnalysis::copyValues($myDef, $defAssign);
-                            TaintAnalysis::setTainted($myDef->isTainted(), $defAssign, $exprReturn);
-                        }
-                    }
-                }
+                $myElement = $newArrs[1][0];
+                $myElement->getCurrentState()->setTainted(true);
+            } elseif (!$mySource->getIsReturnArray()) {
+                $myDef->getCurrentState()->setTainted(true);
             }
-        }
-        
-        return $hasSources;
-    }
-
-    public static function setTainted($tainted, $defAssign, $expr)
-    {
-        if ($tainted) {
-            $defAssign->setTainted(true);
-            $defAssign->setTaintedByExpr($expr);
         }
     }
 }

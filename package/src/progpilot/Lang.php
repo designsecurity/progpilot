@@ -70,19 +70,27 @@ class Lang
         Lang::GLOBAL_ERROR.
         Lang::GLOBAL_CHECK_CONFIG.
         "Unable to parse the YAML file configuration";
+
+    const UNABLE_TO_CREATE_WORKSPACE =
+            Lang::GLOBAL_ERROR.
+            "Unable to create the workspace directory, do you have the correct permissions on filesystem?";
         
     const COMMAND_LINE_ARG =
         "Usage of progpilot : php progpilot.phar [--configuration path_to_config_file.yml] ".
         "[files and folders (file1.php file2.php ...)]";
         
+    const PARSER_ERROR = "Exception raised during parsing.\nMessage: ";
     const PROGPILOT_ARG_DESC = "Progpilot a static analysis tool for security purposes";
     const FILES_ARG_DESC = "Files to be analyzed";
     const CONFIG_ARG_DESC = "Read configuration from config file";
     const MAX_TIME_EXCEEDED = "Max time execution exceeded (you can increase the value with ".
-        "\$context->setLimitTime())";
+        "\$context->setMaxFileAnalysisDuration())";
     const MAX_DEFS_EXCEEDED = "Max definitions exceeded (you can increase the value with ".
-        "\$context->setLimitDefs())";
+        "\$context->setMaxDefinitions())";
     const MAX_SIZE_EXCEEDED = "Max size of file exceeded (you can increase the value with ".
-        "\$context->setLimitSize())";
+        "\$context->setMaxFileSize())";
+    const MAX_MEMORY_EXCEEDED = "Memory threshold reached, some references will be released ".
+        "(increasing execution time)";
+    const CANNOT_SET_MEMORY = "Cannot set php memory_limit to ";
     const V8JS_NOTLOADED = "extension v8js must be loaded to analyze js files";
 }

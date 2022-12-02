@@ -13,13 +13,13 @@ include($dir."myfile$suf.php");
 ```
 
 To bypass this limitation use these functions:
-- $obj_context->outputs->resolveIncludes($bool);
-- $obj_context->outputs->resolveIncludesFile($file);  
+- $obj_context->outputs->setWriteIncludeFailures($bool);
+- $obj_context->outputs->setIncludeFailuresFile($file);  
 When *$bool* set to *true* and *$file* set to *resolve_includes.json* for example
 
 For each include not resolved an entry will be printed in the *$file* with the location of the include function (file, line, column):
 ```javascript
-{"includes_not_resolved":[["/home/dev/projects/tests/includes/simple5.php",11,11]]}
+{"include_failures":[["/home/dev/projects/tests/includes/simple5.php",11,11]]}
 ```
 Next create a *resolved_includes.json* file with the good value for each include function call:
 ```javascript

@@ -1,4 +1,16 @@
 {
-    "validators": [
-		]
+  "validators": [
+      {"name": "in_array_false", "language": "php", "valid_when_returning": false, "parameters": 
+          [
+              {"id": 1, "conditions": "valid"},
+              {"id": 2, "conditions": "array_not_tainted"}
+          ]
+      },
+      {"name": "in_array_true", "language": "php", "valid_when_returning": true, "parameters": 
+          [
+              {"id": 1, "conditions": "valid"},
+              {"id": 2, "conditions": "array_not_tainted"}
+          ]
+      }
+    ]
 }

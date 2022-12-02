@@ -1,9 +1,41 @@
 {
     "custom_rules": [
         {
+            "name": "input", 
+            "instanceof": "CI_Controller", 
+            "description": "load security helper in the controller",
+            "language": "php", 
+            "action": "DEFINE_OBJECT", 
+            "extra": "InputCodeIgniter"
+        },
+        {
+            "name": "security", 
+            "instanceof": "CI_Controller", 
+            "description": "load security helper in the controller",
+            "language": "php", 
+            "action": "DEFINE_OBJECT", 
+            "extra": "SecurityHelperCodeIgniter"
+        },
+        {
+            "name": "load", 
+            "instanceof": "CI_Controller", 
+            "description": "load templates in the controller",
+            "language": "php", 
+            "action": "DEFINE_OBJECT", 
+            "extra": "ViewCodeIgniter"
+        },
+        {
+            "name": "db", 
+            "instanceof": "CI_Model", 
+            "description": "db interface to perform queries",
+            "language": "php", 
+            "action": "DEFINE_OBJECT", 
+            "extra": "DBCodeIgniter"
+        },
+        {
             "name": "query", 
             "is_function": true,
-            "instanceof": "CI_Model->db", 
+            "instanceof": "DBCodeIgniter", 
             "description": "Result of db queries as new sources",
             "language": "php", 
             "action": "DEFINE_OBJECT", 
@@ -12,7 +44,7 @@
         {
             "name": "get", 
             "is_function": true,
-            "instanceof": "CI_Model->db", 
+            "instanceof": "DBCodeIgniter", 
             "description": "Result of db queries as new sources",
             "language": "php", 
             "action": "DEFINE_OBJECT", 

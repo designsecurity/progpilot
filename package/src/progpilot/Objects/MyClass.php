@@ -12,9 +12,8 @@ namespace progpilot\Objects;
 
 class MyClass extends MyOp
 {
-    private $properties;
     private $methods;
-    private $objectIdThis;
+    private $properties;
     private $extendsof;
 
     public function __construct($varLine, $varColumn, $varName)
@@ -23,7 +22,6 @@ class MyClass extends MyOp
 
         $this->properties = [];
         $this->methods = [];
-        $this->objectIdThis = null;
         $this->extendsof = null;
     }
 
@@ -77,8 +75,8 @@ class MyClass extends MyOp
     public function addProperty($property)
     {
         $exist = false;
-        foreach ($this->properties as $propertyClass) {
-            if ($propertyClass->property->getProperties() === $property->property->getProperties()) {
+        foreach ($this->properties as $defClass) {
+            if ($defClass->getName() === $property->getName()) {
                 $exist = true;
                 break;
             }
@@ -89,28 +87,36 @@ class MyClass extends MyOp
         }
     }
 
-    public function getProperty($name)
+    public function getProperty($context, $blockid, $instance, $name)
     {
-        foreach ($this->properties as $property) {
+        foreach ($this->properties as $def) {
             // we don't check if it's STATIC property or NOT
-            if ($property->property->getProperties()[0] === $name) {
-                return $property;
+            if ($def->getName() === $name) {
+                return $def;
             }
         }
 
-        return null;
-    }
+        // we didn't find any propery but in this case php create automatically the property
+        // same code than in selectproperties resolvedef
+        $myProperty = new MyProperty(
+            $context->getCurrentBlock()->getId(),
+            $context->getCurrentMyFile(),
+            $instance->getLine(),
+            $instance->getColumn(),
+            $name
+        );
+        $myProperty->setVisibility("public");
+        $this->addProperty($myProperty);
 
-    public function setObjectIdThis($objectId)
-    {
-        $this->objectIdThis = $objectId;
-    }
+        $state = $instance->getState($blockid);
+        if (!is_null($state) && $state->isType(MyDefinition::ALL_PROPERTIES_TAINTED)) {
+            $myProperty->getCurrentState()->setTainted(true);
+            $myProperty->getCurrentState()->addTaintedByDef([$instance, $state]);
+        }
 
-    public function getObjectIdThis()
-    {
-        return $this->objectIdThis;
+        return $myProperty;
     }
-
+    
     public function getExtendsOf()
     {
         return $this->extendsof;

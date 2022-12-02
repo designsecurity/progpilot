@@ -3,9 +3,9 @@
         return [
                 [
                     "./tests/phpwander/test0.php",
-                        [["\$id_return", "4", "file_disclosure"],
-                        ["\$return_basename", "9", "file_disclosure"],
-                        ["\$_GET[\"f\"]", "11", "file_disclosure"],
+                        [["\$id_return", "4", "path_traversal"],
+                        ["\$basename_return", "9", "path_traversal"],
+                        ["\$_GET[\"f\"]", "11", "path_traversal"],
                         ["\$b", "9", "xss"],
                         ["\$c", "11", "xss"]]
                 ],
@@ -27,8 +27,8 @@
                 [
                     "./tests/phpwander/test4.php",
                         [[["\$_GET[\"user\"]", "\$_GET[\"password\"]"], ["4", "4"], "sql_injection"],
-                        ["\$_GET[\"file\"]", "8", "file_inclusion"],
-                        ["\$user[\"email\"]", "12", "xss"]]
+                        ["\$user[\"email\"]", "5", "xss"],
+                        ["\$_GET[\"file\"]", "11", "file_inclusion"]]
                 ],
                 [
                     "./tests/phpwander/test5.php",
@@ -41,7 +41,7 @@
                 ],
                 [
                     "./tests/phpwander/test7.php",
-                        [["\$param", "9", "xss"]]
+                        [["\$param", "10", "xss"]]
                 ],// handle with report confidence to check
                 [
                     "./tests/phpwander/test8.php",
@@ -63,7 +63,7 @@
                 ],*/
                 [
                     "./tests/phpwander/test12.php",
-                        [["D::\$vars", "8", "xss"],
+                        [["D::\$vars", "10", "xss"],
                         ["\$danger_return", "12", "xss"]]
                 ],// a corriger
                 [
