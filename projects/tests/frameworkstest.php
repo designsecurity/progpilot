@@ -15,7 +15,7 @@
                 ],
                 [
                     "./tests/frameworks/symfony1.php",
-                        [["5", "79", "security misconfiguration"],
-                        ["11", "183", "security misconfiguration"]]
+                        [["5", "83", "security misconfiguration"],
+                        ["11", "193", "security misconfiguration"]]
                 ]
             ];

@@ -25,5 +25,10 @@
         "psr-0": {
             "progpilot": "package/src"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "phpro/grumphp": true
+        }
     }
 }
