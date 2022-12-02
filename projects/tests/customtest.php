@@ -3,81 +3,81 @@
         return [
                 [
                     "./tests/custom/custom1.php",
-                        [["13", "175", "bypass access control"]]
+                        [["13", "163", "bypass access control"]]
                 ],
                 [
                     "./tests/custom/custom2.php",
-                        [["5", "79", "security misconfiguration"],
-                         ["7", "150", "security misconfiguration"],
-                         ["9", "221", "security misconfiguration"],
-                         ["9", "221", "security misconfiguration"],
-                         ["11", "293", "security misconfiguration"],
-                         ["13", "357", "security misconfiguration"],
-                         ["13", "357", "security misconfiguration"],
-                         ["15", "422", "security misconfiguration"],
-                         ["15", "422", "security misconfiguration"]]
+                        [["5", "75", "security misconfiguration"],
+                         ["7", "144", "security misconfiguration"],
+                         ["9", "213", "security misconfiguration"],
+                         ["9", "213", "security misconfiguration"],
+                         ["11", "283", "security misconfiguration"],
+                         ["13", "345", "security misconfiguration"],
+                         ["13", "345", "security misconfiguration"],
+                         ["15", "408", "security misconfiguration"],
+                         ["15", "408", "security misconfiguration"]]
                 ],
                 [
                     "./tests/custom/custom3.php",
-                        [["11", "110", "security misconfiguration"]]
+                        [["11", "100", "security misconfiguration"]]
                 ],
                 [
                     "./tests/custom/custom4.php",
-                        [["3", "14", "security misconfiguration"]]
+                        [["3", "12", "security misconfiguration"]]
                 ],
                 [
                     "./tests/custom/custom5.php",
-                        [["3", "9", "security misconfiguration"]]
+                        [["3", "7", "security misconfiguration"]]
                 ],
                 [
                     "./tests/custom/customcookieoptions.php",
-                        [["12", "187", "security misconfiguration"]]
+                        [["12", "176", "security misconfiguration"]]
                 ],
                 [
                     "./tests/custom/cert1.php",
-                        [["3", "9", "security misconfiguration"],
-                        ["5", "63", "security misconfiguration"],
-                        ["7", "117", "security misconfiguration"]]
+                        [["3", "7", "security misconfiguration"],
+                        ["5", "59", "security misconfiguration"],
+                        ["7", "111", "security misconfiguration"]]
                 ],
                 [
                     "./tests/custom/cert2.php",
-                        [["15", "617", "security misconfiguration"],
-                        ["30", "1273", "security misconfiguration"]]
+                        [["15", "603", "security misconfiguration"],
+                        ["30", "1244", "security misconfiguration"]]
                 ],
                 [
                     "./tests/custom/cert3.php",
-                        [["3", "9", "security misconfiguration"],
-                        ["7", "117", "security misconfiguration"]]
+                        [["3", "7", "security misconfiguration"],
+                        ["7", "111", "security misconfiguration"]]
                 ],
                 [
                     "./tests/custom/cert4.php",
-                        [["15", "617", "security misconfiguration"],
-                        ["30", "1273", "security misconfiguration"]]
+                        [["15", "603", "security misconfiguration"],
+                        ["30", "1244", "security misconfiguration"]]
                 ],
                 [
                     "./tests/custom/cert5.php",
-                        [["16", "687", "security misconfiguration"],
-                        ["16", "687", "security misconfiguration"],
-                        ["32", "1377", "security misconfiguration"],
-                        ["47", "2064", "security misconfiguration"]]
+                        [["16", "672", "security misconfiguration"],
+                        ["16", "672", "security misconfiguration"],
+                        ["32", "1346", "security misconfiguration"],
+                        ["47", "2018", "security misconfiguration"]]
                 ],
                 [
                     "./tests/custom/unsetcookies.php",
-                        [["7", "130", "security misconfiguration"],
-                        ["7", "130", "security misconfiguration"],
-                        ["13", "287", "security misconfiguration"],
-                        ["13", "287", "security misconfiguration"]]
+                        [["7", "124", "security misconfiguration"],
+                        ["7", "124", "security misconfiguration"],
+                        ["13", "275", "security misconfiguration"],
+                        ["13", "275", "security misconfiguration"]]
                 ],
                 [
                     "./tests/custom/conditionalvalues.php",
-                        [["9", "121", "security misconfiguration"]]
+                        [["9", "113", "security misconfiguration"]]
                 ],
                 [
                     "./tests/custom/cookies1.php",
-                        [["8", "109", "security misconfiguration"],
-                        ["8", "109", "security misconfiguration"],
-                        ["9", "185", "security misconfiguration"],
-                        ["9", "185", "security misconfiguration"]]
+                        [["8", "102", "security misconfiguration"],
+                        ["8", "102", "security misconfiguration"],
+                        ["9", "177", "security misconfiguration"],
+                        ["9", "177", "security misconfiguration"]]
                 ],
             ];
 
