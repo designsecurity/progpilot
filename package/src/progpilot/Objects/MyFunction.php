@@ -21,86 +21,141 @@ class MyFunction extends MyOp
     const TYPE_FUNC_STATIC = 0x0002;
     const TYPE_FUNC_METHOD = 0x0004;
 
+    private $lastLine;
+    private $lastColumn;
+    private $firstBlockId;
+    private $lastBlockIds;
+
     private $nbParams;
     private $params;
     private $returnDefs;
+    private $initialReturnDefs;
     private $defs;
+    private $opInformations;
     private $blocks;
     private $visibility;
     private $myClass;
-    private $instance;
     private $blockId;
     private $nameInstance;
     
     private $thisDef;
-    private $backDef;
+    private $instanceClassName;
 
-    private $lastLine;
-    private $lastColumn;
-    private $lastBlockId;
-
-    private $isAnalyzed;
-    private $isDataAnalyzed;
+    private $thisHasBeenUpdated;
+    private $isVisited;
+    private $isVisitedFromInclude;
 
     private $myCode;
-    private $castReturn;
 
-    public $property;
-    
     public function __construct($name)
     {
         parent::__construct($name, 0, 0);
 
+        $this->args = [];
         $this->params = [];
+        $this->initialReturnDefs = [];
         $this->returnDefs = [];
         $this->visibility = "public";
-        $this->myclass = null;
+        $this->myClass = null;
         $this->nameInstance = null;
         $this->thisDef = null;
-        $this->backDef = null;
+        $this->instanceClassName = "";
         $this->blockId = 0;
+        $this->firstBlockId = 0;
         $this->nbParams = 0;
 
         $this->lastLine = 0;
         $this->lastColumn = 0;
-        $this->lastBlockId = 0;
+        $this->lastBlockIds = [];
+        $this->lastExecutionTime = 0;
+        $this->startExecutionTime = 0;
+        $this->nbExecutions = 0;
 
-        $this->isAnalyzed = false;
-        $this->isDataAnalyzed = false;
+        $this->thisHasBeenUpdated = false;
+        $this->isVisited = false;
+        $this->isVisitedFromInclude = false;
+        $this->hasGlobalVariables = false;
 
-        $this->property = new MyProperty;
         $this->defs = new Definitions;
-        $this->blocks = new \SplObjectStorage;
+        $this->opInformations = [];
+        $this->blocks = [];
 
         $this->myCode = new \progpilot\Code\MyCode;
-        $this->castReturn = MyDefinition::CAST_NOT_SAFE;
     }
 
-    public function __clone()
+    public function reset()
     {
-        $this->property = clone $this->property;
-        $this->blocks = clone $this->blocks;
-        $this->defs = clone $this->defs;
+        $this->opInformations = [];
     }
 
-    public function setIsDataAnalyzed($isDataAnalyzed)
+    public function setNbExecutions($nbExecutions)
     {
-        $this->isDataAnalyzed = $isDataAnalyzed;
+        $this->nbExecutions = $nbExecutions;
     }
 
-    public function isDataAnalyzed()
+    public function getNbExecutions()
     {
-        return $this->isDataAnalyzed;
+        return $this->nbExecutions;
     }
 
-    public function setIsAnalyzed($isAnalyzed)
+    public function setStartExecutionTime($startExecutionTime)
     {
-        $this->isAnalyzed = $isAnalyzed;
+        $this->startExecutionTime = $startExecutionTime;
     }
 
-    public function isAnalyzed()
+    public function getStartExecutionTime()
     {
-        return $this->isAnalyzed;
+        return $this->startExecutionTime;
+    }
+
+    public function setLastExecutionTime($lastExecutionTime)
+    {
+        $this->lastExecutionTime = $lastExecutionTime;
+    }
+
+    public function getLastExecutionTime()
+    {
+        return $this->lastExecutionTime;
+    }
+
+    public function setThisHasBeenUpdated($thisHasBeenUpdated)
+    {
+        $this->thisHasBeenUpdated = $thisHasBeenUpdated;
+    }
+
+    public function thisHasBeenUpdated()
+    {
+        return $this->thisHasBeenUpdated;
+    }
+
+    public function setHasGlobalVariables($hasGlobalVariables)
+    {
+        $this->hasGlobalVariables = $hasGlobalVariables;
+    }
+
+    public function hasGlobalVariables()
+    {
+        return $this->hasGlobalVariables;
+    }
+
+    public function setIsVisitedFromInclude($isVisited)
+    {
+        $this->isVisitedFromInclude = $isVisited;
+    }
+
+    public function isVisitedFromInclude()
+    {
+        return $this->isVisitedFromInclude;
+    }
+
+    public function setIsVisited($isVisited)
+    {
+        $this->isVisited = $isVisited;
+    }
+
+    public function isVisited()
+    {
+        return $this->isVisited;
     }
 
     public function setMyCode($myCode)
@@ -123,9 +178,21 @@ class MyFunction extends MyOp
         $this->lastColumn = $lastColumn;
     }
 
-    public function setLastBlockId($lastBlockId)
+    public function setLastBlockIds($lastBlockIds)
     {
-        $this->lastBlockId = $lastBlockId;
+        $this->lastBlockIds = $lastBlockIds;
+    }
+
+    public function getLastBlockIds()
+    {
+        return $this->lastBlockIds;
+    }
+
+    public function addLastBlockId($id)
+    {
+        if (!in_array($id, $this->lastBlockIds, true)) {
+            $this->lastBlockIds[] = $id;
+        }
     }
 
     public function getLastLine()
@@ -138,19 +205,14 @@ class MyFunction extends MyOp
         return $this->lastColumn;
     }
 
-    public function getLastBlockId()
-    {
-        return $this->lastBlockId;
-    }
-
     public function getMyClass()
     {
-        return $this->myclass;
+        return $this->myClass;
     }
 
     public function setMyClass($myClass)
     {
-        $this->myclass = $myClass;
+        $this->myClass = $myClass;
     }
 
     public function getThisDef()
@@ -163,14 +225,14 @@ class MyFunction extends MyOp
         $this->thisDef = $thisDef;
     }
 
-    public function getBackDef()
+    public function getInstanceClassName()
     {
-        return $this->backDef;
+        return $this->instanceClassName;
     }
 
-    public function setBackDef($backDef)
+    public function setInstanceClassName($instanceClassName)
     {
-        $this->backDef = $backDef;
+        $this->instanceClassName = $instanceClassName;
     }
 
     public function getNameInstance()
@@ -203,6 +265,86 @@ class MyFunction extends MyOp
         return $this->blocks;
     }
 
+    public function getBlockById($id)
+    {
+        foreach ($this->blocks as $block) {
+            if ($block->getId() === $id) {
+                return $block;
+            }
+        }
+
+        return null;
+    }
+
+    public function setOpInformations($opInformations)
+    {
+        $this->opInformations = $opInformations;
+    }
+
+    public function getOpInformations()
+    {
+        return $this->opInformations;
+    }
+
+    public function getOpId($op)
+    {
+        if (is_object($op)) {
+            return spl_object_hash($op);
+        }
+        
+        return null;
+    }
+
+    public function getNbsOpInformations()
+    {
+        $nb = 0;
+        if (is_array($this->opInformations)) {
+            foreach ($this->opInformations as $opInformation) {
+                if (isset($opInformation["chained_results"])) {
+                    $nb += count($opInformation["chained_results"]);
+                }
+
+                if (isset($opInformation["valid_when_returning"])) {
+                    $nb += 1;
+                }
+            
+                if (isset($opInformation["condition_defs"])) {
+                    $nb += count($opInformation["condition_defs"]);
+                }
+            }
+        }
+
+        return $nb;
+    }
+
+    public function cleanOpInformations()
+    {
+        $this->opInformations = null;
+    }
+
+    public function cleanOpInformation($id)
+    {
+        if (isset($this->opInformations[$id])) {
+            unset($this->opInformations[$id]);
+        }
+    }
+
+    public function getOpInformation($id)
+    {
+        if (isset($this->opInformations[$id])) {
+            return $this->opInformations[$id];
+        }
+
+        return null;
+    }
+
+    public function storeOpInformation($id, $infos)
+    {
+        if (!empty($id)) {
+            $this->opInformations[$id] = $infos;
+        }
+    }
+
     public function setDefs($defs)
     {
         $this->defs = $defs;
@@ -211,6 +353,16 @@ class MyFunction extends MyOp
     public function getDefs()
     {
         return $this->defs;
+    }
+
+    public function getStatePastArguments()
+    {
+        return $this->args;
+    }
+
+    public function addStatePastArgument($nbparam, $state)
+    {
+        $this->args[$nbparam][] = $state;
     }
 
     public function addParam($param)
@@ -252,6 +404,36 @@ class MyFunction extends MyOp
         $this->returnDefs[] = $return_def;
     }
 
+    public function setReturnDefs($returndefs)
+    {
+        $this->returnDefs = $returndefs;
+    }
+
+    public function getInitialReturnDefs()
+    {
+        return $this->initialReturnDefs;
+    }
+
+    public function addInitialReturnDef($returnDef)
+    {
+        $this->initialReturnDefs[] = $returnDef;
+    }
+
+    public function setInitialReturnDefs($returndefs)
+    {
+        $this->initialReturnDefs = $returndefs;
+    }
+
+    public function getFirstBlockId()
+    {
+        return $this->firstBlockId;
+    }
+
+    public function setFirstBlockId($blockId)
+    {
+        $this->firstBlockId = $blockId;
+    }
+
     public function getBlockId()
     {
         return $this->blockId;
@@ -260,15 +442,5 @@ class MyFunction extends MyOp
     public function setBlockId($blockId)
     {
         $this->blockId = $blockId;
-    }
-    
-    public function setCastReturn($cast)
-    {
-        $this->castReturn = $cast;
-    }
-    
-    public function getCastReturn()
-    {
-        return $this->castReturn;
     }
 }

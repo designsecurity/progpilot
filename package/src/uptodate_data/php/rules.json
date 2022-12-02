@@ -79,6 +79,13 @@
             "max_nb_args": 3,
             "parameters": 
             [
+                {"id": 2, "sufficient": true, "fail_if_not_verified": false, "notequals": true, "values": 
+                    [ 
+                        {"value" : ""},
+                        {"value" : "null"},
+                        {"value" : "NULL"}
+                    ]
+                },
                 {"id": 3, "valid_by_default": false, "values": 
                     [ 
                         {"value" : "FALSE", "is_array": true, "array_index": "secure"},
@@ -98,6 +105,13 @@
             "max_nb_args": 3,
             "parameters": 
             [
+                {"id": 2, "sufficient": true, "fail_if_not_verified": false, "notequals": true, "values": 
+                    [ 
+                        {"value" : ""},
+                        {"value" : "null"},
+                        {"value" : "NULL"}
+                    ]
+                },
                 {"id": 3, "valid_by_default": false, "values": 
                     [ 
                         {"value" : "FALSE", "is_array": true, "array_index": "httponly"},
@@ -117,6 +131,12 @@
             "min_nb_args": 4,
             "parameters": 
             [
+                {"id": 2, "sufficient": true, "fail_if_not_verified": false, "values": 
+                    [ 
+                        {"value" : ""},
+                        {"value" : "null"}
+                    ]
+                },
                 {"id": 7, "values": 
                     [ 
                         {"value" : "true"},
@@ -136,6 +156,12 @@
             "min_nb_args": 4,
             "parameters": 
             [
+                {"id": 2, "sufficient": true, "fail_if_not_verified": false, "values": 
+                    [ 
+                        {"value" : ""},
+                        {"value" : "null"}
+                    ]
+                },
                 {"id": 6, "values": 
                     [ 
                         {"value" : "true"},

@@ -271,7 +271,6 @@ class wpdb {
 	// ==================================================================
 	// Function to get column meta data info pertaining to the last query
 	// see docs for more info and usage
-
 	function get_col_info($info_type = 'name', $col_offset = -1) {
 		if ( $this->col_info ) {
 			if ( $col_offset == -1 ) {
@@ -286,7 +285,6 @@ class wpdb {
 			}
 		}
 	}
-
 	function timer_start() {
 		$mtime = microtime();
 		$mtime = explode(' ', $mtime);
@@ -301,7 +299,6 @@ class wpdb {
 		$time_total = $time_end - $this->time_start;
 		return $time_total;
 	}
-
 	function bail($message) { // Just wraps errors in a nice header and footer
 	if ( !$this->show_errors )
 		return false;
@@ -360,5 +357,6 @@ HEAD;
 }
 
 $wpdb = new wpdb(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
+
 
 ?>

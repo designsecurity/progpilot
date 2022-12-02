@@ -16,12 +16,7 @@ $context = new \progpilot\Context;
 $analyzer = new \progpilot\Analyzer;
 
 $context->inputs->setCode($code);
-
-try {
-    $analyzer->run($context);
-} catch (Exception $e) {
-    echo 'Exception : ',  $e->getMessage(), "\n";
-}
+$analyzer->run($context);
 
 $results = $context->outputs->getResults();
 $outputjson = array('results' => $results);

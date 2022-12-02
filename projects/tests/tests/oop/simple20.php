@@ -1,6 +1,6 @@
 <?php
 
-class testc1
+class testc4
 {
     private $member1;
 
@@ -14,7 +14,7 @@ class testc1
 };
 
 
-$testc1 = new testc1;
+$testc1 = new testc4;
 
 $testc1->member1 = $_GET["p"];
 

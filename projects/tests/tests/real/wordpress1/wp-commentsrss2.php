@@ -1,6 +1,8 @@
 <?php 
 
 	require_once('wp-config.php');
+	
+
 	/*
 	class wpdb {
 	

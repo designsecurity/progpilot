@@ -13,20 +13,17 @@ class RunAllTest extends TestCase
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
-        $context->setAnalyzeHardrules(true);
-        $context->setAnalyzeFunctions(false);
         $context->outputs->taintedFlow(true);
         
         $nbVulns = 0;
         $context->inputs->setDev(true);
         $context->inputs->setLanguages(["php", "js"]);
         $context->inputs->setFile($file);
+        // enable "vendor" folder analysis
+        // test case: tests/real/composer/
+        $context->inputs->setExclusions([]);
         
-        try {
-            $analyzer->run($context);
-        } catch (Exception $e) {
-            echo 'Exception : ',  $e->getMessage(), "\n";
-        }
+        $analyzer->run($context);
 
         $results = $context->outputs->getResults();
 
@@ -44,17 +41,17 @@ class RunAllTest extends TestCase
                         }
                             
                         foreach ($expectedSourceLine as $oneSourceLine) {
-                            $this->assertContains($oneSourceLine, $vuln["source_line"]);
+                            $this->assertContains((int)$oneSourceLine, $vuln["source_line"]);
                         }
                     } else {
                         $this->assertContains($expectedSourceName, $vuln["source_name"]);
-                        $this->assertContains($expectedSourceLine, $vuln["source_line"]);
+                        $this->assertContains((int)$expectedSourceLine, $vuln["source_line"]);
                         $this->assertEquals($expectedVulnName, $vuln["vuln_name"]);
                     }
                 } // custom
                 else {
-                    $this->assertEquals($expectedSourceName, $vuln["vuln_line"]);
-                    $this->assertEquals($expectedSourceLine, $vuln["vuln_column"]);
+                    $this->assertEquals((int)$expectedSourceName, $vuln["vuln_line"]);
+                    $this->assertEquals((int)$expectedSourceLine, $vuln["vuln_column"]);
                     $this->assertEquals($expectedVulnName, $vuln["vuln_name"]);
                 }
             } else {
@@ -69,6 +66,7 @@ class RunAllTest extends TestCase
 
     public function dataProvider()
     {
+        $tabopti = include("optimizationstest.php");
         $taboop = include("ooptest.php");
         $tabreal = include("realtest.php");
         $tabgen = include("generictest.php");
@@ -91,6 +89,7 @@ class RunAllTest extends TestCase
         }
         
         $tab = array_merge(
+            $tabopti,
             $taboop,
             $tabreal,
             $tabgen,

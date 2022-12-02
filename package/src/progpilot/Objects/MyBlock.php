@@ -12,33 +12,124 @@ namespace progpilot\Objects;
 
 class MyBlock extends MyOp
 {
+    private $returnDefs;
     private $startAddressBlock;
     private $endAddressBlock;
-    private $id;
-    private $loop;
+    private $needUpdateOfState;
+    private $hasBeenAnalyzed;
+    private $loopParents;
 
+    public $children;
     public $parents;
+    public $virtualParents;
     public $assertions;
 
-    public function __construct()
+    public function __construct($startLine, $startColumn)
     {
-        parent::__construct("", 0, 0);
+        parent::__construct("", $startLine, $startColumn);
 
+        $this->returnDefs = [];
         $this->startAddressBlock = -1;
         $this->endAddressBlock = -1;
         $this->assertions = [];
         $this->parents = [];
-        $this->loop = false;
+        $this->loopParents = [];
+        $this->virtualParents = [];
+        $this->children = [];
+        $this->needUpdateOfState = true;
+        $this->hasBeenAnalyzed = false;
+    }
+
+    public function hasBeenAnalyzed()
+    {
+        return $this->hasBeenAnalyzed;
+    }
+
+    public function setHasBeenAnalyzed($hasBeenAnalyzed)
+    {
+        $this->hasBeenAnalyzed = $hasBeenAnalyzed;
+    }
+
+    public function setNeedUpdateOfState($update)
+    {
+        $this->needUpdateOfState = $update;
+    }
+
+    public function doNeedUpdateOfState()
+    {
+        return $this->needUpdateOfState;
+    }
+
+    public function addLoopParent($parent)
+    {
+        if (!in_array($parent, $this->loopParents, true)) {
+            $this->loopParents[] = $parent;
+        }
+    }
+
+    public function isLoopParent($parent)
+    {
+        return in_array($parent, $this->loopParents, true);
+    }
+
+    public function addVirtualParent($parent)
+    {
+        if (!in_array($parent, $this->virtualParents, true)) {
+            $this->virtualParents[] = $parent;
+        }
+    }
+
+    public function setVirtualParents($parents)
+    {
+        $this->virtualParents = $parents;
+    }
+
+    public function getVirtualParents()
+    {
+        return $this->virtualParents;
     }
 
     public function addParent($parent)
     {
-        $this->parents[] = $parent;
+        if (!in_array($parent, $this->parents, true)) {
+            $this->parents[] = $parent;
+        }
+    }
+
+    public function getParents()
+    {
+        return $this->parents;
+    }
+
+    public function addChild($child)
+    {
+        if (!in_array($child, $this->children, true)) {
+            $this->children[] = $child;
+        }
+    }
+
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    public function addReturnDef($def)
+    {
+        if (!in_array($def, $this->returnDefs, true)) {
+            $this->returnDefs[] = $def;
+        }
+    }
+
+    public function getReturnDefs()
+    {
+        return $this->returnDefs;
     }
 
     public function addAssertion($myassertion)
     {
-        $this->assertions[] = $myassertion;
+        if (!in_array($myassertion, $this->assertions, true)) {
+            $this->assertions[] = $myassertion;
+        }
     }
 
     public function getAssertions()
@@ -64,25 +155,5 @@ class MyBlock extends MyOp
     public function getEndAddressBlock()
     {
         return $this->endAddressBlock;
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    public function setIsLoop($loop)
-    {
-        $this->loop = $loop;
-    }
-
-    public function getIsLoop()
-    {
-        return $this->loop;
     }
 }

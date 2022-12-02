@@ -6,7 +6,3 @@ grumphp:
         metadata:
           priority: 300
         ignore_patterns: ["*/projects/tests/*"]
-        
-      progpilot:
-        config_file: progpilot.yml
-        triggered_by: [php]

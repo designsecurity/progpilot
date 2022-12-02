@@ -3,7 +3,7 @@
         return [
                 [
                     "./tests/custom/custom1.php",
-                        [["13", "154", "bypass access control"]]
+                        [["13", "163", "bypass access control"]]
                 ],
                 [
                     "./tests/custom/custom2.php",
@@ -19,15 +19,11 @@
                 ],
                 [
                     "./tests/custom/custom3.php",
-                        [["11", "95", "security misconfiguration"]]
+                        [["11", "100", "security misconfiguration"]]
                 ],
                 [
                     "./tests/custom/custom4.php",
-                        [["3", "7", "security misconfiguration"]]
-                ],
-                [
-                    "./tests/custom/custom5.php",
-                        [["3", "7", "security misconfiguration"]]
+                        [["3", "12", "security misconfiguration"]]
                 ],
                 [
                     "./tests/custom/custom5.php",
@@ -64,5 +60,25 @@
                         ["16", "672", "security misconfiguration"],
                         ["32", "1346", "security misconfiguration"],
                         ["47", "2018", "security misconfiguration"]]
-                ]
+                ],
+                [
+                    "./tests/custom/unsetcookies.php",
+                        [["7", "124", "security misconfiguration"],
+                        ["7", "124", "security misconfiguration"],
+                        ["13", "275", "security misconfiguration"],
+                        ["13", "275", "security misconfiguration"]]
+                ],
+                [
+                    "./tests/custom/conditionalvalues.php",
+                        [["9", "113", "security misconfiguration"]]
+                ],
+                [
+                    "./tests/custom/cookies1.php",
+                        [["8", "102", "security misconfiguration"],
+                        ["8", "102", "security misconfiguration"],
+                        ["9", "177", "security misconfiguration"],
+                        ["9", "177", "security misconfiguration"]]
+                ],
             ];
+
+            

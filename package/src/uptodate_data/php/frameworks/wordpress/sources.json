@@ -1,9 +1,0 @@
-{
-    "sources": [
-        {"name": "get_col", "is_function": true, "instanceof": "wpdb", "language": "php"},
-        {"name": "get_results", "is_object": true, "is_function": true, "instanceof": "wpdb", "language": "php"},
-        {"name": "get_row", "is_function": true, "instanceof": "wpdb", "language": "php"},
-        {"name": "get_var", "is_function": true, "instanceof": "wpdb", "language": "php"},
-        {"name": "query", "is_function": true, "instanceof": "wpdb", "language": "php"}
-        ]
-}

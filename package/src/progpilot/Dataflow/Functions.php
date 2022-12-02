@@ -12,38 +12,49 @@ namespace progpilot\Dataflow;
 
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyOp;
+use progpilot\Utils;
 
 class Functions
 {
     private $functions;
 
-    public function getFunction($funcname, $className = null)
+    public function __construct()
     {
-        if (isset($this->functions[$funcname])) {
-            $list_funcs = $this->functions[$funcname];
-            foreach ($list_funcs as $myFunc) {
-                if (!$myFunc->isType(MyFunction::TYPE_FUNC_METHOD) && is_null($className)) {
-                    return $myFunc;
-                }
+        $this->functions = [];
+    }
 
-                if ($myFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
-                    $myClass = $myFunc->getMyClass();
-                    if ($className === $myClass->getName()) {
-                        return $myFunc;
-                    }
-                }
+    public function getAllFunctions($funcname, $className = "function")
+    {
+        $functionsTmp = [];
+
+        foreach ($this->functions as $id => $functionsFile) {
+            if (isset($functionsFile[$className][$funcname])) {
+                $functionsTmp[] = $functionsFile[$className][$funcname];
             }
         }
 
-        return null;
+        return $functionsTmp;
     }
 
-    public function getFunctionsByName($name)
+
+    public function getFunction($funcname, $className = null, $specificFile = null)
     {
-        if (isset($this->functions[$name])) {
-            return $this->functions[$name];
+        if (is_null($className)) {
+            $className = "function";
         }
 
+        if (!is_null($specificFile)) {
+            if (isset($this->functions[$specificFile][$className][$funcname])) {
+                return $this->functions[$specificFile][$className][$funcname];
+            }
+        } else {
+            foreach ($this->functions as $id => $functionsFile) {
+                if (isset($functionsFile[$className][$funcname])) {
+                    return $functionsFile[$className][$funcname];
+                }
+            }
+        }
+        
         return null;
     }
 
@@ -52,27 +63,20 @@ class Functions
         return $this->functions;
     }
 
-    public function addFunction($funcname, $func)
+    public function addFunction($filenamehash, $classname, $funcname, $myFunc)
     {
-        // we can have many functions/methods with the same name
-        $continue = true;
-        if (isset($this->functions[$funcname])) {
-            $continue = false;
-            if (!in_array($func, $this->functions[$funcname], true)) {
-                $continue = true;
-            }
-        }
-
-        if ($continue) {
-            $this->functions[$funcname][] = $func;
-        }
+        $this->functions[$filenamehash][$classname][$funcname] = $myFunc;
     }
 
-    public function delFunction($funcname)
+    public function delFunction($filenamehash, $classname, $funcname)
     {
-        $save = $this->functions[$funcname];
-        $this->functions[$funcname] = [];
-        //unset($this->functions[$funcname]);
+        $save = null;
+
+        if (isset($this->functions[$filenamehash][$classname][$funcname])) {
+            $save = $this->functions[$filenamehash][$classname][$funcname];
+            $this->functions[$filenamehash][$classname][$funcname] = null;
+        }
+
         return $save;
     }
 }

@@ -14,13 +14,25 @@ class MyValidator extends MySpecify
 {
     private $parameters;
     private $hasParameters;
+    private $validWhenReturning;
 
-    public function __construct($name, $language)
+    public function __construct($name, $language, $validWhenReturning)
     {
         parent::__construct($name, $language);
 
         $this->hasParameters = false;
         $this->parameters = [];
+        $this->validWhenReturning = $validWhenReturning;
+    }
+
+    public function getValidWhenReturning()
+    {
+        return $this->validWhenReturning;
+    }
+
+    public function setValidWhenReturning($validWhenReturning, $validwhenreturning, $notboolean)
+    {
+        $this->validWhenReturning = $validWhenReturning;
     }
 
     public function addParameter($parameter, $conditions, $values = null)
@@ -51,7 +63,6 @@ class MyValidator extends MySpecify
     {
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
-            $conditions = $parameter[1];
             $values = $parameter[2];
 
             if ($index === $i) {
@@ -66,7 +77,6 @@ class MyValidator extends MySpecify
     {
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
-            $conditions = $parameter[1];
 
             if ($index === $i) {
                 return true;

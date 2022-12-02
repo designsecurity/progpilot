@@ -13,7 +13,6 @@ namespace progpilot\Transformations\Js;
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyBlock;
 use progpilot\Objects\MyDefinition;
-use progpilot\Objects\MyExpr;
 use progpilot\Objects\MyClass;
 use progpilot\Objects\MyOp;
 use progpilot\Objects\MyFile;
@@ -77,7 +76,7 @@ class Transform
                 $this->context->getCurrentMycode()->addCode($instFunc);
                 
                 // because when we call (funccall) a function by name, it can be undefined
-                $this->context->getFunctions()->addFunction($myFunction->getName(), $myFunction);
+                $this->context->getFunctions()->addFunction("file.js", "function", $myFunction->getName(), $myFunction);
                 $this->context->setCurrentFunc($myFunction);
             
                 foreach ($cfg[2] as $FlowNode) {
@@ -85,7 +84,10 @@ class Transform
                     
                     if (isset($astNode->type)) {
                         if ($astNode->type !== "exit") {
-                            $myBlock = new MyBlock;
+                            $myBlock = new MyBlock(
+                                $this->context->getCurrentLine(),
+                                $this->context->getCurrentColumn()
+                            );
                             $myBlock->setStartAddressBlock(count($this->context->getCurrentMycode()->getCodes()));
                             //$this->context->setCurrentBlock($FlowNode);
 
@@ -119,20 +121,6 @@ class Transform
                                     break;
                             
                                 case 'CallExpression':
-                                    $myExpr = new MyExpr(
-                                        $astNode->loc->start->line,
-                                        $astNode->loc->start->column
-                                    );
-                                    $this->context->getCurrentMycode()->addCode(
-                                        new MyInstruction(Opcodes::START_EXPRESSION)
-                                    );
-        
-                                    FuncCall::instruction($this->context, $myExpr, $astNode);
-                                                    
-                                    $instEndExpr = new MyInstruction(Opcodes::END_EXPRESSION);
-                                    $instEndExpr->addProperty(MyInstruction::EXPR, $myExpr);
-                                    $this->context->getCurrentMycode()->addCode($instEndExpr);
-                                    
                                     break;
                             
                                 case 'ReturnStatement':

@@ -13,19 +13,13 @@ class RunAllFoldersTest extends TestCase
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
-        $context->setAnalyzeHardrules(true);
-        $context->setAnalyzeFunctions(false);
         $context->outputs->taintedFlow(true);
         
         $nbVulns = 0;
         $context->inputs->setDev(true);
         $context->inputs->setFolder($folder);
         
-        try {
-            $analyzer->run($context);
-        } catch (Exception $e) {
-            echo 'Exception : ',  $e->getMessage(), "\n";
-        }
+        $analyzer->run($context);
 
         $results = $context->outputs->getResults();
 
@@ -43,17 +37,17 @@ class RunAllFoldersTest extends TestCase
                         }
                             
                         foreach ($expectedSourceLine as $oneSourceLine) {
-                            $this->assertContains($oneSourceLine, $vuln["source_line"]);
+                            $this->assertContains((int)$oneSourceLine, $vuln["source_line"]);
                         }
                     } else {
                         $this->assertContains($expectedSourceName, $vuln["source_name"]);
-                        $this->assertContains($expectedSourceLine, $vuln["source_line"]);
+                        $this->assertContains((int)$expectedSourceLine, $vuln["source_line"]);
                         $this->assertEquals($expectedVulnName, $vuln["vuln_name"]);
                     }
                 } // custom
                 else {
-                    $this->assertEquals($expectedSourceName, $vuln["vuln_line"]);
-                    $this->assertEquals($expectedSourceLine, $vuln["vuln_column"]);
+                    $this->assertEquals((int)$expectedSourceName, $vuln["vuln_line"]);
+                    $this->assertEquals((int)$expectedSourceLine, $vuln["vuln_column"]);
                     $this->assertEquals($expectedVulnName, $vuln["vuln_name"]);
                 }
             } else {

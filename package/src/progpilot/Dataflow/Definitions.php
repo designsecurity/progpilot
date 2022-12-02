@@ -34,6 +34,7 @@ class Definitions
     {
         $this->currentFunc = null;
         $this->nbDefs = 0;
+        $this->defs = [];
     }
 
     public function setNbDefs($nbDefs)
@@ -108,9 +109,19 @@ class Definitions
         return $this->defs;
     }
 
+    public function getOriginalDef($id)
+    {
+        if (isset($this->originalDefs[$id])) {
+            return $this->originalDefs[$id];
+        }
+
+        return null;
+    }
+
     public function addDef($name, $def)
     {
         $continue = true;
+        
         if (isset($this->defs[$name])) {
             $continue = false;
             if (!in_array($def, $this->defs[$name], true)) {
@@ -121,9 +132,8 @@ class Definitions
         if ($continue) {
             $this->nbDefs ++;
             $this->defs[$name][] = $def;
+            $this->originalDefs[$def->getId()] = clone $def;
         }
-
-        return $continue;
     }
 
     public function addIn($block, $def)
@@ -256,25 +266,9 @@ class Definitions
     }
 
     // def1 = def, def2 = defsearch inside ResolveDefs function
-    public static function defEquality($def1, $def2, $byPassArray = false)
+    public static function defEquality($def1, $def2)
     {
         if ($def1->getName() === $def2->getName()) {
-            if (($def1->property->getProperties() !== $def2->property->getProperties())
-                && !$def1->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")
-                    && !$def2->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
-                    return false;
-            }
-
-            if (($def1->getArrayValue() !== $def2->getArrayValue()) && !$byPassArray) {
-                if ($def1->isType(MyDefinition::TYPE_ARRAY) && $def2->isType(MyDefinition::TYPE_ARRAY)) {
-                    $extract = BuildArrays::extractArrayFromArr($def1->getArrayValue(), $def2->getArrayValue());
-
-                    if ($extract === false) {
-                        return false;
-                    }
-                }
-            }
-
             return true;
         }
 
@@ -282,7 +276,7 @@ class Definitions
     }
 
     // $this->data["gen"][$blockId]
-    public function computeKill($context, $blockId)
+    public function computeKill($blockId)
     {
         foreach ($this->gen[$blockId] as $gen) {
             $tmpdefs = $this->getDefRefByName($gen->getName());
@@ -311,9 +305,9 @@ class Definitions
         while ($change) {
             $change = false;
 
-            foreach ($myBlocks as $id => $block) {
+            foreach ($myBlocks as $block) {
+                $idcurrent = $block->getId();
                 foreach ($block->parents as $idparent => $parent) {
-                    $idcurrent = $block->getId();
                     $idparent = $parent->getId();
 
                     if ($idcurrent !== $idparent) {

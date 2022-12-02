@@ -18,8 +18,11 @@
                 ],
                 [
                     "./tests/real/wordpress1/wp-commentsrss2.php",
-                        [["\$title", "38", "xss"],
-                        [array("\$apply_filters_return", "\$apply_filters_return"), array("65", "88"), "xss"]]
+                        [["\$title", "40", "xss"]]
+                ],
+                [
+                    "./tests/real/wordpress2/wp-commentsrss2.php",
+                        [["\$query", "132", "sql_injection"],
+                        ["\$this->last_query", "102", "xss"]]
                 ]
-                
         ];

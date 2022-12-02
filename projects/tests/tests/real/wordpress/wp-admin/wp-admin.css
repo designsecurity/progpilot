@@ -1,0 +1,904 @@
+* html #poststuff {
+	height: 100%; /* kill peekaboo bug in IE */
+}
+
+/* This is the Holly Hack \*/
+* html .wrap { height: 1% }
+/* For Win IE's eyes only */
+
+body {
+	border: none;
+}
+a {
+	border-bottom: 1px solid #69c;
+	color: #00019b;
+	text-decoration: none;
+}
+
+a.delete:hover {
+	background: #c00;
+	color: #fff;
+}
+
+#planetnews ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#planetnews li {
+	width: 17%;
+	margin: 1%;
+	float: left;
+}
+
+#planetnews li a {
+	display: block;
+	padding: .5em;
+	background: #ddd;
+	height: 6em;
+	overflow: hidden;
+}
+
+a.edit, a.delete, a.edit:hover, a.delete:hover {
+	border-bottom: none;
+	display: block;
+	padding: 5px 0;
+	text-align: center;
+}
+
+a.edit:hover {
+	background: #ccc;
+	color: #036;
+}
+
+a:visited {
+	color: #006;
+}
+
+a:hover {
+/*	border-bottom: 1px solid #3a75ae;*/
+	color: #069;
+}
+
+body	{
+	background: #f9fcfe;
+	color: #000;
+	margin: 0;
+	padding: 0;
+}
+
+body, td {
+	font: 13px "Lucida Grande", "Lucida Sans Unicode", Tahoma, Verdana;
+}
+
+fieldset {
+	border: none;
+	padding: 3px;
+}
+
+fieldset label.selectit {
+	display: block;
+	font-size: 11px;
+	padding: 0 2px;
+}
+
+fieldset label.selectit:hover {
+	background: #e9e9e9;
+}
+
+fieldset legend {
+	padding: .1em .3em;
+}
+
+fieldset span.cat-nest {
+	display: block;
+	margin-left: 10px;
+}
+
+fieldset.options {
+	padding: 1em;
+}
+
+fieldset.options legend {
+	font-size: 16px;
+}
+
+form, label input {
+	margin: 0;
+	padding: 0;
+}
+
+h2 {
+	border-bottom: .5em solid #f0f8ff;
+	color: #333;
+	font: normal 30px/5px serif;
+	margin: 5px 10px;
+}
+
+h2 small.quickjump {
+	display: block;
+	text-align: right;
+}
+
+h2 small.quickjump a {
+	text-decoration: none;
+	border-bottom: 0;
+	font-size: 15px;
+	background: #f0f8ff;
+	padding: 5px 10px;
+}
+
+img, #footer a {
+	border: 0;
+}
+
+input:focus, textarea:focus, label:focus {
+	background: #fff;
+	border: 1px solid #686868;
+}
+
+label {
+	cursor: pointer;
+}
+
+li, dd {
+	margin-bottom: 6px;
+}
+
+p, li, dl, dd, dt {
+	line-height: 130%;
+}
+
+textarea, input, select {
+	background: #f4f4f4;
+	border: 1px solid #b2b2b2;
+	color: #000;
+	font:  13px Verdana, Arial, Helvetica, sans-serif;
+	margin: 1px;
+	padding: 3px;
+}
+
+#uploading {
+	border-style: none;
+	padding: 0px;
+	margin-bottom: 16px;
+	height: 15em;
+	width: 100%;
+/*	overflow-y: hidden;*/
+}
+
+form#upload th {
+	text-align: right;
+}
+
+form#upload #post_content, form#upload #post_title {
+	width: 250px;
+}
+
+form#upload #post_content {
+	height: 50px;
+}
+
+.attpreview {
+	width: 1px; /* hug */
+	text-align: center;
+}
+
+.alignleft {
+	float: left
+}
+
+.alignright {
+	float: right;
+}
+
+.alternate {
+	background: #f1f1f1;
+}
+
+.anchors {
+	margin: 10px 20px 10px 20px;
+}
+
+.available-theme {
+	width: 30%;
+	margin: 0 1em;
+	float: left;
+	text-align: center;
+	height: 28em;
+	overflow: hidden;
+}
+
+.available-theme a.screenshot {
+	width: 250px;
+	height: 200px;
+	display: block;
+	margin: auto;
+	background: #f1f1f1;
+	border: 1px solid #ccc;
+	margin-bottom: 10px;
+	overflow: hidden;
+}
+
+.available-theme a.screenshot:hover {
+/*	border: 1px solid #666;*/
+}
+
+.available-theme img {
+	width: 100%;
+}
+
+.checkbox {
+	background: #fff;
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+.code {
+	font-family: "Courier New", Courier, monospace;
+}
+
+.commentlist li {
+	border-bottom: 1px solid #369;
+	padding: .3em 1em;
+}
+
+.clear {
+	clear: both;
+	height: 2px;
+}
+
+.hidden {
+	display: none;
+}
+
+.navigation {
+	display: block;
+	text-align: center;
+	margin-top: 10px;
+	margin-bottom: 30px;
+}
+
+.post-categories {
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+
+.post-categories li, #ed_toolbar {
+	display: inline;
+}
+
+.quicktags, .search {
+	background: #ccc;
+	color: #000;
+	font: 12px Georgia, "Times New Roman", Times, serif;
+}
+
+.submit input, .submit input:focus, .button {
+	background: url( images/fade-butt.png );
+	border: 3px double #999;
+	border-left-color: #ccc;
+	border-top-color: #ccc;
+	color: #333;
+	padding: 0.25em;
+}
+
+.submit input:active, .button:active {
+	background: #f4f4f4;
+	border: 3px double #ccc;
+	border-left-color: #999;
+	border-top-color: #999;
+}
+
+.submit, .editform th, #postcustomsubmit {
+	text-align: right;
+}
+
+.unapproved {
+	color: #888;
+}
+
+.unapproved a:link {
+	color: #b9bcff;
+}
+
+.unapproved a:visited {
+	color: #696dff;
+}
+
+.unapproved a:hover {
+	color: #009ef0;
+}
+
+.updated {
+	background: #CFEBF7 url(images/notice.gif) no-repeat 1em ;
+	border: 1px solid #2580B2;
+	margin: 1em 5% 10px;
+	padding: 0 1em 0 3em;
+}
+
+.error {
+	background: #FFEFF7;
+	border: 1px solid #c69;
+	margin: 1em 5% 10px;
+	padding: 0 1em 0 1em;
+}
+
+.wrap {
+	background: #fff;
+	border: 1px solid #ccc;
+	clear: both;
+	margin: 15px 5%;
+	padding: .5em 1em;
+}
+
+.wrap h2 {
+	margin: .8em 0 .5em;
+	clear: both;
+}
+
+table .vers, table .name {
+	text-align: center;
+}
+
+#adminmenu {
+	background: #6da6d1;
+	border-top: 3px solid #448abd;
+	margin: 0;
+	padding: .2em .2em .2em 2em;
+}
+
+#adminmenu .current, #submenu .current {
+	font-weight: bold;
+}
+
+#adminmenu a {
+	color: #000;
+	font-size: 14px;
+	font-weight: normal;
+	margin: 0;
+	padding: 3px 5px;
+	text-decoration: none;
+}
+
+#adminmenu a:hover, .current {
+	background: #ddeaf4;
+	color: #333;
+}
+
+#adminmenu li, #submenu li {
+	display: inline;
+	line-height: 200%;
+	list-style: none;
+	text-align: center;
+}
+
+#submenu {
+	background: #0d324f;
+	border-bottom: none;
+	margin: 0;
+	padding: 3px 2em 0 3em;
+}
+
+#submenu .current {
+	background: #f9fcfe;
+	border-top: 1px solid #045290;
+	border-right: 2px solid #045290;
+	color: #000;
+}
+
+#submenu a {
+	border: none;
+	color: #fff;
+	font-size: 12px;
+	padding: .3em .4em .33em;
+}
+
+#submenu a:hover {
+	background: #ddeaf4;
+	color: #393939;
+}
+
+#submenu li {
+	line-height: 170%;
+}
+
+
+#categorydiv input, #poststatusdiv input, #commentstatusdiv input, #pingstatusdiv input {
+	border: none;
+}
+
+#titlediv, #guiddiv {
+	margin: 0 8px 0 0;
+	padding: 0px;
+}
+
+#postdiv {
+	margin: 0 8px 0 0;
+	padding: 0px;
+}
+
+#postdivrich {
+	margin: 0px;
+	padding: 0px;
+}
+
+#content {
+	margin: 0 0 0 0;
+	width: 100%;
+}
+
+#titlediv input, #guiddiv input {
+	margin: 0px;
+	width: 100%;
+}
+
+#quicktags {
+	margin-left: -1px;
+}
+
+#currenttheme img {
+	float: left;
+	border: 1px solid #666;
+	margin-right: 1em;
+	margin-bottom: 1.5em;
+	width: 300px;
+}
+
+#deletepost:hover {
+	background: #ce0000;
+	color: #fff;
+}
+
+#quicktags #ed_strong {
+	font-weight: bold;
+}
+
+#quicktags #ed_link {
+	color: blue;
+	text-decoration: underline;
+}
+
+#quicktags #ed_del {
+	text-decoration: line-through;
+}
+
+#quicktags #ed_em {
+	font-style: italic;
+}
+
+#quicktags #ed_code {
+	font-family: "Courier New", Courier, mono;
+}
+
+#title {
+	font-size: 1.5em;
+}
+
+#postexcerpt div, #attachmentlinks div {
+	margin-right: 8px;
+}
+
+#attachmentlinks textarea {
+	width: 100%;
+	height: 2.5em;
+	margin-bottom: 6px;
+}
+
+* html #postexcerpt .dbx-toggle-open, * html #postexcerpt .dbx-toggle-open {
+	padding-right: 8px;
+}
+
+#excerpt, .attachmentlinks {
+	margin: 0px;
+	height: 4em;
+	width: 100%;
+}
+
+#footer {
+	clear: both;
+	text-align: center;
+}
+
+#login {
+	background: #fff;
+	border: 1px solid #a2a2a2;
+	margin: 5em auto;
+	padding: 1.5em;
+	width: 25em;
+}
+
+#login #login_error {
+	background: #c00;
+	border: 1px solid #a40000;
+	color: #fff;
+	font-size: 16px;
+	font-weight: bold;
+	padding: .5em;
+	text-align: center;
+}
+
+#login h1 {
+	background: url(images/wordpress-logo.png) no-repeat top left;
+	margin-top: 0;
+}
+
+#login h1 a {
+	display: block;
+	text-indent: -1000px;
+	height: 66px;
+	border-bottom: none;
+}
+
+#login input {
+	padding: 3px;
+}
+
+#login ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#login ul li {
+	display: inline;
+	margin-left: 1.4em;
+	text-align: center;
+}
+
+#login #log, #pwd {
+	font-size: 1.7em;
+	width: 80%;
+}
+
+#login #submit {
+	font-size: 1.7em;
+}
+
+#postcustom .updatemeta, #postcustom .deletemeta {
+	margin: auto;
+}
+
+#postcustom table {
+	border: 1px solid #ccc;
+	margin: 0px;
+	width: 100%;
+}
+
+#postcustom table input, #postcustom table textarea {
+	width: 95%;
+}
+
+#poststuff {
+	margin-right: 16em;
+}
+
+#save {
+	width: 15em;
+}
+
+#template div {
+	margin-right: 190px;
+}
+
+* html #template div {
+	margin-right: 0px;
+}
+
+#template, #template div, #editcat, #addcat {
+	zoom: 1;
+}
+
+#template textarea {
+	font: small 'Courier New', Courier, monospace;
+	width: 97%;
+}
+
+#templateside {
+	float: right;
+	width: 170px;
+}
+
+#templateside h3, #postcustom p {
+	margin: 0;
+}
+
+#templateside ol, #templateside ul {
+	list-style: none;
+	margin: .5em;
+	padding: 0;
+}
+
+#user_info {
+	position: absolute;
+	right: 1em;
+	top: 0;
+	color: #fff;
+	font-size: .9em;
+}
+
+#user_info a {
+	color: #fff;
+}
+
+#wphead {
+	background: #14568a;
+	padding: .8em 19em .8em 2em;
+	color: #c3def1;
+}
+
+#wphead a {
+	color: #fff;
+}
+
+#wphead h1 {
+	font-size: 2.5em;
+	font-weight: normal;
+	letter-spacing: -.05em;
+	margin: 0;
+	font-family: Georgia, "Times New Roman", Times, serif
+}
+
+#wphead h1 span {
+	font-size: .4em;
+	letter-spacing: 0;
+}
+
+#zeitgeist {
+	background: #eee;
+	border: 1px solid #69c;
+	float: right;
+	font-size: 90%;
+	margin-bottom: .5em;
+	margin-left: 1em;
+	margin-top: .5em;
+	padding: 1em;
+	width: 40%;
+}
+
+#zeitgeist h2, fieldset legend a {
+	border-bottom: none;
+}
+
+#zeitgeist h2 {
+	margin-top: .4em;
+}
+
+#zeitgeist h3 {
+	border-bottom: 1px solid #ccc;
+	font-size: 16px;
+	margin: 1em 0 0;
+}
+
+#zeitgeist h3 cite {
+	font-size: 12px;
+	font-style: normal;
+}
+
+#zeitgeist li, #zeitgeist p {
+	margin: .2em 0;
+}
+
+#zeitgeist ul {
+	margin: 0 0 .3em .6em;
+	padding: 0 0 0 .6em;
+}
+
+.active td {
+	background: #BEB;
+}
+.active .name {
+	background: #9C9;
+}
+.alternate.active td {
+	background: #ADA;
+}
+.alternate.active .name {
+	background: #8B8;
+}
+
+/* A handy div class for hiding controls.
+   Some browsers will disable them when you
+   set display:none; */
+.zerosize {
+	height: 0px;
+	width: 0px;
+	margin: 0px;
+	border: 0px;
+	padding: 0px;
+	overflow: hidden;
+	position: absolute;
+}
+
+/* Box stuff */
+.dbx-clone {
+	position:absolute;
+	visibility:hidden;
+}
+.dbx-clone, .dbx-clone .dbx-handle-cursor {
+	cursor:move !important;
+}
+.dbx-dummy {
+	display:block;
+	width:0;
+	height:0;
+	overflow:hidden;
+}
+.dbx-group, .dbx-box, .dbx-handle {
+	position:relative;
+	display:block;
+}
+
+* html #themeselect {
+	padding: 0px 3px;
+	height: 22px;
+}
+
+/****************************************************************
+  avoid padding, margins or borders on dbx-box, 
+  to reduce visual discrepancies between it and the clone.  
+  overall, dbx-box is best left as visually unstyled as possible 
+*****************************************************************/
+.dbx-box {
+	margin:0;
+	padding:0;
+	border:none;
+}
+
+/* Can change this */
+#moremeta fieldset, #advancedstuff fieldset {
+	margin-bottom: 1em;
+}
+#moremeta fieldset div {
+	margin: 2px 0 0 0px;
+	padding: 7px;
+}
+#moremeta {
+	line-height: 130%;
+	margin-right: 15px;
+	position: absolute;
+	right: 5%;
+	width: 14.5em;
+}
+
+#slugdiv input, #passworddiv input, #authordiv select, #thumbdiv input, #parentdiv input {
+	margin-top: .5em;
+	width: 90%;
+}
+
+#moremeta h3, #advancedstuff h3 {
+	padding: 3px;
+	font-weight: normal;
+	font-size: 13px;
+}
+
+#advancedstuff div {
+	margin-top: .5em;
+}
+
+#categorydiv div div {
+	height: 12em;
+	overflow: auto;
+}
+
+#ajaxcat input {
+	border: 1px solid #ccc;
+}
+
+#your-profile fieldset {
+	border: 1px solid #ccc;
+	float: left;
+	width: 40%;
+	padding: .5em 2em;
+	margin: 1em; 
+}
+
+#your-profile fieldset input  {
+	width: 100%;
+	font-size: 20px;
+	padding: 2px;
+}
+
+#your-profile fieldset textarea {
+	width: 100%;
+	padding: 2px;
+}
+
+#your-profile legend {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 22px;
+}
+
+/* default box styles */
+
+/* toggle state of inner content area */
+.dbx-box-open .dbx-content {
+	display: block;
+}
+.dbx-box-closed .dbx-content {
+	display: none;
+}
+
+#moremeta .dbx-content {
+	background: url(images/box-butt.gif) no-repeat bottom right;
+	padding-bottom: 15px;
+	padding-right: 2px;
+}
+
+/* handles */
+
+.dbx-handle  {
+	background: #2685af;
+	padding: 6px 1em 2px;
+	font-size: 12px;
+	margin: 0;
+	color: #E3EFF5;
+}
+
+#moremeta .dbx-handle {
+	padding: 6px 1em 2px;
+	font-size: 12px;
+	background: #2685af url(images/box-head.gif) no-repeat right;
+}
+
+#moremeta .dbx-box {
+	background: url(images/box-bg.gif) repeat-y right;
+}
+
+/* handle cursors */
+.dbx-handle-cursor {
+	cursor: move;
+}
+	
+/* toggle images */
+a.dbx-toggle, a.dbx-toggle:visited {
+	display:block;
+	overflow: hidden;
+	background-image: url( images/toggle.gif );
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	background-repeat: no-repeat;
+	border: 0px;
+	margin: 0px;
+	padding: 0px;
+}
+
+#moremeta a.dbx-toggle, #moremeta a.dbx-toggle-open:visited {
+	height: 25px;
+	width: 27px;
+	background-position: 0 0px;
+}
+
+#moremeta a.dbx-toggle-open, #moremeta a.dbx-toggle-open:visited {
+	height: 25px;
+	width: 27px;
+	background-position: 0 -25px;
+}
+
+#advancedstuff a.dbx-toggle, #advancedstuff a.dbx-toggle-open:visited {
+	height: 22px;
+	width: 22px;
+	background-position: 0 -3px;
+}
+
+#advancedstuff a.dbx-toggle-open, #advancedstuff a.dbx-toggle-open:visited {
+	height: 22px;
+	width: 22px;
+	background-position: 0 -28px;
+}
+
+#categorychecklist {
+	margin-right: 6px;
+}
+
+/* additional clone styles */
+.dbx-clone {
+	opacity: 0.8;
+	-moz-opacity: 0.8;
+	-khtml-opacity: 0.8;
+	filter: alpha(opacity=80);
+}

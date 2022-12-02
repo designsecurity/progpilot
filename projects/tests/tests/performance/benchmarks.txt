@@ -1,0 +1,36 @@
+=================================================================================
+./tests/real/wordpress/
+
+    setLimitTime: 300
+    setLimitDefs: 100000
+    setLimitSize: 1000000
+    
+real    217m58.642s
+user    217m56.825s
+sys     0m1.108s
+=================================================================================
+
+
+./tests/real/wordpress/
+
+    setLimitTime: 300
+    setLimitDefs: 100000
+    setLimitSize: 1000000
+    
+real    96m24.123s
+user    96m10.106s
+sys     0m1.532s
+
+
+
+=================================================================================
+./tests/real/wordpress/
+
+    setLimitTime: 300
+    setLimitDefs: 100000
+    setLimitSize: 1000000
+    
+    
+real    56m16.871s
+user    55m48.726s
+sys     0m2.379s

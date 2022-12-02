@@ -1,6 +1,5 @@
 <?php
 
-
 $var1[0] = "leel";
 $var1[1] = "eee";
 $var1[2] = "eee";

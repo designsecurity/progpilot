@@ -1,0 +1,2 @@
+./tests/vulntestsuite/CWE_78__GET__CAST-func_settype_int__find_size-interpretation_simple_quote.php 
+./tests/phpwander/test3.php

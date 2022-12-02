@@ -63,7 +63,7 @@ class Input
 $temp = new Input();
 $tainted =  $temp->getInput();
 
-$tainted = preg_replace('/\'/', '', $tainted);
+//$tainted = preg_replace('/\'/', '', $tainted);
 
 //flaw
 

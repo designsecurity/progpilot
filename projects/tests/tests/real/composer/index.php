@@ -1,6 +1,6 @@
 <?php
 
-require "./vendor/autoload.php";
+require "./notexcluded_vendor/autoload.php";
 
 echo blabla();
 

@@ -15,245 +15,243 @@ use progpilot\Objects\MyOp;
 use progpilot\Utils;
 use progpilot\Transformations\Php\Common;
 
+use progpilot\Helpers\State as HelpersState;
+
 class MyDefinition extends MyOp
 {
-    const CAST_SAFE = "cast_int";
-    const CAST_NOT_SAFE = "cast_string";
+    const CAST_SAFE = 1;
+    const CAST_NOT_SAFE = 2;
 
     const TYPE_PROPERTY = 0x0001;
     const TYPE_ARRAY = 0x0002;
     const TYPE_CONSTANTE = 0x0004;
     const TYPE_REFERENCE = 0x0008;
     const TYPE_ARRAY_REFERENCE = 0x0010;
-    const TYPE_COPY_ARRAY = 0x0020;
+    const TYPE_ARRAY_ELEMENT = 0x0020;
     const TYPE_INSTANCE = 0x0040;
     const TYPE_GLOBAL = 0x0080;
     const TYPE_STATIC_PROPERTY = 0x0100;
+    const ALL_PROPERTIES_TAINTED = 0x0200;
+    const ALL_ARRAY_ELEMENTS_TAINTED = 0x0400;
+    const TYPE_LITERAL = 0x0800;
+    const TYPE_ITERATOR = 0x1000;
+    const TYPE_ARRAY_ARRAY = 0x2000;
 
     const SECURITY_HIGH = 1;
     const SECURITY_LOW = 2;
     
-    private $isCopyArray;
-    private $objectId;
     private $blockId;
-    private $isTainted;
-    private $isConst;
-    private $isRef;
-    private $refName;
-    private $isRefArr;
-    private $refArrValue;
-    private $theArrays;
-    private $theExpr;
-    private $theExprs;
-    private $taintedByExpr;
-    private $instance;
     private $className;
-    private $isSanitized;
-    private $typeSanitized;
-    private $valueFromDef;
-    private $cast;
-    private $isProperty;
-    private $isInstance;
-    private $isEmbeddedByChar;
-    private $label;
+    private $returnedFromValidator;
+    private $validWhenReturning;
+    private $validNotBoolean;
+    private $paramToArg;
+    private $argToParam;
+    private $isReturnDef;
+    private $refs;
+    private $iteratorValues;
 
-    public $property;
+    public $original;
+    public $states;
 
-    public function __construct($varLine, $varColumn, $varName)
+    public function __construct($blockId, $myFile, $varLine, $varColumn, $varName)
     {
         parent::__construct($varName, $varLine, $varColumn);
 
-        $this->isEmbeddedByChar = [];
-
-        $this->isCopyArray = false;
-        $this->valueFromDef = null;
-
-        $this->objectId = -1;
-        $this->blockId = -1;
-        $this->isTainted = false;
-        $this->isConst = false;
-        $this->isRef = false;
-        $this->isRefArr = false;
-        $this->refArrValue = null;
-        $this->instance = false;
-        $this->theArrays = [];
-        $this->theExpr = null;
-        $this->taintedByExpr = null;
+        $this->setSourceMyFile($myFile);
+        $this->blockId = $blockId;
         $this->className = "";
-        $this->label = MyDefinition::SECURITY_LOW;
+        $this->returnedFromValidator = false;
+        $this->validWhenReturning = false;
+        $this->validNotBoolean = false;
+        $this->paramToArg = null;
+        $this->argToParam = null;
+        $this->isReturnDef = null;
+        $this->refs = [];
+        $this->iteratorValues = [];
 
-        $this->isSanitized = false;
-        $this->typeSanitized = [];
+        $this->original = new MyDefOriginal;
+        $this->states = [];
+        $this->blocksIdsStates = [];
 
-        $this->lastKnownValue = [];
-
-        $this->property = new MyProperty;
-        $this->cast = MyDefinition::CAST_NOT_SAFE;
-
-        $this->isProperty = false;
-        $this->isInstance = false;
-    }
-
-    public function __clone()
-    {
-        $this->property = clone $this->property;
+        // original state
+        $state = $this->createState();
+        $this->assignStateToBlockId($state->getId(), $blockId);
     }
 
     public function printStdout($context = null)
     {
+        echo "_____________________ start def _____________________\n";
         echo "def id ".$this->varId." :: \
         name = ".htmlentities($this->getName(), ENT_QUOTES, 'UTF-8')." :: \
         line = ".$this->getLine()." :: column = ".$this->getColumn()." :: \
-        tainted = ".$this->isTainted()." :: \
-        label = ".$this->getLabel()." :: \
         ref = ".$this->isType(MyDefinition::TYPE_REFERENCE)." :: \
         is_property = ".$this->isType(MyDefinition::TYPE_PROPERTY)." :: \
         is_static_property = ".$this->isType(MyDefinition::TYPE_STATIC_PROPERTY)." :: \
-        isInstance = ".$this->isType(MyDefinition::TYPE_INSTANCE)." :: \
+        is_type_array_element = ".$this->isType(MyDefinition::TYPE_ARRAY_ELEMENT)." :: \
+        isArray = ".$this->isType(MyDefinition::TYPE_ARRAY)." :: \
         is_const = ".$this->isType(MyDefinition::TYPE_CONSTANTE)." :: \
-        blockid = ".$this->getBlockId()." :: \
-        cast = ".$this->getCast()."\n";
+        is_iterator = ".$this->isType(MyDefinition::TYPE_ITERATOR)." :: \
+        is_return_def = ".$this->isReturnDef." :: \
+        blockid = ".$this->getBlockId()."\n";
 
-        echo "last_known_value :\n";
-        var_dump($this->lastKnownValue);
-
-        echo "is_embeddedbychar :\n";
-        var_dump($this->isEmbeddedByChar);
-        echo "type_sanitized :\n";
-        var_dump($this->typeSanitized);
-
-        if ($this->isType(MyDefinition::TYPE_ARRAY)) {
-            echo "array index value :\n";
-            var_dump($this->getArrayValue());
-        }
-        
-        if ($this->getArrayValue() === "PROGPILOT_ALL_INDEX_TAINTED") {
-            echo "array index value : PROGPILOT_ALL_INDEX_TAINTED\n";
-        }
-        
-        if ($this->property->hasProperty("PROGPILOT_ALL_PROPERTIES_TAINTED")) {
-            echo "property value : PROGPILOT_ALL_PROPERTIES_TAINTED\n";
+        if (!is_null($this->getParamToArg())) {
+            echo "it's a param (to arg possibility) start ===\n";
+            $this->getParamToArg()->printStdout();
+            echo "it's a param (to arg possibility) end ===\n";
         }
 
-        if ($this->isType(MyDefinition::TYPE_PROPERTY) || $this->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
-            echo "property : ".Utils::printProperties("php", $this->property->getProperties())."\n";
-            echo "class_name : ".htmlentities($this->getClassName(), ENT_QUOTES, 'UTF-8')."\n";
-            echo "visibility : ".htmlentities($this->property->getVisibility(), ENT_QUOTES, 'UTF-8')."\n";
+        $this->getSourceMyFile()->printStdout();
+
+        foreach ($this->states as $id => $state) {
+            echo "state id '$id'\n";
+            echo "__________________ start state ________________________\n";
+            $state->printStdout();
+            echo "__________________ end state________________________\n";
         }
 
-        if ($this->isType(MyDefinition::TYPE_INSTANCE)) {
-            echo "instance : ".htmlentities($this->getClassName(), ENT_QUOTES, 'UTF-8')."\n";
-            echo "object id : ".$this->getObjectId()."\n";
-            
-            if (!is_null($context)) {
-                $tmpMyClass = $context->getObjects()->getMyClassFromObject($this->getObjectId());
-                if (!is_null($tmpMyClass)) {
-                    echo "class of object : ".htmlentities($tmpMyClass->getName(), ENT_QUOTES, 'UTF-8')."\n";
+        echo "_____________________ states blocks associations _____________________\n\n\n";
+        var_dump($this->blocksIdsStates);
+        echo "_____________________ end def _____________________\n\n\n";
+    }
+
+    public function unsetState($blockId)
+    {
+        unset($this->blocksIdsStates[$blockId]);
+    }
+
+    public function setStatesToBlocksIds($statesToBlocksIds)
+    {
+        $this->blocksIdsStates = $statesToBlocksIds;
+    }
+
+    public function getStatesToBlocksIds()
+    {
+        return $this->blocksIdsStates;
+    }
+
+    public function setStates($states)
+    {
+        $this->states = $states;
+    }
+
+    public function assignStateToBlockId($stateId, $blockId)
+    {
+        if (isset($this->blocksIdsStates[$blockId])
+            && $blockId !== $this->getBlockId()) {
+            $toRemove = true;
+            $overWrittentStateId = $this->blocksIdsStates[$blockId];
+            foreach ($this->blocksIdsStates as $keyBlockId => $valueStateId) {
+                if ($valueStateId === $overWrittentStateId
+                    && $keyBlockId !== $blockId) {
+                    $toRemove = false;
+                    break;
                 }
             }
-        }
 
-        if ($this->isType(MyDefinition::TYPE_COPY_ARRAY)) {
-            echo "copyarray start ================= count = ".count($this->getCopyArrays())."\n";
-            foreach ($this->getCopyArrays() as $copyArray) {
-                var_dump($copyArray[0]);
-            }
-            echo "copyarray end =================\n";
-        }
-        echo "__________________________________________\n\n\n";
-    }
-
-    public function setIsEmbeddedByChars($chars, $control)
-    {
-        foreach ($chars as $char => $value) {
-            if (!isset($this->isEmbeddedByChar[$char])) {
-                $this->isEmbeddedByChar[$char] = $value;
-            } else {
-                if (!$value && !$control) {
-                    $this->isEmbeddedByChar[$char] = false;
-                } elseif ($value) {
-                    $this->isEmbeddedByChar[$char] = true;
-                }
+            if ($toRemove) {
+                unset($this->states[$overWrittentStateId]);
             }
         }
+
+        $this->blocksIdsStates[$blockId] = $stateId;
     }
 
-    public function getIsEmbeddedByChars()
+    public function createState()
     {
-        return $this->isEmbeddedByChar;
+        $state = new MyDefState;
+        $this->states[$state->getId()] = $state;
+
+        return $state;
     }
 
-    public function setIsEmbeddedByChar($char, $bool)
+    public function addState($newstate)
     {
-        $this->isEmbeddedByChar[$char] = $bool;
+        $this->states[$newstate->getId()] = $newstate;
     }
 
-    public function getIsEmbeddedByChar($char)
+    public function getCurrentState()
     {
-        if (isset($this->isEmbeddedByChar[$char])) {
-            return $this->isEmbeddedByChar[$char];
+        if (isset($this->blocksIdsStates[$this->blockId])) {
+            $stateId = $this->blocksIdsStates[$this->blockId];
+            if (isset($this->states[$stateId])) {
+                return $this->states[$stateId];
+            }
         }
 
-        return false;
+        return null;
     }
 
-    public function setLabel($label)
+    public function getNbStates()
     {
-        $this->label = $label;
+        return count($this->states);
     }
 
-    public function getLabel()
+    public function getStates()
     {
-        return $this->label;
+        return $this->states;
     }
 
-    public function setCast($cast)
+    public function getState($blockId)
     {
-        $this->cast = $cast;
-    }
-
-    public function getCast()
-    {
-        return $this->cast;
-    }
-
-    public function setValueFromDef($def)
-    {
-        $this->valueFromDef = $def;
-    }
-
-    public function getValueFromDef()
-    {
-        return $this->valueFromDef;
-    }
-
-    public function resetLastKnownValues()
-    {
-        $this->lastKnownValue = [];
-    }
-
-    public function setLastKnownValues($values)
-    {
-        $this->lastKnownValue = $values;
-    }
-
-    public function setLastKnownValue($id, $value)
-    {
-        $this->lastKnownValue[$id] = $value;
-    }
-
-    public function addLastKnownValue($value)
-    {
-        $value = rtrim(ltrim($value));
-
-        if (Common::validLastKnownValue($value) && !in_array($value, $this->lastKnownValue, true)) {
-            $this->lastKnownValue[] = $value;
+        if (isset($this->blocksIdsStates[$blockId])) {
+            $stateId = $this->blocksIdsStates[$blockId];
+            if (isset($this->states[$stateId])) {
+                return $this->states[$stateId];
+            }
         }
+
+        return null;
+    }
+    
+    public function setArgToParam($def)
+    {
+        $this->argToParam = $def;
     }
 
-    public function getLastKnownValues()
+    public function getArgToParam()
     {
-        return $this->lastKnownValue;
+        return $this->argToParam;
+    }
+
+    public function setParamToArg($def)
+    {
+        $this->paramToArg = $def;
+    }
+
+    public function getParamToArg()
+    {
+        return $this->paramToArg;
+    }
+
+    public function setValidWhenReturning($value)
+    {
+        $this->validWhenReturning = $value;
+    }
+
+    public function getValidWhenReturning()
+    {
+        return $this->validWhenReturning;
+    }
+
+    public function setValidNotBoolean($value)
+    {
+        $this->validNotBoolean = $value;
+    }
+
+    public function getValidNotBoolean()
+    {
+        return $this->validNotBoolean;
+    }
+
+    public function setReturnedFromValidator($value)
+    {
+        $this->returnedFromValidator = $value;
+    }
+
+    public function getReturnedFromValidator()
+    {
+        return $this->returnedFromValidator;
     }
 
     public function getClassName()
@@ -266,54 +264,24 @@ class MyDefinition extends MyOp
         $this->className = $className;
     }
 
-    public function getRefName()
+    public function getRefs()
     {
-        return $this->refName;
+        return $this->refs;
     }
 
-    public function setRefName($refname)
+    public function setRefs($refs)
     {
-        $this->refName = $refname;
+        $this->refs = $refs;
     }
 
-    public function isTainted()
+    public function getIteratorValues()
     {
-        return $this->isTainted;
+        return $this->iteratorValues;
     }
 
-    public function setTainted($tainted)
+    public function setIteratorValues($iteratorValues)
     {
-        $this->isTainted = $tainted;
-    }
-
-    public function setTaintedByExpr($expr)
-    {
-        $this->taintedByExpr = $expr;
-    }
-
-    public function getTaintedByExpr()
-    {
-        return $this->taintedByExpr;
-    }
-
-    public function getRefArrValue()
-    {
-        return $this->refArrValue;
-    }
-
-    public function setRefArrValue($arr)
-    {
-        $this->refArrValue = $arr;
-    }
-
-    public function getObjectId()
-    {
-        return $this->objectId;
-    }
-
-    public function setObjectId($objectId)
-    {
-        $this->objectId = $objectId;
+        $this->iteratorValues = $iteratorValues;
     }
 
     public function getBlockId()
@@ -326,67 +294,13 @@ class MyDefinition extends MyOp
         $this->blockId = $blockId;
     }
 
-    public function addCopyArray($arr, $def)
+    public function isReturnDef()
     {
-        $val = [$arr, $def];
-        if (!in_array($val, $this->theArrays, true)) {
-            $this->theArrays[] = $val;
-        }
+        return $this->returnDef;
     }
 
-    public function setCopyArrays($theArrays)
+    public function setReturnDef($returnDef)
     {
-        $this->theArrays = $theArrays;
-    }
-
-    public function getCopyArrays()
-    {
-        return $this->theArrays;
-    }
-
-    public function setExpr($myExpr)
-    {
-        $this->theExpr = $myExpr;
-    }
-
-    public function getExpr()
-    {
-        return $this->theExpr;
-    }
-
-    public function setSanitized($isSanitized)
-    {
-        $this->isSanitized = $isSanitized;
-    }
-
-    public function isSanitized()
-    {
-        return $this->isSanitized;
-    }
-
-    public function setTypeSanitized($typeSanitized)
-    {
-        $this->typeSanitized = $typeSanitized;
-    }
-
-    public function getTypeSanitized()
-    {
-        return $this->typeSanitized;
-    }
-
-    public function addTypeSanitized($typeSanitized)
-    {
-        if (!in_array($typeSanitized, $this->typeSanitized, true)) {
-            $this->typeSanitized[] = $typeSanitized;
-        }
-    }
-
-    public function isTypeSanitized($typeSanitized)
-    {
-        if (in_array($typeSanitized, $this->typeSanitized, true)) {
-            return true;
-        }
-
-        return false;
+        $this->returnDef = $returnDef;
     }
 }

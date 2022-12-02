@@ -13,19 +13,12 @@ class RunFlowsTest extends TestCase
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
-        $context->setAnalyzeHardrules(true);
-        $context->setAnalyzeFunctions(false);
         $context->outputs->taintedFlow(true);
         
         $nbVulns = 0;
         $context->inputs->setDev(true);
         $context->inputs->setFile($file);
-        
-        try {
-            $analyzer->run($context);
-        } catch (Exception $e) {
-            echo 'Exception : ',  $e->getMessage(), "\n";
-        }
+        $analyzer->run($context);
 
         $results = $context->outputs->getResults();
 

@@ -2,6 +2,7 @@ articles/
 builds/*.phar
 projects/tests/vendor
 projects/tests/composer.lock
+projects/tests/.phpunit.result.cache
 projects/example/vendor
 projects/example/composer.lock
 projects/example_config/vendor
