@@ -15,16 +15,6 @@ use progpilot\Utils;
 
 class MyInputs extends MyInputsInternalApi
 {
-    public function setLanguages($languages)
-    {
-        $this->languages = $languages;
-    }
-    
-    public function getLanguages()
-    {
-        return $this->languages;
-    }
-
     public function getFolder()
     {
         return $this->folder;

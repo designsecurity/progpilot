@@ -18,8 +18,6 @@ To retrieve the value of $file, $code and $folder use these methods:
 ***
 
 ***
-- $obj_context->inputs->setLanguages($array);  
-Languages you want to analyze (["php", "js"] but js is in development), default is *["php"]*
 - $obj_context->inputs->setDev($bool);  
 If you want to use security data relative to development of progpilot (default is *false*)
 ***

@@ -17,7 +17,6 @@ class RunAllTest extends TestCase
         
         $nbVulns = 0;
         $context->inputs->setDev(true);
-        $context->inputs->setLanguages(["php", "js"]);
         $context->inputs->setFile($file);
         // enable "vendor" folder analysis
         // test case: tests/real/composer/
@@ -79,15 +78,6 @@ class RunAllTest extends TestCase
         $tabwander = include("phpwandertest.php");
         $tabframeworks = include("frameworkstest.php");
         
-        if(extension_loaded("v8js")) {
-            $tabtwig = include("twigtest.php");
-            $tabjavascript = include("javascripttest.php");
-        }
-        else {
-            $tabtwig = [];
-            $tabjavascript = [];
-        }
-        
         $tab = array_merge(
             $tabopti,
             $taboop,
@@ -100,9 +90,7 @@ class RunAllTest extends TestCase
             $tabcus,
             $tabvulntest,
             $tabwander,
-            $tabframeworks,
-            $tabtwig,
-            $tabjavascript
+            $tabframeworks
         );
         
         return $tab;

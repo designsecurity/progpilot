@@ -32,7 +32,6 @@ class FileAnalysis
 class Analyzer
 {
     const PHP = "php";
-    const JS = "js";
     
     private $parser;
     
@@ -203,47 +202,6 @@ class Analyzer
         $this->visitDataFlow($context);
     }
     
-    public function computeDataFlowJs($context)
-    {
-        $startTime = microtime(true);
-        
-        // free memory
-        if (function_exists('gc_mem_caches')) {
-            gc_mem_caches();
-        }
-        
-        if (!is_null($context->inputs->getFile())) {
-            $content = @file_get_contents($context->inputs->getFile());
-            
-            if (Analyzer::getTypeOfLanguage(Analyzer::JS, $content)) {
-                if (!extension_loaded("v8js")) {
-                    Utils::printWarning($context, Lang::V8JS_NOTLOADED);
-                    return;
-                }
-
-                $pastResults = &$context->outputs->getResults();
-                $context->resetInternalValues();
-                $context->outputs->setResults($pastResults);
-                
-                if ((microtime(true) - $startTime) > $context->getMaxFileAnalysisDuration()) {
-                    Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
-                    return;
-                }
-                
-                $transformvisitor = new \progpilot\Transformations\Js\Transform();
-                $transformvisitor->setContext($context);
-                $transformvisitor->v8jsExecute();
-            
-                if ((microtime(true) - $startTime) > $context->getMaxFileAnalysisDuration()) {
-                    Utils::printWarning($context, Lang::MAX_TIME_EXCEEDED);
-                    return;
-                }
-                
-                $this->visitDataFlow($context);
-            }
-        }
-    }
-    
     public function computeDataFlow($context)
     {
         $filename = $context->inputs->getFile();
@@ -264,11 +222,7 @@ class Analyzer
                 );
             } else {
                 if (!$context->isFileDataAnalyzed($filename)) {
-                    if ($context->inputs->isLanguage(Analyzer::PHP)) {
-                        $this->computeDataFlowPhp($context);
-                    } elseif ($context->inputs->isLanguage(Analyzer::JS)) {
-                        $this->computeDataFlowJs($context);
-                    }
+                    $this->computeDataFlowPhp($context);
                 }
             }
         }
@@ -279,15 +233,6 @@ class Analyzer
         if ($lookfor === Analyzer::PHP && !empty($content)) {
             if (strpos($content, "<?") !== false
                 || strpos($content, "<?php") !== false) {
-                return true;
-            }
-        }
-
-        if ($lookfor === Analyzer::JS && !empty($content)) {
-            if (strpos($content, "var") !== false
-                || strpos($content, "let") !== false
-                    || strpos($content, "export") !== false
-                        || strpos($content, "import") !== false) {
                 return true;
             }
         }

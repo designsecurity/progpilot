@@ -7,7 +7,6 @@ if ($argc > 1) {
     $analyzer = new \progpilot\Analyzer;
     $context->inputs->setFolder($argv[1]);
     $context->inputs->setDev(true);
-    $context->inputs->setLanguages(["php", "js"]);
     $context->setDebugMode(true);
     $context->outputs->taintedFlow(true);
         

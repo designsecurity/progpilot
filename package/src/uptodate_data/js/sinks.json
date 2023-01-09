@@ -1,5 +1,0 @@
-{
-    "sinks": [
-        {"name": "write", "instanceof": "document", "language": "js", "attack": "xss", "cwe": "CWE_79"}
-        ]
-}
