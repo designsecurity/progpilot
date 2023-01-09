@@ -3,7 +3,7 @@
     "description": "Example of use of Progpilot",
     "require": {
         "php": ">=7.4",
-        "designsecurity/progpilot": "^0.8.0",
-        "ircmaxell/php-cfg": "^0.6.0"
+        "designsecurity/progpilot": "^1.0.1",
+        "ircmaxell/php-cfg": "^0.7.0"
     }
 } 

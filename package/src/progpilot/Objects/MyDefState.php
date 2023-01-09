@@ -155,8 +155,10 @@ class MyDefState extends MyOp
 
     public function addLastKnownValue($value)
     {
-        $value = rtrim(ltrim($value));
-
+        if($value !== null) {
+            $value = rtrim(ltrim($value));
+        }
+        
         if (Common::validLastKnownValue($value)
             && !in_array($value, $this->lastKnownValue, true)
                 && count($this->lastKnownValue) < 10) {

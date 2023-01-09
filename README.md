@@ -1,5 +1,5 @@
 # progpilot
-> A Static application security testing (SAST) for PHP
+> A static application security testing (SAST) for PHP
 
 [![Build Status](https://github.com/designsecurity/progpilot/actions/workflows/main.yml/badge.svg)](https://github.com/designsecurity/progpilot/actions) [![Packagist](https://img.shields.io/packagist/v/designsecurity/progpilot.svg)](https://packagist.org/packages/designsecurity/progpilot) [![Packagist](https://img.shields.io/packagist/l/designsecurity/progpilot.svg)](LICENSE)
 ---
