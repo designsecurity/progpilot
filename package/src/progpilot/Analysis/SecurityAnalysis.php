@@ -66,7 +66,7 @@ class SecurityAnalysis
     public static function taintedStateFlow($context, $mySink, $indexParameter, $taintedDef, $taintedState)
     {
         $resultTaintedFlow = [];
-        $idFlow = \progpilot\Utils::printDefinition($mySink->getLanguage(), $taintedDef);
+        $idFlow = \progpilot\Utils::printDefinition($taintedDef);
 
         do {
             $fromTaintedByDefs = $taintedState->getTaintedByDefs();
@@ -96,7 +96,7 @@ class SecurityAnalysis
 
                             $resultTaintedFlow[] = $oneTainted;
 
-                            $idFlow .= \progpilot\Utils::printDefinition($mySink->getLanguage(), $fromTaintedDef);
+                            $idFlow .= \progpilot\Utils::printDefinition($fromTaintedDef);
                             $idFlow .= "-".$fromTaintedDef->getSourceMyFile()->getName();
                             $taintedDef = $fromTaintedDef;
                             $taintedState = $fromTaintedState;
@@ -245,7 +245,7 @@ class SecurityAnalysis
                 }
             }
 
-            $hashedValue = $hashIdVuln."-".$mySink->getName()."-".$myFuncCall->getSourceMyFile()->getName();
+            $hashedValue = $hashIdVuln."-".$mySink->getName()."-".$myFuncCall->getSourceMyFile()->fileName;
             $hashIdVuln = hash("sha256", $hashedValue);
 
             if ($nbtainted && is_null($context->inputs->getFalsePositiveById($hashIdVuln))) {
@@ -268,7 +268,7 @@ class SecurityAnalysis
     {
         if (!is_null($myDef->getArgToParam())) {
             $param = $myDef->getArgToParam();
-            $return["source_name"] = \progpilot\Utils::printDefinition($mySink->getLanguage(), $param);
+            $return["source_name"] = \progpilot\Utils::printDefinition($param);
             $return["source_line"] = $param->getLine();
             $return["source_column"]= $param->getColumn();
             $return["source_file"] = \progpilot\Utils::encodeCharacters($param->getSourceMyFile()->getName());
@@ -278,7 +278,6 @@ class SecurityAnalysis
 
         if (!is_null($myDef->original->getDef())) {
             $return["source_name"] = \progpilot\Utils::printDefinition(
-                $mySink->getLanguage(),
                 $myDef,
                 $myDef->original->getDef()
             );
@@ -290,7 +289,7 @@ class SecurityAnalysis
             return $return;
         }
 
-        $return["source_name"] = \progpilot\Utils::printDefinition($mySink->getLanguage(), $myDef);
+        $return["source_name"] = \progpilot\Utils::printDefinition($myDef);
         $return["source_line"] = $myDef->getLine();
         $return["source_column"] = $myDef->getColumn();
         $return["source_file"] = \progpilot\Utils::encodeCharacters($myDef->getSourceMyFile()->getName());

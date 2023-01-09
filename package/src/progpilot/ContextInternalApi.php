@@ -499,10 +499,6 @@ class ContextInternalApi
                                 $this->inputs->setFalsePositives($value["inputs"]["false_positives"]);
                             }
                             
-                            if (isset($value["inputs"]["languages"])) {
-                                $this->inputs->setLanguages($value["inputs"]["languages"]);
-                            }
-                            
                             if (isset($value["inputs"]["dev_mode"])) {
                                 $this->inputs->setDev($value["inputs"]["dev_mode"]);
                             }

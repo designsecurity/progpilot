@@ -96,15 +96,6 @@ class VisitorAnalysis
                         // we assign the object of the instance to this->
                         $method->getThisDef()->getCurrentState()->setObjectId($objectId);
                     }
-
-                    // twig analysis
-                    if ($this->context->inputs->isLanguage(Analyzer::JS)) {
-                        if (!is_null($myClass) && $myClass->getName() === "Twig_Environment") {
-                            if ($funcName === "render") {
-                                TwigAnalysis::funccall($this->context, $myFuncCall, $instruction);
-                            }
-                        }
-                    }
                                
                     $listMyFunc[] = [$objectId, $myClass, $method, $visibility, $classOfFuncCall];
                 }

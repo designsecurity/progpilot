@@ -1,7 +1,5 @@
 inputs:
     dev_mode: false
-    languages: 
-        - php
     sources:
       keep_defaults: true
       config_files:  ~
@@ -24,7 +22,6 @@ inputs:
         - "node_modules"
         - ".git/"
         - "./projects/"
-        - "./package/src/progpilot/Transformations/Js/"
     resolved_includes_file: ~
     false_positives: ~
     

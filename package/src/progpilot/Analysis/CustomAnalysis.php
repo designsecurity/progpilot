@@ -32,7 +32,7 @@ class CustomAnalysis
                                         
                 if ($result) {
                     $hashedValue = $defassign->getLine();
-                    $hashedValue.= "-".$customRule->getAction()."-".$defassign->getSourceMyFile()->getName();
+                    $hashedValue.= "-".$customRule->getAction()."-".$defassign->getSourceMyFile()->fileName;
                     $idVuln = hash("sha256", $hashedValue);
 
                     if (is_null($context->inputs->getFalsePositiveById($idVuln))) {
@@ -286,7 +286,7 @@ class CustomAnalysis
                         
                         if (!$isValid) {
                             $hashedValue = $myFunc->getLine();
-                            $hashedValue.= "-".$customRule->getAction()."-".$myFunc->getSourceMyFile()->getName();
+                            $hashedValue.= "-".$customRule->getAction()."-".$myFunc->getSourceMyFile()->fileName;
                             $idVuln = hash("sha256", $hashedValue);
                             
                             if (is_null($context->inputs->getFalsePositiveById($idVuln))) {

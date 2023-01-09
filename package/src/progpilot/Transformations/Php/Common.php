@@ -24,6 +24,10 @@ class Common
 {
     public static function validLastKnownValue($value)
     {
+        if($value === null) {
+            return true;
+        }
+        
         if (strpos($value, '\n') === false && strpos($value, '\r') === false && strlen($value) < 200) {
             return true;
         }

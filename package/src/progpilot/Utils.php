@@ -52,27 +52,11 @@ class Utils
         throw new \Exception($message);
     }
 
-    public static function printStaticProperties($language, $props)
-    {
-        return "::"."\$".Utils::encodeCharacters($props);
-    }
-
-    public static function printProperties($language, $props)
-    {
-        $separator = "->";
-        if ($language === "js") {
-            $separator = ".";
-        }
-
-        return $separator.Utils::encodeCharacters($props);
-    }
-
-    public static function printDefinition($language, $def, $original = null)
+    public static function printDefinition($def, $original = null)
     {
 
         $prefix = "\$";
-        if ($def->isType(MyDefinition::TYPE_STATIC_PROPERTY)
-            || $language === "js") {
+        if ($def->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
             // oop/simple31.php
             if (!is_null($original)
                 && !empty($original)

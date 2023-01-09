@@ -1,7 +1,5 @@
 inputs:
     dev_mode: false
-    languages: 
-        - php
     sources:
       keep_defaults: true
       config_files:  ~

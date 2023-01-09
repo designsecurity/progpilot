@@ -18,7 +18,6 @@ use progpilot\Objects\MyDefinition;
 class MyInputsInternalApi
 {
     protected $dev;
-    protected $languages;
     
     protected $customRules;
     protected $sanitizers;
@@ -46,7 +45,6 @@ class MyInputsInternalApi
     public function __construct()
     {
         $this->dev = false;
-        $this->languages = ["php"];
         
         $this->customRules = [];
         $this->sanitizers = [];
@@ -120,11 +118,6 @@ class MyInputsInternalApi
                 $this->includesFilesAnalysis[] = $includedFile;
             }
         }
-    }
-
-    public function isLanguage($lang)
-    {
-        return in_array($lang, $this->languages, true);
     }
     
     public function isExcludedFile($name)
@@ -395,7 +388,6 @@ class MyInputsInternalApi
     {
         if (!$this->overwrittenSanitizers) {
             $this->readSanitizersFile(__DIR__."/../../uptodate_data/php/sanitizers.json");
-            $this->readSanitizersFile(__DIR__."/../../uptodate_data/js/sanitizers.json");
         }
     }
 
@@ -478,7 +470,6 @@ class MyInputsInternalApi
     {
         if (!$this->overwrittenSinks) {
             $this->readSinksFile(__DIR__."/../../uptodate_data/php/sinks.json");
-            $this->readSinksFile(__DIR__."/../../uptodate_data/js/sinks.json");
         }
     }
 
@@ -547,7 +538,6 @@ class MyInputsInternalApi
     {
         if (!$this->overwrittenSources) {
             $this->readSourcesFile(__DIR__."/../../uptodate_data/php/sources.json");
-            $this->readSourcesFile(__DIR__."/../../uptodate_data/js/sources.json");
         }
     }
 
@@ -657,7 +647,6 @@ class MyInputsInternalApi
     {
         if (!$this->overwrittenValidators) {
             $this->readValidatorsFile(__DIR__."/../../uptodate_data/php/validators.json");
-            $this->readValidatorsFile(__DIR__."/../../uptodate_data/js/validators.json");
         }
     }
 
@@ -740,7 +729,6 @@ class MyInputsInternalApi
     {
         if (!$this->overwrittenCustomRules) {
             $this->readCustomFile(__DIR__."/../../uptodate_data/php/rules.json");
-            $this->readCustomFile(__DIR__."/../../uptodate_data/js/rules.json");
         }
     }
 
