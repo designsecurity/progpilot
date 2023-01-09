@@ -116,6 +116,7 @@ class IncludeAnalysis
                                     || ($typeInclude === 1 || $typeInclude === 3))) {
                                 $myFileIncluded = new MyFile(
                                     $nameIncludedFile,
+                                    dirname($nameIncludedFile),
                                     $myFuncCall->getLine(),
                                     $myFuncCall->getColumn()
                                 );
@@ -325,6 +326,7 @@ class IncludeAnalysis
                 if (!$atLeastOneIncludeResolved && $context->outputs->getWriteIncludeFailures()) {
                     $myFileTemp = new MyFile(
                         $myFuncCall->getSourceMyFile()->getName(),
+                        $myFuncCall->getSourceMyFile()->baseDir,
                         $myFuncCall->getLine(),
                         $myFuncCall->getColumn()
                     );

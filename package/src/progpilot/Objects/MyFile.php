@@ -14,6 +14,15 @@ class MyFile extends MyOp
 {
     private $includedFromMyFile;
     private $includedToMyFile;
+    public $baseDir;
+    public $fileName;
+
+    public function __construct($fullPathFileName, $baseDir, $fakeLine, $fakeColumn)
+    {
+        parent::__construct($fullPathFileName, $fakeLine, $fakeColumn);
+        $this->baseDir = $baseDir;
+        $this->fileName = substr($fullPathFileName, strlen($baseDir) + 1); 
+    }
 
     public function setIncludedToMyfile($myFileTo)
     {

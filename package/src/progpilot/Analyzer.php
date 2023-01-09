@@ -17,6 +17,18 @@ use progpilot\Helpers\Analysis as HelpersAnalysis;
 
 use function DeepCopy\deep_copy;
 
+class FileAnalysis
+{
+    public $fullpath;
+    public $basedir;
+
+    public function __construct($fullpath, $basedir)
+    {
+        $this->fullpath = $fullpath;
+        $this->basedir = $basedir;
+    }
+}
+
 class Analyzer
 {
     const PHP = "php";
@@ -37,7 +49,7 @@ class Analyzer
         $this->parser = new \PHPCfg\Parser($astparser, null);
     }
 
-    public function getFilesOfDir($context, $dir, &$files)
+    public function getFilesOfDir($context, $dir, $initialDir, &$files)
     {
         if (is_dir($dir) && !$context->inputs->isExcludedFile($dir)) {
             $filesanddirs = @scandir($dir);
@@ -48,12 +60,13 @@ class Analyzer
                         $folderorfile = $dir.DIRECTORY_SEPARATOR.$filedir;
                         
                         if (is_dir($folderorfile)) {
-                            $this->getFilesOfDir($context, $folderorfile, $files);
+                            $this->getFilesOfDir($context, $folderorfile, $initialDir, $files);
                         } else {
-                            if (!$context->inputs->isExcludedFile($folderorfile)) {
-                                if (!in_array($folderorfile, $files, true) && realpath($folderorfile)) {
-                                    $fileToAdd = realpath($folderorfile);
-                                    $files[] = $fileToAdd;
+                            $realpath = realpath($folderorfile);
+                            if ($realpath && !$context->inputs->isExcludedFile($realpath)) {
+                                $fileA = new FileAnalysis($realpath, $initialDir);
+                                if (!in_array($fileA, $files, true)) {
+                                    $files[] = $fileA;
                                 }
                             }
                         }
@@ -122,7 +135,8 @@ class Analyzer
 
             if ($updatemyfile) {
                 $file = $myFunc->getSourceMyFile()->getName();
-                $myFile = new MyFile($file, 0, 0);
+                $baseDir = $myFunc->getSourceMyFile()->baseDir;
+                $myFile = new MyFile($file, $baseDir, 0, 0);
                 $context->inputs->setFile($file);
                 $context->setCurrentMyfile($myFile);
             }
@@ -311,7 +325,7 @@ class Analyzer
             foreach ($nsCalls as $nsCall) {
                 $fileToInclude = $context->getFileFromNamespace($nsCall);
                 if (!is_null($fileToInclude) && !$context->isFileDataAnalyzed($fileToInclude)) {
-                    $myFileToInclude = new MyFile($fileToInclude, 0, 0);
+                    $myFileToInclude = new MyFile($fileToInclude, dirname($fileToInclude), 0, 0);
                     $context->inputs->setFile($fileToInclude);
                     $context->setCurrentMyfile($myFileToInclude);
 
@@ -395,11 +409,15 @@ class Analyzer
         if ($cmdFiles !== null) {
             foreach ($cmdFiles as $cmdFile) {
                 if (is_dir($cmdFile)) {
-                    $this->getFilesOfDir($context, $cmdFile, $files);
+                    $this->getFilesOfDir($context, $cmdFile, $cmdFile, $files);
                 } else {
-                    if (!in_array($cmdFile, $files, true)
-                                && !$context->inputs->isExcludedFile($cmdFile)) {
-                        $files[] = $cmdFile;
+                    $realpath = realpath($cmdFile);
+                    if($realpath) {
+                        $cmdFileA = new FileAnalysis($realpath, dirname($realpath));
+                        if (!in_array($cmdFileA, $files, true)
+                                    && !$context->inputs->isExcludedFile($realpath)) {
+                            $files[] = $cmdFileA;
+                        }
                     }
                 }
             }
@@ -409,42 +427,49 @@ class Analyzer
 
         foreach ($includedFiles as $includedFile) {
             if (is_dir($includedFile)) {
-                $this->getFilesOfDir($context, $includedFile, $files);
+                $this->getFilesOfDir($context, $includedFile, $includedFile, $files);
             } else {
-                if (!in_array($includedFile, $files, true)
-                        && !$context->inputs->isExcludedFile($includedFile)) {
-                    $files[] = $includedFile;
+                $realpath = realpath($includedFile);
+                if($realpath) {
+                    $cmdFileA = new FileAnalysis($realpath, dirname($realpath));
+                    if (!in_array($cmdFileA, $files, true)
+                            && !$context->inputs->isExcludedFile($realpath)) {
+                        $files[] = $cmdFileA;
+                    }
                 }
             }
         }
 
         if (!is_null($context->inputs->getFolder())) {
-            $this->getFilesOfDir($context, $context->inputs->getFolder(), $files);
+            $this->getFilesOfDir($context, $context->inputs->getFolder(), $context->inputs->getFolder(), $files);
         } else {
             if ($context->inputs->getFile() !== null) {
-                if (!in_array($context->inputs->getFile(), $files, true)
-                    && !$context->inputs->isExcludedFile($context->inputs->getFile())
-                        && realpath($context->inputs->getFile())) {
-                    $files[] = realpath($context->inputs->getFile());
+                $realpath = realpath($context->inputs->getFile());
+                if($realpath) {
+                    $cmdFileA = new FileAnalysis($realpath, dirname($realpath));
+                    if (!in_array($cmdFileA, $files, true)
+                        && !$context->inputs->isExcludedFile($realpath)) {
+                        $files[] = $cmdFileA;
+                    }
                 }
             }
         }
 
         // a first pass to identify namespaces and calls
         foreach ($files as $file) {
-            if (is_file($file)) {
-                $myFile = new MyFile($file, 0, 0);
-                $context->inputs->setFile($file);
+            if (is_file($file->fullpath)) {
+                $myFile = new MyFile($file->fullpath, $file->basedir, 0, 0);
+                $context->inputs->setFile($file->fullpath);
                 $context->setCurrentMyfile($myFile);
 
-                $this->getNamespace($context, $file);
+                $this->getNamespace($context, $file->fullpath);
             }
         }
 
         foreach ($files as $file) {
-            if (is_file($file)) {
+            if (is_file($file->fullpath)) {
                 if ($context->isDebugMode()) {
-                    echo "progpilot analyze : ".Utils::encodeCharacters($file)."\n";
+                    echo "progpilot analyze : ".Utils::encodeCharacters($file->fullpath)."\n";
                 }
             
                 $context->outputs->setCountAnalyzedFiles(
@@ -452,15 +477,15 @@ class Analyzer
                 );
 
                 // for each file we look for required namespaces to include
-                $this->computeDataFlowOfNamespaces($context, $file);
+                $this->computeDataFlowOfNamespaces($context, $file->fullpath);
 
-                $myFile = new MyFile($file, 0, 0);
-                $context->inputs->setFile($file);
+                $myFile = new MyFile($file->fullpath, $file->basedir, 0, 0);
+                $context->inputs->setFile($file->fullpath);
                 $context->setCurrentMyfile($myFile);
 
                 $this->computeDataFlow($context);
                 // the file is now data analyzed
-                $context->addDataAnalyzedFile($file);
+                $context->addDataAnalyzedFile($file->fullpath);
                 $this->runAnalysisOfCurrentMyFile($context);
 
                 $context->resetIncludedFiles();

@@ -245,7 +245,7 @@ class SecurityAnalysis
                 }
             }
 
-            $hashedValue = $hashIdVuln."-".$mySink->getName()."-".$myFuncCall->getSourceMyFile()->getName();
+            $hashedValue = $hashIdVuln."-".$mySink->getName()."-".$myFuncCall->getSourceMyFile()->fileName;
             $hashIdVuln = hash("sha256", $hashedValue);
 
             if ($nbtainted && is_null($context->inputs->getFalsePositiveById($hashIdVuln))) {
