@@ -11,9 +11,9 @@
     "require": {
         "php": ">=7.4",
         "ircmaxell/php-cfg": "^0.7.0",
-        "symfony/yaml": ">=3.3.6",
-        "symfony/console": ">=3.3.5",
-        "myclabs/deep-copy": "^1.10.2"
+        "symfony/yaml": "^5.4.17",
+        "symfony/console": "^5.4.17",
+        "myclabs/deep-copy": "^1.11.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.0 || ^9.0",

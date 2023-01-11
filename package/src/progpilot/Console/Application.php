@@ -24,7 +24,7 @@ class Application extends BaseApplication
         parent::__construct(self::NAME, self::VERSION);
     }
 
-    public function run(InputInterface $input = null, OutputInterface $output = null)
+    public function run(InputInterface $input = null, OutputInterface $output = null) : int
     {
         parent::run($input, $output);
     }
