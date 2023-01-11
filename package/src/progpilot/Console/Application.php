@@ -17,14 +17,14 @@ use progpilot\Lang;
 class Application extends BaseApplication
 {
     const NAME = 'progpilot';
-    const VERSION = '1.0.1';
+    const VERSION = '1.0.2';
 
     public function __construct()
     {
         parent::__construct(self::NAME, self::VERSION);
     }
 
-    public function run(InputInterface $input = null, OutputInterface $output = null)
+    public function run(InputInterface $input = null, OutputInterface $output = null) : int
     {
         parent::run($input, $output);
     }
