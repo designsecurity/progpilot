@@ -9,7 +9,7 @@
     ],
     "require": {
         "php": ">=7.4",
-        "progpilot/package": "^1.0.1",
+        "progpilot/package": "^1.0.2",
         "ircmaxell/php-cfg": "^0.7.0"
     }
 } 

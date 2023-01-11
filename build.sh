@@ -14,6 +14,7 @@ newfile="progpilot_${version}${date}"
 
 echo "Progpilot builder"
 echo "Did you update the version of progpilot in Console/Application.php file? (optional)"
+echo "and did you update the version of progpilot in composer.json examples? (optional)"
 
 mkdir -p ./builds
 
