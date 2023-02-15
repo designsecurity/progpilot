@@ -328,6 +328,12 @@
                         [["\$myvar1", "3", "xss"]]
                 ],
 */
+
+                [
+                    "./tests/generic/global4.php",
+                        [["\$_POST[\"form_id\"]", "6", "sql_injection"]]
+                ],
+
                 [
                     "./tests/generic/namespace1.php",
                         [["\$_GET[\"p\"]", "9", "xss"]]
@@ -368,5 +374,5 @@
                     "./tests/generic/loop4.php",
                         [["\$this->last_query", "6", "xss"]]
                 ]
-                
+
         ];

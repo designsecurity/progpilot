@@ -7,7 +7,6 @@
  * @license MIT See LICENSE at the root of the project for more info
  */
 
-
 namespace progpilot\Analysis;
 
 use PHPCfg\Block;
@@ -53,7 +52,7 @@ class ResolveDefs
 
         $i = 0;
         $classStackName = [];
-        
+
         if ($myFuncCall->getName() === "__construct") {
             $myFakeInstance = new MyDefinition(
                 $context->getCurrentBlock()->getId(),
@@ -83,7 +82,7 @@ class ResolveDefs
 
             $myDefTmp->addType(MyDefinition::TYPE_PROPERTY);
             // we don't want the backdef but the original instance
-            
+
             $classStackName[$i] = [];
             $previousChainedResults = $context->getCurrentFunc()->getOpInformation($varid);
 
@@ -91,11 +90,23 @@ class ResolveDefs
                 && isset($previousChainedResults["chained_results"])) {
                 $instances = $previousChainedResults["chained_results"];
             } else {
-                $instances = ResolveDefs::selectDefinitions(
+                $instancestmp = ResolveDefs::selectDefinitions(
                     $context,
                     $data,
                     $myDefTmp
                 );
+
+                $instances = [];
+                foreach ($instancestmp as $instancetmp) {
+                    if ($instancetmp->isType(MyDefinition::TYPE_GLOBAL)) {
+                        $defGlobals = ResolveDefs::selectGlobals($context, $instancetmp);
+                        foreach ($defGlobals as $defGlobal) {
+                            $instances[] = $defGlobal;
+                        }
+                    } else {
+                        $instances[] = $instancetmp;
+                    }
+                }
             }
 
             foreach ($instances as $instance) {
@@ -157,7 +168,7 @@ class ResolveDefs
         if (!$def1IncludedToDef2 && !$def1IncludedByDef2) {
             $def2IncludedByDef1 = false;
             $def2IncludedToDef1 = false;
-            
+
             $myFilef = $def2->getSourceMyFile();
             while (!is_null($myFilef)) {
                 $myFileFrom = $myFilef->getIncludedFromMyfile();
@@ -281,7 +292,7 @@ class ResolveDefs
                 && $method->getVisibility() === "public") {
             return true;
         }
-        
+
         if (is_null($method)) {
             return true;
         }
@@ -295,7 +306,7 @@ class ResolveDefs
             && $def->getName() === "this") {
             return true;
         }
-            
+
         if (!is_null($def) && !is_null($currentFunc) && !is_null($currentFunc->getMyClass())
                 && $def->getName() === $currentFunc->getMyClass()->getName()) {
             return true;
@@ -325,7 +336,7 @@ class ResolveDefs
                 if ($instance->isType(MyDefinition::TYPE_INSTANCE)) {
                     $idObject = $instance->getCurrentState()->getObjectId();
                     $tmpMyClass = $context->getObjects()->getMyClassFromObject($idObject);
-                    
+
                     if (!is_null($tmpMyClass)) {
                         $property = $tmpMyClass->getProperty($context, $instance, $prop);
 
@@ -344,7 +355,7 @@ class ResolveDefs
         } elseif ($defAssign->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
             $visibilityFinal = false;
             $myClass = $context->getClasses()->getMyClass($defAssign->getName());
-            
+
             if (!is_null($myClass)) {
                 $property = $myClass->getProperty($defAssign->property->getProperties());
                 if (!is_null($property)
@@ -470,7 +481,7 @@ class ResolveDefs
                 // source of type array of properties
                 $instance = $instance->getIteratorValues()[0];
             }
-            
+
             if ($instance->isType(MyDefinition::TYPE_PROPERTY)
                 || $instance->isType(MyDefinition::TYPE_ARRAY_ELEMENT)) {
                 $state = $instance->getState($tempDefaProp->getBlockId());
