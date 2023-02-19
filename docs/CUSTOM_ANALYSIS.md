@@ -91,16 +91,16 @@ A variable, property of return of a function could be a custom object of a class
 ```javascript
         {
             "name": "query", 
-            "is_function": true, // return of a function = true
+            "is_function": true, 
             "instanceof": "CI_Model->db", 
             "description": "Result of db queries as new sources",
             "language": "php", 
             "action": "DEFINE_OBJECT", 
-            "extra": "DBQueryCodeIgniter" // type of variable
+            "extra": "DBQueryCodeIgniter" 
         }
 }
 ```
 
-* `is_function`, determine if `name` is a function and the rule applies on the return of the function.
+* `is_function`, when set on true, `name` is a function and the rule applies on the return of the function.
 
 Then it's possible to use this class name when [defining sources, sinks, sanitizers or validators](./SPECIFY_ANALYSIS.md).
