@@ -372,7 +372,8 @@
                 ],
                 [
                     "./tests/generic/loop4.php",
-                        [["\$this->last_query", "6", "xss"]]
+                        [["\$this->last_query", "6", "xss"],
+                        ["\$_GET[\"p\"]", "19", "sql_injection"]]
                 ]
 
         ];

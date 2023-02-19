@@ -290,6 +290,7 @@ class Analyzer
         $functions = $context->getFunctions()->getFunctions();
         $fileNameHash = hash("sha256", $context->getCurrentMyfile()->getName());
 
+        $myFuncsOfFileDiscarded = [];
         $myFuncsOfFile = [];
         // we take all function except mains
         if (isset($functions["$fileNameHash"])) {
@@ -301,6 +302,8 @@ class Analyzer
                     // func with global variables except to be analyzed/called from a main
                     if (!$myFunc->hasGlobalVariables() && $myFunc->getName() !== "{main}") {
                         $myFuncsOfFile[] = $myFunc;
+                    } else {
+                        $myFuncsOfFileDiscarded[] = $myFunc;
                     }
                 }
             }
@@ -315,6 +318,11 @@ class Analyzer
         }
 
         foreach ($myFuncsOfFile as $myFunc) {
+            $this->runFunctionAnalysis($context, $myFunc);
+            $context->resetCallStack();
+        }
+
+        foreach ($myFuncsOfFileDiscarded as $myFunc) {
             $this->runFunctionAnalysis($context, $myFunc);
             $context->resetCallStack();
         }

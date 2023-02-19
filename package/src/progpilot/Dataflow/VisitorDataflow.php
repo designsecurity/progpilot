@@ -276,6 +276,14 @@ class VisitorDataflow
                                 && !$myDef->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
                                 $context->getCurrentFunc()->getDefs()->addDef($myDef->getName(), $myDef);
                                 $context->getCurrentFunc()->getDefs()->addGen($myDef->getBlockId(), $myDef);
+
+                                \progpilot\Analysis\CustomAnalysis::defineObject(
+                                    $context,
+                                    $instruction,
+                                    $myDef,
+                                    null,
+                                    $myDef
+                                );
                             }
                         } else {
                             if (!$alreadyWarned) {

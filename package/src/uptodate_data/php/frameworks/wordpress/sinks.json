@@ -1,0 +1,11 @@
+{
+    "sinks": [
+        {"name": "get_col", "instanceof": "wpdb", "parameters": [{"id": 1, "conditions": "QUOTES"}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "get_results", "instanceof": "wpdb", "parameters": [{"id": 1, "conditions": "QUOTES"}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "get_row", "instanceof": "wpdb", "parameters": [{"id": 1, "conditions": "QUOTES"}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "get_var", "instanceof": "wpdb", "parameters": [{"id": 1, "conditions": "QUOTES"}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "insert", "instanceof": "wpdb", "parameters": [{"id": 2, "conditions": "array_tainted"}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "update", "instanceof": "wpdb", "parameters": [{"id": 2, "conditions": "array_tainted"}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"},
+        {"name": "query", "instanceof": "wpdb", "parameters": [{"id": 1, "conditions": "QUOTES"}], "language": "php", "attack": "sql_injection", "cwe": "CWE_89"}
+    ]
+}

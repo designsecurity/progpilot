@@ -7,6 +7,7 @@ if ($argc > 1) {
     $analyzer = new \progpilot\Analyzer;
     $context->inputs->setFile($argv[1]);
     $context->inputs->setDev(true);
+    $context->setConfiguration("../../../progpilot_tests/progpilot.yml");
         
     $context->setDebugMode(true);
     $context->outputs->taintedFlow(true);

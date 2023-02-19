@@ -25,7 +25,9 @@
                 [
                     "./tests/real/wordpress2",
                         [["\$query", "132", "sql_injection"],
-                        ["\$this->last_query", "102", "xss"]]
+                        ["\$this->last_query", "102", "xss"],
+                        ["\$query", "245", "sql_injection"],
+                        ["\$_GET[\"p\"]", "5", "sql_injection"]]
                 ]/*,
                 [
                     "./tests/real/wordpress3",
