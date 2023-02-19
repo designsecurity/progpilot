@@ -100,8 +100,12 @@ class ResolveDefs
                 foreach ($instancestmp as $instancetmp) {
                     if ($instancetmp->isType(MyDefinition::TYPE_GLOBAL)) {
                         $defGlobals = ResolveDefs::selectGlobals($context, $instancetmp);
-                        foreach ($defGlobals as $defGlobal) {
-                            $instances[] = $defGlobal;
+                        if (!empty($defGlobals)) {
+                            foreach ($defGlobals as $defGlobal) {
+                                $instances[] = $defGlobal;
+                            }
+                        } else {
+                            $instances[] = $instancetmp;
                         }
                     } else {
                         $instances[] = $instancetmp;

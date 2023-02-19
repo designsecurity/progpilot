@@ -86,19 +86,21 @@ $a = new Twig_Environment($loader, array("autoescape" => false));
 
 ## Create an object
 
-The return of a function could be a custom object of a class name defined in the `extra` property:  
+A variable, property of return of a function could be a custom object of a class name defined in the `extra` property:  
 
 ```javascript
         {
             "name": "query", 
-            "is_function": true,
+            "is_function": true, 
             "instanceof": "CI_Model->db", 
             "description": "Result of db queries as new sources",
             "language": "php", 
             "action": "DEFINE_OBJECT", 
-            "extra": "DBQueryCodeIgniter"
+            "extra": "DBQueryCodeIgniter" 
         }
 }
 ```
 
-Thus it's possible to use this class name when [defining sources, sinks, sanitizers or validators](./SPECIFY_ANALYSIS.md).
+* `is_function`, when set on true, `name` is a function and the rule applies on the return of the function.
+
+Then it's possible to use this class name when [defining sources, sinks, sanitizers or validators](./SPECIFY_ANALYSIS.md).

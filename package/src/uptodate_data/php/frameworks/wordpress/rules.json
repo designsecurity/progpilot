@@ -1,0 +1,12 @@
+{
+    "custom_rules": [
+        {
+            "name": "wpdb", 
+            "description": "wpdb variable should be an object of type wpdb",
+            "language": "php", 
+            "action": "DEFINE_OBJECT", 
+            "extra": "wpdb"
+        }
+	]
+}
+
