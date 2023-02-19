@@ -12,7 +12,7 @@ namespace progpilot\Representations;
 
 class NodeCG
 {
-    private $myClass;
+    private $myclass;
     private $name;
     private $line;
     private $column;

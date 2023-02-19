@@ -25,6 +25,7 @@ class Definitions
     private $outminuskill;
     private $gen;
     private $kill;
+    private $originalDefs;
 
     private $defs;
     private $currentFunc;

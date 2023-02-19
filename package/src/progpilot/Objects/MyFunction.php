@@ -27,6 +27,7 @@ class MyFunction extends MyOp
     private $lastBlockIds;
 
     private $nbParams;
+    private $args;
     private $params;
     private $returnDefs;
     private $initialReturnDefs;
@@ -45,6 +46,10 @@ class MyFunction extends MyOp
     private $isVisited;
     private $isVisitedFromInclude;
 
+    private $startExecutionTime;
+    private $lastExecutionTime;
+    private $nbExecutions;
+    private $hasGlobalVariables;
     private $myCode;
 
     public function __construct($name)

@@ -41,7 +41,10 @@ class ContextInternalApi
     protected $maxFileSize;
     protected $maxMemory;
     protected $defsMain;
+    protected $tmpfunctions;
     protected $callStack;
+    protected $calltonamespaces;
+    protected $namespaces;
 
     protected $analyzedDataFiles;
 

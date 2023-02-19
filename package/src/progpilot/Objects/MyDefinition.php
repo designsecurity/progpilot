@@ -50,6 +50,8 @@ class MyDefinition extends MyOp
     private $isReturnDef;
     private $refs;
     private $iteratorValues;
+    private $blocksIdsStates;
+    private $returnDef;
 
     public $original;
     public $states;
