@@ -286,13 +286,15 @@ class MyInputsInternalApi
                 if (!$mySource->isInstance()
                     && empty($mySource->getArrayValue())
                         && !$myFuncOrDef->isType(MyFunction::TYPE_FUNC_METHOD)
-                            && !$myFuncOrDef->isType(MyDefinition::TYPE_PROPERTY)) {
+                            && !$myFuncOrDef->isType(MyFunction::TYPE_FUNC_STATIC)
+                                && !$myFuncOrDef->isType(MyDefinition::TYPE_PROPERTY)) {
                     return $mySource;
                 }
 
                 if ($mySource->isInstance()
                     && ($myFuncOrDef->isType(MyFunction::TYPE_FUNC_METHOD)
-                        || $myFuncOrDef->isType(MyDefinition::TYPE_PROPERTY))) {
+                        || $myFuncOrDef->isType(MyFunction::TYPE_FUNC_STATIC)
+                            || $myFuncOrDef->isType(MyDefinition::TYPE_PROPERTY))) {
                     if (!is_null($myClass) &&
                         ($mySource->getInstanceOfName() === $myClass->getName()
                             || $mySource->getInstanceOfName() === $myClass->getExtendsOf())) {
