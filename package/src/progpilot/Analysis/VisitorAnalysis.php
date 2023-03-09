@@ -132,6 +132,15 @@ class VisitorAnalysis
                 $this->context->getObjects()->addMyclassToObject($idObjectTmp, $myClassStatic);
                                 
                 $stackClass[0][0] = $myDefStatic;
+            } else {
+                // we create a fake instance
+                $myClass = new MyClass(
+                    $myFuncCall->getLine(),
+                    $myFuncCall->getColumn(),
+                    $myFuncCall->getNameInstance()
+                );
+
+                $listMyFunc[] = [0, $myClass, null, true, null];
             }
         } else {
             $myFunc = $this->context->getFunctions()->getFunction($funcName);
