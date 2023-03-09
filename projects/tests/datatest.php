@@ -136,6 +136,11 @@
                         [["\$title", "0", "xss"]]
                 ],
                 [
+                    "./tests/data/source22.php",
+                        [["\$getValue_return", "3", "xss"],
+                        ["\$getValue_return", "7", "xss"]]
+                ],
+                [
                     "./tests/data/sanitizer1.php",
                         [["\$var7safe", "5", "xss"]]
                 ],
