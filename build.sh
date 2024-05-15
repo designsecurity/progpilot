@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Check if phar-composer.phar is in the $PATH
 if ! [ -x "$(command -v phar-composer.phar)" ]; then

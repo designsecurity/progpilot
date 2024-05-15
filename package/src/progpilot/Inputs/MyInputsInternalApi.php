@@ -70,50 +70,50 @@ class MyInputsInternalApi
         $this->falsePositives= null;
     }
 
-    public function resolvePaths()
+    public static function resolvePath($file)
     {
-        $tmpFiles = $this->excludesFilesAnalysis;
+        if (strpos($file, "/") !== false
+            || strpos($file, "\\") !== false) {
+            // there is a slash, the dev likely wants a path
+            if (str_starts_with("./", $file) === 0
+                && str_starts_with(".\\", $file) === 0
+                    && str_starts_with("/", $file) === 0
+                        && preg_match("/^[a-bA-B]*:/", $file) === 0) {
+                // it's not a relative or absolute path
+                $file = ".".DIRECTORY_SEPARATOR.$file;
+            }
+
+            $file = realpath($file);
+        }
+
+        return $file;
+    }
+
+    public static function resolvePaths($files)
+    {
+        $resolvePaths = [];
+        foreach ($files as $file) {
+            $resolvePaths[] = MyInputsInternalApi::resolvePath($file);
+        }
+
+        return $resolvePaths;
+    }
+
+    public function resolvePathsIncludedAndExcludedFiles()
+    {
+        $tmpFiles = MyInputsInternalApi::resolvePaths($this->excludesFilesAnalysis);
         $this->excludesFilesAnalysis = [];
 
         foreach ($tmpFiles as $excludedFile) {
-            if (strpos($excludedFile, "/") !== false
-                || strpos($excludedFile, "\\") !== false) {
-                // there is a slash, the dev likely wants a path
-                if (str_starts_with("./", $excludedFile) === 0
-                    && str_starts_with(".\\", $excludedFile) === 0
-                        && str_starts_with("/", $excludedFile) === 0
-                            && preg_match("/^[a-bA-B]*:/", $excludedFile) === 0) {
-                    // it's not a relative or absolute path
-                    $excludedFile = ".".DIRECTORY_SEPARATOR.$excludedFile;
-                }
-
-                $excludedFile = realpath($excludedFile);
-            }
-
             if (!in_array($excludedFile, $this->excludesFilesAnalysis, true)) {
                 $this->excludesFilesAnalysis[] = $excludedFile;
             }
         }
 
-
-        $tmpFiles = $this->includesFilesAnalysis;
+        $tmpFiles = MyInputsInternalApi::resolvePaths($this->includesFilesAnalysis);
         $this->includesFilesAnalysis = [];
 
         foreach ($tmpFiles as $includedFile) {
-            if (strpos($includedFile, "/") !== false
-                || strpos($includedFile, "\\") !== false) {
-                // there is a slash, the dev likely wants a path
-                if (str_starts_with("./", $includedFile) === 0
-                    && str_starts_with(".\\", $includedFile) === 0
-                        && str_starts_with("/", $includedFile) === 0
-                            && preg_match("/^[a-bA-B]*:/", $includedFile) === 0) {
-                    // it's not a relative or absolute path
-                    $includedFile = ".".DIRECTORY_SEPARATOR.$includedFile;
-                }
-
-                $includedFile = realpath($includedFile);
-            }
-
             if (!in_array($includedFile, $this->includesFilesAnalysis, true)) {
                 $this->includesFilesAnalysis[] = $includedFile;
             }

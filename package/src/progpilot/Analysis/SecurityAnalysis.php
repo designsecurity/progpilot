@@ -92,12 +92,12 @@ class SecurityAnalysis
                             $oneTainted["flow_name"] = $ret["source_name"];
                             $oneTainted["flow_line"] = $ret["source_line"];
                             $oneTainted["flow_column"] = $ret["source_column"];
-                            $oneTainted["flow_file"] =$ret["source_file"];
+                            $oneTainted["flow_file"] = $ret["source_file"];
 
                             $resultTaintedFlow[] = $oneTainted;
 
                             $idFlow .= \progpilot\Utils::printDefinition($fromTaintedDef);
-                            $idFlow .= "-".$fromTaintedDef->getSourceMyFile()->getName();
+                            $idFlow .= "-".$fromTaintedDef->getSourceMyFile()->fileName;
                             $taintedDef = $fromTaintedDef;
                             $taintedState = $fromTaintedState;
                             break 2;
