@@ -1,5 +1,5 @@
 {
-    "name": "test vuln composer package",
+    "name": "test/vuln",
     "description": "test vuln composer package",
     "repositories": [
         {

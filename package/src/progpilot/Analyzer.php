@@ -347,7 +347,7 @@ class Analyzer
 
         $context->readConfiguration();
         // try to resolve incorrect included/excluded file paths
-        $context->inputs->resolvePaths();
+        $context->inputs->resolvePathsIncludedAndExcludedFiles();
 
         // add all configurations inside frameworks folders except if overwritten
         $context->inputs->readFrameworks();
@@ -360,17 +360,15 @@ class Analyzer
         $context->inputs->readDefaultCustomRules();
 
         if ($cmdFiles !== null) {
+            $cmdFiles = \progpilot\Inputs\MyInputsInternalApi::resolvePaths($cmdFiles);
             foreach ($cmdFiles as $cmdFile) {
                 if (is_dir($cmdFile)) {
                     $this->getFilesOfDir($context, $cmdFile, $cmdFile, $files);
                 } else {
-                    $realpath = realpath($cmdFile);
-                    if($realpath) {
-                        $cmdFileA = new FileAnalysis($realpath, dirname($realpath));
-                        if (!in_array($cmdFileA, $files, true)
-                                    && !$context->inputs->isExcludedFile($realpath)) {
-                            $files[] = $cmdFileA;
-                        }
+                    $cmdFileA = new FileAnalysis($cmdFile, dirname($cmdFile));
+                    if (!in_array($cmdFileA, $files, true)
+                                && !$context->inputs->isExcludedFile($cmdFile)) {
+                        $files[] = $cmdFileA;
                     }
                 }
             }
@@ -382,28 +380,24 @@ class Analyzer
             if (is_dir($includedFile)) {
                 $this->getFilesOfDir($context, $includedFile, $includedFile, $files);
             } else {
-                $realpath = realpath($includedFile);
-                if($realpath) {
-                    $cmdFileA = new FileAnalysis($realpath, dirname($realpath));
-                    if (!in_array($cmdFileA, $files, true)
-                            && !$context->inputs->isExcludedFile($realpath)) {
-                        $files[] = $cmdFileA;
-                    }
+                $cmdFileA = new FileAnalysis($includedFile, dirname($includedFile));
+                if (!in_array($cmdFileA, $files, true)
+                        && !$context->inputs->isExcludedFile($includedFile)) {
+                    $files[] = $cmdFileA;
                 }
             }
         }
 
         if (!is_null($context->inputs->getFolder())) {
-            $this->getFilesOfDir($context, $context->inputs->getFolder(), $context->inputs->getFolder(), $files);
+            $folder = \progpilot\Inputs\MyInputsInternalApi::resolvePath($context->inputs->getFolder());
+            $this->getFilesOfDir($context, $folder, $folder, $files);
         } else {
             if ($context->inputs->getFile() !== null) {
-                $realpath = realpath($context->inputs->getFile());
-                if($realpath) {
-                    $cmdFileA = new FileAnalysis($realpath, dirname($realpath));
-                    if (!in_array($cmdFileA, $files, true)
-                        && !$context->inputs->isExcludedFile($realpath)) {
-                        $files[] = $cmdFileA;
-                    }
+                $file = \progpilot\Inputs\MyInputsInternalApi::resolvePath($context->inputs->getFile());
+                $cmdFileA = new FileAnalysis($file, dirname($file));
+                if (!in_array($cmdFileA, $files, true)
+                    && !$context->inputs->isExcludedFile($file)) {
+                    $files[] = $cmdFileA;
                 }
             }
         }
