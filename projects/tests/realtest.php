@@ -9,6 +9,12 @@
                         [["\$var", "6", "xss"]]
                 ],
                 [
+                    "./tests/real/feedbackgithub/test.php",
+                        [["\$id", "3", "sql_injection"],
+                        ["\$id", "9", "sql_injection"],
+                        ["\$_POST[\"id\"]", "14", "sql_injection"]]
+                ],
+                [
                     "./tests/real/composer/index.php",
                         [["\$_GET[\"p\"]", "7", "xss"],
                         ["\$_GET[\"p\"]", "14", "xss"]]

@@ -269,15 +269,12 @@ class Analysis
                         return true;
                     }
 
-                    if (empty($defArg->getCurrentState()->getLastKnownValues())) {
-                        return false;
-                    }
-
+                    // is there new values to consider ?
                     if (isset($statesPastArgs[$i]) && is_array($statesPastArgs[$i])) {
                         foreach ($statesPastArgs[$i] as $statePastArg) {
                             if ($defArg->getCurrentState()->getLastKnownValues()
-                                === $statePastArg->getLastKnownValues()) {
-                                return false;
+                                !== $statePastArg->getLastKnownValues()) {
+                                return true;
                             }
                         }
                     } else {
