@@ -62,11 +62,10 @@ class ProgpilotCommand extends Command
         
             $analyzer->run($context, $cmdFiles);
 
-            if($context->outputs->getSarifOutput()) {
+            if ($context->outputs->getSarifOutput()) {
                 $sarifOutput = new SarifOutput($context->outputs->getResults());
-                echo $sarifOutput->transform();
-            }
-            else {
+                echo $sarifOutput->output();
+            } else {
                 if ($context->getPrettyPrint()) {
                     echo json_encode($context->outputs->getResults(), JSON_PRETTY_PRINT);
                 } else {
