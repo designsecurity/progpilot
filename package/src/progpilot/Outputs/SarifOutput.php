@@ -28,20 +28,27 @@ class SarifOutput
         $this->progpilotResults = $progpilotResults;
     }
     
-    private function createRules() {
-        $rule1 = new ReportingDescriptor();
-        $rule1->setId("taint-style");
-        $message1 = new MultiformatMessageString();
-        $message1->setText('https://github.com/designsecurity/progpilot/blob/master/docs/SPECIFY_ANALYSIS.md');
-        $rule1->setShortDescription($message1);
+    private function createRules(): array
+    {
+        $rules = [
+            [
+                'id' => 'taint-style',
+                'description' => 'https://github.com/designsecurity/progpilot/blob/master/docs/SPECIFY_ANALYSIS.md'
+            ],
+            [
+                'id' => 'custom',
+                'description' => 'https://github.com/LioTree/progpilot/blob/master/docs/CUSTOM_ANALYSIS.md'
+            ]
+        ];
 
-        $rule2 = new ReportingDescriptor();
-        $rule2->setId("custom");
-        $message2 = new MultiformatMessageString();
-        $message2->setText('https://github.com/LioTree/progpilot/blob/master/docs/CUSTOM_ANALYSIS.md');
-        $rule2->setShortDescription($message2);
-
-        return [$rule1, $rule2];
+        return array_map(function ($rule) {
+            $reportingDescriptor = new ReportingDescriptor();
+            $reportingDescriptor->setId($rule['id']);
+            $message = new MultiformatMessageString();
+            $message->setText($rule['description']);
+            $reportingDescriptor->setShortDescription($message);
+            return $reportingDescriptor;
+        }, $rules);
     }
 
     private function createTool(): Tool
@@ -63,7 +70,11 @@ class SarifOutput
 
         if ($progpilotResult['vuln_type'] === 'taint-style') {
             $message = new Message();
-            $message->setText("A vulnerability of type {$progpilotResult['vuln_name']} exists at {$progpilotResult['sink_name']} in file {$progpilotResult['sink_file']} at line {$progpilotResult['sink_line']}.");
+            $message->setText(
+                "A vulnerability of type {$progpilotResult['vuln_name']} exists at " .
+                "{$progpilotResult['sink_name']} in file {$progpilotResult['sink_file']} " .
+                "at line {$progpilotResult['sink_line']}."
+            );
             $result->setMessage($message);
 
             $propertyBag = new PropertyBag();
@@ -111,8 +122,7 @@ class SarifOutput
                 $codeFlow->addThreadFlows([$threadFlow]);
                 $result->addCodeFlows([$codeFlow]);
             }
-        }
-        else if($progpilotResult['vuln_type'] === 'custom') {
+        } elseif ($progpilotResult['vuln_type'] === 'custom') {
             $message = new Message();
             $message->setText($progpilotResult['vuln_description']);
             $result->setMessage($message);
@@ -157,7 +167,7 @@ class SarifOutput
         $location->setMessage($message);
 
         return $location;
-    } 
+    }
 
     public function output(): SarifLog
     {
