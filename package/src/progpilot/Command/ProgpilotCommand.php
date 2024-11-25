@@ -12,6 +12,7 @@ namespace progpilot\Command;
 use progpilot\Context;
 use progpilot\Analyzer;
 use progpilot\Lang;
+use progpilot\Outputs\SarifOutput;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -61,10 +62,16 @@ class ProgpilotCommand extends Command
         
             $analyzer->run($context, $cmdFiles);
 
-            if ($context->getPrettyPrint()) {
-                echo json_encode($context->outputs->getResults(), JSON_PRETTY_PRINT);
-            } else {
-                echo json_encode($context->outputs->getResults());
+            if($context->outputs->getSarifOutput()) {
+                $sarifOutput = new SarifOutput($context->outputs->getResults());
+                echo $sarifOutput->transform();
+            }
+            else {
+                if ($context->getPrettyPrint()) {
+                    echo json_encode($context->outputs->getResults(), JSON_PRETTY_PRINT);
+                } else {
+                    echo json_encode($context->outputs->getResults());
+                }
             }
 
             if (count($context->outputs->getResults()) > 0) {

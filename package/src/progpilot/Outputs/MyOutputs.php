@@ -144,4 +144,14 @@ class MyOutputs extends MyOutputsInternalApi
     {
         return $this->taintedFlow;
     }
+
+    public function sarifOutput($bool)
+    {
+        $this->sarifOutput = $bool;
+    }
+
+    public function getSarifOutput()
+    {
+        return $this->sarifOutput;
+    }
 }

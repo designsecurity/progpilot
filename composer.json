@@ -13,7 +13,8 @@
         "ircmaxell/php-cfg": "^0.7.0",
         "symfony/yaml": "^5.4.17",
         "symfony/console": "^5.4.17",
-        "myclabs/deep-copy": "^1.11.0"
+        "myclabs/deep-copy": "^1.11.0",
+        "bartlett/sarif-php-sdk": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.0 || ^9.0",
