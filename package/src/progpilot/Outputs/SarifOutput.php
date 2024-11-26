@@ -106,19 +106,19 @@ class SarifOutput
             if (isset($progpilotResult['tainted_flow'])) {
                 $taintFlow = [];
                 foreach ($progpilotResult['tainted_flow'] as $flow) {
-                    if(count($flow) > 0) {
+                    if (count($flow) > 0) {
                         $flowLocation = $this->createLocation(
                             $flow[0]['flow_file'],
                             $flow[0]['flow_line'],
                             $flow[0]['flow_column'],
                             $flow[0]['flow_name']
-                         );
+                        );
                          $threadFlowLocation = new ThreadFlowLocation();
                          $threadFlowLocation->setLocation($flowLocation);
                          $taintFlow[] = $threadFlowLocation;
-                     }
+                    }
                 }
-                if(count($taintFlow) > 0) {
+                if (count($taintFlow) > 0) {
                     $threadFlow = new ThreadFlow();
                     $threadFlow->addLocations($taintFlow);
                     $codeFlow = new CodeFlow();
