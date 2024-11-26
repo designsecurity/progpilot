@@ -511,6 +511,10 @@ class ContextInternalApi
                             if (isset($value["outputs"]["tainted_flow"])) {
                                 $this->outputs->taintedFlow($value["outputs"]["tainted_flow"]);
                             }
+                            
+                            if (isset($value["outputs"]["sarif_output"])) {
+                                $this->outputs->sarifOutput($value["outputs"]["sarif_output"]);
+                            }
 
                             if (isset($value["outputs"]["include_failures_file"])) {
                                 $this->outputs->setIncludeFailuresFile($value["outputs"]["include_failures_file"]);

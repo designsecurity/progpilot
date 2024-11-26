@@ -24,6 +24,7 @@ class MyOutputsInternalApi
     protected $includeFailuresFile;
     protected $onAddResult;
     protected $taintedFlow;
+    protected $sarifOutput;
     protected $countfilesanalyzed;
 
     public $currentIncludesFile;
@@ -38,6 +39,7 @@ class MyOutputsInternalApi
         $this->currentIncludesFile = [];
         $this->results = [];
         $this->taintedFlow = false;
+        $this->sarifOutput = false;
         $this->onAddResult = null;
         $this->countfilesanalyzed = 0;
         
