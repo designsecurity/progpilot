@@ -28,6 +28,7 @@ inputs:
 outputs:
     tainted_flow: true
     include_failures_file: ~
+    sarif_output: false
     
 options:
     analyze_includes: true
