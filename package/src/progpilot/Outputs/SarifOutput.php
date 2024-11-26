@@ -118,11 +118,13 @@ class SarifOutput
                          $taintFlow[] = $threadFlowLocation;
                      }
                 }
-                $threadFlow = new ThreadFlow();
-                $threadFlow->addLocations($taintFlow);
-                $codeFlow = new CodeFlow();
-                $codeFlow->addThreadFlows([$threadFlow]);
-                $result->addCodeFlows([$codeFlow]);
+                if(count($taintFlow) > 0) {
+                    $threadFlow = new ThreadFlow();
+                    $threadFlow->addLocations($taintFlow);
+                    $codeFlow = new CodeFlow();
+                    $codeFlow->addThreadFlows([$threadFlow]);
+                    $result->addCodeFlows([$codeFlow]);
+                }
             }
         } elseif ($progpilotResult['vuln_type'] === 'custom') {
             $message = new Message();
