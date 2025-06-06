@@ -154,8 +154,12 @@ class State
 
         foreach ($defs as $def) {
             if ($def->isType(MyDefinition::TYPE_ARRAY_ELEMENT)
-                || $def->isType(MyDefinition::TYPE_PROPERTY)) {
+                || $def->isType(MyDefinition::TYPE_PROPERTY)
+                || $def->isType(MyDefinition::TYPE_REFERENCE)) {
                 $state = $def->getState($blockId);
+                if (is_null($state)) { 
+                    $state = $def->getCurrentState();
+                }
             } else {
                 $state = $def->getCurrentState();
             }

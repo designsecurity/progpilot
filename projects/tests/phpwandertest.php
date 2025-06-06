@@ -68,7 +68,7 @@
                 ],// a corriger
                 [
                     "./tests/phpwander/test13.php",
-                        []
+                        [["\$value", "11", "xss"]]
                 ],
                 [
                     "./tests/phpwander/test14.php",

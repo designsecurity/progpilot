@@ -43,6 +43,7 @@
                 ],
                 [
                     "./tests/real/incallstack/",
-                        [["\$rtrim_return", "77", "xss"]]
+                        [["\$rtrim_return", "77", "xss"],
+                        ["\$localfile", "610", "path_traversal"]]
                 ]
             ];
