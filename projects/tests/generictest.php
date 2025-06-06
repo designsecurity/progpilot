@@ -335,6 +335,12 @@
                 ],
 
                 [
+                    "./tests/generic/global5.php",
+                        [["\$query", "8", "sql_injection"],
+                        ["\$row[1]", "17", "xss"]]
+                ],
+
+                [
                     "./tests/generic/namespace1.php",
                         [["\$_GET[\"p\"]", "9", "xss"]]
                 ],

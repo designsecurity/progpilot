@@ -58,7 +58,7 @@ class VisitorAnalysis
         $myFuncCall
     ) {
         $hasSources = false;
-                 
+
         $listMyFunc = [];
 
         IncludeAnalysis::funccall(
@@ -86,7 +86,7 @@ class VisitorAnalysis
                 if (!is_null($myClass)) {
                     $visibility = true;
                     $method = $myClass->getMethod($funcName);
-                    
+
                     if (!ResolveDefs::getVisibilityMethod($myFuncCall->getNameInstance(), $method)) {
                         $method = null;
                         $visibility = false;
@@ -96,7 +96,7 @@ class VisitorAnalysis
                         // we assign the object of the instance to this->
                         $method->getThisDef()->getCurrentState()->setObjectId($objectId);
                     }
-                               
+
                     $listMyFunc[] = [$objectId, $myClass, $method, $visibility, $classOfFuncCall];
                 }
             }
@@ -130,7 +130,7 @@ class VisitorAnalysis
                 $idObjectTmp = $this->context->getObjects()->addObject();
                 $myDefStatic->getCurrentState()->setObjectId($idObjectTmp);
                 $this->context->getObjects()->addMyclassToObject($idObjectTmp, $myClassStatic);
-                                
+
                 $stackClass[0][0] = $myDefStatic;
             } else {
                 // we create a fake instance
@@ -164,18 +164,21 @@ class VisitorAnalysis
             if (!is_null($myFunc) && !$this->context->inCallStack($myFunc)) {
                 // the called function is a method and this method exists in the class
                 if (($myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)
-                    || $myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC))
-                        && $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)
-                            || ((!$myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)
-                                && !$myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC))
-                                    && !$myFunc->isType(MyFunction::TYPE_FUNC_METHOD))) {
+                        || $myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC))
+                    && $myFunc->isType(MyFunction::TYPE_FUNC_METHOD)
+                    || ((!$myFuncCall->isType(MyFunction::TYPE_FUNC_METHOD)
+                        && !$myFuncCall->isType(MyFunction::TYPE_FUNC_STATIC))
+                        && !$myFunc->isType(MyFunction::TYPE_FUNC_METHOD))
+                ) {
                     // we don't visit twice function with a long execution time
-                    if (HelpersAnalysis::checkIfOneFunctionArgumentIsNew($myFunc, $instruction)
+                    if (
+                        HelpersAnalysis::checkIfOneFunctionArgumentIsNew($myFunc, $instruction)
                         || !$myFunc->isVisited()
-                            || ($myFunc->isType(MyFunction::TYPE_FUNC_METHOD)
-                                && !$myFunc->isType(MyFunction::TYPE_FUNC_STATIC))
-                                    || $myFunc->hasGlobalVariables()
-                                        || $myFunc->getName() === "{main}") {
+                        || ($myFunc->isType(MyFunction::TYPE_FUNC_METHOD)
+                            && !$myFunc->isType(MyFunction::TYPE_FUNC_STATIC))
+                        || $myFunc->hasGlobalVariables()
+                        || $myFunc->getName() === "{main}"
+                    ) {
                         // we clean all the param of the function
                         $funcCallBack = "Callbacks::cleanTaintedDef";
                         HelpersAnalysis::forAllDefsOfFunction($funcCallBack, $myFunc);
@@ -184,7 +187,7 @@ class VisitorAnalysis
 
                         // we propagate the taint to the params
                         FuncAnalysis::funccallBefore($myFunc, $instruction);
-                    
+
                         // we clean all the param of the function
                         // except return defs see functions21.php test case
                         $funcCallBack = "Callbacks::addStateDefAsAPastArgument";
@@ -233,7 +236,7 @@ class VisitorAnalysis
                     $myFuncCall,
                     $myClass
                 );
-            // representations end
+                // representations end
             } else {
                 // representations start
                 foreach ($myFunc->getBlocks() as $myBlock) {
@@ -304,11 +307,13 @@ class VisitorAnalysis
             $this->defs = $this->currentMyFunc->getDefs();
             $this->blocks = $this->currentMyFunc->getBlocks();
 
-            $val = [$this->currentMyFunc,
-                    $this->blocks,
-                        $this->defs,
-                            $this->currentContextCall];
-                                            
+            $val = [
+                $this->currentMyFunc,
+                $this->blocks,
+                $this->defs,
+                $this->currentContextCall
+            ];
+
             $this->context->pushToCallStack($val);
 
             // for the properties data flow
@@ -316,8 +321,10 @@ class VisitorAnalysis
             $firstMyBlockCalled = $this->currentMyFunc->getBlockById($firstBlockIdCalled);
             $blockOfCallee = $this->currentMyBlock;
 
-            if (!is_null($firstMyBlockCalled)
-                            && !is_null($blockOfCallee)) {
+            if (
+                !is_null($firstMyBlockCalled)
+                && !is_null($blockOfCallee)
+            ) {
                 $firstMyBlockCalled->setVirtualParents([$blockOfCallee]);
                 $firstMyBlockCalled->setNeedUpdateOfState(true);
             }
@@ -331,8 +338,10 @@ class VisitorAnalysis
                         $lastBlockIdConstuctor = $constructor->getFirstBlockId();
                         $lastMyBlockConstuctor = $constructor->getBlockById($lastBlockIdConstuctor);
 
-                        if (!is_null($firstMyBlockCalled)
-                                        && !is_null($lastMyBlockConstuctor)) {
+                        if (
+                            !is_null($firstMyBlockCalled)
+                            && !is_null($lastMyBlockConstuctor)
+                        ) {
                             $firstMyBlockCalled->addVirtualParent($lastMyBlockConstuctor);
                         }
                     }
@@ -345,7 +354,7 @@ class VisitorAnalysis
                         $idObject = $this->context->getObjects()->addObject();
                         $thisDef->getCurrentState()->setObjectId($idObject);
                         $myClass = clone $myClass;
-                    
+
                         $this->context->getObjects()->addMyclassToObject($idObject, $myClass);
                     }
                 }
@@ -380,7 +389,7 @@ class VisitorAnalysis
 
             $callStack = $this->context->getCallStack();
             if (!empty($callStack)) {
-                $lastElement = $callStack[count($callStack) -1];
+                $lastElement = $callStack[count($callStack) - 1];
 
                 $this->currentContextCall = $lastElement[3];
                 $this->defs = $lastElement[2];
@@ -478,8 +487,10 @@ class VisitorAnalysis
                 // needed to have a proper opinformation eachtime:
                 $opInformation["chained_results"] = [];
 
-                if ($instruction->getOpcode() !== Opcodes::ARRAYDIM_FETCH
-                    && $instruction->getOpcode() !== Opcodes::PROPERTY_FETCH) {
+                if (
+                    $instruction->getOpcode() !== Opcodes::ARRAYDIM_FETCH
+                    && $instruction->getOpcode() !== Opcodes::PROPERTY_FETCH
+                ) {
                     $originalFlow = [];
                 }
 
@@ -497,10 +508,12 @@ class VisitorAnalysis
 
                         foreach ($myBlock->parents as $blockParent) {
                             // if not in the stack (it's not a loop)
-                            if ($blockParent->getId() !== $myBlock->getId()
+                            if (
+                                $blockParent->getId() !== $myBlock->getId()
                                 && !$myBlock->isLoopParent($blockParent)
-                                    && !$blockParent->hasBeenAnalyzed()
-                                        && !in_array($blockParent->getId(), $blockStack, true)) {
+                                && !$blockParent->hasBeenAnalyzed()
+                                && !in_array($blockParent->getId(), $blockStack, true)
+                            ) {
                                 $addrStart = $blockParent->getStartAddressBlock();
                                 $addrEnd = $blockParent->getEndAddressBlock();
 
@@ -516,7 +529,7 @@ class VisitorAnalysis
                                 $myCode->setEnd($oldIndexEnd);
                             }
                         }
-                        
+
                         $fromParent = false;
 
                         $this->currentMyBlock = $myBlock;
@@ -528,7 +541,7 @@ class VisitorAnalysis
 
                         HelpersState::blockSwitching($this->context, $this->currentMyFunc);
                         break;
-                    
+
 
                     case Opcodes::LEAVE_BLOCK:
                         $myBlock = $instruction->getProperty(MyInstruction::MYBLOCK);
@@ -545,7 +558,7 @@ class VisitorAnalysis
 
                         break;
 
-                    
+
                     case Opcodes::CONCAT_LEFT:
                         $leftid = $instruction->getProperty(MyInstruction::LEFTID);
                         $rightids = $instruction->getProperty(MyInstruction::RIGHTID);
@@ -574,20 +587,24 @@ class VisitorAnalysis
                                         HelpersAnalysis::updateNbChars($lastNbChars, $curLastKnownValues[0], $chars);
                                     }
 
-                                    if (!in_array($chainedResult, $vars["chained_results"], true)
-                                    && count($vars["chained_results"]) < 20) {
+                                    if (
+                                        !in_array($chainedResult, $vars["chained_results"], true)
+                                        && count($vars["chained_results"]) < 20
+                                    ) {
                                         $vars["chained_results"][] = $chainedResult;
                                     }
                                 }
                             }
                         }
-                        
+
                         $rightValuesSets = [];
                         foreach ($rightids as $rightid) {
                             $rightOpInformation = $this->context->getCurrentFunc()->getOpInformation($rightid);
                             $rightValuesSet = [];
-                            if (isset($rightOpInformation["chained_results"])
-                                && !empty($rightOpInformation["chained_results"])) {
+                            if (
+                                isset($rightOpInformation["chained_results"])
+                                && !empty($rightOpInformation["chained_results"])
+                            ) {
                                 foreach ($rightOpInformation["chained_results"] as $chainedResult) {
                                     $curLastKnownValues = $chainedResult->getCurrentState()->getLastKnownValues();
                                     $rightValuesSet[] = $curLastKnownValues;
@@ -597,8 +614,10 @@ class VisitorAnalysis
                                         HelpersAnalysis::updateNbChars($lastNbChars, $curLastKnownValues[0], $chars);
                                     }
 
-                                    if (!in_array($chainedResult, $vars["chained_results"], true)
-                                        && count($vars["chained_results"]) < 20) {
+                                    if (
+                                        !in_array($chainedResult, $vars["chained_results"], true)
+                                        && count($vars["chained_results"]) < 20
+                                    ) {
                                         $vars["chained_results"][] = $chainedResult;
                                     }
                                 }
@@ -640,7 +659,7 @@ class VisitorAnalysis
                                 }
                             }
 
-                            $i ++;
+                            $i++;
                         }
 
                         /*
@@ -654,7 +673,7 @@ class VisitorAnalysis
                         $lastPart = count($possibleRightsParts) - 1;
                         foreach ($possibleRightsParts[$lastPart] as $lastRightPart) {
                             $stringConcat = "";
-                            for ($i = 0; $i < ($lastPart); $i ++) {
+                            for ($i = 0; $i < ($lastPart); $i++) {
                                 $stringConcat .= $possibleRightsParts[$i][0];
                             }
 
@@ -679,7 +698,7 @@ class VisitorAnalysis
                         $myTemp->addState($mergedState);
                         $currentBlockId = $this->context->getCurrentBlock()->getId();
                         $myTemp->assignStateToBlockId($mergedState->getId(), $currentBlockId);
-                        
+
                         $opInformation["chained_results"][] = $myTemp;
 
                         //$this->context->getCurrentFunc()->cleanOpInformation($leftid);
@@ -722,6 +741,7 @@ class VisitorAnalysis
 
                                 $defGlobals = ResolveDefs::selectGlobals($this->context, $globalDef);
                                 foreach ($defGlobals as $defGlobal) {
+                                    $defGlobal->addType(MyDefinition::TYPE_REFERENCE);
                                     $opInformation["chained_results"][] = $defGlobal;
                                 }
                             } else {
@@ -820,7 +840,7 @@ class VisitorAnalysis
                         $this->context->getCurrentFunc()->cleanOpInformation($varid);
 
                         break;
-                    
+
 
                     case Opcodes::STATIC_PROPERTY_FETCH:
                         $propertyName = $instruction->getProperty(MyInstruction::PROPERTY_NAME);
@@ -907,7 +927,7 @@ class VisitorAnalysis
                             $originalFlow[] = $propertyName;
                             // we are in the middle of the chain thus we can access the previous chained object
                             $previousOpInformation = $this->context->getCurrentFunc()->getOpInformation($varid);
-                            
+
                             if (isset($previousOpInformation["original_def"])) {
                                 $opInformation["original_def"] = $previousOpInformation["original_def"];
                             }
@@ -927,12 +947,14 @@ class VisitorAnalysis
                                                 $propertyName
                                             );
 
-                                            if (!is_null($property)
+                                            if (
+                                                !is_null($property)
                                                 && ResolveDefs::getVisibility(
                                                     $previousChainedResult,
                                                     $property,
                                                     $this->context->getCurrentFunc()
-                                                )) {
+                                                )
+                                            ) {
                                                 $opInformation["chained_results"][] = $property;
                                             }
                                         }
@@ -945,20 +967,20 @@ class VisitorAnalysis
                         $this->context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
 
                         break;
-        
+
 
                     case Opcodes::LITERAL_FETCH:
                         $resultid = $instruction->getProperty(MyInstruction::RESULTID);
                         $def = $instruction->getProperty(MyInstruction::DEF);
-    
+
                         $opInformation = $this->context->getCurrentFunc()->getOpInformation($resultid);
 
                         $opInformation["chained_results"][] = $def;
 
                         $this->context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
-                
+
                         break;
-        
+
 
                     case Opcodes::CONST_FETCH:
                         $resultid = $instruction->getProperty(MyInstruction::RESULTID);
@@ -976,9 +998,9 @@ class VisitorAnalysis
                                 }
                             }
                         }
-                            
+
                         $this->context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
-                        
+
                         break;
 
 
@@ -995,15 +1017,18 @@ class VisitorAnalysis
                             foreach ($opDataVar["chained_results"] as $chainedResult) {
                                 $state = $chainedResult->getCurrentState();
                                 if (!is_null($state)) {
-                                    if ($state->isType(MyDefinition::TYPE_ARRAY)
-                                    && !$state->isType(MyDefinition::TYPE_INSTANCE)) {
+                                    if (
+                                        $state->isType(MyDefinition::TYPE_ARRAY)
+                                        && !$state->isType(MyDefinition::TYPE_INSTANCE)
+                                    ) {
                                         foreach ($state->getArrayIndexes() as $arrayIndex) {
                                             $element = $arrayIndex->def;
                                             $opInformation["chained_results"][] = $element;
                                         }
                                     } elseif (($state->isType(MyDefinition::TYPE_INSTANCE)
-                                    && $state->isType(MyDefinition::TYPE_ARRAY)) ||
-                                    $state->isType(MyDefinition::TYPE_ARRAY_ARRAY)) {
+                                            && $state->isType(MyDefinition::TYPE_ARRAY)) ||
+                                        $state->isType(MyDefinition::TYPE_ARRAY_ARRAY)
+                                    ) {
                                         // probably a source arrayofobjects arrayofarrays
                                         if ($state->isType(MyDefinition::ALL_PROPERTIES_TAINTED)) {
                                             $opInformation["chained_results"][] = $chainedResult;
@@ -1044,8 +1069,10 @@ class VisitorAnalysis
                                     // a classic (not array/property) could have been overwritten
                                     // we should search for the last variables
 
-                                    if (!$ref->isType(MyDefinition::TYPE_ARRAY_ELEMENT)
-                                        && !$ref->isType(MyDefinition::TYPE_PROPERTY)) {
+                                    if (
+                                        !$ref->isType(MyDefinition::TYPE_ARRAY_ELEMENT)
+                                        && !$ref->isType(MyDefinition::TYPE_PROPERTY)
+                                    ) {
                                         $refbis = clone $ref;
                                         $refbis->setBlockId($variable->getBlockId());
                                         $refbis->setLine($variable->getLine());
@@ -1084,7 +1111,7 @@ class VisitorAnalysis
                                 }
                             }
                         }
-                        
+
                         $opInformation = [];
                         $opInformation["chained_results"] = $newDefFounds;
                         $opInformation["original_def"] = $variable;
@@ -1094,15 +1121,15 @@ class VisitorAnalysis
                         $this->context->getCurrentFunc()->cleanOpInformation($varid);
                         $this->context->getCurrentFunc()->cleanOpInformation($exprid);
                         $this->context->getCurrentFunc()->storeOpInformation($id, $opInformation);
-    
+
                         break;
-                    
+
 
                     case Opcodes::ARGUMENT:
                         $varid = $instruction->getProperty(MyInstruction::VARID);
                         $idparam = $instruction->getProperty("idparam");
                         $def = $instruction->getProperty("argdef$idparam");
-        
+
                         $opDataVar = $this->context->getCurrentFunc()->getOpInformation($varid);
                         $concatValues = isset($opDataVar["concats_values"]) ? $opDataVar["concats_values"] : [];
 
@@ -1179,7 +1206,7 @@ class VisitorAnalysis
                                     }
                                     $opResultData["chained_results"][] = $chainedResult;
                                 }
-        
+
                                 $this->context->getCurrentFunc()->storeOpInformation($resultid, $opResultData);
                             }
                         }
@@ -1188,19 +1215,21 @@ class VisitorAnalysis
                         $this->context->getCurrentFunc()->cleanOpInformation($exprid);
 
                         break;
-                    
+
 
                     case Opcodes::CAST:
                         $resultid = $instruction->getProperty(MyInstruction::RESULTID);
                         $exprid = $instruction->getProperty(MyInstruction::EXPRID);
                         $typeCast = $instruction->getProperty("type_cast");
-    
+
                         $rightOpInformation = $this->context->getCurrentFunc()->getOpInformation($exprid);
                         $leftOpInformation =
                             $this->context->getCurrentFunc()->getOpInformation($resultid);
-    
-                        if (isset($rightOpInformation["chained_results"])
-                            && $typeCast === MyDefinition::CAST_NOT_SAFE) {
+
+                        if (
+                            isset($rightOpInformation["chained_results"])
+                            && $typeCast === MyDefinition::CAST_NOT_SAFE
+                        ) {
                             foreach ($rightOpInformation["chained_results"] as $chainedResult) {
                                 $leftOpInformation["chained_results"][] = $chainedResult;
                             }
@@ -1209,7 +1238,7 @@ class VisitorAnalysis
                         }
 
                         $this->context->getCurrentFunc()->cleanOpInformation($exprid);
-    
+
                         break;
 
 
@@ -1232,17 +1261,17 @@ class VisitorAnalysis
                         $resultid = $instruction->getProperty(MyInstruction::RESULTID);
                         $leftid = $instruction->getProperty(MyInstruction::LEFTID);
                         $rightid = $instruction->getProperty(MyInstruction::RIGHTID);
-    
+
                         $leftOpInformation = $this->context->getCurrentFunc()->getOpInformation($leftid);
                         $rightOpInformation = $this->context->getCurrentFunc()->getOpInformation($rightid);
-                        
+
                         $opInformation = [];
                         $opInformation["condition_defs"] = [];
 
                         if (isset($leftOpInformation["condition_defs"])) {
                             $opInformation["condition_defs"] = $leftOpInformation["condition_defs"];
                         }
-                        
+
                         if (isset($rightOpInformation["condition_defs"])) {
                             $opInformation["condition_defs"] =
                                 array_merge($rightOpInformation["condition_defs"], $opInformation["condition_defs"]);
@@ -1251,7 +1280,7 @@ class VisitorAnalysis
                         $this->context->getCurrentFunc()->cleanOpInformation($leftid);
                         $this->context->getCurrentFunc()->cleanOpInformation($rightid);
                         $this->context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
-    
+
                         break;
 
 
@@ -1260,15 +1289,17 @@ class VisitorAnalysis
                         $myBlockIf = $instruction->getProperty(MyInstruction::MYBLOCK_IF);
                         $myBlockElse = $instruction->getProperty(MyInstruction::MYBLOCK_ELSE);
                         $opExprData = $this->context->getCurrentFunc()->getOpInformation($conds);
-                        
+
                         $validwhenreturning = true;
                         if (isset($opExprData["valid_when_returning"])) {
                             $validwhenreturning = $opExprData["valid_when_returning"];
                         }
 
                         $notboolean = false;
-                        if (isset($opExprData["not_boolean"])
-                            && $opExprData["not_boolean"]) {
+                        if (
+                            isset($opExprData["not_boolean"])
+                            && $opExprData["not_boolean"]
+                        ) {
                             $notboolean = true;
                             $block = $validwhenreturning ? $myBlockElse : $myBlockIf;
                         } else {
@@ -1291,22 +1322,22 @@ class VisitorAnalysis
                         $this->context->getCurrentFunc()->cleanOpInformation($conds);
 
                         break;
-                        
+
 
                     case Opcodes::ARRAY_EXPR:
                         $resultid = $instruction->getProperty(MyInstruction::RESULTID);
                         $opInformation = $this->context->getCurrentFunc()->getOpInformation($resultid);
                         $nbkeys = $instruction->getProperty("nbkeys");
 
-                        for ($i = 0; $i < $nbkeys; $i ++) {
-                            $valueid = $instruction->getProperty("value".$i);
-                            $keyid = $instruction->getProperty("key".$i);
+                        for ($i = 0; $i < $nbkeys; $i++) {
+                            $valueid = $instruction->getProperty("value" . $i);
+                            $keyid = $instruction->getProperty("key" . $i);
 
                             $keyData = $this->context->getCurrentFunc()->getOpInformation($keyid);
                             $valueData = $this->context->getCurrentFunc()->getOpInformation($valueid);
 
                             $keys = [];
-                            
+
                             if (!is_null($keyData) && isset($keyData["chained_results"])) {
                                 foreach ($keyData["chained_results"] as $chainedResult) {
                                     $lastKnownValues = $chainedResult->getCurrentState()->getLastKnownValues();
@@ -1370,22 +1401,22 @@ class VisitorAnalysis
                         if ($funcName === "call_user_func" || $funcName === "call_user_func_array") {
                             if ($instruction->isPropertyExist("argdef0")) {
                                 $defArg = $instruction->getProperty("argdef0");
-                                
+
                                 $newInst = new MyInstruction(Opcodes::FUNC_CALL);
-                        
+
                                 $myFunctionCall = new MyFunction("tmp");
                                 $myFunctionCall->setLine($myFuncCall->getLine());
                                 $myFunctionCall->setColumn($myFuncCall->getColumn());
                                 $myFunctionCall->setSourceMyFile($myFuncCall->getSourceMyFile());
-                                    
+
                                 if ($funcName === "call_user_func") {
-                                    for ($nbParams = 1; $nbParams < $myFuncCall->getNbParams(); $nbParams ++) {
+                                    for ($nbParams = 1; $nbParams < $myFuncCall->getNbParams(); $nbParams++) {
                                         $oldDefArg = $instruction->getProperty("argdef$nbParams");
-                                        
+
                                         $newNbParams = $nbParams - 1;
                                         $newInst->addProperty("argdef$newNbParams", $oldDefArg);
                                     }
-                                    
+
                                     $myFunctionCall->setNbParams($myFuncCall->getNbParams() - 1);
                                 } else {
                                     if ($instruction->isPropertyExist("argdef1")) {
@@ -1400,17 +1431,17 @@ class VisitorAnalysis
                                                 $newdef->removeType(MyDefinition::TYPE_ARRAY_ELEMENT);
 
                                                 $newInst->addProperty("argdef$newNbParams", $newdef);
-                                                
-                                                $newNbParams ++;
+
+                                                $newNbParams++;
                                             }
-                                            
+
                                             $myFunctionCall->setNbParams($newNbParams);
                                         }
                                     }
                                 }
-                                
+
                                 $newInst->addProperty(MyInstruction::MYFUNC_CALL, $myFunctionCall);
-                                 
+
                                 foreach ($defArg->getCurrentState()->getLastKnownValues() as $lastValue) {
                                     $myFunctionCall->setName($lastValue);
                                     $newInst->addProperty(MyInstruction::FUNCNAME, $lastValue);
