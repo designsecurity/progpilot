@@ -1,0 +1,16 @@
+.git
+.gitignore
+.gitattributes
+.github
+.devcontainer
+docs
+projects/tests
+projects/example
+projects/example_config
+*.md
+LICENSE
+grumphp.yml
+progpilot.yml
+builds
+vendor
+composer.lock 
