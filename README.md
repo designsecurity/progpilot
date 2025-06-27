@@ -6,9 +6,11 @@
 
 ## Installation
 
-### Option 1: use standalone phar
+There are many options available, select the one that best suits your use case.
 
-- Download the latest phar archive from the [releases](https://github.com/designsecurity/progpilot/releases) page.
+### Use PHAR releases 
+
+- Download the latest PHAR archive from the [releases](https://github.com/designsecurity/progpilot/releases) page.
 - Place the file somewhere in your path and make it executable:
 
 ```shell
@@ -16,7 +18,16 @@ chmod +x progpilot_vX.Y.Z.phar
 sudo mv progpilot_vX.Y.Z.phar /usr/local/bin/progpilot
 ```
 
-### Option 2: build phar from source code
+### Use Docker 
+
+- Build the docker image ([detailed documentation on this page](./DOCKER.md)) and run the container:
+
+```shell
+docker build -t progpilot .
+docker run -v $(pwd):/workspace progpilot /workspace/path/to/your/file.php
+```
+
+### Build PHAR archive from source code
 
 [phar-composer.phar](https://github.com/clue/phar-composer/releases) should be located in a directory listed in the `$PATH` environment variable before starting the build:
 
@@ -28,9 +39,9 @@ cd progpilot
 
 The resulting phar archive will be located in the `builds` folder at the root of this project.
 
-### Option 3: use composer
+### Use composer
 
-Use [Composer](https://getcomposer.org/) to install progpilot:
+Install the package with [composer](https://getcomposer.org/), typically when using progpilot as a library of your PHP project:
 
 ```shell
 composer require --dev designsecurity/progpilot
