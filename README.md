@@ -29,7 +29,7 @@ docker run -v $(pwd):/workspace progpilot /workspace/path/to/your/file.php
 
 ### Build PHAR archive from source code
 
-[phar-composer.phar](https://github.com/clue/phar-composer/releases) should be located in a directory listed in the `$PATH` environment variable before starting the build:
+[phar-composer.phar](https://github.com/clue/phar-composer/releases) should be located in a directory listed in the `$PATH` environment variable:
 
 ```shell
 git clone https://github.com/designsecurity/progpilot
