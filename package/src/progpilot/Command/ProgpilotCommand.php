@@ -46,7 +46,7 @@ class ProgpilotCommand extends Command
         $this->output = $output;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;

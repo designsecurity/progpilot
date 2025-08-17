@@ -5,7 +5,7 @@ require_once './vendor/autoload.php';
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class RunAllConfiguration extends TestCase
+class RunAllConfigurations extends TestCase
 {
     #[DataProvider('dataProvider')]
     public function testSecurity($configfile, $expectedVulns)

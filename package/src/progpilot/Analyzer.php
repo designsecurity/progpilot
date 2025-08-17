@@ -30,9 +30,9 @@ class FileAnalysis
 class Analyzer
 {
     const PHP = "php";
-
+    
     private $parser;
-
+    
     public function __construct()
     {
         $astparser = (new \PhpParser\ParserFactory)->createForNewestSupportedVersion();
@@ -48,8 +48,8 @@ class Analyzer
             if ($filesanddirs !== false) {
                 foreach ($filesanddirs as $filedir) {
                     if ($filedir !== '.' && $filedir !== "..") {
-                        $folderorfile = $dir . DIRECTORY_SEPARATOR . $filedir;
-
+                        $folderorfile = $dir.DIRECTORY_SEPARATOR.$filedir;
+                        
                         if (is_dir($folderorfile)) {
                             $this->getFilesOfDir($context, $folderorfile, $initialDir, $files);
                         } else {
@@ -87,7 +87,7 @@ class Analyzer
                     }
                 }
             } catch (\Exception $e) {
-                Utils::printWarning($context, Lang::PARSER_ERROR . $e->getMessage());
+                Utils::printWarning($context, Lang::PARSER_ERROR.$e->getMessage());
             }
         }
 
@@ -106,7 +106,7 @@ class Analyzer
 
             unset($traverser);
             unset($transformvisitor);
-
+        
             /*
             $dumper = new \PHPCfg\Printer\Text();
             echo $dumper->printScript($script);
@@ -118,10 +118,10 @@ class Analyzer
     {
         if (!is_null($myFunc) && !$myFunc->isVisited()) {
             $myFunc->setIsVisited(true);
-
+            
             $myFunc->getMyCode()->setStart(0);
             $myFunc->getMyCode()->setEnd(count($myFunc->getMyCode()->getCodes()));
-
+            
             $visitoranalyzer = new \progpilot\Analysis\VisitorAnalysis;
 
             if ($updatemyfile) {
@@ -151,13 +151,13 @@ class Analyzer
             // throw main function missing
         }
     }
-
+    
     public function visitDataFlow($context)
     {
         // analyze
         if (!is_null($context)) {
             $visitordataflow = new \progpilot\Dataflow\VisitorDataflow();
-
+    
             $fileNameHash = hash("sha256", $context->getCurrentMyfile()->getName());
             foreach ($context->getTmpFunctions() as $myFunc) {
                 if (!is_null($myFunc)) {
@@ -175,7 +175,7 @@ class Analyzer
             $context->clearTmpFunctions();
         }
     }
-
+    
     public function computeDataFlowPhp($context)
     {
         // free memory
@@ -190,10 +190,10 @@ class Analyzer
         $script = $this->parsePhp($context);
 
         $this->transformPhp($context, $script);
-
+            
         $this->visitDataFlow($context);
     }
-
+    
     public function computeDataFlow($context)
     {
         $filename = $context->inputs->getFile();
@@ -201,18 +201,16 @@ class Analyzer
         if (!file_exists($filename) && is_null($context->inputs->getCode())) {
             Utils::printWarning(
                 $context,
-                Lang::FILE_DOESNT_EXIST . " (" . Utils::encodeCharacters($filename) . ")"
+                Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($filename).")"
             );
         } elseif (is_null($filename) && is_null($context->inputs->getCode())) {
             Utils::printWarning($context, Lang::FILE_AND_CODE_ARE_NULL);
         } else {
-            if (
-                is_null($context->inputs->getCode())
-                && @filesize($filename) > $context->getMaxFileSize()
-            ) {
+            if (is_null($context->inputs->getCode())
+                && @filesize($filename) > $context->getMaxFileSize()) {
                 Utils::printWarning(
                     $context,
-                    Lang::MAX_SIZE_EXCEEDED . " (" . Utils::encodeCharacters($filename) . ")"
+                    Lang::MAX_SIZE_EXCEEDED." (".Utils::encodeCharacters($filename).")"
                 );
             } else {
                 if (!$context->isFileDataAnalyzed($filename)) {
@@ -221,18 +219,16 @@ class Analyzer
             }
         }
     }
-
+    
     public static function getTypeOfLanguage($lookfor, $content)
     {
         if ($lookfor === Analyzer::PHP && !empty($content)) {
-            if (
-                strpos($content, "<?") !== false
-                || strpos($content, "<?php") !== false
-            ) {
+            if (strpos($content, "<?") !== false
+                || strpos($content, "<?php") !== false) {
                 return true;
             }
         }
-
+        
         return false;
     }
 
@@ -255,7 +251,7 @@ class Analyzer
                 $traverser->traverse($script);
             }
         } catch (\Exception $e) {
-            Utils::printWarning($context, Lang::PARSER_ERROR . $e->getMessage());
+            Utils::printWarning($context, Lang::PARSER_ERROR.$e->getMessage());
         }
     }
 
@@ -323,7 +319,7 @@ class Analyzer
             $context->resetCallStack();
         }
     }
-
+    
     public function run($context, $cmdFiles = null)
     {
         $currentMemoryLimit = ini_get("memory_limit");
@@ -335,7 +331,7 @@ class Analyzer
         if ($bytes < $context->getMaxMemory()) {
             $ret = ini_set('memory_limit', $context->getMaxMemory());
             if (!$ret) {
-                Utils::printWarning($context, Lang::CANNOT_SET_MEMORY . $context->getMaxMemory());
+                Utils::printWarning($context, Lang::CANNOT_SET_MEMORY.$context->getMaxMemory());
             }
         }
 
@@ -362,10 +358,8 @@ class Analyzer
                     $this->getFilesOfDir($context, $cmdFile, $cmdFile, $files);
                 } else {
                     $cmdFileA = new FileAnalysis($cmdFile, dirname($cmdFile));
-                    if (
-                        !in_array($cmdFileA, $files, true)
-                        && !$context->inputs->isExcludedFile($cmdFile)
-                    ) {
+                    if (!in_array($cmdFileA, $files, true)
+                                && !$context->inputs->isExcludedFile($cmdFile)) {
                         $files[] = $cmdFileA;
                     }
                 }
@@ -379,10 +373,8 @@ class Analyzer
                 $this->getFilesOfDir($context, $includedFile, $includedFile, $files);
             } else {
                 $cmdFileA = new FileAnalysis($includedFile, dirname($includedFile));
-                if (
-                    !in_array($cmdFileA, $files, true)
-                    && !$context->inputs->isExcludedFile($includedFile)
-                ) {
+                if (!in_array($cmdFileA, $files, true)
+                        && !$context->inputs->isExcludedFile($includedFile)) {
                     $files[] = $cmdFileA;
                 }
             }
@@ -395,10 +387,8 @@ class Analyzer
             if ($context->inputs->getFile() !== null) {
                 $file = \progpilot\Inputs\MyInputsInternalApi::resolvePath($context->inputs->getFile());
                 $cmdFileA = new FileAnalysis($file, dirname($file));
-                if (
-                    !in_array($cmdFileA, $files, true)
-                    && !$context->inputs->isExcludedFile($file)
-                ) {
+                if (!in_array($cmdFileA, $files, true)
+                    && !$context->inputs->isExcludedFile($file)) {
                     $files[] = $cmdFileA;
                 }
             }
@@ -418,9 +408,9 @@ class Analyzer
         foreach ($files as $file) {
             if (is_file($file->fullpath)) {
                 if ($context->isDebugMode()) {
-                    echo "progpilot analyze : " . Utils::encodeCharacters($file->fullpath) . "\n";
+                    echo "progpilot analyze : ".Utils::encodeCharacters($file->fullpath)."\n";
                 }
-
+            
                 $context->outputs->setCountAnalyzedFiles(
                     $context->outputs->getCountAnalyzedFiles() + 1
                 );
@@ -442,6 +432,12 @@ class Analyzer
                 // needed??
                 $context->inputs->setCode(null);
             }
+        }
+
+        // if no files try to read code
+        if (empty($files) && !is_null($context->inputs->getCode())) {
+            $this->computeDataFlow($context);
+            $this->runAnalysisOfCurrentMyFile($context);
         }
 
         if ($context->outputs->getWriteIncludeFailures()) {
