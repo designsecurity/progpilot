@@ -60,5 +60,5 @@ If you're using a configuration file, make sure to:
 
 - The container builds the progpilot phar file during the build process
 - All arguments passed to the container are forwarded to the progpilot command
-- The container uses PHP 8.1 which is compatible with the project requirements (>=7.4)
+- The container uses PHP 8.1 which is compatible with the project requirements (>=8.0)
 - Make sure to use the correct file paths when mounting volumes 

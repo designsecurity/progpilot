@@ -1,4 +1,4 @@
-# Use PHP 8.1 as base image (compatible with >=7.4 requirement)
+# Use PHP 8.1 as base image (compatible with >=8.0 requirement)
 FROM php:8.1-cli
 
 # Install system dependencies
