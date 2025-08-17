@@ -10,7 +10,6 @@
 
 namespace progpilot\Transformations\Php\Exprs;
 
-use PHPCfg\Op;
 use PHPCfg\Operand;
 
 use progpilot\Objects\MyDefinition;
@@ -21,8 +20,10 @@ class LiteralFetch
 {
     public static function literalFetch($context, $op)
     {
-        if (isset($op)
-            && $op instanceof Operand\Literal) {
+        if (
+            isset($op)
+            && $op instanceof Operand\Literal
+        ) {
             $myTemp = new MyDefinition(
                 $context->getCurrentBlock()->getId(),
                 $context->getCurrentMyFile(),
@@ -30,7 +31,7 @@ class LiteralFetch
                 $context->getCurrentColumn(),
                 "literal"
             );
-            
+
             $myTemp->getCurrentState()->addType(MyDefinition::TYPE_LITERAL);
             $myTemp->getCurrentState()->addLastKnownValue($op->value);
 

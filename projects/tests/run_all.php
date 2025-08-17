@@ -1,6 +1,7 @@
 <?php
 
 require_once './vendor/autoload.php';
+
 use PHPUnit\Framework\TestCase;
 
 class RunAllTest extends TestCase
@@ -14,14 +15,14 @@ class RunAllTest extends TestCase
         $analyzer = new \progpilot\Analyzer;
 
         $context->outputs->taintedFlow(true);
-        
+
         $nbVulns = 0;
         $context->inputs->setDev(true);
         $context->inputs->setFile($file);
         // enable "vendor" folder analysis
         // test case: tests/real/composer/
         $context->inputs->setExclusions([]);
-        
+
         $analyzer->run($context);
 
         $results = $context->outputs->getResults();
@@ -31,14 +32,14 @@ class RunAllTest extends TestCase
                 $expectedSourceName = $expectedVulns[$nbVulns][0];
                 $expectedSourceLine = $expectedVulns[$nbVulns][1];
                 $expectedVulnName = $expectedVulns[$nbVulns][2];
-                
+
                 // taint-style
                 if (isset($vuln['source_name']) && isset($vuln['source_line'])) {
                     if (is_array($expectedSourceName) && is_array($expectedSourceLine)) {
                         foreach ($expectedSourceName as $oneSourceName) {
                             $this->assertContains($oneSourceName, $vuln["source_name"]);
                         }
-                            
+
                         foreach ($expectedSourceLine as $oneSourceLine) {
                             $this->assertContains((int)$oneSourceLine, $vuln["source_line"]);
                         }
@@ -56,10 +57,10 @@ class RunAllTest extends TestCase
             } else {
                 $this->assertTrue(false);
             }
-            
-            $nbVulns ++;
+
+            $nbVulns++;
         }
-        
+
         $this->assertCount(count($expectedVulns), $results);
     }
 
@@ -77,7 +78,7 @@ class RunAllTest extends TestCase
         $tabvulntest = include("testvulntestsuite.php");
         $tabwander = include("phpwandertest.php");
         $tabframeworks = include("frameworkstest.php");
-        
+
         $tab = array_merge(
             $tabopti,
             $taboop,
@@ -92,7 +93,7 @@ class RunAllTest extends TestCase
             $tabwander,
             $tabframeworks
         );
-        
+
         return $tab;
     }
 }

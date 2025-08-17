@@ -10,11 +10,7 @@
 
 namespace progpilot\Helpers;
 
-use progpilot\Objects\MyDefinition;
-use progpilot\Objects\MyProperty;
 use progpilot\Objects\MyAssertion;
-
-use function DeepCopy\deep_copy;
 
 class Callbacks
 {

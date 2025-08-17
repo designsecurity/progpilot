@@ -36,7 +36,7 @@ class Classes
         if (isset($this->listClasses[$name])) {
             return $this->listClasses[$name];
         }
-        
+
         return null;
     }
 }

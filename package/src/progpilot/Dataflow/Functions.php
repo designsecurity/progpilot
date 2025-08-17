@@ -10,10 +10,6 @@
 
 namespace progpilot\Dataflow;
 
-use progpilot\Objects\MyFunction;
-use progpilot\Objects\MyOp;
-use progpilot\Utils;
-
 class Functions
 {
     private $functions;
@@ -54,7 +50,7 @@ class Functions
                 }
             }
         }
-        
+
         return null;
     }
 

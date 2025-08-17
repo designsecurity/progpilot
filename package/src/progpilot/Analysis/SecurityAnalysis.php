@@ -10,29 +10,20 @@
 
 namespace progpilot\Analysis;
 
-use PHPCfg\Block;
-use PHPCfg\Func;
-use PHPCfg\Op;
-use PHPCfg\Script;
-use PHPCfg\Visitor;
-use PHPCfg\Operand;
-
-use progpilot\Objects\MyOp;
-use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
 use progpilot\Code\MyInstruction;
-
-use progpilot\Helpers\Analysis as HelpersAnalysis;
 
 class SecurityAnalysis
 {
     public static function inArrayStateSource($temp, $ret)
     {
-        for ($i = 0; $i < count($temp["source_name"]); $i ++) {
-            if ($temp["source_name"][$i] === $ret["source_name"]
+        for ($i = 0; $i < count($temp["source_name"]); $i++) {
+            if (
+                $temp["source_name"][$i] === $ret["source_name"]
                 && $temp["source_line"][$i] === $ret["source_line"]
-                    && $temp["source_column"][$i] === $ret["source_column"]
-                        && $temp["source_file"][$i] === $ret["source_file"]) {
+                && $temp["source_column"][$i] === $ret["source_column"]
+                && $temp["source_file"][$i] === $ret["source_file"]
+            ) {
                 return true;
             }
         }
@@ -47,7 +38,7 @@ class SecurityAnalysis
         $mySink = $context->inputs->getSinkByName($myFuncCall, $myClass);
         if (!is_null($mySink)) {
             $nbParams = $myFuncCall->getNbParams();
-            for ($i = 0; $i < $nbParams; $i ++) {
+            for ($i = 0; $i < $nbParams; $i++) {
                 $myDefArg = $instruction->getProperty("argdef$i");
 
                 if (!$mySink->hasParameters() || ($mySink->hasParameters() && $mySink->isParameter($i + 1))) {
@@ -97,7 +88,7 @@ class SecurityAnalysis
                             $resultTaintedFlow[] = $oneTainted;
 
                             $idFlow .= \progpilot\Utils::printDefinition($fromTaintedDef);
-                            $idFlow .= "-".$fromTaintedDef->getSourceMyFile()->fileName;
+                            $idFlow .= "-" . $fromTaintedDef->getSourceMyFile()->fileName;
                             $taintedDef = $fromTaintedDef;
                             $taintedState = $fromTaintedState;
                             break 2;
@@ -113,7 +104,7 @@ class SecurityAnalysis
     public static function isSafeState($context, $mySink, $indexParameter, $myState)
     {
         $possibleConditions = ["QUOTES", "object_tainted", "array_tainted", "variable_tainted", null];
-        
+
         foreach ($possibleConditions as $condition) {
             if ($mySink->isParameterCondition($indexParameter, $condition)) {
                 if (!SecurityAnalysis::isSafeStateCondition($context, $mySink, $myState, $condition)) {
@@ -121,24 +112,29 @@ class SecurityAnalysis
                 }
             }
         }
-        
+
         return true;
     }
-    
+
     public static function isSafeStateCondition($context, $mySink, $state, $condition, $isFlow = false)
     {
         if (($state->isTainted())
             && $state->getCast() === MyDefinition::CAST_NOT_SAFE
-                && $condition !== "object_tainted"
-                    && $condition !== "array_tainted") {
+            && $condition !== "object_tainted"
+            && $condition !== "array_tainted"
+        ) {
             if ($state->isSanitized()) {
-                if ($state->isTypeSanitized($mySink->getAttack())
-                            || $state->isTypeSanitized("ALL")) {
+                if (
+                    $state->isTypeSanitized($mySink->getAttack())
+                    || $state->isTypeSanitized("ALL")
+                ) {
                     // 1° the argument of sink must be quoted
                     if ($condition === "QUOTES" && !$state->isTypeSanitized("ALL")) {
                         // the def is embedded into quotes but quotes are not sanitized
-                        if (!$state->isTypeSanitized("QUOTES")
-                            && $state->getIsEmbeddedByChar("'")) {
+                        if (
+                            !$state->isTypeSanitized("QUOTES")
+                            && $state->getIsEmbeddedByChar("'")
+                        ) {
                             return false;
                         }
 
@@ -148,15 +144,21 @@ class SecurityAnalysis
                         }
                     }
 
-                    if ($mySink->isGlobalCondition("QUOTES_HTML")
-                                && !$state->isTypeSanitized("ALL")) {
-                        if (!$state->isTypeSanitized("QUOTES") && $state->getIsEmbeddedByChar("<")
-                                    && $state->getIsEmbeddedByChar("'")) {
+                    if (
+                        $mySink->isGlobalCondition("QUOTES_HTML")
+                        && !$state->isTypeSanitized("ALL")
+                    ) {
+                        if (
+                            !$state->isTypeSanitized("QUOTES") && $state->getIsEmbeddedByChar("<")
+                            && $state->getIsEmbeddedByChar("'")
+                        ) {
                             return false;
                         }
 
-                        if ($state->getIsEmbeddedByChar("<")
-                            && !$state->getIsEmbeddedByChar("'")) {
+                        if (
+                            $state->getIsEmbeddedByChar("<")
+                            && !$state->getIsEmbeddedByChar("'")
+                        ) {
                             return false;
                         }
                     }
@@ -170,14 +172,16 @@ class SecurityAnalysis
             return false;
         } elseif (($condition === "object_tainted" || $isFlow)
             && $state->isType(MyDefinition::TYPE_INSTANCE)
-                && $state->isType(MyDefinition::ALL_PROPERTIES_TAINTED)) {
+            && $state->isType(MyDefinition::ALL_PROPERTIES_TAINTED)
+        ) {
             return false;
         } elseif (($condition === "array_tainted" || $isFlow)
             && $state->isType(MyDefinition::TYPE_ARRAY)
-                && $state->isType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED)) {
+            && $state->isType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED)
+        ) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -190,7 +194,7 @@ class SecurityAnalysis
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -240,12 +244,12 @@ class SecurityAnalysis
                         $temp["source_column"][] = $ret["source_column"];
                         $temp["source_file"][] = $ret["source_file"];
 
-                        $nbtainted ++;
+                        $nbtainted++;
                     }
                 }
             }
 
-            $hashedValue = $hashIdVuln."-".$mySink->getName()."-".$myFuncCall->getSourceMyFile()->fileName;
+            $hashedValue = $hashIdVuln . "-" . $mySink->getName() . "-" . $myFuncCall->getSourceMyFile()->fileName;
             $hashIdVuln = hash("sha256", $hashedValue);
 
             if ($nbtainted && is_null($context->inputs->getFalsePositiveById($hashIdVuln))) {
@@ -270,7 +274,7 @@ class SecurityAnalysis
             $param = $myDef->getArgToParam();
             $return["source_name"] = \progpilot\Utils::printDefinition($param);
             $return["source_line"] = $param->getLine();
-            $return["source_column"]= $param->getColumn();
+            $return["source_column"] = $param->getColumn();
             $return["source_file"] = \progpilot\Utils::encodeCharacters($param->getSourceMyFile()->getName());
 
             return $return;
@@ -293,7 +297,7 @@ class SecurityAnalysis
         $return["source_line"] = $myDef->getLine();
         $return["source_column"] = $myDef->getColumn();
         $return["source_file"] = \progpilot\Utils::encodeCharacters($myDef->getSourceMyFile()->getName());
-        
+
         return $return;
     }
 }

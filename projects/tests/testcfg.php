@@ -7,7 +7,6 @@ $code = "<?php function testf(\$param){	return [\$param, \"nono\"];}\$var = test
 $context = new \progpilot\Context;
 $analyzer = new \progpilot\Analyzer;
 
-$context->setAnalyzeJs(false);
 $context->setAnalyzeIncludes(false);
 $context->inputs->setCode($code);
 $analyzer->run($context);

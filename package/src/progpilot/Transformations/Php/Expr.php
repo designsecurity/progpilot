@@ -10,16 +10,6 @@
 
 namespace progpilot\Transformations\Php;
 
-use PHPCfg\Block;
-use PHPCfg\Op;
-
-use progpilot\Objects\MyFunction;
-use progpilot\Objects\MyDefinition;
-use progpilot\Objects\MyOp;
-
-use progpilot\Code\MyInstruction;
-use progpilot\Code\Opcodes;
-use progpilot\Transformations\Php\Transform;
 use progpilot\Transformations\Php\Exprs\PropertyFetch;
 use progpilot\Transformations\Php\Exprs\StaticPropertyFetch;
 use progpilot\Transformations\Php\Exprs\DimFetch;

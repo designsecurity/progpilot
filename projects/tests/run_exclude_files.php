@@ -1,6 +1,7 @@
 <?php
 
 require_once './vendor/autoload.php';
+
 use PHPUnit\Framework\TestCase;
 
 class RunExcludeFilesTest extends TestCase
@@ -14,12 +15,12 @@ class RunExcludeFilesTest extends TestCase
         $analyzer = new \progpilot\Analyzer;
 
         $context->outputs->taintedFlow(true);
-        
+
         $exclusions = [
-          "./tests/folders/folder2/mix3.php",
-          "./tests/folders/folder2/sub_folder1/sub_folder2",
-          "onefolderexcludedtest",
-          "onefileexcludedtest.php"
+            "./tests/folders/folder2/mix3.php",
+            "./tests/folders/folder2/sub_folder1/sub_folder2",
+            "onefolderexcludedtest",
+            "onefileexcludedtest.php"
         ];
 
         $nbVulns = 0;
@@ -35,14 +36,14 @@ class RunExcludeFilesTest extends TestCase
                 $expectedSourceName = $expectedVulns[$nbVulns][0];
                 $expectedSourceLine = $expectedVulns[$nbVulns][1];
                 $expectedVulnName = $expectedVulns[$nbVulns][2];
-                
+
                 // taint-style
                 if (isset($vuln['source_name']) && isset($vuln['source_line'])) {
                     if (is_array($expectedSourceName) && is_array($expectedSourceLine)) {
                         foreach ($expectedSourceName as $oneSourceName) {
                             $this->assertContains($oneSourceName, $vuln["source_name"]);
                         }
-                            
+
                         foreach ($expectedSourceLine as $oneSourceLine) {
                             $this->assertContains((int)$oneSourceLine, $vuln["source_line"]);
                         }
@@ -60,17 +61,17 @@ class RunExcludeFilesTest extends TestCase
             } else {
                 $this->assertTrue(false);
             }
-            
-            $nbVulns ++;
+
+            $nbVulns++;
         }
-        
+
         $this->assertCount(count($expectedVulns), $results);
     }
 
     public function dataProvider()
     {
         $tab = include("folderexcludedtest.php");
-        
+
         return $tab;
     }
 }

@@ -10,9 +10,6 @@
 
 namespace progpilot\Objects;
 
-use PHPCfg\Op;
-use PHPCfg\Script;
-use progpilot\Objects\MyDefinition;
 use progpilot\Dataflow\Definitions;
 
 class MyFunction extends MyOp
@@ -38,7 +35,7 @@ class MyFunction extends MyOp
     private $myClass;
     private $blockId;
     private $nameInstance;
-    
+
     private $thisDef;
     private $instanceClassName;
 
@@ -296,7 +293,7 @@ class MyFunction extends MyOp
         if (is_object($op)) {
             return spl_object_hash($op);
         }
-        
+
         return null;
     }
 
@@ -312,7 +309,7 @@ class MyFunction extends MyOp
                 if (isset($opInformation["valid_when_returning"])) {
                     $nb += 1;
                 }
-            
+
                 if (isset($opInformation["condition_defs"])) {
                     $nb += count($opInformation["condition_defs"]);
                 }

@@ -10,7 +10,6 @@
 
 namespace progpilot;
 
-use progpilot\Objects\MyOp;
 use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyFunction;
 
@@ -38,11 +37,11 @@ class Utils
     {
         if ($context->isDebugMode()) {
             fwrite(STDERR, "progpilot warning: $message\n");
-            fwrite(STDERR, "file: '".$context->getCurrentMyFile()->getName()."'\n");
+            fwrite(STDERR, "file: '" . $context->getCurrentMyFile()->getName() . "'\n");
 
             // sometimes it's called outside of function context
             if (!is_null($context->getCurrentFunc())) {
-                fwrite(STDERR, "function: '".$context->getCurrentFunc()->getName()."'\n");
+                fwrite(STDERR, "function: '" . $context->getCurrentFunc()->getName() . "'\n");
             }
         }
     }
@@ -58,23 +57,29 @@ class Utils
         $prefix = "\$";
         if ($def->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
             // oop/simple31.php
-            if (!is_null($original)
+            if (
+                !is_null($original)
                 && !empty($original)
-                    && $original[0]->isType(MyDefinition::TYPE_STATIC_PROPERTY)) {
+                && $original[0]->isType(MyDefinition::TYPE_STATIC_PROPERTY)
+            ) {
                 $prefix = "";
             }
         }
 
         $printableDef = "";
         if (!is_null($original) && !empty($original)) {
-            for ($i = 0; $i < count($original); $i ++) {
+            $wasArray = false;
+            $wasStatic = false;
+            for ($i = 0; $i < count($original); $i++) {
                 if ($original[$i] instanceof MyDefinition) {
-                    $printableDef .= "$prefix".Utils::encodeCharacters($original[$i]->getName());
-                } elseif (is_numeric($original[$i])
+                    $printableDef .= "$prefix" . Utils::encodeCharacters($original[$i]->getName());
+                } elseif (
+                    is_numeric($original[$i])
                     || $original[$i] === ']'
-                        || $original[$i] === '['
-                            || $original[$i] === '->'
-                                || $original[$i] === '::') {
+                    || $original[$i] === '['
+                    || $original[$i] === '->'
+                    || $original[$i] === '::'
+                ) {
                     // numeric element
                     $printableDef .= $original[$i];
 
@@ -105,7 +110,7 @@ class Utils
                 }
             }
         } else {
-            $printableDef = "$prefix".Utils::encodeCharacters($def->getName());
+            $printableDef = "$prefix" . Utils::encodeCharacters($def->getName());
         }
 
 
@@ -116,7 +121,7 @@ class Utils
     {
         $functionName = "\$";
         if ($function->isType(MyFunction::TYPE_FUNC_METHOD)) {
-            $functionName = Utils::encodeCharacters($function->getMyClass()->getName())."->";
+            $functionName = Utils::encodeCharacters($function->getMyClass()->getName()) . "->";
         }
 
         $functionName .= Utils::encodeCharacters($function->getName());
@@ -130,9 +135,9 @@ class Utils
             foreach ($array as $index => $value) {
                 if (isset($array[$index])) {
                     if (is_string($index)) {
-                        $print .= "[\"".Utils::encodeCharacters($index)."\"]";
+                        $print .= "[\"" . Utils::encodeCharacters($index) . "\"]";
                     } else {
-                        $print .= "[".Utils::encodeCharacters($index)."]";
+                        $print .= "[" . Utils::encodeCharacters($index) . "]";
                     }
 
                     Utils::printArray($array[$index], $print);

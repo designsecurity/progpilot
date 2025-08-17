@@ -13,7 +13,6 @@ namespace progpilot;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser;
 use progpilot\Utils;
-use progpilot\Dataflow;
 use progpilot\Objects\MyFunction;
 
 class ContextInternalApi
@@ -81,7 +80,7 @@ class ContextInternalApi
         $this->tmpfunctions = [];
         $this->callStack = [];
     }
-    
+
     public function pushToCallStack($val)
     {
         array_push($this->callStack, $val);
@@ -107,27 +106,33 @@ class ContextInternalApi
         foreach ($this->callStack as $call) {
             $callFunc = $call[0];
 
-            if ($callFunc->getName() === $curFunc->getName()
+            if (
+                $callFunc->getName() === $curFunc->getName()
                 && !$callFunc->isType(MyFunction::TYPE_FUNC_METHOD)
-                    && !$curFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
+                && !$curFunc->isType(MyFunction::TYPE_FUNC_METHOD)
+            ) {
                 return true;
             }
 
-            if ($callFunc->getName() === $curFunc->getName()
+            if (
+                $callFunc->getName() === $curFunc->getName()
                 && $callFunc->isType(MyFunction::TYPE_FUNC_METHOD)
-                    && $curFunc->isType(MyFunction::TYPE_FUNC_METHOD)) {
+                && $curFunc->isType(MyFunction::TYPE_FUNC_METHOD)
+            ) {
                 $curClass = $curFunc->getMyClass();
                 $callClass = $callFunc->getMyClass();
 
                 if ($curClass->getName() === $callClass->getName()) {
                     return true;
                 }
-                
+
                 $curClassExtends = $curClass->getExtendsOf();
                 $callClassExtends = $callClass->getExtendsOf();
 
-                if (isset($curClassExtends) && isset($callClassExtends)
-                    && $curClassExtends === $callClassExtends) {
+                if (
+                    isset($curClassExtends) && isset($callClassExtends)
+                    && $curClassExtends === $callClassExtends
+                ) {
                     return true;
                 }
             }
@@ -135,17 +140,17 @@ class ContextInternalApi
 
         return false;
     }
-    
+
     public function addTmpFunctions($myfunc)
     {
         $this->tmpfunctions[] = $myfunc;
     }
-    
+
     public function clearTmpFunctions()
     {
         $this->tmpfunctions = [];
     }
-    
+
     public function getTmpFunctions()
     {
         return $this->tmpfunctions;
@@ -189,15 +194,15 @@ class ContextInternalApi
 
     public function addCallToNamespace($namespace)
     {
-        if (!isset($this->calltonamespaces["".$this->currentMyFile->getName().""])) {
-            $this->calltonamespaces["".$this->currentMyFile->getName().""] = [];
+        if (!isset($this->calltonamespaces["" . $this->currentMyFile->getName() . ""])) {
+            $this->calltonamespaces["" . $this->currentMyFile->getName() . ""] = [];
         }
 
-        if (!in_array($namespace, $this->calltonamespaces["".$this->currentMyFile->getName().""], true)) {
-            $this->calltonamespaces["".$this->currentMyFile->getName().""][] = $namespace;
+        if (!in_array($namespace, $this->calltonamespaces["" . $this->currentMyFile->getName() . ""], true)) {
+            $this->calltonamespaces["" . $this->currentMyFile->getName() . ""][] = $namespace;
         }
     }
-    
+
     public function getCallsToNamespace($file)
     {
         if (isset($this->calltonamespaces["$file"])) {
@@ -322,7 +327,7 @@ class ContextInternalApi
                 }
             }
         }
-        
+
         return $nb;
     }
 
@@ -501,7 +506,7 @@ class ContextInternalApi
                             if (isset($value["inputs"]["false_positives"])) {
                                 $this->inputs->setFalsePositives($value["inputs"]["false_positives"]);
                             }
-                            
+
                             if (isset($value["inputs"]["dev_mode"])) {
                                 $this->inputs->setDev($value["inputs"]["dev_mode"]);
                             }
@@ -511,7 +516,7 @@ class ContextInternalApi
                             if (isset($value["outputs"]["tainted_flow"])) {
                                 $this->outputs->taintedFlow($value["outputs"]["tainted_flow"]);
                             }
-                            
+
                             if (isset($value["outputs"]["sarif_output"])) {
                                 $this->outputs->sarifOutput($value["outputs"]["sarif_output"]);
                             }
@@ -553,7 +558,7 @@ class ContextInternalApi
                     }
                 } else {
                     Utils::printError(
-                        Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($this->configurationFile).")"
+                        Lang::FILE_DOESNT_EXIST . " (" . Utils::encodeCharacters($this->configurationFile) . ")"
                     );
                 }
             } catch (ParseException $e) {

@@ -10,24 +10,19 @@
 
 namespace progpilot\Transformations\Php;
 
-use PHPCfg\Block;
 use PHPCfg\Op;
 use PHPCfg\Operand;
 
-use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyOp;
-use progpilot\Code\MyInstruction;
-use progpilot\Code\Opcodes;
-use progpilot\Transformations\Php\Transform;
 
 class Common
 {
     public static function validLastKnownValue($value)
     {
-        if($value === null) {
+        if ($value === null) {
             return true;
         }
-        
+
         if (strpos($value, '\n') === false && strpos($value, '\r') === false && strlen($value) < 200) {
             return true;
         }
@@ -37,9 +32,11 @@ class Common
 
     public static function isChainedKnownType($op)
     {
-        if ($op instanceof Op\Expr\PropertyFetch
+        if (
+            $op instanceof Op\Expr\PropertyFetch
             || $op instanceof Op\Expr\StaticPropertyFetch
-                || $op instanceof Op\Expr\ArrayDimFetch) {
+            || $op instanceof Op\Expr\ArrayDimFetch
+        ) {
             return true;
         }
 
@@ -53,9 +50,11 @@ class Common
         // this->foo
 
         if (isset($op->var->ops[0])) {
-            if (isset($op->var->ops[0]->var->ops[0])
+            if (
+                isset($op->var->ops[0]->var->ops[0])
                 && Common::isChainedKnownType($op->var->ops[0]->var->ops[0])
-                 && $op->var->ops[0]->var->ops[0] !== $op->var->ops[0]) {
+                && $op->var->ops[0]->var->ops[0] !== $op->var->ops[0]
+            ) {
                 return Common::getTypeDef($op->var->ops[0]);
             } else {
                 if ($op->var->ops[0] instanceof Op\Expr\PropertyFetch) {
@@ -79,18 +78,20 @@ class Common
                 }
             }
         }
- 
+
         // then for the right
         // foo = array()
         // foo = define("FOO")
         if (isset($op) && isset($op->name)) {
-            if ($op instanceof Op\Expr\FuncCall
+            if (
+                $op instanceof Op\Expr\FuncCall
                 && $op->name instanceof Operand\Literal
-                    && $op->name->value === "define") {
+                && $op->name->value === "define"
+            ) {
                 return MyOp::TYPE_CONST;
             }
         }
-        
+
         if (isset($op->expr->ops[0])) {
             if ($op->expr->ops[0] instanceof Op\Expr\Array_) {
                 return MyOp::TYPE_ARRAY_EXPR;
@@ -103,9 +104,11 @@ class Common
     public static function getNameDefinition($ops, $lookingForProperty = false)
     {
         //  $this->property = property
-        if ($lookingForProperty
+        if (
+            $lookingForProperty
             && ($ops instanceof Op\Expr\PropertyFetch || $ops instanceof Op\Expr\StaticPropertyFetch)
-                && isset($ops->name->value)) {
+            && isset($ops->name->value)
+        ) {
             return $ops->name->value;
         }
 
@@ -151,7 +154,7 @@ class Common
                 }
             }
         }
-        
+
         if ($ops instanceof Op\Iterator\Value) {
             return Common::getNameDefinition($ops->var, $lookingForProperty);
         }
@@ -175,7 +178,7 @@ class Common
         if (isset($ops->name->value)) {
             return $ops->name->value;
         }
-        
+
         // arrayexpr
         if (isset($ops->value)) {
             return $ops->value;

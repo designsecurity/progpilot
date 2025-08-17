@@ -20,8 +20,10 @@ class DimFetch
 {
     public static function dimFetch($context, $op)
     {
-        if (isset($op)
-            && $op instanceof Op\Expr\ArrayDimFetch) {
+        if (
+            isset($op)
+            && $op instanceof Op\Expr\ArrayDimFetch
+        ) {
             $instDefChained = new MyInstruction(Opcodes::ARRAYDIM_FETCH);
             if (isset($op->dim->value)) {
                 $instDefChained->addProperty(MyInstruction::ARRAY_DIM, $op->dim->value);

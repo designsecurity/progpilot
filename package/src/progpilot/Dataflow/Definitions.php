@@ -10,14 +10,6 @@
 
 namespace progpilot\Dataflow;
 
-use progpilot\Utils;
-use progpilot\Lang;
-
-use PHPCfg\Block;
-use progpilot\Objects\MyOp;
-use progpilot\Objects\MyDefinition;
-use progpilot\Transformations\Php\BuildArrays;
-
 class Definitions
 {
     private $in;
@@ -122,7 +114,7 @@ class Definitions
     public function addDef($name, $def)
     {
         $continue = true;
-        
+
         if (isset($this->defs[$name])) {
             $continue = false;
             if (!in_array($def, $this->defs[$name], true)) {
@@ -131,7 +123,7 @@ class Definitions
         }
 
         if ($continue) {
-            $this->nbDefs ++;
+            $this->nbDefs++;
             $this->defs[$name][] = $def;
             $this->originalDefs[$def->getId()] = clone $def;
         }

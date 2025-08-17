@@ -10,14 +10,8 @@
 
 namespace progpilot\Helpers;
 
-use progpilot\Code\MyCode;
-use progpilot\Code\Opcodes;
-use progpilot\Code\MyInstruction;
-use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyDefState;
-use progpilot\Analysis\ResolveDefs;
-use progpilot\Analysis\TaintAnalysis;
 use progpilot\Analysis\AssertionAnalysis;
 
 class State
@@ -34,7 +28,7 @@ class State
                 if ($state->isType(MyDefinition::TYPE_ARRAY)) {
                     State::updateBlocksOfArrayElements($context, $state, $defStack);
                 }
-            
+
                 if ($state->isType(MyDefinition::TYPE_INSTANCE)) {
                     State::updateBlocksOfProperties($context, $state, $defStack);
                 }
@@ -51,7 +45,7 @@ class State
                 State::updateBlocksOfDef($context, $def, $defStack);
             }
         }
-        
+
         foreach ($context->getCurrentFunc()->getBlocks() as $myBlock) {
             $myBlock->setNeedUpdateOfState(false);
         }
@@ -103,7 +97,7 @@ class State
 
         $blockParents = $myBlock->getVirtualParents();
         $existingState = $property->getState($myBlock->getId());
-                     
+
         // the state has been already computer, we don't need to update that
         // unless there is a new parent that have been added
         if (is_null($existingState) || $myBlock->doNeedUpdateOfState()) {
@@ -116,7 +110,7 @@ class State
                     }
                 }
             }
-                
+
             if (count($states) === 1) {
                 $newstate = $states[0];
                 $property->assignStateToBlockId($newstate->getId(), $myBlock->getId());
@@ -153,11 +147,13 @@ class State
         $oneStateNotSanitizer = false;
 
         foreach ($defs as $def) {
-            if ($def->isType(MyDefinition::TYPE_ARRAY_ELEMENT)
+            if (
+                $def->isType(MyDefinition::TYPE_ARRAY_ELEMENT)
                 || $def->isType(MyDefinition::TYPE_PROPERTY)
-                || $def->isType(MyDefinition::TYPE_REFERENCE)) {
+                || $def->isType(MyDefinition::TYPE_REFERENCE)
+            ) {
                 $state = $def->getState($blockId);
-                if (is_null($state)) { 
+                if (is_null($state)) {
                     $state = $def->getCurrentState();
                 }
             } else {
@@ -251,7 +247,7 @@ class State
 
             if ($state->isSanitized()) {
                 foreach ($state->getTypeSanitized() as $typeSanitized) {
-                    $sanitizedTypes["".$typeSanitized.""][] = true;
+                    $sanitizedTypes["" . $typeSanitized . ""][] = true;
                 }
             }
 

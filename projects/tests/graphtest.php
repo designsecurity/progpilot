@@ -11,16 +11,16 @@ $analyzer->run($context);
 
 $graphCfgJson = $context->outputs->getCfg();
 $graphCallgraphJson = $context->outputs->getCallGraph();
-    
+
 echo "\ndigraph callgraph {\nordering=out;\n";
 foreach ($graphCallgraphJson["nodes"] as $node) {
-    echo "node_".$node["id"]." [label=\"".$node["name"]."\"];\n";
+    echo "node_" . $node["id"] . " [label=\"" . $node["name"] . "\"];\n";
 }
 
 foreach ($graphCallgraphJson["links"] as $link) {
-    echo "node_".$link["source"]."->"."node_".$link["target"]."\n";
+    echo "node_" . $link["source"] . "->" . "node_" . $link["target"] . "\n";
 }
-    
+
 echo "\n\n}\n\n";
     
 /*

@@ -10,8 +10,6 @@
 
 namespace progpilot\Dataflow;
 
-use progpilot\Objects\MyOp;
-
 class Objects
 {
     private $objects;

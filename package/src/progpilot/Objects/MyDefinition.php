@@ -10,12 +10,7 @@
 
 namespace progpilot\Objects;
 
-use PHPCfg\Op;
 use progpilot\Objects\MyOp;
-use progpilot\Utils;
-use progpilot\Transformations\Php\Common;
-
-use progpilot\Helpers\State as HelpersState;
 
 class MyDefinition extends MyOp
 {
@@ -39,7 +34,7 @@ class MyDefinition extends MyOp
 
     const SECURITY_HIGH = 1;
     const SECURITY_LOW = 2;
-    
+
     private $blockId;
     private $className;
     private $returnedFromValidator;
@@ -84,18 +79,18 @@ class MyDefinition extends MyOp
     public function printStdout($context = null)
     {
         echo "_____________________ start def _____________________\n";
-        echo "def id ".$this->varId." :: \
-        name = ".htmlentities($this->getName(), ENT_QUOTES, 'UTF-8')." :: \
-        line = ".$this->getLine()." :: column = ".$this->getColumn()." :: \
-        ref = ".$this->isType(MyDefinition::TYPE_REFERENCE)." :: \
-        is_property = ".$this->isType(MyDefinition::TYPE_PROPERTY)." :: \
-        is_static_property = ".$this->isType(MyDefinition::TYPE_STATIC_PROPERTY)." :: \
-        is_type_array_element = ".$this->isType(MyDefinition::TYPE_ARRAY_ELEMENT)." :: \
-        isArray = ".$this->isType(MyDefinition::TYPE_ARRAY)." :: \
-        is_const = ".$this->isType(MyDefinition::TYPE_CONSTANTE)." :: \
-        is_iterator = ".$this->isType(MyDefinition::TYPE_ITERATOR)." :: \
-        is_return_def = ".$this->isReturnDef." :: \
-        blockid = ".$this->getBlockId()."\n";
+        echo "def id " . $this->varId . " :: \
+        name = " . htmlentities($this->getName(), ENT_QUOTES, 'UTF-8') . " :: \
+        line = " . $this->getLine() . " :: column = " . $this->getColumn() . " :: \
+        ref = " . $this->isType(MyDefinition::TYPE_REFERENCE) . " :: \
+        is_property = " . $this->isType(MyDefinition::TYPE_PROPERTY) . " :: \
+        is_static_property = " . $this->isType(MyDefinition::TYPE_STATIC_PROPERTY) . " :: \
+        is_type_array_element = " . $this->isType(MyDefinition::TYPE_ARRAY_ELEMENT) . " :: \
+        isArray = " . $this->isType(MyDefinition::TYPE_ARRAY) . " :: \
+        is_const = " . $this->isType(MyDefinition::TYPE_CONSTANTE) . " :: \
+        is_iterator = " . $this->isType(MyDefinition::TYPE_ITERATOR) . " :: \
+        is_return_def = " . $this->isReturnDef . " :: \
+        blockid = " . $this->getBlockId() . "\n";
 
         if (!is_null($this->getParamToArg())) {
             echo "it's a param (to arg possibility) start ===\n";
@@ -139,13 +134,17 @@ class MyDefinition extends MyOp
 
     public function assignStateToBlockId($stateId, $blockId)
     {
-        if (isset($this->blocksIdsStates[$blockId])
-            && $blockId !== $this->getBlockId()) {
+        if (
+            isset($this->blocksIdsStates[$blockId])
+            && $blockId !== $this->getBlockId()
+        ) {
             $toRemove = true;
             $overWrittentStateId = $this->blocksIdsStates[$blockId];
             foreach ($this->blocksIdsStates as $keyBlockId => $valueStateId) {
-                if ($valueStateId === $overWrittentStateId
-                    && $keyBlockId !== $blockId) {
+                if (
+                    $valueStateId === $overWrittentStateId
+                    && $keyBlockId !== $blockId
+                ) {
                     $toRemove = false;
                     break;
                 }
@@ -205,7 +204,7 @@ class MyDefinition extends MyOp
 
         return null;
     }
-    
+
     public function setArgToParam($def)
     {
         $this->argToParam = $def;

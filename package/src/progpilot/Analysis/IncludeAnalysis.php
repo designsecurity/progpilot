@@ -11,23 +11,10 @@
 namespace progpilot\Analysis;
 
 use progpilot\Objects\MyFile;
-use progpilot\Objects\MyOp;
-use progpilot\Objects\ArrayStatic;
-use progpilot\Objects\MyDefinition;
-use progpilot\Dataflow\Definitions;
-use progpilot\Objects\MyClass;
-use progpilot\Objects\MyFunction;
-
-use progpilot\Code\MyCode;
-use progpilot\Code\Opcodes;
 use progpilot\Code\MyInstruction;
 
 use progpilot\Helpers\Analysis as HelpersAnalysis;
 use progpilot\Helpers\State as HelpersState;
-
-use progpilot\Utils;
-
-use function DeepCopy\deep_copy;
 
 class IncludeAnalysis
 {
@@ -62,10 +49,12 @@ class IncludeAnalysis
                     foreach ($myDefArg->getCurrentState()->getLastKnownValues() as $lastKnownValue) {
                         $realFile = false;
                         // else it's maybe a relative path
-                        if (strlen($lastKnownValue) > 0
+                        if (
+                            strlen($lastKnownValue) > 0
                             && (substr($lastKnownValue, 0, 1) !== DIRECTORY_SEPARATOR
-                                || preg_match("/^[a-bA-B]*:/", $lastKnownValue) === 0)) {
-                            $file = $context->getPath().DIRECTORY_SEPARATOR.$lastKnownValue;
+                                || preg_match("/^[a-bA-B]*:/", $lastKnownValue) === 0)
+                        ) {
+                            $file = $context->getPath() . DIRECTORY_SEPARATOR . $lastKnownValue;
                             $realFile = realpath($file);
                         }
 
@@ -86,15 +75,17 @@ class IncludeAnalysis
 
                             if (!is_null($myInclude)) {
                                 $manuallyIncludedFile = $myInclude->getValue();
-                                if (strlen($manuallyIncludedFile) > 0
+                                if (
+                                    strlen($manuallyIncludedFile) > 0
                                     && (substr($manuallyIncludedFile, 0, 1) !== DIRECTORY_SEPARATOR
-                                        || preg_match("/^[a-bA-B]*:/", $manuallyIncludedFile) === 0)) {
+                                        || preg_match("/^[a-bA-B]*:/", $manuallyIncludedFile) === 0)
+                                ) {
                                     $manuallyIncludedFile =
-                                        $context->getPath().DIRECTORY_SEPARATOR.$manuallyIncludedFile;
+                                        $context->getPath() . DIRECTORY_SEPARATOR . $manuallyIncludedFile;
                                 }
 
                                 $nameIncludedFile = realpath($manuallyIncludedFile);
-                        
+
                                 if ($nameIncludedFile) {
                                     $continueInclude = true;
                                 }
@@ -103,17 +94,19 @@ class IncludeAnalysis
                             $continueInclude = true;
                             $nameIncludedFile = $realFile;
                         }
-                        
+
                         if ($continueInclude) {
                             $atLeastOneIncludeResolved = true;
 
                             $arrayIncludes = &$context->getArrayIncludes();
                             $arrayRequires = &$context->getArrayRequires();
-        
-                            if (!$context->inputs->isExcludedFile($nameIncludedFile)
+
+                            if (
+                                !$context->inputs->isExcludedFile($nameIncludedFile)
                                 && ((!in_array($nameIncludedFile, $arrayIncludes, true) && $typeInclude === 2)
-                                || (!in_array($nameIncludedFile, $arrayRequires, true) && $typeInclude === 4)
-                                    || ($typeInclude === 1 || $typeInclude === 3))) {
+                                    || (!in_array($nameIncludedFile, $arrayRequires, true) && $typeInclude === 4)
+                                    || ($typeInclude === 1 || $typeInclude === 3))
+                            ) {
                                 $myFileIncluded = new MyFile(
                                     $nameIncludedFile,
                                     dirname($nameIncludedFile),
@@ -170,13 +163,15 @@ class IncludeAnalysis
                                     if (!is_null($mainInclude)) {
                                         foreach ($mainInclude->getLastBlockIds() as $lastBlockId) {
                                             $lastMyBlockConstuctor =
-                                            $mainInclude->getBlockById($lastBlockId);
-                                            if (!is_null($context->getCurrentBlock())
-                                                && !is_null($lastMyBlockConstuctor)) {
+                                                $mainInclude->getBlockById($lastBlockId);
+                                            if (
+                                                !is_null($context->getCurrentBlock())
+                                                && !is_null($lastMyBlockConstuctor)
+                                            ) {
                                                 $saveCurrentBlock->addVirtualParent($lastMyBlockConstuctor);
                                             }
                                         }
-                                    
+
                                         // we change the source of defs nevermind the file is really analyzed or not
                                         foreach ($mainInclude->getDefs()->getDefs() as $defOfMainArray) {
                                             foreach ($defOfMainArray as $defOfMain) {
@@ -189,9 +184,11 @@ class IncludeAnalysis
                                             $currentFileDefs = $defs->getOutMinusKill($myFuncCall->getBlockId());
                                             if (!empty($currentFileDefs)) {
                                                 foreach ($currentFileDefs as $defToInclude) {
-                                                    if ($defToInclude->getLine() < $myFuncCall->getLine()
+                                                    if (
+                                                        $defToInclude->getLine() < $myFuncCall->getLine()
                                                         || ($defToInclude->getLine() === $myFuncCall->getLine()
-                                                            && $defToInclude->getColumn() < $myFuncCall->getColumn())) {
+                                                            && $defToInclude->getColumn() < $myFuncCall->getColumn())
+                                                    ) {
                                                         $saveMyFile[$defToInclude->getId()]
                                                             = $defToInclude->getSourceMyFile();
                                                         $defsIncluded[] = $defToInclude;
@@ -214,7 +211,7 @@ class IncludeAnalysis
                                                 $mainInclude->getDefs()->computeKill($mainInclude->getFirstBlockId());
                                                 $mainInclude->getDefs()->reachingDefs($mainInclude->getBlocks());
                                             }
-                            
+
                                             // we analyze the main of the function again
                                             // we can have tainted def included and vice-versa
                                             $mainInclude->setIsVisited(false);
@@ -224,7 +221,7 @@ class IncludeAnalysis
                                             $context->resetCallStack();
 
                                             $analyzerInclude->runFunctionAnalysis($context, $mainInclude, false);
-                                        
+
                                             $context->setCurrentOp($saveCurrentOp);
                                             $context->setCurrentBlock($saveCurrentBlock);
                                             $context->setCurrentLine($saveCurrentLine);

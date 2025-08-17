@@ -14,6 +14,8 @@ class DepthFirstSearch
 {
     private $nodes;
 
+    private DFSVisitor $visitor;
+
     public function __construct($nodes, $visitor)
     {
         $this->nodes = $nodes;

@@ -10,17 +10,7 @@
 
 namespace progpilot\Analysis;
 
-use progpilot\Objects\MyClass;
-use progpilot\Objects\MyOp;
-use progpilot\Objects\MyCode;
-use progpilot\Objects\ArrayStatic;
 use progpilot\Objects\MyDefinition;
-use progpilot\Objects\MyInstance;
-use progpilot\Objects\MyAssertion;
-use progpilot\Objects\MyFunction;
-
-use progpilot\Dataflow\Definitions;
-use progpilot\Code\Opcodes;
 use progpilot\Code\MyInstruction;
 use progpilot\Inputs\MySource;
 use progpilot\Helpers\Analysis as HelpersAnalysis;
@@ -106,13 +96,17 @@ class TaintAnalysis
                             $validNotBoolean = $returnDef->getValidNotBoolean();
 
                             foreach ($returnDef->getCurrentState()->getLastKnownValues() as $lastKnownValue) {
-                                if ($lastKnownValue === "true"
+                                if (
+                                    $lastKnownValue === "true"
                                     || $lastKnownValue === "TRUE"
-                                        || (is_numeric($lastKnownValue) && $lastKnownValue > 0)) {
+                                    || (is_numeric($lastKnownValue) && $lastKnownValue > 0)
+                                ) {
                                     $returnTrue = true;
-                                } elseif ($lastKnownValue === "false"
+                                } elseif (
+                                    $lastKnownValue === "false"
                                     || $lastKnownValue === "FALSE"
-                                        || (is_numeric($lastKnownValue) && $lastKnownValue <= 0)) {
+                                    || (is_numeric($lastKnownValue) && $lastKnownValue <= 0)
+                                ) {
                                     $returnFalse = true;
                                 } else {
                                     $ambiguous = true;
@@ -135,7 +129,7 @@ class TaintAnalysis
                 }
             }
 
-            $nbParams ++;
+            $nbParams++;
         }
 
         if (!empty($defsValid)) {
@@ -175,7 +169,7 @@ class TaintAnalysis
         $conditionsRespectedFinal = true;
 
         $mySanitizer = $context->inputs->getSanitizerByName($myFuncCall, $myClass);
-        
+
         if (!is_null($mySanitizer)) {
             $preventFinal = $mySanitizer->getPrevent();
         }
@@ -184,7 +178,7 @@ class TaintAnalysis
             if (!$instruction->isPropertyExist("argdef$nbParams")) {
                 break;
             }
-            
+
             $defArg = $instruction->getProperty("argdef$nbParams");
 
             if ($defArg->getCurrentState()->isTainted()) {
@@ -214,7 +208,8 @@ class TaintAnalysis
                         foreach ($values as $value) {
                             foreach ($defArg->getCurrentState()->getLastKnownValues() as $lastKnownValue) {
                                 if (($value->value === $lastKnownValue && $conditions === "equals")
-                                    || ($value->value !== $lastKnownValue && $conditions === "notequals")) {
+                                    || ($value->value !== $lastKnownValue && $conditions === "notequals")
+                                ) {
                                     $conditionsRespected = true;
                                     if (isset($value->prevent)) {
                                         $preventFinal = array_merge($preventFinal, $value->prevent);
@@ -238,7 +233,7 @@ class TaintAnalysis
                 }
             }
 
-            $nbParams ++;
+            $nbParams++;
         }
 
         $funcReturnDefs = (!is_null($myFunc) && !empty($myFunc->getReturnDefs())) ? true : false;
@@ -249,8 +244,10 @@ class TaintAnalysis
         // AND no defs are returned/defined
         // AND the func is not a sanitizer (with all conditions respected)
         // AND the func is not a source (will return already a def)
-        if (!$funcReturnDefs
-            && is_null($mySource)) {
+        if (
+            !$funcReturnDefs
+            && is_null($mySource)
+        ) {
             $virtualReturnDef->getCurrentState()->setTainted($paramsTainted);
 
             foreach ($paramsTaintedDefs as $paramsTaintedDef) {
@@ -299,7 +296,7 @@ class TaintAnalysis
 
                     if ($mySource->isParameter($nbParams + 1)) {
                         $defFrom = $instruction->getProperty("argoriginaldef$nbParams");
-                        
+
                         if (!is_null($defFrom)) {
                             $arrayIndex = $mySource->getconditionsParameter($nbParams + 1, MySource::CONDITION_ARRAY);
                             if (!is_null($arrayIndex)) {
@@ -315,12 +312,12 @@ class TaintAnalysis
                         }
                     }
 
-                    $nbParams ++;
+                    $nbParams++;
                 }
             }
 
             $myDef = $virtualReturnDef;
-            
+
             // sanitizers are deleted
             $myDef->getCurrentState()->setSanitized(false);
             $myDef->getCurrentState()->setTypeSanitized([]);
@@ -332,7 +329,7 @@ class TaintAnalysis
                 $myDef->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
                 $myDef->getCurrentState()->addType(MyDefinition::ALL_PROPERTIES_TAINTED);
 
-                $myDef->setClassName($myFuncCall->getName()."_built-in-class");
+                $myDef->setClassName($myFuncCall->getName() . "_built-in-class");
                 HelpersAnalysis::createObject($context, $myDef);
             } elseif ($mySource->getIsArrayOfArrays()) {
                 $myDef->getCurrentState()->addType(MyDefinition::TYPE_ARRAY_ARRAY);
@@ -342,7 +339,7 @@ class TaintAnalysis
                 $myDef->getCurrentState()->addType(MyDefinition::TYPE_INSTANCE);
                 $myDef->getCurrentState()->addType(MyDefinition::ALL_PROPERTIES_TAINTED);
 
-                $myDef->setClassName($myFuncCall->getName()."_built-in-class");
+                $myDef->setClassName($myFuncCall->getName() . "_built-in-class");
                 HelpersAnalysis::createObject($context, $myDef);
             } elseif ($mySource->getIsArray()) {
                 $myDef->getCurrentState()->addType(MyDefinition::TYPE_ARRAY);

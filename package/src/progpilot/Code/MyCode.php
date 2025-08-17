@@ -10,11 +10,6 @@
 
 namespace progpilot\Code;
 
-use progpilot\Objects\MyOp;
-use progpilot\Objects\MyBlock;
-use progpilot\Objects\MyDefinition;
-use progpilot\Objects\MyFunction;
-
 class MyCode
 {
     private $code;
@@ -82,21 +77,21 @@ class MyCode
 
                         $myFunc = $instruction->getProperty(MyInstruction::MYFUNC);
                         $currentFunc = $myFunc;
-                        echo "name = ".htmlentities($myFunc->getName(), ENT_QUOTES, 'UTF-8')."\n";
+                        echo "name = " . htmlentities($myFunc->getName(), ENT_QUOTES, 'UTF-8') . "\n";
                         break;
 
                     case Opcodes::CLASSE:
                         echo "Opcodes::CLASSE\n";
 
                         $myClass = $instruction->getProperty(MyInstruction::MYCLASS);
-                        echo "name = ".htmlentities($myClass->getName(), ENT_QUOTES, 'UTF-8')."\n";
+                        echo "name = " . htmlentities($myClass->getName(), ENT_QUOTES, 'UTF-8') . "\n";
                         break;
 
                     case Opcodes::ENTER_BLOCK:
                         echo "Opcodes::ENTER_BLOCK\n";
 
                         $myBlock = $instruction->getProperty(MyInstruction::MYBLOCK);
-                        echo "id = ".$myBlock->getId()."\n";
+                        echo "id = " . $myBlock->getId() . "\n";
 
                         break;
 
@@ -104,7 +99,7 @@ class MyCode
                         echo "Opcodes::LEAVE_BLOCK\n";
 
                         $myBlock = $instruction->getProperty(MyInstruction::MYBLOCK);
-                        echo "id = ".$myBlock->getId()."\n";
+                        echo "id = " . $myBlock->getId() . "\n";
 
                         break;
 
@@ -112,7 +107,7 @@ class MyCode
                         echo "Opcodes::LEAVE_FUNCTION\n";
 
                         break;
-                    
+
 
                     case Opcodes::FUNC_CALL:
                         echo "Opcodes::FUNC_CALL\n";
@@ -178,7 +173,7 @@ class MyCode
                             'UTF-8'
                         );
                         echo "property name = $propertyName\n";
-    
+
                         break;
 
                     case Opcodes::STATIC_PROPERTY_FETCH:
@@ -189,7 +184,7 @@ class MyCode
                             'UTF-8'
                         );
                         echo "property name = $propertyName\n";
-        
+
                         break;
 
                     case Opcodes::ARRAYDIM_FETCH:
@@ -200,7 +195,7 @@ class MyCode
                         echo "exprid = '$exprid'\n";
                         $arrayDim = $instruction->getProperty(MyInstruction::ARRAY_DIM);
                         echo "array dim = $arrayDim\n";
-        
+
                         break;
 
                     case Opcodes::VARIABLE_FETCH:
@@ -217,27 +212,27 @@ class MyCode
                         echo "Opcodes::VARIABLE\n";
                         $variableName = $instruction->getProperty(MyInstruction::VARIABLE_NAME);
                         echo "variable name = $variableName\n";
-        
+
                         break;
 
                     case Opcodes::ASSIGN:
                         echo "Opcodes::ASSIGN\n";
-            
+
                         break;
 
                     case Opcodes::ARGUMENT:
                         echo "Opcodes::ARGUMENT\n";
-                
+
                         break;
 
                     case Opcodes::CAST:
                         echo "Opcodes::CAST\n";
-                    
+
                         break;
 
                     case Opcodes::CONST_FETCH:
                         echo "Opcodes::CONST_FETCH\n";
-                        
+
                         break;
 
                     case Opcodes::LITERAL_FETCH:
@@ -247,22 +242,22 @@ class MyCode
                             $literal = $def->getCurrentState()->getLastKnownValues()[0];
                             echo "literal = $literal\n";
                         }
-                            
+
                         break;
 
                     case Opcodes::ITERATOR:
                         echo "Opcodes::ITERATOR\n";
-                                 
+
                         break;
 
                     case Opcodes::ARRAY_EXPR:
                         echo "Opcodes::ARRAY_EXPR\n";
-                                     
+
                         break;
 
                     case Opcodes::BINARYOP:
                         echo "Opcodes::BINARYOP\n";
-                                         
+
                         break;
                 }
 

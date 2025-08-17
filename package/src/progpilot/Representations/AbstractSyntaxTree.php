@@ -2,13 +2,7 @@
 
 namespace progpilot\Representations;
 
-use PhpParser\Error;
-use PhpParser\ErrorHandler;
 use PhpParser\Node;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitorAbstract;
 
 class AbstractSyntaxTree extends NodeVisitorAbstract
@@ -42,14 +36,12 @@ class AbstractSyntaxTree extends NodeVisitorAbstract
         $this->edges[] = [$caller, $callee];
     }
 
-    public function beforeTraverse(array $nodes)
-    {
-    }
+    public function beforeTraverse(array $nodes) {}
 
     public function enterNode(Node $node)
     {
         foreach ($node->getSubNodeNames() as $name) {
-            $subNode = & $node->$name;
+            $subNode = &$node->$name;
 
             if (is_object($subNode)) {
                 $this->addEdge($node, $subNode);
@@ -57,11 +49,7 @@ class AbstractSyntaxTree extends NodeVisitorAbstract
         }
     }
 
-    public function leaveNode(Node $node)
-    {
-    }
+    public function leaveNode(Node $node) {}
 
-    public function afterTraverse(array $nodes)
-    {
-    }
+    public function afterTraverse(array $nodes) {}
 }

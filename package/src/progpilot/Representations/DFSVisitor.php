@@ -33,16 +33,19 @@ class DFSVisitor
 
         foreach ($this->rules as $rule) {
             foreach ($rule->getSequence() as $sequence) {
-                if ($node->getName() === $sequence->getName()
+                if (
+                    $node->getName() === $sequence->getName()
                     && ((!$sequence->isInstance() && is_null($node->getMyClass()))
                         || (!is_null($node->getMyClass()) && $sequence->isInstance()
-                            && $sequence->getInstanceOfName() === $node->getMyClass()->getName()))) {
+                            && $sequence->getInstanceOfName() === $node->getMyClass()->getName()))
+                ) {
                     $mod = count($rule->getSequence());
                     $rule->setCurrentOrderNumber($rule->getCurrentOrderNumber() + 1);
 
                     if (($rule->getCurrentOrderNumber() % $mod)
-                                !== ($sequence->getOrderNumberExpected() % $mod)) {
-                        $hashIdVuln = hash("sha256", $node->getLine()."-".$rule->getAction()."-".$node->getFile());
+                        !== ($sequence->getOrderNumberExpected() % $mod)
+                    ) {
+                        $hashIdVuln = hash("sha256", $node->getLine() . "-" . $rule->getAction() . "-" . $node->getFile());
 
                         if (is_null($this->context->inputs->getFalsePositiveById($hashIdVuln))) {
                             $temp["vuln_rule"] = \progpilot\Utils::encodeCharacters($rule->getAction());
@@ -54,7 +57,7 @@ class DFSVisitor
                             $temp["vuln_cwe"] = \progpilot\Utils::encodeCharacters($rule->getCwe());
                             $temp["vuln_id"] = $hashIdVuln;
                             $temp["vuln_type"] = "custom";
-                            
+
                             $this->context->outputs->addResult($temp);
                         }
                     }

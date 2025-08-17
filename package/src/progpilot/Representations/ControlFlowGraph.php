@@ -10,8 +10,6 @@
 
 namespace progpilot\Representations;
 
-use progpilot\Code\Opcodes;
-
 class ControlFlowGraph
 {
     private $nodes;
@@ -37,7 +35,7 @@ class ControlFlowGraph
     public function addTextOfMyBlock($id, $text)
     {
         if (isset($this->myBlockText["$id"])) {
-            $this->myBlockText["$id"] = $this->myBlockText["$id"]."$text";
+            $this->myBlockText["$id"] = $this->myBlockText["$id"] . "$text";
         } else {
             $this->myBlockText["$id"] = "$text";
         }

@@ -21,7 +21,7 @@ class MyFile extends MyOp
     {
         parent::__construct($fullPathFileName, $fakeLine, $fakeColumn);
         $this->baseDir = $baseDir;
-        $this->fileName = substr($fullPathFileName, strlen($baseDir) + 1); 
+        $this->fileName = substr($fullPathFileName, strlen($baseDir) + 1);
     }
 
     public function setIncludedToMyfile($myFileTo)
@@ -46,15 +46,15 @@ class MyFile extends MyOp
 
     public function printStdout($context = null)
     {
-        echo "file ".$this->getName()."\n";
+        echo "file " . $this->getName() . "\n";
         $includeFile = $this->getIncludedFromMyfile();
         while (!is_null($includeFile)) {
-            echo "included from ".$includeFile->getName()."\n";
+            echo "included from " . $includeFile->getName() . "\n";
             $includeFile = $includeFile->getIncludedFromMyfile();
         }
         $includeFile = $this->getIncludedToMyfile();
         while (!is_null($includeFile)) {
-            echo "included to ".$includeFile->getName()."\n";
+            echo "included to " . $includeFile->getName() . "\n";
             $includeFile = $includeFile->getIncludedToMyfile();
         }
     }

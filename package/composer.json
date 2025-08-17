@@ -10,7 +10,7 @@
     ],
     "require": {
         "php": ">=7.4",
-        "ircmaxell/php-cfg": "^0.7.0",
+        "ircmaxell/php-cfg": "^0.8.0",
         "symfony/yaml": "^5.4.17",
         "symfony/console": "^5.4.17",
         "bartlett/sarif-php-sdk": "^2.0"

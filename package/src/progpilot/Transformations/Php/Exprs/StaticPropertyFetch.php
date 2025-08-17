@@ -21,8 +21,10 @@ class StaticPropertyFetch
 {
     public static function staticPropertyFetch($context, $op)
     {
-        if (isset($op)
-            && $op instanceof Op\Expr\StaticPropertyFetch) {
+        if (
+            isset($op)
+            && $op instanceof Op\Expr\StaticPropertyFetch
+        ) {
             $instDefChained = new MyInstruction(Opcodes::STATIC_PROPERTY_FETCH);
             $instDefChained->addProperty(MyInstruction::PROPERTY_NAME, $op->name->value);
 
@@ -36,7 +38,7 @@ class StaticPropertyFetch
                     $op->class->value
                 );
                 $originalDef->addType(MyDefinition::TYPE_STATIC_PROPERTY);
-            
+
                 $instDefChained->addProperty(MyInstruction::ORIGINAL_DEF, $originalDef);
             }
 

@@ -10,16 +10,8 @@
 
 namespace progpilot\Helpers;
 
-use progpilot\Code\MyCode;
-use progpilot\Code\Opcodes;
-use progpilot\Code\MyInstruction;
-use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
-use progpilot\Objects\MyDefState;
 use progpilot\Objects\MyClass;
-use progpilot\Analysis\ResolveDefs;
-use progpilot\Analysis\TaintAnalysis;
-use progpilot\Analysis\AssertionAnalysis;
 
 class Analysis
 {
@@ -27,7 +19,7 @@ class Analysis
     {
         foreach ($context->getObjects()->getObjects() as $id => $objectClass) {
             $params = array($context, $id, $objectClass, $myClass);
-            call_user_func_array(__NAMESPACE__ ."\\$func", $params);
+            call_user_func_array(__NAMESPACE__ . "\\$func", $params);
         }
     }
 
@@ -38,7 +30,7 @@ class Analysis
                 foreach ($functionBlock->getDefs()->getDefs() as $defsBlocks) {
                     foreach ($defsBlocks as $defBlock) {
                         $params = array($context, $defBlock, $myClass);
-                        call_user_func_array(__NAMESPACE__ ."\\$func", $params);
+                        call_user_func_array(__NAMESPACE__ . "\\$func", $params);
                     }
                 }
             }
@@ -53,7 +45,7 @@ class Analysis
                 foreach ($defnames as $def) {
                     if (!in_array($def, $returnDefs, true)) {
                         $params = array($def, $myFunc->getDefs());
-                        call_user_func_array(__NAMESPACE__ ."\\$func", $params);
+                        call_user_func_array(__NAMESPACE__ . "\\$func", $params);
                     }
                 }
             }
@@ -68,10 +60,10 @@ class Analysis
         foreach ($returnDefs as $returnDef) {
             if (isset($initialReturnDefs[$i])) {
                 $params = array($returnDef, $initialReturnDefs[$i]);
-                call_user_func_array(__NAMESPACE__ ."\\$func", $params);
+                call_user_func_array(__NAMESPACE__ . "\\$func", $params);
             }
 
-            $i ++;
+            $i++;
         }
     }
 
@@ -81,7 +73,7 @@ class Analysis
             if (is_array($defnames)) {
                 foreach ($defnames as $def) {
                     $params = array($def, $myFunc->getDefs());
-                    call_user_func_array(__NAMESPACE__ ."\\$func", $params);
+                    call_user_func_array(__NAMESPACE__ . "\\$func", $params);
                 }
             }
         }
@@ -95,7 +87,7 @@ class Analysis
             if ($instruction->isPropertyExist("argdef$i")) { // myfunccall
                 $defArg = $instruction->getProperty("argdef$i");
                 $params = array($myfunc, $i, $defArg);
-                call_user_func_array(__NAMESPACE__ ."\\$func", $params);
+                call_user_func_array(__NAMESPACE__ . "\\$func", $params);
             }
         }
     }
@@ -109,7 +101,8 @@ class Analysis
 
         if (($nbExecutions >= 1 && $nbExecutions < 5 && $lastExecutionTime >= $threshold1)
             || ($nbExecutions >= 4 && $nbExecutions < 10 && $lastExecutionTime >= $threshold2)
-                || $nbExecutions >= 10) {
+            || $nbExecutions >= 10
+        ) {
             return false;
         }
 
@@ -119,11 +112,11 @@ class Analysis
     public static function getBytes($val)
     {
         $val = trim($val);
-        $last = strtolower($val[strlen($val)-1]);
+        $last = strtolower($val[strlen($val) - 1]);
         if (!is_numeric($last)) {
             $val = (int) substr($val, 0, -1);
             switch ($last) {
-            // The 'G' modifier is available since PHP 5.1.0
+                // The 'G' modifier is available since PHP 5.1.0
                 case 'g':
                     $val *= 1024;
                     // no break
@@ -134,14 +127,14 @@ class Analysis
                     $val *= 1024;
             }
         }
-    
+
         return $val;
     }
 
     public static function isASource($context, $def, $myClass, $arrayDim)
     {
         $source = $context->inputs->getSourceByName($def, $myClass, $arrayDim);
-        
+
         if (!is_null($source)) {
             return true;
         }
@@ -158,7 +151,7 @@ class Analysis
                 $taintedState = $taintedByDef[1];
 
                 $params = array($taintedDef, $block);
-                call_user_func_array(__NAMESPACE__ ."\\$callback", $params);
+                call_user_func_array(__NAMESPACE__ . "\\$callback", $params);
             }
         }
     }
@@ -175,7 +168,7 @@ class Analysis
             for ($i = 0; $i < strlen($string); $i++) {
                 foreach ($arrayChars as $char) {
                     if ($string[$i] === $char) {
-                        $nbChars[$char] ++;
+                        $nbChars[$char]++;
                     }
                 }
             }
@@ -190,11 +183,11 @@ class Analysis
             foreach ($arrayChars as $char) {
                 $nbChars[$char] = 0;
             }
-            
+
             for ($i = 0; $i < strlen($string); $i++) {
                 foreach ($arrayChars as $char) {
                     if ($string[$i] === $char) {
-                        $nbChars[$char] ++;
+                        $nbChars[$char]++;
                     }
                 }
             }
@@ -219,7 +212,7 @@ class Analysis
                 }
             }
         }
-        
+
         return false;
     }
 
@@ -235,10 +228,12 @@ class Analysis
                 }
 
                 foreach ($state->getArrayIndexes() as $arrayElement) {
-                    if ($arrayElement->def !== $def
+                    if (
+                        $arrayElement->def !== $def
                         && !in_array($arrayElement->def, $defsToAnalyze, true)
-                            && !in_array($arrayElement->def, $arrayTotal, true)
-                                && count($arrayTotal) < 50) {
+                        && !in_array($arrayElement->def, $arrayTotal, true)
+                        && count($arrayTotal) < 50
+                    ) {
                         $defsToAnalyze[] = $arrayElement->def;
                         $arrayTotal[] = $arrayElement->def;
                     }
@@ -272,8 +267,10 @@ class Analysis
                     // is there new values to consider ?
                     if (isset($statesPastArgs[$i]) && is_array($statesPastArgs[$i])) {
                         foreach ($statesPastArgs[$i] as $statePastArg) {
-                            if ($defArg->getCurrentState()->getLastKnownValues()
-                                !== $statePastArg->getLastKnownValues()) {
+                            if (
+                                $defArg->getCurrentState()->getLastKnownValues()
+                                !== $statePastArg->getLastKnownValues()
+                            ) {
                                 return true;
                             }
                         }
@@ -286,45 +283,55 @@ class Analysis
 
         return false;
     }
-    
+
     public static function checkIfFuncEqualMySpecify($context, $mySpecify, $myFunc, $myClass = null)
     {
-        if (!$mySpecify->isInstance()
-            && $mySpecify->getName() === $myFunc->getName()) {
+        if (
+            !$mySpecify->isInstance()
+            && $mySpecify->getName() === $myFunc->getName()
+        ) {
             return true;
         }
-                    
-        if ($mySpecify->isInstance() && !is_null($myClass) &&
+
+        if (
+            $mySpecify->isInstance() && !is_null($myClass) &&
             ($myClass->getName() === $mySpecify->getInstanceOfName()
-                || $myClass->getExtendsOf() === $mySpecify->getInstanceOfName())) {
+                || $myClass->getExtendsOf() === $mySpecify->getInstanceOfName())
+        ) {
             return true;
         }
-        
+
         return false;
     }
-    
+
     public static function checkIfDefEqualDefRule($context, $defs, $rule, $def, $myClass = null)
     {
         $definition = $rule->getDefinition();
 
-        if (!$definition->isInstance()
-            && $def->getName() === $definition->getName()) {
+        if (
+            !$definition->isInstance()
+            && $def->getName() === $definition->getName()
+        ) {
             return true;
         }
 
-        if ($definition->isInstance() && !is_null($myClass) && $def->getName() === $definition->getName() &&
+        if (
+            $definition->isInstance() && !is_null($myClass) && $def->getName() === $definition->getName() &&
             ($myClass->getName() === $definition->getInstanceOfName()
-                || $myClass->getExtendsOf() === $definition->getInstanceOfName())) {
+                || $myClass->getExtendsOf() === $definition->getInstanceOfName())
+        ) {
             return true;
         }
-        
+
         return false;
     }
 
     public static function createObject($context, $myDef)
     {
-        if ($myDef->isType(MyDefinition::TYPE_INSTANCE)
-            || $myDef->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
+        if (
+            $myDef->isType(MyDefinition::TYPE_INSTANCE)
+            || $myDef->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)
+        ) {
             $idObject = $context->getObjects()->addObject();
 
             if ($myDef->getCurrentState()->getObjectId() === -1) {
