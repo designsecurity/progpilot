@@ -3,13 +3,12 @@
 require_once './vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class RunAllFoldersTest extends TestCase
+final class RunAll extends TestCase
 {
-    /**
-     * @dataProvider dataProvider
-     */
-    public function testSecurity($folder, $expectedVulns)
+    #[DataProvider('dataProvider')]
+    public function testSecurity($file, $expectedVulns)
     {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
@@ -18,7 +17,10 @@ class RunAllFoldersTest extends TestCase
 
         $nbVulns = 0;
         $context->inputs->setDev(true);
-        $context->inputs->setFolder($folder);
+        $context->inputs->setFile($file);
+        // enable "vendor" folder analysis
+        // test case: tests/real/composer/
+        $context->inputs->setExclusions([]);
 
         $analyzer->run($context);
 
@@ -61,9 +63,35 @@ class RunAllFoldersTest extends TestCase
         $this->assertCount(count($expectedVulns), $results);
     }
 
-    public function dataProvider()
+    public static function dataProvider()
     {
-        $tab = include("foldertest.php");
+        $tabopti = include("optimizationstest.php");
+        $taboop = include("ooptest.php");
+        $tabreal = include("realtest.php");
+        $tabgen = include("generictest.php");
+        $tabinc = include("includetest.php");
+        $tabdata = include("datatest.php");
+        $tabcond = include("conditionstest.php");
+        $tabneg = include("negativetest.php");
+        $tabcus = include("customtest.php");
+        $tabvulntest = include("testvulntestsuite.php");
+        $tabwander = include("phpwandertest.php");
+        $tabframeworks = include("frameworkstest.php");
+
+        $tab = array_merge(
+            $tabopti,
+            $taboop,
+            $tabreal,
+            $tabgen,
+            $tabinc,
+            $tabdata,
+            $tabcond,
+            $tabneg,
+            $tabcus,
+            $tabvulntest,
+            $tabwander,
+            $tabframeworks
+        );
 
         return $tab;
     }

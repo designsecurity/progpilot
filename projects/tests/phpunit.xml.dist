@@ -11,11 +11,11 @@
          bootstrap="./vendor/autoload.php">
     <testsuites>
         <testsuite name="progpilot Test Suite">
-            <file>run_all.php</file>
-            <file>run_all_folders.php</file>
-            <file>run_flows.php</file>
-            <file>run_exclude_files.php</file>
-            <file>run_all_configurations.php</file>
+            <file>RunAll.php</file>
+            <file>RunAllFolders.php</file>
+            <file>RunFlows.php</file>
+            <file>RunExcludeFiles.php</file>
+            <file>RunAllConfigurations.php</file>
         </testsuite>
     </testsuites>
 

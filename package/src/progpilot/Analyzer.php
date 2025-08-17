@@ -444,6 +444,12 @@ class Analyzer
             }
         }
 
+        // if no files try to read code
+        if (empty($files) && !is_null($context->inputs->getCode())) {
+            $this->computeDataFlow($context);
+            $this->runAnalysisOfCurrentMyFile($context);
+        }
+
         if ($context->outputs->getWriteIncludeFailures()) {
             $context->outputs->writeIncludesFile();
         }

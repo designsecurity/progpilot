@@ -3,26 +3,29 @@
 require_once './vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class RunAllTest extends TestCase
+class RunExcludeFiles extends TestCase
 {
-    /**
-     * @dataProvider dataProvider
-     */
-    public function testSecurity($file, $expectedVulns)
+    #[DataProvider('dataProvider')]
+    public function testSecurity($folder, $expectedVulns)
     {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
         $context->outputs->taintedFlow(true);
 
+        $exclusions = [
+            "./tests/folders/folder2/mix3.php",
+            "./tests/folders/folder2/sub_folder1/sub_folder2",
+            "onefolderexcludedtest",
+            "onefileexcludedtest.php"
+        ];
+
         $nbVulns = 0;
         $context->inputs->setDev(true);
-        $context->inputs->setFile($file);
-        // enable "vendor" folder analysis
-        // test case: tests/real/composer/
-        $context->inputs->setExclusions([]);
-
+        $context->inputs->setExclusions($exclusions);
+        $context->inputs->setFolder($folder);
         $analyzer->run($context);
 
         $results = $context->outputs->getResults();
@@ -64,35 +67,9 @@ class RunAllTest extends TestCase
         $this->assertCount(count($expectedVulns), $results);
     }
 
-    public function dataProvider()
+    public static function dataProvider()
     {
-        $tabopti = include("optimizationstest.php");
-        $taboop = include("ooptest.php");
-        $tabreal = include("realtest.php");
-        $tabgen = include("generictest.php");
-        $tabinc = include("includetest.php");
-        $tabdata = include("datatest.php");
-        $tabcond = include("conditionstest.php");
-        $tabneg = include("negativetest.php");
-        $tabcus = include("customtest.php");
-        $tabvulntest = include("testvulntestsuite.php");
-        $tabwander = include("phpwandertest.php");
-        $tabframeworks = include("frameworkstest.php");
-
-        $tab = array_merge(
-            $tabopti,
-            $taboop,
-            $tabreal,
-            $tabgen,
-            $tabinc,
-            $tabdata,
-            $tabcond,
-            $tabneg,
-            $tabcus,
-            $tabvulntest,
-            $tabwander,
-            $tabframeworks
-        );
+        $tab = include("folderexcludedtest.php");
 
         return $tab;
     }

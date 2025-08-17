@@ -3,30 +3,19 @@
 require_once './vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class RunExcludeFilesTest extends TestCase
+class RunAllConfigurations extends TestCase
 {
-    /**
-     * @dataProvider dataProvider
-     */
-    public function testSecurity($folder, $expectedVulns)
+    #[DataProvider('dataProvider')]
+    public function testSecurity($configfile, $expectedVulns)
     {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
-        $context->outputs->taintedFlow(true);
-
-        $exclusions = [
-            "./tests/folders/folder2/mix3.php",
-            "./tests/folders/folder2/sub_folder1/sub_folder2",
-            "onefolderexcludedtest",
-            "onefileexcludedtest.php"
-        ];
-
         $nbVulns = 0;
-        $context->inputs->setDev(true);
-        $context->inputs->setExclusions($exclusions);
-        $context->inputs->setFolder($folder);
+        $context->setConfiguration($configfile);
+
         $analyzer->run($context);
 
         $results = $context->outputs->getResults();
@@ -68,10 +57,10 @@ class RunExcludeFilesTest extends TestCase
         $this->assertCount(count($expectedVulns), $results);
     }
 
-    public function dataProvider()
+    public static function dataProvider()
     {
-        $tab = include("folderexcludedtest.php");
+        $tabconfig = include("configtest.php");
 
-        return $tab;
+        return array_merge($tabconfig);
     }
 }

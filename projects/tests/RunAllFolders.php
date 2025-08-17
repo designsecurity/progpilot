@@ -3,19 +3,21 @@
 require_once './vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class RunAllConfigurationTest extends TestCase
+class RunAllFolders extends TestCase
 {
-    /**
-     * @dataProvider dataProvider
-     */
-    public function testSecurity($configfile, $expectedVulns)
+    #[DataProvider('dataProvider')]
+    public function testSecurity($folder, $expectedVulns)
     {
         $context = new \progpilot\Context;
         $analyzer = new \progpilot\Analyzer;
 
+        $context->outputs->taintedFlow(true);
+
         $nbVulns = 0;
-        $context->setConfiguration($configfile);
+        $context->inputs->setDev(true);
+        $context->inputs->setFolder($folder);
 
         $analyzer->run($context);
 
@@ -58,10 +60,10 @@ class RunAllConfigurationTest extends TestCase
         $this->assertCount(count($expectedVulns), $results);
     }
 
-    public function dataProvider()
+    public static function dataProvider()
     {
-        $tabconfig = include("configtest.php");
+        $tab = include("foldertest.php");
 
-        return array_merge($tabconfig);
+        return $tab;
     }
 }

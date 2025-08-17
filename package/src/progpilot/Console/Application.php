@@ -11,12 +11,13 @@ namespace progpilot\Console;
 
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Application extends BaseApplication
 {
     const NAME = 'progpilot';
-    const VERSION = '1.2.0';
+    const VERSION = '1.3.0';
 
     public function __construct()
     {
@@ -25,10 +26,11 @@ class Application extends BaseApplication
 
     public function run(?InputInterface $input = null, ?OutputInterface $output = null): int
     {
+        $this->setCatchExceptions(true);
         parent::run($input, $output);
     }
 
-    public function getDefinition()
+    public function getDefinition(): InputDefinition
     {
         $inputDefinition = parent::getDefinition();
         // clear out the normal first argument, which is the command name
@@ -37,7 +39,7 @@ class Application extends BaseApplication
         return $inputDefinition;
     }
 
-    protected function getCommandName(InputInterface $input)
+    protected function getCommandName(InputInterface $input): ?string
     {
         return 'progpilot';
     }

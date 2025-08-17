@@ -3,12 +3,11 @@
 require_once './vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class RunFlowsTest extends TestCase
+class RunFlows extends TestCase
 {
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testSecurity($file, $expectedVulns)
     {
         $context = new \progpilot\Context;
@@ -38,7 +37,7 @@ class RunFlowsTest extends TestCase
         }
     }
 
-    public function dataProvider()
+    public static function dataProvider()
     {
         $tab = include("flowstest.php");
 
