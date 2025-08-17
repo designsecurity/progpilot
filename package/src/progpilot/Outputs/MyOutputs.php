@@ -10,9 +10,6 @@
 
 namespace progpilot\Outputs;
 
-use progpilot\Lang;
-use progpilot\Representations\Callgraph;
-
 class MyOutputs extends MyOutputsInternalApi
 {
     public function getAst($myFunc)
@@ -63,9 +60,11 @@ class MyOutputs extends MyOutputsInternalApi
                 $callerId = $tmpCfg->getIdOfNode($edge[0]);
                 $calleeId = $tmpCfg->getIdOfNode($edge[1]);
 
-                if ($callerId !== $calleeId
+                if (
+                    $callerId !== $calleeId
                     && in_array($callerId, $realNodes, true)
-                        && in_array($calleeId, $realNodes, true)) {
+                    && in_array($calleeId, $realNodes, true)
+                ) {
                     $linksjson[] = array('source' => $callerId, 'target' => $calleeId);
                 }
             }
@@ -92,9 +91,11 @@ class MyOutputs extends MyOutputsInternalApi
             foreach ($nodes as $key => $nodeCaller) {
                 foreach ($nodeCaller->getChildren() as $key => $nodeCalleeId) {
                     $nodeCallee = $nodes[$nodeCalleeId];
-                    if ($nodeCaller->getId() !== $nodeCallee->getId()
-                                                        && in_array($nodeCaller->getId(), $realNodes, true)
-                                                        && in_array($nodeCallee->getId(), $realNodes, true)) {
+                    if (
+                        $nodeCaller->getId() !== $nodeCallee->getId()
+                        && in_array($nodeCaller->getId(), $realNodes, true)
+                        && in_array($nodeCallee->getId(), $realNodes, true)
+                    ) {
                         $linksjson[] = array('source' => $nodeCaller->getId(), 'target' => $nodeCallee->getId());
                     }
                 }
@@ -103,12 +104,12 @@ class MyOutputs extends MyOutputsInternalApi
 
         return array('nodes' => $nodesjson, 'links' => $linksjson);
     }
-    
+
     public function setOnAddResult($func)
     {
         $this->onAddResult = $func;
     }
-    
+
     public function getOnAddResult()
     {
         return $this->onAddResult;

@@ -9,7 +9,7 @@ if ($argc > 1) {
     $context->inputs->setDev(true);
     $context->setDebugMode(true);
     $context->outputs->taintedFlow(true);
-        
+
     $exclusions = [
         "./tests/folders/folder2/mix3.php",
         "./tests/folders/folder2/sub_folder1/sub_folder2"

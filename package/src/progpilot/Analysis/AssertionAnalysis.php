@@ -10,8 +10,6 @@
 
 namespace progpilot\Analysis;
 
-use progpilot\Objects\MyDefinition;
-
 class AssertionAnalysis
 {
     public static function checkDefIsAssert($myBlock, $def)

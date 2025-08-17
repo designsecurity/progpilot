@@ -27,7 +27,7 @@ class SarifOutput
     {
         $this->progpilotResults = $progpilotResults;
     }
-    
+
     private function createRules(): array
     {
         $rules = [
@@ -72,8 +72,8 @@ class SarifOutput
             $message = new Message();
             $message->setText(
                 "A vulnerability of type {$progpilotResult['vuln_name']} exists at " .
-                "{$progpilotResult['sink_name']} in file {$progpilotResult['sink_file']} " .
-                "at line {$progpilotResult['sink_line']}."
+                    "{$progpilotResult['sink_name']} in file {$progpilotResult['sink_file']} " .
+                    "at line {$progpilotResult['sink_line']}."
             );
             $result->setMessage($message);
 
@@ -113,9 +113,9 @@ class SarifOutput
                             $flow[0]['flow_column'],
                             $flow[0]['flow_name']
                         );
-                         $threadFlowLocation = new ThreadFlowLocation();
-                         $threadFlowLocation->setLocation($flowLocation);
-                         $taintFlow[] = $threadFlowLocation;
+                        $threadFlowLocation = new ThreadFlowLocation();
+                        $threadFlowLocation->setLocation($flowLocation);
+                        $taintFlow[] = $threadFlowLocation;
                     }
                 }
                 if (count($taintFlow) > 0) {

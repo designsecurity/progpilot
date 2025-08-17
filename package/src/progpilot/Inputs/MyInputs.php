@@ -55,19 +55,19 @@ class MyInputs extends MyInputsInternalApi
         $this->dev = $dev;
 
         if ($this->dev) {
-            $sanitizersfile = __DIR__."/../../uptodate_data/php/dev/sanitizers.json";
+            $sanitizersfile = __DIR__ . "/../../uptodate_data/php/dev/sanitizers.json";
             $this->readSanitizersFile($sanitizersfile);
-            
-            $sinksfile = __DIR__."/../../uptodate_data/php/dev/sinks.json";
+
+            $sinksfile = __DIR__ . "/../../uptodate_data/php/dev/sinks.json";
             $this->readSinksFile($sinksfile);
-            
-            $sourcesfile = __DIR__."/../../uptodate_data/php/dev/sources.json";
+
+            $sourcesfile = __DIR__ . "/../../uptodate_data/php/dev/sources.json";
             $this->readSourcesFile($sourcesfile);
-            
-            $validatorsfile = __DIR__."/../../uptodate_data/php/dev/validators.json";
+
+            $validatorsfile = __DIR__ . "/../../uptodate_data/php/dev/validators.json";
             $this->readValidatorsFile($validatorsfile);
-            
-            $customsfile = __DIR__."/../../uptodate_data/php/dev/rules.json";
+
+            $customsfile = __DIR__ . "/../../uptodate_data/php/dev/rules.json";
             $this->readCustomFile($customsfile);
         }
     }
@@ -192,28 +192,30 @@ class MyInputs extends MyInputsInternalApi
         if (!is_null($resolvedIncludes)) {
             if (!file_exists($resolvedIncludes)) {
                 Utils::printError(
-                    Lang::FILE_DOESNT_EXIST." (".Utils::encodeCharacters($resolvedIncludes).")"
+                    Lang::FILE_DOESNT_EXIST . " (" . Utils::encodeCharacters($resolvedIncludes) . ")"
                 );
             }
 
             $outputJson = file_get_contents($resolvedIncludes);
             $parsedJson = json_decode($outputJson);
 
-            if (isset($parsedJson-> {'includes'})) {
-                $includes = $parsedJson-> {'includes'};
+            if (isset($parsedJson->{'includes'})) {
+                $includes = $parsedJson->{'includes'};
                 foreach ($includes as $include) {
-                    if (!isset($include-> {'line'})
-                                || !isset($include-> {'column'})
-                                || !isset($include-> {'source_file'})
-                                || !isset($include-> {'value'})) {
+                    if (
+                        !isset($include->{'line'})
+                        || !isset($include->{'column'})
+                        || !isset($include->{'source_file'})
+                        || !isset($include->{'value'})
+                    ) {
                         Utils::printError(Lang::FORMAT_INCLUDES);
                     }
 
-                    if (realpath($include-> {'source_file'})) {
-                        $line = $include-> {'line'};
-                        $column = $include-> {'column'};
-                        $sourceFile = realpath($include-> {'source_file'});
-                        $value = $include-> {'value'};
+                    if (realpath($include->{'source_file'})) {
+                        $line = $include->{'line'};
+                        $column = $include->{'column'};
+                        $sourceFile = realpath($include->{'source_file'});
+                        $value = $include->{'value'};
 
                         $myInclude = new MyInclude($line, $column, $sourceFile, $value);
                         if (!in_array($myInclude, $this->resolvedIncludesAnalysis, true)) {
@@ -226,7 +228,7 @@ class MyInputs extends MyInputsInternalApi
             }
         }
     }
-    
+
     public function getFalsePositives()
     {
         return $this->falsePositivesAnalysis;

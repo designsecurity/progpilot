@@ -9,9 +9,9 @@
         }
     ],
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.0",
         "progpilot/package": "@dev",
-        "ircmaxell/php-cfg": "^0.7.0",
+        "ircmaxell/php-cfg": "^0.8.0",
         "symfony/yaml": "^5.4.17",
         "symfony/console": "^5.4.17",
         "myclabs/deep-copy": "^1.11.0",

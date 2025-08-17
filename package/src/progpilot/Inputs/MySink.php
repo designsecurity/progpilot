@@ -55,7 +55,7 @@ class MySink extends MySpecify
     {
         return $this->parameters;
     }
-    
+
     public function parameterHasconditions($i)
     {
         foreach ($this->parameters as $parameter) {
@@ -75,7 +75,7 @@ class MySink extends MySpecify
         if (is_null($condition)) {
             return true;
         }
-            
+
         foreach ($this->parameters as $parameter) {
             $index = $parameter[0];
             $conditions = $parameter[1];

@@ -12,11 +12,7 @@ namespace progpilot\Analysis;
 
 use function DeepCopy\deep_copy;
 
-use progpilot\Objects\MyFile;
-use progpilot\Objects\MyOp;
-use progpilot\Objects\ArrayStatic;
 use progpilot\Objects\MyDefinition;
-use progpilot\Dataflow\Definitions;
 use progpilot\Objects\MyClass;
 use progpilot\Objects\MyFunction;
 
@@ -29,7 +25,6 @@ use progpilot\Helpers\Analysis as HelpersAnalysis;
 
 use progpilot\Lang;
 use progpilot\Utils;
-use progpilot\Analyzer;
 
 class VisitorAnalysis
 {

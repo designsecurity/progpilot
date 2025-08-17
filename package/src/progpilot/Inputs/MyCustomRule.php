@@ -116,7 +116,7 @@ class MyCustomRule
 
     public function addToSequenceWithAction($functionName, $language, $action)
     {
-        $this->currentOrderNumber ++;
+        $this->currentOrderNumber++;
         $myCustomFunction = new MyCustomFunction($functionName, $language, $this->currentOrderNumber);
         $myCustomFunction->setAction($action);
         $this->sequenceRule[] = $myCustomFunction;
@@ -126,7 +126,7 @@ class MyCustomRule
 
     public function addToSequence($functionName, $language)
     {
-        $this->currentOrderNumber ++;
+        $this->currentOrderNumber++;
         $myCustomFunction = new MyCustomFunction($functionName, $language, $this->currentOrderNumber);
         $this->sequenceRule[] = $myCustomFunction;
 

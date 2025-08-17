@@ -116,7 +116,7 @@ class MyClass extends MyOp
 
         return $myProperty;
     }
-    
+
     public function getExtendsOf()
     {
         return $this->extendsof;

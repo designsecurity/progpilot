@@ -43,13 +43,13 @@ class MyDefState extends MyOp
 
     public function printStdout()
     {
-        echo "cast = ".$this->getCast()."\n";
+        echo "cast = " . $this->getCast() . "\n";
 
         if ($this->isTainted()) {
             echo "tainted = 1\n";
 
             foreach ($this->taintedByDefs as $taintedByDef) {
-                echo "taintedByDef = '".$taintedByDef[0]->getId()."'\n";
+                echo "taintedByDef = '" . $taintedByDef[0]->getId() . "'\n";
             }
         }
 
@@ -63,12 +63,12 @@ class MyDefState extends MyOp
         var_dump($this->typeSanitized);
         echo "objectid :\n";
         var_dump($this->objectId);
-        echo "istypeinstance : '".$this->isType(MyDefinition::TYPE_INSTANCE)."'\n";
-        echo "allpropertiestainted : '".$this->isType(MyDefinition::ALL_PROPERTIES_TAINTED)."'\n";
-        echo "allarrayelementstainted : '".$this->isType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED)."'\n";
-        echo "istypearray : '".$this->isType(MyDefinition::TYPE_ARRAY)."'\n";
-        echo "istypearrayarray : '".$this->isType(MyDefinition::TYPE_ARRAY_ARRAY)."'\n";
-        
+        echo "istypeinstance : '" . $this->isType(MyDefinition::TYPE_INSTANCE) . "'\n";
+        echo "allpropertiestainted : '" . $this->isType(MyDefinition::ALL_PROPERTIES_TAINTED) . "'\n";
+        echo "allarrayelementstainted : '" . $this->isType(MyDefinition::ALL_ARRAY_ELEMENTS_TAINTED) . "'\n";
+        echo "istypearray : '" . $this->isType(MyDefinition::TYPE_ARRAY) . "'\n";
+        echo "istypearrayarray : '" . $this->isType(MyDefinition::TYPE_ARRAY_ARRAY) . "'\n";
+
         foreach ($this->arrayIndexes as $arrayIndex) {
             echo "index :\n";
             var_dump($arrayIndex->index);
@@ -155,13 +155,15 @@ class MyDefState extends MyOp
 
     public function addLastKnownValue($value)
     {
-        if($value !== null) {
+        if ($value !== null) {
             $value = rtrim(ltrim($value));
         }
-        
-        if (Common::validLastKnownValue($value)
+
+        if (
+            Common::validLastKnownValue($value)
             && !in_array($value, $this->lastKnownValue, true)
-                && count($this->lastKnownValue) < 10) {
+            && count($this->lastKnownValue) < 10
+        ) {
             $this->lastKnownValue[] = $value;
         }
     }
@@ -226,7 +228,7 @@ class MyDefState extends MyOp
             $myArrayDef->getColumn(),
             "built-in-index-array"
         );
-            
+
         $myDef->addType(MyDefinition::TYPE_ARRAY_ELEMENT);
         $this->addArrayIndex($arrayIndex, $myDef);
         $this->addType(MyDefinition::TYPE_ARRAY);
@@ -250,7 +252,7 @@ class MyDefState extends MyOp
     {
         $ret = [];
         $found = false;
-        for ($i = 0; $i < count($this->arrayIndexes); $i ++) {
+        for ($i = 0; $i < count($this->arrayIndexes); $i++) {
             if ($this->arrayIndexes[$i]->index === $arrayIndex) {
                 $found = true;
                 $ret[] = $this->arrayIndexes[$i]->def;
@@ -266,19 +268,21 @@ class MyDefState extends MyOp
 
     public function isArrayIndexExists($arrayIndex)
     {
-        for ($i = 0; $i < count($this->arrayIndexes); $i ++) {
+        for ($i = 0; $i < count($this->arrayIndexes); $i++) {
             if ($this->arrayIndexes[$i]->index === $arrayIndex) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
     public function addArrayIndex($arrayIndex, $def)
     {
-        if (!$this->isArrayIndexExists($arrayIndex)
-            && count($this->arrayIndexes) < 100) {
+        if (
+            !$this->isArrayIndexExists($arrayIndex)
+            && count($this->arrayIndexes) < 100
+        ) {
             $ele = new \stdClass;
             $ele->index = $arrayIndex;
             $ele->def = $def;
@@ -292,7 +296,7 @@ class MyDefState extends MyOp
 
     public function overwriteArrayIndex($arrayIndex, $def)
     {
-        for ($i = 0; $i < count($this->arrayIndexes); $i ++) {
+        for ($i = 0; $i < count($this->arrayIndexes); $i++) {
             if ($this->arrayIndexes[$i]->index === $arrayIndex) {
                 $this->arrayIndexes[$i]->def = $def;
                 break;

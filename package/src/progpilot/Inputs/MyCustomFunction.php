@@ -14,11 +14,11 @@ class MyCustomFunction extends MySpecify
 {
     private $parameters;
     private $hasParameters;
-    
+
     private $action;
     private $orderNumberExpected;
     private $orderNumberReal;
-    
+
     private $minNbArgs;
     private $maxNbArgs;
 
@@ -31,7 +31,7 @@ class MyCustomFunction extends MySpecify
 
         $this->minNbArgs = 0;
         $this->maxNbArgs = PHP_INT_MAX;
-        
+
         $this->hasParameters = false;
         $this->parameters = [];
     }
@@ -52,7 +52,8 @@ class MyCustomFunction extends MySpecify
             $fixed,
             $sufficient,
             $failifnotverified,
-            $notequals];
+            $notequals
+        ];
     }
 
     public function getParameters()

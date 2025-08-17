@@ -10,8 +10,6 @@
 
 namespace progpilot\Representations;
 
-use progpilot\Objects\MyFunction;
-
 class Callgraph
 {
     private $nodes;
@@ -69,9 +67,11 @@ class Callgraph
             $myClassCallee
         );
 
-        if (array_key_exists($NodeCGCaller->getId(), $this->nodes)
+        if (
+            array_key_exists($NodeCGCaller->getId(), $this->nodes)
             && array_key_exists($NodeCGCallee->getId(), $this->nodes)
-                && $NodeCGCaller->getId() !== $NodeCGCallee->getId()) {
+            && $NodeCGCaller->getId() !== $NodeCGCallee->getId()
+        ) {
             if (!in_array($NodeCGCallee->getId(), $this->nodes[$NodeCGCaller->getId()]->getChildren(), true)) {
                 $storage = $this->nodes[$NodeCGCaller->getId()]->getChildren();
                 $storage[] = $NodeCGCallee->getId();
@@ -149,9 +149,11 @@ class Callgraph
                             if (!in_array($child, $nullNodes, true)) {
                                 $nullNodes[] = $child;
                                 foreach ($this->blocks[$child]->children as $childFar) {
-                                    if (!in_array($childFar, $newChildren, true)
-                                                && $myBlock !== $childFar
-                                                                 && $child !== $childFar) {
+                                    if (
+                                        !in_array($childFar, $newChildren, true)
+                                        && $myBlock !== $childFar
+                                        && $child !== $childFar
+                                    ) {
                                         $newChildren[] = $childFar;
                                         $modification = true;
                                     }
@@ -180,7 +182,7 @@ class Callgraph
 
             // calculate edges first case : sequential calls
             if (count($calls) > 1) {
-                for ($i = 0; $i < count($calls) - 1; $i ++) {
+                for ($i = 0; $i < count($calls) - 1; $i++) {
                     $this->addEdge($calls[$i][0], $calls[$i][1], $calls[$i + 1][0], $calls[$i + 1][1]);
                 }
             }

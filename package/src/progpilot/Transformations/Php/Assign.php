@@ -10,23 +10,14 @@
 
 namespace progpilot\Transformations\Php;
 
-use PHPCfg\Block;
 use PHPCfg\Op;
-use PHPCfg\Operand;
 
-use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyOp;
 
 use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
-use progpilot\Transformations\Php\Transform;
-use progpilot\Transformations\Php\OpTr;
 use progpilot\Transformations\Php\Common;
-use progpilot\Transformations\Php\Exprs\PropertyFetch;
-use progpilot\Transformations\Php\Exprs\DimFetch;
-use progpilot\Transformations\Php\Exprs\VariableFetch;
-use progpilot\Transformations\Php\Exprs\ArrayFetch;
 
 class Assign
 {
@@ -41,7 +32,7 @@ class Assign
         $backDef = null;
 
         if ($isDefine) {
-            $name = "const_".rand();
+            $name = "const_" . rand();
             if (isset($context->getCurrentOp()->args[0]->value)) {
                 $name = $context->getCurrentOp()->args[0]->value;
                 $var = $context->getCurrentOp()->args[0];
@@ -53,13 +44,13 @@ class Assign
         } else {
             $name = Common::getNameDefinition($context->getCurrentOp());
             if (empty($name)) {
-                $name = "empty_".rand();
+                $name = "empty_" . rand();
             }
         }
 
         // name of function return
         if ($isReturnDef) {
-            $name = $context->getCurrentFunc()->getName()."_return";
+            $name = $context->getCurrentFunc()->getName() . "_return";
         }
 
         $instAssign = new MyInstruction(Opcodes::END_ASSIGN);
@@ -75,7 +66,7 @@ class Assign
 
         // let's continue by the left part
         $instDefinition = new MyInstruction(Opcodes::DEFINITION);
-            
+
         $myDef = new MyDefinition(
             $context->getCurrentBlock()->getId(),
             $context->getCurrentMyFile(),
@@ -83,7 +74,7 @@ class Assign
             $context->getCurrentColumn(),
             $name
         );
- 
+
         switch (Common::getTypeDef($op)) {
             case MyOp::TYPE_ARRAY:
                 $myDef->addType(MyDefinition::TYPE_ARRAY);

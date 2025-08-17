@@ -10,12 +10,8 @@
 
 namespace progpilot\Analysis;
 
-use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
-use progpilot\Code\Opcodes;
 use progpilot\Code\MyInstruction;
-
-use progpilot\Helpers\Analysis as HelpersAnalysis;
 
 class FuncAnalysis
 {
@@ -34,7 +30,7 @@ class FuncAnalysis
             $context->getCurrentMyFile(),
             $myFuncCall->getLine(),
             $myFuncCall->getColumn(),
-            $myFuncCall->getName()."_return"
+            $myFuncCall->getName() . "_return"
         );
 
         $opInformation["chained_results"][] = $myFuncReturn;
@@ -90,7 +86,7 @@ class FuncAnalysis
                 }
             }
         }
-        
+
         $context->getCurrentFunc()->storeOpInformation($resultid, $opInformation);
     }
 
@@ -105,11 +101,11 @@ class FuncAnalysis
 
                 $param->setParamToArg($defArg);
                 $defArg->setArgToParam($param);
-                
+
                 $state = $defArg->createState();
                 $defArg->assignStateToBlockId($state->getId(), $param->getBlockId());
 
-                $nbParams ++;
+                $nbParams++;
             }
         }
     }

@@ -9,8 +9,6 @@
 
 namespace progpilot\Command;
 
-use progpilot\Context;
-use progpilot\Analyzer;
 use progpilot\Lang;
 use progpilot\Outputs\SarifOutput;
 use Symfony\Component\Console\Command\Command;
@@ -59,7 +57,7 @@ class ProgpilotCommand extends Command
             }
 
             $cmdFiles = $this->input->getArgument('files');
-        
+
             $analyzer->run($context, $cmdFiles);
 
             if ($context->outputs->getSarifOutput()) {
@@ -77,13 +75,13 @@ class ProgpilotCommand extends Command
                 return 1;
             }
         } catch (\Exception $e) {
-            echo $e->getMessage()."\n";
-            
+            echo $e->getMessage() . "\n";
+
             if ($context->isDebugMode()) {
-                echo "Exception raised on file : ".$e->getFile()." line : ".$e->getLine()."\n";
+                echo "Exception raised on file : " . $e->getFile() . " line : " . $e->getLine() . "\n";
             }
         }
-        
+
         return 0;
     }
 }

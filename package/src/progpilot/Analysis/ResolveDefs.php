@@ -9,25 +9,10 @@
 
 namespace progpilot\Analysis;
 
-use PHPCfg\Block;
-use PHPCfg\Func;
-use PHPCfg\Op;
-use PHPCfg\Script;
-use PHPCfg\Visitor;
-use PHPCfg\Operand;
-
-use progpilot\Code\Opcodes;
 use progpilot\Code\MyInstruction;
-
-use progpilot\Objects\MyProperty;
-use progpilot\Objects\MyClass;
-use progpilot\Objects\MyOp;
-use progpilot\Objects\MyInstance;
 use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyFunction;
-
 use progpilot\Dataflow\Definitions;
-
 use progpilot\Helpers\Analysis as HelpersAnalysis;
 
 class ResolveDefs
@@ -86,8 +71,10 @@ class ResolveDefs
             $classStackName[$i] = [];
             $previousChainedResults = $context->getCurrentFunc()->getOpInformation($varid);
 
-            if (!is_null($previousChainedResults)
-                && isset($previousChainedResults["chained_results"])) {
+            if (
+                !is_null($previousChainedResults)
+                && isset($previousChainedResults["chained_results"])
+            ) {
                 $instances = $previousChainedResults["chained_results"];
             } else {
                 $instancestmp = ResolveDefs::selectDefinitions(
@@ -211,7 +198,8 @@ class ResolveDefs
             // def2 defined after the include
             if (($def2->getLine() > $myFilef->getLine())
                 || ($def2->getLine() === $myFilef->getLine()
-                    && $def2->getColumn() >= $myFilef->getColumn())) {
+                    && $def2->getColumn() >= $myFilef->getColumn())
+            ) {
                 return false;
             }
 
@@ -222,7 +210,8 @@ class ResolveDefs
             // def2 defined before the include
             if (($def1->getLine() > $myFilet->getLine())
                 || ($def1->getLine() === $myFilet->getLine()
-                    && $def1->getColumn() >= $myFilet->getColumn())) {
+                    && $def1->getColumn() >= $myFilet->getColumn())
+            ) {
                 return false;
             }
 
@@ -243,7 +232,8 @@ class ResolveDefs
             // def1 defined after the include
             if (($def1->getLine() > $myFilef->getLine())
                 || ($def1->getLine() === $myFilef->getLine()
-                    &&  $def1->getColumn() >= $myFilef->getColumn())) {
+                    &&  $def1->getColumn() >= $myFilef->getColumn())
+            ) {
                 return true;
             }
 
@@ -253,7 +243,8 @@ class ResolveDefs
             // def1 defined before the include
             if (($def2->getLine() > $myFilet->getLine())
                 || ($def2->getLine() === $myFilet->getLine()
-                    &&  $def2->getColumn() >= $myFilet->getColumn())) {
+                    &&  $def2->getColumn() >= $myFilet->getColumn())
+            ) {
                 return true;
             }
 
@@ -291,9 +282,11 @@ class ResolveDefs
             return true;
         }
 
-        if (!is_null($method)
+        if (
+            !is_null($method)
             && $method->isType(MyFunction::TYPE_FUNC_METHOD)
-                && $method->getVisibility() === "public") {
+            && $method->getVisibility() === "public"
+        ) {
             return true;
         }
 
@@ -306,18 +299,24 @@ class ResolveDefs
 
     public static function getVisibility($def, $property, $currentFunc)
     {
-        if (!is_null($def)
-            && $def->getName() === "this") {
+        if (
+            !is_null($def)
+            && $def->getName() === "this"
+        ) {
             return true;
         }
 
-        if (!is_null($def) && !is_null($currentFunc) && !is_null($currentFunc->getMyClass())
-                && $def->getName() === $currentFunc->getMyClass()->getName()) {
+        if (
+            !is_null($def) && !is_null($currentFunc) && !is_null($currentFunc->getMyClass())
+            && $def->getName() === $currentFunc->getMyClass()->getName()
+        ) {
             return true;
         }
 
-        if (!is_null($property)
-            && $property->getVisibility() === "public") {
+        if (
+            !is_null($property)
+            && $property->getVisibility() === "public"
+        ) {
             return true;
         }
 
@@ -344,8 +343,10 @@ class ResolveDefs
                     if (!is_null($tmpMyClass)) {
                         $property = $tmpMyClass->getProperty($context, $instance, $prop);
 
-                        if (!is_null($property)
-                            && (ResolveDefs::getVisibility($copyDefAssign, $property, $currentFunc))) {
+                        if (
+                            !is_null($property)
+                            && (ResolveDefs::getVisibility($copyDefAssign, $property, $currentFunc))
+                        ) {
                             $visibilityFinal = true;
                             break;
                         }/* elseif (is_null($property)) {
@@ -362,8 +363,10 @@ class ResolveDefs
 
             if (!is_null($myClass)) {
                 $property = $myClass->getProperty($defAssign->property->getProperties());
-                if (!is_null($property)
-                    && (ResolveDefs::getVisibility($defAssign, $property, $currentFunc))) {
+                if (
+                    !is_null($property)
+                    && (ResolveDefs::getVisibility($defAssign, $property, $currentFunc))
+                ) {
                     $visibilityFinal = true;
                 }
             }
@@ -380,16 +383,20 @@ class ResolveDefs
         }
 
         foreach ($data as $def) {
-            if (Definitions::defEquality($def, $searchedDed)
-                && ResolveDefs::isNearest($context, $searchedDed, $def)) {
+            if (
+                Definitions::defEquality($def, $searchedDed)
+                && ResolveDefs::isNearest($context, $searchedDed, $def)
+            ) {
                 // we are looking for the nearest not instance of a property
                 $defsFound[$def->getBlockId()][] = $def;
             }
         }
 
         // si on a trouvé des defs dans le même bloc que la ou on cherche elles killent les autres
-        if (isset($defsFound[$searchedDed->getBlockId()])
-                    && count($defsFound[$searchedDed->getBlockId()]) > 0) {
+        if (
+            isset($defsFound[$searchedDed->getBlockId()])
+            && count($defsFound[$searchedDed->getBlockId()]) > 0
+        ) {
             $defsFoundGood[$searchedDed->getBlockId()] = $defsFound[$searchedDed->getBlockId()];
         } else {
             $defsFoundGood = $defsFound;
@@ -444,7 +451,7 @@ class ResolveDefs
 */
             $arrayDefs[] = $arrayDef
                 ->getCurrentState()
-                    ->getOrCreateDefArrayIndex($tempDefa->getBlockId(), $arrayDef, $arrayDim);
+                ->getOrCreateDefArrayIndex($tempDefa->getBlockId(), $arrayDef, $arrayDim);
         }
 
         return $arrayDefs;
@@ -460,8 +467,10 @@ class ResolveDefs
         if (!is_null($myClass)) {
             $property = $myClass->getProperty($context, $tempDef->getBlockId(), $tempDef, $propertyName);
 
-            if (!is_null($property)
-                && (ResolveDefs::getVisibility($tempDef, $property, $currentFunc))) {
+            if (
+                !is_null($property)
+                && (ResolveDefs::getVisibility($tempDef, $property, $currentFunc))
+            ) {
                 return $property;
             }
         }
@@ -479,15 +488,19 @@ class ResolveDefs
         $instances = ResolveDefs::selectDefinitions($context, $data, $tempDefaProp);
 
         foreach ($instances as $instance) {
-            if ($instance->isType(MyDefinition::TYPE_ITERATOR)
+            if (
+                $instance->isType(MyDefinition::TYPE_ITERATOR)
                 && !empty($instance->getIteratorValues())
-                    && $instance->getIteratorValues()[0]->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)) {
+                && $instance->getIteratorValues()[0]->getCurrentState()->isType(MyDefinition::TYPE_INSTANCE)
+            ) {
                 // source of type array of properties
                 $instance = $instance->getIteratorValues()[0];
             }
 
-            if ($instance->isType(MyDefinition::TYPE_PROPERTY)
-                || $instance->isType(MyDefinition::TYPE_ARRAY_ELEMENT)) {
+            if (
+                $instance->isType(MyDefinition::TYPE_PROPERTY)
+                || $instance->isType(MyDefinition::TYPE_ARRAY_ELEMENT)
+            ) {
                 $state = $instance->getState($tempDefaProp->getBlockId());
                 $stateId = $tempDefaProp->getBlockId();
             } else {
@@ -518,7 +531,7 @@ class ResolveDefs
         $callStack = $context->getCallStack();
 
         if (is_array($callStack)) {
-            for ($callNumber = count($callStack) - 1; $callNumber !== 0; $callNumber --) {
+            for ($callNumber = count($callStack) - 1; $callNumber !== 0; $callNumber--) {
                 $currentContextCall = $callStack[$callNumber][3];
                 // ca peut arriver si on est dans le main() est qu'on appelle une globale
                 if (!is_null($currentContextCall->func_called) && !is_null($currentContextCall->func_callee)) {

@@ -15,8 +15,6 @@ use progpilot\Representations\DFSVisitor;
 use progpilot\Representations\NodeCG;
 use progpilot\Inputs\MyCustomRule;
 use progpilot\Objects\MyDefinition;
-use progpilot\Objects\MyClass;
-use progpilot\Code\MyInstruction;
 use progpilot\Utils;
 use progpilot\Helpers\Analysis as HelpersAnalysis;
 
@@ -26,13 +24,15 @@ class CustomAnalysis
     {
         $customRules = $context->inputs->getCustomRules();
         foreach ($customRules as $customRule) {
-            if ($customRule->getType() === MyCustomRule::TYPE_VARIABLE
-                && $customRule->getAction() === "ASSIGNMENT_DISCLOSE_HIGH_VALUE") {
+            if (
+                $customRule->getType() === MyCustomRule::TYPE_VARIABLE
+                && $customRule->getAction() === "ASSIGNMENT_DISCLOSE_HIGH_VALUE"
+            ) {
                 $result = HelpersAnalysis::checkIfDefEqualDefRule($context, $defs, $customRule, $defassign);
-                                        
+
                 if ($result) {
                     $hashedValue = $defassign->getLine();
-                    $hashedValue.= "-".$customRule->getAction()."-".$defassign->getSourceMyFile()->fileName;
+                    $hashedValue .= "-" . $customRule->getAction() . "-" . $defassign->getSourceMyFile()->fileName;
                     $idVuln = hash("sha256", $hashedValue);
 
                     if (is_null($context->inputs->getFalsePositiveById($idVuln))) {
@@ -50,17 +50,19 @@ class CustomAnalysis
                 }
             }
         }
-        
+
         return null;
     }
-    
+
     public static function defineObject($context, $instruction, $myFuncorDef, $myClassFound, $virtualReturnDef)
     {
         $customRules = $context->inputs->getCustomRules();
         foreach ($customRules as $customRule) {
-            if ($customRule->getType() === MyCustomRule::TYPE_VARIABLE
+            if (
+                $customRule->getType() === MyCustomRule::TYPE_VARIABLE
                 && $customRule->getAction() === "DEFINE_OBJECT"
-                    && !is_null($customRule->getExtra())) {
+                && !is_null($customRule->getExtra())
+            ) {
                 $result = HelpersAnalysis::checkIfDefEqualDefRule(
                     $context,
                     null,
@@ -79,10 +81,10 @@ class CustomAnalysis
                 }
             }
         }
-        
+
         return null;
     }
-    
+
     public static function returnObjectCreateObject($context, $customRule, $myFuncorDef, $virtualReturnDef)
     {
         $myFakeInstance = null;
@@ -103,14 +105,16 @@ class CustomAnalysis
             return $myFakeInstance;
         }
     }
-    
+
     public static function returnObject($context, $myFuncorDef, $myClass, $instruction, $virtualReturnDef)
     {
         $customRules = $context->inputs->getCustomRules();
         foreach ($customRules as $customRule) {
-            if ($customRule->getType() === MyCustomRule::TYPE_FUNCTION
-                    && $customRule->getAction() === "DEFINE_OBJECT"
-                        && !is_null($customRule->getExtra())) {
+            if (
+                $customRule->getType() === MyCustomRule::TYPE_FUNCTION
+                && $customRule->getAction() === "DEFINE_OBJECT"
+                && !is_null($customRule->getExtra())
+            ) {
                 $result = HelpersAnalysis::checkIfDefEqualDefRule(
                     $context,
                     null,
@@ -128,7 +132,7 @@ class CustomAnalysis
                 }
             }
         }
-        
+
         return null;
     }
 
@@ -136,11 +140,13 @@ class CustomAnalysis
     {
         $customRules = $context->inputs->getCustomRules();
         foreach ($customRules as $customRule) {
-            if ($customRule->getType() === MyCustomRule::TYPE_FUNCTION
+            if (
+                $customRule->getType() === MyCustomRule::TYPE_FUNCTION
                 && ($customRule->getAction() === "MUST_VERIFY_DEFINITION"
-                    || $customRule->getAction() === "MUST_NOT_VERIFY_DEFINITION")) {
+                    || $customRule->getAction() === "MUST_NOT_VERIFY_DEFINITION")
+            ) {
                 $functionDefinition = $customRule->getDefinition();
-                
+
                 if (!is_null($functionDefinition)) {
                     $result = HelpersAnalysis::checkIfFuncEqualMySpecify(
                         $context,
@@ -149,13 +155,15 @@ class CustomAnalysis
                         $myClass
                     );
                     if ($result) {
-                        if ($myFunc->getNbParams() < $functionDefinition->getMinNbArgs()
-                            || $myFunc->getNbParams() > $functionDefinition->getMaxNbArgs()) {
+                        if (
+                            $myFunc->getNbParams() < $functionDefinition->getMinNbArgs()
+                            || $myFunc->getNbParams() > $functionDefinition->getMaxNbArgs()
+                        ) {
                             $isValid = true;
                         } else {
                             $isValid = false;
                             $params = $functionDefinition->getParameters();
-                            
+
                             // if one parameter is not valid all the rule is not valid
                             foreach ($params as $param) {
                                 $isValid = false;
@@ -173,17 +181,19 @@ class CustomAnalysis
                                         $isValid = $validbydefault;
                                         break;
                                     }
-                                    
+
                                     $defArg = $instruction->getProperty("argdef$idParam");
-                        
+
                                     foreach ($valuesParameter as $valueParameter) {
                                         $defLastKnownValues = [];
 
-                                        if (isset($valueParameter->is_array)
+                                        if (
+                                            isset($valueParameter->is_array)
                                             && $valueParameter->is_array === true
-                                                && isset($valueParameter->array_index)) {
+                                            && isset($valueParameter->array_index)
+                                        ) {
                                             $arrayfound = false;
-                                            
+
                                             if ($defArg->getCurrentState()->isType(MyDefinition::TYPE_ARRAY)) {
                                                 foreach ($defArg->getCurrentState()->getArrayIndexes() as $arrayIndex) {
                                                     if ($arrayIndex->index === $valueParameter->array_index) {
@@ -195,7 +205,7 @@ class CustomAnalysis
                                                     }
                                                 }
                                             }
-                                            
+
                                             if (!$arrayfound) {
                                                 $isValid = $validbydefault;
                                                 break 2;
@@ -203,7 +213,7 @@ class CustomAnalysis
                                         } else {
                                             $defLastKnownValues = $defArg->getCurrentState()->getLastKnownValues();
                                         }
-                                        
+
                                         if (count($defLastKnownValues) === 0) {
                                             $isValid = false;
                                         }
@@ -213,9 +223,10 @@ class CustomAnalysis
                                         foreach ($defLastKnownValues as $lastKnownValue) {
                                             // if it's valid we continue
                                             if (($valueParameter->value === $lastKnownValue
-                                                && !$isParameterNotEquals)
+                                                    && !$isParameterNotEquals)
                                                 || ($valueParameter->value !== $lastKnownValue
-                                                && $isParameterNotEquals)) {
+                                                    && $isParameterNotEquals)
+                                            ) {
                                                 $validForAllValues = true;
                                             } else {
                                                 // it's not valid we can break
@@ -253,8 +264,10 @@ class CustomAnalysis
                                     //      * it can be enough (if sufficient) to valid the rule (no issue)
 
                                     // one parameter is not valid and required
-                                    if (!$isValid
-                                        && $isParameterFixed) {
+                                    if (
+                                        !$isValid
+                                        && $isParameterFixed
+                                    ) {
                                         $isValid = true;
                                         break;
                                     }
@@ -264,15 +277,19 @@ class CustomAnalysis
                                     }
 
                                     // one parameter is valid and enough
-                                    if ($isValid
-                                        && $isParameterSufficient) {
+                                    if (
+                                        $isValid
+                                        && $isParameterSufficient
+                                    ) {
                                         $isValid = true;
                                         break;
                                     }
 
                                     // one parameter is not valid but should not fail and continue with other params
-                                    if (!$isValid
-                                        && !$isParameterFailIfNotVerifed) {
+                                    if (
+                                        !$isValid
+                                        && !$isParameterFailIfNotVerifed
+                                    ) {
                                         $isValid = true;
                                     }
 
@@ -283,12 +300,12 @@ class CustomAnalysis
                                 }
                             }
                         }
-                        
+
                         if (!$isValid) {
                             $hashedValue = $myFunc->getLine();
-                            $hashedValue.= "-".$customRule->getAction()."-".$myFunc->getSourceMyFile()->fileName;
+                            $hashedValue .= "-" . $customRule->getAction() . "-" . $myFunc->getSourceMyFile()->fileName;
                             $idVuln = hash("sha256", $hashedValue);
-                            
+
                             if (is_null($context->inputs->getFalsePositiveById($idVuln))) {
                                 $temp["vuln_rule"] = Utils::encodeCharacters($customRule->getAction());
                                 $temp["vuln_name"] = Utils::encodeCharacters($customRule->getAttack());
@@ -314,8 +331,10 @@ class CustomAnalysis
         $rulesVerifyCallFlow = [];
         $customRules = $context->inputs->getCustomRules();
         foreach ($customRules as $customRule) {
-            if ($customRule->getType() === MyCustomRule::TYPE_SEQUENCE
-                    && $customRule->getAction() === "MUST_VERIFY_CALL_FLOW") {
+            if (
+                $customRule->getType() === MyCustomRule::TYPE_SEQUENCE
+                && $customRule->getAction() === "MUST_VERIFY_CALL_FLOW"
+            ) {
                 $sequence = $customRule->getSequence();
 
                 $customRule->setCurrentOrderNumber(0);

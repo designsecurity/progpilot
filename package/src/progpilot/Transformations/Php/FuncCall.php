@@ -10,20 +10,14 @@
 
 namespace progpilot\Transformations\Php;
 
-use PHPCfg\Block;
 use PHPCfg\Op;
 
 use progpilot\Objects\MyFunction;
 use progpilot\Objects\MyDefinition;
-use progpilot\Objects\MyOp;
 
 use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
-use progpilot\Transformations\Php\Transform;
 use progpilot\Transformations\Php\Expr;
-use progpilot\Transformations\Php\Exprs\PropertyFetch;
-use progpilot\Transformations\Php\Exprs\DimFetch;
-use progpilot\Transformations\Php\Exprs\VariableFetch;
 
 class FuncCall
 {
@@ -38,13 +32,13 @@ class FuncCall
         }
 
         $defName =
-            $funcCallName.
-            "_param".
-            $numParam.
-            "_line".
-            $context->getCurrentLine().
-            "_column".
-            $context->getCurrentColumn().
+            $funcCallName .
+            "_param" .
+            $numParam .
+            "_line" .
+            $context->getCurrentLine() .
+            "_column" .
+            $context->getCurrentColumn() .
             "_progpilot";
 
         $myDef = new MyDefinition(
@@ -113,8 +107,7 @@ class FuncCall
             $funcCallName = "echo";
         } elseif ($context->getCurrentOp() instanceof Op\Expr\Eval_) {
             $funcCallName = "eval";
-        } elseif ($context->getCurrentOp() instanceof Op\Expr\Exit_
-            || $context->getCurrentOp() instanceof Op\Terminal\Exit_) {
+        } elseif ($context->getCurrentOp() instanceof Op\Terminal\Exit_) {
             $funcCallName = "exit";
         }
 
@@ -144,8 +137,10 @@ class FuncCall
         $myFunctionCall->setColumn($context->getCurrentColumn());
         $myFunctionCall->setInstanceClassName($className);
 
-        if ($context->getCurrentOp() instanceof Op\Expr\StaticCall &&
-            isset($context->getCurrentOp()->class->value)) {
+        if (
+            $context->getCurrentOp() instanceof Op\Expr\StaticCall &&
+            isset($context->getCurrentOp()->class->value)
+        ) {
             $nameClass = $context->getCurrentOp()->class->value;
             $myFunctionCall->addType(MyFunction::TYPE_FUNC_STATIC);
             $myFunctionCall->setNameInstance($nameClass);
@@ -158,12 +153,13 @@ class FuncCall
 
         $listArgs = [];
 
-        if ($context->getCurrentOp() instanceof Op\Expr\Include_
-                    || $context->getCurrentOp() instanceof Op\Expr\Print_
-                    || $context->getCurrentOp() instanceof Op\Terminal\Echo_
-                    || $context->getCurrentOp() instanceof Op\Expr\Eval_
-                    || $context->getCurrentOp() instanceof Op\Expr\Exit_
-                    || $context->getCurrentOp() instanceof Op\Terminal\Exit_) {
+        if (
+            $context->getCurrentOp() instanceof Op\Expr\Include_
+            || $context->getCurrentOp() instanceof Op\Expr\Print_
+            || $context->getCurrentOp() instanceof Op\Terminal\Echo_
+            || $context->getCurrentOp() instanceof Op\Expr\Eval_
+            || $context->getCurrentOp() instanceof Op\Terminal\Exit_
+        ) {
             if (isset($context->getCurrentOp()->expr)) {
                 $listArgs[] = $context->getCurrentOp()->expr;
             }
@@ -177,7 +173,7 @@ class FuncCall
 
         foreach ($listArgs as $arg) {
             FuncCall::argument($context, $arg, $instFuncCallMain, $funcCallName, $nbparams);
-            $nbparams ++;
+            $nbparams++;
         }
 
         $myFunctionCall->setNbParams($nbparams);

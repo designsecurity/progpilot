@@ -22,8 +22,6 @@ use progpilot\Objects\MyBlock;
 use progpilot\Objects\MyDefinition;
 use progpilot\Objects\MyProperty;
 use progpilot\Objects\MyClass;
-use progpilot\Objects\MyOp;
-use progpilot\Objects\MyFile;
 
 use progpilot\Code\MyInstruction;
 use progpilot\Code\Opcodes;
@@ -31,9 +29,6 @@ use progpilot\Code\Opcodes;
 use progpilot\Transformations\Php\Expr;
 use progpilot\Transformations\Php\Assign;
 use progpilot\Transformations\Php\Common;
-use progpilot\Transformations\Php\Context;
-
-use function DeepCopy\deep_copy;
 
 class Transform implements Visitor
 {
@@ -90,8 +85,10 @@ class Transform implements Visitor
                             return true;
                         }
 
-                        if (!in_array($block_parent, $parentsBlocks, true)
-                            && !in_array($block_parent, $allBlocks, true)) {
+                        if (
+                            !in_array($block_parent, $parentsBlocks, true)
+                            && !in_array($block_parent, $allBlocks, true)
+                        ) {
                             $parentsBlocks[] = $block_parent;
                             $allBlocks[] = $block_parent;
                         }
@@ -111,9 +108,11 @@ class Transform implements Visitor
             $blockIf = $blockResolved[2];
             $blockElse = $blockResolved[3];
 
-            if ($this->sBlocks->contains($blockIf)
+            if (
+                $this->sBlocks->contains($blockIf)
                 && $this->sBlocks->contains($blockElse)
-                    && $this->sBlocks->contains($blockInit)) {
+                && $this->sBlocks->contains($blockInit)
+            ) {
                 $myBlockIf = $this->sBlocks[$blockIf];
                 $myBlockElse = $this->sBlocks[$blockElse];
                 $myBlockInit = $this->sBlocks[$blockInit];
@@ -141,7 +140,7 @@ class Transform implements Visitor
                 }
             }
         }
-        
+
         // extends class
         foreach ($this->context->getClasses()->getListClasses() as $myClass) {
             if (!is_null($myClass->getExtendsOf())) {
@@ -153,7 +152,7 @@ class Transform implements Visitor
                         $myClass->addMethod($cloneMethodFather);
                         $methodFather->setMyClass($myClass);
                     }
-                                    
+
                     foreach ($myClassFather->getProperties() as $propertyFather) {
                         $myClass->addProperty(clone $propertyFather);
                     }
@@ -162,7 +161,7 @@ class Transform implements Visitor
         }
     }
 
-    public function enterBlock(Block $block, Block $prior = null)
+    public function enterBlock(Block $block, ?Block $prior = null)
     {
         $this->insideInclude = false;
         if (!($this->context->getCurrentOp() instanceof Op\Expr\Include_)) {
@@ -193,15 +192,11 @@ class Transform implements Visitor
         }
     }
 
-    public function skipBlock(Block $block, Block $prior = null)
-    {
-    }
+    public function skipBlock(Block $block, ?Block $prior = null) {}
 
-    public function leaveOp(Op $op, Block $block)
-    {
-    }
+    public function leaveOp(Op $op, Block $block) {}
 
-    public function leaveBlock(Block $block, Block $prior = null)
+    public function leaveBlock(Block $block, ?Block $prior = null)
     {
         if (!$this->insideInclude) {
             if ($this->sBlocks->contains($block)) {
@@ -293,8 +288,10 @@ class Transform implements Visitor
 
         // we can have a block opened and we need to leave it
         if ($inst->getOpcode() !== Opcodes::LEAVE_BLOCK) {
-            if (!is_null($this->context->getCurrentBlock())
-                && $this->sBlocks->contains($this->context->getCurrentBlock())) {
+            if (
+                !is_null($this->context->getCurrentBlock())
+                && $this->sBlocks->contains($this->context->getCurrentBlock())
+            ) {
                 $myBlock = $this->sBlocks[$this->context->getCurrentBlock()];
                 $myBlock->setEndAddressBlock(count($this->context->getCurrentMycode()->getCodes()));
 
@@ -305,7 +302,7 @@ class Transform implements Visitor
         }
 
         $myFunction = $this->context->getCurrentFunc();
-        
+
         $myFunction->setLastLine($this->context->getCurrentLine());
         $myFunction->setLastColumn($this->context->getCurrentColumn());
 
@@ -321,17 +318,21 @@ class Transform implements Visitor
         $this->context->setCurrentOp($op);
 
         // for theses objects getline et getcolumn methods exists except for assertion
-        if ($op instanceof Op\Stmt ||
-                ($op instanceof Op\Expr && !($op instanceof Op\Expr\Assertion)) ||
-                    $op instanceof Op\Terminal) {
+        if (
+            $op instanceof Op\Stmt ||
+            ($op instanceof Op\Expr && !($op instanceof Op\Expr\Assertion)) ||
+            $op instanceof Op\Terminal
+        ) {
             if ($op->getLine() !== -1 && $op->getAttribute("startFilePos", -1) !== -1) {
                 $this->context->setCurrentLine($op->getLine());
                 $this->context->setCurrentColumn($op->getAttribute("startFilePos", -1));
             }
         }
 
-        if ($op instanceof Op\Expr\BinaryOp
-            && !($op instanceof Op\Expr\BinaryOp\Concat)) {
+        if (
+            $op instanceof Op\Expr\BinaryOp
+            && !($op instanceof Op\Expr\BinaryOp\Concat)
+        ) {
             $instBinary = new MyInstruction(Opcodes::BINARYOP);
             $instBinary->addProperty(MyInstruction::LEFTID, $this->context->getCurrentFunc()->getOpId($op->left));
             $instBinary->addProperty(MyInstruction::RIGHTID, $this->context->getCurrentFunc()->getOpId($op->right));
@@ -399,13 +400,13 @@ class Transform implements Visitor
                 $this->context->getCurrentColumn(),
                 $className
             );
-            
+
             if (!is_null($op->extends)) {
                 $myClass->setExtendsOf($op->extends->value);
             }
-                
+
             $this->context->getClasses()->addMyclass($myClass);
-            
+
             foreach ($op->stmts->children as $property) {
                 if ($property instanceof Op\Stmt\Property) {
                     $propertyName = Common::getNameDefinition($property);

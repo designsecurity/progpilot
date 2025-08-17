@@ -38,7 +38,7 @@ class MyOp
     public function __construct($varName, $varLine, $varColumn)
     {
         $this->flags = 0;
-        $this->varId = MyOp::$nbObjects ++;
+        $this->varId = MyOp::$nbObjects++;
         $this->varName = $varName;
         $this->varLine = $varLine;
         $this->varColumn = $varColumn;
@@ -47,7 +47,7 @@ class MyOp
 
     public function __clone()
     {
-        $this->varId = MyOp::$nbObjects ++;
+        $this->varId = MyOp::$nbObjects++;
     }
 
     public function setType($flags)
