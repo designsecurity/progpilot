@@ -23,7 +23,7 @@ Most of the time the analysis of progpilot can be extended simply with adding th
 
 ### Implement a test
 A new functionality must be testable, to do that:
-1. Select the category of your functionality in the dataProvider function in *projects/tests/run_all.php*
+1. Select the category of your functionality in the dataProvider function in *projects/tests/RunAll.php*
 2. For example ooptest.php if your functionality extends oop analysis
 3. Add your test in *projects/tests/tests/oop* folder 
 4. Edit *projects/tests/ooptest.php* and add the expected output of your test:

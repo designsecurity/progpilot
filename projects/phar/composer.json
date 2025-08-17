@@ -12,10 +12,10 @@
         "php": ">=8.0",
         "progpilot/package": "@dev",
         "ircmaxell/php-cfg": "^0.8.0",
-        "symfony/yaml": "^5.4.17",
-        "symfony/console": "^5.4.17",
-        "myclabs/deep-copy": "^1.11.0",
-        "bartlett/sarif-php-sdk": "^2.0"
+        "symfony/yaml": "^7.3.2",
+        "symfony/console": "^7.3.2",
+        "myclabs/deep-copy": "^1.13.4",
+        "bartlett/sarif-php-sdk": "^2.2.0"
     },
     "bin": ["progpilot"]
 } 
