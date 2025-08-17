@@ -2,7 +2,7 @@
     "name": "progpilot/example",
     "description": "Example of use of Progpilot",
     "require": {
-        "php": ">=8.0",
+        "php": ">=8.3",
         "designsecurity/progpilot": "^1.2.0",
         "ircmaxell/php-cfg": "^0.8.0"
     }

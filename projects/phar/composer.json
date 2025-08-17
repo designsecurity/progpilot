@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "php": ">=8.0",
+        "php": ">=8.3",
         "progpilot/package": "@dev",
         "ircmaxell/php-cfg": "^0.8.0",
         "symfony/yaml": "^7.3.2",
